@@ -134,7 +134,9 @@ EHR.Server.Validation = {
         cal1.add(java.util.Calendar.YEAR, -1); //adjust for the year we added above
         cal1.add(java.util.Calendar.DATE, -60);
         if (cal1.after(cal2)){
-            EHR.Server.Utils.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
+            var qc = EHR.Server.Security.getQCState(row);
+            if (!qc || !qc.PublicData)
+                EHR.Server.Utils.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
         }
     },
 

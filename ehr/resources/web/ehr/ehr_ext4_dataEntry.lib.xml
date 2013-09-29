@@ -36,6 +36,7 @@
         <script path="ehr/form/Panel.js"/>
         <script path="ehr/grid/Panel.js"/>
         <script path="ehr/panel/BulkEditPanel.js"/>
+        <script path="ehr/panel/DataEntryErrorPanel.js"/>
         <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewPanel.js"/>

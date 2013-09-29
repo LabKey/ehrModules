@@ -120,6 +120,9 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
     },
 
     appendAssignmentsAndGroups: function(record){
+        if (this.redacted)
+            return;
+
         var values = [];
         if (record.getActiveAssignments() && record.getActiveAssignments().length){
             Ext4.each(record.getActiveAssignments(), function(row){

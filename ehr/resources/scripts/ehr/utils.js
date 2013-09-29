@@ -272,7 +272,6 @@ EHR.Server.Utils = new function(){
             //NOTE: with the newer style validation and 13.1 API, we always process every error.
             //this step should be deprecated, but we still support it for the old-style code
             if (!threshold || (helper.isValidateOnly() && !helper.isLegacyFormat())){
-                console.log('no threshold: ' + threshold);
                 return true;
             }
 

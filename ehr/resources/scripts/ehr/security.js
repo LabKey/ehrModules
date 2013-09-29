@@ -259,6 +259,13 @@ EHR.Server.Security = new function(){
                 if (EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData)
                     oldRow._publicData = true;
             }
+        },
+
+        getQCState: function(row){
+            if (row.QCStateLabel)
+                return EHR.Server.Security.getQCStateByLabel(row.QCStateLabel);
+            else if (row.QCState)
+                return EHR.Server.Security.getQCStateByRowId(row.QCState);
         }
     }
 }

@@ -11,5 +11,6 @@
    <sorts>
        <sort column="protocol" descending="false"/>
        <sort column="project" descending="false"/>
+       <sort column="start" descending="true"/>
    </sorts>
 </customView>

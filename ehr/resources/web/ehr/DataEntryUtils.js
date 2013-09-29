@@ -6,6 +6,7 @@
 LABKEY.ExtAdapter.ns('EHR.DataEntryUtils');
 
 EHR.DataEntryUtils = new function(){
+    var dataEntryPanel = null;
     var gridButtons = {
         ADDRECORD: function(config){
             return Ext4.Object.merge({
@@ -13,20 +14,22 @@ EHR.DataEntryUtils = new function(){
                 tooltip: 'Click to add a row',
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
-                    if(!grid.store || !grid.store.hasLoaded()){
+                    if (!grid.store || !grid.store.hasLoaded()){
                         console.log('no store or store hasnt loaded');
                         return;
                     }
 
-                    var cellEditing = grid.getPlugin('cellediting');
-                    if(cellEditing)
+                    var cellEditing = grid.getPlugin(grid.editingPluginId);
+                    if (cellEditing)
                         cellEditing.completeEdit();
 
                     var model = grid.store.createModel({});
-                    grid.store.insert(0, [model]); //add a blank record in the first position
+                    grid.store.add(model); //add a blank record in the first position
+                    var recIdx = grid.store.indexOf(model);
 
-                    if(cellEditing)
-                        cellEditing.startEditByPosition({row: 0, column: grid.firstEditableColumn || 0});
+                    if (cellEditing && recIdx > -1){
+                        cellEditing.startEditByPosition({row: recIdx, column: grid.firstEditableColumn || 1});
+                    }
                 }
             }, config);
         },
@@ -101,6 +104,16 @@ EHR.DataEntryUtils = new function(){
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     grid.getSelectionModel().selectAll();
+                }
+            }, config);
+        },
+        REFRESH: function(config){
+            return Ext4.Object.merge({
+                text: 'Refresh Grid',
+                tooltip: 'Click refresh the grid',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    grid.getView().refresh();
                 }
             }, config);
         },
@@ -240,26 +253,19 @@ EHR.DataEntryUtils = new function(){
             disableOn: 'ERROR'
         },
         /**
-         * A variation on the normal submit button, except will be hidden to non-admins.  It was created so MPRs could have a submit button visible only to admins (permission-based logic was not a sufficient distinction otherwise)
+         * A variation on the normal submit button, intended for use in the basic single-record form.  Does not alter QCState
          */
-        SUBMITADMIN: {
-            text: 'Submit Final',
+        BASICSUBMIT: {
+            text: 'Submit',
             name: 'submit',
-            requiredQC: 'Completed',
-            requiredPermission: 'admin',
-            targetQC: 'Completed',
-            errorThreshold: 'INFO',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
-            disabled: true,
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('project', 'start'),
+            disabled: false,
             itemId: 'submitBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
-                    if(v=='yes')
-                        panel.onSubmit(btn);
-                }, this);
-            },
-            disableOn: 'WARN'
+                panel.onSubmit(btn);
+            }
+            //disableOn: 'WARN'
         },
         /**
          * The standard 'Submit Final' button.  Will change the QCState of all records to 'Completed' and submit the form
@@ -303,24 +309,6 @@ EHR.DataEntryUtils = new function(){
                 }, this);
             },
             disableOn: 'SEVERE'
-        },
-
-        /**
-         * Will attempt to convert the QCState of all records to 'Completed' and submit the form.  Similar to the other SUBMIT button; however, this button does not require a confirmation prior to submitting.
-         */
-        BASICSUBMIT: {
-            text: 'Submit',
-            name: 'basicsubmit',
-            requiredQC: 'Completed',
-            errorThreshold: 'INFO',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
-            disabled: true,
-            itemId: 'submitBtn',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-                panel.onSubmit(btn);
-            },
-            disableOn: 'WARN'
         },
         /**
          * Will attempt to convert all records to the QCState 'Review Required' and submit the form.
@@ -460,6 +448,7 @@ EHR.DataEntryUtils = new function(){
         getColumnConfigFromMetadata: function(meta, grid){
             var col = {};
             col.dataIndex = meta.dataIndex || meta.name;
+            col.name = col.dataIndex;
             col.header = meta.header || meta.caption || meta.label || meta.name;
 
             col.customized = true;
@@ -576,7 +565,7 @@ EHR.DataEntryUtils = new function(){
 
             var storeId = ['ehr_lookups', 'snomed', 'code', 'meaning'].join('||');
 
-            EHR._snomedStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+            EHR._snomedStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.data.Store', {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_combo_list',
@@ -595,7 +584,7 @@ EHR.DataEntryUtils = new function(){
 
             var storeId = ['ehr_lookups', 'procedures', 'rowid', 'name'].join('||');
 
-            EHR._proceduresStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+            EHR._proceduresStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.data.Store', {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'procedures',
@@ -614,7 +603,7 @@ EHR.DataEntryUtils = new function(){
 
             var storeId = ['ehr', 'project', 'project', 'displayName'].join('||');
 
-            EHR._projectStore = Ext4.StoreMgr.get(storeId) || new LABKEY.ext4.Store({
+            EHR._projectStore = Ext4.StoreMgr.get(storeId) || new LABKEY.ext4.data.Store({
                 type: 'labkey-store',
                 schemaName: 'ehr',
                 queryName: 'project',
@@ -643,6 +632,53 @@ EHR.DataEntryUtils = new function(){
             EHR.DataEntryUtils.setSiblingFields(field, {
                 quantity: quantity
             });
+        },
+
+        hasPermission: function(qcStateLabel, permissionName){
+            LDK.Assert.assertNotEmpty('EHR.DataEntryUtils.hasPermission() called without setting DataEntryPanel first', dataEntryPanel);
+
+            return dataEntryPanel.hasPermission(qcStateLabel, permissionName);
+        },
+
+        setDataEntryPanel: function(panel){
+            dataEntryPanel = panel;
+        },
+
+        //returns the most recent weight for the provided animals, preferentially taking weights from the local store
+        getWeights: function(sc, ids, callback, scope){
+            EHR.DemographicsCache.getDemographics(ids, function(animalIds, dataMap){
+                var ret = {};
+                var clientWeightMap = EHR.DataEntryUtils.getClientWeight(sc, ids);
+
+                Ext4.Array.forEach(ids, function(id){
+                    var data = dataMap[id];
+                    ret[id] = clientWeightMap[id] || (data ? data.getMostRecentWeight() : null);
+                }, this);
+
+                if (callback)
+                    callback.call(scope || this, ret);
+            }, this, -1);
+
+        },
+
+        getClientWeight: function(sc, ids){
+            var ret = {};
+            var store = sc.getServerStoreForQuery('study', 'weight');
+            if (store){
+                Ext4.Array.forEach(ids, function(id){
+                    var weights = [];
+                    store.each(function(r){
+                        if (r.get('Id') == id && !Ext4.isEmpty(r.get('weight'))){
+                            weights.push(r.get('weight'));
+                        }
+                    }, this);
+
+                    if (weights.length == 1)
+                        ret[id] = weights[0];
+                }, this);
+            }
+
+            return ret;
         }
     }
 };

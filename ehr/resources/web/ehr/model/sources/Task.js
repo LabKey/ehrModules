@@ -29,7 +29,7 @@ EHR.model.DataModelManager.registerMetadata('Task', {
             category: {defaultValue: 'Task'}
         },
         'study.blood': {
-            performedby: {allowBlank: false},
+            performedby: {allowBlank: true},  //consider what behavior we want here
             tube_type: {allowBlank: false},
             daterequested: {
                 hidden: false,

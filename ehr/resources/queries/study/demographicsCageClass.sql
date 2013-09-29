@@ -20,4 +20,4 @@ ON (c.low < d.id.MostRecentWeight.MostRecentWeight AND d.id.MostRecentWeight.Mos
 
 WHERE
 --d.id.status.status = 'Alive'
-d.calculated_status = 'Alive'
+d.calculated_status = 'Alive' and c.requirementset = 'The Guide'

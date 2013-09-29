@@ -45,7 +45,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
                 xtype: 'checkcombo',
                 forceSelection: true,
                 multiSelect: true,
-                fieldLabel: 'Charge Type',
+                fieldLabel: 'Assigned To',
                 itemId: 'chargeTypeField',
                 displayField: 'value',
                 valueField: 'value',

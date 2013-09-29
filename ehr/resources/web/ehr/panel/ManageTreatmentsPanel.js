@@ -30,6 +30,56 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
 
                 }
             }]
+        },
+
+        getActionBtnMenu: function(rec){
+            return Ext4.create('Ext.menu.Menu', {
+                items: [{
+                    text: 'Change End Date',
+                    disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                    handler: function(btn){
+                        Ext4.create('Ext.window.Window', {
+                            modal: true,
+                            bodyStyle: 'padding: 5px',
+                            width: 400,
+                            items: [{
+                                xtype: 'datefield',
+                                itemId: 'dateField',
+                                fieldLabel: 'End Date',
+                                minValue: new Date(),
+                                value: new Date()
+                            }],
+                            buttons: [{
+                                text: 'Submit',
+                                handler: function(btn){
+                                    var win = btn.up('window');
+                                    var val = win.down('#dateField').getValue();
+                                    if (!val){
+                                        Ext4.Msg.alert('Error', 'Must choose a date');
+                                        return;
+                                    }
+
+                                    rec.set('enddate', val);
+                                    rec.store.sync();
+
+                                    win.close();
+                                }
+                            },{
+                                text: 'Cancel',
+                                handler: function(btn){
+                                    btn.up('window').close();
+                                }
+                            }]
+                        }).show();
+                    }
+                },{
+                    text: 'Edit Treatment',
+                    disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                    handler: function(btn){
+
+                    }
+                }]
+            });
         }
     },
 
@@ -50,14 +100,14 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
 
                 this.setLoading(true);
             }
-        }, this);
+        }, this, {delay: 100});
     },
 
     getStore: function(){
         if (this.store)
             return this.store;
 
-        this.store = Ext4.create('LABKEY.ext4.Store', {
+        this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'Treatment Orders',
             columns: 'lsid,objectid,Id,date,enddate,category,remark,performedby,code,dose,dose_units,amount,amount_units,concentration,conc_units',
@@ -82,7 +132,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
                 tooltip: 'Edit',
                 handler: function(view, rowIndex, colIndex, item, e, rec){
-
+                    EHR.panel.ManageTreatmentsPanel.getActionBtnMenu(rec).showAt(e.getXY());
                 }
             },{
                 header: 'Date',

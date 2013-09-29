@@ -9,13 +9,25 @@
 Ext4.define('EHR.data.LabworkResultsStore', {
     extend: 'EHR.data.DataEntryClientStore',
 
+    constructor: function(){
+        this.callParent(arguments);
+
+        this.on('add', this.onAddRecord, this);
+    },
+
+    onAddRecord: function(store, records){
+        Ext4.each(records, function(record){
+            this.updateUnits(record, ['testid'], true);
+        }, this);
+    },
+
     afterEdit: function(record, modifiedFieldNames){
         this.updateUnits(record, modifiedFieldNames);
 
         this.callParent(arguments);
     },
 
-    updateUnits: function(record, modifiedFieldNames){
+    updateUnits: function(record, modifiedFieldNames, silent){
         if (record.fields.get('testid') && record.get('testid')){
             modifiedFieldNames = modifiedFieldNames || [];
             if (record.get('units') && modifiedFieldNames.indexOf('testid') == -1){
@@ -59,7 +71,9 @@ Ext4.define('EHR.data.LabworkResultsStore', {
                 params.units = lookupRec.get('units');
 
             if (!LABKEY.Utils.isEmptyObj(params)){
+                record.beginEdit();
                 record.set(params);
+                record.endEdit(silent);
             }
         }
     }

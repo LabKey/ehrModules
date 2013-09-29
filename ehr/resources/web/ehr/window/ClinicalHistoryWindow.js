@@ -32,17 +32,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
                 }
             },{
                 text: 'Actions',
-                menu: [{
-                    text: 'Enter Remark',
-                    handler: function(btn){
-                        Ext4.Msg.alert('Enter Remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
-                    }
-                },{
-                    text: 'Order Diet/Medications',
-                    handler: function(btn){
-                        Ext4.Msg.alert('Order Medications', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
-                    }
-                }]
+                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
             }]
 
         });

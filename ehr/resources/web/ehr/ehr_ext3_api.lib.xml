@@ -48,5 +48,6 @@
         <dependency path="Ext.ux.form.LovCombo.js"/>
         <dependency path="Ext.ux.form.LovCombo.css"/>
         <dependency path="StatusBar.js"/>
+        <dependency path="Ext.ux.form.LovCombo.js"/>
     </dependencies>
 </libraries>

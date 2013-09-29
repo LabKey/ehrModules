@@ -68,7 +68,13 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
             items: []
         };
 
-        cfg.items.push(this.appendSection('By Category', this.usageCategoryData, 'Id/utilization/usageCategories', 'eq'));
+        var item = this.appendSection('By Category', this.usageCategoryData, 'Id/utilization/usageCategories', 'eq');
+        if (item)
+            cfg.items.push(item);
+        else
+            cfg.items.push({
+                html: 'No records found'
+            });
 
         target.add(cfg);
     },

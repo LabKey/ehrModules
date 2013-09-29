@@ -15,6 +15,7 @@
         <script path="ehr/panel/LabworkSummaryPanel.js"/>
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
+        <script path="ehr/panel/ClinicalManagementPanel.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>
         <script path="ehr/panel/ManageCasesPanel.js"/>
         <script path="ehr/panel/ClinicalRemarkPanel.js"/>

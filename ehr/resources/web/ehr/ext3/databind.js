@@ -24,7 +24,7 @@ Ext.namespace('EHR.ext.plugins');
  * the other side.  This allows a form to bind() or unbind() records, which lets the form toggle between many records.
  * <p>
  * This plugin creates a new param in the FormPanel called bindConfig.  This parameter is an object with the following options:<br>
- * <li>disableUnlessBound: If true, inputs in the form will be disabled unless a reord is bound</li>
+ * <li>disableUnlessBound: If true, inputs in the form will be disabled unless a record is bound</li>
  * <li>bindOnChange: If true, a new record will be created and bound to the form (if no record is already bound) whenever the value of one of the fields changes</li>
  * <li>showDeleteBtn: If true, a button will be added to the bbar of the form that will delete the bound record</li>
  * <li>autoBindRecord: If true, when the store loads the form will automatically bind the first record of the store</li>

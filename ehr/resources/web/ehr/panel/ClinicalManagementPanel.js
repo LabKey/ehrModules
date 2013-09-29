@@ -11,6 +11,40 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-clinicalmanagementpanel',
 
+    statics: {
+        getActionMenu: function(animalId){
+            return [{
+                text: 'Manage Treatments',
+                disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                scope: this,
+                handler: function(btn){
+                    Ext4.create('EHR.window.ManageTreatmentsWindow', {
+                        animalId: animalId
+                    }).show(btn);
+                }
+            },{
+                text: 'Manage Cases',
+                disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
+                scope: this,
+                handler: function(btn){
+                    Ext4.create('EHR.window.ManageCasesWindow', {
+                        animalId: animalId
+                    }).show(btn);
+                }
+            },{
+                text: 'Enter Remark/Observations',
+                disabled: !EHR.Security.hasPermission(EHR.QCStates.IN_PROGRESS, 'insert', [{schemaName: 'study', queryName: 'Clinical Remarks'}]),
+                scope: this,
+                handler: function(btn){
+                    Ext4.create('EHR.window.EnterRemarkWindow', {
+                        animalId: animalId,
+                        mode: 'Clinical'
+                    }).show(btn);
+                }
+            }]
+        }
+    },
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             bodyStyle: 'padding: 3px;',
@@ -25,32 +59,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                 }
             },{
                 text: 'Actions',
-                menu: [{
-                    text: 'Manage Medications/Diet',
-                    scope: this,
-                    handler: function(btn){
-                        Ext4.create('EHR.window.ManageTreatmentsWindow', {
-                            animalId: this.subjectId
-                        }).show(btn);
-                    }
-                },{
-                    text: 'Manage Cases',
-                    scope: this,
-                    handler: function(btn){
-                        Ext4.create('EHR.window.ManageCasesWindow', {
-                            animalId: this.subjectId
-                        }).show(btn);
-                    }
-                },{
-                    text: 'Enter Remark',
-                    scope: this,
-                    handler: function(btn){
-                        Ext4.create('EHR.window.EnterRemarkWindow', {
-                            animalId: this.subjectId,
-                            mode: 'Clinical'
-                        }).show(btn);
-                    }
-                }]
+                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
             }]
         });
 

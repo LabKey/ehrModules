@@ -89,11 +89,14 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
             cellEditing.completeEdit();
 
         var model = this.targetGrid.store.createModel({});
-        model.set({
-            Id: rec.get('Id'),
-            date: rec.get('date'),
-            parentid: rec.get('parentid')
-        });
+        var obj = {};
+        Ext4.Array.forEach(['Id', 'date', 'parentid'], function(field){
+            if (this.targetGrid.store.getFields().get(field)){
+                obj[field] = rec.get(field);
+            }
+        }, this);
+
+        model.set(obj);
 
         this.targetGrid.store.insert(0, [model]); //add a blank record in the first position
 

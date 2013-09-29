@@ -20,7 +20,7 @@ Ext4.define('EHR.form.field.AnimalGroupField', {
             displayField: 'name',
             valueField: 'rowid',
             queryMode: 'local',
-            store: Ext4.create('LABKEY.ext4.Store', {
+            store: Ext4.create('LABKEY.ext4.data.Store', {
                 schemaName: 'ehr',
                 queryName: 'animal_groups',
                 sort: 'name',

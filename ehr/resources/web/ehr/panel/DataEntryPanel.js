@@ -35,12 +35,11 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             },
             items: [{
                 html: 'Loading...'
-            }],
-            buttonAlign: 'left',
-            buttons: this.getButtons()
+            }]
         });
 
         this.callParent();
+        EHR.DataEntryUtils.setDataEntryPanel(this);
 
         this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged', 'animalchange');
 
@@ -55,18 +54,23 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onStoreCollectionCommitComplete: function(sc, extraContext){
-        console.log('commit complete');
-        console.log(arguments);
-
         Ext4.Msg.hide();
 
         if(extraContext && extraContext.successURL){
             window.onbeforeunload = Ext4.emptyFn;
             window.location = extraContext.successURL;
         }
+
+        this.updateDirtyStateMessage();
     },
 
     onStoreCollectionValidation: function(sc){
+        if (!this.hasStoreCollectionLoaded){
+            return;
+        }
+
+        this.updateDirtyStateMessage();
+
         var maxSeverity = sc.getMaxErrorSeverity();
 
         if(EHR.debug && maxSeverity)
@@ -90,11 +94,19 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 }, this);
             }
         }
-        Ext4.Array.forEach(this.getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
+
+        Ext4.Array.forEach(this.getUpperPanel().getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
             toolbar.items.each(function(item){
                 processItem(item);
             }, this);
         }, this);
+    },
+
+    getUpperPanel: function(){
+        if (!this.upperPanel)
+            this.upperPanel = this.down('#upperPanel');
+
+        return this.upperPanel;
     },
 
     onStoreCollectionBeforeCommit: function(sc, records, commands, extraContext){
@@ -161,9 +173,22 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onStoreCollectionLoad: function(){
-        //TODO: only want to do this once
+        console.log('on store collection loaded');
         this.removeAll();
-        this.add(this.getItems());
+        this.add([{
+            xtype: 'panel',
+            itemId: 'upperPanel',
+            items: this.getItems(),
+            buttonAlign: 'left',
+            buttons: this.getButtons()
+        },{
+            xtype: 'ehr-dataentryerrorpanel',
+            itemId: 'errorPanel',
+            style: 'padding-top: 10px;',
+            storeCollection: this.storeCollection
+        }]);
+
+        this.hasStoreCollectionLoaded = true;
     },
 
     getItems: function(){
@@ -186,7 +211,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 xtype: section.xtype,
                 border: true,
                 style: 'margin-bottom: 10px;',
-                collapsible: true,
+                //collapsible: true,
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
@@ -211,8 +236,36 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return items;
     },
 
+    updateDirtyStateMessage: function(){
+        var target = this.getDirtyStateArea();
+        if (target)
+            target.setVisible(this.storeCollection.isDirty());
+    },
+
+    getDirtyStateArea: function(){
+        if (!this.dirtyStateArea)
+            this.dirtyStateArea = this.down('#dirtyStateIcon');
+
+        return this.dirtyStateArea;
+    },
+
     getButtons: function(){
-        var buttons = [];
+        var buttons = [{
+            xtype: 'container',
+            cls: 'x4-form-invalid-tip-body',
+            hidden: false,
+            itemId: 'dirtyStateIcon',
+            height: 20,
+            width: 20,
+            listeners: {
+                render: function(){
+                    Ext4.QuickTips.register({
+                        target: this.getEl(),
+                        text: 'This form has unsaved data'
+                    });
+                }
+            }
+        }];
 
         if (this.formConfig){
             if (this.formConfig.buttons){
@@ -242,6 +295,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 if (moreActions.length){
                     buttons.push({
                         text: 'More Actions',
+                        cls: 'ehr-dataentrybtn',
                         menu: moreActions
                     });
                 }
@@ -254,6 +308,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     configureButton: function(buttonCfg){
         buttonCfg.scope = this;
         buttonCfg.xtype = 'button';
+        buttonCfg.cls = 'ehr-dataentrybtn';
 
         //only show button if user can access this QCState
         if(buttonCfg.requiredQC){
@@ -269,17 +324,18 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     hasPermission: function(qcStateLabel, permissionName){
         var permMap = this.formConfig.permissions;
-        var permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
+        permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
 
         var hasPermission = true;
         Ext4.Object.each(permMap, function(schemaName, queries) {
             // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
             // for the container-level DataEntryPermission
+            var permissionToTest = permissionName;
             if (schemaName.toLowerCase() != 'study'){
-                permissionName = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
+                permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
             }
             Ext4.Object.each(queries, function(queryName, permissions) {
-                if (!permissions[permissionName]){
+                if (!permissions[permissionToTest]){
                     hasPermission = false;
                     return false;
                 }

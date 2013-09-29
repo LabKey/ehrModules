@@ -47,10 +47,9 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     },
 
     getStoreCopy: function(){
-        var model = this.targetStore.model;
-        var valMap = this.setFieldDefaults(model);
-
-        Ext4.override(model, {
+        var valMap = this.setFieldDefaults(this.targetStore.model);
+        var model = Ext4.define('bulkEditModel-' + Ext4.id(), {
+            extend: this.targetStore.model,
             setFieldDefaults: function(){
                 this.fields.each(function(field){
                     if (Ext4.isDefined(valMap[field.name])){
@@ -58,7 +57,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
                     }
                 }, this);
             }
-        }, this);
+        });
 
         return Ext4.create(this.targetStore.$className, {
             model: model

@@ -126,6 +126,11 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
             displayField: 'DisplayName',
             valueField: 'UserId',
             itemId: 'assignedTo'
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'View Task After Created?',
+            itemId: 'viewAfterCreate',
+            checked: true
         }]
     },
 
@@ -259,15 +264,16 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
             scope: this,
             success: function(response, options, config){
                 Ext4.Msg.hide();
+
+                var viewAfterCreate = this.down('#viewAfterCreate').getValue();
                 this.close();
-                Ext4.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
-                    if(btn == 'yes'){
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
-                    }
-                    else {
-                        LABKEY.DataRegions[this.dataRegionName].refresh();
-                    }
-                }, this)
+
+                if (viewAfterCreate){
+                    window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
+                }
+                else {
+                    LABKEY.DataRegions[this.dataRegionName].refresh();
+                }
             },
             failure: LDK.Utils.getErrorCallback()
         });

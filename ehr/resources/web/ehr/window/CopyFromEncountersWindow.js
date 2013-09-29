@@ -22,7 +22,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper allows you to populate expected based on the procedures requested above.  A list of the procedures and expected values are below.',
+                html: 'This helper allows you to populate expected rows based on the procedures requested above.  A list of the procedures and expected values are below.',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'services',

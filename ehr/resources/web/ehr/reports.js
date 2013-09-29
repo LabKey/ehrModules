@@ -380,4 +380,158 @@ EHR.reports.treatmentSchedule = function(panel, tab){
         style: 'margin-bottom:20px;',
         queryConfig: config
     });
+};
+
+EHR.reports.snapshot = function(panel, tab){
+    if (tab.filters.subjects){
+        renderSubjects(tab.filters.subjects, tab);
+    }
+    else
+    {
+        panel.resolveSubjectsFromHousing(tab, renderSubjects, this);
+    }
+
+    function renderSubjects(subjects, tab){
+        var toAdd = [];
+        if (!subjects.length){
+            toAdd.push({
+                html: 'No animals were found.',
+                border: false
+            });
+        }
+        else if (subjects.length < 10) {
+            for (var i=0;i<subjects.length;i++){
+                toAdd.push({
+                    xtype: 'ldk-webpartpanel',
+                    title: 'Overview: ' + subjects[i],
+                    items: [{
+                        xtype: 'ehr-snapshotpanel',
+                        showExtendedInformation: true,
+                        hrefTarget: '_blank',
+                        border: false,
+                        subjectId: subjects[i]
+                    }]
+                });
+
+                toAdd.push({
+                    border: false,
+                    height: 20
+                });
+
+                toAdd.push(EHR.reports.renderWeightData(panel, tab, subjects[i]));
+            }
+        }
+        else {
+            toAdd.push({
+                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Display History\'.',
+                style: 'padding-bottom: 20px;',
+                border: false
+            });
+
+            var filterArray = panel.getFilterArray(tab);
+            var title = panel.getTitleSuffix();
+            toAdd.push({
+                xtype: 'ldk-querypanel',
+                style: 'margin-bottom:20px;',
+                queryConfig: {
+                    title: 'Overview' + title,
+                    schemaName: 'study',
+                    queryName: 'demographics',
+                    viewName: 'Snapshot',
+                    filterArray: filterArray.removable.concat(filterArray.nonRemovable)
+                }
+            });
+        }
+
+        if (toAdd.length)
+            tab.add(toAdd);
+    }
+
+};
+
+EHR.reports.fullClinicalHistory = function(panel, tab){
+    EHR.reports.clinicalHistory(panel, tab, true);
 }
+
+EHR.reports.clinicalHistory = function(panel, tab, includeAll){
+    if (tab.filters.subjects){
+        renderSubjects(tab.filters.subjects, tab);
+    }
+    else
+    {
+        panel.resolveSubjectsFromHousing(tab, renderSubjects, this);
+    }
+
+    function renderSubjects(subjects, tab){
+        if (subjects.length > 10){
+            tab.add({
+                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Display History\'.',
+                style: 'padding-bottom: 20px;',
+                border: false
+            });
+
+            var filterArray = panel.getFilterArray(tab);
+            var title = panel.getTitleSuffix();
+            tab.add({
+                xtype: 'ldk-querypanel',
+                style: 'margin-bottom:20px;',
+                queryConfig: {
+                    title: 'Overview' + title,
+                    schemaName: 'study',
+                    queryName: 'demographics',
+                    viewName: 'Snapshot',
+                    filterArray: filterArray.removable.concat(filterArray.nonRemovable)
+                }
+            });
+
+            return;
+        }
+
+        if (!subjects.length){
+            tab.add({
+                html: 'No animals were found.',
+                border: false
+            });
+
+            return;
+        }
+
+        var minDate = includeAll ? null : Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2);
+        var toAdd = [];
+        Ext4.each(subjects, function(s){
+            toAdd.push({
+                html: '<span style="font-size: large;"><b>Animal: ' + s + '</b></span>',
+                style: 'padding-bottom: 20px;',
+                border: false
+            });
+
+            toAdd.push({
+                xtype: 'ehr-smallformsnapshotpanel',
+                hrefTarget: '_blank',
+                border: false,
+                subjectId: s
+            });
+
+            toAdd.push({
+                html: '<b>Chronological History:</b><hr>',
+                style: 'padding-top: 5px;',
+                border: false
+            });
+
+            toAdd.push({
+                xtype: 'ehr-clinicalhistorypanel',
+                border: true,
+                subjectId: s,
+                autoLoadRecords: true,
+                minDate: minDate,
+                //maxGridHeight: 1000,
+                hrefTarget: '_blank',
+                style: 'margin-bottom: 20px;'
+            });
+        }, this);
+
+        if (toAdd.length){
+            tab.add(toAdd);
+        }
+    }
+};

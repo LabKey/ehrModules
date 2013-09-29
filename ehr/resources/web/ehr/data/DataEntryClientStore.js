@@ -12,6 +12,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         this.callParent(arguments);
 
         this.on('update', this.onUpdate, this);
+        this.addEvents('validation');
     },
 
     getFields: function(){

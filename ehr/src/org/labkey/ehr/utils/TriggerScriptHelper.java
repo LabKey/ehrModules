@@ -137,7 +137,7 @@ public class TriggerScriptHelper
 
     public static TriggerScriptHelper create(int userId, String containerId)
     {
-        _log.info("Creating trigger script helper for: " +  userId + ", " + containerId);
+        //_log.info("Creating trigger script helper for: " +  userId + ", " + containerId);
         TriggerScriptHelper helper = new TriggerScriptHelper(userId, containerId);
 
         return helper;
@@ -570,6 +570,7 @@ public class TriggerScriptHelper
     public void announceIdsModified(String schema, String query, List<String> ids)
     {
         DemographicsCache.get().reportDataChange(getContainer(), schema, query, ids);
+        DemographicsCache.get().asyncCache(getContainer(), getUser(), ids);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -1044,7 +1045,7 @@ public class TriggerScriptHelper
         if (bloodPerKg == null || interval == null || maxDrawPct == null)
             return "Unable to calculate allowable blood volume";
 
-        Double maxAllowable = weight * bloodPerKg * maxDrawPct;
+        Double maxAllowable = Math.round((weight * bloodPerKg * maxDrawPct) * 100) / 100.0;
 
         //find draws over the interval
         Calendar intervalMin = Calendar.getInstance();

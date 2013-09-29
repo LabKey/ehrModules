@@ -139,6 +139,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 200
             }
         },
+        chargeId: {
+            allowBlank: false,
+            columnConfig: {
+                width: 250
+            },
+            editorConfig: {
+                anyMatch: true,
+                plugins: ['ldk-usereditablecombo'],
+                listConfig: {
+                    innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                    getInnerTpl: function(){
+                        return this.innerTpl;
+                    }
+                }
+            },
+            lookup: {
+                sort: 'category,name',
+                columns: '*'
+            }
+        },
         begindate: {
             xtype: 'xdatetime',
             hidden: true,
@@ -191,7 +211,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             columnConfig: {
                 width: 120
             },
-            shownInGrid: false
+            shownInGrid: true
         },
         userid: {
             lookup: {
@@ -449,6 +469,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.microbiology': {
             tissue: {
+                hidden: false,
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organ/Tissue'
@@ -471,6 +492,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.antibioticSensitivity': {
             tissue: {
+                hidden: false,
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organ/Tissue'
@@ -682,6 +704,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'ehr.encounter_participants': {
+            Id: {
+                hidden: true,
+                allowBlank: true
+            },
+            userid: {
+                hidden: false
+            },
+            username: {
+                hidden: false
+            }
+        },
         'study.encounters': {
             instructions: {
                 columnConfig: {
@@ -763,11 +797,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             sampleType : {
+                hidden: true,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 },
                 columnConfig: {
                     width: 160
+                }
+            },
+            tissue: {
+                columnConfig: {
+                    width: 200
+                },
+                editorConfig: {
+                    defaultSubset: 'Lab Sample Types'
                 }
             },
             condition: {
@@ -794,14 +837,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     anyMatch: true,
                     plugins: ['ldk-usereditablecombo'],
                     listConfig: {
-                        innerTpl: '{[(values.chargetype ? "<b>" + values.chargetype + ":</b> " : "") + values.servicename]}',
+                        innerTpl: '{[(values.chargetype ? "<b>" + values.chargetype + ":</b> " : "") + values.servicename + (values.outsidelab ? "*" : "")]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
                     }
                 },
                 lookup: {
-                    sort: 'chargetype,servicename',
+                    sort: 'chargetype,servicename,outsidelab',
                     columns: '*'
                 }
             },
@@ -949,15 +992,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: false,
+                shownInGrid: true,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             dosage_units: {
-                shownInGrid: false,
-                compositeField: 'Dosage'
+                shownInGrid: true,
+                compositeField: 'Dosage',
+                columnConfig: {
+                    width: 120
+                }
             },
             code: {
                 //shownInGrid: false,
@@ -1011,6 +1057,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             code: {
+                hidden: true,
                 editorConfig: {
                     defaultSubset: 'Organ/Tissue'
                 }
@@ -1022,6 +1069,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 lookup: {
                     columns: '*'
                 }
+            },
+            sampleType: {
+                hidden: true
             }
         },
         'study.serology': {
@@ -1049,6 +1099,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             units: {
                 compositeField: 'Numeric Result'
+            },
+            tissue: {
+                hidden: false
             }
         },
         'study.chemistryResults': {
@@ -1347,6 +1400,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 editorConfig: {
                     allowNegative: false
+                },
+                columnConfig: {
+                    width: 150
                 }
             },
             num_tubes: {
@@ -1394,6 +1450,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.drug': {
+            lot: {
+                shownInGrid: false
+            },
             enddate: {
                 shownInGrid: false,
                 hidden: false,
@@ -1422,17 +1481,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: false,
+                shownInGrid: true,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             dosage_units: {
-                shownInGrid: false,
+                shownInGrid: true,
                 compositeField: 'Dosage',
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
+                },
+                columnConfig: {
+                    width: 120
                 }
             },
             concentration: {
@@ -1623,22 +1685,23 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.pairings': {
             pairid: {
+                hidden: true
+            },
+            lowestcage: {
                 allowBlank: false,
-                xtype: 'triggerfield',
-                editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    triggerToolTip: 'Click to set this to match the current cage',
-                    onTriggerClick: function(e){
-                        var rec = EHR.DataEntryUtils.getBoundRecord(this);
-                        if (rec){
-                            var cage = rec.get('cage');
-                            if (cage)
-                                this.setValue(cage);
-                        }
-                    }
-                }
+                columnConfig: {
+                    width: 120,
+                    showLink: false
+                },
+                xtype: 'ehr-lowestcagefield'
             },
             pairingtype: {
+                columnConfig: {
+                    width: 145,
+                    showLink: false
+                }
+            },
+            goal: {
                 columnConfig: {
                     width: 145,
                     showLink: false

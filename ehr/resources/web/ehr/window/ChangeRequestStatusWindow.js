@@ -50,7 +50,7 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         this.on('render', function(){
             this.setLoading(true);
             this.loadData();
-        }, this, {single: true});
+        }, this, {single: true, delay: 100});
     },
 
     getFormItems: function(){

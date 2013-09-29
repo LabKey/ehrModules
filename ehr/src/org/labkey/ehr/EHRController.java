@@ -80,6 +80,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class EHRController extends SpringActionController
 {
@@ -108,6 +109,61 @@ public class EHRController extends SpringActionController
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class CacheLivingAnimalsAction extends ConfirmAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            return new HtmlView("This action will force the EHR to cache demographics data on all living animals.  This can save significant time during data entry or other screens.  There are currently " + DemographicsCache.get().getCacheSize() + " animals cached.  Do you want to do this?<br><br>");
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            DemographicsCache.get().cacheLivingAnimals(getContainer(), getUser());
+            return true;
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class GetCacheInfoAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            StringBuilder msg = new StringBuilder();
+            msg.append("There are " + DemographicsCache.get().getCacheSize() + " animals currently cached.  There have been a total of " + DemographicsCache.get().getTotalCached() + " total caches and " + DemographicsCache.get().getTotalUncached() + " total records uncached.  The Ids currently cached are:<br><br>");
+            TreeSet<String> sorted = new TreeSet<>(DemographicsCache.get().getCachedIds());
+            msg.append(StringUtils.join(sorted, "<br>"));
+
+            Set<String> missing = DemographicsCache.get().verifyCache();
+            if (missing.size() > 0)
+            {
+                msg.append("<p>The following items are reported as cached, but missing:<br>");
+                msg.append(StringUtils.join(missing, "<br>"));
+            }
+
+            DemographicsCache.get().getCachedIds();
+
+            return new HtmlView(msg.toString());
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Demographics Cache Information");
         }
     }
 
@@ -223,6 +279,9 @@ public class EHRController extends SpringActionController
                 {
                     detailsStr += "&" + pkCol + "=${" + pkCol + "}";
                 }
+
+                //TODO: import URL??  parentage, etc.
+
                 DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
                 updateUrl.setContainerContext(getContainer());
 

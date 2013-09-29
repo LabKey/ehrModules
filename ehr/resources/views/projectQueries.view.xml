@@ -1,7 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view">
     <dependencies>
         <dependency path="ehr.context" />
-        <dependency path="Ext4ClientApi"/>
         <dependency path="extWidgets/SearchPanel.js"/>
     </dependencies>
 </view>

@@ -15,6 +15,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     fieldLabel: 'Project',
     typeAhead: true,
+    editable: false,
     forceSelection: false, //allows project to be set prior to store loading
     emptyText:'',
     disabled: false,
@@ -42,6 +43,12 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                             width: 400,
                             fieldLabel: 'Project',
                             itemId: 'projectField'
+                        },{
+                            xtype: 'ldk-linkbutton',
+                            linkTarget: '_blank',
+                            text: '[View All Projects]',
+                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'ehr', 'query.queryName': 'project', 'query.viewName': 'Active Projects'}),
+                            style: 'padding-top: 5px;padding-bottom: 5px;padding-left: 100px;'
                         }],
                         buttons: [{
                             scope: this,
@@ -59,6 +66,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                     protocolDisplayName: rec.get('protocol/displayName'),
                                     protocol: rec.get('protocol'),
                                     title: rec.get('title'),
+                                    shortname: rec.get('shortname'),
                                     investigator: rec.get('investigatorId/lastName')
                                 });
 
@@ -133,7 +141,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     getInnerTpl: function(){
         //(values["protocol"] ? values["protocol"] : "")
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") + ")" : "")]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") + ")" : ""))]}&nbsp;</span>'];
     },
 
     trigger1Cls: 'x4-form-search-trigger',
@@ -169,10 +177,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, false as fromClient, max(sort_order) as sort_order FROM (";
+        var sql = "SELECT DISTINCT t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, max(sort_order) as sort_order FROM (";
 
         if (id){
-            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
+            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.shortname, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
             "WHERE a.id='"+id+"' ";
 
             if (this.getDisallowedProtocols()){
@@ -192,10 +200,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             if (id)
                 sql += ' UNION ALL ';
 
-            sql += " SELECT p.project, p.displayName, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
+            sql += " SELECT p.project, p.displayName, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
         }
 
-        sql+= " ) t GROUP BY t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title";
+        sql+= " ) t GROUP BY t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
 
         return sql;
     },

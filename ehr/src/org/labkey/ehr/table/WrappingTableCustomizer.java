@@ -23,6 +23,8 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.laboratory.LaboratoryService;
+import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -49,36 +51,47 @@ public class WrappingTableCustomizer implements TableCustomizer
         ehr.setAddLinkDisablers(false);
 
         ehr.customize(table);
+
+        LDKService.get().getDefaultTableCustomizer().customize(table);
     }
 
     public void addWrappedColumn(TableInfo ti)
     {
-        for (ColumnInfo col : ti.getColumns())
+        ColumnInfo col = guessSubjectCol(ti);
+        if (col != null)
         {
-            if (col.getName().equalsIgnoreCase(ID_FIELD) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
+            String name = "EHR";
+            if (ti.getColumn(name) == null)
             {
-                String name = "EHR";
-                if (ti.getColumn(name) == null)
+                Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+                if (studyContainer != null)
                 {
-                    Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-                    if (studyContainer != null)
+                    UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), studyContainer, "study");
+                    if (us != null)
                     {
-                        UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), studyContainer, "study");
-                        if (us != null)
-                        {
-                            WrappedColumn newCol = new WrappedColumn(col, name);
-                            newCol.setIsUnselectable(true);
-                            newCol.setLabel(name);
-                            newCol.setUserEditable(false);
-                            newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
-                            if (ti instanceof AbstractTableInfo)
-                                ((AbstractTableInfo) ti).addColumn(newCol);
-
-                            break;
-                        }
+                        WrappedColumn newCol = new WrappedColumn(col, name);
+                        newCol.setIsUnselectable(true);
+                        newCol.setLabel(name);
+                        newCol.setUserEditable(false);
+                        newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
+                        if (ti instanceof AbstractTableInfo)
+                            ((AbstractTableInfo) ti).addColumn(newCol);
                     }
                 }
             }
         }
+    }
+
+    private ColumnInfo guessSubjectCol(TableInfo ti)
+    {
+        for (ColumnInfo col : ti.getColumns())
+        {
+            if (LaboratoryService.PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
+            {
+                return col;
+            }
+        }
+
+        return null;
     }
 }

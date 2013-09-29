@@ -28,11 +28,6 @@
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>formtypes</fkTable>
-                            <fkColumnName>formtype</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="assignedto">
                         <columnTitle>Assigned To</columnTitle>

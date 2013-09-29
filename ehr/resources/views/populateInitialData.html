@@ -289,6 +289,9 @@ function populateReports(){
             ['pregnancies' ,'Colony Management' ,'query' ,'Pregnancies' ,'true' ,'' ,'study' ,'Pregnancies', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'This report contains a list of known pregnancies, including conception dates and sire, where available'],
             ['TB' ,'Colony Management' ,'query' ,'TB Tests' ,'true' ,'' ,'study' ,'TB Tests', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'TB Test results'],
             ['abstract' ,'General' ,'js' ,'Abstract' ,'true' ,'' ,'study' ,'abstract', '', '', '', 'false', 'false', '', 'qcstate/publicdata', 'This report contains a summary of the animal, including demographics, assignments and weight'],
+            ['snapshot' ,'General' ,'js' ,'Snapshot' ,'true' ,'' ,'study' ,'snapshot', '', '', '', 'false', 'false', '', 'qcstate/publicdata', 'This report contains a summary of the animal, including demographics, assignments and weight'],
+            ['clinSnapshot' ,'Clinical' ,'js' ,'Clinical Snapshot' ,'true' ,'' ,'study' ,'snapshot', '', '', '', 'false', 'false', '', 'qcstate/publicdata', 'This report contains a summary of the animal, including demographics, assignments and weight'],
+            ['clinicalHistory' ,'Clinical' ,'js' ,'Clinical History' ,'true' ,'' ,'study' ,'clinicalHistory', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'This report contains an overview of the animal\'s clinical history'],
             ['arrivalDeparture' ,'General' ,'js' ,'Arrival/Departure' ,'true' ,'' ,'study' ,'arrivalDeparture', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'Displays arrival and departure dates'],
             ['bloodDraws' ,'General' ,'query' ,'Blood Draw History' ,'true' ,'' ,'study' ,'Blood Draws', '', '', 'date', 'false', 'false', '', '', 'Contains records of blood draws.  '],
             ['charges' ,'General' ,'query' ,'Charges' ,'true' ,'' ,'study' ,'Charges', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'This report contains a list of charges attached to the animal\'s record'],
@@ -7893,7 +7896,7 @@ var panel = new Ext.Panel({
             populateSnomedSubsetCodes();  //populate SNOMED subset codes
             populateChargeItems();
 //            populateFormTemplateRecords();   //delete form templates
-//            populateSnomed();  //populate SNOMED
+            populateSnomed();  //populate SNOMED
             populatModuleProperties();
             populateAnimalGroups();
         }
@@ -7911,7 +7914,7 @@ var panel = new Ext.Panel({
             deleteAll('ehr_lookups', 'snomed_subsets', 'rowid');
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
-//            deleteAll('ehr_lookups', 'snomed', 'code');
+            deleteAll('ehr_lookups', 'snomed', 'code');
             deleteAll('ehr', 'module_properties', 'rowid');
 //            deleteAll('ehr', 'animal_groups', 'rowid');
         }

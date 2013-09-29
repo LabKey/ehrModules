@@ -171,11 +171,6 @@
             </ns:column>
             <ns:column columnName="formtype">
                 <ns:nullable>true</ns:nullable>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
-                    <ns:fkTable>formtypes</ns:fkTable>
-                    <ns:fkColumnName>formtype</ns:fkColumnName>
-                </ns:fk>
             </ns:column>
             <ns:column columnName="category">
                 <ns:nullable>false</ns:nullable>
@@ -275,11 +270,6 @@
             </ns:column>
             <ns:column columnName="formtype">
                 <ns:nullable>true</ns:nullable>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
-                    <ns:fkTable>formtypes</ns:fkTable>
-                    <ns:fkColumnName>formtype</ns:fkColumnName>
-                </ns:fk>
             </ns:column>
             <ns:column columnName="daterequested">
                 <ns:nullable>true</ns:nullable>
@@ -1149,6 +1139,9 @@
                 <ns:columnTitle>Is Always Available?</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+            <ns:column columnName="shortname">
+                <ns:columnTitle>Short Name (Used In Data Entry)</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
@@ -1590,6 +1583,7 @@
         <ns:columns>
             <ns:column columnName="Id">
                 <ns:columnTitle>Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
                 <ns:fk>
                     <ns:fkDbSchema>study</ns:fkDbSchema>
                     <ns:fkTable>Animal</ns:fkTable>
@@ -1606,7 +1600,8 @@
             </ns:column>
             <ns:column columnName="username">
                 <ns:columnTitle>User Id</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
+                <ns:inputType>textfield</ns:inputType>
+                <ns:isHidden>false</ns:isHidden>
             </ns:column>
             <ns:column columnName="role">
                 <ns:fk>

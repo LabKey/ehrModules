@@ -77,7 +77,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         this.on('render', function(){
             this.setLoading(true);
             this.loadData();
-        }, this, {single: true});
+        }, this, {single: true, delay: 100});
     },
 
     getAddToExistingItems: function(){
@@ -134,6 +134,11 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             displayField: 'DisplayName',
             valueField: 'UserId',
             itemId: 'assignedTo'
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'View Task After Created?',
+            itemId: 'viewAfterCreate',
+            checked: true
         }]
     },
 
@@ -284,15 +289,16 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             scope: this,
             success: function(response, options, config){
                 Ext4.Msg.hide();
+
+                var viewAfterCreate = this.down('#viewAfterCreate').getValue();
                 this.close();
-                Ext4.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
-                    if(btn == 'yes'){
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
-                    }
-                    else {
-                        LABKEY.DataRegions[this.dataRegionName].refresh();
-                    }
-                }, this)
+
+                if (viewAfterCreate){
+                    window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
+                }
+                else {
+                    LABKEY.DataRegions[this.dataRegionName].refresh();
+                }
             },
             failure: LDK.Utils.getErrorCallback()
         });

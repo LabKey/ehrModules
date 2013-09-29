@@ -21,7 +21,7 @@ Ext4.define('EHR.form.field.AreaField', {
             displayField:'area',
             valueField: 'area',
             queryMode: 'local',
-            store: Ext4.create('LABKEY.ext4.Store', {
+            store: Ext4.create('LABKEY.ext4.data.Store', {
                 schemaName: 'ehr_lookups',
                 queryName: 'areas',
                 sort: 'area',

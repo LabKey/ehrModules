@@ -16,14 +16,6 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -33,6 +25,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
@@ -49,7 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -68,8 +60,7 @@ public class EHRApiTest extends AbstractEHRTest
     private static String FIELD_LSID = "lsid";
 
     private String[] weightFields = {"Id", "date", "enddate", "project", "weight", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid"};
-    private static final String DATE_SUBSTITUTION = "@@CURDATE@@";
-    private Object[] weightData1 = {"TestSubject1", DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
+    private Object[] weightData1 = {"TestSubject1", EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
     private List<Long> _saveRowsTimes;
     private SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private Random _randomGenerator = new Random();
@@ -78,6 +69,7 @@ public class EHRApiTest extends AbstractEHRTest
     private static String[] ROOMS = {"Room1", "Room2", "Room3"};
     private static String[] CAGES = {"1", "2", "3"};
     private static Integer[] PROJECTS = {12345, 123456, 1234567};
+    private EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getContainerPath());
 
     public EHRApiTest()
     {
@@ -165,12 +157,12 @@ public class EHRApiTest extends AbstractEHRTest
             log("Creating test subjects");
             fields = new String[]{"Id", "Species", "Birth", "Gender", "date"};
             data = new Object[][]{
-                {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date()},
-                {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date()},
-                {SUBJECTS[2], "Rhesus", (new Date()).toString(), "f", new Date()}
+                    {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date()},
+                    {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date()},
+                    {SUBJECTS[2], "Rhesus", (new Date()).toString(), "f", new Date()}
             };
-            insertCommand = prepareInsertCommand("study", "demographics", FIELD_LSID, fields, data);
-            doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
+            insertCommand = _apiHelper.prepareInsertCommand("study", "demographics", FIELD_LSID, fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
 
             //used as initial dates
             Date pastDate1 = _tf.parse("2012-01-03 09:30");
@@ -180,22 +172,22 @@ public class EHRApiTest extends AbstractEHRTest
             log("Creating initial housing records");
             fields = new String[]{"Id", "date", "enddate", "room", "cage"};
             data = new Object[][]{
-                {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
-                {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
-                {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
+                    {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                    {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                    {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
             };
-            insertCommand = prepareInsertCommand("study", "Housing", FIELD_LSID, fields, data);
-            doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Housing", FIELD_LSID, fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
 
             //set a base weight
             log("Setting initial weights");
             fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
             data = new Object[][]{
-                {SUBJECTS[0], pastDate2, 10.5, EHRQCState.COMPLETED.label},
-                {SUBJECTS[0], new Date(), 12, EHRQCState.COMPLETED.label}
+                    {SUBJECTS[0], pastDate2, 10.5, EHRQCState.COMPLETED.label},
+                    {SUBJECTS[0], new Date(), 12, EHRQCState.COMPLETED.label}
             };
-            insertCommand = prepareInsertCommand("study", "Weight", FIELD_LSID, fields, data);
-            doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Weight", FIELD_LSID, fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
 
             //set assignment
             log("Setting initial assignments");
@@ -205,8 +197,8 @@ public class EHRApiTest extends AbstractEHRTest
                     {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
                     {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
             };
-            insertCommand = prepareInsertCommand("study", "Assignment", FIELD_LSID, fields, data);
-            doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Assignment", FIELD_LSID, fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
         }
         catch (ParseException e)
         {
@@ -219,7 +211,7 @@ public class EHRApiTest extends AbstractEHRTest
     {
         //expect weight out of range
         Object[][] data = new Object[][]{
-            {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+                {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         Map<String, List<String>> expected = new HashMap<>();
         expected.put("weight", Arrays.asList("Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
@@ -227,7 +219,7 @@ public class EHRApiTest extends AbstractEHRTest
 
         //expect INFO for +10% diff
         data = new Object[][]{
-            {SUBJECTS[0], new Date(), null, null, 20, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+                {SUBJECTS[0], new Date(), null, null, 20, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("Weight gain of >10%. Last weight 12 kg"));
@@ -235,7 +227,7 @@ public class EHRApiTest extends AbstractEHRTest
 
         //expect INFO for -10% diff
         data = new Object[][]{
-            {SUBJECTS[0], new Date(), null, null, 5, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+                {SUBJECTS[0], new Date(), null, null, 5, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("Weight drop of >10%. Last weight 12 kg"));
@@ -255,12 +247,12 @@ public class EHRApiTest extends AbstractEHRTest
 
             //insert into arrival should cascade insert into demographics + housing
             String[] arrivalFields = {"Id", "date", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid",
-                "birth", "initialRoom", "initialCage", "dam", "sire", "gender", "species"};
+                    "birth", "initialRoom", "initialCage", "dam", "sire", "gender", "species"};
             Object[][] data = new Object[][]{
-                {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID",
-                DATE_SUBSTITUTION, ROOMS[0], CAGES[0], "dam", "sire", "m", "Rhesus"}
+                    {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID",
+                            EHRClientAPIHelper.DATE_SUBSTITUTION, ROOMS[0], CAGES[0], "dam", "sire", "m", "Rhesus"}
             };
-            doSaveRows(DATA_ADMIN, Collections.singletonList(prepareInsertCommand("study", "arrival", FIELD_LSID, arrivalFields, data)), getExtraContext(), true);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "arrival", FIELD_LSID, arrivalFields, data)), getExtraContext(), true);
 
             //verify demographics record created with correct field values
             SelectRowsCommand cmd = new SelectRowsCommand("study", "demographics");
@@ -285,9 +277,9 @@ public class EHRApiTest extends AbstractEHRTest
             //enter a departure
             String[] departureFields = {"Id", "date", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid", "destination"};
             data = new Object[][]{
-                {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID", "destination"}
+                    {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID", "destination"}
             };
-            doSaveRows(DATA_ADMIN, Collections.singletonList(prepareInsertCommand("study", "departure", FIELD_LSID, departureFields, data)), getExtraContext(), true);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "departure", FIELD_LSID, departureFields, data)), getExtraContext(), true);
 
             //verify demographics record created with correct field values
             cmd = new SelectRowsCommand("study", "demographics");
@@ -470,9 +462,9 @@ public class EHRApiTest extends AbstractEHRTest
             extraContext.put("validateOnly", true); //a flag to force failure
             extraContext.put("targetQC", EHRQCState.IN_PROGRESS.label);
 
-            JSONObject insertCommand = prepareInsertCommand(schemaName, queryName, FIELD_LSID, fields, data);
-            String response = doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, false);
-            Map<String, List<String>> errors = processResponse(response);
+            JSONObject insertCommand = _apiHelper.prepareInsertCommand(schemaName, queryName, FIELD_LSID, fields, data);
+            String response = _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, false);
+            Map<String, List<String>> errors = _apiHelper.processResponse(response);
 
             //JSONHelper.compareMap()
             Assert.assertEquals("Incorrect number of fields have errors", expectedErrors.keySet().size(), errors.keySet().size());
@@ -515,14 +507,14 @@ public class EHRApiTest extends AbstractEHRTest
         Object[][] insertData = {weightData1};
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = null;
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = null;
-        JSONObject insertCommand = prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
+        JSONObject insertCommand = _apiHelper.prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
 
         for (EHRQCState qc : EHRQCState.values())
         {
             extraContext.put("targetQC", qc.label);
             boolean successExpected = successExpected(user.getRole(), qc, "insert");
             log("Testing role: " + user.getRole().name() + " with insert of QCState: " + qc.label);
-            doSaveRows(user, Collections.singletonList(insertCommand), extraContext, successExpected);
+            _apiHelper.doSaveRows(user.getEmail(), Collections.singletonList(insertCommand), extraContext, successExpected);
         }
         calculateAverage();
 
@@ -536,9 +528,9 @@ public class EHRApiTest extends AbstractEHRTest
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
             extraContext.put("targetQC", originalQc.label);
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = objectId.toString();
-            JSONObject initialInsertCommand = prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
+            JSONObject initialInsertCommand = _apiHelper.prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
             log("Inserting initial record for update test, with initial QCState of: " + originalQc.label);
-            response = doSaveRows(DATA_ADMIN, Collections.singletonList(initialInsertCommand), extraContext, true);
+            response = _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(initialInsertCommand), extraContext, true);
 
             String lsid = getLsidFromResponse(response);
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = lsid;
@@ -549,17 +541,17 @@ public class EHRApiTest extends AbstractEHRTest
                 boolean successExpected = originalQc.equals(qc) ? successExpected(user.getRole(), originalQc, "update") : successExpected(user.getRole(), originalQc, "update") && successExpected(user.getRole(), qc, "insert");
                 log("Testing role: " + user.getRole().name() + " with update from QCState " + originalQc.label + " to: " + qc.label);
                 originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = qc.label;
-                JSONObject updateCommand = prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
+                JSONObject updateCommand = _apiHelper.prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
                 extraContext.put("targetQC", qc.label);
-                doSaveRows(user, Collections.singletonList(updateCommand), extraContext, successExpected);
+                _apiHelper.doSaveRows(user.getEmail(), Collections.singletonList(updateCommand), extraContext, successExpected);
 
                 if (successExpected)
                 {
                     log("Resetting QCState of record to: " + originalQc.label);
                     originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
                     extraContext.put("targetQC", originalQc.label);
-                    updateCommand = prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
-                    doSaveRows(DATA_ADMIN, Collections.singletonList(updateCommand), extraContext, true);
+                    updateCommand = _apiHelper.prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
+                    _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(updateCommand), extraContext, true);
                 }
             }
         }
@@ -595,218 +587,6 @@ public class EHRApiTest extends AbstractEHRTest
     {
         // Expand to other request types once we start testing them. Insert only for now.
         return allowedActions.contains(new Permission(role, qcState, permission));
-    }
-
-    private JSONObject prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
-    {
-        return prepareCommand("insertWithKeys", schema, queryName, pkName, fieldNames, rows);
-    }
-
-    private JSONObject prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
-    {
-        return prepareCommand("updateChangingKeys", schema, queryName, pkName, fieldNames, rows);
-    }
-
-    private JSONObject prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
-    {
-        try
-        {
-            JSONObject resp = new JSONObject();
-            resp.put("schemaName", schema);
-            resp.put("queryName", queryName);
-            resp.put("command", command);
-            JSONArray jsonRows = new JSONArray();
-            for (Object[] row : rows)
-            {
-                JSONObject oldKeys = new JSONObject();
-                JSONObject values = new JSONObject();
-
-                int position = 0;
-                for (String name : fieldNames)
-                {
-                    Object v = row[position];
-
-                    //allow mechanism to use current time,
-                    if (DATE_SUBSTITUTION.equals(v))
-                        v = (new Date()).toString();
-
-                    values.put(name, v);
-                    if (pkName.equals(name))
-                        oldKeys.put(name, v);
-
-                    position++;
-                }
-                JSONObject ro = new JSONObject();
-                ro.put("oldKeys", oldKeys);
-                ro.put("values", values);
-                jsonRows.put(ro);
-            }
-            resp.put("rows", jsonRows);
-
-            return resp;
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String doSaveRows(EHRUser user, List<JSONObject> commands, JSONObject extraContext, boolean expectSuccess)
-    {
-        long start = System.currentTimeMillis();
-        HttpClient client = WebTestHelper.getHttpClient(user.getEmail(), PasswordUtil.getPassword());
-        HttpContext context = WebTestHelper.getBasicHttpContext();
-        HttpPost method = null;
-        HttpResponse response = null;
-        try
-        {
-            JSONObject json = new JSONObject();
-            json.put("commands", commands);
-            json.put("extraContext", extraContext);
-
-            String requestUrl = WebTestHelper.getBaseURL() + "/query/" + getContainerPath() +"/saveRows.view";
-            method = new HttpPost(requestUrl);
-            method.addHeader("Content-Type", "application/json");
-            method.setEntity(new StringEntity(json.toString(), "application/json", "UTF-8"));
-
-            response = client.execute(method, context);
-            int status = response.getStatusLine().getStatusCode();
-
-            long stop = System.currentTimeMillis();
-            if (_saveRowsTimes != null)
-                _saveRowsTimes.add(stop - start);
-
-            log("Expect success: " + expectSuccess + ", actual: " + (HttpStatus.SC_OK == status));
-
-            if (expectSuccess && HttpStatus.SC_OK != status)
-            {
-                logResponse(response);
-                Assert.assertEquals("SaveRows request failed unexpectedly with code: " + status, HttpStatus.SC_OK, status);
-            }
-            else if (!expectSuccess && HttpStatus.SC_BAD_REQUEST != status)
-            {
-                logResponse(response);
-                Assert.assertEquals("SaveRows request failed unexpectedly with code: " + status, HttpStatus.SC_BAD_REQUEST, status);
-            }
-
-            String responseBody = WebTestHelper.getHttpResponseBody(response);
-            EntityUtils.consume(response.getEntity()); // close connection
-
-            return responseBody;
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            try{
-                if (response != null)
-                    EntityUtils.consume(response.getEntity());
-            }
-            catch (IOException ex)
-            {/*ignore*/}
-            if (client != null)
-                client.getConnectionManager().shutdown();
-        }
-    }
-
-    private void logResponse(HttpResponse response)
-    {
-        String responseBody = WebTestHelper.getHttpResponseBody(response);
-        try
-        {
-            JSONObject o = new JSONObject(responseBody);
-            if (o.has("exception"))
-                log("Expection: " + o.getString("exception"));
-
-            Map<String, List<String>> ret = processResponse(responseBody);
-            for (String field : ret.keySet())
-            {
-                log("Error in field: " + field);
-                for (String err : ret.get(field))
-                {
-                    log(err);
-                }
-            }
-        }
-        catch (JSONException e)
-        {
-            log("Response was not JSON");
-            log(responseBody);
-        }
-    }
-
-    private Map<String, List<String>> processResponse(String response)
-    {
-        try
-        {
-            Map<String, List<String>> ret = new HashMap<>();
-            JSONObject o = new JSONObject(response);
-            if (o.has("errors"))
-            {
-                JSONArray errors = o.getJSONArray("errors");
-                for (int i = 0; i < errors.length(); i++)
-                {
-                    JSONObject error = errors.getJSONObject(i);
-                    JSONArray subErrors = error.getJSONArray("errors");
-                    if (subErrors != null)
-                    {
-                        for (int j = 0; j < subErrors.length(); j++)
-                        {
-                            JSONObject subError = subErrors.getJSONObject(j);
-                            String msg = subError.getString("message");
-                            if(!subError.has("field"))
-                                throw new RuntimeException(msg);
-
-                            String field = subError.getString("field");
-
-                            List<String> list = ret.get(field);
-                            if (list == null)
-                                list = new ArrayList<>();
-
-                            list.add(msg);
-                            ret.put(field, list);
-                        }
-                    }
-                }
-            }
-
-            //append errors from extraContext
-            if (o.has("extraContext") && o.getJSONObject("extraContext").has("skippedErrors"))
-            {
-                JSONObject errors = o.getJSONObject("extraContext").getJSONObject("skippedErrors");
-                Iterator keys = errors.keys();
-                while (keys.hasNext())
-                {
-                    String key = (String)keys.next();
-                    JSONArray errorArray = errors.getJSONArray(key);
-                    for (int i=0;i<errorArray.length();i++)
-                    {
-                        JSONObject subError = errorArray.getJSONObject(i);
-                        String msg = subError.getString("message");
-                        String field = subError.getString("field");
-
-                        List<String> list = ret.get(field);
-                        if (list == null)
-                            list = new ArrayList<>();
-
-                        list.add(msg);
-                        ret.put(field, list);
-                    }
-                }
-            }
-
-            return ret;
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()

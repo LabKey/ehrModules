@@ -21,7 +21,8 @@ Ext4.define('EHR.window.GuessProjectWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper allows you to set the project on the selected records, based on the current assignments for the animal.  If the animal is currently assigned to a single research project, it will pick that project.  If assigned to both a research project and a center resource, it will pick the research project.  Otherwise it will allow you to choose.',
+                html: 'This helper allows you to set the project on the selected records, based on the current assignments for the animal.  If the animal is currently assigned to a single research project, it will pick that project.  If assigned to both a research project and a center resource, it will pick the research project.  Otherwise it will allow you to choose.' +
+                    '<br><br>Note: you have selected ' + this.getRecords().length + ' record(s).  Only the selected rows will be changed.',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'projects',
@@ -86,7 +87,7 @@ Ext4.define('EHR.window.GuessProjectWindow', {
                     items.push({
                         xtype: 'displayfield',
                         fieldLabel: id,
-                        value: 'No assignments found'
+                        value: 'No active assignments found'
                     });
                 }
                 else {

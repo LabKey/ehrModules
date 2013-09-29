@@ -65,15 +65,15 @@ EHR.Server.Triggers = {};
  * @param {object} errors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.init = function(event, errors){
-    console.log('** evaluating: ' + this['javax.script.filename'] + ' for: ' + event);
-
     var fileParse = (this['javax.script.filename']).split('/');
     this.extraContext.schemaName = fileParse[1];
     this.extraContext.queryName = fileParse[2].replace(/\.js$/, '');
 
     // even though it is cached globally, force code to use local passed reference 
     this.scriptHelper = new EHR.Server.ScriptHelper(this.extraContext, event, EHR);
-    var helper = this.scriptHelper;  
+    var helper = this.scriptHelper;
+
+    console.log('** evaluating: ' + this['javax.script.filename'] + ' for: ' + (helper.isValidateOnly() ? 'validation/' : '') + event);
 
     EHR.Server.Security.init(helper);
 
@@ -423,6 +423,11 @@ EHR.Server.Triggers.complete = function(event, errors) {
     helper.logDebugMsg('Participants modified: ' + helper.getParticipantsModified());
     helper.logDebugMsg('PKs modified: ' + helper.getPKsModified());
 
+    if (helper.isValidateOnly()){
+        helper.logDebugMsg('Validating, so skipping onComplete');
+        return;
+    }
+
     var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.COMPLETE, helper.getSchemaName(), helper.getQueryName(), true) || [];
 
     if (this.onComplete)
@@ -588,7 +593,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     ){
         helper.logDebugMsg('Verifying room/cage:');
         if (!helper.getJavaHelper().validateHousing(row.Id, row.room, row.cage, row.date)){
-            EHR.Server.Utils.addError(scriptErrors, 'room', 'Not housed in this room on this date', 'WARN');            
+            EHR.Server.Utils.addError(scriptErrors, 'room', 'Not housed in this location on this date', helper.getErrorSeveritiyForImproperHousing());
         }
     }
 
@@ -677,7 +682,8 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
     var errorThreshold = helper.getErrorThreshold() || 'WARN';
 
     //this flag is to let records be validated, but forces failure of validation.  has been deprecated, but we still support it
-    if (helper.isValidateOnly() && helper.isLegacyFormat()){
+    //NOTE: have reverted to adding a dummy error in order to force LK to skip downstream DB insert, which can be slow
+    if (helper.isValidateOnly()){   //&& helper.isLegacyFormat()
         EHR.Server.Utils.addError(scriptErrors, '_validateOnly', 'Ignore this error');
     }
 

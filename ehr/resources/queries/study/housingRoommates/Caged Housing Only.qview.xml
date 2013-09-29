@@ -9,7 +9,7 @@
         <column name="DaysCoHoused"/>
     </columns>
     <filters>
-        <filter column="cage" operator="isnonblank" value=""/>
+        <filter column="room/housingType/value" operator="eq" value="Cage Location"/>
     </filters>
     <sorts>
         <sort column="Id" descending="true"/>

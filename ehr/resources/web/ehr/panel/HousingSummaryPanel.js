@@ -81,7 +81,8 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     appendSection: function(results, cfg){
         if (!results || !results.rows || !results.rows.length){
             return {
-                html: 'There was an error loading data'
+                html: 'No records were found',
+                style: 'padding-bottom: 10px;'
             }
         }
 

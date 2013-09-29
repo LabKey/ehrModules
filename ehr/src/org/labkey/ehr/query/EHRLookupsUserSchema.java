@@ -21,6 +21,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
@@ -126,6 +127,13 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     protected TableInfo createTable(String name)
     {
         Set<String> available = super.getTableNames();
+
+        //special cases
+        if ("snomed".equalsIgnoreCase(name))
+        {
+            return createSNOMEDTable(name);
+        }
+
         if (available.contains(name))
             return super.createTable(name);
 
@@ -143,6 +151,12 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
 
         return null;
+    }
+
+    private TableInfo createSNOMEDTable(String name)
+    {
+        SchemaTableInfo table = _dbSchema.getTable(name);
+        return new ContainerScopedTable(this, table, "code").init();
     }
 
     private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)

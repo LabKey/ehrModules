@@ -18,13 +18,17 @@ package org.labkey.test.tests;
 import org.junit.Assert;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
+import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.SelectRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.tests.SimpleApiTestWD;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
@@ -133,6 +137,30 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
     @Override
     public void doCleanup(boolean afterTest) throws TestTimeoutException
     {
+        try
+        {
+            _helper.deleteUserAPI(DATA_ADMIN.getEmail(), getProjectName(), false);
+            _helper.deleteUserAPI(REQUESTER.getEmail(), getProjectName(), false);
+            _helper.deleteUserAPI(BASIC_SUBMITTER.getEmail(), getProjectName(), false);
+            _helper.deleteUserAPI(REQUEST_ADMIN.getEmail(), getProjectName(), false);
+            _helper.deleteUserAPI(FULL_UPDATER.getEmail(), getProjectName(), false);
+            _helper.deleteUserAPI(FULL_SUBMITTER.getEmail(), getProjectName(), false);
+        }
+        catch(Throwable ignored)
+        {
+
+        }
+
+        try
+        {
+            deleteHardTableRecords();
+        }
+        catch(Throwable ignored)
+        {
+            log("there was an error deleting records from EHR hard tables");
+            log(ignored.getMessage());
+        }
+
         long startTime = System.currentTimeMillis();
         deleteProject(getProjectName(), afterTest);
         if(isTextPresent(getProjectName()))
@@ -148,61 +176,48 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
             else
                 Assert.fail("Test Project not finished deleting after 5 minutes");
         }
+    }
 
-        deleteUsers(afterTest,
-                DATA_ADMIN.getEmail(),
-                REQUESTER.getEmail(),
-                BASIC_SUBMITTER.getEmail(),
-                REQUEST_ADMIN.getEmail(),
-                FULL_UPDATER.getEmail(),
-                FULL_SUBMITTER.getEmail());
+    @LogMethod
+    protected void doStudyImport()
+    {
+        goToModule("Study");
+        importStudyFromZip(new File(getLabKeyRoot(), STUDY_ZIP));
+    }
 
-        try{deleteRecords();}catch(Throwable ignored){}
+    protected void createProjectAndFolders()
+    {
+        _containerHelper.createProject(getProjectName(), null);
+        createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, "EHR", null);
     }
 
     @LogMethod
     protected void initProject() throws Exception
     {
-        _containerHelper.createProject(getProjectName(), null);
-        createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, "EHR", null);
-
+        createProjectAndFolders();
         setEHRModuleProperties();
         createUsersandPermissions();  //note: we create the users prior to study import, b/c that user is used by TableCustomizers
+        populateInitialData();
+        doStudyImport();
 
-        beginAt(getBaseURL()+"/ehr/"+getContainerPath()+"/populateInitialData.view");
-        clickButton("Delete All", 0);
-        waitForElement(Locator.xpath("//div[text() = 'Delete Complete']"), 200000);
-        clickButton("Populate All", 0);
-        waitForElement(Locator.xpath("//div[text() = 'Populate Complete']"), 200000);
+        populateHardTableRecords();
 
-        //these tables do not have a container field, so are not deleted when the test project is deleted
-        clickButton("Delete Data From SNOMED", 0);
-        waitForElement(Locator.xpath("//div[text() = 'Delete Complete']"), 200000);
-        clickButton("Populate SNOMED Table", 0);
-        waitForElement(Locator.xpath("//div[text() = 'Populate Complete']"), 200000);
-
-        goToModule("Study");
-        importStudyFromZip(new File(getLabKeyRoot(), STUDY_ZIP));
-        try
-        {
-            deleteRecords();
-            populateRecords();
-        }
-        catch (Throwable e)
-        {
-            //ignore for now
-            log("There was an error");
-        }
-
-        log("Remove all webparts");
-        goToEHRFolder();
-        addWebPart("Quick Search");
-
-        //note: this expects the study to already have been imported
+        //note: these expects the study to already have been imported
         setupStudyPermissions();
         defineQCStates();
     }
 
+    @LogMethod
+    protected void populateInitialData()
+    {
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/populateInitialData.view");
+        clickButton("Delete All", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate All", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+    }
+
+    @LogMethod
     protected void setEHRModuleProperties()
     {
         //set dummy values first, to test the admin UI
@@ -211,14 +226,17 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
 
         ModulePropertyValue prop = new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRStudyContainer", "/" + getContainerPath());
         ModulePropertyValue prop2 = new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRAdminUser", DATA_ADMIN._email);
-        ModulePropertyValue prop3 = new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "abstract");
+        ModulePropertyValue prop3 = new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "snapshot");
         setModuleProperties(Arrays.asList(prop, prop2, prop3));
     }
 
     @LogMethod
-    protected void populateRecords() throws Exception
+    protected void populateHardTableRecords() throws Exception
     {
         log("Inserting initial records into EHR hard tables");
+
+        //verify delete first
+        deleteHardTableRecords();
 
         Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
 
@@ -255,44 +273,55 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         saveResp = insertCmd.execute(cn, getContainerPath());
     }
 
+    private void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws Exception
+    {
+        Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+
+        SelectRowsCommand selectCmd = new SelectRowsCommand(schemaName, queryName);
+        selectCmd.addFilter(new Filter(pkName, map.get(pkName)));
+        SelectRowsResponse srr = selectCmd.execute(cn, getContainerPath());
+
+        if (srr.getRowCount().intValue() > 0)
+        {
+            DeleteRowsCommand deleteCmd = new DeleteRowsCommand(schemaName, queryName);
+            deleteCmd.addRow(map);
+            deleteCmd.execute(cn, getContainerPath());
+        }
+    }
+
     @LogMethod
-    protected void deleteRecords() throws Exception
+    protected void deleteHardTableRecords() throws Exception
     {
         log("Deleting initial records from EHR hard tables");
 
-        Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-
         //first ehr.protocol
-        DeleteRowsCommand deleteCmd = new DeleteRowsCommand("ehr", "protocol");
-        Map<String,Object> rowMap = new HashMap<>();
-        rowMap.put("protocol", PROTOCOL_ID);
-        deleteCmd.addRow(rowMap);
-        rowMap = new HashMap<>();
-        rowMap.put("protocol", DUMMY_PROTOCOL);
-        deleteCmd.addRow(rowMap);
-        SaveRowsResponse deleteResp = deleteCmd.execute(cn, getContainerPath());
+        Map<String,Object> rowMap1 = new HashMap<>();
+        rowMap1.put("protocol", PROTOCOL_ID);
+        deleteIfNeeded("ehr", "protocol", rowMap1, "protocol");
+
+        Map<String,Object> rowMap2 = new HashMap<>();
+        rowMap2.put("protocol", DUMMY_PROTOCOL);
+        deleteIfNeeded("ehr", "protocol", rowMap2, "protocol");
 
         //then ehr.project
-        deleteCmd = new DeleteRowsCommand("ehr", "project");
-        rowMap = new HashMap<>();
-        rowMap.put("project", PROTOCOL_PROJECT_ID);
-        rowMap.put("protocol", PROTOCOL_ID);
-        deleteCmd.addRow(rowMap);
-        rowMap = new HashMap<>();
-        rowMap.put("project", PROJECT_ID);
-        rowMap.put("protocol", DUMMY_PROTOCOL);
-        deleteCmd.addRow(rowMap);
-        deleteResp = deleteCmd.execute(cn, getContainerPath());
+        Map<String,Object> rowMap3 = new HashMap<>();
+        rowMap3.put("project", PROTOCOL_PROJECT_ID);
+        rowMap3.put("protocol", PROTOCOL_ID);
+        deleteIfNeeded("ehr", "project", rowMap3, "project");
+
+        Map<String,Object> rowMap4 = new HashMap<>();
+        rowMap4.put("project", PROJECT_ID);
+        rowMap4.put("protocol", DUMMY_PROTOCOL);
+        deleteIfNeeded("ehr", "project", rowMap4, "project");
 
         //then ehr_lookups.room
-        deleteCmd = new DeleteRowsCommand("ehr_lookups", "rooms");
-        rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID);
-        deleteCmd.addRow(rowMap);
-        rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID2);
-        deleteCmd.addRow(rowMap);
-        deleteResp = deleteCmd.execute(cn, getContainerPath());
+        Map<String,Object> rowMap5 = new HashMap<>();
+        rowMap5.put("room", ROOM_ID);
+        deleteIfNeeded("ehr_lookups", "rooms", rowMap5, "room");
+
+        Map<String,Object> rowMap6 = new HashMap<>();
+        rowMap6.put("room", ROOM_ID2);
+        deleteIfNeeded("ehr_lookups", "rooms", rowMap6, "room");
     }
 
     protected void assertNoErrorText()
@@ -332,18 +361,6 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
 
         beginAt("/ehr/" + getContainerPath() + "/ensureQCStates.view");
         clickButton("OK");
-
-        goToEHRFolder();
-        goToManageStudy();
-        clickAndWait(Locator.linkWithText("Manage Dataset QC States"));
-
-        //TODO: it would be nice to get EnsureQCStatesAction to handle this
-        selectOptionByText(Locator.name("defaultPipelineQCState"), "Completed");
-        selectOptionByText(Locator.name("defaultAssayQCState"), "Completed");
-        selectOptionByText(Locator.name("defaultDirectEntryQCState"), "Completed");
-
-        selectOptionByValue(Locator.name("showPrivateDataByDefault"), "true");
-        clickButton("Done");
     }
 
     @LogMethod
@@ -392,37 +409,14 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         _ext4Helper.clickTabContainingText("Study Security");
         waitAndClickButton("Study Security");
 
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(DATA_ADMIN.getGroup(), "READOWN"));
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(REQUESTER.getGroup(), "READOWN"));
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(BASIC_SUBMITTER.getGroup(), "READOWN"));
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(FULL_SUBMITTER.getGroup(), "READOWN"));
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(FULL_UPDATER.getGroup(), "READOWN"));
-        checkRadioButton(getAnimalHistoryRadioButtonLocator(REQUEST_ADMIN.getGroup(), "READOWN"));
-        clickAndWait(Locator.id("groupUpdateButton"));
+        File studyXML = new File(getLabKeyRoot(), getStudyPolicyXML());
+        setFormElement(Locator.name("fileUpload"), studyXML);
+        clickButton("Import");
+    }
 
-        //"set all to..." combo-boxes don't work through _selenium.
-        log("Set per-dataset permissions individually");
-        setPDP(DATA_ADMIN);
-        setPDP(BASIC_SUBMITTER);
-        setPDP(FULL_SUBMITTER);
-        setPDP(FULL_UPDATER);
-        setPDP(REQUESTER);
-        setPDP(REQUEST_ADMIN);
-
-        waitFor(new BaseWebDriverTest.Checker()
-        {
-            public boolean check()
-            {
-                return "EHR Data Admin".equals(getSelectedOptionText(Locator.name("dataset.1061", 0))) &&
-                        "EHR Basic Submitter".equals(getSelectedOptionText(Locator.name("dataset.1061", 1))) &&
-                        "EHR Full Submitter".equals(getSelectedOptionText(Locator.name("dataset.1061", 2))) &&
-                        "EHR Full Updater".equals(getSelectedOptionText(Locator.name("dataset.1061", 3))) &&
-                        "EHR Request Admin".equals(getSelectedOptionText(Locator.name("dataset.1061", 4))) &&
-                        "EHR Requestor".equals(getSelectedOptionText(Locator.name("dataset.1061", 5)));
-            }
-        }, "Per-dataset permission not set", WAIT_FOR_JAVASCRIPT);
-
-        clickButton("Save");
+    protected String getStudyPolicyXML()
+    {
+        return "/sampledata/study/ehrTestStudyPolicy.xml";
     }
 
     @LogMethod
@@ -434,29 +428,6 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         setInitialPassword(FULL_SUBMITTER.getEmail(), PasswordUtil.getPassword());
         setInitialPassword(FULL_UPDATER.getEmail(), PasswordUtil.getPassword());
         setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
-    }
-
-    public void setPDP(EHRUser user)
-    {
-        int col = getElementCount(Locator.xpath("//table[@id='datasetSecurityFormTable']//th[.='" + user.getGroup() + "']/preceding-sibling::*"));
-
-        //see if we can use the top toggle
-        Select el = new Select(getDriver().findElement(By.xpath("//table[@id='datasetSecurityFormTable']/tbody/tr[" + 2 + "]/td[" + col + "]//select")));
-        el.selectByValue(user.getRole().toString());
-        sleep(250);
-
-//        int rowCt = getTableRowCount("datasetSecurityFormTable");
-//        for (int i = 3; i <= rowCt; i++) // xpath indexing is 1 based
-//        {
-//            selectOptionByText(Locator.xpath("//table[@id='datasetSecurityFormTable']/tbody/tr[" + i + "]/td[" + col + "]//select"), user.getRole().toString());
-//        }
-    }
-
-    public Locator getAnimalHistoryRadioButtonLocator(String groupName, String setting)
-    {
-        //not sure why the radios are in TH elements, but they are...
-        return Locator.xpath("//form[@id='groupUpdateForm']/table/tbody/tr/td[text()='"
-                + groupName + "']/../th/input[@value='" + setting + "']");
     }
 
     public static class EHRUser

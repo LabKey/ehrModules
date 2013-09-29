@@ -14,7 +14,7 @@
 Ext4.define('EHR.window.AddAnimalsWindow', {
     extend: 'Ext.window.Window',
 
-    MAX_ANIMALS: 100,
+    MAX_ANIMALS: 250,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -31,7 +31,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 bodyBorder: false
             },
             items: [{
-                html: 'This helper is designed to quickly add records to the grid below.  You can look up animals in a variety of different ways.  For each animal, one reord will be created.  If you check the \'Bulk Edit\' box, you will be prompted to fill out values for the other fields.  If not, one row will be created per animal with blank values.',
+                html: 'This helper is designed to quickly add records to the grid below.  You can look up animals in a variety of different ways.  For each animal, one record will be created.  If you check the \'Bulk Edit\' box, you will be prompted to fill out values for the other fields.  If not, one row will be created per animal with blank values.',
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'radiogroup',

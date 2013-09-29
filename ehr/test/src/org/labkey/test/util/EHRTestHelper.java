@@ -16,17 +16,23 @@
 package org.labkey.test.util;
 
 import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.security.AddGroupMembersCommand;
 import org.labkey.remoteapi.security.CreateGroupCommand;
 import org.labkey.remoteapi.security.CreateGroupResponse;
 import org.labkey.remoteapi.security.CreateUserCommand;
 import org.labkey.remoteapi.security.CreateUserResponse;
+import org.labkey.remoteapi.security.DeleteUserCommand;
+import org.labkey.remoteapi.security.GetUsersCommand;
+import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseSeleniumWebTest;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.tests.EHRReportingAndUITest;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
+import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
+import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -99,6 +105,36 @@ public class EHRTestHelper
         return resp.getUserId().intValue();
     }
 
+
+    public boolean deleteUserAPI(String email, String containerPath, boolean throwOnException)
+    {
+        try
+        {
+            Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+            GetUsersCommand getUsers = new GetUsersCommand();
+            getUsers.setName(email);
+            GetUsersResponse userResp = getUsers.execute(cn, containerPath);
+            if (userResp.getUsersInfo().size() > 0)
+            {
+                DeleteUserCommand uc = new DeleteUserCommand(userResp.getUsersInfo().get(0).getUserId());
+                CommandResponse resp = uc.execute(cn, containerPath);
+                return true;
+            }
+        }
+        catch (CommandException e)
+        {
+            if (throwOnException)
+                throw new RuntimeException(e);
+        }
+        catch (IOException e)
+        {
+            if (throwOnException)
+                throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+
     public int createPermissionsGroupAPI(String groupName, String containerPath, Integer... memberIds) throws Exception
     {
         Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
@@ -156,6 +192,49 @@ public class EHRTestHelper
         {
             throw new NoSuchElementException("Timeout waiting for element [" + secTimeout + "sec]: " + l.getLoggableDescription());
         }
+    }
+
+    //helpers for Ext4 data entry
+    public void goToTaskForm(String name)
+    {
+        _test.goToProjectHome();
+        _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
+        _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
+        _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name), _test.WAIT_FOR_PAGE);
+
+        _test.waitForElement(Locator.ext4Button("Save Draft"));
+        Ext4CmpRefWD saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRefWD.class);
+        saveBtn.waitForEnabled();
+    }
+
+    public Ext4FieldRefWD getExt4FieldForFormSection(String sectionTitle, String fieldLabel)
+    {
+        return _test._ext4Helper.queryOne("panel[title='" + sectionTitle + "'] [fieldLabel='" + fieldLabel + "']", Ext4FieldRefWD.class);
+    }
+
+    public Ext4GridRefWD getExt4GridForFormSection(String sectionTitle)
+    {
+        String query = "panel[title='" + sectionTitle + "']";
+        Ext4CmpRefWD.waitForComponent(_test, query);
+        Ext4GridRefWD grid = _test._ext4Helper.queryOne(query, Ext4GridRefWD.class);
+        if (grid != null)
+            grid.setClicksToEdit(1);
+
+        return grid;
+    }
+
+    public Locator getDataEntryButton(String text)
+    {
+        return Locator.tag("div").withClass("ehr-dataentrybtn").append(Locator.ext4Button(text));
+    }
+
+    public void addRecordToGrid(Ext4GridRefWD grid)
+    {
+        Long count = grid.getRowCount();
+        grid.clickTbarButton("Add");
+        grid.waitForRowCount(count.intValue() + 1);
+        grid.cancelEdit();
+        _test.sleep(50);
     }
 }
 

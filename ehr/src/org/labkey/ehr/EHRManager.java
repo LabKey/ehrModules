@@ -25,6 +25,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
@@ -220,16 +221,19 @@ public class EHRManager
      * @param commitChanges
      * @return
      */
-    public List<String> ensureStudyQCStates(Container c, User u, boolean commitChanges)
+    public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
     {
-        List<String> messages = new ArrayList<>();
-        Study s = StudyService.get().getStudy(c);
+        final List<String> messages = new ArrayList<>();
+        final Study s = StudyService.get().getStudy(c);
         if (s == null){
             messages.add("There is no study in container: " + c.getPath());
             return messages;
         }
 
-        //there does not seem to be a public API, so we hit the DB directly
+        boolean shouldClearCache = false;
+
+        //NOTE: there is no public API to set a study, so hit the DB directly.
+        final TableInfo studyTable = DbSchema.get("study").getTable("study");
         TableInfo ti = DbSchema.get("study").getTable("qcstate");
 
         Object[][] states = new Object[][]{
@@ -245,29 +249,84 @@ public class EHRManager
             {"Scheduled", "Record is scheduled, but not performed", false}
         };
 
-        boolean shouldClearCache = false;
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
+            final Map<String, Integer> qcMap = new HashMap<>();
+
+            //first QCStates
             for (Object[] qc : states)
             {
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Container"), c);
                 filter.addCondition(FieldKey.fromString("label"), qc[0]);
-                TableSelector ts = new TableSelector(ti, filter, null);
-                if (ts.getRowCount() > 0)
+                TableSelector ts = new TableSelector(ti, Collections.singleton("RowId"), filter, null);
+                Integer[] rowIds = ts.getArray(Integer.class);
+                if (rowIds.length > 0)
+                {
+                    qcMap.put((String)qc[0], rowIds[0]);
                     continue;
+                }
 
                 messages.add("Missing QCState: " + qc[0]);
                 if (commitChanges)
                 {
-                    Map<String, Object> row = new HashMap<>();
+                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
                     row.put("container", c.getId());
                     row.put("label", qc[0]);
                     row.put("description", qc[1]);
                     row.put("publicdata", qc[2]);
-                    Table.insert(u, ti, row);
+                    row = Table.insert(u, ti, row);
+
+                    qcMap.put((String)row.get("label"), (Integer)row.get("rowid"));
 
                     shouldClearCache = true;
                 }
+            }
+
+            //then check general properties
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("entityid"), s.getEntityId());
+            TableSelector studySelector = new TableSelector(studyTable, filter, null);
+            Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+            Integer completedQCState = qcMap.get("Completed");
+
+            try (Results rs = studySelector.getResults())
+            {
+                rs.next();
+                if (!qcMap.containsKey("Completed"))
+                {
+                    messages.add("There was an error locating QCState Completed");
+                }
+                else
+                {
+                    if (rs.getInt("DefaultAssayQCState") != completedQCState)
+                    {
+                        messages.add("Set DefaultAssayQCState to Completed");
+                        toUpdate.put("DefaultAssayQCState", completedQCState);
+                    }
+
+                    if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
+                    {
+                        messages.add("Set DefaultDirectEntryQCState to Completed");
+                        toUpdate.put("DefaultDirectEntryQCState", completedQCState);
+                    }
+
+                    if (rs.getInt("DefaultPipelineQCState") != completedQCState)
+                    {
+                        messages.add("Set DefaultPipelineQCState to Completed");
+                        toUpdate.put("DefaultPipelineQCState", completedQCState);
+                    }
+
+                    if (!rs.getBoolean("ShowPrivateDataByDefault"))
+                    {
+                        messages.add("Set ShowPrivateDataByDefault to true");
+                        toUpdate.put("ShowPrivateDataByDefault", true);
+                    }
+                }
+            }
+
+            if (commitChanges && toUpdate.size() > 0)
+            {
+                Table.update(u, studyTable, toUpdate, s.getContainer().getId());
+                shouldClearCache = true;
             }
 
             transaction.commit();
@@ -483,6 +542,8 @@ public class EHRManager
                     toAdd.add(new String[]{"participantid", "enddate"});
                     toAdd.add(new String[]{"participantid", "include:date,cage,room"});
                     toAdd.add(new String[]{"lsid", "participantid"});
+                    toAdd.add(new String[]{"date", "lsid", "participantid"});
+                    toAdd.add(new String[]{"date", "include:lsid,participantid,cage,room"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Assignment"))
                 {

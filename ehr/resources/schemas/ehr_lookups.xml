@@ -55,6 +55,10 @@
                 <ns:isHidden>true</ns:isHidden>
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="requirementset">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Requirement Set</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="low">
                 <ns:nullable>true</ns:nullable>
                 <ns:columnTitle>Min Weight</ns:columnTitle>
@@ -731,17 +735,19 @@
         <ns:pkColumnName>code</ns:pkColumnName>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isKeyField>false</ns:isKeyField>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="code">
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="meaning">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:nullable>true</ns:nullable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--</ns:column>-->
+            <ns:column columnName="container">
+
+            </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
@@ -1710,18 +1716,41 @@
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="dataset">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>clinpath_types</ns:fkTable>
+                    <ns:fkColumnName>value</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="chargetype">
                 <ns:columnTitle>Group</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>labworkChargeType</ns:fkTable>
+                    <ns:fkColumnName>value</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
-            <ns:column columnName="sampletype">
-                <ns:columnTitle>Sample Type</ns:columnTitle>
+            <ns:column columnName="tissue">
+                <ns:columnTitle>Tissue</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>snomed</ns:fkTable>
+                    <ns:fkColumnName>code</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="collectionmethod">
                 <ns:columnTitle>Collection Method</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>clinpath_collection_method</ns:fkTable>
+                    <ns:fkColumnName>value</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="alertOnComplete">
                 <ns:columnTitle>Alert On Complete?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="outsidelab">
+                <ns:columnTitle>From Outside Lab?</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>

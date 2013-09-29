@@ -36,7 +36,7 @@ import java.util.Date;
  * or similar business logic.
  */
 @Category({External.class, EHR.class, ONPRC.class})
-public class EHRDataEntryTest extends AbstractEHRTest
+public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 {
     @Override
     public void runUITests() throws Exception

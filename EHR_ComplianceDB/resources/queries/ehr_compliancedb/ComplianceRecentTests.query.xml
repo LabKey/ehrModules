@@ -1,7 +1,8 @@
 <query xmlns="http://labkey.org/data/xml/query">
 <metadata>
     <tables xmlns="http://labkey.org/data/xml">
-        <table tableName="ComplianceRecentTests" tableDbType="NOT_IN_DB">
+        <table tableName="complianceRecentTests" tableDbType="NOT_IN_DB">
+            <tableTitle>Employee Requirement Summary</tableTitle>
             <columns>
                 <column columnName="employeeId">
                     <isKeyField>true</isKeyField>
@@ -12,16 +13,30 @@
                     </fk>
                 </column>
                 <column columnName="requirementName">
-                    <url>/query/executeQuery.view?schemaName=ehr_compliancedb&amp;
-                        query.queryName=CompletionDates&amp;
-                        query.EmployeeId~eq=${employeeId}&amp;
-                        query.RequirementName~lte=${RequirementName}&amp;
-                    </url>
+                    <columnTitle>Requirement Name</columnTitle>
                     <fk>
                         <fkDbSchema>ehr_compliancedb</fkDbSchema>
                         <fkTable>requirements</fkTable>
                         <fkColumnName>requirementName</fkColumnName>
                     </fk>
+                </column>
+                <column columnName="timesCompleted">
+                    <columnTitle>Times Completed</columnTitle>
+                    <url>/query/executeQuery.view?schemaName=ehr_compliancedb&amp;
+                        query.queryName=CompletionDates&amp;
+                        query.EmployeeId~eq=${employeeId}&amp;
+                        query.requirementName~eq=${requirementName}&amp;
+                    </url>
+                </column>
+                <column columnName="MonthsUntilRenewal">
+                    <conditionalFormats>
+                        <conditionalFormat>
+                            <filters>
+                                <filter operator="lte" value="0"/>
+                            </filters>
+                            <backgroundColor>FBEC5D</backgroundColor>
+                        </conditionalFormat>
+                    </conditionalFormats>
                 </column>
             </columns>
         </table>

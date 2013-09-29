@@ -67,9 +67,10 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                 dataIndex: 'area',
                 editor: {
                     xtype: 'labkey-combo',
-                    displayField: 'area',
-                    valueField: 'area',
+                    displayField: 'value',
+                    valueField: 'value',
                     forceSelection: true,
+                    value: 'Whole Body',
                     store: {
                         type: 'labkey-store',
                         schemaName: 'ehr_lookups',
@@ -158,7 +159,7 @@ Ext4.define('EHR.panel.ObservationsPanel', {
             }]
         });
 
-        this.observationTypesStore = Ext4.create('LABKEY.ext4.Store', {
+        this.observationTypesStore = Ext4.create('LABKEY.ext4.data.Store', {
             type: 'labkey-store',
             schemaName: 'ehr_lookups',
             queryName: 'observation_types',

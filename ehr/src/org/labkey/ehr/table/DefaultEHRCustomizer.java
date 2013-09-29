@@ -18,6 +18,7 @@ package org.labkey.ehr.table;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
@@ -187,9 +188,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void doSharedCustomization(AbstractTableInfo ti)
     {
-        appendEnddate(ti);
+        LDKService.get().appendEnddateColumns(ti);
         appendDuration(ti);
-        appendDateOnly(ti);
+
         if (_addLinkDisablers)
             setLinkDisablers(ti);
 
@@ -367,9 +368,13 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ti.getColumn(name) == null)
         {
             SQLFragment sql = new SQLFragment("(CASE " +
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".date > {fn now()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    // when the start is in the future, using whole-day increments, it is not active
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    // when enddate is null, it is active
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    // if allowSameDay=true, then consider records that start/stop on today's date to be active
                     (allowSameDay ? " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() : "") +
+                    // if enddate is in the future (whole-day increments), then it is active
                     " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                     //(allowDateOfDeath ? " WHEN " + ExprColumn.STR_TABLE_ALIAS : "") +
                     " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
@@ -381,14 +386,17 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
-    //note: intended specially for treatment orders.  note slightly unusual behavior around start date
+    //note: intended specially for treatment orders, but also used for housing.  note slightly unusual behavior around start date
     private void addIsActiveColWithTime(AbstractTableInfo ti)
     {
         String name = "isActive";
         if (ti.getColumn(name) == null)
         {
             SQLFragment sql = new SQLFragment("(CASE " +
+                // any record with a future start date (whole-day increments) is inactive.
+                // this does mean any record starting today could potentially be active, even if in the future.  this was done to support PM treatments.
                 " WHEN (cast(" + ExprColumn.STR_TABLE_ALIAS + ".date as date) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                // any record with a null or future enddate (considering time) is active
                 " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                 " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate >= {fn now()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                 " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
@@ -773,11 +781,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col15.setDescription("Shows the total offspring of each animal");
         ds.addColumn(col15);
 
-        ColumnInfo col16 = getWrappedIdCol(us, ds, "Surgery", "demographicsSurgery");
-        col16.setLabel("Surgical History");
-        col16.setDescription("Calculates whether this animal has ever had any surgery or a surgery flagged as major");
-        ds.addColumn(col16);
-
         ColumnInfo col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
         col19.setLabel("Weight Change");
         col19.setDescription("This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight");
@@ -790,7 +793,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
         ColumnInfo col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
         col8.setLabel("Required Case Size");
-        col8.setDescription("Calculates the cage size necessary for this animal, based on weight");
+        col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
         ColumnInfo col21 = getWrappedIdCol(us, ds, "activeAnimalGroups", "demographicsActiveAnimalGroups");
@@ -1006,13 +1009,14 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
-    private boolean hasTable (AbstractTableInfo ti, String schemaName, String queryName)
+    private boolean hasTable(AbstractTableInfo ti, String schemaName, String queryName)
     {
         UserSchema us = getUserSchema(ti, schemaName);
         if (us == null)
             return false;
 
-        return us.getTableNames().contains(queryName);
+        CaseInsensitiveHashSet names = new CaseInsensitiveHashSet(us.getTableNames());
+        return names.contains(queryName);
     }
 
     //note: these columns should both be date/time
@@ -1355,53 +1359,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
             ti.addColumn(col);
         }
 
-    }
-
-    private void appendEnddate(AbstractTableInfo ti)
-    {
-        ColumnInfo enddate = ti.getColumn("enddate");
-        if (enddate != null && ti.getColumn("enddateCoalesced") == null)
-        {
-            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()}) as date)");
-            ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.DATE);
-            col.setCalculated(true);
-            col.setUserEditable(false);
-            col.setHidden(true);
-            col.setLabel("Enddate, Coalesced");
-
-            if (enddate.getFormat() != null)
-                col.setFormat(enddate.getFormat());
-
-            ti.addColumn(col);
-        }
-
-        if (enddate != null && ti.getColumn("enddatetimeCoalesced") == null)
-        {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn now()})");
-            ExprColumn col = new ExprColumn(ti, "enddatetimeCoalesced", sql, JdbcType.DATE);
-            col.setCalculated(true);
-            col.setUserEditable(false);
-            col.setHidden(true);
-            col.setLabel("End Time, Coalesced");
-            col.setFormat("yyyy-MM-dd HH:mm");
-
-            ti.addColumn(col);
-        }
-    }
-
-    private void appendDateOnly(AbstractTableInfo ti)
-    {
-        ColumnInfo date = ti.getColumn("date");
-        if (date != null && ti.getColumn("dateOnly") == null)
-        {
-            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName()));
-            ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);
-            col.setCalculated(true);
-            col.setUserEditable(false);
-            col.setHidden(true);
-            col.setLabel("Date Only");
-            ti.addColumn(col);
-        }
     }
 
     public boolean isAddLinkDisablers()

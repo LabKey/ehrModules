@@ -9,7 +9,7 @@
  * being used must also support validation.
  */
 Ext4.define('EHR.data.DataEntryStore', {
-    extend: 'LABKEY.ext4.Store',
+    extend: 'LABKEY.ext4.data.Store',
     alias: 'store.ehr-dataentrystore',
 
     constructor: function(){

@@ -25,11 +25,6 @@ Ext4.define('EHR.grid.Panel', {
                 border: false
             },
             dockedItems: [{
-//                xtype: 'pagingtoolbar',
-//                store: this.store,   // same store GridPanel is using
-//                dock: 'bottom',
-//                displayInfo: true
-//            },{
                 xtype: 'toolbar',
                 dock: 'top',
                 items: this.getTbarButtons()
@@ -48,11 +43,11 @@ Ext4.define('EHR.grid.Panel', {
             this.fireEvent('animalchange', id);
         }, this);
 
-        this.mon(this.store, 'datachanged', this.onStoreDataChanged, this);
+        this.store.on('validation', this.onStoreValidation, this);
     },
 
-    onStoreDataChanged: function(store){
-        this.getView().refresh();
+    onStoreValidation: function(store, record){
+        this.getView().onUpdate(store, record);
     },
 
     configureColumns: function(){

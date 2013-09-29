@@ -1,767 +1,794 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="employeecategory" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeecategory&amp;categoryname=${categoryname}</ns:tableUrl>
-    <ns:pkColumnName>categoryname</ns:pkColumnName>
-    <ns:tableTitle>Employee Categories</ns:tableTitle>
-    <ns:columns>
-      <ns:column columnName="categoryname">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Category Name</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employeelocations" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeelocations&amp;location=${location}</ns:tableUrl>
-    <ns:tableTitle>Employee Locations</ns:tableTitle>
-    <ns:pkColumnName>location</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="location">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Location</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="unit_names" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=unit_names&amp;unit=${unit}</ns:tableUrl>
-    <ns:tableTitle>Unit Names</ns:tableTitle>
-    <ns:pkColumnName>unit</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="unit">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Unit</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="supervisor">
-        <ns:columnTitle>Supervisor</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="phone">
-        <ns:columnTitle>Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="address">
-        <ns:inputType>textarea</ns:inputType>
-        <ns:columnTitle>Address</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirementtype" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementtype&amp;type=${type}</ns:tableUrl>
-    <ns:tableTitle>Requirement Types</ns:tableTitle>
-    <ns:pkColumnName>type</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="type">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Type</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employeetypes" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeetypes&amp;type=${type}</ns:tableUrl>
-    <ns:tableTitle>Employee Types</ns:tableTitle>
-    <ns:pkColumnName>type</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="type">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Type</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employeetitles" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeetitles&amp;title=${title}</ns:tableUrl>
-    <ns:tableTitle>Employee Titles</ns:tableTitle>
-    <ns:pkColumnName>title</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="title">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Title</ns:columnTitle>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employees" tableDbType="TABLE" useColumnOrder="true">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/ehr_compliancedb/employeeDetails.view?employeeid=${employeeid}</ns:tableUrl>
-    <ns:javaCustomizer>org.labkey.ehr.table.WrappingTableCustomizer</ns:javaCustomizer>
-    <ns:tableTitle>Employees</ns:tableTitle>
-    <ns:pkColumnName>employeeid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="employeeid">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="lastName">
-      <ns:columnTitle>Last Name</ns:columnTitle>
-          <ns:displayWidth>100</ns:displayWidth>
-      </ns:column>
-      <ns:column columnName="firstName">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>First Name</ns:columnTitle>
-        <ns:displayWidth>100</ns:displayWidth>
-      </ns:column>
-        <ns:column columnName="middleName">
-            <ns:columnTitle>Middle Name</ns:columnTitle>
-            <ns:displayWidth>100</ns:displayWidth>
-        </ns:column>
-      <ns:column columnName="email">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Email</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="email2">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Alternate Email</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="personid">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Person Id</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="type">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Type</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeetypes</ns:fkTable>
-            <ns:fkColumnName>type</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="majorudds">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Major UDDS</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Title</ns:columnTitle>
-	<ns:fk>
-		<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-		<ns:fkTable>employeetitles</ns:fkTable>
-		<ns:fkColumnName>title</ns:fkColumnName>
-	</ns:fk>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Category</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeecategory</ns:fkTable>
-            <ns:fkColumnName>categoryname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="unit">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Unit</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>unit_names</ns:fkTable>
-            <ns:fkColumnName>unit</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="supervisor">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Supervisor</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="emergencycontact">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Emergency Contact</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="emergencycontactdaytimephone">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Emergency Contact Daytime Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="emergencycontactnighttimephone">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Emergency Contact Nighttime Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="homephone">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Home Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="officephone">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Office Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="cellphone">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Cell Phone</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="location">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Location</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeelocations</ns:fkTable>
-            <ns:fkColumnName>location</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="startdate">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Start Date</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="enddate">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>End Date</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="notes">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Notes</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="barrier">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Barrier Access?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="animals">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Contacts NHPs?</ns:columnTitle>
-      </ns:column>
-        <ns:column columnName="contactsSla">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Contacts Small Lab Animals?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="tissue">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Handles Tissue?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="isemployee">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Is Center Employee?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid2" wrappedColumnName="employeeid">
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="UsernameStatus" wrappedColumnName="employeeid">
-        <ns:columnTitle>Labkey User Status</ns:columnTitle>
-        <ns:isUnselectable>true</ns:isUnselectable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <!--NOTE: on individual servers, this metadata can be overridden in the schema browser to point to a specific container-->
-          <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-          <ns:fkTable>EmployeeUsers</ns:fkTable>
-          <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirements" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/ehr_compliancedb/requirementDetails.view?requirementname=${requirementname}</ns:tableUrl>
-    <ns:tableTitle>Requirements</ns:tableTitle>
-    <ns:pkColumnName>requirementname</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="requirementname">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Requirement Name</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="type">
-        <ns:columnTitle>Type</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>requirementtype</ns:fkTable>
-            <ns:fkColumnName>type</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="expireperiod">
-        <ns:columnTitle>Expire Period (Months)</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="required">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required For Everyone?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="access">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required If Has Barrier Access?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="animals">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required If Contacts NHPs?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="contactsSla">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required If Contacts Small Lab Animals?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="tissues">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required If Handles Tissue?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirementspercategory" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementspercategory&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>Requirements Per Employee Category</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:columnTitle>Requirement Name</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>requirements</ns:fkTable>
-            <ns:fkColumnName>requirementname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:columnTitle>Category</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeecategory</ns:fkTable>
-            <ns:fkColumnName>categoryname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="unit">
-        <ns:columnTitle>Unit</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>unit_names</ns:fkTable>
-            <ns:fkColumnName>unit</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementsperemployee&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>Requirements Per Employee</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employees</ns:fkTable>
-            <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:columnTitle>Requirement Name</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>requirements</ns:fkTable>
-            <ns:fkColumnName>requirementname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="completiondates" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=completiondates&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>Dates Employees Completed Requirements</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employees</ns:fkTable>
-            <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:columnTitle>Requirement Name</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>requirements</ns:fkTable>
-            <ns:fkColumnName>requirementname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="date">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Date Completed</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="result">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Result</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="trainer">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Trainer</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="comment">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Comment</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeerequirementexemptions&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>Employee Exemptions to Requirements</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employees</ns:fkTable>
-            <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:columnTitle>Requirement Name</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>requirements</ns:fkTable>
-            <ns:fkColumnName>requirementname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="sops" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sops&amp;sopid=${sopid}</ns:tableUrl>
-    <ns:tableTitle>SOPs</ns:tableTitle>
-    <ns:pkColumnName>sopid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="sopid">
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>SOP ID</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="name">
-        <ns:columnTitle>Name</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="pdf">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>PDF</ns:columnTitle>
-        <ns:fk>
-          <ns:fkDbSchema>exp</ns:fkDbSchema>
-          <ns:fkTable>datas</ns:fkTable>
-          <ns:fkColumnName>rowid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="sopdates" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopdates&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>SOP Completion Dates</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:columnTitle>Employee Id</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employees</ns:fkTable>
-            <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="sopid">
-        <ns:columnTitle>SOP ID</ns:columnTitle>
-        <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
-            <!--<ns:fkTable>sops</ns:fkTable>-->
-            <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      </ns:column>
-      <ns:column columnName="date">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Date Completed</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="sopbycategory" tableDbType="TABLE">
-    <ns:auditLogging>DETAILED</ns:auditLogging>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopbycategory&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:tableTitle>SOPs Per Employee Category</ns:tableTitle>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:columnTitle>Key</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="sop_id">
-        <ns:columnTitle>SOP ID</ns:columnTitle>
-        <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
-            <!--<ns:fkTable>sops</ns:fkTable>-->
-            <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:columnTitle>Employee Category</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeecategory</ns:fkTable>
-            <ns:fkColumnName>categoryname</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+    <ns:table tableName="employeecategory" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>categoryname</ns:pkColumnName>
+        <ns:tableTitle>Employee Categories</ns:tableTitle>
+        <ns:columns>
+            <ns:column columnName="categoryname">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Category Name</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="employeelocations" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Employee Locations</ns:tableTitle>
+        <ns:pkColumnName>location</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="location">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Location</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="unit_names" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Unit Names</ns:tableTitle>
+        <ns:pkColumnName>unit</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="unit">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Unit</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="supervisor">
+                <ns:columnTitle>Supervisor</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="phone">
+                <ns:columnTitle>Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="address">
+                <ns:inputType>textarea</ns:inputType>
+                <ns:columnTitle>Address</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="requirementtype" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Requirement Types</ns:tableTitle>
+        <ns:pkColumnName>type</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="type">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Type</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="employeetypes" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Employee Types</ns:tableTitle>
+        <ns:pkColumnName>type</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="type">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Type</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="employeetitles" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Employee Titles</ns:tableTitle>
+        <ns:pkColumnName>title</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="title">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Title</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="employees" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Employees</ns:tableTitle>
+        <ns:pkColumnName>employeeid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="employeeid">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="lastName">
+                <ns:columnTitle>Last Name</ns:columnTitle>
+                <ns:displayWidth>100</ns:displayWidth>
+                <ns:facetingBehavior>ALWAYS_OFF</ns:facetingBehavior>
+            </ns:column>
+            <ns:column columnName="firstName">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>First Name</ns:columnTitle>
+                <ns:displayWidth>100</ns:displayWidth>
+                <ns:facetingBehavior>ALWAYS_OFF</ns:facetingBehavior>
+            </ns:column>
+            <ns:column columnName="middleName">
+                <ns:columnTitle>Middle Name</ns:columnTitle>
+                <ns:displayWidth>100</ns:displayWidth>
+                <ns:facetingBehavior>ALWAYS_OFF</ns:facetingBehavior>
+            </ns:column>
+            <ns:column columnName="email">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Email</ns:columnTitle>
+                <ns:facetingBehavior>ALWAYS_OFF</ns:facetingBehavior>
+            </ns:column>
+            <ns:column columnName="email2">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Alternate Email</ns:columnTitle>
+                <ns:facetingBehavior>ALWAYS_OFF</ns:facetingBehavior>
+            </ns:column>
+            <ns:column columnName="personid">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Person Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="type">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Type</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeetypes</ns:fkTable>
+                    <ns:fkColumnName>type</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="majorudds">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Major UDDS</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Title</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeetitles</ns:fkTable>
+                    <ns:fkColumnName>title</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Category</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeecategory</ns:fkTable>
+                    <ns:fkColumnName>categoryname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="unit">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Unit</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>unit_names</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="supervisor">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Supervisor</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="emergencycontact">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Emergency Contact</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="emergencycontactdaytimephone">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Emergency Contact Daytime Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="emergencycontactnighttimephone">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Emergency Contact Nighttime Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="homephone">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Home Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="officephone">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Office Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="cellphone">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Cell Phone</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="location">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Location</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeelocations</ns:fkTable>
+                    <ns:fkColumnName>location</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="startdate">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Start Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>End Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="notes">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Notes</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="barrier">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Barrier Access?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="animals">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Contacts NHPs?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="contactsSla">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Contacts Small Lab Animals?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="tissue">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Handles Tissue?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="isemployee">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Is Center Employee?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="employeeid2" wrappedColumnName="employeeid">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="UsernameStatus" wrappedColumnName="employeeid">
+                <ns:columnTitle>Labkey User Status</ns:columnTitle>
+                <ns:isUnselectable>true</ns:isUnselectable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <!--NOTE: on individual servers, this metadata can be overridden in the schema browser to point to a specific container-->
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>EmployeeUsers</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="requirements" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Requirements</ns:tableTitle>
+        <ns:pkColumnName>requirementname</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="requirementname">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Requirement Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="type">
+                <ns:columnTitle>Requirement Type</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>requirementtype</ns:fkTable>
+                    <ns:fkColumnName>type</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="expireperiod">
+                <ns:columnTitle>Expire Period (Months)</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="required">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Required For Everyone?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="access">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Required If Has Barrier Access?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="animals">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Required If Contacts NHPs?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="contactsSla">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Required If Contacts Small Lab Animals?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="tissues">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Required If Handles Tissue?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="requirementspercategory" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Requirements Per Employee Category</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="requirementname">
+                <ns:columnTitle>Requirement Name</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>requirements</ns:fkTable>
+                    <ns:fkColumnName>requirementname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeecategory</ns:fkTable>
+                    <ns:fkColumnName>categoryname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="unit">
+                <ns:columnTitle>Unit</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>unit_names</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Requirements Per Employee</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="employeeid">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employees</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="requirementname">
+                <ns:columnTitle>Requirement Name</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>requirements</ns:fkTable>
+                    <ns:fkColumnName>requirementname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="completiondates" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Dates Employees Completed Requirements</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="employeeid">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employees</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="requirementname">
+                <ns:columnTitle>Requirement Name</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>requirements</ns:fkTable>
+                    <ns:fkColumnName>requirementname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="date">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Date Completed</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="result">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Result</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="trainer">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Trainer</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>trainers</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="comment">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Comment</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="employeeId2" wrappedColumnName="employeeId">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Employee Exemptions to Requirements</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="employeeid">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employees</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="requirementname">
+                <ns:columnTitle>Requirement Name</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>requirements</ns:fkTable>
+                    <ns:fkColumnName>requirementname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="sops" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>SOPs</ns:tableTitle>
+        <ns:pkColumnName>sopid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="sopid">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>SOP ID</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="name">
+                <ns:columnTitle>Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="pdf">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>PDF</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>exp</ns:fkDbSchema>
+                    <ns:fkTable>datas</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="sopdates" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>SOP Completion Dates</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="employeeid">
+                <ns:columnTitle>Employee Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employees</ns:fkTable>
+                    <ns:fkColumnName>employeeid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="sopid">
+                <ns:columnTitle>SOP ID</ns:columnTitle>
+                <!--<ns:fk>-->
+                <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
+                <!--<ns:fkTable>sops</ns:fkTable>-->
+                <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            </ns:column>
+            <ns:column columnName="date">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Date Completed</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="sopbycategory" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>SOPs Per Employee Category</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sop_id">
+                <ns:columnTitle>SOP ID</ns:columnTitle>
+                <!--<ns:fk>-->
+                <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
+                <!--<ns:fkTable>sops</ns:fkTable>-->
+                <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Employee Category</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+                    <ns:fkTable>employeecategory</ns:fkTable>
+                    <ns:fkColumnName>categoryname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
 </ns:tables>

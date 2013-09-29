@@ -22,7 +22,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             reportNamespace: EHR.reports
         });
 
-        this.reportStore = Ext4.create('LABKEY.ext4.Store', {
+        this.reportStore = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'ehr',
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],

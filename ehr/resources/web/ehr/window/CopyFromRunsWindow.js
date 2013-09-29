@@ -82,6 +82,17 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
         return records;
     },
 
+    getExistingRunIds: function(){
+        var map = {};
+        this.targetGrid.store.each(function(r){
+            if (r.get('runid')){
+                map[r.get('runid')] = true;
+            }
+        }, this);
+
+        return map;
+    },
+
     loadServices: function(){
         LABKEY.Query.selectRows({
             schemaName: 'ehr_lookups',
@@ -117,9 +128,10 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
         },{
             html: '<b>Choose Template</b>'
         },{
-            html: '<b>Ignore</b>'
+            html: '<b>Skip?</b>'
         }];
 
+        var existingRunIds = this.getExistingRunIds();
         Ext4.Array.forEach(this.runRecords, function(r){
             toAdd.push({
                 html: r.get('Id'),
@@ -156,7 +168,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 xtype: 'checkbox',
                 width: 80,
                 itemId: ignoreId,
-                checked: false
+                checked: existingRunIds[r.get('objectid')]
             });
         }, this);
 
@@ -205,6 +217,15 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                         date: item.boundRecord.get('date'),
                         runid: item.boundRecord.get('objectid')
                     };
+
+                    //set tissue if the result's model and service record have it
+                    if (this.targetGrid.store.model.prototype.fields.get('tissue') && item.boundRecord.get('tissue')){
+                        data.tissue = item.boundRecord.get('tissue');
+                    }
+
+//                    if (this.targetGrid.store.model.prototype.fields.get('qualifier') && item.boundRecord.get('qualifier')){
+//                        data.qualifier = item.boundRecord.get('qualifier');
+//                    }
 
                     if (row){
                         if (row.getValue('method')){

@@ -238,8 +238,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
         this.appendProblemList(results.getActiveProblems());
         this.appendAssignments(results.getActiveAssignments());
-        this.appendAssignmentsAndGroups(results);
-        this.appendGroups(results.getActiveAnimalGroups());
+
+        if (!this.redacted){
+            this.appendAssignmentsAndGroups(results);
+            this.appendGroups(results.getActiveAnimalGroups());
+        }
 
         this.appendSourceResults(results.getSourceRecord());
         this.appendTreatments(results.getActiveTreatments());
@@ -427,7 +430,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
+    //note: this should not get called if redacted
     appendGroups: function(results){
+        if (this.redacted)
+            return;
+
         if (results){
             var values = [];
             Ext4.each(results, function(row){
@@ -445,6 +452,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     appendAssignmentsAndGroups: Ext4.emptyFn,
 
     appendAssignments: function(results){
+        if (this.redacted)
+            return;
+
         if (results){
             var values = [];
             Ext4.each(results, function(row){

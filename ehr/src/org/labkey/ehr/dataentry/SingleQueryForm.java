@@ -69,7 +69,7 @@ public class SingleQueryForm extends AbstractDataEntryForm
     @Override
     protected List<String> getButtonConfigs()
     {
-        return Collections.singletonList("SUBMIT");
+        return Collections.singletonList("BASICSUBMIT");
     }
 
     @Override

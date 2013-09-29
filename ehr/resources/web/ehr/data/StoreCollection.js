@@ -407,7 +407,7 @@ Ext4.define('EHR.data.StoreCollection', {
             success: this.getOnCommitSuccess(recordsArr, validateOnly),
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
-            timeout: this.timeout || 0,
+            timeout: 500000,  //a little extreme?
             jsonData : {
                 apiVersion: 13.2,
                 transacted: true,
@@ -462,6 +462,32 @@ Ext4.define('EHR.data.StoreCollection', {
         }, this);
 
         return dirty;
+    },
+
+    getErrorMessages: function(excludeInfo){
+        var ret = {};
+        this.clientStores.each(function(store){
+            var messages = [];
+            var field, label;
+            store.each(function(record, idx){
+                record.validate().each(function(e){
+                    if (excludeInfo && e.message.match(/^INFO:/)){
+                        return;
+                    }
+
+                    field = store.getFields().get(e.field);
+                    label = field ? (field.caption || field.name) : e.field;
+                    messages.push('Row ' + (idx + 1) + ', ' + label + ': ' + e.message);
+                }, this);
+            }, this);
+
+            if (messages.length){
+                messages = Ext4.unique(messages);
+                ret[store.model.prototype.sectionCfg.label] = messages;
+            }
+        }, this);
+
+        return ret;
     },
 
     onServerStoreValidation: function(store, records){
@@ -553,11 +579,12 @@ Ext4.define('EHR.data.StoreCollection', {
                     if (!validateOnly){
                         store.processResponse(command.rows, command[i]);
                     }
-                    else {
-                        this.transformServerToClient(true);
-                        this.fireEvent('validation', this);
-                    }
                 }
+            }
+
+            this.transformServerToClient(true);
+            if (validateOnly){
+                this.fireEvent('validation', this);
             }
 
             this.onComplete((options.jsonData ? options.jsonData.extraContext : null));

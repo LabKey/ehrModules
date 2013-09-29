@@ -146,18 +146,18 @@ Ext4.define('EHR.model.DefaultClientModel', {
             if (this.phantom)
                 return true;
 
-            return EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries);
+            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries);
         }
         else if (permission == 'insert'){
-            return EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries);
+            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries);
         }
         else if (permission == 'update'){
-            if (!EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries)){
+            if (!EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries)){
                 return false;
             }
 
             if (targetQCStateLabel){
-                if (!EHR.Security.hasPermission(targetQCStateLabel, 'insert', this.queries)){
+                if (!EHR.DataEntryUtils.hasPermission(targetQCStateLabel, 'insert', this.queries)){
                     return false;
                 }
             }

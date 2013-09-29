@@ -91,6 +91,17 @@ Ext4.define('EHR.window.GetDistinctWindow', {
         this.close();
     },
 
+    getDataRegionFilterArray: function(dataRegion){
+        var filters = dataRegion.getUserFilterArray() || [];
+
+        //NOTE: need to account for non-removeable filters in a QWP
+        if (dataRegion.qwp && dataRegion.qwp.filters && dataRegion.qwp.filters.length){
+            filters = filters.concat(dataRegion.qwp.filters);
+        }
+
+        return filters;
+    },
+
     selectDistinct: function(){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         var field = this.down('#field').getValue();
@@ -100,7 +111,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
             column: field,
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
-            filterArray: dataRegion.getUserFilterArray(),
+            filterArray: this.getDataRegionFilterArray(dataRegion),
             viewName: dataRegion.viewName,
             scope: this,
             success: function(results){

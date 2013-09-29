@@ -186,6 +186,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             method: {
                 hidden: true
             },
+            chargetype: {
+                hidden: true
+            },
             remark: {
                 hidden: false
             }

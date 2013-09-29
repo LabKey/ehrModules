@@ -9,14 +9,28 @@
 Ext4.define('EHR.data.ClinpathRunsClientStore', {
     extend: 'EHR.data.DataEntryClientStore',
 
+    constructor: function(){
+        this.callParent(arguments);
+
+        this.on('add', this.onAddRecord, this);
+    },
+
+    onAddRecord: function(store, records){
+        Ext4.each(records, function(record){
+            this.onRecordUpdate(record, ['servicerequested']);
+        }, this);
+    },
+
     afterEdit: function(record, modifiedFieldNames){
-        this.onRecordUpdate(record);
+        this.onRecordUpdate(record, modifiedFieldNames);
 
         this.callParent(arguments);
     },
 
-    onRecordUpdate: function(record){
+    onRecordUpdate: function(record, modifiedFieldNames){
         if (record.get('servicerequested')){
+            modifiedFieldNames = modifiedFieldNames || [];
+
             var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId({
                 lookup: {
                     schemaName: 'ehr_lookups',
@@ -31,6 +45,7 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
                 LDK.Utils.logToServer({
                     message: 'Unable to find lookup store in ClinpathRunsClientStore'
                 });
+                console.error('Unable to find lookup store in ClinpathRunsClientStore');
 
                 return;
             }
@@ -40,6 +55,7 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
                 LDK.Utils.logToServer({
                     message: 'Unable to find lookup record in ClinpathRunsClientStore'
                 });
+                console.error('Unable to find lookup record in ClinpathRunsClientStore');
 
                 return;
             }
@@ -49,11 +65,12 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
             if (lookupRec.get('dataset'))
                 params.type = lookupRec.get('dataset');
 
-            if (lookupRec.get('chargetype'))
+            if (modifiedFieldNames.indexOf('servicerequested') > -1 && lookupRec.get('chargetype'))
                 params.chargetype = lookupRec.get('chargetype');
 
-            if (lookupRec.get('sampletype'))
-                params.sampletype = lookupRec.get('sampletype');
+            if (modifiedFieldNames.indexOf('servicerequested') > -1 && lookupRec.get('tissue')){
+                params.tissue = lookupRec.get('tissue');
+            }
 
             if (!LABKEY.Utils.isEmptyObj(params)){
                 record.beginEdit();

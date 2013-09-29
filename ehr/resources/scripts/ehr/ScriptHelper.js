@@ -60,6 +60,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         skipHousingCheck: false,
         skipAssignmentCheck: false,
         notificationTypes: null,
+        errorSeveritiyForImproperHousing: 'WARN',
         requiresStatusRecalc: false
     };
 
@@ -385,6 +386,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         isAllowFutureDates: function(){
             return scriptOptions.allowFutureDates;
+        },
+
+        getErrorSeveritiyForImproperHousing: function(){
+            return scriptOptions.errorSeveritiyForImproperHousing;
         },
 
         isGeneratedByServer: function(){

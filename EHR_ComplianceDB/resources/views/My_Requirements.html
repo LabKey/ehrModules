@@ -16,7 +16,7 @@ Ext4.onReady(function(){
     var userName = LABKEY.Security.currentUser.email;
 
     //we find this employee's info
-    var employeeStore = Ext4.create('LABKEY.ext4.Store', {
+    var employeeStore = Ext4.create('LABKEY.ext4.data.Store', {
         schemaName: 'ehr_compliancedb',
         queryName: 'Employees',
         containerPath: employeeContainer,

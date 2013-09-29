@@ -49,6 +49,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
 
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', this.actionName, this.containerPath),
+            method: 'POST',
             params: {
                 subjectIds: config.subjectIds,
                 caseId: config.caseId,

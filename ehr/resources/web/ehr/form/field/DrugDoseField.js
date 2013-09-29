@@ -29,12 +29,11 @@ Ext4.define('EHR.form.field.DrugDoseField', {
             return;
         }
 
-        var conc = record.get('concentration');
         var dosage = record.get('dosage');
         var id = record.get('Id');
 
-        if(!conc || !dosage || !id){
-            Ext4.Msg.alert('Error', 'Must supply Id, dosage and concentration');
+        if (!dosage || !id){
+            Ext4.Msg.alert('Error', 'Must supply at least Id and dosage');
             return
         }
 
@@ -55,7 +54,8 @@ Ext4.define('EHR.form.field.DrugDoseField', {
     onDemographicsLoad: function(id, data, record, sc){
         Ext4.Msg.hide();
 
-        var weight = this.getClientWeight(sc, id) || data.getMostRecentWeight();
+        var clientWeightMap = EHR.DataEntryUtils.getClientWeight(sc, [id]);
+        var weight = clientWeightMap[id] || data.getMostRecentWeight();
 
         if (!weight){
             Ext4.Msg.alert('Error', 'Unable to find weight, cannot calculate amount');
@@ -64,21 +64,6 @@ Ext4.define('EHR.form.field.DrugDoseField', {
 
         this.showWeight(weight);
         this.getDose(record, weight);
-    },
-
-    getClientWeight: function(sc, id){
-        var store = sc.getServerStoreForQuery('study', 'weight');
-        if (store){
-            var weights = [];
-            store.each(function(r){
-                if (r.get('Id') == id && !Ext4.isEmpty(r.get('weight'))){
-                    weights.push(r.get('weight'));
-                }
-            }, this);
-
-            if (weights.length == 1)
-                return weights[0];
-        }
     },
 
     showWeight: function(weight){
@@ -94,7 +79,7 @@ Ext4.define('EHR.form.field.DrugDoseField', {
             return;
         }
 
-        if(weight){
+        if (weight){
             target.setValue('<span>Weight: '+weight+' kg</span>');
             target.setVisible(true);
         }
@@ -106,7 +91,7 @@ Ext4.define('EHR.form.field.DrugDoseField', {
 
     getDose: function(record, weight){
         var showWeight = true;
-        if(record.get('dosage_units') && !record.get('dosage_units').match(/\/kg$/)){
+        if (record.get('dosage_units') && !record.get('dosage_units').match(/\/kg$/)){
             console.log('using animal as unit');
             showWeight = false;
             weight = 1;
@@ -115,13 +100,14 @@ Ext4.define('EHR.form.field.DrugDoseField', {
 
         }
 
-        var vol = Ext4.util.Format.round(weight * record.get('dosage') / record.get('concentration'), 2);
-
         //NOTE: calculated from volume to avoid errors due to rounding
-        var amount = Ext4.util.Format.round(vol * record.get('concentration'), 2);
+        var amount = Ext4.util.Format.round(weight * record.get('dosage'), 2);
+        var vol = record.get('concentration') ? Ext4.util.Format.round(weight * record.get('dosage') / record.get('concentration'), 2) : null;
 
-        record.set('amount', amount);
-        record.set('volume', vol);
         record.set('dosage', record.get('dosage'));
+        record.set('amount', amount);
+
+        if (vol)
+            record.set('volume', vol);
     }
 });

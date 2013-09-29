@@ -92,7 +92,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 queryName: 'blood',
                 viewName: 'Requests',
                 removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                 ]
             }
@@ -104,7 +104,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 queryName: 'Clinpath Runs',
                 viewName: 'Requests',
                 removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                 ]
             }
@@ -116,7 +116,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 queryName: 'encounters',
                 viewName: 'Requests',
                 removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                 ]
             }

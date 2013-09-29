@@ -218,9 +218,19 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     record = records[rowError.rowNumber - 1];
                 }
 
-                LDK.Assert.assertNotEmpty('Unable to find matching record after validation.  Row # was: ' + rowError.rowNumber + '.  Total records: ' + records.length, record);
-                if (!record)
+                if (!record){
+                    LDK.Utils.logToServer({
+                        level: 'ERROR',
+                        message: 'Unable to find matching record after validation.  Row # was: ' + rowError.rowNumber + '.\n' +
+                                'storeId: ' + this.storeId + '\n' +
+                                'Total records in store: ' + this.getCount() + '\n' +
+                                'Total records received: ' + records.length + '\n' +
+                                'exception: ' + rowError.exception + '\n' +
+                                'Row Data: ' + Ext4.encode(rowError.row) + '\n'
+                    });
+
                     return;
+                }
 
                 if (record.lastRequestId && record.lastRequestId > requestId){
                     return;
@@ -229,6 +239,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 if (rowError.errors){
                     //now iterate field errors
                     Ext4.Array.forEach(rowError.errors, function(fieldError, idx){
+                        //this is a flag used by server-side validation scripts
+                        if (fieldError.field == '_validateOnly') {
+                            return;
+                        }
+
                         var severity = 'ERROR';
                         var msg = fieldError.message;
 
@@ -300,7 +315,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     },
 
     transformRecordsToClient: function(sc,targetChildStores, changedStoreIDs, syncErrorsOnly){
-        var fieldMap, clientStore, serverFieldName, clientKeyField, toRemove = [];
+        var fieldMap, clientStore, serverFieldName, clientKeyField, toRemove = [], toFireValidation = [];
         this.each(function(serverModel){
             var found = false;
 
@@ -348,6 +363,8 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
                     fieldMap = targetChildStores[clientStoreId];
                     clientModel.suspendEvents();
+
+                    var changedData = false;
                     for (var clientFieldName in fieldMap){
                         serverFieldName = fieldMap[clientFieldName];
                         LDK.Assert.assertNotEmpty('Unable to find serverField to match clientField: ' + clientFieldName, serverFieldName);
@@ -357,6 +374,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
                             var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
                             if (serverVal != clientVal){
+                                changedData = true;
                                 clientModel.set(clientFieldName, serverVal);
                                 changedStoreIDs[clientStore.storeId] = true;
                             }
@@ -374,6 +392,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             }, this);
                         }
                     }
+
+                    if (!changedData){
+                        toFireValidation.push(clientModel);
+                    }
+
                     clientModel.resumeEvents();
                 }
             }
@@ -391,6 +414,13 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             }
         }, this);
 
+        for (var i=0;i<toFireValidation.length;i++){
+            var model = toFireValidation[i];
+            if (model.store){
+                model.store.fireEvent('validation', model.store, model);
+            }
+        }
+        
         if (toRemove.length){
             Ext4.Array.forEach(toRemove, function(r){
                 this.remove(r);

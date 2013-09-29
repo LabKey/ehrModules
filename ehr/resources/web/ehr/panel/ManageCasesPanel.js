@@ -56,14 +56,14 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
 
                 this.setLoading(true);
             }
-        }, this);
+        }, this, {delay: 100});
     },
 
     getStore: function(){
         if (this.store)
             return this.store;
 
-        this.store = Ext4.create('LABKEY.ext4.Store', {
+        this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'Cases',
             columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,encounterid',

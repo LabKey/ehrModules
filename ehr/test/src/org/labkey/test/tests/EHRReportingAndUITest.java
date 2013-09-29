@@ -26,6 +26,7 @@ import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
@@ -34,11 +35,11 @@ import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 @Category({External.class, EHR.class, ONPRC.class})
 public class EHRReportingAndUITest extends AbstractEHRTest
 {
-    @Override
-    public void doCleanup(boolean afterTest) throws TestTimeoutException
-    {
-        super.doCleanup(afterTest);
-    }
+//    @Override
+//    public void doCleanup(boolean afterTest) throws TestTimeoutException
+//    {
+//        super.doCleanup(afterTest);
+//    }
 
     @Override
     public void runUITests() throws Exception
@@ -46,10 +47,13 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         initProject();
 
         detailsPagesTest();
-        viewsTest();
         customActionsTest();
+        dataRegionButtonsTest();
         animalHistoryTest();
         quickSearchTest();
+
+        //TODO: also check that delete, import, etc do not appear unless explicitly enabled
+
     }
 
     /**
@@ -94,7 +98,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForText("Drug Administration");
         waitAndClick(LabModuleHelper.getNavPanelItem("Drug Administration:", VIEW_TEXT));
 
-        waitForText("details");
+        waitForText("details", WAIT_FOR_PAGE * 2);
         DataRegionTable dr = new DataRegionTable("query", this);
         dr.clickLink(0, 0);
         //these are the sections we expect
@@ -143,42 +147,34 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertNoErrorText();
     }
 
-    private void dataRegionButtonTest()
-    {
-        //TODO: check custom buttons
-
-        //TODO: also check that delete, import, etc do not appear unless explicitly enabled
-    }
-
     /**
-     * This tests misc views that are not included in detailsPagesTest()
+     * This tests misc custom pages that are not included in detailsPagesTest()
      */
-    public void viewsTest()
+    public void customActionsTest()
     {
+        log("verifying custom actions");
+
         //housing queries
         beginAt("/project/" + getContainerPath() + "/begin.view");
         waitAndClick(Locator.linkWithText("Housing Queries"));
-
-        waitForText("View:"); //a proxy for the search panel loading
-
+        waitForTextToDisappear("Loading");
+        waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
+        assertNoErrorText();
 
         //animal queries
         beginAt("/project/" + getContainerPath() + "/begin.view");
         waitAndClick(Locator.linkWithText("Animal Search"));
-
         waitForTextToDisappear("Loading");
-        waitForText("View:"); //a proxy for the search panel loading
+        waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
-        //TODO: test search plus specific queries
 
         //project, protocol queries
         beginAt("/project/" + getContainerPath() + "/begin.view");
         waitAndClick(Locator.linkWithText("Protocol and Project Queries"));
-
         waitForTextToDisappear("Loading");
-        waitForText("View:"); //a proxy for the search panel loading
+        waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
+        waitForElement(Locator.linkContainingText("View All Projects With Active Assignments"));
         assertNoErrorText();
-        //TODO: test search plus specific queries
 
         //population overview
         beginAt("/project/" + getContainerPath() + "/begin.view");
@@ -196,8 +192,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         DataRegionTable dr = new DataRegionTable("query", this);
         dr.clickLink(1,"Id");
         log("Inspecting details page");
-        waitForElement(Locator.xpath("//span[contains(text(), 'Animal Details:')]"));
-        waitForElement(Locator.xpath("//label[contains(text(), '# Animals In Cage:')]"));
+        waitForElement(Locator.tagContainingText("th", "Overview: "));
+        waitForElement(Locator.tagContainingText("th", "Weights - "));
         assertNoErrorText();
     }
 
@@ -220,12 +216,11 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         subjField = _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
         Assert.assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
 
-        //crawlReportTabs(); // TOO SLOW. TODO: Crawl specific tabs to test functionality
-
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
         waitAndClick(Locator.ext4Radio("Entire Database"));
-        _ext4Helper.clickTabContainingText("Demographics");
+        refreshAnimalHistoryReport();
+        waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
         waitForText("Rhesus"); //a proxy for the loading of the dataRegion
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         Assert.assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
@@ -237,8 +232,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         sleep(200); //wait for 2nd field to filter
         _ext4Helper.queryOne("#roomField", Ext4FieldRefWD.class).setValue(ROOM_ID);
         _ext4Helper.queryOne("#cageField", Ext4FieldRefWD.class).setValue(CAGE_ID);
-        _ext4Helper.clickTabContainingText("Abstract");
-        waitForText("9794992", WAIT_FOR_JAVASCRIPT);   //this is the values of sire field
+        refreshAnimalHistoryReport();
+        waitForText("9794992", WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
 
         log("Verify Project search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
@@ -249,10 +244,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         waitForElement(Locator.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-
-        //NOTE: unsure why this causes the page to lock up
-        //waitForElement(Locator.linkWithText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT * 3);
-        waitForElement(Locator.xpath("//th[text() = 'Details: " + PROJECT_MEMBER_ID + "']"), WAIT_FOR_JAVASCRIPT * 2);
+        waitForElement(Locator.tagContainingText("span", "Demographics - " + PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT * 2);
 
         log("Verify Protocol search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
@@ -264,7 +256,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         // Check protocol search results.
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Abstract");
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
@@ -272,7 +264,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
         waitForElementToDisappear(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Abstract");
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, getDataRegionRowCount(dataRegionName));
 
         // Re-add animal.
@@ -280,24 +272,16 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Button("Append -->"));
         waitForElement(Locator.button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Abstract");
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         waitForText(PROTOCOL_MEMBER_IDS[0]);
         Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
-
-        waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
-        _ext4Helper.clickExt4Tab("Raw Data");
-        waitForText("Percent Change", WAIT_FOR_PAGE * 3);
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Locator.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Abstract");
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         Assert.assertEquals("Did not find the expected number of Animals", 5, getDataRegionRowCount(dataRegionName));
-
-        //NOTE: this cause the page to lock up.
-        //waitForElementToDisappear(Locator.linkWithText(PROTOCOL_MEMBER_IDS[1]));
-        //assertElementNotPresent(Locator.linkWithText(PROTOCOL_MEMBER_IDS[2]));
 
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
@@ -308,11 +292,35 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertElementNotPresent(Locator.buttonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");
         click(Locator.ext4Button("OK"));
+
+        log("checking specific tabs");
+
+        //snapshot
+        getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
+        waitAndClick(Locator.ext4Button("Replace -->"));
+        refreshAnimalHistoryReport();
+        waitAndClick(Ext4HelperWD.ext4Tab("General"));
+        waitAndClick(Ext4HelperWD.ext4Tab("Snapshot"));
+        waitForElement(Locator.tagContainingText("span", "Dead"));
+        waitForElement(Locator.tagContainingText("div", "1 years, 307 days"));
+        waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
+
+        //weight
+        waitAndClick(Ext4HelperWD.ext4Tab("Clinical"));
+        waitAndClick(Ext4HelperWD.ext4Tab("Weights"));
+        waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
+        waitAndClick(Ext4HelperWD.ext4Tab("Raw Data"));
+        waitForText("Percent Change", WAIT_FOR_PAGE * 3);
+
+        //chronological history
+        waitAndClick(Ext4HelperWD.ext4Tab("Clinical"));
+        waitAndClick(Ext4HelperWD.ext4Tab("Clinical History"));
+        waitForElement(Locator.tagContainingText("div", "No records found since:"));
     }
 
-    private void customActionsTest()
+    private void dataRegionButtonsTest()
     {
-        log("Verify custom actions");
+        log("Verify custom dataregion buttons");
         String dataRegionName = "query";
         beginAt("/query/" + getContainerPath() + "/executeQuery.view?schemaName=study&query.queryName=weight&query.id~in=" + (PROTOCOL_MEMBER_IDS[0] + ";" + PROTOCOL_MEMBER_IDS[1] + ";" + PROTOCOL_MEMBER_IDS[2]));
         waitForElement(Locator.xpath("//span[contains(text(), 'Weight')]"));
@@ -390,14 +398,16 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         log("Jump to History");
         checkDataRegionCheckbox("query", 0); // PROTOCOL_MEMBER_IDS[0]
-        clickMenuButton("More Actions", "Jump To History");
+        _extHelper.clickMenuButton("More Actions", "Jump To History");
         assertTitleContains("Animal History");
+        waitForElement(Locator.tagContainingText("th", "Overview: "));
 
         //page has loaded, so we re-query
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[2]);
         waitAndClick(Locator.ext4Button("Append -->"));
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Abstract");
+        waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         Assert.assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));
         assertTextPresent(PROTOCOL_MEMBER_IDS[0], PROTOCOL_MEMBER_IDS[2]);
     }
@@ -410,13 +420,18 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
     private void refreshAnimalHistoryReport()
     {
-        waitForText("Abstract");
+        waitForElement(Ext4HelperWD.ext4Tab("Demographics"));
         sleep(200);
         waitAndClick(Locator.ext4Button("Refresh"));
     }
 
     private void quickSearchTest()
     {
+        //TODO: can I interact with this as a menu webpart?
+        log("Add quick search webpart");
+        goToEHRFolder();
+        addWebPart("Quick Search");
+
         log("Quick Search - Show Animal");
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
@@ -453,14 +468,14 @@ public class EHRReportingAndUITest extends AbstractEHRTest
     private void crawlReportTabs()
     {
         String tabs[] = {/*"-Assay", "MHC SSP Typing", "Viral Loads", */ //Bad queries on test server.
-                         "-Assignments", "Active Assignments", "Assignment History",
-                         "-Clin Path", "Bacteriology", "Chemistry:By Panel", "Clinpath Runs", "Hematology:By Panel", "Immunology:By Panel", "Parasitology", "Urinalysis:By Panel", "Viral Challenges", "Virology",
-                         "-Clinical", "Abstract:Active Assignments", "Clinical Encounters", "Clinical Remarks", "Diarrhea Calendar", "Full History", "Full History Plus Obs", "Irregular Obs:Irregular Observations", "Problem List", "Procedure Codes", "Surgical History", "Tasks", "Treatment Orders", "Treatments", "Treatment Schedule", "Weights:Weight",
-                         "-Colony Management", "Behavior Remarks", "Birth Records", "Housing - Active", "Housing History", "Inbreeding Coefficients", "Kinship", "Menses Calendar", "Menses Observations:Irregular Observations", "Pedigree:Offspring", /*"Pedigree Plot",*/ "Pregnancies", "TB Tests",
-                         "-Pathology", "Biopsies", "Histology", "Morphologic Diagnosis", "Necropsies",
-                         "-Physical Exam", "Alopecia", "Body Condition", "Dental Status", "Exams", "PE Findings", "Teeth", "Vitals",
-                         "-Today At Center", "Irregular Observations", "Obs/Treatment:Obs/Treatments", "Problem List", /*"Today's History",*/ "Treatments - Morning", "Treatments - Afternoon", "Treatments - Evening", "Treatments - Master", "Unresolved Problem List", /*"Today's Blood Draws",*/
-                         "-General", "Arrival/Departure:Arrivals", "Blood Draw History", "Charges", "Current Blood", "Deaths", "Demographics", "Major Events", "Notes", "Abstract:Active Assignments"};
+                "-Assignments", "Active Assignments", "Assignment History",
+                "-Clin Path", "Bacteriology", "Chemistry:By Panel", "Clinpath Runs", "Hematology:By Panel", "Immunology:By Panel", "Parasitology", "Urinalysis:By Panel", "Viral Challenges", "Virology",
+                "-Clinical", "Abstract:Active Assignments", "Clinical Encounters", "Clinical Remarks", "Diarrhea Calendar", "Full History", "Full History Plus Obs", "Irregular Obs:Irregular Observations", "Problem List", "Procedure Codes", "Surgical History", "Tasks", "Treatment Orders", "Treatments", "Treatment Schedule", "Weights:Weight",
+                "-Colony Management", "Behavior Remarks", "Birth Records", "Housing - Active", "Housing History", "Inbreeding Coefficients", "Kinship", "Menses Calendar", "Menses Observations:Irregular Observations", "Pedigree:Offspring", /*"Pedigree Plot",*/ "Pregnancies", "TB Tests",
+                "-Pathology", "Biopsies", "Histology", "Morphologic Diagnosis", "Necropsies",
+                "-Physical Exam", "Alopecia", "Body Condition", "Dental Status", "Exams", "PE Findings", "Teeth", "Vitals",
+                "-Today At Center", "Irregular Observations", "Obs/Treatment:Obs/Treatments", "Problem List", /*"Today's History",*/ "Treatments - Morning", "Treatments - Afternoon", "Treatments - Evening", "Treatments - Master", "Unresolved Problem List", /*"Today's Blood Draws",*/
+                "-General", "Arrival/Departure:Arrivals", "Blood Draw History", "Charges", "Current Blood", "Deaths", "Demographics", "Major Events", "Notes", "Abstract:Active Assignments"};
 
         log("Check all Animal History report tabs");
         for (String tab : tabs)

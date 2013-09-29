@@ -173,7 +173,7 @@ function makePanel(){
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {key:value});
                     }
                 },{
-                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'projectQueries', ctx['EHRStudyContainer'])) + '">Advanced Project Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'project', 'query.viewName': 'Active Projects'})) + '">View All Projects</a>',
                     colspan: 2
                 },{
                     html: 'IACUC Protocol:',
@@ -212,7 +212,7 @@ function makePanel(){
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'protocolDetails', ctx['EHRStudyContainer'], {key:value});
                     }
                 },{
-                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'projectQueries', ctx['EHRStudyContainer'])) + '">Advanced Protocol Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'protocol', 'query.viewName': 'Active Protocols'})) + '">View All Protocols</a>',
                     colspan: 2
                 },{
                     html: 'Room:',
