@@ -16,12 +16,13 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             proxy: {
                 type: 'memory'
             },
-            fields: ['dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId']
+            fields: ['idfield', 'dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId']
         });
 
         this.actionName = config.actionName || this.actionName;
 
         this.callParent(arguments);
+        this.model.prototype.idProperty = 'idfield';
 
         this.changeMode(config.sortMode || 'date');
     },
