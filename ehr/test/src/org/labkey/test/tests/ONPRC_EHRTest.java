@@ -38,6 +38,7 @@ import org.openqa.selenium.Keys;
 import org.testng.Assert;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,7 +221,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                 {"BASIC Chemistry Panel in-house", "T-0X500", "Biochemistry", "chemistry_tests"},
                 {"Anaerobic Culture", null, "Microbiology", null, "T-0X000"},  //NOTE: cultures dont have a default tissue, so we set it using value
                 {"CBC with automated differential", "T-0X000", "Hematology", "hematology_tests"},
-                {"Antibiotic Sensitivity", null, "Antibiotic Sensitivity", null},
+                {"Antibiotic Sensitivity", null, "Antibiotic Sensitivity", null, "T-0X000"},
                 {"Fecal parasite exam", "T-6Y100", "Parasitology", null},
                 {"ESPF Surveillance - Monthly", "T-0X500", "Serology/Virology", null},
                 {"Urinalysis", "T-7X100", "Urinalysis", "urinalysis_tests"},
@@ -241,8 +242,10 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             else if (arr.length > 4)
             {
                 //for some panels, tissue will not have a default.  therefore we set one and verify it gets copied into the results downstream
-                panelGrid.setGridCell(panelIdx, "tissue", arr[4]);
+                panelGrid.setGridCellJS(panelIdx, "tissue", arr[4]);
                 arr[1] = arr[4];
+
+                Assert.assertEquals(panelGrid.getFieldValue(panelIdx, "tissue"), arr[1], "Tissue not set properly");
             }
 
             Assert.assertEquals(panelGrid.getFieldValue(panelIdx, "type"), arr[2], "Category not set properly");
@@ -319,7 +322,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             //iterate rows, checking keyboard navigation
             if (testFieldName != null)
             {
-                Long rowCount = grid.getRowCount();
+                Integer rowCount = grid.getRowCount();
 
                 //TODO: test keyboard navigation
                 //            grid.startEditing(1, grid.getIndexOfColumn(testFieldName));
@@ -328,10 +331,11 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                 // this might not occur if the lookup is invalid
                 for (int j = 1; j <= rowCount; j++)
                 {
+                    log("testing row: " + j);
                     Object origVal = grid.getFieldValue(j, testFieldName);
 
                     grid.startEditing(j, testFieldName);
-
+                    sleep(50);
                     //TODO: test keyboard navigation
                     grid.completeEdit();
                     //grid.getActiveGridEditor().sendKeys(Keys.ENTER);
@@ -339,6 +343,15 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                     Object newVal = grid.getFieldValue(j, testFieldName);
                     Assert.assertEquals(newVal, origVal, "Test Id value did not match after key navigation");
                 }
+
+                //NOTE: the test can get bogged down w/ many rows, so we delete as it goes along
+                grid.clickTbarButton("Select All");
+                grid.waitForSelected(grid.getRowCount());
+                grid.clickTbarButton("Delete Selected");
+                waitForElement(Ext4HelperWD.ext4Window("Confirm"));
+                waitAndClick(Locator.ext4Button("Yes"));
+                grid.waitForRowCount(0);
+                sleep(200);
             }
         }
     }
@@ -387,7 +400,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitAndClick(manageLink);
         waitForElement(Ext4HelperWD.ext4Window("Manage Subscribed Users"));
         Ext4FieldRefWD combo = Ext4FieldRefWD.getForLabel(this, "Add User Or Group");
-        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), PasswordUtil.getUsername(), true);
+        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), DATA_ADMIN.getEmail(), true);
         waitForElement(Locator.ext4Button("Remove"));
 
         combo = Ext4FieldRefWD.getForLabel(this, "Add User Or Group");
@@ -398,26 +411,41 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         waitAndClick(manageLink);
         waitForElement(Ext4HelperWD.ext4Window("Manage Subscribed Users"));
-        waitForElement(Locator.tagContainingText("div", PasswordUtil.getUsername()));
+        waitForElement(Locator.tagContainingText("div", DATA_ADMIN.getEmail()));
         waitForElement(Locator.tagContainingText("div", BASIC_SUBMITTER.getEmail()));
+        waitForElement(Locator.ext4Button("Remove"));
         assertElementPresent(Locator.ext4Button("Remove"), 2);
-        waitAndClick(Locator.ext4Button("Remove").index(1));
+        waitAndClick(Locator.ext4Button("Remove").index(0));  //remove admin
         waitAndClick(Locator.ext4Button("Close"));
 
         waitAndClick(manageLink);
         waitForElement(Ext4HelperWD.ext4Window("Manage Subscribed Users"));
-        waitForElement(Locator.tagContainingText("div", PasswordUtil.getUsername()));
+        waitForElement(Locator.tagContainingText("div", BASIC_SUBMITTER.getEmail()));
+        waitForElement(Locator.ext4Button("Remove"));
         assertElementPresent(Locator.ext4Button("Remove"), 1);
         waitAndClick(Locator.ext4Button("Close"));
 
         //iterate all notifications and run them.
         log("running all notifications");
+        List<String> skippedNotifications = Arrays.asList(new String[]{"ETL Validation Notification"});
 
         int count = getElementCount(Locator.tagContainingText("a", "Run Report In Browser"));
         for (int i = 0; i < count; i++)
         {
             beginAt(getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
-            waitAndClickAndWait(Locator.tagContainingText("a", "Run Report In Browser").index(i));
+            Locator link = Locator.tagContainingText("a", "Run Report In Browser").index(i);
+            Locator label = Locator.tag("div").withClass("ldk-notificationlabel").index(i);
+            waitForElement(label);
+            String notificationName = label.findElement(getDriver()).getText();
+            Assert.assertNotNull(notificationName);
+            if (skippedNotifications.contains(notificationName))
+            {
+                log("skipping notification: " + notificationName);
+                continue;
+            }
+
+            log("running notification: " + notificationName);
+            waitAndClickAndWait(link);
             waitForText("The notification email was last sent on:");
             assertTextNotPresent("not configured");
         }

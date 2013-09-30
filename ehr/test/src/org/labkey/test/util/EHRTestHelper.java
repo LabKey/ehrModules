@@ -230,9 +230,9 @@ public class EHRTestHelper
 
     public void addRecordToGrid(Ext4GridRefWD grid)
     {
-        Long count = grid.getRowCount();
+        Integer count = grid.getRowCount();
         grid.clickTbarButton("Add");
-        grid.waitForRowCount(count.intValue() + 1);
+        grid.waitForRowCount(count + 1);
         grid.cancelEdit();
         _test.sleep(50);
     }

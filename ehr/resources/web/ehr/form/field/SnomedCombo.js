@@ -111,10 +111,11 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                 }
             },{
                 text: 'Close',
+                scope: this,
                 handler: function(btn){
                     var win = btn.up('window');
                     win.close();
-                    win.fieldContainer.window = null;
+                    this.window = null;
                 }
             }]
 

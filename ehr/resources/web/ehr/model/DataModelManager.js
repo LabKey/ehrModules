@@ -50,6 +50,9 @@ EHR.model.DataModelManager = new function(){
                 if (cfg){
                     EHR.Utils.rApplyClone(meta, cfg);
                 }
+                else {
+                    console.log('no config found for table: ' + tableId);
+                }
             }
 
             if (sources && sources.length){

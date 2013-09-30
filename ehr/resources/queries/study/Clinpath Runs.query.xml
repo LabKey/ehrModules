@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="ClinpathRuns" tableDbType="TABLE" useColumnOrder="true">
+            <table tableName="clinpathRuns" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl>/ehr/clinpathDetails.view?lsid=${lsid}&amp;objectid=${objectid}</tableUrl>
                 <insertUrl />
                 <importUrl />

@@ -455,7 +455,12 @@ Ext4.define('EHR.data.StoreCollection', {
     isDirty: function(){
         var dirty = false;
         this.serverStores.each(function(s){
-            if(s.getModifiedRecords().length){
+            if (s.getModifiedRecords().length){
+                dirty = true;
+                return false;
+            }
+
+            if (s.getRemovedRecords().length){
                 dirty = true;
                 return false;
             }

@@ -258,7 +258,6 @@ ehr/resources/queries/ehr_lookups/procedure_default_codes/.qview.xml -text
 ehr/resources/queries/ehr_lookups/procedures/.qview.xml -text
 ehr/resources/queries/ehr_lookups/procedures/Active[!!-~]Procedures.qview.xml -text
 ehr/resources/queries/ehr_lookups/rooms.query.xml -text
-ehr/resources/queries/ehr_lookups/snomed.js -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_combo_list.sql -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text

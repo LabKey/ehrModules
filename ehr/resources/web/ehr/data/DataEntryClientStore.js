@@ -10,8 +10,6 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     constructor: function(){
         this.callParent(arguments);
-
-        this.on('update', this.onUpdate, this);
         this.addEvents('validation');
     },
 
@@ -108,13 +106,15 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     //private
     // NOTE: the gridpanel will attempt to cache display values, so we need to clear them on update
-    onUpdate : function(store, record, operation) {
-        for(var field  in record.getChanges()){
+    onUpdate: function(record, operation) {
+        for (var field  in record.getChanges()){
             if (record.raw && record.raw[field]){
                 delete record.raw[field].displayValue;
                 delete record.raw[field].mvValue;
             }
         }
+
+        this.callParent(arguments);
     },
 
     createModel: function(data){
@@ -178,6 +178,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                         var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
                         if (serverVal != clientVal){
                             serverModel.set(serverFieldName, clientVal);
+                            serverModel.phantom = clientModel.phantom;
                             serverModel.setDirty(true);
 
                             if (!changedRecords[serverStore.storeId])

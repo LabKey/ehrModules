@@ -155,6 +155,26 @@ EHR.DataEntryUtils = new function(){
                 }
             }, config);
         },
+        BULKEDITDATE: function(config){
+            return Ext4.Object.merge({
+                text: 'Bulk Edit Date/Time',
+                tooltip: 'Click to edit the time of the selected rows in bulk',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    var selected = grid.getSelectionModel().getSelection();
+                    if (!selected || !selected.length){
+                        Ext4.Msg.alert('Error', 'No records selected');
+                        return;
+                    }
+
+                    Ext4.create('EHR.window.BulkEditWindow', {
+                        targetStore: grid.store,
+                        formConfig: grid.formConfig,
+                        records: selected
+                    }).show();
+                }
+            }, config);
+        },
         TEMPLATE: function(config){
             return Ext4.Object.merge({
                 text: 'Templates',

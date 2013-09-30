@@ -44,7 +44,9 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 defaults: {
                     border: false
                 },
-                html: 'Loading...'
+                items: [{
+                    html: 'Loading...'
+                }]
             }]
         });
 

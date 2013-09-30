@@ -4,6 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
+ * @cfg demographicsFilterArray
  * @cfg filterArray
  */
 Ext4.define('EHR.panel.ClinicalSummaryPanel', {
@@ -44,7 +45,7 @@ Ext4.define('EHR.panel.ClinicalSummaryPanel', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'Demographics',
-            filterArray: this.filterArray,
+            filterArray: this.demographicsFilterArray,
             columns: ['Id'].join(','),
             failure: LDK.Utils.getErrorCallback(),
             scope: this,

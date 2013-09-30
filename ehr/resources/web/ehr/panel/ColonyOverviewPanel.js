@@ -11,6 +11,11 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
             LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
             LABKEY.Filter.create('gender/meaning', 'Unknown', LABKEY.Filter.Types.NEQ)
         ];
+        this.childFilterArray = [
+            LABKEY.Filter.create('Id/demographics/calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('Id/demographics/gender/meaning', 'Unknown', LABKEY.Filter.Types.NEQ)
+        ];
+
         Ext4.apply(this, {
             border: false,
             defaults: {
@@ -70,7 +75,8 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                 },{
                     title: 'Clinical',
                     xtype: 'ehr-clinicalsummarypanel',
-                    filterArray: this.filterArray,
+                    demographicsFilterArray: this.filterArray,
+                    filterArray: this.childFilterArray,
                     itemId: 'clinicalSummary'
                 }]
             }]
