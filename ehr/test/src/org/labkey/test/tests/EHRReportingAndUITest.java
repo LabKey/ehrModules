@@ -334,7 +334,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         checkAllOnPage(dataRegionName);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4HelperWD.ext4Window("Return Distinct Values"));
-        waitForElement(Locator.ext4Button("Submit"));
+        waitForElement(Locator.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
         new Ext4ComboRefWD(Ext4ComboRefWD.getForLabel(this, "Select Field"), this).setComboByDisplayValue("Animal Id");
         _extHelper.clickExtButton("Return Distinct Values", "Submit", 0);
         _extHelper.waitForExtDialog("Distinct Values");
