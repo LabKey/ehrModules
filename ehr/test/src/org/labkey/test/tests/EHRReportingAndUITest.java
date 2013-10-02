@@ -326,6 +326,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.xpath("//span[contains(text(), 'Weight')]"));
         log("Return Distinct Values - no selections");
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
+        waitForElement(Ext4HelperWD.ext4Window("Return Distinct Values"));
         _extHelper.clickExtButton("Return Distinct Values", "Submit", 0);
         _extHelper.waitForExtDialog("Error");
         waitAndClick(Locator.ext4Button("OK"));
