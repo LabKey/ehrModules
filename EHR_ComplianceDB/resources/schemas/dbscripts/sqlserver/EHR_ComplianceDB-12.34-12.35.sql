@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --delete potential orphans
 DELETE FROM ehr_compliancedb.requirements WHERE container IS NULL OR (select entityid FROM core.containers WHERE entityid = container) IS NULL;
 
