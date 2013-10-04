@@ -102,7 +102,6 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
             if (r != null)
             {
                 ModuleHtmlView view = new ModuleHtmlView(r);
-                view.setFrame(WebPartView.FrameType.NONE);
 
                 //override page template if view requests
                 if(null != view.getPageTemplate())

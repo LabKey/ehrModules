@@ -13,7 +13,7 @@ Ext4.namespace('EHR.reports');
  * to the TabPanel, plus passing in some non-standard context
  *
  */
-EHR.reports.abstract = function(panel, tab){
+EHR.reports['abstract'] = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
 
