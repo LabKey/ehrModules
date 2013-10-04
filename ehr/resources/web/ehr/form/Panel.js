@@ -170,9 +170,9 @@ Ext4.define('EHR.form.Panel', {
 
         //divide the fields into columns, if selected
         var cols = [];
-        var numColumns = this.maxItemsPerCol ? Math.ceil(items.length / this.maxItemsPerCol): 1;
+        var numColumns = this.maxItemsPerCol ? Math.ceil(items.length / this.maxItemsPerCol) : 1;
         for (var i=0;i<numColumns;i++){
-            var start = (i * this.maxItemsPerCol);
+            var start = this.maxItemsPerCol ? (i * this.maxItemsPerCol) : 0;
             var stop = this.maxItemsPerCol ? start + this.maxItemsPerCol : items.length;
             cols.push({
                 border: false,

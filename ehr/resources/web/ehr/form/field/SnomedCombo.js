@@ -27,7 +27,6 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             onTrigger2Click: Ext4.form.field.ComboBox.prototype.onTriggerClick,
             trigger1Cls: 'x4-form-search-trigger',
             xtype: 'labkey-combo',
-            itemId: 'snomedCombo',
             queryMode: 'local',
             tabIndex: 1,
             name: this.name,

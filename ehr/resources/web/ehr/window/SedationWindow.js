@@ -18,8 +18,7 @@ Ext4.define('EHR.window.SedationWindow', {
             width: 800,
             title: 'Add Sedations',
             items: [{
-                html: 'This helper allows you to fill out sedation drugs for each animal in the blood draws section.  Choose which IDs and type of sedation to use from the list below.' +
-                    '<br><br>NOTE: This will choose the most recent weight for the animal, preferentially using any weights from this form.',
+                html: 'This helper allows you to fill out sedation drugs for each animal in the blood draws section.  Choose which IDs and type of sedation to use from the list below.  Note: this will default to the most recent weight for the animal; however, the weight can be adjusted below.',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'animalIds',
@@ -38,16 +37,22 @@ Ext4.define('EHR.window.SedationWindow', {
             ids[r.get('Id')] = true;
         }, this);
 
-        ids = Ext4.Object.getKeys(ids);
+        this.animalIds = Ext4.Object.getKeys(ids);
 
-        EHR.DataEntryUtils.getWeights(this.targetGrid.store.storeCollection, ids, this.onLoad, this);
+        EHR.DataEntryUtils.getWeights(this.targetGrid.store.storeCollection, this.animalIds, this.onLoad, this, true);
     },
 
     onLoad: function(weightMap){
         this.weights = weightMap;
 
+        EHR.DemographicsCache.getDemographics(this.animalIds, this.onDemographicsLoad, this);
+    },
+
+    onDemographicsLoad: function(ids, animalRecordMap){
         var target = this.down('#animalIds');
         target.removeAll();
+
+        this.animalRecordMap = animalRecordMap;
 
         var toAdd = this.getFinalItems();
         if (toAdd.length)
@@ -55,7 +60,7 @@ Ext4.define('EHR.window.SedationWindow', {
         else
             target.add({
                 html: 'No animals found'
-            })
+            });
     },
 
     getInitialItems: function(){
@@ -65,6 +70,7 @@ Ext4.define('EHR.window.SedationWindow', {
     },
 
     getFinalItems: function(){
+        var numCols = 7;
         var items = [{
             html: '<b>Animal</b>'
         },{
@@ -99,6 +105,16 @@ Ext4.define('EHR.window.SedationWindow', {
         var existingIds = this.getExistingIds();
         Ext4.Array.forEach(Ext4.Object.getKeys(keys), function(key){
             var o = keys[key];
+            var ar = this.animalRecordMap[key];
+            var flags = ar.getActiveFlags();
+            var msgs = [];
+            if (flags){
+                Ext4.Array.forEach(flags, function(f){
+                    if ((f.category == 'Alert' || f.category == 'Flag') && f.value && (f.value.match(/Ketamine/i) || f.value.match(/Telazol/i))){
+                        msgs.push(f.value);
+                    }
+                }, this);
+            }
 
             items.push({
                 xtype: 'displayfield',
@@ -164,7 +180,9 @@ Ext4.define('EHR.window.SedationWindow', {
             });
 
             items.push({
-                xtype: 'displayfield',
+                xtype: 'numberfield',
+                hideTrigger: true,
+                width: 80,
                 fieldName: 'weight',
                 key: key,
                 value: this.weights[o.Id]
@@ -172,7 +190,9 @@ Ext4.define('EHR.window.SedationWindow', {
 
             items.push({
                 xtype: 'numberfield',
+                hideTrigger: true,
                 fieldName: 'dosage',
+                width: 80,
                 key: key,
                 value: 10
             });
@@ -183,6 +203,12 @@ Ext4.define('EHR.window.SedationWindow', {
                 key: key,
                 checked: existingIds[key]
             });
+
+            items.push({
+                colspan: numCols,
+                bodyStyle: 'padding-bottom: 5px;',
+                html: (msgs.length ? '<span style="background-color: yellow">**' + msgs.join('<br>**') + '</span>' : '')
+            });
         }, this);
 
         return [{
@@ -190,11 +216,11 @@ Ext4.define('EHR.window.SedationWindow', {
             itemId: 'theTable',
             layout: {
                 type: 'table',
-                columns: 7
+                columns: numCols
             },
             defaults: {
                 border: false,
-                style: 'margin: 5px;'
+                style: 'margin-left: 5px;margin-right: 5px;'
             },
             items: items
         }];

@@ -221,6 +221,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                     //set tissue if the result's model and service record have it
                     if (this.targetGrid.store.model.prototype.fields.get('tissue') && item.boundRecord.get('tissue')){
                         data.tissue = item.boundRecord.get('tissue');
+                        data.remark = item.boundRecord.get('remark');
                     }
 
 //                    if (this.targetGrid.store.model.prototype.fields.get('qualifier') && item.boundRecord.get('qualifier')){

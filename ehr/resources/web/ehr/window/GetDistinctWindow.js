@@ -11,6 +11,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
 
     initComponent: function(){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        LDK.Assert.assertNotEmpty('Unable to find DataRegion with name: ' + this.dataRegionName, dataRegion);
 
         //NOTE: this allows queries to redirect to a query other than themselves (ie. if a query is a derivative of a dataset)
         this.queryName = this.queryName || dataRegion.queryName;

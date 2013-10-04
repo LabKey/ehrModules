@@ -83,10 +83,10 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         //TODO: these should be separated to run independently so 1 failure doesnt kill the others
         doCustomActionsTests();
-        doNotificationTests();
         doDataEntryTests();
         doReportingTests();
         doApiTests();
+        doNotificationTests();  //placed at end due to PG incompatibility until trunk
     }
 
     protected void doApiTests()

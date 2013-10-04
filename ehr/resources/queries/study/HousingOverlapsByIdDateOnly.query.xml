@@ -45,7 +45,7 @@
                         </item>
                         <item text="Return Distinct Values">
                             <onClick>
-                                EHR.DatasetButtons.getDistinctHandler(dataRegion, dataRegionName, 'Housing');
+                                EHR.DatasetButtons.getDistinctHandler(dataRegionName, 'Housing');
                             </onClick>
                         </item>
                     </item>

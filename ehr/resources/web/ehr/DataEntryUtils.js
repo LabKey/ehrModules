@@ -579,6 +579,25 @@ EHR.DataEntryUtils = new function(){
             return boundRecord;
         },
 
+        getLabworkServicesStore: function(){
+            if (EHR._labworkServicesStore)
+                return EHR._labworkServicesStore;
+
+            var storeId = ['ehr_lookups', 'labwork_services', 'servicename', 'servicename'].join('||');
+
+            EHR._labworkServicesStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+                type: 'labkey-store',
+                schemaName: 'ehr_lookups',
+                queryName: 'labwork_services',
+                sort: 'chargetype,servicename,outsidelab',
+                columns: '*',
+                storeId: storeId,
+                autoLoad: true
+            });
+
+            return EHR._labworkServicesStore;
+        },
+
         getSnomedStore: function(){
             if (EHR._snomedStore)
                 return EHR._snomedStore;
@@ -665,10 +684,10 @@ EHR.DataEntryUtils = new function(){
         },
 
         //returns the most recent weight for the provided animals, preferentially taking weights from the local store
-        getWeights: function(sc, ids, callback, scope){
+        getWeights: function(sc, ids, callback, scope, ignoreClientWeights){
             EHR.DemographicsCache.getDemographics(ids, function(animalIds, dataMap){
                 var ret = {};
-                var clientWeightMap = EHR.DataEntryUtils.getClientWeight(sc, ids);
+                var clientWeightMap = ignoreClientWeights ? {} : EHR.DataEntryUtils.getClientWeight(sc, ids);
 
                 Ext4.Array.forEach(ids, function(id){
                     var data = dataMap[id];

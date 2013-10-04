@@ -110,7 +110,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             caseId: this.caseId,
             minDate: this.minDate,
             maxDate: this.maxDate,
-            tbar: this.printMode ? null : {
+            tbar: this.hideGridButtons ? null : {
                 border: true,
                 items: [{
                     xtype: 'datefield',
@@ -159,6 +159,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     }
                 },{
                     text: 'Collapse All',
+                    hidden: this.printMode,
                     collapsed: false,
                     handler: function(btn){
                         var grid = btn.up('grid');
@@ -176,6 +177,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         btn.collapsed = !btn.collapsed;
                     }
                 },{
+                    hidden: this.printMode,
                     text: (this.sortMode == 'type' ? 'Group By Date' : 'Group By Type'),
                     sortMode: this.sortMode == 'type' ? 'date' : 'type',
                     scope: this,
@@ -194,10 +196,12 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     }
                 },{
                     text: 'Print Version',
-                    hidden: this.hideExportBtn,
+                    hidden: this.hideExportBtn || this.printMode,
                     scope: this,
                     handler: function(btn){
-                        var params = {};
+                        var params = {
+                            hideGridButtons: true
+                        };
                         if (this.subjectId)
                             params.subjectId = [this.subjectId];
                         if (this.caseId)

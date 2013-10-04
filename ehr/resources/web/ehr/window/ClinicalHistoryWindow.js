@@ -11,7 +11,26 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.ehr-clinicalhistorywindow',
 
+    statics: {
+        showClinicalHistory: function(objectId, Id, date, el){
+            var ctx = EHR.Utils.getEHRContext();
+            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+            if (!ctx){
+                return;
+            }
+
+            Ext4.create('EHR.window.ClinicalHistoryWindow', {
+                subjectId: Id,
+                containerPath: ctx['EHRStudyContainer']
+            }).show(el);
+        }
+    },
+
     initComponent: function(){
+        if (!EHR.Security.hasLoaded()){
+            console.log('EHR.Security.init() has not been called.  Cannot show insert UI');
+        }
+
         LABKEY.ExtAdapter.apply(this, {
             title: 'Clinical History:',
             bodyStyle: 'padding: 3px;',
@@ -19,25 +38,34 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             modal: true,
             closeAction: 'destroy',
             items: this.getItems(),
-            buttons: [{
-                text: 'Close',
-                handler: function(btn){
-                    btn.up('window').close();
-                }
-            },{
-                text: 'Full Screen',
-                scope: this,
-                handler: function(btn){
-                    window.location = LABKEY.ActionURL.buildURL('ehr', 'clinicalManagement', this.containerPath, {subjectId: this.subjectId})
-                }
-            },{
-                text: 'Actions',
-                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
-            }]
-
+            buttons: this.getButtonCfg()
         });
 
         this.callParent(arguments);
+    },
+
+    getButtonCfg: function(){
+        var ret = [{
+            text: 'Close',
+            handler: function(btn){
+                btn.up('window').close();
+            }
+        },{
+            text: 'Full Screen',
+            scope: this,
+            handler: function(btn){
+                window.location = LABKEY.ActionURL.buildURL('ehr', 'clinicalManagement', this.containerPath, {subjectId: this.subjectId})
+            }
+        }];
+
+        if (EHR.Security.hasLoaded()){
+            ret.push({
+                text: 'Actions',
+                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
+            });
+        }
+
+        return ret;
     },
 
     getItems: function(){

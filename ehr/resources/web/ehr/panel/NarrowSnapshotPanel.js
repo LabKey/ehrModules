@@ -31,6 +31,9 @@ Ext4.define('EHR.panel.NarrowSnapshotPanel', {
 
         firstCol.items = firstCol.items.concat(secondCol.items);
 
+        var extended = this.getExtendedItems();
+        thirdCol.items = thirdCol.items.concat(extended[0].items[1].items[0].items);
+
         if (!this.redacted){
             items[0].items.push({
                 xtype: 'displayfield',

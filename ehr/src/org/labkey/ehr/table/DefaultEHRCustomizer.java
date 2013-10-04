@@ -516,7 +516,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                         Date date = (Date)ctx.get("date");
                         String id = (String)ctx.get(ID_COL);
 
-                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.DatasetButtons.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
+                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
                     }
 
                     @Override
@@ -596,6 +596,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
 
         cfg.setAlwaysShowRecordSelectors(true);
+        cfg.setOnRenderScript("EHR.DatasetButtons.moreActionsHandler");
         setScriptIncludes(cfg);
         configureTbarBtns(ti, cfg);
         configureMoreActionsBtn(ti, cfg);

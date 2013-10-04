@@ -37,6 +37,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
                     EHR.DataEntryUtils.getProceduresStore();
                 }
 
+                if (cfg.lookup && cfg.lookup.schemaName == 'ehr_lookups' && cfg.lookup.queryName == 'labwork_services'){
+                    EHR.DataEntryUtils.getLabworkServicesStore();
+                }
+
                 fields.push(cfg);
             }
 

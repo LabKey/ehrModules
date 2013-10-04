@@ -30,6 +30,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
@@ -369,7 +370,7 @@ public class TriggerScriptHelper
         DemographicsCache.get().uncacheRecords(getContainer(), Arrays.asList(ids));
     }
 
-    public String validateAssignment(String id, Integer projectId, Date date)
+    public String validateAssignment(String id, Integer projectId, Date date) throws SQLException
     {
         if (id == null || projectId == null || date == null)
             return null;
@@ -387,12 +388,11 @@ public class TriggerScriptHelper
         Map<FieldKey, ColumnInfo> cols = QueryService.get().getColumns(ti, keys);
         TableSelector ts = new TableSelector(ti, cols.values(), filter, null);
 
-        Map<String, Object>[] ret = ts.getMapArray();
-        if (ret.length != 1)
+        Results ret = ts.getResults();
+        if (!ret.next())
             return "Not assigned to the project on this date";
 
-        Map<String, Object> row = ret[0];
-        if (!row.containsKey("protocol") || row.get("protocol") == null)
+        if (ret.getString(FieldKey.fromString("project/protocol")) == null)
         {
             return "This project is not associated with a valid protocol";
         }

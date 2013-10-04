@@ -57,12 +57,6 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     }
 
     @Override
-    protected Collection<WebPartFactory> createWebPartFactories()
-    {
-        return Collections.emptyList();
-    }
-
-    @Override
     protected void init()
     {
         addController(CONTROLLER_NAME, EHR_ComplianceDBController.class);

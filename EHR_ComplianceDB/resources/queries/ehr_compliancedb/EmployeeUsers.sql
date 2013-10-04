@@ -14,7 +14,7 @@ CASE WHEN u4.displayname is NULL THEN 'NO' ELSE 'YES' END AS ColonyAccess
 FROM ehr_compliancedb.employees e
 
 LEFT JOIN core.users u1
-ON (e.employeeid = u1.DisplayName)
+ON (e.employeeid = u1.DisplayName OR e.email = u1.DisplayName)
 
 LEFT JOIN core.users u2
 ON (e.email = u2.email)

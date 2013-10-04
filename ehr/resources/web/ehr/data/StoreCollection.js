@@ -19,7 +19,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.callParent(arguments);
         this.addEvents('commitcomplete', 'commitexception', 'validation', 'load', 'clientdatachanged', 'serverdatachanged');
 
-        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 30});
+        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 100});
     },
 
     getKey: function(o){
@@ -87,7 +87,7 @@ Ext4.define('EHR.data.StoreCollection', {
     addServerStore: function(store){
         this.mon(store, 'load', this.onServerStoreLoad, this);
         this.mon(store, 'exception', this.onServerStoreException, this);
-        this.mon(store, 'validation', this.onServerStoreValidation, this);
+        this.mon(store, 'validation', this.onServerStoreValidation, this, {buffer: 100});
         store.storeCollection = this;
 
         this.serverStores.add(store);
@@ -133,6 +133,7 @@ Ext4.define('EHR.data.StoreCollection', {
 
     //used to allow buffering so clientdatachange events from many sources only trigger 1 recalculation
     onClientDataChanged: function(){
+        //console.log('client data changed');
         this.transformClientToServer();
     },
 
@@ -269,6 +270,9 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     transformServerToClient: function(syncErrorsOnly){
+        if (EHR.debug)
+            console.log('server to client');
+
         var map = this.getServerToClientDataMap();
         var changedStoreIDs = {};
         Ext4.Array.forEach(this.getSortedServerStores(), function(name){
@@ -282,6 +286,7 @@ Ext4.define('EHR.data.StoreCollection', {
             s.loaded = true;
         });
 
+        //TODO: this is a blunt instrument.  should be smarter about which to refresh
         Ext4.Array.forEach(Ext4.Object.getKeys(changedStoreIDs), function(storeId){
             var store = this.clientStores.get(storeId);
             this.addIgnoredClientEvent(storeId, 'datachanged');

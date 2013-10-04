@@ -51,7 +51,7 @@ function afterUpdate(row, oldRow, errors){
             helper.cascadeUpdate('ehr_compliancedb', 'requirementsperemployee', 'employeeid', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'sopdates', 'employeeid', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'completiondates', 'employeeid', row[fieldName], oldRow[fieldName]);
-
+            helper.cascadeUpdate('ehr_compliancedb', 'completiondates', 'trainer', row[fieldName], oldRow[fieldName]);
         }
     }
 }
@@ -67,6 +67,11 @@ function beforeDelete(row, errors){
                 addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the table ' + query);
             }
         }
+    }
+
+    //also check trainer
+    if (helper.verifyNotUsed('ehr_compliancedb', 'completiondates', 'trainer', row[fieldName])){
+        addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the table completiondates');
     }
 }
 

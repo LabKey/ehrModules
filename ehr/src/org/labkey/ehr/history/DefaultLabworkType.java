@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -70,6 +71,8 @@ public class DefaultLabworkType implements LabworkType
     protected String _normalRangeField = null;
     protected String _normalRangeStatusField = null;
 
+    private static final Logger _log = Logger.getLogger(DefaultLabworkType.class);
+
     public DefaultLabworkType(String name, String schemaName, String queryName)
     {
         _name = name;
@@ -88,7 +91,17 @@ public class DefaultLabworkType implements LabworkType
         if (us == null)
             return null;
 
-        return us.getTable(_queryName);
+        TableInfo ti = us.getTable(_queryName);
+        if (ti == null)
+            return null;
+
+        if (ti.getColumn(FieldKey.fromString("runId")) == null)
+        {
+            _log.warn("Attempting to use a LabworkType without a runId field");
+            return null;
+        }
+
+        return ti;
     }
 
     public String getName()

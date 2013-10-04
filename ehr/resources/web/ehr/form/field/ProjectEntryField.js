@@ -15,7 +15,6 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     fieldLabel: 'Project',
     typeAhead: true,
-    editable: false,
     forceSelection: false, //allows project to be set prior to store loading
     emptyText:'',
     disabled: false,

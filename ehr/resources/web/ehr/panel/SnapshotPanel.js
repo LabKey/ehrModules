@@ -132,68 +132,72 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }];
     },
 
-    getItems: function(){
-        var items = this.getBaseItems();
-
-        if (this.showExtendedInformation){
-            items[0].items = items[0].items.concat([{
-                itemId: 'additionalInformation',
-                style: 'padding-bottom: 10px;',
-                border: false,
+    getExtendedItems: function(){
+        return [{
+            itemId: 'additionalInformation',
+            style: 'padding-bottom: 10px;',
+            border: false,
+            defaults: {
+                border: false
+            },
+            items: [{
+                html: '<b>Additional Information</b><hr>'
+            },{
+                layout: 'column',
                 defaults: {
-                    border: false
+                    labelWidth: this.defaultLabelWidth
                 },
                 items: [{
-                    html: '<b>Additional Information</b><hr>'
+                    columnWidth: 0.5,
+                    border: false,
+                    defaults: {
+                        labelWidth: this.defaultLabelWidth,
+                        border: false,
+                        style: 'margin-right: 20px;'
+                    },
+                    items: [{
+                        xtype: 'displayfield',
+                        width: 350,
+                        fieldLabel: 'Geographic Origin',
+                        itemId: 'geographic_origin'
+                    },{
+                        xtype: 'displayfield',
+                        fieldLabel: 'Birth',
+                        itemId: 'birth'
+                    },{
+                        xtype: 'displayfield',
+                        fieldLabel: 'Death',
+                        itemId: 'death'
+                    }]
                 },{
-                    layout: 'column',
+                    xtype: 'container',
+                    columnWidth: 0.5,
                     defaults: {
                         labelWidth: this.defaultLabelWidth
                     },
                     items: [{
-                        columnWidth: 0.5,
-                        border: false,
-                        defaults: {
-                            labelWidth: this.defaultLabelWidth,
-                            border: false,
-                            style: 'margin-right: 20px;'
-                        },
-                        items: [{
-                            xtype: 'displayfield',
-                            width: 350,
-                            fieldLabel: 'Geographic Origin',
-                            itemId: 'geographic_origin'
-                        },{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Birth',
-                            itemId: 'birth'
-                        },{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Death',
-                            itemId: 'death'
-                        }]
+                        xtype: 'displayfield',
+                        fieldLabel: 'Parent Information',
+                        itemId: 'parents'
                     },{
-                        xtype: 'container',
-                        columnWidth: 0.5,
-                        defaults: {
-                            labelWidth: this.defaultLabelWidth
-                        },
-                        items: [{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Parent Information',
-                            itemId: 'parents'
-                        },{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Pairing Type',
-                            itemId: 'pairingType'
-                        },{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Cagemates',
-                            itemId: 'cagemates'
-                        }]
+                        xtype: 'displayfield',
+                        fieldLabel: 'Pairing Type',
+                        itemId: 'pairingType'
+                    },{
+                        xtype: 'displayfield',
+                        fieldLabel: 'Cagemates',
+                        itemId: 'cagemates'
                     }]
                 }]
-            }]);
+            }]
+        }];
+    },
+
+    getItems: function(){
+        var items = this.getBaseItems();
+
+        if (this.showExtendedInformation){
+            items[0].items = items[0].items.concat(this.getExtendedItems());
         }
 
         items[0].items = items[0].items.concat([{

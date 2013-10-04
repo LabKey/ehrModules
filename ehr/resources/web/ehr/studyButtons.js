@@ -233,7 +233,6 @@ EHR.DatasetButtons = new function(){
         /**
          * This is a helper used by the 'Get Distinct' button, which will return the distinct Animal IDs, project, etc,
          * based on the rows checked on a dataregion.
-         * @param dataRegion
          * @param dataRegionName
          * @param queryName
          * @param schemaName
@@ -585,20 +584,6 @@ EHR.DatasetButtons = new function(){
                     }]
                 }).show();
             }
-        },
-
-
-        showClinicalHistory: function(objectId, Id, date, el){
-            var ctx = EHR.Utils.getEHRContext();
-            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
-            if (!ctx){
-                return;
-            }
-
-            Ext4.create('EHR.window.ClinicalHistoryWindow', {
-                subjectId: Id,
-                containerPath: ctx['EHRStudyContainer']
-            }).show(el);
         },
 
         showCaseHistory: function(objectId, subjectId, el){
