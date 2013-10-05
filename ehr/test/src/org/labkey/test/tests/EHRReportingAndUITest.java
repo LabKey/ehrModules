@@ -38,7 +38,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 //    @Override
 //    public void doCleanup(boolean afterTest) throws TestTimeoutException
 //    {
-//        super.doCleanup(afterTest);
+////        super.doCleanup(afterTest);
 //    }
 
     @Override
@@ -240,7 +240,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
         _ext4Helper.selectComboBoxItem("Center Project:", PROJECT_ID, true);
-        _extHelper.clickExtButton("Search By Project/Protocol", "Submit", 0);
+        _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
 
         waitForElement(Locator.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
@@ -326,9 +326,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.xpath("//span[contains(text(), 'Weight')]"));
         log("Return Distinct Values - no selections");
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
-        waitForElement(Ext4HelperWD.ext4Window("Return Distinct Values"));
-        _extHelper.clickExtButton("Return Distinct Values", "Submit", 0);
-        _extHelper.waitForExtDialog("Error");
+        _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
+        waitForElement(Ext4HelperWD.ext4Window("Error"));
         waitAndClick(Locator.ext4Button("OK"));
 
         log("Return Distinct Values");
@@ -337,11 +336,11 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Ext4HelperWD.ext4Window("Return Distinct Values"));
         waitForElement(Locator.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
         new Ext4ComboRefWD(Ext4ComboRefWD.getForLabel(this, "Select Field"), this).setComboByDisplayValue("Animal Id");
-        _extHelper.clickExtButton("Return Distinct Values", "Submit", 0);
-        _extHelper.waitForExtDialog("Distinct Values");
+        _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
+        waitForElement(Ext4HelperWD.ext4Window("Distinct Values"));
         String expected = PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[1]+"\n"+PROTOCOL_MEMBER_IDS[2];
         Assert.assertEquals("Incorrect value returned", expected, _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
-        _extHelper.clickExtButton("Distinct Values", "Close", 0);
+        _helper.clickExt4WindowBtn("Distinct Values", "Close");
 
         log("Return Distinct Values - filtered");
         _extHelper.waitForLoadingMaskToDisappear(WAIT_FOR_JAVASCRIPT * 3);
@@ -378,25 +377,25 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         checkDataRegionCheckbox(dataRegionName, 0);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Compare Weights");
         _extHelper.waitForExtDialog("Weights");
-        _extHelper.clickExtButton("Weights", "OK", 0);
+        _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
         log("Compare Weights - two selections");
         checkDataRegionCheckbox(dataRegionName, 1);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Compare Weights");
         _extHelper.waitForExtDialog("Weights");
-        _extHelper.clickExtButton("Weights", "OK", 0);
+        _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
         log("Compare Weights - three selections");
         checkDataRegionCheckbox(dataRegionName, 2);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Compare Weights");
-        _extHelper.waitForExtDialog("Error"); // After error dialog.
-        _extHelper.clickExtButton("Error", "OK", 0);
+        waitForElement(Ext4HelperWD.ext4Window("Error")); // After error dialog.
+        _helper.clickExt4WindowBtn("Error", "OK");
 
         //wait for load
-        _extHelper.waitForExtDialog("Weights");
-        _extHelper.clickExtButton("Weights", "OK", 0);
+        waitForElement(Ext4HelperWD.ext4Window("Weights"));
+        _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
         log("Jump to History");

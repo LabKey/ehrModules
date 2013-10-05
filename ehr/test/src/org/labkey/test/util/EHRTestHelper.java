@@ -236,5 +236,11 @@ public class EHRTestHelper
         grid.cancelEdit();
         _test.sleep(50);
     }
+
+    public void clickExt4WindowBtn(String title, String label)
+    {
+        _test.waitForElement(Ext4HelperWD.ext4Window(title));
+        _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Locator.ext4Button(label)));
+    }
 }
 
