@@ -270,7 +270,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
         waitAndClick(Locator.ext4Button("Append -->"));
-        waitForElement(Locator.button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         waitForText(PROTOCOL_MEMBER_IDS[0]);
@@ -289,7 +289,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Button("Clear"));
         refreshAnimalHistoryReport();
         waitForElement(Ext4Helper.ext4Window("Error"));
-        assertElementNotPresent(Locator.buttonContainingText("(X)"));
+        assertElementNotPresent(Locator.ext4ButtonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");
         click(Locator.ext4Button("OK"));
 

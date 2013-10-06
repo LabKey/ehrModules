@@ -225,7 +225,7 @@ public class EHRTestHelper
 
     public Locator getDataEntryButton(String text)
     {
-        return Locator.tag("div").withClass("ehr-dataentrybtn").append(Locator.ext4Button(text));
+        return Locator.ext4Button(text).withClass("ehr-dataentrybtn");
     }
 
     public void addRecordToGrid(Ext4GridRefWD grid)

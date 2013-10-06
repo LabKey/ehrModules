@@ -388,13 +388,15 @@ public class TriggerScriptHelper
         Map<FieldKey, ColumnInfo> cols = QueryService.get().getColumns(ti, keys);
         TableSelector ts = new TableSelector(ti, cols.values(), filter, null);
 
-        Results ret = ts.getResults();
-        if (!ret.next())
-            return "Not assigned to the project on this date";
-
-        if (ret.getString(FieldKey.fromString("project/protocol")) == null)
+        try (Results ret = ts.getResults())
         {
-            return "This project is not associated with a valid protocol";
+            if (!ret.next())
+                return "Not assigned to the project on this date";
+
+            if (ret.getString(FieldKey.fromString("project/protocol")) == null)
+            {
+                return "This project is not associated with a valid protocol";
+            }
         }
 
         return null;

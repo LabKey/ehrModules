@@ -255,7 +255,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             panelIdx++;
         }
 
-        click(_helper.getDataEntryButton("More Actions"));
+        waitAndClick(_helper.getDataEntryButton("More Actions"));
         _ext4Helper.clickExt4MenuItem("Discard");
         waitForElement(Ext4HelperWD.ext4Window("Discard Form"));
         clickAndWait(Locator.ext4Button("Yes"));
