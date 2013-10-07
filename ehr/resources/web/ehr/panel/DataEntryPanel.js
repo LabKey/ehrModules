@@ -15,7 +15,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {});
         this.storeCollection.formConfig = this.formConfig;
 
-        this.storeCollection.on('load', this.onStoreCollectionLoad, this);
+        this.storeCollection.on('initialload', this.onStoreCollectionInitialLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
@@ -172,8 +172,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return cfg;
     },
 
-    onStoreCollectionLoad: function(){
-        console.log('on store collection loaded');
+    onStoreCollectionInitialLoad: function(){
         this.removeAll();
         this.add([{
             xtype: 'panel',

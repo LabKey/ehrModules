@@ -1,13 +1,4 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
-    <columns>
-        <column name="Id"/>
-        <column name="RoommateId"/>
-        <column name="room"/>
-        <column name="cage"/>
-        <column name="RoommateStart"/>
-        <column name="RoommateEnd"/>
-        <column name="DaysCoHoused"/>
-    </columns>
     <filters>
         <filter column="room/housingType/value" operator="eq" value="Cage Location"/>
     </filters>

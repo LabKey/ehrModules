@@ -231,41 +231,6 @@ EHR.DatasetButtons = new function(){
         },
 
         /**
-         * This is a helper used by the 'Get Distinct' button, which will return the distinct Animal IDs, project, etc,
-         * based on the rows checked on a dataregion.
-         * @param dataRegionName
-         * @param queryName
-         * @param schemaName
-         */
-        getDistinctHandler: function(dataRegionName, queryName, schemaName){
-            Ext4.create('EHR.window.GetDistinctWindow', {
-                dataRegionName: dataRegionName,
-                schemaName: schemaName,
-                queryName: queryName
-            }).show();
-        },
-
-        /**
-         * This adds a button that will allow the user to set the end date on records.  It is used by Treatments, Problem List and Assignments.
-         */
-        markCompletedButtonHandler: function(dataRegionName, schemaName, queryName, fieldXtype){
-            var dataRegion = LABKEY.DataRegions[dataRegionName];
-
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
-
-            Ext4.create('EHR.window.MarkCompletedWindow', {
-                dataRegionName: dataRegionName,
-                schemaName: schemaName,
-                queryName: queryName,
-                fieldXtype: fieldXtype
-            }).show();
-        },
-
-        /**
          * This add a button that allows the user to create a task from a list of IDs, that contains one record per ID.  It was originally
          * created to allow users to create a weight task based on a list of IDs (like animals needed weights).
          */

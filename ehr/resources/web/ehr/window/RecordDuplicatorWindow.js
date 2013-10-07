@@ -131,7 +131,16 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
                 this.close();
             }
             else {
-                this.targetGrid.store.add(toAdd);
+                //NOTE: when duplicating records, always insert after the highest selected row
+                var insertIdx = -1;
+                var selected = this.targetGrid.getSelectionModel().getSelection();
+                Ext4.Array.forEach(selected, function(r){
+                    var idx = r.store.indexOf(r);
+                    if (idx > insertIdx)
+                        insertIdx = idx;
+                }, this);
+
+                this.targetGrid.store.insert(insertIdx++, toAdd);
             }
         }
     }

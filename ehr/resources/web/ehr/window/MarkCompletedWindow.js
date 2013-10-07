@@ -12,6 +12,25 @@
 Ext4.define('EHR.window.MarkCompletedWindow', {
     extend: 'Ext.window.Window',
 
+    statics: {
+        buttonHandler: function(dataRegionName, schemaName, queryName, fieldXtype){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.MarkCompletedWindow', {
+                dataRegionName: dataRegionName,
+                schemaName: schemaName,
+                queryName: queryName,
+                fieldXtype: fieldXtype
+            }).show();
+        }
+    },
+
     initComponent: function(){
         Ext4.apply(this, {
             modal: true,

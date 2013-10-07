@@ -158,7 +158,6 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         }, this);
 
         if (toAdd.length){
-            console.log('adding');
             this.targetStore.add(toAdd);
         }
 

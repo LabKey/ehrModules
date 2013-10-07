@@ -50,6 +50,7 @@ import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
+import org.labkey.ehr.query.buttons.ExcelImportButton;
 import org.labkey.ehr.query.buttons.JumpToHistoryButton;
 import org.labkey.ehr.query.buttons.MarkCompletedButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
@@ -157,6 +158,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "assignment"), "study", "assignment");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls"), "study", "parentage");
+        EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
     }

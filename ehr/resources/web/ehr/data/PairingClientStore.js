@@ -73,7 +73,7 @@ Ext4.define('EHR.data.PairingClientStore', {
         modifiedFieldNames = modifiedFieldNames || [];
         var lowest;
         if (record.get('lowestcage') && record.get('room')){
-            lowest = record.get('room') + '||' + record.get('room')
+            lowest = record.get('room') + '||' + record.get('lowestcage')
         }
 
         var params = {};

@@ -30,7 +30,7 @@ public class ReturnDistinctButton extends SimpleButtonConfigFactory
 {
     public ReturnDistinctButton(Module owner)
     {
-        super(owner, "Return Distinct Values", "EHR.DatasetButtons.getDistinctHandler(dataRegionName);");
+        super(owner, "Return Distinct Values", "EHR.window.GetDistinctWindow.getDistinctHandler(dataRegionName);");
         setClientDependencies(ClientDependency.fromModuleName("ehr"));
     }
 

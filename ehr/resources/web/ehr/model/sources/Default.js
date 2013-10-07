@@ -454,6 +454,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'study.parentage': {
+            parent: {
+                lookups: false
+            }
+        },
         'study.Demographics': {
             Id: {
                 allowBlank: false,
@@ -1477,7 +1482,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true,
                 shownInGrid: false
             },
-            remark: {shownInGrid: false},
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',

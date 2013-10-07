@@ -9,6 +9,16 @@
 Ext4.define('EHR.window.GetDistinctWindow', {
     extend: 'Ext.window.Window',
 
+    statics: {
+        getDistinctHandler: function(dataRegionName, queryName, schemaName){
+            Ext4.create('EHR.window.GetDistinctWindow', {
+                dataRegionName: dataRegionName,
+                schemaName: schemaName,
+                queryName: queryName
+            }).show();
+        }
+    },
+
     initComponent: function(){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LDK.Assert.assertNotEmpty('Unable to find DataRegion with name: ' + this.dataRegionName, dataRegion);

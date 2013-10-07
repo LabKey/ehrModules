@@ -66,6 +66,6 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
         if (col.getFormat().contains("HH"))
             xtype = "xdatetime";
 
-        return "EHR.DatasetButtons.markCompletedButtonHandler(dataRegionName, " + PageFlowUtil.jsString(_schemaName) + ", " + PageFlowUtil.jsString(_queryName) + ", " + PageFlowUtil.jsString(xtype) + ");";
+        return "EHR.window.MarkCompletedWindow.buttonHandler(dataRegionName, " + PageFlowUtil.jsString(_schemaName) + ", " + PageFlowUtil.jsString(_queryName) + ", " + PageFlowUtil.jsString(xtype) + ");";
     }
 }

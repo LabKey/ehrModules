@@ -17,7 +17,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.serverStores = Ext4.create('Ext.util.MixedCollection', false, this.getKey);
 
         this.callParent(arguments);
-        this.addEvents('commitcomplete', 'commitexception', 'validation', 'load', 'clientdatachanged', 'serverdatachanged');
+        this.addEvents('commitcomplete', 'commitexception', 'validation', 'initialload', 'load', 'clientdatachanged', 'serverdatachanged');
 
         this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 100});
     },
@@ -44,6 +44,7 @@ Ext4.define('EHR.data.StoreCollection', {
             return;
 
         this.serverStoresLoading = {};
+        this.haveStoresLoaded = false;
         this.serverStores.each(function(s){
             this.serverStoresLoading[s.storeId] = true;
             s.load();
@@ -97,10 +98,16 @@ Ext4.define('EHR.data.StoreCollection', {
         if (this.serverStoresLoading && this.serverStoresLoading[store.storeId]){
             store.validateRecords(store.getRange(), true);
             delete this.serverStoresLoading[store.storeId];
-            if (LABKEY.Utils.isEmptyObj(this.serverStoresLoading)){
-                delete this.serverStoresLoading;
-                this.transformServerToClient();
-                this.fireEvent('load', this);
+        }
+
+        if (LABKEY.Utils.isEmptyObj(this.serverStoresLoading)){
+            delete this.serverStoresLoading;
+            this.transformServerToClient();
+            this.fireEvent('load', this);
+
+            if (!this.haveStoresLoaded){
+                this.haveStoresLoaded = true;
+                this.fireEvent('initialload', this);
             }
         }
     },

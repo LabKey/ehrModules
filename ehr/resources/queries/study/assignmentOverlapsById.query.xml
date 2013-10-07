@@ -5,6 +5,9 @@
                 <tableTitle>Assignment Overlaps</tableTitle>
                 <tableUrl />
                 <columns>
+                    <column columnName="Id">
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>
                     </column>
@@ -46,7 +49,7 @@
                         </item>
                         <item text="Return Distinct Values">
                             <onClick>
-                                EHR.DatasetButtons.getDistinctHandler(dataRegionName, 'Assignment');
+                                EHR.window.GetDistinctWindow.getDistinctHandler(dataRegionName, 'Assignment');
                             </onClick>
                         </item>
                     </item>

@@ -16,8 +16,8 @@ t.RoommateId,
 t.RoommateStart,
 t.RoommateEnd,
 TIMESTAMPDIFF('SQL_TSI_DAY', t.RoommateStart, COALESCE(t.RoommateEnd, now())) as DaysCoHoused,
-
-t.qcstate,
+t.duration,
+t.qcstate
 
 FROM (
 
@@ -38,7 +38,7 @@ CASE
   WHEN h2.enddateTimeCoalesced < h1.enddateTimeCoalesced THEN h2.enddate
   else h1.enddate
 END AS RoommateEnd,
-
+h1.duration,
 h1.qcstate
 FROM study.Housing h1
 
@@ -47,10 +47,9 @@ LEFT JOIN study.Housing h2
       ((h2.Date < h1.enddateTimeCoalesced AND h2.enddateTimeCoalesced > h1.date) OR (h1.Date < h2.enddateTimeCoalesced AND h1.enddateTimeCoalesced > h2.date))
       AND
       h1.id != h2.id AND h1.room = h2.room AND (h1.cage = h2.cage OR (h1.cage is null and h2.cage is null))
+      AND h2.qcstate.publicdata = true
     )
 
-
 WHERE h1.qcstate.publicdata = true
-AND (h2.qcstate.publicdata = true or h2.qcstate IS NULL)
 
 ) t

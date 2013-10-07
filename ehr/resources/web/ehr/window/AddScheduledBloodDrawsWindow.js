@@ -11,6 +11,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
 
     initComponent: function(){
         this.bloodDrawStore = this.targetStore.storeCollection.getServerStoreForQuery('study', 'blood');
+        this.tasksStore = this.targetStore.storeCollection.getServerStoreForQuery('ehr', 'tasks');
 
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
@@ -80,20 +81,24 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
     getFilterArray: function(){
         var area = this.down('#areaField') ? this.down('#areaField').getValue() : null;
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
-        var categories = EHR.DataEntryUtils.ensureArray(this.down('#categoryField').getValue()) || [];
+        var chargeType = EHR.DataEntryUtils.ensureArray(this.down('#chargeTypeField').getValue()) || [];
 
         var date = (this.down('#dateField') ? this.down('#dateField').getValue() : new Date());
 
         if (!area && !rooms.length){
-            alert('Must provide at least one room or an area');
+            Ext4.Msg.alert('Error', 'Must provide at least one room or an area');
             return;
         }
 
+        if (!chargeType){
+            Ext4.Msg.alert('Error', 'Must pick enter a value in the \'Assigned To\' field');
+            return;
+        }
         var filterArray = [];
 
         filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         filterArray.push(LABKEY.Filter.create('taskId', null, LABKEY.Filter.Types.ISBLANK));
-        filterArray.push(LABKEY.Filter.create('QCState/label', 'Request:', LABKEY.Filter.Types.STARTS_WITH));
+        filterArray.push(LABKEY.Filter.create('QCState/label', 'Request: Approved', LABKEY.Filter.Types.STARTS_WITH));
 
         if (area)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
@@ -101,8 +106,8 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
         if (rooms.length)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/room', rooms.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
-        if (categories.length)
-            filterArray.push(LABKEY.Filter.create('category', categories.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+        if (chargeType.length)
+            filterArray.push(LABKEY.Filter.create('chargeType', chargeType.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -130,8 +135,8 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
             success: this.onSuccess,
             failure: LDK.Utils.getErrorCallback()
         });
-
     },
+
     onSuccess: function(results){
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
@@ -143,27 +148,54 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
         var performedby = this.down('#performedBy').getValue();
 
         Ext4.Array.each(results.rows, function(row){
-            row.taskId = this.targetStore.storeCollection.getTaskId();
-            row.QCStateLabel = 'Scheduled';
+            var sr = new LDK.SelectRowsRow(row);
+            var toAdd = {
+                lsid: sr.getValue('lsid'),
+                taskId: this.targetStore.storeCollection.getTaskId(),
+                QCStateLabel: 'Scheduled'
+            };
 
-            console.log(row.taskId);
-            rows.push(row);
+            records.push(toAdd);
         }, this);
 
         if (records.length){
-            LABKEY.Query.updateRows({
-                schemaName: 'study',
-                queryName: 'blood',
-                rows: records,
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: function(results){
-                    this.bloodDrawStore.load();
+            var taskRecord = this.tasksStore.getAt(0);
+            LDK.Assert.assertNotEmpty('Unable to find taskRecord', taskRecord);
+            if (taskRecord.phantom){
+                this.tasksStore.sync({
+                    scope: this,
+                    success: function(store){
+                        console.log('saving task record');
+                        this.doUpdateBloodDraws(records);
+                    },
+                    failure: LDK.Utils.getErrorCallback()
+                })
+            }
+            else {
+                this.doUpdateBloodDraws(records);
+            }
 
-                    Ext4.Msg.hide();
-                }
-            });
         }
+    },
+
+    doUpdateBloodDraws: function(records){
+        LABKEY.Query.updateRows({
+            schemaName: 'study',
+            queryName: 'blood',
+            rows: records,
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                console.log('refreshing blood');
+
+                Ext4.Msg.hide();
+                Ext4.Msg.wait('Reloading blood draws...');
+                this.bloodDrawStore.load();
+                this.bloodDrawStore.on('load', function(){
+                    Ext4.Msg.hide();
+                }, this, {single: true});
+            }
+        });
     }
 });
 

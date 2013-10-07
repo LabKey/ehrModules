@@ -7,6 +7,9 @@
         <column name="RoommateStart"/>
         <column name="RoommateEnd"/>
         <column name="DaysCoHoused"/>
+        <column name="startDate"/>
+        <column name="removalDate"/>
+        <column name="duration"/>
     </columns>
    <sorts>
        <sort column="Id" descending="true"/>

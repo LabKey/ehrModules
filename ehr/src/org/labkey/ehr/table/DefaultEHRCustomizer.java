@@ -777,11 +777,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col14.setDescription("This calculates the final housing location for the animal.  This is distinct from active housing, because it will return a location for dead animals");
         ds.addColumn(col14);
 
-        ColumnInfo col15 = getWrappedIdCol(us, ds, "totalOffspring", "demographicsTotalOffspring");
-        col15.setLabel("Number of Offspring");
-        col15.setDescription("Shows the total offspring of each animal");
-        ds.addColumn(col15);
-
         ColumnInfo col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
         col19.setLabel("Weight Change");
         col19.setDescription("This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight");

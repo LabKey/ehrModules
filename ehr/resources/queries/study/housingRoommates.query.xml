@@ -46,6 +46,15 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Cagemate End</columnTitle>
                     </column>
+                    <column columnName="startDate">
+                        <columnTitle>Housing Start</columnTitle>
+                    </column>
+                    <column columnName="removalDate">
+                        <columnTitle>Housing End</columnTitle>
+                    </column>
+                    <column columnName="duration">
+                        <columnTitle>Total Days In This Location</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

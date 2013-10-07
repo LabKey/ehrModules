@@ -74,6 +74,11 @@ public class DemographicsCache
 
     public List<AnimalRecord> getAnimals(Container c, User u, List<String> ids)
     {
+        return getAnimals(c, u, ids, false);
+    }
+
+    protected List<AnimalRecord> getAnimals(Container c, User u, List<String> ids, boolean forceRecache)
+    {
         //TODO: check security?
 
         List<AnimalRecord> records = new ArrayList<>();
@@ -81,7 +86,7 @@ public class DemographicsCache
         for (String id : ids)
         {
             String key = getCacheKey(c, id);
-            if (CacheManager.getSharedCache().get(key) == null)
+            if (forceRecache || CacheManager.getSharedCache().get(key) == null)
             {
                 toCreate.add(id);
             }
@@ -150,7 +155,9 @@ public class DemographicsCache
             public void run()
             {
                 _log.info("Perform async cache for " + ids.size() + " animals");
-                DemographicsCache.get().getAnimals(c, u, ids);
+
+                //note, if the record is re-requested between the point of uncaching, but prior to commit, we can end up with inconsistent values, so force a re-calculation here
+                DemographicsCache.get().getAnimals(c, u, ids, true);
             }
         }, 6000);
     }

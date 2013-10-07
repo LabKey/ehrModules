@@ -28,9 +28,11 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 if (v)
                     return v;
 
-                v = (new Date()).add(Date.DAY, 2);
+                v = new Date();
                 v.setHours(8);
                 v.setMinutes(30);
+                if (v < (new Date()))
+                    v = new Date();
 
                 return v;
             }
@@ -125,9 +127,12 @@ EHR.model.DataModelManager.registerMetadata('Request', {
 //                    }
 //                },
                 getInitialValue: function(v){
-                    var date = (new Date()).add(Date.DAY, 2);
+                    var date = new Date();
                     date.setHours(9);
                     date.setMinutes(30);
+                    if (v < (new Date()))
+                        v = new Date();
+
                     return v || date;
                 }
             },

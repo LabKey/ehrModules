@@ -118,8 +118,9 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     removePhantomRecords: function(){
         this.each(function(r){
-            if (r.phantom)
+            if (r.phantom){
                 this.remove(r);
+            }
         }, this);
     },
 
