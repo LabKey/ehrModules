@@ -12,6 +12,7 @@
 Ext4.define('EHR.panel.BulkEditPanel', {
     extend: 'EHR.form.Panel',
     alias: 'widget.ehr-bulkeditpanel',
+    insertIndex: null,
 
     statics: {
         getButtonCfg: function(scope){
@@ -158,7 +159,12 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         }, this);
 
         if (toAdd.length){
-            this.targetStore.add(toAdd);
+            if (LABKEY.ExtAdapter.isDefined(this.insertIndex)){
+                this.targetStore.insert(this.insertIndex, toAdd);
+            }
+            else {
+                this.targetStore.add(toAdd);
+            }
         }
 
         this.targetStore.resumeEvents();

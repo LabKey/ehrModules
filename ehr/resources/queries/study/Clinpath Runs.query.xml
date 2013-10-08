@@ -78,6 +78,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>clinpath_types</fkTable>
                             <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="chargetype">

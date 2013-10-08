@@ -386,7 +386,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         //add a context flag to the request to saveRows
         var extraContext = Ext.apply({
-            importPathway: 'ehr-importPanel'
+            importPathway: 'ehr-ext3DataEntry'
             //,targetQC : 'Delete Requested'
         }, options);
 

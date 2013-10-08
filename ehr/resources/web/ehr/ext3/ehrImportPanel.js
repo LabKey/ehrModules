@@ -357,7 +357,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
             targetQC : o.targetQC,
             errorThreshold: o.errorThreshold,
             successURL : o.successURL,
-            importPathway: 'ehr-importPanel'
+            importPathway: 'ehr-ext3DataEntry'
         };
 
         //we delay this event so that any modified fields can fire their blur events and/or commit changes
@@ -383,7 +383,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
                     var extraContext = {
                         errorThreshold: o.errorThreshold,
                         successURL : o.successURL,
-                        importPathway: 'ehr-importPanel'
+                        importPathway: 'ehr-ext3DataEntry'
                     };
 
                     this.store.requestDeleteAllRecords(extraContext);
@@ -441,7 +441,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
                         targetQC : o.targetQC,
                         errorThreshold: o.errorThreshold,
                         successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
-                        importPathway: 'ehr-importPanel'
+                        importPathway: 'ehr-ext3DataEntry'
                     };
 
                     //we delay this event so that any modified fields can fire their blur events and/or commit changes

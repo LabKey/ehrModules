@@ -120,27 +120,30 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
         }
 
         if (toAdd.length){
+            //NOTE: when duplicating records, always insert after the highest selected row
+            var insertIdx = -1;
+            var selected = this.targetGrid.getSelectionModel().getSelection();
+            Ext4.Array.forEach(selected, function(r){
+                var idx = r.store.indexOf(r);
+                if (idx > insertIdx)
+                    insertIdx = idx;
+            }, this);
+
+            insertIdx++;
+
             var choose = this.down('#doBulkEdit').getValue();
             if (choose){
                 Ext4.create('EHR.window.BulkEditWindow', {
                     suppressConfirmMsg: true,
                     records: toAdd,
                     targetStore: this.targetGrid.store,
-                    formConfig: this.targetGrid.formConfig
+                    formConfig: this.targetGrid.formConfig,
+                    insertIndex: insertIdx
                 }).show();
                 this.close();
             }
             else {
-                //NOTE: when duplicating records, always insert after the highest selected row
-                var insertIdx = -1;
-                var selected = this.targetGrid.getSelectionModel().getSelection();
-                Ext4.Array.forEach(selected, function(r){
-                    var idx = r.store.indexOf(r);
-                    if (idx > insertIdx)
-                        insertIdx = idx;
-                }, this);
-
-                this.targetGrid.store.insert(insertIdx++, toAdd);
+                this.targetGrid.store.insert(insertIdx, toAdd);
             }
         }
     }

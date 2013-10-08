@@ -823,7 +823,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         var extraContext = {
             //targetQC : 'Delete Requested',
             errorThreshold: 'SEVERE',
-            importPathway: 'ehr-importPanel'
+            importPathway: 'ehr-ext3DataEntry'
         };
 
         var recs = [];

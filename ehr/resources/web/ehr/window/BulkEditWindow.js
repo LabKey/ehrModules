@@ -11,7 +11,7 @@
  */
 Ext4.define('EHR.window.BulkEditWindow', {
     extend: 'Ext.window.Window',
-
+    insertIndex: null,
     width: 600,
 
     initComponent: function(){
@@ -48,6 +48,7 @@ Ext4.define('EHR.window.BulkEditWindow', {
             xtype: 'ehr-bulkeditpanel',
             title: null,
             suppressConfirmMsg: this.suppressConfirmMsg,
+            insertIndex: this.insertIndex,
             formConfig: this.formConfig,
             targetStore: this.targetStore,
             records: this.records,

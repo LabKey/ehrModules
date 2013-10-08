@@ -375,7 +375,9 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     getExtraContext: function(extraContext){
-        var ret = {};
+        var ret = {
+            importPathway: 'ehr-ext4DataEntry'
+        };
 
         this.clientStores.each(function(s){
             var ctx = s.getExtraContext();

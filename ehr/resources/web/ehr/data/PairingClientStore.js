@@ -39,7 +39,7 @@ Ext4.define('EHR.data.PairingClientStore', {
 
             var lowest;
             if (r.get('lowestcage') && r.get('room')){
-                lowest = r.get('room') + '||' + r.get('room')
+                lowest = this.getPairIdString(r);
             }
 
             var pairid = r.get('pairid');
@@ -69,11 +69,15 @@ Ext4.define('EHR.data.PairingClientStore', {
         return map;
     },
 
+    getPairIdString: function(record){
+        return record.get('room') + '||' + record.get('lowestcage');
+    },
+
     onRecordUpdate: function(record, modifiedFieldNames){
         modifiedFieldNames = modifiedFieldNames || [];
         var lowest;
         if (record.get('lowestcage') && record.get('room')){
-            lowest = record.get('room') + '||' + record.get('lowestcage')
+            lowest = this.getPairIdString(record);
         }
 
         var params = {};

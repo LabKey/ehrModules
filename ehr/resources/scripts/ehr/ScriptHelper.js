@@ -20,6 +20,7 @@ EHR.Server = {};
  */
 EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     var startTime = new Date();
+    var validationHelper = null;
 
     var props = {
         event: event,
@@ -32,6 +33,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         notificationRecipients : [],
         participantsModified: [],
         publicParticipantsModified: [],
+        importPathway: extraContext.importPathway,
         tasksModified: [],
         requestsModified: [],
         requestsDenied: {},
@@ -61,7 +63,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         skipAssignmentCheck: false,
         notificationTypes: null,
         errorSeveritiyForImproperHousing: 'WARN',
-        requiresStatusRecalc: false
+        requiresStatusRecalc: false,
+        lookupValidationFields: []
     };
 
     var cachedValues = {
@@ -105,6 +108,17 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             LABKEY.ExtAdapter.apply(scriptOptions, opts);
         },
 
+        getValidationHelper: function(){
+            if (validationHelper == null)
+                validationHelper = org.labkey.ldk.query.LookupValidationHelper.create(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, extraContext.schemaName, extraContext.queryName);
+
+            return validationHelper;
+        },
+
+        getLookupValidationFields: function(){
+            return scriptOptions.lookupValidationFields;
+        },
+
         shouldRemoveTimeFromDate: function(){
             return scriptOptions.removeTimeFromDate;
         },
@@ -136,6 +150,14 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getJavaHelper: function(){
             return props.javaHelper;
+        },
+
+        getImportPathway: function(){
+            return props.importPathway;
+        },
+
+        isEHRDataEntry: function(){
+            return this.getImportPathway() == 'ehr-ext4DataEntry' || this.getImportPathway() == 'ehr-ext3DataEntry'
         },
 
         //validateOnly is the old-style flag, and must be differentiated in some places

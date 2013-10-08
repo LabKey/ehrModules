@@ -607,6 +607,32 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
+    //lookup validations
+    if (helper.getLookupValidationFields() && helper.getLookupValidationFields().length){
+        var lookupFields = helper.getLookupValidationFields();
+        for (var i=0;i<lookupFields.length;i++){
+            var f = lookupFields[i];
+            var val = row[f];
+            if (!LABKEY.ExtAdapter.isEmpty(val)){
+                var normalizedVal = helper.getValidationHelper().getLookupValue(val, f);
+                if (LABKEY.ExtAdapter.isEmpty(normalizedVal)){
+                    EHR.Server.Utils.addError(scriptErrors, f, 'Unknown value for field: ' + f + '. Value was: ' + val, helper.isEHRDataEntry() ? 'WARN' : 'ERROR');
+                }
+                else {
+                    row[f] = normalizedVal;  //cache value for purpose of normalizing case
+                }
+            }
+        }
+    }
+
+    //check required fields.
+    for (var fieldName in row){
+        var msg = helper.getValidationHelper().validateRequiredField(fieldName, LABKEY.ExtAdapter.isEmpty(row[fieldName]) ? null : row[fieldName]);
+        if (msg){
+            EHR.Server.Utils.addError(scriptErrors, fieldName, msg, helper.isEHRDataEntry() ? 'WARN' : 'ERROR');
+        }
+    }
+
     //dont allow future dates on completed records
     if (row.date && row.QCStateLabel == 'Completed' && !helper.isAllowFutureDates()){
         if (row.date.getTime() > (new Date).getTime()){

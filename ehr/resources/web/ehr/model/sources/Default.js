@@ -840,7 +840,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     anyMatch: true,
-                    plugins: ['ldk-usereditablecombo'],
                     listConfig: {
                         innerTpl: '{[(values.chargetype ? "<b>" + values.chargetype + ":</b> " : "") + values.servicename + (values.outsidelab ? "*" : "")]}',
                         getInnerTpl: function(){
