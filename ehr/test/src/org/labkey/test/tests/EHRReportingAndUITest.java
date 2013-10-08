@@ -414,12 +414,6 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertTextPresent(PROTOCOL_MEMBER_IDS[0], PROTOCOL_MEMBER_IDS[2]);
     }
 
-    private Ext4FieldRefWD getAnimalHistorySubjField()
-    {
-        Ext4CmpRefWD.waitForComponent(this, "#subjArea");
-        return _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
-    }
-
     private void refreshAnimalHistoryReport()
     {
         waitForElement(Ext4HelperWD.ext4Tab("Demographics"));

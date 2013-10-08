@@ -31,6 +31,8 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
+import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -533,5 +535,11 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
             this.draftData = draftData;
             this.isRequest = isRequest;
         }
+    }
+
+    protected Ext4FieldRefWD getAnimalHistorySubjField()
+    {
+        Ext4CmpRefWD.waitForComponent(this, "#subjArea");
+        return _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
     }
 }

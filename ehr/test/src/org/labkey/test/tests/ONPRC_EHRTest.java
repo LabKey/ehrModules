@@ -27,9 +27,11 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.RReportHelperWD;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
@@ -39,6 +41,7 @@ import org.testng.Assert;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +55,7 @@ import java.util.Map;
 public class ONPRC_EHRTest extends AbstractEHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
+    protected static final String ID_PREFIX = "_testid";
 
     @Override
     protected String getProjectName()
@@ -87,6 +91,18 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         doReportingTests();
         doApiTests();
         doNotificationTests();  //placed at end due to PG incompatibility until trunk
+
+        //TODO: need to configure ehrContext.xml on the server
+        //testGeneticsPipeline();
+    }
+
+    @Override
+    protected void initProject() throws Exception
+    {
+        super.initProject();
+
+        RReportHelperWD rHelper = new RReportHelperWD(this);
+        rHelper.ensureRConfig();
     }
 
     protected void doApiTests()
@@ -102,7 +118,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
     }
 
-    protected void doCustomActionsTests()
+    protected void doCustomActionsTests() throws Exception
     {
         //colony overview
         goToProjectHome();
@@ -201,6 +217,25 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "Printable Reports"));
         waitForElement(Locator.ext4Button("Print Version"));
+
+        //pedigree R report
+        testPedigreeReport();
+    }
+
+    private void testPedigreeReport() throws Exception
+    {
+        goToProjectHome();
+        createBirthRecords();
+        waitAndClickAndWait(Locator.tagContainingText("a", "Animal History"));
+        _helper.waitForCmp("textfield[itemId=subjArea]");
+        String id = ID_PREFIX + 1;
+        getAnimalHistorySubjField().setValue(id);
+        waitAndClick(Ext4HelperWD.ext4Tab("Genetics"));
+        waitAndClick(Ext4HelperWD.ext4Tab("Pedigree Plot"));
+
+        waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id));
+        assertTextNotPresent("Error executing command");
+        waitForElement(Locator.tagContainingText("a", "Console output"));
     }
 
     protected void doDataEntryTests() throws Exception
@@ -377,6 +412,60 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         _unitsMap.put(queryName, queryResults);
 
         return _unitsMap.get(queryName).get(testId);
+    }
+
+    private boolean _hasCreatedBirthRecords = false;
+
+    protected void createBirthRecords() throws Exception
+    {
+        if (_hasCreatedBirthRecords)
+            return;
+
+        //note: these should cascade insert into demographics
+        EHRClientAPIHelper apiHelper = new EHRClientAPIHelper(this, getProjectName());
+        String schema = "study";
+        String query = "birth";
+        String parentageQuery = "parentage";
+
+        int i = 0;
+        while (i < 10)
+        {
+            i++;
+            Map<String, Object> row = new HashMap();
+            row.put("Id", ID_PREFIX + i);
+            row.put("date", new Date());
+            row.put("gender", ((i % 2) == 0 ? "m" : "f"));
+            row.put("dam", ID_PREFIX + (i + 100 + "f"));
+
+            apiHelper.deleteIfExists(schema, query, row, "Id");
+            apiHelper.insertRow(schema, query, row, false);
+
+            Map<String, Object> parentageRow = new HashMap();
+            parentageRow.put("Id", ID_PREFIX + i);
+            parentageRow.put("date", new Date());
+            parentageRow.put("relationship", "Sire");
+            parentageRow.put("parent", ID_PREFIX + (i + 100 + "m"));
+            parentageRow.put("method", "Genetic");
+
+            //we dont have the LSID, so dont bother deleting the record.  it wont hurt anything to have 2 copies
+            apiHelper.insertRow(schema, parentageQuery, parentageRow, false);
+        }
+
+        _hasCreatedBirthRecords = true;
+    }
+
+    protected void testGeneticsPipeline() throws Exception
+    {
+        goToProjectHome();
+
+        createBirthRecords();
+
+        //NOTE: we need to set ehrContext.xml file
+        waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
+        waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
+        waitAndClickAndWait(Locator.ext4Button("Run Now"));
+        waitAndClickAndWait(Locator.navButton("OK"));
+        waitForPipelineJobsToComplete(2, "genetics pipeline", false);
     }
 
     protected void doNotificationTests()
