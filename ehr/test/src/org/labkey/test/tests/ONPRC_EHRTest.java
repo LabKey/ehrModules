@@ -233,9 +233,9 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitAndClick(Ext4HelperWD.ext4Tab("Genetics"));
         waitAndClick(Ext4HelperWD.ext4Tab("Pedigree Plot"));
 
-        waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id));
+        waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
-        waitForElement(Locator.tagContainingText("a", "Console output"));
+        Assert.assertTrue(isTextPresent("Console output"));
     }
 
     protected void doDataEntryTests() throws Exception
