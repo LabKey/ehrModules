@@ -1043,7 +1043,6 @@ ehr/resources/web/ehr/window/SubmitForReviewPanel.js -text
 ehr/resources/web/ehr/window/SurgeryAddRecordWindow.js -text
 ehr/resources/web/ehr/window/TaskAssignWindow.js -text
 ehr/resources/web/ehr/window/TaskWindow.js -text
-ehr/src/META-INF/ehr/ehr.sql -text
 ehr/src/org/labkey/ehr/EHRActionResolver.java -text
 ehr/src/org/labkey/ehr/EHRController.java -text
 ehr/src/org/labkey/ehr/EHRManager.java -text
