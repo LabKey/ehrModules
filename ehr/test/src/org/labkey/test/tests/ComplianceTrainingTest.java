@@ -17,6 +17,8 @@ package org.labkey.test.tests;
 
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
@@ -24,7 +26,7 @@ import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.BaseWebDriverTest;
+import org.labkey.test.BaseWebDriverMultipleTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestTimeoutException;
@@ -52,7 +54,7 @@ import java.util.Map;
  * Time: 7:02 AM
  */
 @Category({External.class, EHR.class, ONPRC.class})
-public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
+public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
 {
     private String listZIP =  getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
     private LabModuleHelper _helper = new LabModuleHelper(this);
@@ -63,15 +65,16 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         return "ComplianceTraining";// + TRICKY_CHARACTERS_FOR_PROJECT_NAMES;
     }
 
-    @Override
-    protected void doTestSteps() throws Exception
+    @BeforeClass
+    public static void doSetup() throws Exception
     {
-        setUpTest();
-        cleanupRecords(false);
+        ComplianceTrainingTest initTest = new ComplianceTrainingTest();
+        initTest.doCleanup(false);
 
-        testCustomActions();
-        testTriggerScripts();
-        testSopSubmission();
+        initTest.setUpTest();
+        initTest.cleanupRecords(false);
+
+        currentTest = initTest;
     }
 
     private final String prefix = "complianceTest_";
@@ -136,7 +139,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         }
     }
 
-    private void testTriggerScripts() throws Exception
+    @Test
+    public void testTriggerScripts() throws Exception
     {
         //the module's triggers perform cascade updates and also enforce FKs
         //this section will insert dummy data and make sure the code works as expected
@@ -319,7 +323,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         Assert.assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName2), "requirementname"));
     }
 
-    private void testCustomActions() throws Exception
+    @Test
+    public void testCustomActions() throws Exception
     {
         goToProjectHome();
         waitAndClickAndWait(Locator.linkContainingText("Employee List"));
@@ -339,11 +344,10 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         waitForElement(Locator.tagContainingText("span", "Categories/Units That Must Complete This Requirement"));
         waitForElement(Locator.tagContainingText("span", "Individual Employees That Must Complete This Requirement (beyond their category/unit)"));
         waitForElement(Locator.tagContainingText("span", "Individual Employees Exempt From This Requirement"));
-
-        goToProjectHome();
     }
 
-    private void testSopSubmission() throws Exception
+    @Test
+    public void testSopSubmission() throws Exception
     {
         beginAt("/ehr_compliancedb/" + getProjectName() + "/SOP_submission.view");
         reloadPage();

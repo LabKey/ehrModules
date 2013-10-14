@@ -15,14 +15,19 @@
  */
 package org.labkey.test.tests;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
+import org.openqa.selenium.WebDriver;
 
 import java.util.Date;
 
@@ -38,19 +43,20 @@ import java.util.Date;
 @Category({External.class, EHR.class, ONPRC.class})
 public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 {
-    @Override
-    public void runUITests() throws Exception
+    @BeforeClass @LogMethod
+    public static void doSetup() throws Exception
     {
-        initProject();
+        WNPRCEHRDataEntryTest initTest = new WNPRCEHRDataEntryTest();
+        initTest.doCleanup(false);
 
-        weightDataEntryTest();
-        mprDataEntryTest();
+        initTest.initProject();
+
+        currentTest = initTest;
     }
 
-    @LogMethod
-    private void weightDataEntryTest()
+    @Test
+    public void weightDataEntryTest()
     {
-        log("Test weight data entry");
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
         saveLocation();
@@ -198,10 +204,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         Assert.assertEquals("Completed was not present the expected number of times", 3, getElementCount(Locator.xpath("//td[text() = 'Completed']")));
     }
 
-    @LogMethod
-    private void mprDataEntryTest()
+    @Test
+    public void mprDataEntryTest()
     {
-        log("Test MPR data entry.");
         clickProject(PROJECT_NAME);
         clickFolder(FOLDER_NAME);
         saveLocation();

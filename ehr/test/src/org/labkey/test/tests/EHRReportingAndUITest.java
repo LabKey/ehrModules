@@ -17,6 +17,8 @@
 package org.labkey.test.tests;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
@@ -28,6 +30,7 @@ import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LabModuleHelper;
+import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
@@ -35,32 +38,24 @@ import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 @Category({External.class, EHR.class, ONPRC.class})
 public class EHRReportingAndUITest extends AbstractEHRTest
 {
-//    @Override
-//    public void doCleanup(boolean afterTest) throws TestTimeoutException
-//    {
-////        super.doCleanup(afterTest);
-//    }
-
-    @Override
-    public void runUITests() throws Exception
+    @BeforeClass
+    @LogMethod
+    public static void doSetup() throws Exception
     {
-        initProject();
-
-        detailsPagesTest();
-        customActionsTest();
-        dataRegionButtonsTest();
-        animalHistoryTest();
-        quickSearchTest();
-
-        //TODO: also check that delete, import, etc do not appear unless explicitly enabled
-
+        EHRReportingAndUITest initTest = new EHRReportingAndUITest();
+        initTest.doCleanup(false);
+        initTest.initProject();
+        currentTest = initTest;
     }
+
+    //TODO: also check that delete, import, etc do not appear unless explicitly enabled
 
     /**
      * This test will hit a variety of EHR views and provides a very basic test of the UI on that page.  Initially it will
      * just look for JS errors and certain keywords, like 'error' or 'failed'.
      */
-    private void detailsPagesTest()
+    @Test
+    public void detailsPagesTest()
     {
         String VIEW_TEXT = "Browse All";
 
@@ -150,6 +145,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
     /**
      * This tests misc custom pages that are not included in detailsPagesTest()
      */
+    @Test
     public void customActionsTest()
     {
         log("verifying custom actions");
@@ -197,7 +193,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertNoErrorText();
     }
 
-    private void animalHistoryTest()
+    @Test
+    public void animalHistoryTest()
     {
         String dataRegionName;
         clickProject(getProjectName());
@@ -318,7 +315,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("div", "No records found since:"));
     }
 
-    private void dataRegionButtonsTest()
+    @Test
+    public void dataRegionButtonsTest()
     {
         log("Verify custom dataregion buttons");
         String dataRegionName = "query";
@@ -421,7 +419,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Button("Refresh"));
     }
 
-    private void quickSearchTest()
+    @Test
+    public void quickSearchTest()
     {
         //TODO: can I interact with this as a menu webpart?
         log("Add quick search webpart");

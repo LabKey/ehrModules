@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
@@ -77,27 +79,23 @@ public class EHRApiTest extends AbstractEHRTest
         STUDY_ZIP = STUDY_ZIP_NO_DATA;
     }
 
-    @Override
-    public void runUITests()
-    {
-        log("There are no UI tests");
-    }
-
-    @Override
-    public void runApiTests() throws Exception
-    {
-        initProject();
-        setEhrUserPasswords();
-
-        goToProjectHome();
-        createTestSubjects();
-
-        doSecurityTest();
-        doTriggerScriptTests();
-    }
-
+    @BeforeClass
     @LogMethod
-    private void doSecurityTest() throws Exception
+    public static void doSetup() throws Exception
+    {
+        EHRApiTest initTest = new EHRApiTest();
+        initTest.doCleanup(false);
+        initTest.initProject();
+
+        initTest.setEhrUserPasswords();
+        initTest.goToProjectHome();
+        initTest.createTestSubjects();
+
+        currentTest = initTest;
+    }
+
+    @Test
+    public void doSecurityTest() throws Exception
     {
         testUserAgainstAllStates(DATA_ADMIN);
         testUserAgainstAllStates(REQUESTER);
@@ -110,8 +108,8 @@ public class EHRApiTest extends AbstractEHRTest
         resetErrors(); //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
     }
 
-    @LogMethod
-    private void doTriggerScriptTests() throws Exception
+    @Test
+    public void doTriggerScriptTests() throws Exception
     {
         _saveRowsTimes = new ArrayList<>();
         weightValidationTest();

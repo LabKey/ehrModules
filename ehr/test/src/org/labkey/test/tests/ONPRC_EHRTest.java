@@ -15,6 +15,9 @@
  */
 package org.labkey.test.tests;
 
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
@@ -22,7 +25,6 @@ import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 import org.labkey.test.Locator;
-import org.labkey.test.TestTimeoutException;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -35,8 +37,6 @@ import org.labkey.test.util.RReportHelperWD;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.Keys;
 import org.testng.Assert;
 
 import java.io.File;
@@ -75,50 +75,42 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         goToProjectHome();
     }
 
-//    @Override
-//    public void doCleanup(boolean afterTest) throws TestTimeoutException
-//    {
-//        super.doCleanup(afterTest);
-//    }
-
-    public void runUITests() throws Exception
+    @BeforeClass
+    @LogMethod
+    public static void doSetup() throws Exception
     {
-        initProject();
+        ONPRC_EHRTest initTest = new ONPRC_EHRTest();
+        initTest.doCleanup(false);
 
-        //TODO: these should be separated to run independently so 1 failure doesnt kill the others
-        doCustomActionsTests();
-        doDataEntryTests();
-        doReportingTests();
-        doApiTests();
-        doNotificationTests();  //placed at end due to PG incompatibility until trunk
-
-        //TODO: need to configure ehrContext.xml on the server
-        //testGeneticsPipeline();
-    }
-
-    @Override
-    protected void initProject() throws Exception
-    {
-        super.initProject();
-
-        RReportHelperWD rHelper = new RReportHelperWD(this);
+        initTest.initProject();
+        RReportHelperWD rHelper = new RReportHelperWD(initTest);
         rHelper.ensureRConfig();
+
+        currentTest = initTest;
     }
 
-    protected void doApiTests()
+    @Test @Ignore("Placeholder: No tests yet")
+    public void doApiTests()
     {
-        //blood draw volumes
+        //TODO: blood draw volumes
 
-        //all other custom trigger script code
+        //TODO: all other custom trigger script code
     }
 
-    protected void doReportingTests()
+    @Test @Ignore("Placeholder: No tests yet")
+    public void doReportingTests()
     {
-        //animal history
-
+        //TODO: animal history
     }
 
-    protected void doCustomActionsTests() throws Exception
+    @Test @Ignore("Placeholder: No tests yet")
+    public void geneticsPipelineTest()
+    {
+        //TODO: need to configure ehrContext.xml on the server
+    }
+
+    @Test
+    public void doCustomActionsTests() throws Exception
     {
         //colony overview
         goToProjectHome();
@@ -238,7 +230,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         Assert.assertTrue(isTextPresent("Console output"));
     }
 
-    protected void doDataEntryTests() throws Exception
+    @Test
+    public void doDataEntryTests() throws Exception
     {
         doLabworkResultEntryTest();
 
@@ -297,7 +290,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     }
 
     @LogMethod
-    private void validatePanelEntry(String panelName, String tissue, String title, String lookupTable) throws Exception
+    public void validatePanelEntry(String panelName, String tissue, String title, String lookupTable) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("ehr_lookups", "labwork_panels");
         cmd.addFilter(new Filter("servicename", panelName));
@@ -468,7 +461,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForPipelineJobsToComplete(2, "genetics pipeline", false);
     }
 
-    protected void doNotificationTests()
+    @Test
+    public void doNotificationTests()
     {
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));

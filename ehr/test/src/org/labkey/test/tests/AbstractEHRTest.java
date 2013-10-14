@@ -23,6 +23,7 @@ import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.test.BaseWebDriverMultipleTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestProperties;
@@ -47,7 +48,7 @@ import java.util.regex.Pattern;
  * Date: 11/27/12
  * Time: 2:22 PM
  */
-abstract public class AbstractEHRTest extends SimpleApiTestWD implements AdvancedSqlTest
+abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
 {
     protected String PROJECT_NAME = "EHR_TestProject";
     protected String FOLDER_NAME = "EHR";
@@ -124,12 +125,6 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
                 Pattern.compile("qcstate", Pattern.CASE_INSENSITIVE),//qcstate IDs aren't predictable
                 Pattern.compile("stacktrace", Pattern.CASE_INSENSITIVE)
         };
-    }
-
-    @Override
-    protected File[] getTestFiles()
-    {
-        return new File[0];
     }
 
     @Override
