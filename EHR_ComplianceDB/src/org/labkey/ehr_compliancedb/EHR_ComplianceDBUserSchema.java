@@ -56,15 +56,11 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
     {
         final DbSchema dbSchema = DbSchema.get(EHR_ComplianceDBModule.SCHEMA_NAME);
 
-        DefaultSchema.registerProvider(EHR_ComplianceDBModule.SCHEMA_NAME, new DefaultSchema.SchemaProvider()
+        DefaultSchema.registerProvider(EHR_ComplianceDBModule.SCHEMA_NAME, new DefaultSchema.SchemaProvider(m)
         {
-            public QuerySchema getSchema(final DefaultSchema schema)
+            public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
-                if (schema.getContainer().getActiveModules().contains(m))
-                {
-                    return new EHR_ComplianceDBUserSchema(schema.getUser(), schema.getContainer(), dbSchema);
-                }
-                return null;
+                return new EHR_ComplianceDBUserSchema(schema.getUser(), schema.getContainer(), dbSchema);
             }
         });
     }

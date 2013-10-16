@@ -169,18 +169,16 @@ public class EHRModule extends ExtendedSimpleModule
         for (final String schemaName : getSchemaNames())
         {
             final DbSchema dbschema = DbSchema.get(schemaName);
-            DefaultSchema.registerProvider(schemaName, new DefaultSchema.SchemaProvider()
+            DefaultSchema.registerProvider(schemaName, new DefaultSchema.SchemaProvider(this)
             {
-                public QuerySchema getSchema(final DefaultSchema schema)
+                public QuerySchema createSchema(final DefaultSchema schema, Module module)
                 {
-                    if (schema.getContainer().getActiveModules().contains(EHRModule.this))
-                    {
-                        if (schemaName.equalsIgnoreCase(EHRSchema.EHR_LOOKUPS))
-                            return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), dbschema);
-                        else if (schemaName.equalsIgnoreCase(EHRSchema.EHR_SCHEMANAME))
-                            return new EHRUserSchema(schema.getUser(), schema.getContainer(), dbschema);
-                    }
-                    return null;
+                    if (schemaName.equalsIgnoreCase(EHRSchema.EHR_LOOKUPS))
+                        return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), dbschema);
+                    else if (schemaName.equalsIgnoreCase(EHRSchema.EHR_SCHEMANAME))
+                        return new EHRUserSchema(schema.getUser(), schema.getContainer(), dbschema);
+                    else
+                        return null;
                 }
             });
         }
