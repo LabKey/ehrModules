@@ -225,6 +225,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         log("Verify location based history");
         waitAndClick(Locator.ext4Radio("Current Location"));
 
+        _helper.waitForCmp("#areaField");
         _ext4Helper.queryOne("#areaField", Ext4FieldRefWD.class).setValue(AREA_ID);
         sleep(200); //wait for 2nd field to filter
         _ext4Helper.queryOne("#roomField", Ext4FieldRefWD.class).setValue(ROOM_ID);
