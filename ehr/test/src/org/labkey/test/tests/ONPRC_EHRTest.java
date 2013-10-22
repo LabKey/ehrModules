@@ -483,12 +483,12 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitAndClick(manageLink);
         waitForElement(Ext4HelperWD.ext4Window("Manage Subscribed Users"));
         Ext4FieldRefWD combo = Ext4FieldRefWD.getForLabel(this, "Add User Or Group");
-        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), DATA_ADMIN.getEmail(), true);
+        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, DATA_ADMIN.getEmail());
         waitForElement(Locator.ext4Button("Remove"));
 
         combo = Ext4FieldRefWD.getForLabel(this, "Add User Or Group");
 
-        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), BASIC_SUBMITTER.getEmail(), true);
+        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, BASIC_SUBMITTER.getEmail());
         waitForElement(Locator.ext4Button("Remove"), 2);
         waitAndClick(Locator.ext4Button("Close"));
 
