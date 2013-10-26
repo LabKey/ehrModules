@@ -572,13 +572,13 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         goToModule("Pipeline");
         waitAndClickButton("Process and Import Data");
 
-        _extHelper.selectFileBrowserRoot();
-        _extHelper.clickFileBrowserFileCheckbox("study.xml");
+        _fileBrowserHelper.expandFileBrowserRootNode();
+        _fileBrowserHelper.clickFileBrowserFileCheckbox("study.xml");
 
         if (isTextPresent("Reload Study"))
-            selectImportDataAction("Reload Study");
+            _fileBrowserHelper.selectImportDataAction("Reload Study");
         else
-            selectImportDataAction("Import Study");
+            _fileBrowserHelper.selectImportDataAction("Import Study");
 
         waitForPipelineJobsToComplete(1, "Study import", false);
     }
