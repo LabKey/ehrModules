@@ -16,6 +16,8 @@
 package org.labkey.ehr.pipeline;
 
 import org.labkey.api.gwt.client.util.StringUtils;
+import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
 import org.labkey.api.pipeline.PipelineJob;
@@ -25,7 +27,10 @@ import org.labkey.api.pipeline.RecordedAction;
 import org.labkey.api.pipeline.RecordedActionSet;
 import org.labkey.api.pipeline.WorkDirectoryTask;
 import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
+import org.labkey.api.resource.FileResource;
+import org.labkey.api.resource.Resource;
 import org.labkey.api.util.FileType;
+import org.labkey.ehr.EHRModule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -139,14 +144,15 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
 
     private String getScriptPath(String name) throws PipelineJobException
     {
-        String packagePath = PipelineJobService.get().getConfigProperties().getSoftwarePackagePath("EHRKinship");
-        if (StringUtils.isEmpty(packagePath))
-            throw new PipelineJobException("EHRKinship path not specified in the pipeline config file");
-
-        File script = new File(packagePath, name);
+        Module module = ModuleLoader.getInstance().getModule(EHRModule.class);
+        Resource script = module.getModuleResource("/pipeline/kinship/" + name);
         if (!script.exists())
             throw new PipelineJobException("Unable to find file: " + script.getPath());
 
-        return script.getPath();
+        File f = ((FileResource) script).getFile();
+        if (!f.exists())
+            throw new PipelineJobException("Unable to find file: " + f.getPath());
+
+        return f.getPath();
     }
 }
