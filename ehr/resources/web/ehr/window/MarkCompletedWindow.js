@@ -90,6 +90,7 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
 
                             if(toUpdate.length){
                                 LABKEY.Query.updateRows({
+                                    method: 'POST',
                                     schemaName: this.schemaName,
                                     queryName: this.queryName,
                                     rows: toUpdate,

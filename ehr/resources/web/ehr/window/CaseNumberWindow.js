@@ -63,6 +63,7 @@ Ext4.define('EHR.window.CaseNumberWindow', {
         }
 
         LABKEY.Query.executeSql({
+            method: 'POST',
             schemaName: 'study',
             sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.\"Clinical Encounters\" WHERE type = 'Necropsy' AND caseno LIKE '" + year + prefix + "%'",
             scope: this,

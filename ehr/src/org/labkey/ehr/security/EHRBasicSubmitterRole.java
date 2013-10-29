@@ -15,25 +15,7 @@
  */
 package org.labkey.ehr.security;
 
-import org.labkey.api.ehr.security.EHRDeleteRequestedInsertPermission;
-import org.labkey.api.ehr.security.EHRDeleteRequestedUpdatePermission;
-import org.labkey.api.ehr.security.EHRInProgressDeletePermission;
-import org.labkey.api.ehr.security.EHRInProgressInsertPermission;
-import org.labkey.api.ehr.security.EHRInProgressUpdatePermission;
-import org.labkey.api.ehr.security.EHRRequestCompleteInsertPermission;
-import org.labkey.api.ehr.security.EHRRequestCompleteUpdatePermission;
-import org.labkey.api.ehr.security.EHRRequestDeniedInsertPermission;
-import org.labkey.api.ehr.security.EHRRequestDeniedUpdatePermission;
-import org.labkey.api.ehr.security.EHRRequestPendingInsertPermission;
-import org.labkey.api.ehr.security.EHRRequestPendingUpdatePermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredAdminPermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredDeletePermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredInsertPermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredUpdatePermission;
-import org.labkey.api.ehr.security.EHRReviewRequiredInsertPermission;
-import org.labkey.api.ehr.security.EHRReviewRequiredUpdatePermission;
-import org.labkey.api.ehr.security.EHRScheduledInsertPermission;
-import org.labkey.api.ehr.security.EHRScheduledUpdatePermission;
+import org.labkey.api.ehr.security.*;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
@@ -77,7 +59,7 @@ public class EHRBasicSubmitterRole extends AbstractEHRDatasetRole
 //                EHRReviewRequiredDeletePermission.class,
                 EHRReviewRequiredInsertPermission.class,
                 EHRReviewRequiredUpdatePermission.class,
-//                EHRScheduledDeletePermission.class,
+                EHRScheduledDeletePermission.class,
                 EHRScheduledInsertPermission.class,
                 EHRScheduledUpdatePermission.class
         );

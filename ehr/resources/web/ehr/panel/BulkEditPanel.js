@@ -159,7 +159,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         }, this);
 
         if (toAdd.length){
-            if (LABKEY.ExtAdapter.isDefined(this.insertIndex)){
+            if (!LABKEY.ExtAdapter.isEmpty(this.insertIndex)){
                 this.targetStore.insert(this.insertIndex, toAdd);
             }
             else {

@@ -156,6 +156,7 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         Ext4.Msg.wait('Saving...');
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LABKEY.Query.updateRows({
+            method: 'POST',
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
             rows: records,

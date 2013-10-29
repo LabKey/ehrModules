@@ -180,6 +180,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
 
     doUpdateBloodDraws: function(records){
         LABKEY.Query.updateRows({
+            method: 'POST',
             schemaName: 'study',
             queryName: 'blood',
             rows: records,

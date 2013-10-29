@@ -718,6 +718,31 @@ EHR.DataEntryUtils = new function(){
             }
 
             return ret;
+        },
+
+        hasPermission: function(permMap, qcStateLabel, permissionName){
+            permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
+
+            var hasPermission = true;
+            Ext4.Object.each(permMap, function(schemaName, queries) {
+                // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
+                // for the container-level DataEntryPermission
+                var permissionToTest = permissionName;
+                if (schemaName.toLowerCase() != 'study'){
+                    permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
+                }
+                Ext4.Object.each(queries, function(queryName, permissions) {
+                    if (!permissions[permissionToTest]){
+                        hasPermission = false;
+                        return false;
+                    }
+                }, this);
+
+                if (!hasPermission)
+                    return false;
+            }, this);
+
+            return hasPermission;
         }
     }
 };

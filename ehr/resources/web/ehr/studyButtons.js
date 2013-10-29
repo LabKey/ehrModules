@@ -63,6 +63,7 @@ EHR.DatasetButtons = new function(){
             var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
 
             LABKEY.Query.executeSql({
+                method: 'POST',
                 schemaName: 'study',
                 sql: sql,
                 failure: LDK.Utils.getErrorCallback(),

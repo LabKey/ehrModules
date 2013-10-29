@@ -15,11 +15,17 @@
  */
 package org.labkey.ehr.demographics;
 
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.Results;
 import org.labkey.api.ehr.demographics.AbstractDemographicsProvider;
 import org.labkey.api.query.FieldKey;
+import org.labkey.ehr.table.AgeDisplayColumn;
 
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -60,7 +66,18 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
 
         keys.add(FieldKey.fromString("Id/age/yearAndDays"));
         keys.add(FieldKey.fromString("Id/age/ageInDays"));
+        keys.add(FieldKey.fromString("Id/age/ageInYears"));
 
         return keys;
+    }
+
+    @Override
+    protected void processRow(Results rs, Map<FieldKey, ColumnInfo> cols, Map<String, Object> map) throws SQLException
+    {
+        super.processRow(rs, cols, map);
+
+        // NOTE: this is a column with a java-generated display value.
+        // it's a slight hack, but in order to keep consistency, we poke that calculated value in here
+        map.put(FieldKey.fromString("Id/age/yearAndDays").toString(), AgeDisplayColumn.getFormattedAge((Date)map.get("birth"), (Date)map.get("death")));
     }
 }

@@ -15,7 +15,7 @@ Ext4.define('EHR.window.SedationWindow', {
         this.getParentRecords();
 
         LABKEY.ExtAdapter.apply(this, {
-            width: 800,
+            width: 860,
             title: 'Add Sedations',
             items: [{
                 html: 'This helper allows you to fill out sedation drugs for each animal in the blood draws section.  Choose which IDs and type of sedation to use from the list below.  Note: this will default to the most recent weight for the animal; however, the weight can be adjusted below.',
@@ -65,12 +65,13 @@ Ext4.define('EHR.window.SedationWindow', {
 
     getInitialItems: function(){
         return [{
+            border: false,
             html: 'Loading...'
         }]
     },
 
     getFinalItems: function(){
-        var numCols = 7;
+        var numCols = 8;
         var items = [{
             html: '<b>Animal</b>'
         },{
@@ -83,6 +84,8 @@ Ext4.define('EHR.window.SedationWindow', {
             html: '<b>Weight (kg)</b>'
         },{
             html: '<b>Dosage (mg/kg)</b>'
+        },{
+            html: '<b>Amount (mg)</b>'
         },{
             html: '<b>Skip?</b>'
         }];
@@ -172,17 +175,26 @@ Ext4.define('EHR.window.SedationWindow', {
                             return;
 
                         var dose = recs[0].get('dosage');
-                        var target = field.up('panel').down("numberfield[key='" + field.key + "]");
-                        LDK.Assert.assertNotEmpty('Unable to find target field in SedationWindow', target);
-                        target.setValue(dose);
+                        var weightField = field.up('panel').down("field[key='" + field.key + "][fieldName='weight']");
+                        var dosageField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='dosage']");
+                        var amountField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='amount']");
+                        LDK.Assert.assertNotEmpty('Unable to find target field in SedationWindow', dosageField);
+
+                        var amount = weightField.getValue() ? Ext4.util.Format.round(weightField.getValue() * dose, 1) : null;
+
+                        dosageField.setValue(dose);
+
+                        amountField.suspendEvents();
+                        amountField.setValue(amount);
+                        amountField.resumeEvents();
                     }
                 }
             });
 
             items.push({
-                xtype: 'numberfield',
+                xtype: 'displayfield',
                 hideTrigger: true,
-                width: 80,
+                width: 70,
                 fieldName: 'weight',
                 key: key,
                 value: this.weights[o.Id]
@@ -195,6 +207,22 @@ Ext4.define('EHR.window.SedationWindow', {
                 width: 80,
                 key: key,
                 value: 10
+            });
+
+            items.push({
+                xtype: 'numberfield',
+                hideTrigger: true,
+                fieldName: 'amount',
+                width: 80,
+                key: key,
+                value: this.weights[o.Id] ? Ext4.util.Format.round(this.weights[o.Id] * 10, 1) : null,
+                listeners: {
+                    change: function(field, value){
+                        var dosageField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='dosage']");
+                        LDK.Assert.assertNotEmpty('Unable to find target field in SedationWindow', dosageField);
+                        dosageField.setValue(null);
+                    }
+                }
             });
 
             items.push({
@@ -229,16 +257,14 @@ Ext4.define('EHR.window.SedationWindow', {
     onSubmit: function(btn){
         var toAdd = [];
         Ext4.Array.forEach(this.getRows(), function(data){
-            if (!data.dosage || data.exclude)
+            if (!data.amount || data.exclude)
                 return;
 
-            if (data.weight){
-                data.amount = Ext4.util.Format.round(data.dosage * data.weight, 2);
-                delete data.weight;
-            }
+            delete data.weight;
 
             Ext4.apply(data, {
-                dosage_units: 'mg/kg',
+                route: 'IM',
+                dosage_units: data.dosage ? 'mg/kg' : null,
                 amount_units: 'mg',
                 performedby: LABKEY.Security.currentUser.displayName
             });

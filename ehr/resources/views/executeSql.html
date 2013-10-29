@@ -42,6 +42,7 @@ Ext.onReady(function(){
 
                     formPanel.ownerCt.grid.body.update('Loading...');
                     LABKEY.Query.executeSql({
+                        method: 'POST',
                         containerPath: formPanel.containerPath.getValue(),
                         schemaName: formPanel.schemaName.getValue(),
                         sql: formPanel.sql.getValue(),

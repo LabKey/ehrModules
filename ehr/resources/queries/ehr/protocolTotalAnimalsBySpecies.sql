@@ -11,7 +11,7 @@ p.species,
 pc.allowed,
 p.TotalAnimals,
 CONVERT(pc.allowed - p.TotalAnimals, INTEGER) as TotalRemaining,
-round(cast(p.TotalAnimals as float) / cast(pc.allowed as float) * 100, 1) as PercentUsed,
+CASE WHEN (pc.allowed IS NULL or pc.allowed = 0) THEN NULL ELSE round(cast(p.TotalAnimals as float) / cast(pc.allowed as float) * 100, 1) END as PercentUsed,
 p.Animals,
 
 FROM
@@ -45,7 +45,7 @@ SELECT
   p.maxAnimals as allowed,
   CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
   p.maxAnimals - Count(pa.id) as TotalRemaining,
-  round(cast(Count(pa.id) as float) / cast(p.maxAnimals as float) * 100, 1) as PercentUsed,
+  CASE WHEN (p.maxAnimals IS NULL or p.maxAnimals = 0) THEN NULL ELSE round(cast(Count(pa.id) as float) / cast(p.maxAnimals as float) * 100, 1) END as PercentUsed,
   group_concat(distinct pa.Id) as animals,
 
 FROM ehr.protocol p

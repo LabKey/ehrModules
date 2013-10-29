@@ -18,6 +18,19 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
             },
             items: [{
                 html: 'Loading...'
+            }],
+            buttonAlign: 'left',
+            buttons: [{
+                text: 'Edit',
+                disabled: true,
+                hidden: true,
+                scope: this,
+                itemId: 'editBtn',
+                handler: function(){
+                    var url = window.location.href;
+                    url = url.replace('dataEntryFormDetails', 'dataEntryForm');
+                    window.location = url;
+                }
             }]
         });
 
@@ -85,6 +98,13 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                 }]
             })
         }, this);
+
+        var hasPermission = EHR.DataEntryUtils.hasPermission(results.form.permissions, 'Completed', 'update');
+        if (hasPermission){
+            var btn = this.down('#editBtn');
+            btn.setVisible(true);
+            btn.setDisabled(false);
+        }
 
         this.removeAll();
         this.add(toAdd);

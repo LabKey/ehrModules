@@ -175,6 +175,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
         var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
 
         LABKEY.Query.executeSql({
+            method: 'POST',
             schemaName: 'study',
             sql: sql,
             scope: this,

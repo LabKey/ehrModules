@@ -52,6 +52,9 @@
                     <column columnName="removalDate">
                         <columnTitle>Housing End</columnTitle>
                     </column>
+                    <column columnName="DaysCoHoused">
+                        <columnTitle>Days In This Condition</columnTitle>
+                    </column>
                     <column columnName="duration">
                         <columnTitle>Total Days In This Location</columnTitle>
                     </column>

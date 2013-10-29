@@ -509,6 +509,9 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.362-12.363.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.363-12.364.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.364-12.365.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.371-12.372.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.372-12.373.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.373-12.374.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.374-12.375.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -562,6 +565,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.367-12.368.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.368-12.369.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.369-12.370.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.370-12.371.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.374-12.375.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -692,6 +696,9 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.362-12.363.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.363-12.364.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.364-12.365.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.371-12.372.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.372-12.373.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.373-12.374.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.374-12.375.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -744,6 +751,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.367-12.368.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.368-12.369.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.369-12.370.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.370-12.371.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.374-12.375.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -1148,6 +1156,7 @@ ehr/src/org/labkey/ehr/security/EHRRequestAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text
 ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
+ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/DescriptionUpdateService.java -text

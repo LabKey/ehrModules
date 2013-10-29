@@ -56,6 +56,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         allowFutureDates: false,
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
+        allowRequestsInPast: false,
         allowDeadIds: false,
         allowAnyId: false,
         skipIdFormatCheck: false,
@@ -64,6 +65,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         notificationTypes: null,
         errorSeveritiyForImproperHousing: 'WARN',
         requiresStatusRecalc: false,
+        allowDatesInDistantPast: false,
         lookupValidationFields: []
     };
 
@@ -121,6 +123,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         shouldRemoveTimeFromDate: function(){
             return scriptOptions.removeTimeFromDate;
+        },
+
+        shouldAllowRequestsInPast: function(){
+            return scriptOptions.allowRequestsInPast;
         },
 
         shouldRemoveTimeFromEndDate: function(){
@@ -480,6 +486,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getSessionGUID: function(){
             return props.sessionGUID;
+        },
+
+        allowDatesInDistantPast: function(){
+            return scriptOptions.allowDatesInDistantPast;
         }
     }
 };

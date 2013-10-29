@@ -19,17 +19,25 @@ import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.study.Study;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
+import org.labkey.ehr.EHRManager;
+import org.labkey.ehr.EHRModule;
+import org.springframework.dao.DeadlockLoserDataAccessException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +48,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: bimber
@@ -55,6 +67,11 @@ public class DemographicsCache
     private int _totalCached = 0;
     private int _totalUncached = 0;
     private List<String> _cachedIds = new ArrayList<>();
+    private boolean _onStartupCalled = false;
+    private ScheduledExecutorService _executor;
+    private static ScheduledFuture _future = null;
+
+    private Map<Container, Set<String>> _toCache = new HashMap<>();
 
     private DemographicsCache()
     {
@@ -72,15 +89,13 @@ public class DemographicsCache
         return ret.size() > 0 ? ret.get(0) : null;
     }
 
-    public List<AnimalRecord> getAnimals(Container c, User u, List<String> ids)
+    public List<AnimalRecord> getAnimals(Container c, User u, Collection<String> ids)
     {
         return getAnimals(c, u, ids, false);
     }
 
-    protected List<AnimalRecord> getAnimals(Container c, User u, List<String> ids, boolean forceRecache)
+    protected List<AnimalRecord> getAnimals(Container c, User u, Collection<String> ids, boolean forceRecache)
     {
-        //TODO: check security?
-
         List<AnimalRecord> records = new ArrayList<>();
         Set<String> toCreate = new HashSet<>();
         for (String id : ids)
@@ -148,18 +163,55 @@ public class DemographicsCache
         _totalUncached += ids.size();
     }
 
-    public void asyncCache(final Container c, final User u, final List<String> ids)
+    // IDs to recache are placed into a queue that is inspected and processed on a schedule
+    public synchronized void asyncCache(Container c, List<String> ids)
     {
         _log.info("Request async cache for " + ids.size() + " animals");
-        JobRunner.getDefault().execute(new Runnable(){
-            public void run()
-            {
-                _log.info("Perform async cache for " + ids.size() + " animals");
 
-                //note, if the record is re-requested between the point of uncaching, but prior to commit, we can end up with inconsistent values, so force a re-calculation here
-                DemographicsCache.get().getAnimals(c, u, ids, true);
+        Set<String> queue = _toCache.get(c);
+        if (queue == null)
+            queue = new HashSet<>();
+
+        queue.addAll(ids);
+        _toCache.put(c, queue);
+    }
+
+    // This is intended to run as a background process
+    private void processCache()
+    {
+        for (Container c : _toCache.keySet())
+        {
+            Set<String> ids;
+            synchronized (this)
+            {
+                ids = _toCache.get(c);
+                if (ids.size() == 0)
+                    continue;
             }
-        }, 6000);
+
+            User u = EHRService.get().getEHRUser(c);
+            if (u == null)
+                continue;
+
+            _log.info("Perform async cache for " + ids.size() + " animals");
+
+            //note, if the record is re-requested between the point of uncaching, but prior to commit, we can end up with inconsistent values, so force a re-calculation here
+            try
+            {
+                DemographicsCache.get().getAnimals(c, u, ids, true);
+                synchronized (this)
+                {
+                    _toCache.get(c).removeAll(ids);
+                    if (_toCache.get(c).size() == 0)
+                        _toCache.remove(c);
+                }
+            }
+            catch (DeadlockLoserDataAccessException e)
+            {
+                //if we hit a deadlock, the IDs will not be removed from the cache and therefore re-cached on the next cycle
+                _log.error("DemographicsCache encountered a deadlock", e);
+            }
+        }
     }
 
     public List<AnimalRecord> createRecords(Container c, Collection<String> ids)
@@ -173,7 +225,7 @@ public class DemographicsCache
         Map<String, Map<String, Object>> ret = new HashMap<>();
         //NOTE: SQLServer can complain if requesting more than 2000 at a time, so break into smaller sets
         int start = 0;
-        int batchSize = 1000;
+        int batchSize = 500;
         List<String> allIds = new ArrayList<>(ids);
         while (start < ids.size())
         {
@@ -252,7 +304,7 @@ public class DemographicsCache
         if (ids.size() > 0)
         {
             _log.info("Forcing recache of " + ids.size() + " animals");
-            asyncCache(c, u, ids);
+            asyncCache(c, ids);
         }
     }
 
@@ -266,5 +318,49 @@ public class DemographicsCache
         }
 
         return missing;
+    }
+
+    public void onStartup()
+    {
+        if (_onStartupCalled)
+        {
+            throw new IllegalArgumentException("DemographicsCache.onStartup() has already been called");
+        }
+
+        _onStartupCalled = true;
+
+        //schedule the background process to inspect the queue
+        _executor = Executors.newSingleThreadScheduledExecutor();
+        _future = _executor.scheduleWithFixedDelay(new Runnable(){
+            public void run()
+            {
+                processCache();
+            }
+        }, 60, 10, TimeUnit.SECONDS);
+
+        //also cause all living animals to be cached, if set
+        ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
+        User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
+        if (rootUser == null)
+            return;
+
+        for (Study s : EHRManager.get().getEhrStudies(rootUser))
+        {
+            String value = shouldCache.getEffectiveValue(s.getContainer());
+            if (value != null)
+            {
+                Boolean val = Boolean.parseBoolean(value);
+                if (val)
+                {
+                    User u = EHRService.get().getEHRUser(s.getContainer());
+                    if (u == null || !s.getContainer().hasPermission(u, AdminPermission.class))
+                    {
+                        continue;
+                    }
+
+                    DemographicsCache.get().cacheLivingAnimals(s.getContainer(), u);
+                }
+            }
+        }
     }
 }

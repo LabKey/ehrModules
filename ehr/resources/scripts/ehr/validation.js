@@ -114,9 +114,9 @@ EHR.Server.Validation = {
     /**
      * A helper that will flag any dates more than 1 year in the future or 60 days in the past.
      * @param row The row object, provided by LabKey
-     * @param errors The errors object, provided by LabKey
+     * @param scriptErrors The scriptErrors object, maintined by EHR code
      */
-    flagSuspiciousDate: function(row, errors){
+    flagSuspiciousDate: function(row, scriptErrors, helper){
         var date = EHR.Server.Utils.normalizeDate(row.date);
         if (!date)
             return;
@@ -128,15 +128,17 @@ EHR.Server.Validation = {
         cal2.setTimeInMillis(date.getTime());
 
         if (cal2.after(cal1)){
-            EHR.Server.Utils.addError(errors, 'date', 'Date is more than 1 year in future', 'WARN');
+            EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is more than 1 year in future', 'WARN');
         }
 
         cal1.add(java.util.Calendar.YEAR, -1); //adjust for the year we added above
         cal1.add(java.util.Calendar.DATE, -60);
         if (cal1.after(cal2)){
             var qc = EHR.Server.Security.getQCState(row);
-            if (!qc || !qc.PublicData)
-                EHR.Server.Utils.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
+            if (!qc || !qc.PublicData){
+                var severity = helper.allowDatesInDistantPast() ? 'INFO' : 'WARN';
+                EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is more than 60 days in past', severity);
+            }
         }
     },
 

@@ -146,7 +146,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             editorConfig: {
                 anyMatch: true,
-                plugins: ['ldk-usereditablecombo'],
                 listConfig: {
                     innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
                     getInnerTpl: function(){
@@ -212,23 +211,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 120
             },
             shownInGrid: true
-        },
-        userid: {
-            lookup: {
-                schemaName: 'core',
-                queryName: 'users',
-                displayColumn: 'name',
-                keyColumn: 'name',
-                sort: 'Email'
-            },
-            formEditorConfig:{
-                readOnly: true
-            },
-            editorConfig: {
-                listWidth: 200
-            },
-            defaultValue: LABKEY.Security.currentUser.displayName,
-            shownInGrid: false
         },
         CreatedBy: {
             hidden: false,
@@ -401,6 +383,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'ehr.requests': {
+            sendemail: {
+                //NOTE: Ext doesnt seem to respect value=true, so resort to checked.
+                editorConfig: {
+                    checked: true
+                }
+            },
             requestid: {
                 getInitialValue: function(v, rec){
                     v = v || (rec.dataEntryPanel && rec.dataEntryPanel.requestId ? rec.dataEntryPanel.requestId : LABKEY.Utils.generateUUID());
@@ -704,9 +692,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             room: {
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
-                }
+
             }
         },
         'ehr.encounter_participants': {
@@ -719,6 +705,13 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             username: {
                 hidden: false
+            }
+        },
+        'ehr.encounter_summaries': {
+            remark: {
+                columnConfig: {
+                    width: 500
+                }
             }
         },
         'study.encounters': {
@@ -996,14 +989,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: true,
+                shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             dosage_units: {
-                shownInGrid: true,
+                shownInGrid: false,
                 compositeField: 'Dosage',
                 columnConfig: {
                     width: 120
@@ -1050,6 +1043,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             }
         },
+        'study.flags': {
+
+        },
+        'ehr.snomed_tags': {
+
+        },
+        'onprc_billing.miscCharges': {
+
+        },
         'study.miscTests': {
             result: {
                 compositeField: 'Numeric Result'
@@ -1086,7 +1088,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             qualifier: {
-                hidden: false
+                hidden: false,
+                editorConfig: {
+                    plugins: ['ldk-usereditablecombo']
+                }
             },
             agent: {
                 editorConfig: {
@@ -1139,9 +1144,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             testid: {
                 lookup: {
                     columns: '*'
-                },
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1168,9 +1170,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             testid: {
                 lookup: {
                     columns: '*'
-                },
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1214,9 +1213,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             testid: {
                 lookup: {
                     columns: '*'
-                },
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1484,14 +1480,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: true,
+                shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             dosage_units: {
-                shownInGrid: true,
+                shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']

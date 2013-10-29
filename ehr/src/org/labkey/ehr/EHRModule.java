@@ -42,6 +42,7 @@ import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
+import org.labkey.ehr.demographics.DemographicsCache;
 import org.labkey.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
@@ -86,7 +87,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.372;
+        return 12.375;
     }
 
     public boolean hasScripts()
@@ -143,6 +144,8 @@ public class EHRModule extends ExtendedSimpleModule
 
         //attempt to schedule genetic calculations.  will abort if not enabled
         GeneticCalculationsJob.schedule();
+
+        DemographicsCache.get().onStartup();
 
         //buttons
         EHRService.get().registerMoreActionsButton(new JumpToHistoryButton(this), "study", LDKService.ALL_TABLES);

@@ -8,16 +8,15 @@ SELECT
 d.id,
 d.species,
 d.birth,
+d.death,
 
-floor(age(d.birth, COALESCE(d.death, now()))) AS AgeInYearsRounded,
+floor(age(d.birth, COALESCE(d.death, now()))) AS ageInYearsRounded,
 
-ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE), 1) AS AgeInMonths,
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE), 1) AS ageInMonths,
 
-ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12, 1) AS AgeInYears,
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12, 1) AS ageInYears,
 
-TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as AgeInDays,
-
-cast(floor(age(d.birth, COALESCE(d.death, now()))) as varchar) || ' years, ' || cast(mod(cast(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as integer), 365) as varchar) || ' days' as yearAndDays,
+TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as ageInDays,
 
 case
   when (age_in_months(d.birth, COALESCE(d.death, now()))) < 1
@@ -26,7 +25,7 @@ case
     then (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())), 1), float), VARCHAR) || ' months')
   else
     (CONVERT(CONVERT(FLOOR(age_in_months(d.birth, COALESCE(d.death, now())) / 12), SQL_INTEGER), VARCHAR) || '.' || CONVERT(MOD(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12.0 * 10.0, 0), SQL_INTEGER), 10), VARCHAR) || ' years')
-end as AgeFriendly
+end as ageFriendly
 
 FROM study.Demographics d
 

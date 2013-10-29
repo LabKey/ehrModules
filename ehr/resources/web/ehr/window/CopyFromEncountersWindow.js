@@ -90,7 +90,13 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
         },
         Flags: {
             queryName: 'procedure_default_flags',
-            columns: 'procedureid,flag,value'
+            columns: 'procedureid,flag,value',
+            targetColumns: 'procedureid,category,value'
+        },
+        Narrative: {
+            queryName: 'procedure_default_comments',
+            columns: 'procedureid,comment',
+            targetColumns: 'procedureid,remark'
         },
         'SNOMED Codes': {
             queryName: 'procedure_default_codes',
@@ -231,9 +237,10 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                         var cfg = this.tableNameMap[this.targetTab];
                         if (cfg && cfg.columns){
                             var columns = cfg.columns.split(',');
-                            Ext4.Array.forEach(columns, function(col){
+                            var targetColumns = (cfg.targetColumns || cfg.columns).split(',');
+                            Ext4.Array.forEach(columns, function(col, idx){
                                 if (!Ext4.isEmpty(row.getValue(col))){
-                                    data[col] = row.getValue(col);
+                                    data[targetColumns[idx]] = row.getValue(col);
                                 }
                             }, this);
                         }

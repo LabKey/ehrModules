@@ -1592,16 +1592,22 @@
             </ns:column>
             <ns:column columnName="userid">
                 <ns:columnTitle>User Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
                 <ns:fk>
                     <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>users</ns:fkTable>
+                    <ns:fkTable>Users</ns:fkTable>
                     <ns:fkColumnName>UserId</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
             <ns:column columnName="username">
-                <ns:columnTitle>User Id</ns:columnTitle>
+                <ns:columnTitle>User Name</ns:columnTitle>
                 <ns:inputType>textfield</ns:inputType>
-                <ns:isHidden>false</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>DisplayName</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="role">
                 <ns:fk>
@@ -1716,7 +1722,6 @@
         <ns:tableTitle>Encounter Summaries</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
-            <ns:column columnName="rowid"/>
             <ns:column columnName="Id">
                 <ns:columnTitle>Id</ns:columnTitle>
                 <ns:fk>
@@ -1727,8 +1732,20 @@
             </ns:column>
             <ns:column columnName="date"/>
             <ns:column columnName="parentid"/>
-            <ns:column columnName="schemaName"/>
-            <ns:column columnName="queryName"/>
+            <ns:column columnName="taskid">
+                <ns:columnTitle>Task Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>tasks</ns:fkTable>
+                    <ns:fkColumnName>taskid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="schemaName">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="queryName">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="remark"/>
             <ns:column columnName="objectid"/>
             <ns:column columnName="container"/>

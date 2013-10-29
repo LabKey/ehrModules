@@ -300,7 +300,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Ext4HelperWD.ext4Tab("General"));
         waitAndClick(Ext4HelperWD.ext4Tab("Snapshot"));
         waitForElement(Locator.tagContainingText("span", "Dead"));
-        waitForElement(Locator.tagContainingText("div", "1 years, 307 days"));
+        waitForElement(Locator.tagContainingText("div", "1 year, 308 days"));
         waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
 
         //weight

@@ -24,7 +24,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper allows you to pull records from the treatment schedule into this form.  It will identify any records matching the criteria below that have not already been marked as completed.',
+                html: 'This helper allows you to pull records from the treatment schedule into this form.  It will identify any records matching the criteria below that have not already been marked as completed.  NOTE: it will only return records with a scheduled time that is in the past.',
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'datefield',
@@ -100,6 +100,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
         var filterArray = [];
 
         filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('date', (new Date()).format('Y-m-d H:i'), LABKEY.Filter.Types.LTE));  //exclude treatments in the future
         filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('treatmentStatus', null, LABKEY.Filter.Types.ISBLANK));
 
@@ -162,11 +163,17 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             var row = new LDK.SelectRowsRow(sr);
 
             row.date = row.getDateValue('date');
-            var date = new Date();
 
-            //if retroactively entering (more than 2 hours after the scheduled time), we take the time that record was scheduled to be administered.  otherwise we use the current time
-            if ((date.getTime() - row.date.getTime()) > (1000 * 60 * 60 * 2))
-                date = row.date;
+            var date = row.date;
+
+            // NOTE: the following block has been disabled.
+            // we always use the scheduled time, rather than the current time
+            // we could also consider putting a toggle on the window to switch behavior
+//            var date = new Date();
+//
+//            //if retroactively entering (more than 2 hours after the scheduled time), we take the time that record was scheduled to be administered.  otherwise we use the current time
+//            if ((date.getTime() - row.date.getTime()) > (1000 * 60 * 60 * 2))
+//                date = row.date;
 
             records.push(this.targetStore.createModel({
                 Id: row.getValue('Id'),
@@ -184,6 +191,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 dosage: row.getValue('dosage'),
                 dosage_units: row.getValue('dosage_units'),
                 treatmentid: row.getValue('treatmentid'),
+                timeordered: row.getValue('date'),
                 performedby: performedby,
                 remark: row.getValue('remark'),
                 category: row.getValue('category')

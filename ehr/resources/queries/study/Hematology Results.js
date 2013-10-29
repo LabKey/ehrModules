@@ -8,6 +8,7 @@ require("ehr/triggers").initScript(this);
 
 function onInit(event, helper){
     helper.setScriptOptions({
-        removeTimeFromDate: true
+        removeTimeFromDate: true,
+        allowDatesInDistantPast: true
     });
 }

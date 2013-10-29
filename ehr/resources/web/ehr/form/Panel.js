@@ -51,7 +51,7 @@ Ext4.define('EHR.form.Panel', {
             }
 
             if (!field.name){
-                console.log(field)
+                console.log(field);
                 field.name = field.itemId;
             }
 

@@ -20,7 +20,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
         this.storeCollection.on('commitexception', this.onStoreCollectionCommitException, this);
-        this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
+        //this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
 
 
         this.createServerStores();
@@ -115,11 +115,29 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
     },
 
-    onStoreCollectionCommitException: function(sc){
+    onStoreCollectionCommitException: function(sc, response){
         console.log(arguments);
-        console.log('commit exception');
+        var msg = 'There was an error saving data';
+        var errorMsgs = [];
+        if (response && response.result){
+            Ext4.Array.forEach(response.result, function(command){
+                if (command.errors && command.errors.exception){
+                    errorMsgs.push(command.errors.exception);
+                }
+            }, this);
+
+            errorMsgs = Ext4.Array.unique(errorMsgs);
+
+            msg += '.  The error messages were: ' + errorMsgs.join('\n') + '\n\n';
+            msg += '.  The response JSON was:\n' + Ext4.encode(response.result);
+        }
+
         Ext4.Msg.hide();
-        Ext4.Msg.alert('Error', 'There was an error saving the data');
+        Ext4.Msg.alert('Error', 'There was an error saving the data' + (errorMsgs.length ? '.  The errors were:<br><br>' + errorMsgs.join('<br>') : ''));
+        LDK.Utils.logToServer({
+            level: 'ERROR',
+            message: msg
+        });
     },
 
     onStoreCollectionServerDataChanged: function(sc, changed){
@@ -322,29 +340,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     hasPermission: function(qcStateLabel, permissionName){
-        var permMap = this.formConfig.permissions;
-        permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
-
-        var hasPermission = true;
-        Ext4.Object.each(permMap, function(schemaName, queries) {
-            // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
-            // for the container-level DataEntryPermission
-            var permissionToTest = permissionName;
-            if (schemaName.toLowerCase() != 'study'){
-                permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
-            }
-            Ext4.Object.each(queries, function(queryName, permissions) {
-                if (!permissions[permissionToTest]){
-                    hasPermission = false;
-                    return false;
-                }
-            }, this);
-
-            if (!hasPermission)
-                return false;
-        }, this);
-
-        return hasPermission;
+        return EHR.DataEntryUtils.hasPermission(this.formConfig.permissions, qcStateLabel, permissionName);
     },
 
     onSubmit: function(btn){

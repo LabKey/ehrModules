@@ -17,9 +17,11 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.ehr.history.HistoryRowImpl;
 import org.labkey.api.query.FieldKey;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * User: bimber
@@ -53,5 +55,15 @@ public class DefaultHousingDataSource extends AbstractDataSource
         safeAppend(rs, "Remark", "remark");
 
         return sb.toString();
+    }
+
+    @Override
+    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
+    {
+        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
+        if (row != null)
+            row.setShowTime(true);
+
+        return row;
     }
 }

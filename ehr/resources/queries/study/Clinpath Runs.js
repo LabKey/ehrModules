@@ -11,7 +11,9 @@ function onInit(event, helper){
         removeTimeFromDate: true,
         allowDeadIds: true,
         allowAnyId: true,
-        skipIdFormatCheck: true
+        skipIdFormatCheck: true,
+        allowRequestsInPast: true,
+        allowDatesInDistantPast: true
     });
 }
 

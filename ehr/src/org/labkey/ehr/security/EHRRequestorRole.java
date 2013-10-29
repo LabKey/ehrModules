@@ -17,6 +17,7 @@ package org.labkey.ehr.security;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.security.EHRRequestDeniedUpdatePermission;
+import org.labkey.api.ehr.security.EHRRequestPendingDeletePermission;
 import org.labkey.api.ehr.security.EHRRequestPendingInsertPermission;
 import org.labkey.api.ehr.security.EHRRequestPendingUpdatePermission;
 import org.labkey.api.ehr.security.EHRRequestSampleDeliveredAdminPermission;
@@ -69,7 +70,7 @@ public class EHRRequestorRole extends AbstractEHRDatasetRole
 //                EHRRequestDeniedDeletePermission.class,
 //                EHRRequestDeniedInsertPermission.class,
                 EHRRequestDeniedUpdatePermission.class,
-//                EHRRequestPendingDeletePermission.class,
+                EHRRequestPendingDeletePermission.class,
                 EHRRequestPendingInsertPermission.class,
                 EHRRequestPendingUpdatePermission.class,
                 EHRRequestSampleDeliveredInsertPermission.class,

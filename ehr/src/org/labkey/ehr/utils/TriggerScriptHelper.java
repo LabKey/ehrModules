@@ -33,6 +33,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlSelector;
@@ -40,6 +41,7 @@ import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
@@ -48,16 +50,21 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.security.Group;
+import org.labkey.api.security.GroupManager;
+import org.labkey.api.security.MemberType;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
+import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
@@ -72,6 +79,8 @@ import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
 import org.labkey.ehr.security.EHRSecurityManager;
 
+import javax.mail.Message;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,8 +102,6 @@ import java.util.Set;
  */
 public class TriggerScriptHelper
 {
-    private static final String QCSTATE_CACHE_ID = "qcstates";
-
     private Container _container = null;
     private User _user = null;
 
@@ -181,55 +188,14 @@ public class TriggerScriptHelper
 
     public boolean hasPermission(String schemaName, String queryName, String eventName, String originalQCState, String targetQCState)
     {
-        EVENT_TYPE event = EVENT_TYPE.valueOf(eventName);
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
-
-        SecurableResource sr = getSecurableResource(schemaName, queryName);
-        EHRQCState targetQC = qcStates.get(targetQCState);
-        if (targetQC == null)
-            return false;
-        EHRQCState originalQC = null;
-        if (originalQCState != null)
-        {
-            originalQC = qcStates.get(originalQCState);
-            if (originalQC == null)
-                return false;
-        }
-
-        //NOTE: currently we only test per-table permissions on study
-        if (sr == null)
-            return true;
-
-        if (event.equals(EVENT_TYPE.update))
-        {
-            //test update on oldQC, plus insert on new QC
-            if (originalQCState != null)
-            {
-                if (!EHRSecurityManager.get().testPermission(getUser(), sr, UpdatePermission.class, originalQC))
-                    return false;
-            }
-
-            //we only need to test insert if the new QCState is different from the old one
-            if (!targetQCState.equals(originalQCState))
-            {
-                if (!EHRSecurityManager.get().testPermission(getUser(), sr, InsertPermission.class, targetQC))
-                    return false;
-            }
-        }
-        else
-        {
-            if (!EHRSecurityManager.get().testPermission(getUser(), sr, event.perm, targetQC))
-                return false;
-        }
-
-        return true;
+        return EHRSecurityManager.get().hasPermission(getContainer(), getUser(), schemaName, queryName, EHRSecurityManager.EVENT_TYPE.valueOf(eventName), originalQCState, targetQCState);
     }
 
     public String getQCStateJson() throws Exception
     {
         try
         {
-            Map<String, EHRQCState> qcStates = getQCStateInfo();
+            Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(getContainer());
 
             JSONArray json = new JSONArray();
             for (EHRQCState qc : qcStates.values())
@@ -249,7 +215,7 @@ public class TriggerScriptHelper
 
     public EHRQCState getQCStateForRowId(int rowId)
     {
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
+        Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(getContainer());
 
         for (EHRQCState qc : qcStates.values())
         {
@@ -262,7 +228,7 @@ public class TriggerScriptHelper
 
     public EHRQCState getQCStateForLabel(String label)
     {
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
+        Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(getContainer());
 
         if (qcStates.containsKey(label))
             return qcStates.get(label);
@@ -307,57 +273,6 @@ public class TriggerScriptHelper
             filter.addWhereClause(sql, new Object[]{keyValue}, FieldKey.fromParts(keyField));
         }
         Table.delete(table, filter);
-    }
-
-    private static enum EVENT_TYPE {
-        insert(InsertPermission.class),
-        update(UpdatePermission.class),
-        delete(DeletePermission.class);
-
-        EVENT_TYPE(Class<? extends Permission> perm)
-        {
-            this.perm = perm;
-        }
-
-        public Class<? extends Permission> perm;
-    }
-
-    private SecurableResource getSecurableResource(String schemaName, String queryName)
-    {
-        if ("study".equalsIgnoreCase(schemaName))
-        {
-            for (SecurableResource sr : getStudy().getChildResources(getUser()))
-            {
-                if (sr.getResourceName().equals(queryName))
-                {
-                    return sr;
-                }
-            }
-        }
-        return null;
-    }
-
-    private Map<String, EHRQCState> getQCStateInfo()
-    {
-        String cacheKey = getCacheKey(getStudy(), QCSTATE_CACHE_ID);
-        Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>)CacheManager.getSharedCache().get(cacheKey);
-        if (qcStates != null)
-            return qcStates;
-
-        qcStates = new HashMap<>();
-        for (EHRQCState qc : EHRManager.get().getQCStates(getContainer()))
-        {
-            qcStates.put(qc.getLabel(), qc);
-        }
-
-        CacheManager.getSharedCache().put(getCacheKey(getStudy(), QCSTATE_CACHE_ID), qcStates);
-
-        return qcStates;
-    }
-
-    private String getCacheKey(Study s, String suffix)
-    {
-        return getClass().getName() + "||" + s.getEntityId() + "||" + suffix;
     }
 
     public AnimalRecord getDemographicRecord(String id)
@@ -572,7 +487,7 @@ public class TriggerScriptHelper
     public void announceIdsModified(String schema, String query, List<String> ids)
     {
         DemographicsCache.get().reportDataChange(getContainer(), schema, query, ids);
-        DemographicsCache.get().asyncCache(getContainer(), getUser(), ids);
+        DemographicsCache.get().asyncCache(getContainer(), ids);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -582,12 +497,12 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("study", "weight");
 
-        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.put("Id", id);
         row.put("date", date);
         row.put("weight", weight);
 
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
@@ -601,7 +516,7 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("study", "housing");
 
-        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.put("Id", id);
         row.put("date", date);
         row.put("room", room);
@@ -1080,139 +995,133 @@ public class TriggerScriptHelper
         return null;
     }
 
-    //TODO
-    public void processDeniedRequests(List<String> requestIds)
+    public void processDeniedRequests(final List<String> requestIds)
     {
-        TableInfo ti = getTableInfo("ehr", "requests");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+        JobRunner.getDefault().execute(new Runnable(){
+            public void run()
+            {
+                _log.info("processing denied request email for " + requestIds.size() + " records");
 
+                TableInfo ti = getTableInfo("ehr", "requests");
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
+                TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
 
-        StringBuilder msg = new StringBuilder("<p>The requests that have been denied will say 'Request: Denied' in the status column.  Please do not reply to this email, as this account is not read.");
+                ts.forEach(new Selector.ForEachBlock<ResultSet>()
+                {
+                    @Override
+                    public void exec(ResultSet rs) throws SQLException
+                    {
+                        String requestid = rs.getString("requestid");
+                        Integer notify1 = rs.getInt("notify1");
+                        Integer notify2 = rs.getInt("notify2");
+                        Integer notify3 = rs.getInt("notify3");
+                        boolean sendemail = rs.getObject("sendemail") == null ? false : rs.getBoolean("sendemail");
+                        String title = rs.getString("title");
+                        String formtype = rs.getString("formtype");
 
+                        if (sendemail)
+                        {
+                            String subject = "EHR " + formtype + " Cancelled/Denied";
+                            Set<User> recipients = getRecipients(notify1, notify2, notify3);
+                            if (recipients.size() == 0)
+                            {
+                                _log.warn("No recipients, unable to send EHR trigger script email");
+                                return;
+                            }
 
-//
-//        for (var i=0;i<data.rows.length;i++){
-//            row = data.rows[i];
-//            var recipients = [];
-//            var rows = helper.getRequestsDenied()[row.requestid];
-//
-//            if (row.notify1)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
-//            if (row.notify2)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
-//            if (row.notify3)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
-//
-//            var msgContent = 'One or more elements from a '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been denied: ' +
-//                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
-//                    '">Click here to view them</a>.  <p>';
-//
-//            if (rows.length){
-//                msgContent += 'The following IDs have been marked complete:<br>';
-//                var req;
-//                for (var j=0;j<rows.length;j++){
-//                    req = rows[j];
-//                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
-//                    if (req.description){
-//                        msgContent += req.description.replace(/\n/g,'<br>');
-//                    }
-//                    msgContent += '<p>';
-//                }
-//            }
-//
-//            EHR.Server.Utils.sendEmail({
-//                    recipients: recipients,
-//                    msgContent: msgContent,
-//                    msgSubject: 'EHR '+row.formtype+' Denied',
-//                    notificationType: row.formtype+' Denied'
-//            })
-//        }
-//    }
+                            StringBuilder html = new StringBuilder();
 
+                            html.append("One or more records from the request titled " + title + " have been cancelled or denied.  ");
+                            html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/dataEntryFormDetails.view?requestId=" + requestid + "&formType=" + formtype + "'>");
+                            html.append("Click here to view them</a>.  <p>");
+
+                            sendMessage(subject, html.toString(), recipients);
+                        }
+                    }
+                });
+
+                //TODO: figure out whether to mark whole request as denied
+            }
+        });
     }
 
-    //TODO
-    public void processCompletedRequests(List<String> requestsIds)
+    public void processCompletedRequests(final List<String> requestIds) throws Exception
     {
-        TableInfo ti = getTableInfo("ehr", "requests");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestsIds, CompareType.IN);
-        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+        JobRunner.getDefault().execute(new Runnable(){
+            public void run()
+            {
+                _log.info("processing completed request email for " + requestIds.size() + " records");
 
+                TableInfo ti = getTableInfo("ehr", "requests");
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
+                TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
 
-//        var emails = [];
-//        var row;
-//
-//        for (var i=0;i<data.rows.length;i++){
-//            row = data.rows[i];
-//            var recipients = [];
-//            var rows = helper.getRequestsCompleted()[row.requestid] || [];
-//
-//            if (row.notify1)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
-//            if (row.notify2)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
-//            if (row.notify3)
-//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
-//
-//            var msgContent = 'One or more elements from the '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been completed: ' +
-//                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
-//                    '">Click here to view them</a>.  <p>';
-//
-//            if (rows.length){
-//                msgContent += 'The following IDs have been marked complete:<br>';
-//                var req;
-//                for (var j=0;j<rows.length;j++){
-//                    req = rows[j];
-//                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
-//                    if (req.description){
-//                        msgContent += req.description.replace(/\n/g,'<br>');
-//                    }
-//                    msgContent += '<p>';
-//                }
-//            }
-//
-//            msgContent += '<p>The requests that have been completed will say \'Completed\' in the status column.  Please do not reply directly to this email, as this account is not read.';
-//
-//            EHR.Server.Utils.sendEmail({
-//                    recipients: recipients,
-//                    msgContent: msgContent,
-//                    msgSubject: 'EHR '+row.formtype+' Completed',
-//                    notificationType: row.formtype+' Completed'
-//            })
-//        }
+                ts.forEach(new Selector.ForEachBlock<ResultSet>()
+                {
+                    @Override
+                    public void exec(ResultSet rs) throws SQLException
+                    {
+                        String requestid = rs.getString("requestid");
+                        Integer notify1 = rs.getInt("notify1");
+                        Integer notify2 = rs.getInt("notify2");
+                        Integer notify3 = rs.getInt("notify3");
+                        boolean sendemail = rs.getObject("sendemail") == null ? false : rs.getBoolean("sendemail");
+                        String title = rs.getString("title");
+                        String formtype = rs.getString("formtype");
 
+                        if (sendemail)
+                        {
+                            String subject = "EHR " + formtype + " Completed";
+                            Set<User> recipients = getRecipients(notify1, notify2, notify3);
+                            if (recipients.size() == 0)
+                            {
+                                _log.warn("No recipients, unable to send EHR trigger script email");
+                                return;
+                            }
 
-        //TODO: this should be more general code, not located here
-//    if (helper.getRows().length > 0) {
-//        var r = helper.getRows()[0];
-//        if (r.row.requestid && !r.row.taskid && r.row.QCState == 5) {
-//            LABKEY.Query.selectRows({
-//                schemaName:'ehr',
-//                queryName:'requests',
-//                filterArray:[
-//                    LABKEY.Filter.create('requestid', r.row.requestid, LABKEY.Filter.Types.EQUAL)
-//                ],
-//                scope:this,
-//                success: function(data){
-//                    if (data.rows && data.rows.length) {
-//                        var dRow = data.rows[0];
-//                        if (dRow.priority == 'Stat') {
-//                            EHR.Server.Utils.sendEmail({
-//                                notificationType: 'Clinpath Request - Stat',
-//                                msgContent: 'A clinpath request (' + dRow.rowid +') requires immediate attention:<br>' +
-//                                        dRow.title + ',<br>' +
-//                                        '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?formtype=Clinpath Request&requestid=' + r.row.requestid +
-//                                        '">Click here to view request ' + dRow.rowid +'</a>.',
-//                                msgSubject: 'Request ' + dRow.rowid + ' Stat!'
-//                            });
-//                        }
-//                    }
-//                },
-//                failure: EHR.Server.Utils.onFailure
-//            });
-//        }
-//    }
+                            StringBuilder html = new StringBuilder();
+
+                            html.append("One or more records from the request titled " + title + " have been marked completed.  ");
+                            html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/dataEntryFormDetails.view?requestId=" + requestid + "&formType=" + formtype + "'>");
+                            html.append("Click here to view them</a>.  <p>");
+
+                            sendMessage(subject, html.toString(), recipients);
+                        }
+                    }
+                });
+
+                //TODO: figure out whether to mark whole request as completed
+            }
+        });
+    }
+
+    private Set<User> getRecipients(Integer... userIds)
+    {
+        Set<User> recipients = new HashSet<>();
+        for (Integer userId : userIds)
+        {
+            if (userId > 0)
+            {
+                UserPrincipal up = SecurityManager.getPrincipal(userId);
+                if (up != null)
+                {
+                    if (up instanceof  User)
+                    {
+                        recipients.add((User)up);
+                    }
+                    else
+                    {
+                        for (UserPrincipal u : SecurityManager.getAllGroupMembers((Group)up, MemberType.ACTIVE_USERS))
+                        {
+                            if (((User)u).isActive())
+                                recipients.add((User)u);
+                        }
+                    }
+                }
+            }
+        }
+
+        return recipients;
     }
 
     public void onAnimalArrival(String id, Map<String, Object> row) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -1463,35 +1372,47 @@ public class TriggerScriptHelper
         return null;
     }
 
-    //TODO
-    private void sendMessage(String subject, String bodyText, List<User> recipients)
+    private void sendMessage(String subject, String bodyHtml, Set<User> recipients)
     {
-        //to send email: see SendMessageAction implementation
-        //MailHelper will send the email, but you loose some of the benefit of our API, like auto-resolving emails from UserIds.
-        //it would be preferable to use this and i need to look in more detail
         try
         {
             MailHelper.MultipartMessage msg = MailHelper.createMultipartMessage();
-            //msg.setFrom();
+            msg.setFrom(NotificationService.get().getReturnEmail(getContainer()));
             msg.setSubject(subject);
-            msg.setBodyContent(bodyText, "text/html");
+
+            List<String> emails = new ArrayList<>();
+            for (User u : recipients)
+            {
+                if (u.getEmail() != null)
+                    emails.add(u.getEmail());
+            }
+
+            if (emails.size() == 0)
+            {
+                _log.warn("No emails, unable to send EHR trigger script email");
+                return;
+            }
+
+            msg.setRecipients(Message.RecipientType.TO, StringUtils.join(emails, ","));
+            msg.setBodyContent(bodyHtml, "text/html");
+
+            MailHelper.send(msg, getUser(), getContainer());
         }
         catch (Exception e)
         {
-            //do something
+            _log.error("Unable to send email from EHR trigger script", e);
         }
     }
 
     //TODO
-    private void sendDeathNotification(String idString)
+    private void sendDeathNotification(final String idString)
     {
-        final User user = getUser();
-        final Container container = getContainer();
-        String[] ids = idString.split(";");
-
         JobRunner.getDefault().execute(new Runnable(){
             public void run()
             {
+                final User user = getUser();
+                final Container container = getContainer();
+                String[] ids = idString.split(";");
 
 
             }

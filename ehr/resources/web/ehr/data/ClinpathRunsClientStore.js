@@ -17,7 +17,11 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
 
     onAddRecord: function(store, records){
         Ext4.each(records, function(record){
-            this.onRecordUpdate(record, ['servicerequested']);
+            var modified = ['servicerequested'];
+            if (record.get('chargetype')){
+                modified.push('chargetype');
+            }
+            this.onRecordUpdate(record, modified);
         }, this);
     },
 
@@ -65,7 +69,8 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
             if (lookupRec.get('dataset'))
                 params.type = lookupRec.get('dataset');
 
-            if (modifiedFieldNames.indexOf('servicerequested') > -1 && lookupRec.get('chargetype'))
+            //NOTE: if setting both service and chargetype simultaneously, do not override that selection
+            if (modifiedFieldNames.indexOf('servicerequested') > -1 && modifiedFieldNames.indexOf('chargetype') == -1 && lookupRec.get('chargetype'))
                 params.chargetype = lookupRec.get('chargetype');
 
             if (modifiedFieldNames.indexOf('servicerequested') > -1 && lookupRec.get('tissue')){

@@ -118,8 +118,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
     helper.logDebugMsg(row);
 
     if (EHR.Server.Security.verifyPermissions('insert', row) === false){
-        errors._form = 'Insufficent Permissions';
-        console.warn('ERROR: insufficient permissions');
+        errors._form = 'Insufficient permissions to insert: ' + helper.getQueryName() + ' with status: ' + row.QCStateLabel;
         return;
     }
 
@@ -128,7 +127,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
     EHR.Server.Triggers.rowInit.call(this, helper, scriptErrors, row, null);
 
     //force newly inserted requests to have future dates
-    if (row.date && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest){
+    if (!helper.shouldAllowRequestsInPast() && row.date && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest){
         var now = new Date();
         // NOTE: the removeTimeFromDate flag indicates that that tables only considers date (not datetime).  therefore we need to
         // use a different value when considering past dates
@@ -247,7 +246,7 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
     helper.logDebugMsg(row);
 
     if (EHR.Server.Security.verifyPermissions('update', row, oldRow) === false){
-        errors._form = 'Insufficent permissions';
+        errors._form = 'Insufficient permissions to update: ' + helper.getQueryName() + ' to status: ' + row.QCStateLabel + ', from: ' + (oldRow ? oldRow.QCStateLabel : '<none>');
         return;
     }
 
@@ -350,7 +349,7 @@ EHR.Server.Triggers.beforeDelete = function(row, errors){
     helper.logDebugMsg('beforeDelete: ');
 
     if (EHR.Server.Security.verifyPermissions('delete', row) === false){
-        errors._form = 'Insufficent permissions';
+        errors._form = 'Insufficient permissions to delete: ' + helper.getQueryName() + ' with status: ' + row.QCStateLabel;
         return;
     }
 
@@ -667,7 +666,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     if (row.date){
         //flags dates more than 1 year in the future or 60 in the past
-        EHR.Server.Validation.flagSuspiciousDate(row, scriptErrors);
+        EHR.Server.Validation.flagSuspiciousDate(row, scriptErrors, helper);
 
         if (!helper.isETL()){
             EHR.Server.Validation.verifyDate(row, scriptErrors, helper)

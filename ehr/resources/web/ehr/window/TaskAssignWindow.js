@@ -86,6 +86,7 @@ Ext4.define('EHR.window.TaskAssignWindow', {
             Ext4.Msg.wait('Updating...');
 
             LABKEY.Query.updateRows({
+                method: 'POST',
                 schemaName: 'ehr',
                 queryName: 'tasks',
                 rows: rows,

@@ -150,6 +150,11 @@
                         <columnTitle>Treatment Id</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="timeordered">
+                        <columnTitle>Time Ordered</columnTitle>
+                        <description>For drugs that were ordered using the Treatment Orders table, this stores the original time this administration was scheduled to be administered.</description>
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="parentid">
 
                     </column>

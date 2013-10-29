@@ -164,6 +164,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         var checkedRows = dataRegion.getChecked();
 
         LABKEY.Query.selectRows({
+            method: 'POST',
             requiredVersion: 9.1,
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
@@ -246,6 +247,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LABKEY.Query.updateRows({
+            method: 'POST',
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
             rows: toSave,

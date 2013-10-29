@@ -9,6 +9,7 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
 
     initComponent: function(){
         Ext4.apply(this, {
+            minHeight: 200,
             border: false,
             defaults: {
                 border: false

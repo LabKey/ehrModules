@@ -253,6 +253,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
     saveTemplate: function(rows){
         LABKEY.Query.insertRows({
+            method: 'POST',
             schemaName: 'ehr',
             queryName: 'formtemplates',
             scope: this,
@@ -268,6 +269,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
                 }, this);
 
                 LABKEY.Query.insertRows({
+                    method: 'POST',
                     schemaName: 'ehr',
                     queryName: 'formTemplateRecords',
                     rows: rows,

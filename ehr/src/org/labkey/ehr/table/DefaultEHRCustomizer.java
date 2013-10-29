@@ -16,6 +16,7 @@
 package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
@@ -75,6 +76,8 @@ import java.util.Set;
 public class DefaultEHRCustomizer implements TableCustomizer
 {
     public static final String ID_COL = "Id";
+    public static final String PARTICIPANT_CONCEPT_URI = "http://cpas.labkey.com/Study#ParticipantId";
+
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
     private Map<String, UserSchema> _userSchemas = new HashMap<>();
     private boolean _addLinkDisablers = true;
@@ -129,6 +132,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         else if (matches(table, "ehr", "protocol"))
         {
             customizeProtocolTable((AbstractTableInfo) table);
+        }
+        else if (matches(table, "study", "demographicsAge"))
+        {
+            customizeDemographicsAgeTable((AbstractTableInfo) table);
         }
         else if (matches(table, "ehr_lookups", "rooms"))
         {
@@ -236,6 +243,27 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             code.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
+
+        for (ColumnInfo col : ti.getColumns())
+        {
+            if (PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()))
+            {
+                col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                if (col.getFk() == null)
+                {
+                    Container c = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+                    if (c != null)
+                    {
+                        UserSchema us = getUserSchema(ti, "study", c);
+                        if (us != null)
+                        {
+                            col.setFk(new QueryForeignKey(us, "Animal", "Id", "Id"));
+                            col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", c));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void customizeRoomCol(AbstractTableInfo ti, String name)
@@ -274,6 +302,19 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
+
+        //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
+        ColumnInfo datasets = ti.getColumn(FieldKey.fromString("DataSets"));
+        if (datasets != null)
+        {
+            ti.removeColumn(datasets);
+        }
+
+        ColumnInfo dataset = ti.getColumn(FieldKey.fromString("DataSet"));
+        if (dataset != null)
+        {
+            dataset.setHidden(true);
+        }
 
         doSharedCustomization(ti);
         if (matches(ti, "study", "Drug Administration") || matches(ti, "study", "Treatment Orders"))
@@ -767,6 +808,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col11.setDescription("Contains basic demographic information on the animals, including gender, dam, sire, etc.  This is similar to what was formerly called abstract.");
         ds.addColumn(col11);
 
+        ColumnInfo col15 = getWrappedIdCol(us, ds, "death", "deaths");
+        col15.setLabel("Death Information");
+        col15.setDescription("Contains information about the death of this animal, if applicable.");
+        ds.addColumn(col15);
+
+        ColumnInfo col16 = getWrappedIdCol(us, ds, "birth", "birth");
+        col16.setLabel("Birth Information");
+        col16.setDescription("Contains information about the birth of this animal.");
+        ds.addColumn(col16);
+
         ColumnInfo col13 = getWrappedIdCol(us, ds, "curLocation", "demographicsCurLocation");
         col13.setLabel("Housing - Current");
         col13.setDescription("The calculates the current housing location for each living animal.");
@@ -905,6 +956,26 @@ public class DefaultEHRCustomizer implements TableCustomizer
             totalCol.setLabel("Total Animals");
             totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.isActive~eq=true"));
             table.addColumn(totalCol);
+        }
+    }
+
+    private void customizeDemographicsAgeTable(AbstractTableInfo table)
+    {
+        String name = "yearAndDays";
+        if (table.getColumn(name) == null)
+        {
+            WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), name);
+            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
+            {
+                @Override
+                public DisplayColumn createRenderer(ColumnInfo colInfo)
+                {
+                    return new AgeDisplayColumn(colInfo);
+                }
+            });
+            wrap.setLabel("Age (Years and Days");
+
+            table.addColumn(wrap);
         }
     }
 
@@ -1302,20 +1373,32 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     public UserSchema getUserSchema(AbstractTableInfo ds, String name)
     {
-        if (_userSchemas.containsKey(name))
-            return _userSchemas.get(name);
+        Container c = ds.getUserSchema().getContainer();
+        return getUserSchema(ds, name, c);
+    }
+
+    // NOTE: we now cache userSchemas per container, since we want to allow tables in containers outside of the primary EHR container
+    // to get FKs that point to tables in the main EHR container
+    public UserSchema getUserSchema(AbstractTableInfo ds, String name, Container c)
+    {
+        assert c != null : "No container provided";
+
+        String key = c.getEntityId() + "||" + name;
+        if (_userSchemas.containsKey(key))
+            return _userSchemas.get(key);
 
         UserSchema us = ds.getUserSchema();
         if (us != null)
         {
-            _userSchemas.put(us.getName(), us);
+            String tableKey = us.getContainer().getEntityId() + "||" + us.getName();
+            _userSchemas.put(tableKey, us);
 
-            if (name.equalsIgnoreCase(us.getName()))
+            if (name.equalsIgnoreCase(us.getName()) && c.equals(us.getContainer()))
                 return us;
 
-            UserSchema us2 = QueryService.get().getUserSchema(us.getUser(), us.getContainer(), name);
+            UserSchema us2 = QueryService.get().getUserSchema(us.getUser(), c, name);
             if (us2 != null)
-                _userSchemas.put(name, us2);
+                _userSchemas.put(key, us2);
 
             return us2;
         }

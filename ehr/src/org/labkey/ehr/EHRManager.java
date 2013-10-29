@@ -86,6 +86,7 @@ public class EHRManager
     private static final EHRManager _instance = new EHRManager();
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
+    public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
@@ -563,6 +564,11 @@ public class EHRManager
                 {
                     toAdd.add(new String[]{"enddate", "qcstate", "lsid"});
                 }
+                else if (d.getName().equalsIgnoreCase("drug"))
+                {
+                    toAdd.add(new String[]{"treatmentid"});
+                    toAdd.add(new String[]{"qcstate", "include:treatmentid"});
+                }
 
                 for (String[] indexCols : toAdd)
                 {
@@ -787,8 +793,8 @@ public class EHRManager
         names.add(Pair.of("encounter_summaries", new String[]{"parentid"}));
         names.add(Pair.of("encounter_summaries", new String[]{"id"}));
 
-        names.add(Pair.of("encounter_summaries", new String[]{"parentid", "rowid", "container", "id"}));
-        names.add(Pair.of("encounter_summaries", new String[]{"container", "rowid"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"parentid", "objectid", "container", "id"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"container", "objectid"}));
         names.add(Pair.of("encounter_summaries", new String[]{"container", "parentid"}));
 
         names.add(Pair.of("snomed_tags", new String[]{"caseid"}));
@@ -805,11 +811,13 @@ public class EHRManager
         names.add(Pair.of("snomed_tags", new String[]{"recordid", "container", "code"}));
         names.add(Pair.of("snomed_tags", new String[]{"code", "container"}));
 
+        names.add(Pair.of("treatment_times", new String[]{"container", "treatmentid"}));
+
         for (Pair<String, String[]> pair : names)
         {
             String table = pair.first;
             String indexName = table + "_" + StringUtils.join(pair.second, "_");
-            rebuildIndex(indexName, table);
+            rebuildIndex(table, indexName);
         }
 
         //clustered index does not follow other naming conventions
@@ -1006,15 +1014,15 @@ public class EHRManager
             }
             catch (InvalidKeyException e)
             {
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException(e);
             }
             catch (QueryUpdateServiceException e)
             {
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException(e);
             }
             catch (BatchValidationException e)
             {
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException(e);
             }
         }
 

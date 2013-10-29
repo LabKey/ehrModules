@@ -159,6 +159,9 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     return value;
                 }
             },{
+                header: 'Route',
+                dataIndex: 'route'
+            },{
                 header: 'Amount',
                 dataIndex: 'amount'
             },{
