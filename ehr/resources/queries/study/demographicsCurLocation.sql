@@ -18,7 +18,7 @@ d2.room,
 
 d2.cage,
 
-d2.cond,
+ifdefined(d2.cond) as cond,
 
 d2.date,
 
