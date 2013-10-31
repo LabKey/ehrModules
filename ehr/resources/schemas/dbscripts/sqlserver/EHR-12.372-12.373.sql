@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --this might have been created by EHRManager
 EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'index', 'encounter_summaries_objectid';
 EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'index', 'encounter_summaries_parentid_rowid_container_id';
