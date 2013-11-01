@@ -179,7 +179,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForText("Current Population Counts");
         waitForText("Population Changes");
         waitForText("Other Population Queries");
-        //TODO: test R report plus other queries
+
         assertNoErrorText();
 
         //participant page
