@@ -17,6 +17,7 @@ package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -25,6 +26,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.dataentry.RequestForm;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
@@ -58,6 +60,7 @@ import org.labkey.ehr.dataentry.SimpleGridPanel;
 import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
+import org.labkey.ehr.security.EHRSecurityManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -443,6 +446,12 @@ public class EHRServiceImpl extends EHRService
         return ContainerManager.getForPath(path);
     }
 
+    @NotNull
+    public Map<String, EHRQCState> getQCStates(Container c)
+    {
+        return EHRSecurityManager.get().getQCStateInfo(c);
+    }
+
     public void registerFormType(DataEntryForm form)
     {
         DataEntryManager.get().registerFormType(form);
@@ -609,5 +618,17 @@ public class EHRServiceImpl extends EHRService
 
         SecurityPolicy policy = SecurityPolicyManager.getPolicy(sr);
         return policy.hasPermission(ti.getUserSchema().getUser(), perm);
+    }
+
+    public boolean hasPermission (String schemaName, String queryName, Container c, User u, Class<? extends Permission> perm, EHRQCState qcState)
+    {
+        SecurableResource sr = EHRSecurityManager.get().getSecurableResource(c, u, schemaName, queryName);
+        if (sr == null)
+        {
+            _log.warn("Unable to find SecurableResource for table: " + schemaName + "." + queryName);
+            return false;
+        }
+
+        return EHRSecurityManager.get().testPermission(u, sr, perm, qcState);
     }
 }

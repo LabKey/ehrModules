@@ -15,9 +15,11 @@
  */
 package org.labkey.ehr.security;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
@@ -31,9 +33,9 @@ import org.labkey.api.study.DataSetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
-import org.labkey.ehr.utils.EHRQCState;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,7 +180,7 @@ public class EHRSecurityManager
         public Class<? extends Permission> perm;
     }
 
-    private SecurableResource getSecurableResource(Container c, User u, String schemaName, String queryName)
+    public SecurableResource getSecurableResource(Container c, User u, String schemaName, String queryName)
     {
         if ("study".equalsIgnoreCase(schemaName))
         {
@@ -186,9 +188,9 @@ public class EHRSecurityManager
             if (s == null)
                 return null;
 
-            for (SecurableResource sr : s.getChildResources(u))
+            for (DataSet sr : s.getDataSets())
             {
-                if (sr.getResourceName().equals(queryName))
+                if (sr.getLabel().equalsIgnoreCase(queryName) || sr.getName().equalsIgnoreCase(queryName))
                 {
                     return sr;
                 }
@@ -197,11 +199,12 @@ public class EHRSecurityManager
         return null;
     }
 
+    @NotNull
     public Map<String, EHRQCState> getQCStateInfo(Container c)
     {
         Study study = StudyService.get().getStudy(c);
         if (study == null)
-            return null;
+            return Collections.emptyMap();
 
         String cacheKey = getCacheKey(study, QCSTATE_CACHE_ID);
         Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>) CacheManager.getSharedCache().get(cacheKey);

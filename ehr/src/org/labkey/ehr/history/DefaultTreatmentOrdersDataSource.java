@@ -106,7 +106,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     @Override
     protected String getCategoryText(Results rs) throws SQLException
     {
-        String category = rs.getString("category");
+        String category = rs.hasColumn(FieldKey.fromString("category")) ? rs.getString("category") : null;
         return category == null ?  "Medication Ordered" : category + " Medication Ordered";
     }
 

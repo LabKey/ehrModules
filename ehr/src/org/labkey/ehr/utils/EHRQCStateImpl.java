@@ -18,13 +18,14 @@ package org.labkey.ehr.utils;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.ehr.EHRQCState;
 
 /**
  * User: bimber
  * Date: 9/17/12
  * Time: 2:02 PM
  */
-public class EHRQCState
+public class EHRQCStateImpl implements EHRQCState
 {
     private int _rowId;
     private String _label;

@@ -1160,7 +1160,7 @@ ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/DescriptionUpdateService.java -text
-ehr/src/org/labkey/ehr/utils/EHRQCState.java -text
+ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text
 ehr/test/src/org/labkey/test/tests/AbstractEHRTest.java -text

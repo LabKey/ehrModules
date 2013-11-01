@@ -9,13 +9,12 @@
  * @cfg {String} caseId
  * @cfg {String} encounterId
  * @cfg {String} mode
+ * @cfg {String} remarkFormat
  */
 Ext4.define('EHR.panel.EnterRemarkPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-enterremarkpanel',
-    autoScroll: true,
-    minWidth: 590,
-    constrain: true,
+    minWidth: 580,
     itemId: 'remarksPanel',
 
     statics: {
@@ -69,10 +68,10 @@ Ext4.define('EHR.panel.EnterRemarkPanel', {
         }
     },
 
-    getBaseItems: function(){
+    getBaseItems: function(remarkFormat){
         return [{
             xtype: 'ehr-clinicalremarkpanel',
-            remarkFormat: 'Simple Remark',
+            remarkFormat: this.remarkFormat || 'Simple Remark',
             animalId: this.animalId,
             taskId: this.taskId
         },{

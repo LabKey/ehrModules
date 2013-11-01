@@ -11,11 +11,23 @@
  */
 Ext4.define('EHR.window.EnterRemarkWindow', {
     extend: 'Ext.window.Window',
-    constrain: true,
-    maximizable: true,
+
+    statics: {
+        createWindow: function(animalId, category, caseId, remarkFormat, encounterId){
+            console.log(arguments);
+            Ext4.create('EHR.window.EnterRemarkWindow', {
+                animalId: animalId,
+                caseId: caseId,
+                encounterId: encounterId,
+                mode: category,
+                remarkFormat: remarkFormat
+            }).show();
+        }
+    },
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
+            width: 600,
             title: 'Enter Remark: ' + this.animalId,
             modal: true,
             closeAction: 'destroy',

@@ -19,6 +19,7 @@
         <column name="animals"/>
         <column name="barrier"/>
         <column name="tissue"/>
+        <column name="contactsSla"/>
     </columns>
     <sorts>
         <sort column="lastName" descending="false"/>

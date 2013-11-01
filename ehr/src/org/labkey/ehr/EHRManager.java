@@ -35,8 +35,8 @@ import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
-import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.security.EHRCompletedInsertPermission;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.OntologyManager;
@@ -66,7 +66,7 @@ import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.security.EHRSecurityManager;
-import org.labkey.ehr.utils.EHRQCState;
+import org.labkey.ehr.utils.EHRQCStateImpl;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
@@ -1089,6 +1089,6 @@ public class EHRManager
     {
         SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
-        return new SqlSelector(db, sql).getArray(EHRQCState.class);
+        return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
 }

@@ -71,14 +71,12 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
         if (results.distinctTypes)
             this.distinctTypes = results.distinctTypes;
 
-        for (var id in results.results){
-            Ext4.each(results.results[id], function(row){
-                row.date = new Date(row.date);
-                row.group = row.date.format('Y-m-d') + '_' + row.id;
-                row.html = row.html ? row.html.replace(/\n/g, '<br>') : null;
-                toAdd.push(this.createModel(row));
-            }, this);
-        }
+        Ext4.each(results.results, function(row){
+            row.date = new Date(row.date);
+            row.group = row.date.format('Y-m-d') + '_' + row.id;
+            row.html = row.html ? row.html.replace(/\n/g, '<br>') : null;
+            toAdd.push(this.createModel(row));
+        }, this);
 
         this.isLoadingData = false;
         if(toAdd.length){

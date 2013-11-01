@@ -76,7 +76,12 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     text: 'Edit Treatment',
                     disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(btn){
-
+                        Ext4.create('EHR.window.ManageRecordWindow', {
+                            schemaName: 'study',
+                            queryName: 'Treatment Orders',
+                            pkCol: 'lsid',
+                            pkValue: rec.get('lsid')
+                        }).show();
                     }
                 }]
             });
@@ -110,7 +115,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'Treatment Orders',
-            columns: 'lsid,objectid,Id,date,enddate,category,remark,performedby,code,dose,dose_units,amount,amount_units,concentration,conc_units',
+            columns: 'lsid,objectid,Id,date,enddate,category,remark,performedby,code,route,dose,dose_units,amount,amount_units,concentration,conc_units',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)

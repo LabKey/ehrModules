@@ -45,6 +45,7 @@ import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
@@ -77,6 +78,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -604,18 +606,14 @@ public class EHRController extends SpringActionController
 
             try
             {
-                Map<String, JSONArray> results = new HashMap<>();
+                JSONArray results = new JSONArray();
                 for (String subjectId : form.getSubjectIds())
                 {
-                    JSONArray arr = new JSONArray();
-
                     List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate(), form.isRedacted());
                     for (HistoryRow row : rows)
                     {
-                        arr.put(row.toJSON());
+                        results.put(row.toJSON());
                     }
-
-                    results.put(subjectId, arr);
                 }
 
                 resultProperties.put("success", true);
@@ -652,17 +650,11 @@ public class EHRController extends SpringActionController
             try
             {
                 String subjectId = form.getSubjectIds()[0];
-                Map<String, JSONArray> results = new HashMap<>();
+                JSONArray results = new JSONArray();
                 List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getCaseId(), form.isRedacted());
                 for (HistoryRow row : rows)
                 {
-                    JSONArray arr = results.get(subjectId);
-                    if (arr == null)
-                        arr = new JSONArray();
-
-                    arr.put(row.toJSON());
-
-                    results.put(subjectId, arr);
+                    results.put(row.toJSON());
                 }
 
                 resultProperties.put("success", true);
@@ -1147,6 +1139,47 @@ public class EHRController extends SpringActionController
         {
             return root.addChild(_title == null ? "Enter Data" : _title);
         }
+    }
+
+    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    public class DataEntryFormJsonForQueryAction extends ApiAction<EnterDataForm>
+    {
+        @Override
+        public ApiResponse execute(EnterDataForm form, BindException errors)
+        {
+            if (form.getQueryName() == null || form.getSchemaName() == null)
+            {
+                errors.reject(ERROR_MSG, "Must provide either the schema/query");
+                return null;
+            }
+
+            DataEntryForm def = DataEntryManager.get().getFormForQuery(form.getSchemaName(), form.getQueryName(), getContainer(), getUser());
+            if (def == null)
+            {
+                errors.reject(ERROR_MSG, "Unable to create form for query: " + form.getSchemaName() + "." + form.getQueryName());
+                return null;
+            }
+
+            JSONObject ret = new JSONObject();
+            ret.put("formConfig", def.toJSON(getContainer(), getUser()));
+
+            LinkedHashSet<String> jsDependencyPaths = new LinkedHashSet<>();
+            LinkedHashSet<String> cssDependencyPaths = new LinkedHashSet<>();
+
+            LinkedHashSet<ClientDependency> dependencies = new LinkedHashSet<>();
+            dependencies.add(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            dependencies.addAll(def.getClientDependencies());
+            for (ClientDependency cd : dependencies)
+            {
+                jsDependencyPaths.addAll(cd.getJsPaths(getContainer(), getUser(), AppProps.getInstance().isDevMode()));
+                cssDependencyPaths.addAll(cd.getCssPaths(getContainer(), getUser(), AppProps.getInstance().isDevMode()));
+            }
+            ret.put("jsDependencies", jsDependencyPaths);
+            ret.put("cssDsDependencies", cssDependencyPaths);
+
+            return new ApiSimpleResponse(ret);
+        }
+
     }
 
     public static class EnterDataForm

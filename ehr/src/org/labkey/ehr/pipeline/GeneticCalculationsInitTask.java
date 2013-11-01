@@ -34,6 +34,7 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.ResultSetUtil;
+import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -150,6 +151,10 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
                     outputFile.delete();
                     throw new PipelineJobException("No rows present in pedigree table");
                 }
+            }
+            catch (BadSqlGrammarException e)
+            {
+                throw new PipelineJobException("Unable to query pedigree table", e);
             }
             finally
             {
