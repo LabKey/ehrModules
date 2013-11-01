@@ -277,6 +277,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 
         _extHelper.selectComboBoxItem("Route:", "oral\u00a0");
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
+        sleep(150);
         _extHelper.selectComboBoxItem(Locator.xpath("//input[@name='conc_units']/.."), "mg/tablet\u00a0");
 
         //TODO: assert units
