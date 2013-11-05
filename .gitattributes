@@ -286,6 +286,7 @@ ehr/resources/queries/study/Chemistry[!!-~]Results/.qview.xml -text
 ehr/resources/queries/study/Chemistry[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.js -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
+ehr/resources/queries/study/Clinical[!!-~]Encounters/.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries[!!-~]Plus[!!-~]Codes.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.js -text
