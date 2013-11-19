@@ -15,7 +15,6 @@
  */
 package org.labkey.test.tests;
 
-import org.junit.Assert;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -42,6 +41,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.junit.Assert.*;
 
 /**
  * User: bimber
@@ -167,7 +168,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
             if (!isElementPresent(Locator.linkWithText(getProjectName())))
                 log("Test Project deleted in " + (System.currentTimeMillis() - startTime) + "ms");
             else
-                Assert.fail("Test Project not finished deleting after 5 minutes");
+                fail("Test Project not finished deleting after 5 minutes");
         }
     }
 
@@ -321,7 +322,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     {
         String[] texts = new String[]{"error", "Error", "ERROR", "failed", "Failed", "Invalid", "invalid"};
         String visibleText = findVisibleText(texts);
-        Assert.assertTrue("Error text found: " + visibleText, visibleText == null);
+        assertTrue("Error text found: " + visibleText, visibleText == null);
     }
 
     /**

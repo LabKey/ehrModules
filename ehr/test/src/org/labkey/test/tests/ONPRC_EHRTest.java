@@ -37,7 +37,6 @@ import org.labkey.test.util.RReportHelperWD;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
-import org.testng.Assert;
 
 import java.io.File;
 import java.util.Arrays;
@@ -45,6 +44,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * User: bimber
@@ -173,7 +174,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         click(Locator.id("uniqueButton"));
         waitForElement(Locator.id("uniqueInputTotal").withText("6 total"));
         assertElementPresent(Locator.id("uniqueTargetTotal").withText("4 total"));
-        Assert.assertEquals(getDriver().findElement(Locator.id("uniqueTarget").toBy()).getAttribute("value"), "1\n2\n3\n4", "Incorrect text");
+        assertEquals(getDriver().findElement(Locator.id("uniqueTarget").toBy()).getAttribute("value"), "1\n2\n3\n4", "Incorrect text");
 
         setFormElement(Locator.id("subtract1"), "1,2,1\n3,3;4");
         setFormElement(Locator.id("subtract2"), "1,4;23 48");
@@ -182,13 +183,13 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         assertElementPresent(Locator.id("subtractList2Total").withText("4 total"));
 
         assertElementPresent(Locator.id("intersectTargetTotal").withText("2 total"));
-        Assert.assertEquals(getDriver().findElement(Locator.id("intersectTarget").toBy()).getAttribute("value"), "1\n4", "Incorrect text");
+        assertEquals(getDriver().findElement(Locator.id("intersectTarget").toBy()).getAttribute("value"), "1\n4", "Incorrect text");
 
         assertElementPresent(Locator.id("subtractTargetTotal").withText("3 total"));
-        Assert.assertEquals(getDriver().findElement(Locator.id("subtractTarget").toBy()).getAttribute("value"), "2\n3\n3", "Incorrect text");
+        assertEquals(getDriver().findElement(Locator.id("subtractTarget").toBy()).getAttribute("value"), "2\n3\n3", "Incorrect text");
 
         assertElementPresent(Locator.id("subtractTargetTotal2").withText("2 total"));
-        Assert.assertEquals(getDriver().findElement(Locator.id("subtractTarget2").toBy()).getAttribute("value"), "23\n48", "Incorrect text");
+        assertEquals(getDriver().findElement(Locator.id("subtractTarget2").toBy()).getAttribute("value"), "23\n48", "Incorrect text");
 
         //animal groups
         goToProjectHome();
@@ -227,7 +228,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
-        Assert.assertTrue(isTextPresent("Console output"));
+        assertTrue(isTextPresent("Console output"));
     }
 
     @Test
@@ -265,7 +266,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
             if (arr[1] != null && arr.length == 4)
             {
-                Assert.assertEquals(panelGrid.getFieldValue(panelIdx, "tissue"), arr[1], "Tissue not set properly");
+                assertEquals("Tissue not set properly", panelGrid.getFieldValue(panelIdx, "tissue"), arr[1]);
             }
             else if (arr.length > 4)
             {
@@ -273,10 +274,10 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                 panelGrid.setGridCellJS(panelIdx, "tissue", arr[4]);
                 arr[1] = arr[4];
 
-                Assert.assertEquals(panelGrid.getFieldValue(panelIdx, "tissue"), arr[1], "Tissue not set properly");
+                assertEquals("Tissue not set properly", panelGrid.getFieldValue(panelIdx, "tissue"), arr[1]);
             }
 
-            Assert.assertEquals(panelGrid.getFieldValue(panelIdx, "type"), arr[2], "Category not set properly");
+            assertEquals("Category not set properly", panelGrid.getFieldValue(panelIdx, "type"), arr[2]);
 
             validatePanelEntry(arr[0], arr[1], arr[2], arr[3]);
 
@@ -314,7 +315,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
             if (tissue != null && grid.isColumnPresent("tissue", true))
             {
-                Assert.assertEquals(grid.getFieldValue(1, "tissue"), tissue, "Tissue was not copied from runs action");
+                assertEquals("Tissue was not copied from runs action", grid.getFieldValue(1, "tissue"), tissue);
             }
         }
         else
@@ -327,12 +328,12 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             {
                 testFieldName = (String)row.get("testfieldname");
                 String testname = (String)row.get("testname");
-                Assert.assertEquals(grid.getFieldValue(rowIdx, testFieldName), testname, "Wrong testId");
+                assertEquals("Wrong testId", grid.getFieldValue(rowIdx, testFieldName), testname);
 
                 String method = (String)row.get("method");
                 if (method != null)
                 {
-                    Assert.assertEquals(grid.getFieldValue(rowIdx, "method"), method, "Wrong method");
+                    assertEquals("Wrong method", grid.getFieldValue(rowIdx, "method"), method);
                 }
 
                 if (lookupTable != null)
@@ -340,7 +341,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                     String units = getUnits(lookupTable, testname);
                     if (units != null)
                     {
-                        Assert.assertEquals(grid.getFieldValue(rowIdx, "units"), units, "Wrong units");
+                        assertEquals("Wrong units", grid.getFieldValue(rowIdx, "units"), units);
                     }
                 }
 
@@ -369,7 +370,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
                     //grid.getActiveGridEditor().sendKeys(Keys.ENTER);
 
                     Object newVal = grid.getFieldValue(j, testFieldName);
-                    Assert.assertEquals(newVal, origVal, "Test Id value did not match after key navigation");
+                    assertEquals("Test Id value did not match after key navigation", newVal, origVal);
                 }
 
                 //NOTE: the test can get bogged down w/ many rows, so we delete as it goes along
@@ -520,7 +521,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             Locator label = Locator.tag("div").withClass("ldk-notificationlabel").index(i);
             waitForElement(label);
             String notificationName = label.findElement(getDriver()).getText();
-            Assert.assertNotNull(notificationName);
+            assertNotNull(notificationName);
             if (skippedNotifications.contains(notificationName))
             {
                 log("skipping notification: " + notificationName);

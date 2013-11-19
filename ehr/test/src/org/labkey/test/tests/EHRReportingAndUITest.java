@@ -16,7 +16,6 @@
 
 package org.labkey.test.tests;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,6 +33,8 @@ import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
+
+import static org.junit.Assert.*;
 
 @Category({External.class, EHR.class, ONPRC.class})
 public class EHRReportingAndUITest extends AbstractEHRTest
@@ -211,7 +212,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         refreshAnimalHistoryReport();
         _helper.waitForCmp(query);
         subjField = _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
-        Assert.assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
+        assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
 
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
@@ -220,7 +221,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
         waitForText("Rhesus"); //a proxy for the loading of the dataRegion
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        Assert.assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
 
         log("Verify location based history");
         waitAndClick(Locator.ext4Radio("Current Location"));
@@ -255,7 +256,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         // Check protocol search results.
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
@@ -263,7 +264,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElementToDisappear(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, getDataRegionRowCount(dataRegionName));
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
@@ -272,14 +273,14 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         waitForText(PROTOCOL_MEMBER_IDS[0]);
-        Assert.assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Locator.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        Assert.assertEquals("Did not find the expected number of Animals", 5, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", 5, getDataRegionRowCount(dataRegionName));
 
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
@@ -338,7 +339,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
         waitForElement(Ext4HelperWD.ext4Window("Distinct Values"));
         String expected = PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[1]+"\n"+PROTOCOL_MEMBER_IDS[2];
-        Assert.assertEquals("Incorrect value returned", expected, _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
+        assertEquals("Incorrect value returned", expected, _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
         _helper.clickExt4WindowBtn("Distinct Values", "Close");
 
         log("Return Distinct Values - filtered");
@@ -351,7 +352,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         Ext4CmpRefWD btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
         waitForElement(Ext4Helper.ext4Window("Distinct Values"));
-        Assert.assertEquals("Incorrect value returned", PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[2], _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
+        assertEquals("Incorrect value returned", PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[2], _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
         btn = _ext4Helper.queryOne("button[text='Close']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
 
@@ -363,7 +364,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.id(btn.getId()));
         waitForElement(Ext4Helper.ext4Window("Distinct Values"));
         String value = (String)_ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue();
-        Assert.assertEquals("Incorrect number of IDs returned", 2, value.split("\n").length);
+        assertEquals("Incorrect number of IDs returned", 2, value.split("\n").length);
         btn = _ext4Helper.queryOne("button[text='Close']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
 
@@ -409,7 +410,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         refreshAnimalHistoryReport();
         waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        Assert.assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));
+        assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));
         assertTextPresent(PROTOCOL_MEMBER_IDS[0], PROTOCOL_MEMBER_IDS[2]);
     }
 

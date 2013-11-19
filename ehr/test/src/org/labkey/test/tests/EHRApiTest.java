@@ -18,7 +18,6 @@ package org.labkey.test.tests;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * User: bbimber
@@ -257,20 +258,20 @@ public class EHRApiTest extends AbstractEHRTest
             cmd.setFilters(Collections.singletonList(new Filter("Id", subject)));
             Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
             SelectRowsResponse resp = cmd.execute(cn, getContainerPath());
-            Assert.assertEquals("Id not inserted into demographics", 1, resp.getRowCount().intValue());
+            assertEquals("Id not inserted into demographics", 1, resp.getRowCount().intValue());
             Map<String, Object> row = resp.getRows().get(0);
-            Assert.assertEquals("Dam not set", "dam", row.get("dam"));
-            Assert.assertEquals("Sire not set", "sire", row.get("sire"));
-            Assert.assertEquals("Status not correct", "Alive", row.get("calculated_status"));
+            assertEquals("Dam not set", "dam", row.get("dam"));
+            assertEquals("Sire not set", "sire", row.get("sire"));
+            assertEquals("Status not correct", "Alive", row.get("calculated_status"));
 
             //verify cascade insert into housing
             cmd = new SelectRowsCommand("study", "housing");
             cmd.setFilters(Collections.singletonList(new Filter("Id", subject)));
             resp = cmd.execute(cn, getContainerPath());
-            Assert.assertEquals("Id not inserted into housing", 1, resp.getRowCount().intValue());
+            assertEquals("Id not inserted into housing", 1, resp.getRowCount().intValue());
             row = resp.getRows().get(0);
-            Assert.assertEquals("Room not set", ROOMS[0], row.get("room"));
-            Assert.assertEquals("Cage not set", CAGES[0], row.get("cage"));
+            assertEquals("Room not set", ROOMS[0], row.get("room"));
+            assertEquals("Cage not set", CAGES[0], row.get("cage"));
 
             //enter a departure
             String[] departureFields = {"Id", "date", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid", "destination"};
@@ -284,7 +285,7 @@ public class EHRApiTest extends AbstractEHRTest
             cmd.setFilters(Collections.singletonList(new Filter("Id", subject)));
             resp = cmd.execute(cn, getContainerPath());
             row = resp.getRows().get(0);
-            Assert.assertEquals("Status not correct", "Shipped", row.get("calculated_status"));
+            assertEquals("Status not correct", "Shipped", row.get("calculated_status"));
 
         }
         catch (IOException e)
@@ -465,21 +466,21 @@ public class EHRApiTest extends AbstractEHRTest
             Map<String, List<String>> errors = _apiHelper.processResponse(response);
 
             //JSONHelper.compareMap()
-            Assert.assertEquals("Incorrect number of fields have errors", expectedErrors.keySet().size(), errors.keySet().size());
+            assertEquals("Incorrect number of fields have errors", expectedErrors.keySet().size(), errors.keySet().size());
             for (String field : expectedErrors.keySet())
             {
-                Assert.assertEquals("No errors found for field: " + field, true, errors.containsKey(field));
+                assertEquals("No errors found for field: " + field, true, errors.containsKey(field));
                 List<String> expectedErrs = expectedErrors.get(field);
                 List<String> errs = errors.get(field);
 
                 log("Expected " + expectedErrs.size() + " errors for field " + field);
-                Assert.assertEquals("Wrong number of errors found for field: " + field + "; " + StringUtils.join(errs, "; "), expectedErrs.size(), errs.size());
+                assertEquals("Wrong number of errors found for field: " + field + "; " + StringUtils.join(errs, "; "), expectedErrs.size(), errs.size());
                 for (String e : expectedErrs)
                 {
                     boolean success = errs.remove(e);
-                    Assert.assertTrue("Error not found for field: " + field + ".  Missing error is: " + e, success);
+                    assertTrue("Error not found for field: " + field + ".  Missing error is: " + e, success);
                 }
-                Assert.assertEquals("Unexpected error found for field: " + field + ".  They are: " + StringUtils.join(errs, "; "), 0, errs.size());
+                assertEquals("Unexpected error found for field: " + field + ".  They are: " + StringUtils.join(errs, "; "), 0, errs.size());
             }
 
         }

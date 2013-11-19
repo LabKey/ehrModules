@@ -16,7 +16,6 @@
 package org.labkey.test.tests;
 
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,6 +46,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * User: bbimber
@@ -168,8 +169,8 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
         src.addFilter(new Filter("requirementname", requirementName1));
 
         SelectRowsResponse resp = src.execute(_apiHelper.getConnection(), getProjectName());
-        Assert.assertEquals(1, resp.getRowCount().intValue());
-        Assert.assertEquals(requirementType2, resp.getRows().get(0).get("type"));
+        assertEquals(1, resp.getRowCount().intValue());
+        assertEquals(requirementType2, resp.getRows().get(0).get("type"));
 
         log("checking triggers for employees table");
 
@@ -229,11 +230,11 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
         src.addFilter(new Filter("employeeid", employee1));
 
         resp = src.execute(_apiHelper.getConnection(), getProjectName());
-        Assert.assertEquals(1, resp.getRowCount().intValue());
-        Assert.assertEquals(employeeLocation3, resp.getRows().get(0).get("location"));
-        Assert.assertEquals(employeeCategory2, resp.getRows().get(0).get("category"));
-        Assert.assertEquals(employeeTitle2, resp.getRows().get(0).get("title"));
-        Assert.assertEquals(employeeType2, resp.getRows().get(0).get("type"));
+        assertEquals(1, resp.getRowCount().intValue());
+        assertEquals(employeeLocation3, resp.getRows().get(0).get("location"));
+        assertEquals(employeeCategory2, resp.getRows().get(0).get("category"));
+        assertEquals(employeeTitle2, resp.getRows().get(0).get("title"));
+        assertEquals(employeeType2, resp.getRows().get(0).get("type"));
 
         _apiHelper.updateRow("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee1, "location", "garbage value"), true);
 
@@ -311,16 +312,16 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employees", "employeeid", new String[]{"employeeid"}, new Object[][]{{employee2}}, new Object[][]{{employee1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
 
-        Assert.assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
-        Assert.assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
 
-        Assert.assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
-        Assert.assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirements", "requirementname", new String[]{"requirementname"}, new Object[][]{{requirementName2}}, new Object[][]{{requirementName1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
-        Assert.assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName1), "requirementname"));
-        Assert.assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName2), "requirementname"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName1), "requirementname"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName2), "requirementname"));
     }
 
     @Test
@@ -352,12 +353,12 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
         beginAt("/ehr_compliancedb/" + getProjectName() + "/SOP_submission.view");
         reloadPage();
 
-        Assert.assertTrue("Submit button not disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
+        assertTrue("Submit button not disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
 
         DataRegionTable dr1 = _helper.getDrForQueryWebpart("Unread SOPs (Less Than 10 Months Until Renewal)");
         DataRegionTable dr2 = _helper.getDrForQueryWebpart("Dates SOPs Were Last Read");
-        Assert.assertEquals("Incorrect row count found", 1, dr1.getDataRowCount());
-        Assert.assertEquals("Incorrect row count found", 0, dr2.getDataRowCount());
+        assertEquals("Incorrect row count found", 1, dr1.getDataRowCount());
+        assertEquals("Incorrect row count found", 0, dr2.getDataRowCount());
 
         dr1.checkAllOnPage();
         clickButton("Mark Read");
@@ -366,10 +367,10 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
 
         dr1 = _helper.getDrForQueryWebpart("Unread SOPs (Less Than 10 Months Until Renewal)");
         dr2 = _helper.getDrForQueryWebpart("Dates SOPs Were Last Read");
-        Assert.assertEquals("Incorrect row count found", 0, dr1.getDataRowCount());
-        Assert.assertEquals("Incorrect row count found", 1, dr2.getDataRowCount());
+        assertEquals("Incorrect row count found", 0, dr1.getDataRowCount());
+        assertEquals("Incorrect row count found", 1, dr2.getDataRowCount());
 
-        Assert.assertFalse("Submit button is still disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
+        assertFalse("Submit button is still disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
 
         dr2.checkAllOnPage();
         clickButton("Mark Reread");
