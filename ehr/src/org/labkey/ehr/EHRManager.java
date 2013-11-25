@@ -975,14 +975,16 @@ public class EHRManager
             if (ti.getColumn(FieldKey.fromString("requestid")) != null)
                 colNames.add("requestid");
 
+            // forEachMap is much more efficient than iterating ResultSet and calling ResultSetUtil.mapRow(rs)
             TableSelector ts = new TableSelector(ti, colNames, filter, null);
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEachMap(new Selector.ForEachBlock<Map<String, Object>>()
             {
                 @Override
-                public void exec(ResultSet rs) throws SQLException
+                public void exec(Map<String, Object> map) throws SQLException
                 {
                     Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                    row.putAll(ResultSetUtil.mapRow(rs));
+                    row.putAll(map);
+
                     if (row.containsKey("requestid") && row.get("requestid") != null)
                     {
                         row.put("requestid", null);

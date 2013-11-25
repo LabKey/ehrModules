@@ -1043,7 +1043,7 @@ public class TriggerScriptHelper
 
                 TableInfo ti = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+                TableSelector ts = new TableSelector(ti, filter, null);
 
                 ts.forEach(new Selector.ForEachBlock<ResultSet>()
                 {
