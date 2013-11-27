@@ -18,10 +18,10 @@ package org.labkey.ehr.pipeline;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.util.StringUtils;
@@ -35,14 +35,11 @@ import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
-import org.labkey.api.query.FilteredTable;
-import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
-import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.FileType;
 
 import java.io.BufferedReader;
@@ -319,29 +316,19 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             getJob().getLogger().info("Inserting rows");
             BatchValidationException errors = new BatchValidationException();
 
-            ExperimentService.get().ensureTransaction();
-            qus.insertRows(getJob().getUser(), getJob().getContainer(), rows, errors, new HashMap<String, Object>());
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+            {
+                qus.insertRows(getJob().getUser(), getJob().getContainer(), rows, errors, new HashMap<String, Object>());
 
-            if (errors.hasErrors())
-                throw errors;
+                if (errors.hasErrors())
+                    throw errors;
 
-            ExperimentService.get().commitTransaction();
+                transaction.commit();
+            }
             job.getLogger().info("Inserted " + lineNum + " rows into inbreeding coefficients table");
 
         }
-        catch (FileNotFoundException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (IOException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (SQLException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (DuplicateKeyException e)
+        catch (DuplicateKeyException | SQLException | IOException | QueryUpdateServiceException e)
         {
             throw new PipelineJobException(e);
         }
@@ -355,10 +342,6 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             throw new PipelineJobException(e);
         }
-        catch (QueryUpdateServiceException e)
-        {
-            throw new PipelineJobException(e);
-        }
         finally
         {
             if (lnr != null)
@@ -366,8 +349,6 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             if (reader != null)
                 try{reader.close();}catch (Exception ignored){}
-
-            ExperimentService.get().closeTransaction();
         }
     }
 }
