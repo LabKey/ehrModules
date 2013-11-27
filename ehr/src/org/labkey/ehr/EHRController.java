@@ -27,6 +27,7 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
@@ -193,23 +194,18 @@ public class EHRController extends SpringActionController
 
                 if (canDiscard)
                 {
-                    ExperimentService.get().ensureTransaction();
-                    try
+                    try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
                     {
                         for (String taskId : form.getTaskIds())
                         {
                             EHRManager.get().discardTask(getContainer(), getUser(), taskId);
                         }
 
-                        ExperimentService.get().commitTransaction();
+                        transaction.commit();
                     }
                     catch (SQLException e)
                     {
                         throw new RuntimeSQLException(e);
-                    }
-                    finally
-                    {
-                        ExperimentService.get().closeTransaction();
                     }
                 }
                 else
