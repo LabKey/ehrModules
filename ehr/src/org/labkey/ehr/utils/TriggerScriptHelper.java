@@ -427,7 +427,7 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("ehr_lookups", "weight_ranges");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), species, CompareType.EQUAL);
-        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(ti, filter, null);
         Map<String, Object>[] ret = ts.getMapArray();
 
         if (ret.length > 1)
@@ -940,7 +940,7 @@ public class TriggerScriptHelper
         if (weight == null)
             return "Unknown weight, unable to calculate allowable blood volume";
 
-        TableSelector allowable = new TableSelector(getTableInfo("ehr_lookups", "species"), Table.ALL_COLUMNS, new SimpleFilter(FieldKey.fromString("common"), species), null);
+        TableSelector allowable = new TableSelector(getTableInfo("ehr_lookups", "species"), new SimpleFilter(FieldKey.fromString("common"), species), null);
         Map<String, Object>[] rows = allowable.getMapArray();
         if (rows.length != 1)
             return "Unable to calculate allowable blood volume";
@@ -993,7 +993,7 @@ public class TriggerScriptHelper
 
                 TableInfo ti = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+                TableSelector ts = new TableSelector(ti, filter, null);
 
                 ts.forEach(new Selector.ForEachBlock<ResultSet>()
                 {
