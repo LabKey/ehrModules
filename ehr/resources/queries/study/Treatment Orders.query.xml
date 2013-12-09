@@ -1,19 +1,15 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="treatment_order" tableDbType="TABLE">
+            <table tableName="treatment_order" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl>/EHR/treatmentDetails.view?key=${lsid}</tableUrl>
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="project">
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>project</fkTable>
-                            <fkColumnName>project</fkColumnName>
-                        </fk>
+                    <column columnName="Id">
+
                     </column>
                     <column columnName="date">
                         <columnTitle>Begin Date</columnTitle>
@@ -24,8 +20,104 @@
                         <isHidden>false</isHidden>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
+                    <column columnName="project">
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="meaning">
                         <columnTitle>Short Name</columnTitle>
+                    </column>
+                    <column columnName="code">
+                        <nullable>false</nullable>
+                        <columnTitle>Treatment</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="qualifier">
+                        <columnTitle>Qualifier</columnTitle>
+                    </column>
+                    <column columnName="category">
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drug_categories</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason</columnTitle>
+                    </column>
+                    <column columnName="frequency">
+                        <columnTitle>Frequency</columnTitle>
+                        <fk>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>treatment_frequency</fkTable>
+                          <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="route">
+                        <columnTitle>Route</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>routes</fkTable>
+                            <fkColumnName>route</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                        <displayWidth>40</displayWidth>
+                    </column>
+                    <column columnName="concentration">
+                        <columnTitle>Drug Conc</columnTitle>
+                    </column>
+                    <column columnName="conc_units">
+                        <columnTitle>Conc Units</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>conc_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="dosage">
+                        <columnTitle>Dosage</columnTitle>
+                    </column>
+                    <column columnName="dosage_units">
+                        <columnTitle>Dosage Units</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>dosage_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="volume">
+                        <columnTitle>Volume</columnTitle>
+                    </column>
+                    <column columnName="vol_units">
+                        <columnTitle>Volume Units</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>volume_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="amount">
+                        <columnTitle>Amount To Give</columnTitle>
+                    </column>
+                    <column columnName="amount_units">
+                        <columnTitle>Amount Units</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>amount_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
                     </column>
                     <column columnName="performedby">
                         <isHidden>false</isHidden>
@@ -39,115 +131,15 @@
                             query.parentid~eq=${objectid}&amp;
                         </url>
                     </column>
-                    <column columnName="code">
-                        <nullable>false</nullable>
-                        <columnTitle>Treatment</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>snomed</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="parentid">
                         <!--<fk>-->
-                          <!--<fkDbSchema>study</fkDbSchema>-->
-                          <!--<fkTable>studyDataParent</fkTable>-->
-                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--<fkDbSchema>study</fkDbSchema>-->
+                        <!--<fkTable>studyDataParent</fkTable>-->
+                        <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
-                    </column>
-                    <column columnName="frequency">
-                        <columnTitle>Frequency</columnTitle>
-                        <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>treatment_frequency</fkTable>
-                          <fkColumnName>rowid</fkColumnName>
-                        </fk>
-                    </column>
-
-                    <!--<column columnName="dateOnly" wrappedColumnName="lsid">-->
-                        <!--<columnTitle>DateOnly</columnTitle>-->
-                        <!--<isHidden>true</isHidden>-->
-                        <!--<isUnselectable>true</isUnselectable>-->
-                        <!--<fk>-->
-                            <!--<fkDbSchema>study</fkDbSchema>-->
-                            <!--<fkTable>treatmentDate</fkTable>-->
-                            <!--<fkColumnName>lsid</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
-                    <column columnName="route">
-                        <columnTitle>Route</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>routes</fkTable>
-                            <fkColumnName>route</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
-                        <displayWidth>40</displayWidth>
-                    </column>
-                    <column columnName="vol_units">
-                        <columnTitle>Volume Units</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>volume_units</fkTable>
-                            <fkColumnName>unit</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
-                    </column> 
-                    <column columnName="concentration">
-                        <columnTitle>Drug Conc</columnTitle>
-                    </column>
-                    <column columnName="conc_units">
-                        <columnTitle>Conc Units</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>conc_units</fkTable>
-                            <fkColumnName>unit</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
-                    </column>
-                    <column columnName="amount_units">
-                        <columnTitle>Amount Units</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>amount_units</fkTable>
-                            <fkColumnName>unit</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
-                    </column>
-                    <column columnName="amount">
-                        <columnTitle>Amount To Give</columnTitle>
-                    </column>
-                    <column columnName="dosage">
-                        <columnTitle>Dosage</columnTitle>
-                    </column>
-                    <column columnName="reason">
-                        <columnTitle>Reason</columnTitle>
-                    </column>
-                    <column columnName="dosage_units">
-                        <columnTitle>Dosage Units</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>dosage_units</fkTable>
-                            <fkColumnName>unit</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
                     </column>
                     <column columnName="userid">
                         <columnTitle>Ordered By</columnTitle>
-                    </column>
-                    <column columnName="qualifier">
-                        <columnTitle>Qualifier</columnTitle>
-                    </column>
-                    <column columnName="volume">
-                        <columnTitle>Volume</columnTitle>
-                    </column>
-                    <column columnName="category">
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>drug_categories</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
                     </column>
                 </columns>
             </table>

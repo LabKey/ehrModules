@@ -35,6 +35,14 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>blood_draw_reason</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="tube_type">
                         <columnTitle>Tube Type</columnTitle>
                     </column>
@@ -81,14 +89,6 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="reason">
-                        <columnTitle>Reason</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>blood_draw_reason</fkTable>
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>

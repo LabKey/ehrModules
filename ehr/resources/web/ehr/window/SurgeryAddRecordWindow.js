@@ -110,7 +110,20 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
         var data = [];
         this.encountersStore.each(function(r){
             if (r.get('Id') && r.get('date')){
-                var title = r.get('Id') + ': ' + r.get('procedureid');
+                var procedureStore = EHR.DataEntryUtils.getProceduresStore();
+                var procedureName;
+                LDK.Assert.assertNotEmpty('Unable to find procedureStore from SurgeryAddRecordWindow', procedureStore);
+                if (r.get('procedureid')){
+                    var procRecIdx = procedureStore.find('rowid', r.get('procedureid'));
+                    var procedureRec = procedureStore.getAt(procRecIdx);
+                    LDK.Assert.assertNotEmpty('Unable to find procedure record from SurgeryAddRecordWindow', procedureRec);
+                    procedureName = procedureRec.get('name');
+                }
+                else {
+                    procedureName = 'None'
+                }
+
+                var title = r.get('Id') + ': ' + procedureName;
                 data.push({
                     title: title,
                     parentid: r.get('parentid'),

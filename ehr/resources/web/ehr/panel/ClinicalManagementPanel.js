@@ -31,16 +31,16 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                         animalId: animalId
                     }).show(btn);
                 }
-            },{
-                text: 'Enter Remark/Observations',
-                disabled: !EHR.Security.hasPermission(EHR.QCStates.IN_PROGRESS, 'insert', [{schemaName: 'study', queryName: 'Clinical Remarks'}]),
-                scope: this,
-                handler: function(btn){
-                    Ext4.create('EHR.window.EnterRemarkWindow', {
-                        animalId: animalId,
-                        mode: 'Clinical'
-                    }).show(btn);
-                }
+//            },{
+//                text: 'Enter Remark/Observations',
+//                disabled: !EHR.Security.hasPermission(EHR.QCStates.IN_PROGRESS, 'insert', [{schemaName: 'study', queryName: 'Clinical Remarks'}]),
+//                scope: this,
+//                handler: function(btn){
+//                    Ext4.create('EHR.window.EnterRemarkWindow', {
+//                        animalId: animalId,
+//                        mode: 'Clinical'
+//                    }).show(btn);
+//                }
             }]
         }
     },

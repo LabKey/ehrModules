@@ -67,4 +67,12 @@ public class ActiveAssignmentsDemographicsProvider extends AbstractListDemograph
 
         return filter;
     }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "Assignment".equalsIgnoreCase(query)) ||
+               ("study".equalsIgnoreCase(schema) && "Animal Record Flags".equalsIgnoreCase(query)) ||
+               ("study".equalsIgnoreCase(schema) && "flags".equalsIgnoreCase(query));
+    }
 }

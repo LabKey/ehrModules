@@ -41,6 +41,14 @@ public class AgeDisplayColumn extends DataColumn
     }
 
     @Override
+    public Class getDisplayValueClass()
+    {
+        //NOTE: this is required in order to get excel to output correctly
+        //the raw value is numeric, but the displayValue is text
+        return String.class;
+    }
+
+    @Override
     public Object getDisplayValue(RenderContext ctx)
     {
         return getFormattedAge((Date)ctx.get(getMappedFieldKey("birth")), (Date)ctx.get(getMappedFieldKey("death")));
@@ -74,11 +82,11 @@ public class AgeDisplayColumn extends DataColumn
 
         Calendar birthCal = new GregorianCalendar();
         birthCal.setTime(birth);
-        birthCal = DateUtils.round(birthCal, Calendar.DATE);
+        birthCal = DateUtils.truncate(birthCal, Calendar.DATE);
 
         Calendar deathCal = new GregorianCalendar();
         deathCal.setTime(death == null ? new Date() : death);
-        deathCal = DateUtils.round(deathCal, Calendar.DATE);
+        deathCal = DateUtils.truncate(deathCal, Calendar.DATE);
 
         double yearPart = (deathCal.getTimeInMillis() - birthCal.getTimeInMillis()) / (DateUtils.MILLIS_PER_DAY * 365.25);
         int yearRounded = (int)yearPart;

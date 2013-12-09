@@ -10,7 +10,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-managecasespanel',
 
-    minWidth: 600,
+    minWidth: 900,
     minHeight: 50,
 
     statics: {
@@ -22,17 +22,29 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 menu: [{
                     text: 'Open Behavior Case',
                     handler: function(btn){
-                        Ext4.Msg.alert('Not enabled', 'This is not enabled yet');
+                        var owner = btn.up('window');
+                        if (owner)
+                            owner = owner.down('panel');
+
+                        owner.showCreateWindow('Behavior');
                     }
                 },{
                     text: 'Open Clinical Case',
                     handler: function(btn){
-                        Ext4.Msg.alert('Not enabled', 'This is not enabled yet');
+                        var owner = btn.up('window');
+                        if (owner)
+                            owner = owner.down('panel');
+
+                        owner.showCreateWindow('Clinical');
                     }
                 },{
                     text: 'Open Surgery Case',
                     handler: function(btn){
-                        Ext4.Msg.alert('Not enabled', 'This is not enabled yet');
+                        var owner = btn.up('window');
+                        if (owner)
+                            owner = owner.down('panel');
+
+                        owner.showCreateWindow('Surgery');
                     }
                 }]
             }]
@@ -66,12 +78,18 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'Cases',
-            columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,encounterid',
+            columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,problem,encounterid',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)
             ],
-            autoLoad: true
+            autoLoad: true,
+            listeners: {
+                scope: this,
+                synccomplete: function(store){
+                    this.down('grid').getView().refresh();
+                }
+            }
         });
 
         return this.store;
@@ -102,7 +120,8 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                         xtype: 'datefield',
                                         itemId: 'dateField',
                                         fieldLabel: 'Close Date',
-                                        value: new Date()
+                                        value: new Date(),
+                                        maxValue: new Date()
                                     }],
                                     buttons: [{
                                         text: 'Submit',
@@ -116,7 +135,16 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                             }
 
                                             rec.set('enddate', val);
-                                            rec.store.sync();
+
+                                            Ext4.Msg.wait('Saving...');
+                                            var store = rec.store;
+                                            store.sync({
+                                                scope: this,
+                                                success: function(){
+                                                    Ext4.Msg.hide();
+                                                    store.load();
+                                                }
+                                            });
 
                                             win.close();
                                         }
@@ -169,16 +197,79 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                 }).show();
                             }
                         },{
-                            text: 'Add Remark For Case',
+                            text: 'Change To Monitoring',
                             disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
                             scope: this,
                             handler: function(btn){
-                                Ext4.create('EHR.window.EnterRemarkWindow', {
-                                    animalId: rec.get('Id'),
-                                    caseId: rec.get('objectid'),
-                                    encounterId: rec.get('encounterid'),
-                                    mode: rec.get('category')
-                                }).show(btn);
+                                Ext4.Msg.confirm('Switch To Monitoring', 'This will close the selected case and open a new case with \'Monitoring\' as the problem.  Do you want to do this?', function(val){
+                                    if (val == 'yes'){
+                                        rec.set('enddate', new Date());
+                                        Ext4.Msg.wait('Saving...');
+                                        rec.store.sync({
+                                            scope: this,
+                                            success: function(batch, options){
+                                                var store = rec.store;
+                                                LABKEY.Query.insertRows({
+                                                    schemaName: 'study',
+                                                    queryName: 'cases',
+                                                    scope: this,
+                                                    rows: [{
+                                                        Id: rec.get('Id'),
+                                                        category: rec.get('category'),
+                                                        date: new Date(),
+                                                        performedby: LABKEY.Security.currentUser.displayName,
+                                                        remark: rec.get('remark'),
+                                                        problem: 'Monitoring'
+                                                    }],
+                                                    failure: LDK.Utils.getErrorCallback(),
+                                                    success: function(results){
+                                                        Ext4.Msg.hide();
+                                                        store.load();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        },{
+                            text: 'Edit Hx',
+                            disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
+                            scope: this,
+                            handler: function(btn){
+                                var remark = rec.get('remark');
+
+                                Ext4.create('Ext.window.Window', {
+                                    modal: true,
+                                    closeAction: 'destroy',
+                                    title: 'Edit Hx',
+                                    width: 400,
+                                    record: rec,
+                                    bodyStyle: 'padding: 5px;',
+                                    items: [{
+                                        xtype: 'textarea',
+                                        width: 380,
+                                        value: rec.get('remark'),
+                                        itemId: 'remark'
+                                    }],
+                                    buttons: [{
+                                        text: 'Submit',
+                                        scope: this,
+                                        handler: function(btn){
+                                            var win = btn.up('window');
+                                            var val = win.down('#remark').getValue();
+                                            rec.set('remark', val);
+                                            rec.store.sync();
+
+                                            win.close();
+                                        }
+                                    },{
+                                        text: 'Cancel',
+                                        handler: function(btn){
+                                            btn.up('window').close();
+                                        }
+                                    }]
+                                }).show();
                             }
                         }]
                     }).showAt(e.getXY());
@@ -199,14 +290,101 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 format: 'Y-m-d',
                 width: 130
             },{
+                header: 'Hx',
+                dataIndex: 'remark',
+                width: 250
+            },{
                 header: 'Opened By',
                 dataIndex: 'performedby',
                 width: 130
             },{
-                header: 'Reason',
-                dataIndex: 'remark',
+                header: 'Problem',
+                dataIndex: 'problem',
                 width: 200
             }]
         }
+    },
+
+    showCreateWindow: function(category){
+        Ext4.create('Ext.window.Window', {
+            title: 'Open Case: ' + this.animalId,
+            caseCategory: category,
+            width: 400,
+            modal: true,
+            closeAction: 'destroy',
+            bodyStyle: 'padding: 5px;',
+            ownerPanel: this,
+            items: [{
+                xtype: 'form',
+                border: false,
+                defaults: {
+                    border: false,
+                    width: 350
+                },
+                items: [{
+                    xtype: 'displayfield',
+                    fieldLabel: 'Category',
+                    value: category,
+                    name: 'category'
+                },{
+                    xtype: 'textarea',
+                    fieldLabel: 'Hx',
+                    name: 'remark',
+                    allowBlank: false,
+                    height: 150
+                },{
+                    xtype: 'labkey-combo',
+                    fieldLabel: 'Problem',
+                    allowBlank: false,
+                    name: 'problem',
+                    valueField: 'value',
+                    displayField: 'value',
+                    store: {
+                        type: 'labkey-store',
+                        schemaName: 'ehr_lookups',
+                        queryName: 'problem_list_category',
+                        autoLoad: true
+                    }
+                }]
+            }],
+            buttons: [{
+                text: 'Submit',
+                handler: function(btn){
+                    var win = btn.up('window');
+                    var values = win.down('form').getForm().getValues();
+
+                    values.date = new Date();
+                    values.category = win.caseCategory;
+                    values.Id = win.ownerPanel.animalId;
+                    values.performedby = LABKEY.Security.currentUser.displayName;
+
+                    if (!values.Id || !values.problem || !values.remark){
+                        Ext4.Msg.alert('Error', 'Must choose a problem and enter a history');
+                        return;
+                    }
+
+                    var panel = win.ownerPanel;
+                    win.close();
+                    Ext4.Msg.wait('Saving...');
+
+                    LABKEY.Query.insertRows({
+                        schemaName: 'study',
+                        queryName: 'cases',
+                        scope: this,
+                        rows: [values],
+                        failure: LDK.Utils.getErrorCallback(),
+                        success: function(results){
+                            Ext4.Msg.hide();
+                            panel.down('grid').store.load();
+                        }
+                    });
+                }
+            },{
+                text: 'Cancel',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
+        }).show();
     }
 });

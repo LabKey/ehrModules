@@ -1,0 +1,1 @@
+ALTER TABLE ehr.project ADD projecttype varchar(100);

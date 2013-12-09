@@ -27,6 +27,14 @@
                             <fkColumnName>servicename</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>labworkChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="sampletype">
                         <columnTitle>Sample Type</columnTitle>
                             <fk>
@@ -72,10 +80,6 @@
                     <column columnName="remark">
                         <columnTitle>Remark</columnTitle>
                     </column>
-                    <column columnName="instructions">
-                        <columnTitle>Special Instructions</columnTitle>
-                        <inputType>textarea</inputType>
-                    </column>
                     <column columnName="type">
                         <columnTitle>Category</columnTitle>
                         <fk>
@@ -85,13 +89,9 @@
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
-                    <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>labworkChargeType</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                        </fk>
+                    <column columnName="instructions">
+                        <columnTitle>Special Instructions</columnTitle>
+                        <inputType>textarea</inputType>
                     </column>
                     <column columnName="reviewedBy">
                         <columnTitle>Reviewed By</columnTitle>

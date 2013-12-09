@@ -579,8 +579,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     ){
         var assignmentErrors = helper.getJavaHelper().validateAssignment(row.Id, row.project, row.date);
         if (assignmentErrors){
-            var severity = EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest ? 'INFO' : 'WARN';
-            EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, severity);
+            EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, helper.getErrorSeveritiyForImproperAssignment());
         }
     }
 
@@ -634,7 +633,8 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     //dont allow future dates on completed records
     if (row.date && row.QCStateLabel == 'Completed' && !helper.isAllowFutureDates()){
-        if (row.date.getTime() > (new Date).getTime()){
+        var millsDiff = Math.abs(row.date.getTime() - (new Date).getTime());
+        if (millsDiff > 6000){
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is in the future', 'INFO');
         }
     }

@@ -235,7 +235,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
                 rows.push({
                     templateId: null,
-                    storeId: store.storeId,
+                    storeId: this.getStoreSaveName(store),
                     json: Ext4.encode(json),
                     templateName: tn
                 });
@@ -249,6 +249,13 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
         }
 
         this.saveTemplate(rows);
+    },
+
+    getStoreSaveName: function(store){
+        var storeId = store.storeId;
+        storeId = storeId.replace(new RegExp('^' + store.storeCollection.collectionId + '-'), '');
+
+        return storeId;
     },
 
     saveTemplate: function(rows){

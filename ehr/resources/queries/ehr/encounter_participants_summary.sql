@@ -6,13 +6,15 @@
 SELECT
   p2.id,
   p2.parentid,
+  p2.taskid,
   GROUP_CONCAT(DISTINCT p2.userrole, '') as participants
 FROM (
 SELECT
   p.role || ': ' || p.username || chr(10) as userrole,
   p.id,
-  p.parentid
+  p.parentid,
+  p.taskid
 FROM ehr.encounter_participants p
 ) p2
 
-GROUP BY p2.id, p2.parentid
+GROUP BY p2.id, p2.parentid, p2.taskid

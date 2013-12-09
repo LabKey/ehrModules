@@ -40,6 +40,7 @@
                     </column>
                     <column columnName="weight">
                       <columnTitle>Weight (kg)</columnTitle>
+                        <formatString>0.###</formatString>
                     </column>
                 </columns>
             </table>

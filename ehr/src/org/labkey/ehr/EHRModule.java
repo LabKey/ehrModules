@@ -35,6 +35,7 @@ import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
+import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAnimalGroupsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
@@ -87,7 +88,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.375;
+        return 12.379;
     }
 
     public boolean hasScripts()
@@ -144,6 +145,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         //attempt to schedule genetic calculations.  will abort if not enabled
         GeneticCalculationsJob.schedule();
+        RecordDeleteRunner.schedule();
 
         DemographicsCache.get().onStartup();
 

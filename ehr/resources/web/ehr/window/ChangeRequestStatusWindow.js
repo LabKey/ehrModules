@@ -83,6 +83,7 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
 
         LABKEY.Query.selectRows({
             requiredVersion: 9.1,
+            method: 'POST',
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
             columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',

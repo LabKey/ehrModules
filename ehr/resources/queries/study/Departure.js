@@ -19,7 +19,5 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
     helper.registerDeparture(row.Id, row.date);
 
     //this will close any existing assignments, housing and treatment records
-    if (!helper.isETL()){
-        helper.onDeathDeparture(row.Id, row.date);
-    }
+    helper.onDeathDeparture(row.Id, row.date);
 }

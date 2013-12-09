@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
@@ -49,7 +50,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public Set<String> getTableNames()
     {
-        Set<String> available = new HashSet<>();
+        Set<String> available = new CaseInsensitiveHashSet();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
@@ -61,7 +62,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public synchronized Set<String> getVisibleTableNames()
     {
-        Set<String> available = new HashSet<>();
+        Set<String> available = new CaseInsensitiveHashSet();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());

@@ -61,6 +61,7 @@ import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
 import org.labkey.ehr.history.ClinicalHistoryManager;
@@ -427,6 +428,17 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(AdminPermission.class)
+    public class SetRecordDeleteSettingsAction extends ApiAction<RecordDeleteForm>
+    {
+        public ApiResponse execute(RecordDeleteForm form, BindException errors)
+        {
+            RecordDeleteRunner.setProperties(getContainer(), form.isEnabled());
+
+            return new ApiSimpleResponse("success", true);
+        }
+    }
+
     @RequiresPermissionClass(ReadPermission.class)
     public class GetAnimalDetailsAction extends ApiAction<AnimalDetailsForm>
     {
@@ -514,6 +526,19 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(AdminPermission.class)
+    public class GetRecordDeleteSettingsAction extends ApiAction<Object>
+    {
+        public ApiResponse execute(Object form, BindException errors)
+        {
+            Map<String, Object> ret = new HashMap<>();
+
+            ret.put("enabled", RecordDeleteRunner.isEnabled(getContainer()));
+
+            return new ApiSimpleResponse(ret);
+        }
+    }
+
     public static class ScheduleGeneticCalculationForm
     {
         private boolean _enabled;
@@ -538,6 +563,32 @@ public class EHRController extends SpringActionController
         public void setContainerPath(String containerPath)
         {
             this.containerPath = containerPath;
+        }
+
+        public int getHourOfDay()
+        {
+            return hourOfDay;
+        }
+
+        public void setHourOfDay(int hourOfDay)
+        {
+            this.hourOfDay = hourOfDay;
+        }
+    }
+
+    public static class RecordDeleteForm
+    {
+        private boolean _enabled;
+        private int hourOfDay;
+
+        public boolean isEnabled()
+        {
+            return _enabled;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            _enabled = enabled;
         }
 
         public int getHourOfDay()
@@ -859,6 +910,32 @@ public class EHRController extends SpringActionController
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
             return new GeneticCalculationsRunnable().run(getContainer());
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class DeletedRecordsRunnerAction extends ConfirmAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            return new HtmlView("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            new RecordDeleteRunner().run(getContainer());
+
+            return true;
         }
     }
 

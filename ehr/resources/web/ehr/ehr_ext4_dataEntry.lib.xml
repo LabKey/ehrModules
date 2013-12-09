@@ -46,6 +46,7 @@
         <script path="ehr/window/SaveTemplateWindow.js"/>
         <script path="ehr/window/CaseNumberWindow.js"/>
         <script path="ehr/window/LabworkAddRecordWindow.js"/>
+        <script path="ehr/window/CopyFromSectionWindow.js"/>
         <script path="ehr/window/GuessProjectWindow.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/AnimalDetailsPanel.js"/>

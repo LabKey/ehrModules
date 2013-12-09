@@ -599,6 +599,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
@@ -611,6 +612,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
@@ -623,6 +625,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
@@ -636,6 +639,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "insert"));
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "insert"));
@@ -648,6 +652,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "update"));
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "update"));
@@ -660,6 +665,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "delete"));
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "delete"));
@@ -670,8 +676,10 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_PENDING, "update"));
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
-            //add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_CANCELLED, "update"));
 
             // Full Submitter - Users with this role are permitted to submit and approve records.  They cannot modify public data.
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "insert"));
@@ -681,6 +689,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "insert"));
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "insert"));
@@ -693,6 +702,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "update"));
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
@@ -705,6 +715,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "delete"));
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "delete"));
@@ -718,6 +729,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "insert"));
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
             //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
 
@@ -728,6 +740,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "update"));
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
             //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "update"));
 
@@ -741,6 +754,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
@@ -753,6 +767,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
@@ -765,6 +780,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));

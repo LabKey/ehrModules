@@ -42,6 +42,14 @@
                     <column columnName="qualifier">
                         <columnTitle>Qualifier</columnTitle>
                     </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drugReason</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="route">
                         <columnTitle>Route</columnTitle>
                         <fk>
@@ -101,9 +109,6 @@
                             <fkColumnName>unit</fkColumnName>
                             <fkDisplayColumnName useRawValue="true" />
                         </fk>
-                    </column>
-                    <column columnName="outcome">
-                        <columnTitle>Outcome</columnTitle>
                     </column>
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>

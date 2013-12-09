@@ -63,6 +63,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         procedureid: {
             columnConfig: {
                 width: 250
+            },
+            editorConfig: {
+                listConfig: {
+                    innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                    getInnerTpl: function(){
+                        return this.innerTpl;
+                    }
+                }
             }
         },
         chargetype: {
@@ -142,7 +150,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         chargeId: {
             allowBlank: false,
             columnConfig: {
-                width: 250
+                width: 300
             },
             editorConfig: {
                 anyMatch: true,
@@ -208,7 +216,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         performedby: {
             noSaveInTemplateByDefault: true,
             columnConfig: {
-                width: 120
+                width: 160
             },
             shownInGrid: true
         },
@@ -278,8 +286,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         Survivorship: {hidden: true},
         remark: {
             xtype: 'ehr-remarkfield',
-            isAutoExpandColumn: true,
-            printWidth: 150,
+            height: 100,
+            editorConfig: {
+                resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
+            }
+        },
+        s: {
+            xtype: 'ehr-remarkfield',
             editorConfig: {
                 resizeDirections: 's'
             },
@@ -289,26 +305,47 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         so: {
             xtype: 'ehr-remarkfield',
-            isAutoExpandColumn: true,
-            printWidth: 150,
             editorConfig: {
                 resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
+            }
+        },
+        o: {
+            xtype: 'ehr-remarkfield',
+            editorConfig: {
+                resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
             }
         },
         a: {
             xtype: 'ehr-remarkfield',
-            isAutoExpandColumn: true,
-            printWidth: 150,
             editorConfig: {
                 resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
             }
         },
         p: {
             xtype: 'ehr-remarkfield',
-            isAutoExpandColumn: true,
-            printWidth: 150,
             editorConfig: {
                 resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
+            }
+        },
+        p2: {
+            xtype: 'ehr-remarkfield',
+            editorConfig: {
+                resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
             }
         },
         project: {
@@ -555,12 +592,35 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 compositeField: 'Numeric Result'
             }
         },
-        'study.Tissue Samples': {
-            diagnosis: {
-                editorConfig: {
-                    xtype: 'ehr-snomedcombo'
+        'study.tissueDistributions': {
+            qualifier: {
+                hidden: true
+            },
+            performedby: {
+                hidden: true
+            },
+            tissue: {
+                columnConfig: {
+                    width: 250
                 }
             },
+            sampletype: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            recipient: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            requestcategory: {
+                columnConfig: {
+                    width: 200
+                }
+            }
+        },
+        'study.tissue_samples': {
             performedby: {
                 hidden: true
             },
@@ -570,6 +630,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             qualifier: {
+                hidden: true,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 },
@@ -592,24 +653,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             recipient: {
-                shownInGrid: false
-            },
-            trimdate: {
-                shownInGrid: false
-            },
-            trim_remarks: {
-                shownInGrid: false
-            },
-            trimmed_by: {
-                shownInGrid: false
-            },
-            remark: {
-                hidden: true
-            },
-            container_type: {
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
-                },
                 shownInGrid: false
             }
         },
@@ -701,10 +744,24 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: true
             },
             userid: {
-                hidden: false
+                hidden: true,
+                columnConfig: {
+                    width: 200
+                }
             },
             username: {
-                hidden: false
+                hidden: false,
+                columnConfig: {
+                    width: 200
+                }
+            },
+            role: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            comment: {
+                hidden: true
             }
         },
         'ehr.encounter_summaries': {
@@ -748,6 +805,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     rec.dataEntryPanel.encounterId = v;
                     return v;
                 }
+            },
+            caseno: {
+                hidden: true
+            },
+            title: {
+                hidden: true
+            },
+            project: {
+                allowBlank: false
             }
         },
         'study.clinremarks': {
@@ -758,9 +824,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: false,
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
-            remark: {
-                hidden: true
-            },
             date: {
                 getInitialValue: function(v, rec){
                     return v ? v : (new Date((new Date().toDateString())));
@@ -770,18 +833,32 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {
                 hidden: true
             },
+            hx: {
+                height: 100,
+                hidden: true
+            },
+            s: {
+                height: 75
+            },
             so: {
-                shownInGrid: false,
-                //width: 300,
-                height: 150
+                height: 75
+            },
+            o: {
+                height: 75
             },
             a: {
-                shownInGrid: false,
-                height: 150
+                height: 75
             },
             p: {
-                shownInGrid: false,
-                height: 150
+                height: 75
+            },
+            p2: {
+                height: 75
+            },
+            remark: {
+                height: 75,
+                hidden: false,
+                label: 'Other Remark'
             }
         },
         'study.clinpathRuns': {
@@ -878,11 +955,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.treatment_order': {
             date: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d',
+                xtype: 'xdatetime',
+                extFormat: 'Y-m-d H:i',
                 allowBlank: false,
                 getInitialValue: function(v, rec){
-                    console.log(v)
                     return v ? v : new Date()
                 },
                 columnConfig: {
@@ -891,8 +967,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: true
             },
             enddate: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d',
+                xtype: 'xdatetime',
+                extFormat: 'Y-m-d H:i',
                 columnConfig: {
                     //fixed: true,
                     width: 100
@@ -1046,11 +1122,94 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.flags': {
 
         },
-        'ehr.snomed_tags': {
+        'study.histology': {
 
         },
+        'study.measurements': {
+            measurement1: {
+                columnConfig: {
+                    width: 150
+                }
+            },
+            measurement2: {
+                columnConfig: {
+                    width: 150
+                }
+            },
+            measurement3: {
+                columnConfig: {
+                    width: 150
+                }
+            }
+        },
+        'ehr.snomed_tags': {
+            rowid: {
+                hidden: true,
+                allowBlank: true
+            },
+            caseid: {
+                hidden: true
+            }
+        },
         'onprc_billing.miscCharges': {
+            comment: {
+                columnConfig: {
+                    width: 250
+                }
+            }
+        },
+        'study.clinical_observations': {
+            performedby: {
+                hidden: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            category: {
+                lookup: {
+                    columns: 'value,description'
+                },
+                columnConfig: {
+                    width: 200
+                }
+            },
+            area: {
+                defaultValue: 'N/A',
+                columnConfig: {
+                    width: 200
+                }
+            },
+            observation: {
+                columnConfig: {
+                    width: 200,
+                    getEditor: function(record){
+                        if (!record){
+                            //NOTE: i think this is an Ext4 core bug.  if you tab between cells
+                            //this method is called w/o arguments
+                            var records = this.up('grid').getSelectionModel().getSelection();
+                            if (records.length)
+                                record = records[0];
+                            else
+                                return;
+                        }
 
+                        var category = record.get('category');
+                        if (!category){
+                            return false;
+                        }
+
+                        var store = this.up('grid').store.observationTypesStore;
+                        var rec = store.findRecord('value', category);
+                        LDK.Assert.assertNotEmpty('Unable to find record matching category: ' + category, rec);
+                        if (!rec){
+                            return false;
+                        }
+
+                        var config = rec.get('description') ? Ext4.decode(rec.get('description')) : null;
+                        return config || {
+                            xtype: 'textfield'
+                        }
+                    }
+                }
+            }
         },
         'study.miscTests': {
             result: {
@@ -1111,6 +1270,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             tissue: {
                 hidden: false
+            },
+            method: {
+                editorConfig: {
+                    plugins: ['ldk-usereditablecombo']
+                }
             }
         },
         'study.chemistryResults': {
@@ -1199,12 +1363,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             result: {
-                compositeField: 'Result'
+                compositeField: 'Result',
+                editorConfig: {
+                    decimalPrecision: 3
+                },
+                extFormat: '0,000.000'
             },
             rangeMax: {
                 compositeField: 'Result',
                 editorConfig: {
-                    decimalPrecision: 4
+                    decimalPrecision: 3
                 }
             },
             units: {
@@ -1297,7 +1465,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dam: {shownInGrid: false, lookups: false},
             sire: {shownInGrid: false, lookups: false},
             gender: {includeNullRecord: false, allowBlank: false},
-            weight: {shownInGrid: false},
+            weight: {
+                shownInGrid: false,
+                editorConfig: {
+                    decimalPrecision: 3
+                }
+            },
             wdate: {shownInGrid: false},
             room: {shownInGrid: false},
             cage: {shownInGrid: false},
@@ -1327,7 +1500,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             performedby: {
-                shownInGrid: true
+                shownInGrid: true,
+                defaultValue: LABKEY.Security.currentUser.displayName
             },
             instructions: {
                 shownInGrid: true,
@@ -1364,7 +1538,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: 'type,volume,color'
                 },
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo'],
                     listConfig: {
                         innerTpl: '{[(values.type) + (values.color ? " (" + values.color + ")" : "")]}',
                         getInnerTpl: function(){
@@ -1453,6 +1626,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             lot: {
                 shownInGrid: false
             },
+            reason: {
+                defaultValue: 'N/A'
+            },
             enddate: {
                 shownInGrid: false,
                 hidden: false,
@@ -1532,12 +1708,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             route: {
-                shownInGrid: false,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 }
             },
             volume: {
+                shownInGrid: false,
                 compositeField: 'Volume',
                 xtype: 'ehr-drugvolumefield',
                 noDuplicateByDefault: true,
@@ -1547,6 +1723,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             vol_units: {
+                shownInGrid: false,
                 compositeField: 'Volume',
                 header: 'Vol Units',
                 editorConfig: {
@@ -1574,7 +1751,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             performedby: {
-                allowBlank: false
+                allowBlank: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
             },
             project: {
                 //TODO: revisit
@@ -1626,7 +1804,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             performedby: {hidden: true}
         },
-        'study.TB Tests': {
+        'study.tb': {
             lot: {
                 shownInGrid: false
             },
@@ -1636,21 +1814,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {
                 hidden: true
             },
+            eye: {
+                hidden: true
+            },
+            result: {
+                hidden: true
+            },
             dilution: {
                 shownInGrid: false
             },
             remark: {
                 shownInGrid: false
-            },
-            eye: {
-                columnConfig: {
-                    width: 40
-                }
-            },
-            result: {
-                columnConfig: {
-                    width: 40
-                }
             },
             date: {
                 xtype: 'datefield',

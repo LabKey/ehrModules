@@ -20,10 +20,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
     },
 
     statics: {
-        getFieldConfigs: function(fieldConfigs, sources){
+        getFieldConfigs: function(fieldConfigs, sources, extraMetaData){
             var fields = [];
             for (var i=0;i<fieldConfigs.length;i++){
-                var cfg = this.getFieldConfig(fieldConfigs[i], sources);
+                var cfg = this.getFieldConfig(fieldConfigs[i], sources, extraMetaData);
 
                 if (cfg.xtype == 'ehr-snomedcombo' || (cfg.editorConfig && cfg.editorConfig.xtype == 'ehr-snomedcombo')){
                     EHR.DataEntryUtils.getSnomedStore();
@@ -47,7 +47,7 @@ Ext4.define('EHR.model.DefaultClientModel', {
             return fields;
         },
 
-        getFieldConfig: function(cfg, sources){
+        getFieldConfig: function(cfg, sources, extraMetaData){
             var tableConfig = EHR.model.DataModelManager.getTableMetadata(cfg.schemaName, cfg.queryName, sources);
             var ret = LABKEY.ExtAdapter.apply({}, cfg);
             LABKEY.ExtAdapter.apply(ret, {
@@ -67,21 +67,15 @@ Ext4.define('EHR.model.DefaultClientModel', {
                 ret = LABKEY.Utils.merge(ret, tableConfig[map[cfg.name.toLowerCase()]]);
             }
 
+            if (extraMetaData && extraMetaData[cfg.name]){
+                ret = LABKEY.Utils.merge(ret, extraMetaData[cfg.name]);
+            }
+
             return ret;
         }
     },
 
     constructor: function(config){
-//        this.validations = this.validations || [];
-//        this.fields.each(function(field){
-//            if (field.allowBlank===false || field.nullable === false){
-//                this.validations.push({
-//                    type: 'presence',
-//                    message: 'This field is required',
-//                    field: field.name
-//                });
-//            }
-//        }, this);
         this.callParent(arguments);
         this.setFieldDefaults();
         if (this.storeCollection){
@@ -145,23 +139,24 @@ Ext4.define('EHR.model.DefaultClientModel', {
     hasPermission: function(permission, targetQCStateLabel){
         var currentQcStateLabel = this.getCurrentQCStateLabel();
         var permissionName;
+        var permMap = this.storeCollection.formConfig.permissions;
 
         if (permission == 'delete'){
             if (this.phantom)
                 return true;
 
-            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries);
+            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, permMap, this.queries);
         }
         else if (permission == 'insert'){
-            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries);
+            return EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, permMap, this.queries);
         }
         else if (permission == 'update'){
-            if (!EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, this.queries)){
+            if (!EHR.DataEntryUtils.hasPermission(currentQcStateLabel, permission, permMap, this.queries)){
                 return false;
             }
 
             if (targetQCStateLabel){
-                if (!EHR.DataEntryUtils.hasPermission(targetQCStateLabel, 'insert', this.queries)){
+                if (!EHR.DataEntryUtils.hasPermission(targetQCStateLabel, 'insert', permMap, this.queries)){
                     return false;
                 }
             }

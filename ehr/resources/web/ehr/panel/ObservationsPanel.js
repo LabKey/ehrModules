@@ -70,7 +70,7 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                     displayField: 'value',
                     valueField: 'value',
                     forceSelection: true,
-                    value: 'Whole Body',
+                    value: 'N/A',
                     store: {
                         type: 'labkey-store',
                         schemaName: 'ehr_lookups',
@@ -157,14 +157,6 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                     }]
                 }]
             }]
-        });
-
-        this.observationTypesStore = Ext4.create('LABKEY.ext4.data.Store', {
-            type: 'labkey-store',
-            schemaName: 'ehr_lookups',
-            queryName: 'observation_types',
-            columns: 'value,description',
-            autoLoad: true
         });
 
         this.callParent();

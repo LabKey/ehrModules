@@ -52,7 +52,7 @@ Ext4.define('EHR.form.field.ProjectField', {
             containerPath: ctx ? ctx['EHRStudyContainer'] : null,
             schemaName: 'ehr',
             queryName: 'project',
-            columns: 'project,protocol,protocol/displayName,displayName,investigatorId/lastName',
+            columns: 'project,protocol,protocol/displayName,displayName,account,investigatorId/lastName',
             filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
             sort: 'displayName',
             autoLoad: true

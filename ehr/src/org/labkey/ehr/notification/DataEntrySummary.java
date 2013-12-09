@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -24,17 +25,23 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.notification.NotificationSection;
+import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.AppProps;
+import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.ehr.EHRManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -57,45 +64,29 @@ public class DataEntrySummary implements NotificationSection
         if (studies == null || studies.size() == 0)
             return null;
 
+        msg.append("<b>EHR Data Entry Summary:</b><p>");
+
+        getTaskSummary(c, u, msg, studies);
+        getRequestSummary(c, u, msg, studies);
+        getDatasetRowsSummary(c, u, msg, studies);
+
+        msg.append("<hr>");
+
+        return msg.toString();
+    }
+
+    protected Date getYesterday()
+    {
         Calendar yesterday = Calendar.getInstance();
         yesterday.setTime(new Date());
         yesterday.add(Calendar.DATE, -1);
+        return yesterday.getTime();
+    }
 
-        msg.append("<b>EHR Data Entry Summary:</b><p>");
-
-        final StringBuilder taskTable = new StringBuilder();
-        taskTable.append("Tasks created yesterday:<br>");
-        taskTable.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Form Type</td><td>Total</td></tr>");
-        boolean hasTasks = false;
-
-        for (final Study s : studies)
-        {
-            UserSchema us = QueryService.get().getUserSchema(u, s.getContainer(), "ehr");
-            if (us == null)
-                continue;
-
-            TableInfo taskSummary = us.getTable("taskSummary");
-            if (taskSummary == null)
-                continue;
-
-            TableSelector tsTasks = new TableSelector(taskSummary, new SimpleFilter(FieldKey.fromString("created"), yesterday.getTime(), CompareType.DATE_EQUAL), new Sort("-total"));
-            if (tsTasks.exists())
-            {
-                hasTasks = true;
-                tsTasks.forEach(new Selector.ForEachBlock<ResultSet>()
-                {
-                    @Override
-                    public void exec(ResultSet rs) throws SQLException
-                    {
-                        taskTable.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + rs.getString("formType") + "</td><td>" + rs.getInt("total") + "</td></tr>");
-                    }
-                });
-            }
-        }
-
-        taskTable.append("</table><p>");
-
+    protected void getRequestSummary(Container c, User u, StringBuilder msg, Set<Study> studies)
+    {
         final StringBuilder requestTable  = new StringBuilder();
+
         requestTable.append("Requests created yesterday:<br>");
         requestTable.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Form Type</td><td>Total</td></tr>");
         boolean hasRequests = false;
@@ -110,7 +101,7 @@ public class DataEntrySummary implements NotificationSection
             if (requestSummary == null)
                 continue;
 
-            TableSelector tsRequest = new TableSelector(requestSummary, new SimpleFilter(FieldKey.fromString("created"), yesterday.getTime(), CompareType.DATE_EQUAL), new Sort("-total"));
+            TableSelector tsRequest = new TableSelector(requestSummary, new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL), new Sort("-total"));
             if (tsRequest.exists())
             {
                 hasRequests = true;
@@ -127,15 +118,6 @@ public class DataEntrySummary implements NotificationSection
 
         requestTable.append("</table><p>");
 
-        if (hasTasks)
-        {
-            msg.append(taskTable);
-        }
-        else
-        {
-            msg.append("No tasks were created yesterday<p>");
-        }
-
         if (hasRequests)
         {
             msg.append(requestTable);
@@ -144,14 +126,150 @@ public class DataEntrySummary implements NotificationSection
         {
             msg.append("No requests were created yesterday<p>");
         }
+    }
 
-        msg.append("<hr>");
+    protected void getTaskSummary(Container c, User u, StringBuilder msg, Set<Study> studies)
+    {
+        boolean hasTasks = false;
+        final StringBuilder taskTable = new StringBuilder();
 
-        return msg.toString();
+        taskTable.append("Tasks created yesterday:<br>");
+        taskTable.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Form Type</td><td>Total</td></tr>");
+
+        for (final Study s : studies)
+        {
+            UserSchema us = QueryService.get().getUserSchema(u, s.getContainer(), "ehr");
+            if (us == null)
+                continue;
+
+            TableInfo taskSummary = us.getTable("taskSummary");
+            if (taskSummary == null)
+                continue;
+
+            TableSelector tsTasks = new TableSelector(taskSummary, new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL), new Sort("-total"));
+            if (tsTasks.exists())
+            {
+                hasTasks = true;
+                tsTasks.forEach(new Selector.ForEachBlock<ResultSet>()
+                {
+                    @Override
+                    public void exec(ResultSet rs) throws SQLException
+                    {
+                        taskTable.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + rs.getString("formType") + "</td><td>" + rs.getInt("total") + "</td></tr>");
+                    }
+                });
+            }
+        }
+
+        taskTable.append("</table><p>");
+
+        if (hasTasks)
+        {
+            msg.append(taskTable);
+        }
+        else
+        {
+            msg.append("No tasks were created yesterday<p>");
+        }
     }
 
     public boolean isAvailable(Container c, User u)
     {
         return true;
+    }
+
+    protected void getDatasetRowsSummary(Container c, User u, StringBuilder msg, Set<Study> studies)
+    {
+        StringBuilder results = new StringBuilder();
+        boolean hasResults = false;
+        results.append("Records created yesterday:<br>");
+        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows With TaskId or RequestId</td><td>Rows Without TaskId/RequestId</td><td>Public Records Modified</td></tr>");
+
+        for (final Study s : studies)
+        {
+            List<? extends DataSet> datasets = s.getDataSets();
+            Collections.sort(datasets, new Comparator<DataSet>()
+            {
+                @Override
+                public int compare(DataSet o1, DataSet o2)
+                {
+                    return o1.getLabel().toLowerCase().compareTo(o2.getLabel().toLowerCase());
+                }
+            });
+
+            DbSchema schema = DbSchema.get("studydataset");
+            for (DataSet ds : datasets)
+            {
+                TableInfo ti = schema.getTable(ds.getDomain().getStorageTableName());
+
+                long withTask = 0;
+                SimpleFilter filter1 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
+                if (ti.getColumn("taskid") != null)
+                {
+                    if (ti.getColumn("requestid") == null)
+                    {
+                        filter1.addCondition(FieldKey.fromString("taskid"), null, CompareType.NONBLANK);
+                    }
+                    else
+                    {
+                        filter1.addCondition(new SimpleFilter.OrClause(new CompareType.CompareClause(FieldKey.fromString("taskid"), CompareType.NONBLANK, null), new CompareType.CompareClause(FieldKey.fromString("requestid"), CompareType.NONBLANK, null)));
+                    }
+
+                    TableSelector ts1 = new TableSelector(ti, Collections.singleton("lsid"), filter1, null);
+                    withTask = ts1.getRowCount();
+                }
+
+                long withoutTask = 0;
+                SimpleFilter filter2 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
+                if (ti.getColumn("taskid") != null)
+                {
+                    filter2.addCondition(FieldKey.fromString("taskid"), null, CompareType.ISBLANK);
+                    if (ti.getColumn("requestid") != null)
+                    {
+                        filter2.addCondition(FieldKey.fromString("requestid"), null, CompareType.ISBLANK);
+                    }
+
+                    TableSelector ts2 = new TableSelector(ti, Collections.singleton("lsid"), filter2, null);
+                    withoutTask = ts2.getRowCount();
+                }
+
+                //public records, modified yesterday, but not created yesterday
+                SimpleFilter filter3 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_NOT_EQUAL);
+                filter3.addCondition(FieldKey.fromString("modified"), getYesterday(), CompareType.DATE_EQUAL);
+                filter3.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+                TableSelector ts3 = new TableSelector(ds.getTableInfo(u), Collections.singleton("lsid"), filter3, null);
+                long publicModified = ts3.getRowCount();
+
+                if (withTask > 0 || withoutTask > 0 || publicModified > 0)
+                {
+                    results.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + ds.getLabel() + "</td><td><a href='" + generateUrl(c, ds, filter1) + "'>" + withTask + "</a></td><td><a href='" + generateUrl(c, ds, filter2) + "'>" + withoutTask + "</a></td><td><a href='" + generateUrl(c, ds, filter3) + "'>" + publicModified + "</a></td></tr>");
+                    hasResults = true;
+                }
+            }
+        }
+
+        results.append("</table>");
+
+        if (hasResults)
+        {
+            msg.append(results);
+        }
+        else
+        {
+            msg.append("No records were created yesterday<br>");
+        }
+
+        msg.append("<hr>");
+    }
+
+    private String generateUrl(Container c, DataSet ds, SimpleFilter filter)
+    {
+        DetailsURL url = DetailsURL.fromString("/query/executeQuery.view", ds.getContainer());
+        String ret = AppProps.getInstance().getBaseServerUrl() + url.getActionURL().toString();
+        ret += "schemaName=study&query.queryName=" + ds.getName();
+        if (filter != null)
+            ret += "&" + filter.toQueryString("query");
+
+        return ret;
     }
 }

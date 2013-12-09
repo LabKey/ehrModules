@@ -287,8 +287,6 @@ ehr/resources/queries/study/Chemistry[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qvie
 ehr/resources/queries/study/Clinical[!!-~]Encounters.js -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/.qview.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries[!!-~]Plus[!!-~]Codes.qview.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.js -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations/.qview.xml -text
@@ -313,7 +311,6 @@ ehr/resources/queries/study/Hematology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Results/.qview.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Histology.js -text
-ehr/resources/queries/study/Histology.query.xml -text
 ehr/resources/queries/study/Histology/.qview.xml -text
 ehr/resources/queries/study/Housing.js -text
 ehr/resources/queries/study/Housing.query.xml -text
@@ -351,7 +348,6 @@ ehr/resources/queries/study/StudyData/.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/study/Tissue[!!-~]Samples.js -text
-ehr/resources/queries/study/Tissue[!!-~]Samples.query.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders.js -text
 ehr/resources/queries/study/Treatment[!!-~]Orders.query.xml -text
 ehr/resources/queries/study/Urinalysis[!!-~]Results.js -text
@@ -513,6 +509,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.371-12.372.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.372-12.373.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.373-12.374.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.374-12.375.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.376-12.377.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.378-12.379.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -567,6 +565,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.368-12.369.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.369-12.370.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.370-12.371.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.374-12.375.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.375-12.376.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.377-12.378.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -700,6 +700,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.371-12.372.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.372-12.373.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.373-12.374.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.374-12.375.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.376-12.377.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.378-12.379.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -753,6 +755,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.368-12.369.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.369-12.370.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.370-12.371.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.374-12.375.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.375-12.376.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.377-12.378.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -853,6 +857,8 @@ ehr/resources/views/protocolDetails.view.xml -text
 ehr/resources/views/quickSearch.html -text
 ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
+ehr/resources/views/recordDeleteSettings.html -text
+ehr/resources/views/recordDeleteSettings.view.xml -text
 ehr/resources/views/requestDetails.html -text
 ehr/resources/views/requestDetails.view.xml -text
 ehr/resources/views/requestServices.html -text
@@ -879,7 +885,9 @@ ehr/resources/web/ehr/ExtOverrides.js -text
 ehr/resources/web/ehr/Security.js -text
 ehr/resources/web/ehr/data/AssignmentClientStore.js -text
 ehr/resources/web/ehr/data/BloodDrawClientStore.js -text
+ehr/resources/web/ehr/data/ClinicalEncountersClientStore.js -text
 ehr/resources/web/ehr/data/ClinicalHistoryStore.js -text
+ehr/resources/web/ehr/data/ClinicalObservationsClientStore.js -text
 ehr/resources/web/ehr/data/ClinpathRunsClientStore.js -text
 ehr/resources/web/ehr/data/DataEntryClientStore.js -text
 ehr/resources/web/ehr/data/DataEntryServerStore.js -text
@@ -915,6 +923,7 @@ ehr/resources/web/ehr/ext3/ext.ux.datetimefield.js -text
 ehr/resources/web/ehr/ext3/ext.ux.multiselect.js -text
 ehr/resources/web/ehr/ext3/navMenu.js -text
 ehr/resources/web/ehr/form/Panel.js -text
+ehr/resources/web/ehr/form/SimpleDataEntryFormPanel.js -text
 ehr/resources/web/ehr/form/field/AnimalField.js -text
 ehr/resources/web/ehr/form/field/AnimalGroupField.js -text
 ehr/resources/web/ehr/form/field/AreaField.js -text
@@ -922,6 +931,7 @@ ehr/resources/web/ehr/form/field/CageField.js -text
 ehr/resources/web/ehr/form/field/DrugDoseField.js -text
 ehr/resources/web/ehr/form/field/DrugVolumeField.js -text
 ehr/resources/web/ehr/form/field/LowestCageField.js -text
+ehr/resources/web/ehr/form/field/PathologyCaseNoField.js -text
 ehr/resources/web/ehr/form/field/ProjectEntryField.js -text
 ehr/resources/web/ehr/form/field/ProjectField.js -text
 ehr/resources/web/ehr/form/field/ProtocolField.js -text
@@ -934,7 +944,9 @@ ehr/resources/web/ehr/form/field/SnomedCombo.js -text
 ehr/resources/web/ehr/form/field/TimeOfDayField.js -text
 ehr/resources/web/ehr/form/field/TriggerNumberField.js -text
 ehr/resources/web/ehr/form/field/UrinalysisResultField.js -text
+ehr/resources/web/ehr/grid/ObservationsSmallGridPanel.js -text
 ehr/resources/web/ehr/grid/Panel.js -text
+ehr/resources/web/ehr/grid/RemarksAndObsGridPanel.js -text
 ehr/resources/web/ehr/icons/clipboard.png -text
 ehr/resources/web/ehr/icons/folder.png -text
 ehr/resources/web/ehr/icons/icon_browse_lg.png -text
@@ -967,14 +979,24 @@ ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
 ehr/resources/web/ehr/model/DataModelManager.js -text
 ehr/resources/web/ehr/model/DefaultClientModel.js -text
+ehr/resources/web/ehr/model/sources/BehaviorRounds.js -text
+ehr/resources/web/ehr/model/sources/BloodDraw.js -text
+ehr/resources/web/ehr/model/sources/ChargesAdvanced.js -text
+ehr/resources/web/ehr/model/sources/ClinicalProcedure.js -text
+ehr/resources/web/ehr/model/sources/ClinicalRounds.js -text
 ehr/resources/web/ehr/model/sources/Default.js -text
 ehr/resources/web/ehr/model/sources/Encounter.js -text
+ehr/resources/web/ehr/model/sources/EncounterChild.js -text
 ehr/resources/web/ehr/model/sources/LabworkChild.js -text
+ehr/resources/web/ehr/model/sources/Necropsy.js -text
 ehr/resources/web/ehr/model/sources/Request.js -text
+ehr/resources/web/ehr/model/sources/ResearchProcedures.js -text
+ehr/resources/web/ehr/model/sources/SingleQuery.js -text
 ehr/resources/web/ehr/model/sources/Surgery[!!-~]Request.js -text
 ehr/resources/web/ehr/model/sources/Surgery.js -text
-ehr/resources/web/ehr/model/sources/SurgeryChild.js -text
+ehr/resources/web/ehr/model/sources/SurgicalRounds.js -text
 ehr/resources/web/ehr/model/sources/Task.js -text
+ehr/resources/web/ehr/model/sources/Weight.js -text
 ehr/resources/web/ehr/panel/AnimalDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
@@ -1005,6 +1027,7 @@ ehr/resources/web/ehr/panel/ObservationsPanel.js -text
 ehr/resources/web/ehr/panel/ParticipantDetailsPanel.js -text
 ehr/resources/web/ehr/panel/PopulationPanel.js -text
 ehr/resources/web/ehr/panel/PopulationTrendsPanel.js -text
+ehr/resources/web/ehr/panel/RecordDeleteSettingsPanel.js -text
 ehr/resources/web/ehr/panel/RequestDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/ServiceRequestsPanel.js -text
 ehr/resources/web/ehr/panel/SimpleDataEntryPanel.js -text
@@ -1014,6 +1037,7 @@ ehr/resources/web/ehr/panel/TaskDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/UtilizationSummaryPanel.js -text
 ehr/resources/web/ehr/panel/WeightGraphPanel.js -text
 ehr/resources/web/ehr/panel/WeightSummaryPanel.js -text
+ehr/resources/web/ehr/plugin/ClinicalRemarksRowEditor.js -text
 ehr/resources/web/ehr/plugin/DataBind.js -text
 ehr/resources/web/ehr/plugin/ResizableTextArea.js -text
 ehr/resources/web/ehr/plugin/RowEditor.js -text
@@ -1023,8 +1047,10 @@ ehr/resources/web/ehr/studyButtons.js -text
 ehr/resources/web/ehr/stylesheet.css -text
 ehr/resources/web/ehr/utils.js -text
 ehr/resources/web/ehr/window/AddAnimalsWindow.js -text
+ehr/resources/web/ehr/window/AddClinicalCasesWindow.js -text
 ehr/resources/web/ehr/window/AddScheduledBloodDrawsWindow.js -text
 ehr/resources/web/ehr/window/AddScheduledTreatmentsWindow.js -text
+ehr/resources/web/ehr/window/AddSurgicalCasesWindow.js -text
 ehr/resources/web/ehr/window/ApplyTemplateWindow.js -text
 ehr/resources/web/ehr/window/BulkEditWindow.js -text
 ehr/resources/web/ehr/window/CaseHistoryWindow.js -text
@@ -1032,9 +1058,9 @@ ehr/resources/web/ehr/window/CaseNumberWindow.js -text
 ehr/resources/web/ehr/window/ChangeRequestStatusWindow.js -text
 ehr/resources/web/ehr/window/ClinicalHistoryWindow.js -text
 ehr/resources/web/ehr/window/CompareWeightsWindow.js -text
-ehr/resources/web/ehr/window/CopyFromBloodWindow.js -text
 ehr/resources/web/ehr/window/CopyFromEncountersWindow.js -text
 ehr/resources/web/ehr/window/CopyFromRunsWindow.js -text
+ehr/resources/web/ehr/window/CopyFromSectionWindow.js -text
 ehr/resources/web/ehr/window/CreateTaskFromIdsWindow.js -text
 ehr/resources/web/ehr/window/CreateTaskFromRecordsWindow.js -text
 ehr/resources/web/ehr/window/EnterRemarkWindow.js -text
@@ -1066,9 +1092,9 @@ ehr/src/org/labkey/ehr/buttons/ScheduleTaskButton.java -text
 ehr/src/org/labkey/ehr/buttons/TaskAssignButton.java -text
 ehr/src/org/labkey/ehr/dataentry/DataEntryManager.java -text
 ehr/src/org/labkey/ehr/dataentry/EncounterForm.java -text
+ehr/src/org/labkey/ehr/dataentry/RecordDeleteRunner.java -text
 ehr/src/org/labkey/ehr/dataentry/RunForm.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormPanel.java -text
-ehr/src/org/labkey/ehr/dataentry/SimpleFormType.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormpanelForm.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleGridPanel.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleGridpanelForm.java -text
@@ -1110,6 +1136,7 @@ ehr/src/org/labkey/ehr/history/DefaultEncountersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultHousingDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultLabworkDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultLabworkType.java -text
+ehr/src/org/labkey/ehr/history/DefaultObservationsDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultPregnanciesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListDataSource.java -text

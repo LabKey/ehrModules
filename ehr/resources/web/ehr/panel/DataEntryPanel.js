@@ -2,17 +2,22 @@
  * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * @cfg extraMetaData
  */
 Ext4.define('EHR.panel.DataEntryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-dataentrypanel',
 
     storeCollection: null,
+    hideErrorPanel: false,
 
     initComponent: function(){
         Ext4.QuickTips.init();
 
-        this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {});
+        this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {
+            extraMetaData: this.extraMetaData
+        });
         this.storeCollection.formConfig = this.formConfig;
 
         this.storeCollection.on('initialload', this.onStoreCollectionInitialLoad, this);
@@ -95,11 +100,21 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             }
         }
 
-        Ext4.Array.forEach(this.getUpperPanel().getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
-            toolbar.items.each(function(item){
-                processItem(item);
+        var btns = this.getToolbarItems();
+        if (btns){
+            Ext4.Array.forEach(btns, function(toolbar){
+                toolbar.items.each(function(item){
+                    processItem(item);
+                }, this);
             }, this);
-        }, this);
+        }
+    },
+
+    getToolbarItems: function(){
+        var up = this.getUpperPanel();
+        if (up){
+            return up.getDockedItems('toolbar[dock="bottom"]');
+        }
     },
 
     getUpperPanel: function(){
@@ -155,7 +170,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             if (!section.fieldConfigs)
                 continue;
 
-            for(j=0;j<section.fieldConfigs.length;j++){
+            for (j=0;j<section.fieldConfigs.length;j++){
                 var field = section.fieldConfigs[j];
                 var key = field.schemaName + '.' + field.queryName;
                 if (!fieldMap[key])
@@ -165,16 +180,22 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                         fields: {}
                     };
 
+                if (section.serverStoreSort){
+                    LDK.Assert.assertTrue('There is already a serverSort for store: ' + field.schemaName + '.' + field.queryName, !fieldMap[key].sort || fieldMap[key].sort == section.serverStoreSort);
+                    fieldMap[key].sort = section.serverStoreSort;
+                }
+
                 //TODO: consider allowing aliasing server->client
                 fieldMap[key].fields[field.name] = field.name;
             }
         }
 
-        for(var storeId in fieldMap){
+        for (var storeId in fieldMap){
             var cfg = fieldMap[storeId];
             this.storeCollection.addServerStoreFromConfig(this.applyConfigToServerStore({
                 schemaName: cfg.schemaName,
                 queryName: cfg.queryName,
+                sort: cfg.sort,
                 columns: LABKEY.Utils.isEmptyObj(cfg.fields) ? null : Ext4.Object.getKeys(cfg.fields).join(',')
             }));
         }
@@ -192,19 +213,24 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     onStoreCollectionInitialLoad: function(){
         this.removeAll();
-        this.add([{
+        var toAdd = [{
             xtype: 'panel',
             itemId: 'upperPanel',
             items: this.getItems(),
             buttonAlign: 'left',
             buttons: this.getButtons()
-        },{
-            xtype: 'ehr-dataentryerrorpanel',
-            itemId: 'errorPanel',
-            style: 'padding-top: 10px;',
-            storeCollection: this.storeCollection
-        }]);
+        }];
 
+        if (!this.hideErrorPanel){
+            toAdd.push({
+                xtype: 'ehr-dataentryerrorpanel',
+                itemId: 'errorPanel',
+                style: 'padding-top: 10px;',
+                storeCollection: this.storeCollection
+            });
+        }
+
+        this.add(toAdd);
         this.hasStoreCollectionLoaded = true;
     },
 
@@ -228,10 +254,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 xtype: section.xtype,
                 border: true,
                 style: 'margin-bottom: 10px;',
-                //collapsible: true,
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
+                extraMetaData: this.extraMetaData,
                 store: this.storeCollection.getClientStoreForSection(this, section)
             }, section.formConfig);
 
@@ -251,6 +277,34 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         return items;
+    },
+
+    getSectionByLabel: function(label){
+        var up = this.getUpperPanel();
+        if (!up)
+            return;
+
+        var ret;
+        up.items.each(function(item){
+            if (item.title == label){
+                ret = item;
+                return false;
+            }
+        }, this);
+
+        if (!ret){
+            var tabPanel = this.down('tabpanel');
+            if (tabPanel){
+                tabPanel.items.each(function(item){
+                    if (item.title == label){
+                        ret = item;
+                        return false;
+                    }
+                }, this);
+            }
+        }
+
+        return ret;
     },
 
     updateDirtyStateMessage: function(){
@@ -340,7 +394,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     hasPermission: function(qcStateLabel, permissionName){
-        return EHR.DataEntryUtils.hasPermission(this.formConfig.permissions, qcStateLabel, permissionName);
+        return EHR.DataEntryUtils.hasPermission(qcStateLabel, permissionName, this.formConfig.permissions, null);
     },
 
     onSubmit: function(btn){
@@ -364,5 +418,4 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 this.storeCollection.discard(extraContext);
         }, this);
     }
-
 });

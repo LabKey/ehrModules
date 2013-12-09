@@ -83,6 +83,9 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
+        if (!redacted)
+            sb.append(safeAppend(rs, "Charge Type", "chargetype"));
+
         if (rs.hasColumn(FieldKey.fromString("major")) && rs.getObject("major") != null)
         {
             Boolean value = rs.getBoolean("major");
@@ -136,7 +139,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "major", "caseno", "type", "title", "procedureid", "objectid", "procedureid/name", "summaries/summary", "participants/participants");
+        return PageFlowUtil.set("Id", "date", "enddate", "major", "caseno", "type", "title", "procedureid", "objectid", "procedureid/name", "summaries/summary", "participants/participants", "chargetype");
     }
 
     protected Map<String, Map<Integer, Map<Integer, String>>> getSnomedTags(Container c, User u, SimpleFilter filter)

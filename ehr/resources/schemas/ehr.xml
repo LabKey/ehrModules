@@ -1139,6 +1139,9 @@
                 <ns:columnTitle>Is Always Available?</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+            <ns:column columnName="projecttype">
+                <ns:columnTitle>Project Type</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="shortname">
                 <ns:columnTitle>Short Name (Used In Data Entry)</ns:columnTitle>
             </ns:column>

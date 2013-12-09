@@ -45,6 +45,14 @@ public class EHRUserSchema extends SimpleUserSchema
             return getDataEntryTable(schemaTable);
         else if (EHRSchema.TABLE_TASKS.equalsIgnoreCase(name))
             return getDataEntryTable(schemaTable);
+        else if (EHRSchema.TABLE_ENCOUNTER_FLAGS.equalsIgnoreCase(name))
+            return getDataEntryTable(schemaTable);
+        else if (EHRSchema.TABLE_ENCOUNTER_PARTICIPANTS.equalsIgnoreCase(name))
+            return getDataEntryTable(schemaTable);
+        else if (EHRSchema.TABLE_ENCOUNTER_SUMMARIES.equalsIgnoreCase(name))
+            return getDataEntryTable(schemaTable);
+        else if (EHRSchema.TABLE_SNOMED_TAGS.equalsIgnoreCase(name))
+            return getDataEntryTable(schemaTable);
         else
             return super.createWrappedTable(name, schemaTable);
     }

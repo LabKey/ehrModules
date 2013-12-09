@@ -14,11 +14,33 @@ Ext4.define('EHR.window.ManageRecordWindow', {
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
-            width: 600,
-            modal: true
+            modal: true,
+            closeAction: 'destroy',
+            minWidth: 600,
+            minHeight: 200,
+            items: [{
+                border: false,
+                html: 'Loading...'
+            }],
+            buttons: [{
+                text: 'Submit',
+                scope: this,
+                requiredQC: 'Completed',
+                targetQC: 'Completed',
+                errorThreshold: 'INFO',
+                disableOn: 'WARN',
+                disabled: true,
+                handler: this.onSubmit
+            },{
+                text: 'Cancel',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
         });
 
         this.callParent();
+        this.addEvents('save');
 
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryFormJsonForQuery', null),
@@ -30,6 +52,15 @@ Ext4.define('EHR.window.ManageRecordWindow', {
             failure: LDK.Utils.getErrorCallback(),
             success: LABKEY.Utils.getCallbackWrapper(this.onFormLoad, this)
         })
+    },
+
+    onSubmit: function(btn){
+        var form = this.down('#formPanel');
+        var rec = form.getRecord();
+        if (!rec)
+            return;
+
+        this.down('#dataEntryPanel').onSubmit(btn);
     },
 
     onFormLoad: function(results){
@@ -51,23 +82,60 @@ Ext4.define('EHR.window.ManageRecordWindow', {
     onJsLoad: function(){
         this.removeAll();
         var name = Ext4.id();
+
         Ext4.define(name, {
             extend: this.formResults.formConfig.javascriptClass,
+            alias: 'widget.' + name,
+            extraMetaData: this.extraMetaData,
             applyConfigToServerStore: function(cfg){
                 cfg = this.callParent(arguments);
                 cfg.filterArray = cfg.filterArray || [];
                 cfg.filterArray.push(LABKEY.Filter.create(this.pkCol, this.pkValue, LABKEY.Filter.Types.EQUAL));
 
                 return cfg;
+            },
+            onStoreCollectionInitialLoad: function(){
+                this.removeAll();
+                var item = this.getItems()[0];
+                item.itemId = 'formPanel';
+                this.add(item);
+
+                var size = this.getSize();
+                this.setWidth(size.width + 10);
+                this.hasStoreCollectionLoaded = true;
+
+                this.up('window').center();
+            },
+            getToolbarItems: function(){
+                var win = this.up('window');
+                if (!win){
+                    //NOTE: this can occur once after the window is closed, but before the store returns
+                    console.log('no window');
+                    return;
+                }
+
+                return win.getDockedItems('toolbar[dock="bottom"]');
+            },
+            getButtons: function(){
+                return [];
             }
         });
 
-        this.add(Ext4.create(name, {
+        this.add({
+            xtype: name,
+            itemId: 'dataEntryPanel',
             pkCol: this.pkCol,
             pkValue: this.pkValue,
-            formConfig: this.formResults.formConfig
-        }));
+            hideErrorPanel: true,
+            formConfig: this.formResults.formConfig,
+            onStoreCollectionCommitComplete: this.onStoreCollectionCommitComplete
+        });
+    },
 
-        //this.doLayout();
+    onStoreCollectionCommitComplete: function(sc, extraContext){
+        Ext4.Msg.hide();
+        var win = this.up('window');
+        win.fireEvent('save', this);
+        win.close();
     }
 });

@@ -4,16 +4,18 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * @cfg targetField
+ * @cfg targetRecord
  */
 Ext4.define('EHR.window.CaseNumberWindow', {
     extend: 'Ext.window.Window',
+    encounterType: 'Necropsy',
+    prefix: 'a',
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             modal: true,
             closeAction: 'destroy',
-            title: 'Case Number',
+            title: 'Create Case Number',
             border: true,
             bodyStyle: 'padding:5px',
             width: 350,
@@ -23,11 +25,14 @@ Ext4.define('EHR.window.CaseNumberWindow', {
                 bodyBorder: false
             },
             items: [{
+                html : 'This helper will find the next available case number, based on the year and prefix provided below',
+                style: 'padding-bottom: 10px;'
+            },{
                 xtype: 'textfield',
                 itemId: 'prefix',
                 fieldLabel: 'Prefix',
                 allowBlank: false,
-                value: 'a'
+                value: this.prefix
             },{
                 xtype: 'numberfield',
                 itemId: 'year',
@@ -62,10 +67,12 @@ Ext4.define('EHR.window.CaseNumberWindow', {
             return
         }
 
+        Ext4.Msg.wait('Loading...');
+
         LABKEY.Query.executeSql({
             method: 'POST',
             schemaName: 'study',
-            sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.\"Clinical Encounters\" WHERE type = 'Necropsy' AND caseno LIKE '" + year + prefix + "%'",
+            sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.\"Clinical Encounters\" WHERE type = '" + this.encounterType + "' AND caseno LIKE '" + year + prefix + "%'",
             scope: this,
             success: function(data){
                 var caseno;
@@ -80,8 +87,9 @@ Ext4.define('EHR.window.CaseNumberWindow', {
 
                 caseno = Ext4.String.leftPad(caseno, 3, '0');
                 var val = year + prefix + caseno;
-                this.targetField.setValue(val);
-                this.targetField.fireEvent('change', val)
+                this.targetRecord.set('caseno', val);
+
+                Ext4.Msg.hide();
             },
             failure: LDK.Utils.getErrorCallback()
         });

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * @cfg targetGrid
+ * @cfg dataEntryPanel
  * @cfg runsStore
- * @cfg targetTab
+ * @cfg [] targetTabs
  */
 Ext4.define('EHR.window.CopyFromEncountersWindow', {
     extend: 'Ext.window.Window',
@@ -42,11 +42,23 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             }]
         });
 
+        if (!this.targetTabs){
+            this.targetTabs = [];
+            Ext4.each(this.dataEntryPanel.formConfig.sections, function(s){
+                if (this.tableNameMap[s.label]){
+                    var item = this.dataEntryPanel.getSectionByLabel(s.label);
+                    LDK.Assert.assertNotEmpty('Unable to find panel: ' + s.label, item);
+                    if (item != null)
+                        this.targetTabs.push(item);
+                }
+            }, this);
+        }
+
         this.inferPanels();
 
         this.callParent();
 
-        this.on('beforeshow', function(window){
+        this.on('beforeshow', function(){
             if (!this.procedureRecords.length){
                 Ext4.Msg.alert('No Records', 'There are no available procedures, nothing to add');
                 return false;
@@ -79,6 +91,19 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
         return records;
     },
 
+    getExistingParentIds: function(){
+        var keys = {};
+        Ext4.Array.forEach(this.targetTabs, function(tab){
+            keys[tab.title] = {};
+            tab.store.each(function(r){
+                if (r.get('parentid'))
+                    keys[tab.title][r.get('parentid')] = true;
+            }, this);
+        }, this);
+
+        return keys
+    },
+
     tableNameMap: {
         'Medications/Treatments': {
             queryName: 'procedure_default_treatments',
@@ -102,52 +127,58 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             queryName: 'procedure_default_codes',
             columns: 'procedureid,code,qualifier',
             sort: 'sort_order'
+        },
+        'Diagnostic Codes': {
+            queryName: 'procedure_default_codes',
+            columns: 'procedureid,code,qualifier',
+            sort: 'sort_order'
         }
     },
 
     loadServices: function(){
-        var cfg = this.tableNameMap[this.targetTab];
-        if (cfg){
-            LABKEY.Query.selectRows({
-                schemaName: 'ehr_lookups',
-                queryName: cfg.queryName,
-                requiredVersion: 9.1,
-                columns: cfg.columns,
-                failure: LDK.Utils.getErrorCallback(),
-                success: this.onLoad,
-                scope: this
-            });
-        }
-        else {
-            this.onLoad();
-        }
+        var multi = new LABKEY.MultiRequest();
+        this.panelMap = {};
+        Ext4.Array.forEach(this.targetTabs, function(tab){
+            var cfg = this.tableNameMap[tab.title];
+            if (cfg){
+                multi.add(LABKEY.Query.selectRows, {
+                    schemaName: 'ehr_lookups',
+                    queryName: cfg.queryName,
+                    requiredVersion: 9.1,
+                    columns: cfg.columns,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function(results){
+                        this.panelMap[tab.title] = {};
+                        if (results && results.rows && results.rows.length){
+                            Ext4.Array.forEach(results.rows, function(r){
+                                var row = new LDK.SelectRowsRow(r);
+                                if (!this.panelMap[tab.title][row.getValue('procedureid')])
+                                    this.panelMap[tab.title][row.getValue('procedureid')] = [];
+
+                                this.panelMap[tab.title][row.getValue('procedureid')].push(row);
+                            }, this);
+                        }
+                    },
+                    scope: this
+                });
+            }
+        }, this);
+
+        multi.send(this.onLoad, this);
     },
 
-    onLoad: function(results){
-        this.panelMap = {};
-
-        if (results && results.rows && results.rows.length){
-            Ext4.Array.forEach(results.rows, function(r){
-                var row = new LDK.SelectRowsRow(r);
-                if (!this.panelMap[row.getValue('procedureid')])
-                    this.panelMap[row.getValue('procedureid')] = [];
-
-                this.panelMap[row.getValue('procedureid')].push(row);
-            }, this);
-        }
-
+    onLoad: function(){
         var toAdd= [{
             html: '<b>Id</b>'
         },{
             html: '<b>Date</b>'
-        },{
-            html: '<b>Procedure</b>'
         },{
             html: '<b>Choose Template</b>'
         },{
             html: '<b>Ignore</b>'
         }];
 
+        var keys = this.getExistingParentIds();
         Ext4.Array.forEach(this.procedureRecords, function(r){
             toAdd.push({
                 html: r.get('Id'),
@@ -155,10 +186,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             });
             toAdd.push({
                 html: r.get('date').format('Y-m-d'),
-                width: 80
-            });
-            toAdd.push({
-                html: r.get('procedureid')
+                width: 110
             });
 
             var ignoreId = 'ignore_' + Ext4.id();
@@ -184,7 +212,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                 xtype: 'checkbox',
                 width: 80,
                 itemId: ignoreId,
-                checked: false
+                checked: this.targetTabs.length == 1 ? keys[this.targetTabs[0].title][r.get('objectid')] : false
             });
         }, this);
 
@@ -196,7 +224,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             itemId: 'fieldPanel',
             layout: {
                 type: 'table',
-                columns: 5
+                columns: 4
             },
             defaults: {
                 border: false,
@@ -210,7 +238,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
     },
 
     onSubmit: function(){
-        var records = [];
+        var hasRecords = false;
         this.down('#fieldPanel').items.each(function(item){
             if (item.boundRecord){
                 var ignoreCheckbox = this.down('#' + item.ignoreCheckbox);
@@ -219,44 +247,49 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                 }
 
                 var panel = item.getValue();
-                var rows;
-                if (panel && this.panelMap[panel]){
-                    rows = this.panelMap[panel];
-                }
+                Ext4.Array.forEach(this.targetTabs, function(targetTab){
+                    var rows;
+                    var records = [];
 
-                if (rows && rows.length){
-                    Ext4.Array.forEach(rows, function(row){
-                        var data = {
-                            Id: item.boundRecord.get('Id'),
-                            date: item.boundRecord.get('date'),
-                            project: item.boundRecord.get('project'),
-                            encounterid: item.boundRecord.get('objectid'),
-                            parentid: item.boundRecord.get('objectid')
-                        };
+                    if (panel && this.panelMap[targetTab.title] && this.panelMap[targetTab.title][panel]){
+                        rows = this.panelMap[targetTab.title][panel];
+                    }
 
-                        var cfg = this.tableNameMap[this.targetTab];
-                        if (cfg && cfg.columns){
-                            var columns = cfg.columns.split(',');
-                            var targetColumns = (cfg.targetColumns || cfg.columns).split(',');
-                            Ext4.Array.forEach(columns, function(col, idx){
-                                if (!Ext4.isEmpty(row.getValue(col))){
-                                    data[targetColumns[idx]] = row.getValue(col);
-                                }
-                            }, this);
+                    if (rows && rows.length){
+                        Ext4.Array.forEach(rows, function(row){
+                            var data = {
+                                Id: item.boundRecord.get('Id'),
+                                date: item.boundRecord.get('date'),
+                                project: item.boundRecord.get('project'),
+                                encounterid: item.boundRecord.get('objectid'),
+                                parentid: item.boundRecord.get('objectid')
+                            };
+
+                            var cfg = this.tableNameMap[targetTab.title];
+                            if (cfg && cfg.columns){
+                                var columns = cfg.columns.split(',');
+                                var targetColumns = (cfg.targetColumns || cfg.columns).split(',');
+                                Ext4.Array.forEach(columns, function(col, idx){
+                                    if (!Ext4.isEmpty(row.getValue(col))){
+                                        data[targetColumns[idx]] = row.getValue(col);
+                                    }
+                                }, this);
+                            }
+
+                            records.push(targetTab.store.createModel(data));
+                        }, this);
+
+                        if (records.length){
+                            targetTab.store.add(records);
+                            hasRecords = true;
                         }
-
-                        records.push(this.targetGrid.store.createModel(data));
-                    }, this);
-                }
+                    }
+                }, this);
             }
         }, this);
 
-        if (records.length){
-            this.targetGrid.store.add(records);
-            this.close();
-        }
-        else {
+        this.close();
+        if (!hasRecords)
             Ext4.Msg.alert('No Records', 'There are no records to add');
-        }
     }
 });

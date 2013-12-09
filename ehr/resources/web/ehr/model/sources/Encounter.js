@@ -9,51 +9,6 @@
  */
 EHR.model.DataModelManager.registerMetadata('Encounter', {
     allQueries: {
-        Id: {
-            inheritance: {
-                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'objectid',
-                recordSelector: {
-                    parentid: 'objectid',
-                    Id: 'Id'
-                }
-            },
-            hidden: true,
-            shownInGrid: false
-        },
-        date: {
-            inheritance: {
-                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'date',
-                recordSelector: {
-                    parentid: 'objectid'
-                }
-            },
-            hidden: true,
-            shownInGrid: false
-        },
-        parentid: {
-            inheritance: {
-                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'objectid',
-                recordSelector: {
-                    parentid: 'objectid'
-                }
-            },
-            hidden: false,
-            shownInGrid: false,
-            allowBlank: false
-        },
-        project: {
-            inheritance: {
-                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'project',
-                recordSelector: {
-                    parentid: 'objectid'
-                }
-            },
-            hidden: true,
-            shownInGrid: false
-        }
+
     }
 });

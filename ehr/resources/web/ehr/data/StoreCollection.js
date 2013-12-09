@@ -2,6 +2,8 @@
  * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * @cfg extraMetaData
  */
 Ext4.define('EHR.data.StoreCollection', {
     extend: 'Ext.util.Observable',
@@ -19,7 +21,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.callParent(arguments);
         this.addEvents('commitcomplete', 'commitexception', 'validation', 'initialload', 'load', 'clientdatachanged', 'serverdatachanged');
 
-        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 100});
+        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 150});
     },
 
     getKey: function(o){
@@ -319,7 +321,7 @@ Ext4.define('EHR.data.StoreCollection', {
 
     getClientStoreForSection: function(dataEntryPanel, section){
         var modelName = 'EHR.model.model-' + Ext4.id();
-        var fields = EHR.model.DefaultClientModel.getFieldConfigs(section.fieldConfigs, section.configSources);
+        var fields = EHR.model.DefaultClientModel.getFieldConfigs(section.fieldConfigs, section.configSources, this.extraMetaData);
         if (!fields.length){
             return;
         }

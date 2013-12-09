@@ -18,7 +18,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     if (!helper.isETL()){
         if (row.volume && row.concentration){
             var expected = Math.round(row.volume * row.concentration * 1000) / 1000;
-            if (row.amount != expected){
+            if (Math.abs(row.amount - expected) > 0.2){ //allow for rounding
                 EHR.Server.Utils.addError(scriptErrors, 'amount', 'Amount does not match volume for this concentration. Expected: '+expected, 'WARN');
                 //EHR.Server.Utils.addError(scriptErrors, 'volume', 'Volume does not match amount for this concentration. Expected: '+expected, 'WARN');
             }

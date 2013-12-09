@@ -5,7 +5,6 @@
  */
 /**
  * @cfg {String} animalId
- * @cfg {String} dataRegionName
  */
 Ext4.define('EHR.window.ManageCasesWindow', {
     extend: 'Ext.window.Window',

@@ -508,6 +508,9 @@
                 <ns:description>This is the number of days that must elapse to full reconstitute from a max blood draw
                 </ns:description>
             </ns:column>
+            <ns:column columnName="cites_code">
+                <ns:columnTitle>Cites Code</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="dateDisabled">
                 <ns:columnTitle>Date Disabled</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
@@ -1253,6 +1256,7 @@
             <ns:column columnName="description"/>
             <ns:column columnName="category"/>
             <ns:column columnName="major"/>
+            <ns:column columnName="remark"/>
             <ns:column columnName="active"/>
             <ns:column columnName="incision">
                 <ns:columnTitle>Involves Incision?</ns:columnTitle>

@@ -106,8 +106,15 @@ EHR.Server.Validation = {
             EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
         }
 
-        if (helper.getEvent() == 'insert' && !cal1.after(cal2) && row.QCStateLabel == 'Scheduled'){
-            EHR.Server.Utils.addError(errors, 'date', 'Date is in past, but is scheduled', 'ERROR');
+        //consider date-only, not date/time
+        var roundedDate1 = new Date(cal1.getTimeInMillis());
+        roundedDate1 = new Date(roundedDate1.getFullYear(), roundedDate1.getMonth(), roundedDate1.getDate());
+
+        var roundedDate2 = new Date(cal2.getTimeInMillis());
+        roundedDate2 = new Date(roundedDate2.getFullYear(), roundedDate2.getMonth(), roundedDate2.getDate());
+
+        if (helper.getEvent() == 'insert' && roundedDate1.getTime() > roundedDate2.getTime() && row.QCStateLabel == 'Scheduled'){
+            EHR.Server.Utils.addError(errors, 'date', 'Date is in past, but is scheduled', 'WARN');
         }
     },
 

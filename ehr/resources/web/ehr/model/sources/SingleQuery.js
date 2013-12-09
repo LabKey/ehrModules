@@ -3,13 +3,15 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-EHR.model.DataModelManager.registerMetadata('SurgeryChild', {
+EHR.model.DataModelManager.registerMetadata('SingleQuery', {
     allQueries: {
-        Id: {
-            editable: false
-        },
-        project: {
-            editable: false
+        objectid: {
+            allowBlank: false
+        }
+    },
+    byQuery: {
+     'study.clinremarks': {
+
         }
     }
 });

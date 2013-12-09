@@ -1,13 +1,16 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="clinremarks" tableDbType="TABLE">
+            <table tableName="clinremarks" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl />
                 <insertUrl/>
                 <importUrl/>
                 <updateUrl/>
                 <deleteUrl/>
                 <columns>
+                    <column columnName="Id">
+
+                    </column>
                     <column columnName="project">
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
@@ -24,10 +27,6 @@
                         <!--<fkTable>studyDataParent</fkTable>-->
                         <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
-                    </column>
-                    <column columnName="remark">
-                        <isHidden>false</isHidden>
-                        <displayWidth>350</displayWidth>
                     </column>
                     <!--<column columnName="location">-->
                     <!--<columnTitle>Location</columnTitle>-->
@@ -80,6 +79,10 @@
                         <columnTitle>P2</columnTitle>
                         <inputType>textarea</inputType>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                    </column>
+                    <column columnName="remark">
+                        <isHidden>false</isHidden>
+                        <displayWidth>350</displayWidth>
                     </column>
                     <column columnName="performedby">
                         <columnTitle>Entered By</columnTitle>

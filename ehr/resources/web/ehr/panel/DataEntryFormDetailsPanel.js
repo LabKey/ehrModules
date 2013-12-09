@@ -99,7 +99,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
             })
         }, this);
 
-        var hasPermission = EHR.DataEntryUtils.hasPermission(results.form.permissions, 'Completed', 'update');
+        var hasPermission = EHR.DataEntryUtils.hasPermission('Completed', 'update', results.form.permissions, null);
         if (hasPermission){
             var btn = this.down('#editBtn');
             btn.setVisible(true);

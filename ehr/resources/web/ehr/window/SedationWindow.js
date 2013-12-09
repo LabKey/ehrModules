@@ -9,7 +9,9 @@
  * @cfg label
  */
 Ext4.define('EHR.window.SedationWindow', {
-    extend: 'EHR.window.CopyFromBloodWindow',
+    extend: 'EHR.window.CopyFromSectionWindow',
+
+    targetName: 'blood draws',
 
     initComponent: function(){
         this.getParentRecords();
@@ -18,7 +20,7 @@ Ext4.define('EHR.window.SedationWindow', {
             width: 860,
             title: 'Add Sedations',
             items: [{
-                html: 'This helper allows you to fill out sedation drugs for each animal in the blood draws section.  Choose which IDs and type of sedation to use from the list below.  Note: this will default to the most recent weight for the animal; however, the weight can be adjusted below.',
+                html: 'This helper allows you to fill out sedation drugs for each animal in the ' + this.targetName + ' section.  Choose which IDs and type of sedation to use from the list below.  Note: this will default to the most recent weight for the animal; however, the weight can be adjusted below.',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'animalIds',
@@ -296,6 +298,32 @@ EHR.DataEntryUtils.registerGridButton('COPYSEDATIONFROMBLOOD', function(config){
 
             if (store){
                 Ext4.create('EHR.window.SedationWindow', {
+                    targetGrid: grid,
+                    parentStore: store
+                }).show();
+            }
+        }
+    });
+});
+
+EHR.DataEntryUtils.registerGridButton('COPYSEDATIONFROMWEIGHTS', function(config){
+    return Ext4.Object.merge({
+        text: 'Add Sedation(s)',
+        xtype: 'button',
+        tooltip: 'Click to add sedation records based on the animals in the blood draws section',
+        handler: function(btn){
+            var grid = btn.up('grid');
+            LDK.Assert.assertNotEmpty('Unable to find grid in COPYSEDATIONFROMWEIGHTS button', grid);
+
+            var panel = grid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in COPYSEDATIONFROMWEIGHTS button', panel);
+
+            var store = panel.storeCollection.getClientStoreByName('Weight');
+            LDK.Assert.assertNotEmpty('Unable to find blood draw store in COPYSEDATIONFROMWEIGHTS button', store);
+
+            if (store){
+                Ext4.create('EHR.window.SedationWindow', {
+                    targetName: 'weights',
                     targetGrid: grid,
                     parentStore: store
                 }).show();

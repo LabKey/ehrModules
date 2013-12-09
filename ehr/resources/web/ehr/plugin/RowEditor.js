@@ -33,7 +33,7 @@ Ext4.define('EHR.plugin.RowEditor', {
             xtype: 'ehr-formpanel',
             itemId: 'formPanel',
             maxFieldHeight: 100,
-            maxItemsPerCol: 8,
+            maxItemsPerCol: 9,
             bodyStyle: 'padding: 5px;',
             formConfig: this.cmp.formConfig,
             store: this.cmp.getStore(),
@@ -56,9 +56,14 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     createWindow: function(){
-        this.editorWindow = Ext4.create('Ext.window.Window', {
+        this.editorWindow = Ext4.create('Ext.window.Window', this.getWindowCfg());
+        this.getEditorWindow().addEvents('animalchange');
+    },
+
+    getWindowCfg: function(){
+        return {
             modal: true,
-            width: 600,
+            width: 800,
             items: [{
                 items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()],
                 buttons: [{
@@ -85,12 +90,8 @@ Ext4.define('EHR.plugin.RowEditor', {
             closeAction: 'destroy',
             listeners: {
                 scope: this,
-                close: function(){
-                    delete this.editorWindow;
-                },
-                destroy: function(){
-                    delete this.editorWindow;
-                },
+                close: this.onWindowClose,
+                destroy: this.onWindowClose,
                 beforerender: function(win){
                     var cols = win.down('#formPanel').items.get(0).items.getCount();
                     if (cols > 1){
@@ -121,9 +122,11 @@ Ext4.define('EHR.plugin.RowEditor', {
                     buffer: 200
                 }
             }
-        });
+        }
+    },
 
-        this.getEditorWindow().addEvents('animalchange');
+    onWindowClose: function(){
+        delete this.editorWindow;
     },
 
     onCellClick: function(view, cell, colIdx, record){
@@ -136,7 +139,6 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadRecord: function(record){
-        //TODO: some sort of static helper for this?
         var win = this.getEditorWindow();
         win.down('#formPanel').bindRecord(record);
         win.down('#detailsPanel').loadAnimal(record.get('Id'));
@@ -177,17 +179,6 @@ Ext4.define('EHR.plugin.RowEditor', {
             nextRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) + 1);
             if (nextRec){
                 this.loadRecord(nextRec);
-            }
-            else {
-                //TODO: alert?
-                return;
-//                Ext4.Msg.confirm('', 'You have selected the last record.  Do you want to add another?', function(val){
-//                    if (val == 'yes'){
-//                        var r = this.cmp.getStore().createModel({});
-//                        this.cmp.getStore().add(r);
-//                        this.loadRecord(r);
-//                    }
-//                }, this);
             }
         }
     }

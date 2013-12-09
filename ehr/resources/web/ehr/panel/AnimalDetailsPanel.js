@@ -94,6 +94,47 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 },{
                     fieldLabel: 'Weight',
                     itemId: 'weights'
+                },{
+                    xtype: 'ldk-linkbutton',
+                    style: 'margin-top: 10px;',
+                    scope: this,
+                    text: '[Show Full Hx]',
+                    handler: function(){
+                        if (this.subjectId){
+                            EHR.window.ClinicalHistoryWindow.showClinicalHistory(null, this.subjectId, null);
+                        }
+                        else {
+                            console.log('no id');
+                        }
+                    }
+                },{
+                    xtype: 'ldk-linkbutton',
+                    style: 'margin-top: 5px;',
+                    scope: this,
+                    text: '[Manage Treatments]',
+                    hidden: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                    handler: function(){
+                        if (this.subjectId){
+                            Ext4.create('EHR.window.ManageTreatmentsWindow', {animalId: this.subjectId}).show();
+                        }
+                        else {
+                            console.log('no id');
+                        }
+                    }
+                },{
+                    xtype: 'ldk-linkbutton',
+                    style: 'margin-top: 5px;',
+                    scope: this,
+                    text: '[Manage Cases]',
+                    hidden: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
+                    handler: function(){
+                        if (this.subjectId){
+                            Ext4.create('EHR.window.ManageCasesWindow', {animalId: this.subjectId}).show();
+                        }
+                        else {
+                            console.log('no id');
+                        }
+                    }
                 }]
             }]
         }];
@@ -134,7 +175,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
             }, this);
         }
 
-        if (record.getActiveAnimalGroups() && record.getActiveAnimalGroups.length){
+        if (record.getActiveAnimalGroups() && record.getActiveAnimalGroups().length){
             Ext4.each(record.getActiveAnimalGroups(), function(row){
                 values.push(row['groupId/name']);
             }, this);

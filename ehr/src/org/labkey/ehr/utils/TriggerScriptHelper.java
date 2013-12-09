@@ -39,6 +39,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -64,7 +65,9 @@ import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.UnauthorizedException;
+import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRSchema;
+import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
 import org.labkey.ehr.security.EHRSecurityManager;
@@ -154,8 +157,7 @@ public class TriggerScriptHelper
                 continue;
             }
 
-            //TODO: this is done direct to the DB for speed.  however we lose auditing, etc.
-            //might want to reconsider
+            //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
             TableInfo ti = dataset.getTableInfo(user);
             SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND enddate IS NULL", enddate, id);
             new SqlExecutor(ti.getSchema()).execute(sql);
@@ -789,8 +791,8 @@ public class TriggerScriptHelper
     //NOTE: the interval start/stop are inclusive
     private Double getOtherDrawsQuantity(String id, Date intervalStart, Date intervalStop, List<Map<String, Object>> recordsInTransaction, String rowObjectId, Double rowQuantity)
     {
-        intervalStart = DateUtils.round(intervalStart, Calendar.DATE);
-        intervalStop = DateUtils.round(intervalStop, Calendar.DATE);
+        intervalStart = DateUtils.truncate(intervalStart, Calendar.DATE);
+        intervalStop = DateUtils.truncate(intervalStop, Calendar.DATE);
 
         //if provided, we inspect the other records in this transaction and add their values
         //first determine which other records from this transction should be considered
@@ -829,7 +831,7 @@ public class TriggerScriptHelper
                 try
                 {
                     Date d = ConvertHelper.convert(map.get("date"), Date.class);
-                    d = DateUtils.round(d, Calendar.DATE);
+                    d = DateUtils.truncate(d, Calendar.DATE);
                     if (d.getTime() >= intervalStart.getTime() && d.getTime() <= intervalStop.getTime())
                     {
                         Double quantity = ConvertHelper.convert(map.get("quantity"), Double.class);
@@ -989,11 +991,11 @@ public class TriggerScriptHelper
         JobRunner.getDefault().execute(new Runnable(){
             public void run()
             {
-                _log.info("processing denied request email for " + requestIds.size() + " records");
+                _log.info("processing cancelled/denied request email for " + requestIds.size() + " records");
 
-                TableInfo ti = getTableInfo("ehr", "requests");
+                TableInfo requestTable = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(ti, filter, null);
+                TableSelector ts = new TableSelector(requestTable, filter, null);
 
                 ts.forEach(new Selector.ForEachBlock<ResultSet>()
                 {
@@ -1026,10 +1028,37 @@ public class TriggerScriptHelper
 
                             sendMessage(subject, html.toString(), recipients);
                         }
+
+                        DataEntryForm def = DataEntryManager.get().getFormByName(formtype, getContainer(), getUser());
+                        if (def != null)
+                        {
+                            boolean hasRecords = false;
+                            for (TableInfo ti : def.getTables(getContainer(), getUser()))
+                            {
+                                if (ti.getName().equalsIgnoreCase("requests"))
+                                    continue;
+
+                                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestId"), requestid, CompareType.EQUAL);
+                                filter.addCondition(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.RequestDenied.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel()), CompareType.NOT_IN);
+                                TableSelector ts = new TableSelector(ti, Collections.singleton("requestId"), filter, null);
+                                if (ts.exists())
+                                {
+                                    hasRecords = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasRecords)
+                            {
+                                _log.info("cancelling request since all children are cancelled");
+                                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                                toUpdate.put("qcstate", EHRService.QCSTATES.RequestCancelled.getQCState(getContainer()).getRowId());
+                                toUpdate.put("requestid", requestid);
+                                Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestid);
+                            }
+                        }
                     }
                 });
-
-                //TODO: figure out whether to mark whole request as denied
             }
         });
     }
@@ -1041,9 +1070,9 @@ public class TriggerScriptHelper
             {
                 _log.info("processing completed request email for " + requestIds.size() + " records");
 
-                TableInfo ti = getTableInfo("ehr", "requests");
+                TableInfo requestTable = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(ti, filter, null);
+                TableSelector ts = new TableSelector(requestTable, filter, null);
 
                 ts.forEach(new Selector.ForEachBlock<ResultSet>()
                 {
@@ -1076,10 +1105,37 @@ public class TriggerScriptHelper
 
                             sendMessage(subject, html.toString(), recipients);
                         }
+
+                        DataEntryForm def = DataEntryManager.get().getFormByName(formtype, getContainer(), getUser());
+                        if (def != null)
+                        {
+                            boolean hasRecords = false;
+                            for (TableInfo ti : def.getTables(getContainer(), getUser()))
+                            {
+                                if (ti.getName().equalsIgnoreCase("requests"))
+                                    continue;
+
+                                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestId"), requestid, CompareType.EQUAL);
+                                filter.addCondition(FieldKey.fromString("qcstate/label"), EHRService.QCSTATES.Completed.getLabel(), CompareType.EQUAL);
+                                TableSelector ts = new TableSelector(ti, Collections.singleton("requestId"), filter, null);
+                                if (ts.exists())
+                                {
+                                    hasRecords = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasRecords)
+                            {
+                                _log.info("completed request since all children are completed");
+                                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                                toUpdate.put("qcstate", EHRService.QCSTATES.Completed.getQCState(getContainer()).getRowId());
+                                toUpdate.put("requestid", requestid);
+                                Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestid);
+                            }
+                        }
                     }
                 });
-
-                //TODO: figure out whether to mark whole request as completed
             }
         });
     }

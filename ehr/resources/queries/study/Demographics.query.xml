@@ -9,7 +9,7 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="Id">
-                        <isKeyField>true</isKeyField>
+                        <!--<isKeyField>true</isKeyField>-->
                     </column>
                     <column columnName="gender">
                         <columnTitle>Gender</columnTitle>

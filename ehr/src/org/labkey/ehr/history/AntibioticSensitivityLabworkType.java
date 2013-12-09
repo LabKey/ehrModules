@@ -47,7 +47,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     public AntibioticSensitivityLabworkType()
     {
         super("Antibiotic Sensitivity", "study", "Antibiotic Sensitivity");
-        _resultField = "resistant";
+        _resultField = "result";
     }
 
     @Override
@@ -60,12 +60,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     protected String getLine(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
-        String microbe = rs.getString(FieldKey.fromString(_microbeField));
-        Boolean result = rs.getBoolean(FieldKey.fromString(_resultField));
-        String resultText = "";
-        if (result != null)
-            resultText = (!result ? "Not " : "") + "Resistant";
-
+        String result = rs.getString(FieldKey.fromString(_resultField));
         String antibiotic = rs.getString(FieldKey.fromString(_antibioticField));
 
         String delim = "";
@@ -77,7 +72,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
             sb.append("</td><td>");
 
             if (result != null)
-                sb.append(delim).append(resultText);
+                sb.append(delim).append(result);
 
             sb.append("</td>");
         }

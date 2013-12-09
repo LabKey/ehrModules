@@ -27,7 +27,7 @@ Ext4.define('EHR.window.ManageTreatmentsWindow', {
     },
 
     getButtonConfig: function(){
-        var buttons = EHR.panel.ManageTreatmentsPanel.getButtonConfig();
+        var buttons = EHR.panel.ManageTreatmentsPanel.getButtonConfig(this);
         buttons.push({
             text: 'Close',
             handler: function(btn){

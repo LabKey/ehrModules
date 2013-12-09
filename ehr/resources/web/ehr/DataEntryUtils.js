@@ -185,7 +185,7 @@ EHR.DataEntryUtils = new function(){
                         LDK.Assert.assertNotEmpty('Unable to find gridpanel in TEMPLATE button', grid);
 
                         btn.grid = grid;
-                        btn.formType = grid.store.storeCollection.formConfig.name;
+                        btn.formType = grid.formConfig.name;
 
                         btn.populateFromDatabase.call(btn);
                     }
@@ -196,7 +196,7 @@ EHR.DataEntryUtils = new function(){
                         queryName: 'my_formtemplates',
                         sort: 'title',
                         autoLoad: true,
-                        filterArray: [LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL)],
+                        filterArray: [LABKEY.Filter.create('formtype', this.grid.formConfig.name, LABKEY.Filter.Types.EQUAL)],
                         failure: LDK.Utils.getErrorCallback(),
                         scope: this,
                         success: this.onLoad
@@ -216,7 +216,7 @@ EHR.DataEntryUtils = new function(){
                                 handler: function(menu){
                                     Ext4.create('EHR.window.ApplyTemplateWindow', {
                                         targetGrid: this.grid,
-                                        formType: this.formType,
+                                        formType: this.grid.formConfig.name,
                                         defaultTemplate: menu.templateId
                                     }).show();
                                 }
@@ -233,11 +233,12 @@ EHR.DataEntryUtils = new function(){
                 },
                 menu: [{
                     text: 'Save As Template',
+                    hidden: !LABKEY.Security.currentUser.isAdmin,
                     handler: function(btn){
                         var grid = btn.up('gridpanel');
                         Ext4.create('EHR.window.SaveTemplateWindow', {
                             targetGrid: grid,
-                            formType: grid.store.storeCollection.formConfig.name
+                            formType: grid.formConfig.name
                         }).show();
                     }
                 },{
@@ -246,7 +247,7 @@ EHR.DataEntryUtils = new function(){
                         var grid = btn.up('gridpanel');
                         Ext4.create('EHR.window.ApplyTemplateWindow', {
                             targetGrid: grid,
-                            formType: grid.store.storeCollection.formConfig.name
+                            formType: grid.formConfig.name
                         }).show();
                     }
                 },{
@@ -345,9 +346,11 @@ EHR.DataEntryUtils = new function(){
             disableOn: 'ERROR',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
+                var ctx = EHR.Utils.getEHRContext();
                 Ext4.create('EHR.window.SubmitForReviewPanel', {
                     dataEntryPanel: panel,
-                    dataEntryBtn: btn
+                    dataEntryBtn: btn,
+                    reviewRequiredRecipient: ctx ? ctx['EHRSubmitForReviewPrincipal'] : null
                 }).show();
             }
         },
@@ -450,7 +453,7 @@ EHR.DataEntryUtils = new function(){
                 var panel = btn.up('ehr-dataentrypanel');
                 panel.onSubmit(btn);
             },
-            disableOn: 'ERROR'
+            disableOn: 'WARN'
         }
     };
 
@@ -627,8 +630,8 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'procedures',
-                columns: 'rowid,name,active',
-                sort: 'name',
+                columns: 'rowid,name,active,category,remark',
+                sort: 'category,name',
                 storeId: storeId,
                 autoLoad: true
             });
@@ -673,12 +676,6 @@ EHR.DataEntryUtils = new function(){
             });
         },
 
-        hasPermission: function(qcStateLabel, permissionName){
-            LDK.Assert.assertNotEmpty('EHR.DataEntryUtils.hasPermission() called without setting DataEntryPanel first', dataEntryPanel);
-
-            return dataEntryPanel.hasPermission(qcStateLabel, permissionName);
-        },
-
         setDataEntryPanel: function(panel){
             dataEntryPanel = panel;
         },
@@ -720,27 +717,45 @@ EHR.DataEntryUtils = new function(){
             return ret;
         },
 
-        hasPermission: function(permMap, qcStateLabel, permissionName){
+        hasPermission: function(qcStateLabel, permissionName, permMap, queriesToTest){
             permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
 
             var hasPermission = true;
-            Ext4.Object.each(permMap, function(schemaName, queries) {
-                // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
-                // for the container-level DataEntryPermission
-                var permissionToTest = permissionName;
-                if (schemaName.toLowerCase() != 'study'){
-                    permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
-                }
-                Ext4.Object.each(queries, function(queryName, permissions) {
-                    if (!permissions[permissionToTest]){
-                        hasPermission = false;
-                        return false;
+            if (queriesToTest == null){
+                for (var schemaName in permMap){
+                    var permissionToTest = permissionName;
+                    if (schemaName.toLowerCase() != 'study'){
+                        permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
                     }
-                }, this);
 
-                if (!hasPermission)
-                    return false;
-            }, this);
+                    for (var query in permMap[schemaName]){
+                        if (!permMap[schemaName][query][permissionToTest]){
+                            hasPermission = false;
+                            console.log('no permission');
+                            break;
+                        }
+                    }
+                }
+            }
+            else {
+                Ext4.Object.each(permMap, function(schemaName, queries) {
+                    // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
+                    // for the container-level DataEntryPermission
+                    var permissionToTest = permissionName;
+                    if (schemaName.toLowerCase() != 'study'){
+                        permissionToTest = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
+                    }
+                    Ext4.Object.each(queries, function(queryName, permissions) {
+                        if (!permissions[permissionToTest]){
+                            hasPermission = false;
+                            return false;
+                        }
+                    }, this);
+
+                    if (!hasPermission)
+                        return false;
+                }, this);
+            }
 
             return hasPermission;
         }

@@ -1,0 +1,1 @@
+INSERT INTO ehr.qcStateMetadata (QCStateLabel,DraftData,isDeleted,isRequest,allowFutureDates) VALUES ('Request: Cancelled', false, false, true, true);

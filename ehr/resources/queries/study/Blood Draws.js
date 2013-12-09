@@ -86,7 +86,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 var msgs = helper.getJavaHelper().validateBloodAdditionalServices(row.additionalServices, tubeType, quantity);
                 if (msgs && msgs.length){
                     LABKEY.ExtAdapter.each(msgs, function(msg){
-                        EHR.Server.Utils.addError(scriptErrors, 'additionalServices', msg, 'WARN');
+                        EHR.Server.Utils.addError(scriptErrors, 'additionalServices', msg, 'INFO');
                     }, this);
                 }
             }

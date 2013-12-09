@@ -64,6 +64,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         skipAssignmentCheck: false,
         notificationTypes: null,
         errorSeveritiyForImproperHousing: 'WARN',
+        errorSeveritiyForImproperAssignment: 'INFO',
         requiresStatusRecalc: false,
         allowDatesInDistantPast: false,
         lookupValidationFields: []
@@ -308,8 +309,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
             if (qcLabel){
                 //track requests being denied
-                if (qcLabel == 'Request: Denied'){
-                    if (oldQcLabel != 'Request: Denied'){
+                if (qcLabel == 'Request: Denied' || qcLabel == 'Request: Cancelled'){
+                    if (oldQcLabel != 'Request: Denied' && oldQcLabel != 'Request: Cancelled'){
                         if (!props.requestsDenied[requestId])
                             props.requestsDenied[requestId] = [];
 
@@ -490,6 +491,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         allowDatesInDistantPast: function(){
             return scriptOptions.allowDatesInDistantPast;
+        },
+
+        getErrorSeveritiyForImproperAssignment: function(){
+            return scriptOptions.errorSeveritiyForImproperAssignment;
         }
     }
 };

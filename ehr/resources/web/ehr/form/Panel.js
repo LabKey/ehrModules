@@ -42,7 +42,7 @@ Ext4.define('EHR.form.Panel', {
 
     getRawFieldConfigs: function(){
         var items = [];
-        var fields = EHR.model.DefaultClientModel.getFieldConfigs(this.formConfig.fieldConfigs, this.formConfig.configSources);
+        var fields = EHR.model.DefaultClientModel.getFieldConfigs(this.formConfig.fieldConfigs, this.formConfig.configSources, this.extraMetaData);
         Ext4.Array.forEach(fields, function(field){
             if (field.jsonType == 'date' && field.extFormat){
                 if (Ext4.Date.formatContainsHourInfo(field.extFormat)){
@@ -162,27 +162,59 @@ Ext4.define('EHR.form.Panel', {
 
     getItemsConfig: function(){
         var items = this.getFieldConfigs();
-        var visibleHeight = 0;
-        Ext4.Array.forEach(items, function(item){
-            if (!item.hidden)
-                visibleHeight++;
+        var currentColIdx = 0;
+        var currentIdx = 0;
+        var finalItems = [];
+
+        Ext4.Array.forEach(items, function(item, idx){
+            if (!item.hidden){
+                if (this.maxItemsPerCol && currentIdx > this.maxItemsPerCol && (items.length - idx) > 2){
+                    currentColIdx++;
+                    currentIdx = 0;
+                }
+
+                if (!finalItems[currentColIdx]){
+                    finalItems[currentColIdx] = {
+                        border: false,
+                        defaults: {
+                            border: false
+                        },
+                        items: []
+                    }
+                }
+
+                finalItems[currentColIdx].items.push(item);
+
+                currentIdx++;
+
+                if (item.xtype == 'textarea' || item.height > 50){
+                    currentIdx += 2;
+                }
+            }
+            else {
+                console.log('hidden');
+            }
         }, this);
 
-        //divide the fields into columns, if selected
-        var cols = [];
-        var numColumns = this.maxItemsPerCol ? Math.ceil(items.length / this.maxItemsPerCol) : 1;
-        for (var i=0;i<numColumns;i++){
-            var start = this.maxItemsPerCol ? (i * this.maxItemsPerCol) : 0;
-            var stop = this.maxItemsPerCol ? start + this.maxItemsPerCol : items.length;
-            cols.push({
-                border: false,
-                columnWidth: (1/ numColumns),
-                defaults: {
-                    border: false
-                },
-                items: items.slice(start, stop)
-            });
-        }
+        Ext4.Array.forEach(finalItems, function(col){
+            col.columnWidth = (1 / finalItems.length)
+        }, this);
+
+//        //divide the fields into columns, if selected
+//        var cols = [];
+//        var numColumns = this.maxItemsPerCol ? Math.ceil(items.length / this.maxItemsPerCol) : 1;
+//        for (var i=0;i<numColumns;i++){
+//            var start = this.maxItemsPerCol ? (i * this.maxItemsPerCol) : 0;
+//            var stop = this.maxItemsPerCol ? start + this.maxItemsPerCol : items.length;
+//            cols.push({
+//                border: false,
+//                columnWidth: (1/ numColumns),
+//                defaults: {
+//                    border: false
+//                },
+//                items: items.slice(start, stop)
+//            });
+//        }
 
         items = [{
             xtype: 'panel',
@@ -190,7 +222,7 @@ Ext4.define('EHR.form.Panel', {
             defaults: {
                 border: false
             },
-            items: cols
+            items: finalItems
         }];
 
         return items;

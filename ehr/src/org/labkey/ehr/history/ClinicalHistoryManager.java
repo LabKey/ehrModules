@@ -55,6 +55,7 @@ public class ClinicalHistoryManager
 
         registerDataSource(new DefaultClinicalRemarksDataSource());
         registerDataSource(new DefaultDrugsDataSource());
+        registerDataSource(new DefaultObservationsDataSource());
         registerDataSource(new DefaultWeightDataSource());
         registerDataSource(new DefaultAlopeciaDataSource());
         registerDataSource(new DefaultAssignmentDataSource());

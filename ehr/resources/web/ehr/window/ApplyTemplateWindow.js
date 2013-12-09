@@ -50,6 +50,16 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                 helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
                 itemId: 'customizeValues',
                 checked: false
+            },{
+                xtype: 'textarea',
+                fieldLabel: 'Animal Ids (optional)',
+                helpPopup: 'If provided, this template will be applied once per animal Id.  Otherwise the template will be added once with a blank Id',
+                itemId: 'subjectIds'
+            },{
+                xtype: 'xdatetime',
+                fieldLabel: 'Date (optional)',
+                itemId: 'dateField',
+                value: new Date()
             }],
             buttons: [{
                 text:'Submit',
@@ -78,7 +88,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     },
 
     loadTemplate: function(templateId){
-        if(!templateId)
+        if (!templateId)
             return;
 
         LABKEY.Query.selectRows({
@@ -87,7 +97,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             filterArray: [
                 LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)
             ],
-            sort: '-rowid',
+            sort: 'rowid',
             success: this.onLoadTemplate,
             failure: LDK.Utils.getErrorCallback(),
             scope: this
@@ -97,37 +107,66 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     },
 
     onLoadTemplate: function(data){
-        if(!data || !data.rows.length){
+        if (!data || !data.rows.length){
             Ext4.Msg.hide();
             return;
         }
 
+        //find subjectIds and date
+        var date = this.down('#dateField').getValue();
+        var subjectArray = this.down('#subjectIds').getValue();
+        if (subjectArray){
+            subjectArray = Ext4.String.trim(subjectArray);
+            subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
+            subjectArray = subjectArray.replace(/(^;|;$)/g, '');
+            subjectArray = subjectArray.toLowerCase();
+
+            if (subjectArray){
+                subjectArray = subjectArray.split(';');
+            }
+        }
+        subjectArray = subjectArray || [];
+
         var toAdd = {};
-        Ext4.Array.forEach(data.rows, function(row){
-            var data = Ext4.decode(row.json);
-            var store = Ext4.StoreMgr.get(row.storeid);
+        if (!subjectArray.length){
+            subjectArray.push(null);
+        }
 
-            //verify store exists
-            if (!store){
-                Ext4.StoreMgr.on('add', function(){
-                    this.onLoadTemplate(data);
-                }, this, {single: true, delay: 200});
-                return;
-            }
+        Ext4.Array.forEach(subjectArray, function(subjectId){
+            Ext4.Array.forEach(data.rows, function(row){
+                var data = Ext4.decode(row.json);
+                var store = this.targetGrid.store.storeCollection.getClientStoreByName(row.storeid);
 
-            //also verify it is loaded
-            if (store.loading || !store.getFields() || !store.getFields().getCount()){
-                store.on('load', function(){
-                    this.onLoadTemplate(data);
-                }, this, {single: true, delay: 200});
-                return false;
-            }
+                //verify store exists
+                if (!store){
+                    Ext4.StoreMgr.on('add', function(){
+                        this.onLoadTemplate(data);
+                    }, this, {single: true, delay: 200});
+                    return;
+                }
 
-            if (!toAdd[store.storeId])
-                toAdd[store.storeId] = [];
+                //also verify it is loaded
+                if (store.loading || !store.getFields() || !store.getFields().getCount()){
+                    store.on('load', function(){
+                        this.onLoadTemplate(data);
+                    }, this, {single: true, delay: 200});
+                    return false;
+                }
 
-            toAdd[store.storeId].push(data);
-        });
+                if (!toAdd[store.storeId])
+                    toAdd[store.storeId] = [];
+
+                if (date){
+                    data.date = date;
+                }
+
+                var newData = LABKEY.ExtAdapter.apply({}, data);
+                if (subjectId)
+                    newData.Id = subjectId;
+
+                toAdd[store.storeId].push(newData);
+            }, this);
+        }, this);
 
         if (this.down('#customizeValues').checked)
             this.customizeData(toAdd);
@@ -162,7 +201,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
 
     addStore: function(storeId, records){
         var store = Ext4.StoreMgr.get(storeId);
-        if(!store){
+        if (!store){
             alert('ERROR: Store not found');
             return;
         }
@@ -176,7 +215,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         };
 
         store.getFields().each(function(f){
-            if(!f.hidden && f.shownInInsertView && f.allowSaveInTemplate !== false && f.allowDuplicate !== false){
+            if (!f.hidden && f.shownInInsertView && f.allowSaveInTemplate !== false && f.allowDuplicate !== false){
                 var editor = EHR.DataEntryUtils.getFormEditorConfig(f);
                 editor.width= 350;
                 if (f.inputType == 'textarea')
@@ -184,14 +223,14 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
 
                 var values = [];
                 Ext4.Array.forEach(records, function(data){
-                    if(data[f.dataIndex]!==undefined){
+                    if (data[f.dataIndex]!==undefined){
                         values.push(f.convert(data[f.dataIndex], data));
                     }
                 }, this);
 
                 values = Ext4.unique(values);
 
-                if(values.length==1)
+                if (values.length==1)
                     editor.value=values[0];
                 else if (values.length > 1){
                     editor.xtype = 'displayfield';

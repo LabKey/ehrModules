@@ -1,9 +1,9 @@
-/*
- * Copyright (c) 2013 LabKey Corporation
- *
- * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+/**
+ * @cfg targetGrid
+ * @cfg parentStore
+ * @cfg sourceLabel
  */
-Ext4.define('EHR.window.CopyFromBloodWindow', {
+Ext4.define('EHR.window.CopyFromSectionWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
@@ -19,7 +19,7 @@ Ext4.define('EHR.window.CopyFromBloodWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper allows you to populate 1 row for each animal in the blood draws section.  Choose which IDs to add from the list below.',
+                html: 'This helper allows you to populate 1 row for each animal from the ' + this.sourceLabel + ' section.  Choose which IDs to add from the list below.',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'animalIds',
@@ -177,26 +177,66 @@ Ext4.define('EHR.window.CopyFromBloodWindow', {
 });
 
 
-EHR.DataEntryUtils.registerGridButton('COPYFROMBLOOD', function(config){
+EHR.DataEntryUtils.registerGridButton('COPYFROMSECTION', function(config){
     return Ext4.Object.merge({
-        text: 'Copy From Blood',
+        text: 'Copy From Section',
         xtype: 'button',
-        tooltip: 'Click to copy records from the blood draws section',
-        handler: function(btn){
-            var grid = btn.up('grid');
-            LDK.Assert.assertNotEmpty('Unable to find grid in COPYFROMBLOOD button', grid);
+        tooltip: 'Click to copy records from one of the other sections',
+        listeners: {
+            beforerender: function(btn){
+                var grid = btn.up('gridpanel');
+                LDK.Assert.assertNotEmpty('Unable to find gridpanel in COPYFROMSECTION button', grid);
 
-            var panel = grid.up('ehr-dataentrypanel');
-            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in COPYFROMBLOOD button', panel);
+                btn.grid = grid;
 
-            var store = panel.storeCollection.getClientStoreByName('Blood Draws');
-            LDK.Assert.assertNotEmpty('Unable to find blood draw store in COPYFROMBLOOD button', store);
+                btn.appendButtons.call(btn);
+            }
+        },
+        menu: {
+            xtype: 'menu',
+            items: [{
+                text: 'Loading...'
+            }]
+        },
+        appendButtons: function(){
+            this.dataEntryPanel = this.grid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in COPYFROMSECTION button', this.dataEntryPanel);
 
-            if (store){
-                Ext4.create('EHR.window.CopyFromBloodWindow', {
-                    targetGrid: grid,
-                    parentStore: store
-                }).show();
+            var toAdd = [];
+            Ext4.Array.forEach(this.dataEntryPanel.formConfig.sections, function(section){
+                if (section.name == this.grid.formConfig.name){
+                    return;
+                }
+
+                var store = this.dataEntryPanel.storeCollection.getClientStoreByName(section.name);
+                if (store){
+                    //only allow copying from sections with an ID field
+                    if (!store.getFields().get('Id')){
+                        return;
+                    }
+
+                    toAdd.push({
+                        text: section.label,
+                        scope: this,
+                        handler: function(menu){
+                            Ext4.create('EHR.window.CopyFromSectionWindow', {
+                                targetGrid: this.grid,
+                                sourceLabel: section.label,
+                                parentStore: store
+                            }).show();
+                        }
+                    });
+                }
+            }, this);
+
+            this.menu.removeAll();
+            if (toAdd.length){
+                this.menu.add(toAdd);
+            }
+            else {
+                this.menu.add({
+                    text: 'There are no other sections'
+                })
             }
         }
     });

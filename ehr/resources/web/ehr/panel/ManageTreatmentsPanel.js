@@ -10,26 +10,52 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-managetreatmentspanel',
 
-    minWidth: 800,
+    minWidth: 1000,
     minHeight: 50,
 
     statics: {
-        getButtonConfig: function(){
+        getButtonConfig: function(owner){
             return [{
                 xtype: 'button',
-                text: 'Order Medication',
+                text: 'Order Treatment',
                 disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'insert', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                 handler: function(btn){
+                    EHR.panel.ManageTreatmentsPanel.createTreatmentWindow(btn, {
+                        listeners: {
+                            scope: this,
+                            save: function(){
+                                var win = btn.up('window');
+                                var panel;
+                                if (win){
+                                    panel = win.down('ehr-managetreatmentspanel');
+                                }
+                                else {
+                                    panel = btn.up('ehr-managetreatmentspanel');
+                                }
 
-                }
-            },{
-                xtype: 'button',
-                text: 'Order Diet',
-                disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'insert', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
-                handler: function(btn){
-
+                                panel.down('grid').store.load();
+                            }
+                        }
+                    }, (owner ? owner.animalId : null));
                 }
             }]
+        },
+
+        createTreatmentWindow: function(btn, config, animalId){
+            var cfg = LABKEY.ExtAdapter.apply({
+                schemaName: 'study',
+                queryName: 'treatment_order',
+                pkCol: 'objectid',
+                pkValue: LABKEY.Utils.generateUUID(),
+                extraMetaData: {
+                    Id: {
+                        defaultValue: animalId,
+                        editable: false
+                    }
+                }
+            }, config);
+
+            Ext4.create('EHR.window.ManageRecordWindow', cfg).show();
         },
 
         getActionBtnMenu: function(rec){
@@ -41,13 +67,14 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                         Ext4.create('Ext.window.Window', {
                             modal: true,
                             bodyStyle: 'padding: 5px',
-                            width: 400,
+                            width: 420,
                             items: [{
-                                xtype: 'datefield',
+                                xtype: 'xdatetime',
                                 itemId: 'dateField',
+                                width: 400,
                                 fieldLabel: 'End Date',
                                 minValue: new Date(),
-                                value: new Date()
+                                value: rec.get('enddate')
                             }],
                             buttons: [{
                                 text: 'Submit',
@@ -76,12 +103,16 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     text: 'Edit Treatment',
                     disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(btn){
-                        Ext4.create('EHR.window.ManageRecordWindow', {
-                            schemaName: 'study',
-                            queryName: 'Treatment Orders',
-                            pkCol: 'lsid',
-                            pkValue: rec.get('lsid')
-                        }).show();
+                        EHR.panel.ManageTreatmentsPanel.createTreatmentWindow(btn, {
+                            pkCol: 'objectid',
+                            pkValue: rec.get('objectid'),
+                            listeners: {
+                                scope: this,
+                                save: function(){
+                                    rec.store.load();
+                                }
+                            }
+                        }, this.animalId);
                     }
                 }]
             });
@@ -92,7 +123,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         Ext4.apply(this, {
             border: false,
             items: [this.getGridConfig()],
-            buttons: this.hideButtons ? null : this.getButtonConfig()
+            buttons: this.hideButtons ? null : this.getButtonConfig(this)
         });
 
         this.callParent();
@@ -114,13 +145,19 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
 
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
-            queryName: 'Treatment Orders',
-            columns: 'lsid,objectid,Id,date,enddate,category,remark,performedby,code,route,dose,dose_units,amount,amount_units,concentration,conc_units',
+            queryName: 'treatment_order',
+            columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,dose,dose_units,amount,amount_units,concentration,conc_units',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
-            autoLoad: true
+            autoLoad: true,
+            listeners: {
+                scope: this,
+                synccomplete: function(store){
+                    this.down('grid').getView().refresh();
+                }
+            }
         });
 
         return this.store;
@@ -143,13 +180,13 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 header: 'Date',
                 xtype: 'datecolumn',
                 width: 160,
-                format: 'Y-m-d h:m',
+                format: 'Y-m-d H:i',
                 dataIndex: 'date'
             },{
                 header: 'End Date',
                 xtype: 'datecolumn',
                 width: 160,
-                format: 'Y-m-d h:m',
+                format: 'Y-m-d H:i',
                 dataIndex: 'enddate'
             },{
                 header: 'Code',

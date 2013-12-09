@@ -61,6 +61,9 @@ EHR.Server.Security = new function(){
          * @param helper The scriptHelper
          */
         init: function(helper) {
+            if (hasLoaded)
+                return;
+
             _helper = helper;
 
             helper.logDebugMsg('Caching security');

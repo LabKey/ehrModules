@@ -51,13 +51,11 @@ public class DefaultDrugsDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
         String category = rs.getString("category");
 
-        //skip treatments given, for now
-        if (rs.getObject("treatmentid") != null)
+        //if this record is a scheduled treatment, skip it unless this instance is flagged as not normal
+        if (rs.getObject("treatmentid") != null && (rs.getObject("outcome") == null || "Normal".equals(rs.getObject("outcome"))))
             return null;
 
-        safeAppend(rs, "Category", "category");
-        safeAppend(rs, "Case", "caseid");
-        safeAppend(rs, "Category", "parentId/caseid/category");
+        sb.append(safeAppend(rs, "Category", "category"));
 
         if (rs.hasColumn(FieldKey.fromString("code")) && rs.getObject("code") != null)
             sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
@@ -85,6 +83,11 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             sb.append("\n");
         }
 
+        sb.append(safeAppend(rs, "Performed By", "performedby"));
+        sb.append(safeAppend(rs, "Reason", "reason"));
+        sb.append(safeAppend(rs, "Outcome", "outcome"));
+        sb.append(safeAppend(rs, "Remark", "remark"));
+
         return sb.toString();
     }
 
@@ -98,7 +101,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "parentId/caseid/category", "treatmentid");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "treatmentid", "outcome", "remark", "performedby", "reason");
     }
 
     @Override

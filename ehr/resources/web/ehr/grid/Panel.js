@@ -44,6 +44,19 @@ Ext4.define('EHR.grid.Panel', {
         }, this);
 
         this.store.on('validation', this.onStoreValidation, this);
+
+        var width = 0;
+        Ext4.Array.forEach(this.columns, function(col){
+            if (col.width){
+                if (!col.hidden)
+                    width += col.width;
+            }
+            else {
+                console.log('no width');
+            }
+        }, this);
+
+        this.minWidth = width;
     },
 
     onStoreValidation: function(store, record){

@@ -245,6 +245,7 @@ public class EHRManager
             {"Request: Approved", "Request has been approved", false},
             {"Request: Sample Delivered", "The sample associated with this request has been delivered", false},
             {"Request: Denied", "Request has been denied", false},
+            {"Request: Cancelled", "Request has been cancelled", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
             {"Review Required", "Review is required prior to public release", false},
             {"Scheduled", "Record is scheduled, but not performed", false}
@@ -1037,6 +1038,23 @@ public class EHRManager
         if (formType == null)
         {
             throw new IllegalArgumentException("Unable to find formType for the task: " + taskId);
+        }
+
+        DataEntryForm def = DataEntryManager.get().getFormByName(formType, c, u);
+        if (def == null)
+        {
+            throw new IllegalArgumentException("Unable to find form type for the name: " + formType);
+        }
+
+        return def;
+    }
+
+    public DataEntryForm getDataEntryFormForRequest(Container c, User u, String requestId)
+    {
+        String formType = EHRManager.get().getFormTypeForRequest(c, u, requestId);
+        if (formType == null)
+        {
+            throw new IllegalArgumentException("Unable to find formType for the request: " + requestId);
         }
 
         DataEntryForm def = DataEntryManager.get().getFormByName(formType, c, u);

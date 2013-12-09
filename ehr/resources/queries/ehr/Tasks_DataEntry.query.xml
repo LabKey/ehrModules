@@ -110,6 +110,12 @@
                             </conditionalFormat>
                             <conditionalFormat>
                                 <filters>
+                                    <filter operator="eq" value="Request: Cancelled"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
                                     <filter operator="eq" value="Request: Pending"/>
                                 </filters>
                                 <backgroundColor>FBEC5D</backgroundColor>

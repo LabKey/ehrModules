@@ -18,10 +18,13 @@ package org.labkey.ehr.dataentry;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;import org.labkey.api.ehr.dataentry.FormSection;import org.labkey.api.ehr.security.EHRInProgressInsertPermission;
+import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ehr.dataentry.SingleQueryFormSection;
+import org.labkey.api.ehr.security.EHRInProgressInsertPermission;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,14 +48,16 @@ public class SingleQueryForm extends AbstractDataEntryForm
 
         for (FormSection s : getFormSections())
         {
-            s.addConfigSource("SimpleForm");
+            s.addConfigSource("SingleQuery");
         }
+
+        addClientDependency(ClientDependency.fromFilePath("ehr/model/sources/SingleQuery.js"));
     }
 
     public static SingleQueryForm create(Module owner, TableInfo ti)
     {
         List<FormSection> sections = new ArrayList<>();
-        sections.add(new SimpleFormPanel(ti.getPublicSchemaName(), ti.getPublicName(), ti.getTitle()));
+        sections.add(new SingleQueryFormSection(ti.getPublicSchemaName(), ti.getPublicName(), ti.getTitle()));
 
         return new SingleQueryForm(owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, sections);
     }

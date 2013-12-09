@@ -113,7 +113,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         var form = this.down('#theForm');
         form.removeAll();
         form.add({
-            html: 'Either type of cut/paste a list of Animal IDs into the box below.  They can be separated by either commas, spaes, or line breaks.',
+            html: 'Either type of cut/paste a list of Animal IDs into the box below.  They can be separated by either commas, spaces, or line breaks.',
             style: 'padding-bottom: 10px;'
         },{
             xtype: 'textarea',
@@ -238,6 +238,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             this.doQuery({
                 schemaName: 'study',
                 queryName: 'housing',
+                sort: 'room,cage,Id',
                 filterArray: filterArray
             });
         }
@@ -335,13 +336,13 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         Ext4.Msg.wait("Loading...");
 
         //find distinct animals matching criteria
-        LABKEY.Query.selectRows(Ext4.apply({
+        LABKEY.Query.selectRows(Ext4.applyIf(config, {
             sort: 'Id',
             columns: 'Id',
             scope: this,
             success: this.onSuccess,
             failure: LDK.Utils.getErrorCallback()
-        }, config));
+        }));
     },
 
     onSuccess: function(results){

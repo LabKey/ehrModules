@@ -16,6 +16,7 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="enddate">
+                        <columnTitle>End Time</columnTitle>
                         <isHidden>false</isHidden>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
@@ -31,12 +32,15 @@
                         </fk>
                     </column>
                     <column columnName="chargetype">
-                        <columnTitle>Assigned To</columnTitle>
+                        <columnTitle>Charge Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>procedureChargeType</fkTable>
                             <fkColumnName>value</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="caseno">
+                        <columnTitle>Case Number</columnTitle>
                     </column>
                     <column columnName="procedureid">
                         <columnTitle>Procedure</columnTitle>

@@ -23,6 +23,11 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             },
             caseno: {
                 hidden: true
+            },
+            procedureid: {
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('category', 'Clinical', LABKEY.Filter.Types.EQUAL)]
+                }
             }
         }
     }

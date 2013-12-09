@@ -29,6 +29,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
+import org.labkey.api.data.ForeignKey;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.data.SQLFragment;
@@ -1087,9 +1088,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
     }
 
     //note: these columns should both be date/time
-    private void appendHousingAtTimeCol(final UserSchema us, AbstractTableInfo ds, final String dateColName)
+    private void appendHousingAtTimeCol(UserSchema us, AbstractTableInfo ds, final String dateColName)
     {
-        if (!hasTable(ds, "study", "Housing"))
+        if (!hasTable(ds, "study", "housing"))
             return;
 
         String name = "housingAtTime";
@@ -1111,16 +1112,27 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setUserEditable(false);
 
         final String tableName = ds.getName();
-        final String queryName = ds.getPublicName();
-        final String schemaName = ds.getPublicSchemaName();
-
         final boolean hasLookup = hasAnimalLookup(ds);
+
+        final UserSchema targetSchema;
+        if (hasLookup)
+        {
+            ForeignKey fk = ds.getColumn("Id").getFk();
+            targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
+        }
+        else
+        {
+            targetSchema = us;
+        }
+
+        final String schemaName = ds.getPublicSchemaName();
+        final String queryName = ds.getName();
 
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = tableName + "_housingAtTime";
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
+                String name = queryName + "_housingAtTime";
+                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
                 qd.setSql("SELECT\n" +
                     "sd." + pkCol.getSelectName() + ",\n" +
                     "cast((\n" +
@@ -1196,7 +1208,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         return true;
     }
 
-    private void appendSurvivorshipCol(final UserSchema us, AbstractTableInfo ds)
+    private void appendSurvivorshipCol(UserSchema us, AbstractTableInfo ds)
     {
         String name = "survivorship";
         if (ds.getColumn(name) != null)
@@ -1214,9 +1226,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
             return;
 
         final String dateColName = dateCol.getSelectName();
-        final String tableName = ds.getName();
-        final String queryName = ds.getPublicName();
+        ForeignKey fk = ds.getColumn("Id").getFk();
+        final UserSchema targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
         final String schemaName = ds.getPublicSchemaName();
+        final String queryName = ds.getName();
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Survivorship");
@@ -1226,21 +1239,21 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = tableName + "_survivorship";
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
+                String name = queryName + "_survivorship";
+                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
                 qd.setSql("SELECT\n" +
                     "c." + pkCol.getSelectName() + ",\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  age(c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
+                    "  age(c.dateOnly, coalesce(c.id.demographics.death, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  timestampdiff('SQL_TSI_DAY', c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
+                    "  timestampdiff('SQL_TSI_DAY', c.dateOnly, coalesce(c.id.demographics.death, curdate()))\n" +
                     "END as survivorshipInDays,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
@@ -1266,7 +1279,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ds.addColumn(col);
     }
 
-    private void appendTimeSinceCol(final UserSchema us, final AbstractTableInfo ti)
+    private void appendTimeSinceCol(UserSchema us, AbstractTableInfo ti)
     {
         String name = "daysElapsed";
         if (ti.getColumn(name) == null)
@@ -1284,7 +1297,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
-    private void appendAgeAtTimeCol(final UserSchema us, AbstractTableInfo ds, final String dateColName)
+    private void appendAgeAtTimeCol(UserSchema us, AbstractTableInfo ds, final String dateColName)
     {
         String name = "ageAtTime";
         if (ds.getColumn(name) != null)
@@ -1300,9 +1313,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (!hasAnimalLookup(ds))
             return;
 
-        final String tableName = ds.getName();
-        final String queryName = ds.getPublicName();
+        ForeignKey fk = ds.getColumn("Id").getFk();
+        final UserSchema targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
         final String schemaName = ds.getPublicSchemaName();
+        final String queryName = ds.getName();
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
@@ -1312,34 +1326,34 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = tableName + "_ageAtTime";
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
+                String name = queryName + "_ageAtTime";
+                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
                     "c." + pkCol.getSelectName() + ",\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.dataset.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(c.id.dataset.demographics.birth, COALESCE(c.id.dataset.demographics.death, c." + dateColName + ")), DOUBLE) / 12, 1)\n" +
+                    "  ROUND(CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.dataset.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  floor(age(c.id.dataset.demographics.birth, COALESCE(c.id.dataset.demographics.death, c." + dateColName + ")))\n" +
+                    "  floor(age(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.dataset.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  CONVERT(age_in_months(c.id.dataset.demographics.birth, COALESCE(c.id.dataset.demographics.death, c." + dateColName + ")), INTEGER)\n" +
+                    "  CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");

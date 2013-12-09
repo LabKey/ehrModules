@@ -14,6 +14,7 @@
                     </column>
                     <column columnName="caseno">
                         <columnTitle>Case No</columnTitle>
+                        <isHidden>true</isHidden>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>Close Date</columnTitle>
@@ -25,6 +26,14 @@
                         <columnTitle>Case Category</columnTitle>
                         <isUserEditable>false</isUserEditable>
                         <nullable>false</nullable>
+                    </column>
+                    <column columnName="problem">
+                        <columnTitle>Master Problem</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>problem_list_category</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="reviewfrequency">
                         <columnTitle>Review Frequency</columnTitle>

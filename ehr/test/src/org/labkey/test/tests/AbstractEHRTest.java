@@ -511,6 +511,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         REQUEST_APPROVED("Request: Approved", "Request has been approved", true, true, true),
         //REQUEST_COMPLETE("Request: Complete", "Request has been completed", true, false, true),
         REQUEST_DENIED("Request: Denied", "Request has been denied", true, false, true),
+        REQUEST_CANCELLED("Request: Cancelled", "Request has been cancelled", true, false, true),
         REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false, false, true),
         REQUEST_SAMPLE_DELIVERED("Request: Sample Delivered", "Request where the sample is delivered", false, false, true),
         REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false, false, false),

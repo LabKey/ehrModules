@@ -16,6 +16,7 @@ SELECT
   --we calculate the time until renewal
   CAST(
   CASE
+    WHEN (e.EndDateCoalesced < curdate()) THEN NULL --dont bother to include if the employee is not active
     WHEN (rn.requirementname IS NULL) THEN NULL
     WHEN (T1.MostRecentDate IS NULL) THEN 0
     WHEN(rn.ExpirePeriod = 0 OR rn.ExpirePeriod IS NULL) THEN NULL
@@ -69,5 +70,3 @@ WHERE
     WHEN (T1.RequirementName IS NOT NULL) THEN TRUE
     ELSE FALSE
   END = TRUE
-
-  AND e.EndDateCoalesced >= curdate()
