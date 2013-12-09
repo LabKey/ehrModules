@@ -16,6 +16,7 @@
 package org.labkey.viral_load_assay.assay;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Level;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
@@ -776,10 +778,10 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             {
                 try
                 {
-                    Date date = _dateFormat.parse((String)row.get(DATE_FIELD));
+                    Date date = ConvertHelper.convert(row.get(DATE_FIELD), Date.class);
                     _dateFormat.format(date);
                 }
-                catch (ParseException e)
+                catch (ConversionException e)
                 {
                     errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
                     continue;
@@ -889,11 +891,11 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 {
                     try
                     {
-                        Date date = _dateFormat.parse((String)row.get(DATE_FIELD));
+                        Date date = ConvertHelper.convert(row.get(DATE_FIELD), Date.class);
                         String dateString = _dateFormat.format(date);
                         sb.append("_").append(dateString);
                     }
-                    catch (ParseException e)
+                    catch (ConversionException e)
                     {
                         //ignore
                     }
