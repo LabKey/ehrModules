@@ -34,6 +34,7 @@ import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableResultSet;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -836,7 +837,7 @@ public class EHRManager
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
     {
-        Table.TableResultSet results = null;
+        TableResultSet results = null;
 
         try
         {

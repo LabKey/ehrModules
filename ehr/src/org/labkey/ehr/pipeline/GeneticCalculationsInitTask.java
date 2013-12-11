@@ -16,9 +16,7 @@
 package org.labkey.ehr.pipeline;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.Selector;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.gwt.client.util.StringUtils;
@@ -33,7 +31,6 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
-import org.labkey.api.util.ResultSetUtil;
 import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.File;

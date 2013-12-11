@@ -42,7 +42,6 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -177,12 +176,12 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
         }
 
         @Override
-        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
+        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
             String oldValue = (String)oldRow.get(_valueColumn);
             String newValue = (String)row.get(_valueColumn);
 
-            if (oldRow != null && newValue != null && !oldValue.equals(newValue) && _vm.testIfRowExists(newValue))
+            if (newValue != null && !oldValue.equals(newValue) && _vm.testIfRowExists(newValue))
                 throw new ValidationException("There is already a record in the table " + getName() + " where " + _valueColumn + " equals " + newValue);
 
             if (!oldValue.equals(newValue))
