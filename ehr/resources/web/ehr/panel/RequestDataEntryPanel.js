@@ -10,7 +10,7 @@ Ext4.define('EHR.panel.RequestDataEntryPanel', {
     taskId: null,
 
     initComponent: function(){
-        this.requestId = this.requestId || LABKEY.ActionURL.getParameter('requestid') || LABKEY.Utils.generateUUID();
+        this.requestId = this.requestId || LABKEY.ActionURL.getParameter('requestid') || LABKEY.ActionURL.getParameter('requestId') || LABKEY.Utils.generateUUID();
         this.callParent();
     },
 

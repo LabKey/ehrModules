@@ -19,6 +19,9 @@ EHR.Server.TriggerManager = {};
 EHR.Server.TriggerManager = new function(){
     var events = {};
     var queryEvents = {};
+    var properties = {
+
+    };
 
     return {
         /**
@@ -107,6 +110,14 @@ EHR.Server.TriggerManager = new function(){
             handlers = handlers.concat(queryEvents[schemaName][queryName][event]);
 
             return handlers;
+        },
+
+        setProperty: function(name, value){
+            properties[name] = value;
+        },
+
+        getProperty: function(name){
+            return properties[name];
         }
     }
 };

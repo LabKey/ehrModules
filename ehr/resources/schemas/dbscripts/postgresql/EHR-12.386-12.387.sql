@@ -1,0 +1,1 @@
+DROP INDEX ehr.snomed_tags_objectid;

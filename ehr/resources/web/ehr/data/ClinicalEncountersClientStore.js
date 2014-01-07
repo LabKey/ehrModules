@@ -50,12 +50,17 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
                     if (cs.storeId == this.storeCollection.collectionId + '-' + 'encounters'){
                         return;
                     }
+                    var hasProject = cs.getFields().get('project') != null;
 
                     if (cs.getFields().get('parentid')){
                         if (cs.getFields().get('Id') || cs.getFields().get('project')){
                             cs.each(function(r){
-                                if (r.get('parentid') == record.get('parentid')){
-                                    r.set(toApply);
+                                if (r.get('parentid') === record.get('objectid')){
+                                    var obj = Ext4.apply({}, toApply);
+                                    if (!hasProject)
+                                        delete obj.project;
+
+                                    r.set(obj);
                                 }
                             }, this);
                         }

@@ -496,8 +496,8 @@ public class EHRManager
             }
 
             //add indexes
-            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"parentid"}, {"runId"}, {"requestid"}, {"participantid", "date"}};
-            String[][] toRemove = new String[][]{{"date"}};
+            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"runId"}, {"requestid"}, {"participantid", "date"}};
+            String[][] toRemove = new String[][]{{"date"}, {"parentid"}};
 
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<>();
@@ -509,29 +509,6 @@ public class EHRManager
                 {
                     _log.error("Table not found for dataset: " + d.getLabel() + " / " + d.getTypeURI());
                     continue;
-                }
-
-
-                for (String[] cols : toRemove)
-                {
-                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
-
-                    boolean exists = doesIndexExist(schema, tableName, indexName);
-                    if (exists)
-                    {
-                        if (commitChanges)
-                        {
-                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
-                            SQLFragment sql = new SQLFragment(sqlString);
-                            SqlExecutor se = new SqlExecutor(schema);
-                            se.execute(sql);
-                        }
-                        else
-                        {
-                            messages.add("Will drop index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                        }
-                    }
                 }
 
                 List<String[]> toAdd = new ArrayList<>();
@@ -551,6 +528,14 @@ public class EHRManager
                 else if (d.getLabel().equalsIgnoreCase("Assignment"))
                 {
                     toAdd.add(new String[]{"project", "participantid", "enddate"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Clinpath Runs"))
+                {
+                    toAdd.add(new String[]{"parentid"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Clinical Encounters"))
+                {
+                    toAdd.add(new String[]{"caseno"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Demographics"))
                 {
@@ -572,6 +557,45 @@ public class EHRManager
                     toAdd.add(new String[]{"qcstate", "include:treatmentid"});
                 }
 
+                //ensure indexes removed, unless explicitly requested by a table
+                for (String[] cols : toRemove)
+                {
+                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
+                    boolean found = false;
+                    for (String[] addedIndex : toAdd)
+                    {
+                        String addedIndexName = tableName + "_" + StringUtils.join(addedIndex, "_");
+                        if (addedIndexName.equalsIgnoreCase(indexName))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        break;
+                    }
+
+                    boolean exists = doesIndexExist(schema, tableName, indexName);
+                    if (exists)
+                    {
+                        if (commitChanges)
+                        {
+                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+                            SQLFragment sql = new SQLFragment(sqlString);
+                            SqlExecutor se = new SqlExecutor(schema);
+                            se.execute(sql);
+                        }
+                        else
+                        {
+                            messages.add("Will drop index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                        }
+                    }
+                }
+
+                //then add indexes
                 for (String[] indexCols : toAdd)
                 {
                     boolean missingCols = false;
@@ -786,31 +810,16 @@ public class EHRManager
         names.add(Pair.of("encounter_flags", new String[]{"parentid"}));
         names.add(Pair.of("encounter_flags", new String[]{"id"}));
 
-        names.add(Pair.of("encounter_participants", new String[]{"objectid"}));
         names.add(Pair.of("encounter_participants", new String[]{"parentid"}));
         names.add(Pair.of("encounter_participants", new String[]{"id"}));
         names.add(Pair.of("encounter_participants", new String[]{"taskid"}));
 
-        names.add(Pair.of("encounter_summaries", new String[]{"objectid"}));
-        names.add(Pair.of("encounter_summaries", new String[]{"parentid"}));
         names.add(Pair.of("encounter_summaries", new String[]{"id"}));
-
-        names.add(Pair.of("encounter_summaries", new String[]{"parentid", "objectid", "container", "id"}));
         names.add(Pair.of("encounter_summaries", new String[]{"container", "objectid"}));
         names.add(Pair.of("encounter_summaries", new String[]{"container", "parentid"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"taskid"}));
 
-        names.add(Pair.of("snomed_tags", new String[]{"caseid"}));
-        names.add(Pair.of("snomed_tags", new String[]{"id"}));
-        names.add(Pair.of("snomed_tags", new String[]{"id", "recordid", "code"}));
-
-        names.add(Pair.of("snomed_tags", new String[]{"objectid"}));
-        names.add(Pair.of("snomed_tags", new String[]{"parentid"}));
         names.add(Pair.of("snomed_tags", new String[]{"taskid"}));
-        names.add(Pair.of("snomed_tags", new String[]{"recordid"}));
-
-        names.add(Pair.of("snomed_tags", new String[]{"recordid", "rowid", "id"}));
-        names.add(Pair.of("snomed_tags", new String[]{"code", "rowid", "id", "recordid"}));
-        names.add(Pair.of("snomed_tags", new String[]{"recordid", "container", "code"}));
         names.add(Pair.of("snomed_tags", new String[]{"code", "container"}));
 
         names.add(Pair.of("treatment_times", new String[]{"container", "treatmentid"}));
@@ -967,7 +976,7 @@ public class EHRManager
         DataEntryForm def = getDataEntryFormForTask(c, u, taskId);
 
         int deleted = 0;
-        for (final TableInfo ti : def.getTables(c, u))
+        for (final TableInfo ti : def.getTables())
         {
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("taskId"), taskId);
             final List<Map<String, Object>> keysToDelete = new ArrayList<>();
@@ -1078,7 +1087,7 @@ public class EHRManager
         }
 
         boolean hasPermission = true;
-        Set<TableInfo> distinctTables = def.getTables(c, u);
+        Set<TableInfo> distinctTables = def.getTables();
         for (TableInfo ti : distinctTables)
         {
             if (ti.getColumn(FieldKey.fromString("qcstate")) != null && ti.getColumn(FieldKey.fromString("taskid")) != null)

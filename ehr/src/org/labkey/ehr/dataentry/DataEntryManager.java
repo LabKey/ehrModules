@@ -19,6 +19,8 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.ehr.dataentry.DataEntryFormContext;
+import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
@@ -29,8 +31,10 @@ import org.labkey.ehr.EHRModule;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: bimber
@@ -41,7 +45,7 @@ public class DataEntryManager
 {
     private static final DataEntryManager _instance = new DataEntryManager();
 
-    private List<DataEntryForm> _forms = new ArrayList<>();
+    private List<DataEntryFormFactory> _forms = new ArrayList<>();
     private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
 
     private DataEntryManager()
@@ -54,18 +58,20 @@ public class DataEntryManager
         return _instance;
     }
 
-    public void registerFormType(DataEntryForm form)
+    public void registerFormType(DataEntryFormFactory fact)
     {
-        _forms.add(form);
+        _forms.add(fact);
     }
 
     //designed to produce a non-redunant list of forms that are active in the provided container
     private Map<String, DataEntryForm> getFormMap(Container c, User u)
     {
+        DataEntryFormContext ctx = new DataEntryFormContextImpl(c, u);
         Map<String, DataEntryForm> map = new HashMap<>();
-        for (DataEntryForm f : _forms)
+        for (DataEntryFormFactory fact : _forms)
         {
-            if (f.isAvailable(c, u))
+            DataEntryForm f = fact.createForm(ctx);
+            if (f.isAvailable())
                 map.put(f.getName(), f);
         }
 
@@ -92,7 +98,8 @@ public class DataEntryManager
         if (ti == null)
             throw new IllegalArgumentException("Unable to find table: " + schemaName + "." + queryName);
 
-        return SingleQueryForm.create(ModuleLoader.getInstance().getModule(EHRModule.class), ti);
+        DataEntryFormContext ctx = new DataEntryFormContextImpl(c, u);
+        return SingleQueryForm.create(ctx, ModuleLoader.getInstance().getModule(EHRModule.class), ti);
     }
 
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
@@ -136,5 +143,58 @@ public class DataEntryManager
     public static String getTableKey(TableInfo ti)
     {
         return getTableKey(ti.getPublicSchemaName(), ti.getPublicName());
+    }
+
+    public class DataEntryFormContextImpl implements DataEntryFormContext
+    {
+        private User _user;
+        private Container _container;
+        private Map<String, TableInfo> _tableMap = new HashMap<>();
+        private Map<String, UserSchema> _userSchemas = new HashMap<>();
+
+        public DataEntryFormContextImpl(Container c, User u)
+        {
+            _container = c;
+            _user = u;
+        }
+
+        public TableInfo getTable(String schemaName, String queryName)
+        {
+            String key = schemaName + "||" + queryName;
+            if (_tableMap.containsKey(key))
+                return _tableMap.get(key);
+
+            UserSchema us = getUserSchema(schemaName);
+            if (us == null)
+            {
+                return null;
+            }
+
+            TableInfo ti = us.getTable(queryName);
+            _tableMap.put(key, ti);
+
+            return ti;
+        }
+
+        private UserSchema getUserSchema(String schemaName)
+        {
+            if (_userSchemas.containsKey(schemaName))
+                return _userSchemas.get(schemaName);
+
+            UserSchema us = QueryService.get().getUserSchema(_user, _container, schemaName);
+            _userSchemas.put(schemaName, us);
+
+            return _userSchemas.get(schemaName);
+        }
+
+        public Container getContainer()
+        {
+            return _container;
+        }
+
+        public User getUser()
+        {
+            return _user;
+        }
     }
 }

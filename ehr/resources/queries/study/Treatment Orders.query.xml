@@ -27,6 +27,18 @@
                             <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="category">
+                        <columnTitle>Category</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drug_categories</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason</columnTitle>
+                    </column>
                     <column columnName="meaning">
                         <columnTitle>Short Name</columnTitle>
                     </column>
@@ -42,23 +54,12 @@
                     <column columnName="qualifier">
                         <columnTitle>Qualifier</columnTitle>
                     </column>
-                    <column columnName="category">
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>drug_categories</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
-                    </column>
-                    <column columnName="reason">
-                        <columnTitle>Reason</columnTitle>
-                    </column>
                     <column columnName="frequency">
                         <columnTitle>Frequency</columnTitle>
                         <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>treatment_frequency</fkTable>
-                          <fkColumnName>rowid</fkColumnName>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>treatment_frequency</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="route">

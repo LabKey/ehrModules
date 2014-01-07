@@ -5,13 +5,14 @@
  */
 /**
  * @cfg targetGrid
- * @cfg encountersStore
+ * @cfg dataEntryPanel
  */
 Ext4.define('EHR.window.SurgeryAddRecordWindow', {
     extend: 'Ext.window.Window',
+    width: 500,
 
     initComponent: function(){
-        var data = this.getData();
+        var data = EHR.DataEntryUtils.getEncountersRecords(this.dataEntryPanel);
 
         LABKEY.ExtAdapter.apply(this, {
             modal: true,
@@ -22,18 +23,20 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
                 border: false
             },
             items: [{
-                html: 'Please choose which procedure is associated with this record:',
+                html: 'Please choose which procedure is associated with this record, or select multiple procedures to add more than 1 record:',
                 style: 'padding-bottom: 10px;'
             },{
-                xtype: 'combo',
+                xtype: 'checkcombo',
                 itemId: 'comboField',
+                addAllSelector: true,
+                mutliSelect: true,
                 width: 400,
                 displayField: 'title',
                 valueField: 'parentid',
                 store: {
                     type: 'store',
                     fields: ['title', 'parentid', 'Id', 'date'],
-                    data: this.getData()
+                    data: data
                 },
                 forceSelection: true
             }],
@@ -53,7 +56,7 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
 
         if (!data.length) {
             this.on('beforeshow', function(){
-                Ext4.Msg.alert('No Records', 'Cannot add results to this section without a corresponding panel above.  Note: the panels must have an Id/date in order to enter results');
+                Ext4.Msg.alert('No Records', 'Cannot add results to this section without a corresponding procedure above.  Note: the procedure must have an Id/date in order to enter results');
                 this.close();
                 return false;
             }, this);
@@ -61,78 +64,52 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
         else if (data.length == 1){
             var parentid = data[0].parentid;
             this.on('beforeshow', function(){
-                this.processParentId(parentid);
+                this.processParentIds([parentid]);
                 return false;
             }, this);
         }
     },
 
     onSubmit: function(){
-        var parentid = this.down('#comboField').getValue();
-        if (!parentid){
-            Ext4.Msg.alert('Error', 'Must select a procedure');
+        var parentids = this.down('#comboField').getValue();
+        if (!parentids.length){
+            Ext4.Msg.alert('Error', 'Must select at least 1 record');
             return;
         }
 
-        this.processParentId(parentid);
+        this.processParentIds(parentids);
     },
 
-    processParentId: function(parentid){
+    processParentIds: function(parentids){
         var combo = this.down('#comboField');
-        var recIdx = combo.store.find('parentid', parentid);
-
-        LDK.Assert.assertTrue('Unable to find record', recIdx != -1);
-        var rec = combo.store.getAt(recIdx);
-
         var cellEditing = this.targetGrid.getPlugin('cellediting');
         if (cellEditing)
             cellEditing.completeEdit();
 
-        var model = this.targetGrid.store.createModel({});
-        var obj = {};
-        Ext4.Array.forEach(['Id', 'date', 'parentid'], function(field){
-            if (this.targetGrid.store.getFields().get(field)){
-                obj[field] = rec.get(field);
-            }
+        var toAdd = [];
+        Ext4.Array.forEach(parentids, function(parentid){
+            var recIdx = combo.store.find('parentid', parentid);
+
+            LDK.Assert.assertTrue('Unable to find record', recIdx != -1);
+            var rec = combo.store.getAt(recIdx);
+
+            var model = this.targetGrid.store.createModel({});
+            var obj = {};
+            Ext4.Array.forEach(['Id', 'date', 'parentid'], function(field){
+                if (this.targetGrid.store.getFields().get(field)){
+                    obj[field] = rec.get(field);
+                }
+            }, this);
+
+            model.set(obj);
+            toAdd.push(model);
         }, this);
 
-        model.set(obj);
-
-        this.targetGrid.store.insert(0, [model]); //add a blank record in the first position
+        this.targetGrid.store.add(toAdd);
 
         if (cellEditing)
             cellEditing.startEditByPosition({row: 0, column: this.targetGrid.firstEditableColumn || 0});
 
         this.close();
-    },
-
-    getData: function(){
-        var data = [];
-        this.encountersStore.each(function(r){
-            if (r.get('Id') && r.get('date')){
-                var procedureStore = EHR.DataEntryUtils.getProceduresStore();
-                var procedureName;
-                LDK.Assert.assertNotEmpty('Unable to find procedureStore from SurgeryAddRecordWindow', procedureStore);
-                if (r.get('procedureid')){
-                    var procRecIdx = procedureStore.find('rowid', r.get('procedureid'));
-                    var procedureRec = procedureStore.getAt(procRecIdx);
-                    LDK.Assert.assertNotEmpty('Unable to find procedure record from SurgeryAddRecordWindow', procedureRec);
-                    procedureName = procedureRec.get('name');
-                }
-                else {
-                    procedureName = 'None'
-                }
-
-                var title = r.get('Id') + ': ' + procedureName;
-                data.push({
-                    title: title,
-                    parentid: r.get('parentid'),
-                    Id: r.get('Id'),
-                    date: r.get('date')
-                });
-            }
-        }, this);
-
-        return data;
     }
 });

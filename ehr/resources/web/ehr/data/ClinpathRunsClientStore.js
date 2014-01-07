@@ -35,7 +35,7 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
         if (record.get('servicerequested')){
             modifiedFieldNames = modifiedFieldNames || [];
 
-            var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId({
+            var storeId = LABKEY.ext4.Util.getLookupStoreId({
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'labwork_services',

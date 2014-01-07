@@ -67,7 +67,7 @@ Ext4.define('EHR.window.GuessProjectWindow', {
     },
 
     getAssignments: function(ids){
-        EHR.DemographicsCache.getDemographics(ids, this.onLoad, this);
+        EHR.DemographicsCache.getDemographics(ids, this.onLoad, this, -1);
     },
 
     onLoad: function(ids, resultMap){

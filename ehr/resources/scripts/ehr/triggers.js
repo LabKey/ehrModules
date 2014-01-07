@@ -633,7 +633,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     //dont allow future dates on completed records
     if (row.date && row.QCStateLabel == 'Completed' && !helper.isAllowFutureDates()){
-        var millsDiff = Math.abs(row.date.getTime() - (new Date).getTime());
+        var millsDiff = row.date.getTime() - (new Date).getTime();
         if (millsDiff > 6000){
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is in the future', 'INFO');
         }
@@ -670,6 +670,18 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
         if (!helper.isETL()){
             EHR.Server.Validation.verifyDate(row, scriptErrors, helper)
+        }
+    }
+
+    //update SNOMED tags if necessary.  note: this must occur prior to actual insert, since LK strips out properties that do not match actual fields
+    if (!helper.isETL() && helper.getSNOMEDCodeFieldName()){
+        if (row && oldRow && row.codesRaw === oldRow.codesRaw){
+            console.log('codes match: ' + oldRow.codesRaw);
+        }
+
+        if (!helper.isValidateOnly()){
+            console.log('updating snomed tags: ' + row.codesRaw);
+            helper.getJavaHelper().updateSNOMEDTags(row.Id, row.objectid, (row.codesRaw ? row.codesRaw : null));
         }
     }
 
@@ -806,13 +818,8 @@ EHR.Server.Triggers.afterEvent = function (event, helper, errors, row, oldRow){
 
     //NOTE: necessary to populate the _becomingPublicData flag
     EHR.Server.Security.normalizeQcState(row, oldRow);
-
     if (row._becomingPublicData){
         var handlers = [];
-        if (this.afterBecomePublic){
-            handlers.push(this.afterBecomePublic);
-        }
-
         var otherHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_BECOME_PUBLIC, helper.getSchemaName(), helper.getQueryName(), true) || [];
         if (otherHandlers.length)
             handlers = handlers.concat(otherHandlers);

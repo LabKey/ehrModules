@@ -31,16 +31,6 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                         animalId: animalId
                     }).show(btn);
                 }
-//            },{
-//                text: 'Enter Remark/Observations',
-//                disabled: !EHR.Security.hasPermission(EHR.QCStates.IN_PROGRESS, 'insert', [{schemaName: 'study', queryName: 'Clinical Remarks'}]),
-//                scope: this,
-//                handler: function(btn){
-//                    Ext4.create('EHR.window.EnterRemarkWindow', {
-//                        animalId: animalId,
-//                        mode: 'Clinical'
-//                    }).show(btn);
-//                }
             }]
         }
     },
@@ -72,27 +62,26 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
             subjectId: this.subjectId,
             hideHeader: true,
             style: 'padding: 5px;'
-//TODO: restore
-//        },{
-//            xtype: 'tabpanel',
-//            items: [{
-//                xtype: 'ehr-clinicalhistorypanel',
-//                title: 'History',
-//                border: true,
-//                width: 1180,
-//                gridHeight: 400,
-//                height: 400,
-//                autoLoadRecords: true,
-//                autoScroll: true,
-//                subjectId: this.subjectId,
-//                minDate: this.minDate || Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2)
-//            },{
-//                xtype: 'ehr-weightgraphpanel',
-//                title: 'Weights',
-//                subjectId: this.subjectId,
-//                width: 1180,
-//                border: true
-//            }]
+        },{
+            xtype: 'tabpanel',
+            items: [{
+                xtype: 'ehr-clinicalhistorypanel',
+                title: 'History',
+                border: true,
+                width: 1180,
+                gridHeight: 400,
+                height: 400,
+                autoLoadRecords: true,
+                autoScroll: true,
+                subjectId: this.subjectId,
+                minDate: this.minDate || Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2)
+            },{
+                xtype: 'ehr-weightgraphpanel',
+                title: 'Weights',
+                subjectId: this.subjectId,
+                width: 1180,
+                border: true
+            }]
         }];
     }
 });

@@ -11,10 +11,19 @@ Ext4.define('EHR.plugin.ClinicalRemarksRowEditor', {
         LDK.Assert.assertNotEmpty('Observations store not found', store);
 
         return {
-            xtype: 'ehr-observationssmallgridpanel',
+            xtype: 'ehr-observationsroweditorgridpanel',
             itemId: 'observationsPanel',
+            remarkStore: this.cmp.store,
+            width: 500,
             store: store
         };
+    },
+
+    getDetailsPanelCfg: function(){
+        return {
+            xtype: 'ehr-animaldetailsextendedpanel',
+            itemId: 'detailsPanel'
+        }
     },
 
     onWindowClose: function(){
@@ -27,8 +36,17 @@ Ext4.define('EHR.plugin.ClinicalRemarksRowEditor', {
         var ret = this.callParent(arguments);
 
         var formCfg = ret.items[0].items[1];
-        ret.items[0].items.push(this.getObservationPanelCfg());
+        ret.items[0].items[1] = {
+            xtype: 'panel',
+            layout: 'column',
+            defaults: {
+                border: false
+            },
+            border: false,
+            items: [formCfg, this.getObservationPanelCfg()]
+        };
 
+        ret.width = 950;
         return ret;
     },
 

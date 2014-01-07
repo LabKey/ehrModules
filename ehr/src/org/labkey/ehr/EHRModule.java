@@ -24,6 +24,7 @@ import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
@@ -36,7 +37,6 @@ import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
-import org.labkey.ehr.demographics.ActiveAnimalGroupsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
 import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
@@ -49,6 +49,7 @@ import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
 import org.labkey.ehr.demographics.WeightsDemographicsProvider;
 import org.labkey.ehr.notification.DataEntrySummary;
+import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
@@ -77,7 +78,6 @@ import java.util.TreeSet;
 
 public class EHRModule extends ExtendedSimpleModule
 {
-    public static final String EHR_ADMIN_USER = "EHRAdminUser@ehr.com";
     public static final String NAME = "EHR";
     public static final String CONTROLLER_NAME = "ehr";
 
@@ -88,7 +88,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.379;
+        return 12.388;
     }
 
     public boolean hasScripts()
@@ -108,7 +108,6 @@ public class EHRModule extends ExtendedSimpleModule
         // can override them
         EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveAnimalGroupsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveProblemsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider());
@@ -160,6 +159,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
+        NotificationService.get().registerNotification(new DeathNotification());
     }
 
     @Override

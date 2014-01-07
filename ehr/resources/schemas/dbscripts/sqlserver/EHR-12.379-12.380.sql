@@ -1,0 +1,1 @@
+ALTER TABLE ehr.formtemplates ADD category varchar(100);

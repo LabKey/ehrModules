@@ -33,3 +33,16 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
     //this will close any existing assignments, housing and treatment records
     helper.onDeathDeparture(row.Id, row.date);
 }
+
+function onComplete(event, errors, helper){
+    var deaths = helper.getDeaths();
+    if (deaths){
+        var ids = [];
+        for (var id in deaths){
+            ids.push(id);
+        }
+
+        console.log('sending death notification');
+        helper.getJavaHelper().sendDeathNotification(ids);
+    }
+}

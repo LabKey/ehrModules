@@ -6,8 +6,8 @@
 SELECT
     entityid,
     title,
+    category,
     formType,
-    template,
     userId,
     description,
 

@@ -9,6 +9,8 @@
 Ext4.define('EHR.window.AddSurgicalCasesWindow', {
     extend: 'EHR.window.AddClinicalCasesWindow',
     caseCategory: 'Surgery',
+    templateName: 'Surgical Rounds',
+
     allowNoSelection: true,
 
     getCases: function(button){
@@ -26,7 +28,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id', //Id/curlocation/room,Id/curlocation/cage,
-            columns: 'Id,caseid,todaysRemarks',
+            columns: 'Id,objectid,todaysRemarks',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -46,18 +48,22 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
         var records = [];
         var performedby = this.down('#performedBy').getValue();
 
+        var ids = [];
+        var date = new Date();
+
         Ext4.Array.each(results.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
+            ids.push(row.getValue('Id'));
 
             var obj = {
                 Id: row.getValue('Id'),
-                date: new Date(),
+                date: date,
                 category: 'Surgery',
                 s: null,
                 o: null,
                 a: null,
                 p: null,
-                caseid: row.getValue('caseid'),
+                caseid: row.getValue('objectid'),
                 remark: row.getValue('todaysRemarks'),
                 performedby: performedby
             };
@@ -67,14 +73,19 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
 
         this.targetStore.add(records);
 
-        Ext4.Msg.hide();
+        if (this.obsTemplateId){
+            this.applyObsTemplate(ids, date);
+        }
+        else {
+            Ext4.Msg.hide();
+        }
     }
 });
 
 EHR.DataEntryUtils.registerGridButton('ADDSURGICALCASES', function(config){
     return Ext4.Object.merge({
         text: 'Add Open Cases',
-        tooltip: 'Click to automatically add SOAP notes based on open cases',
+        tooltip: 'Click to automatically add animals with open cases',
         handler: function(btn){
             var grid = btn.up('gridpanel');
             if(!grid.store || !grid.store.hasLoaded()){

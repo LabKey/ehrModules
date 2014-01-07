@@ -194,11 +194,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         populateInitialData();
         doStudyImport();
 
-        populateHardTableRecords();
-
-        //note: these expects the study to already have been imported
+        //note: these expect the study to exist
         setupStudyPermissions();
         defineQCStates();
+
+        populateHardTableRecords();
     }
 
     @LogMethod

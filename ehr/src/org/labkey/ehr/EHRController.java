@@ -106,7 +106,7 @@ public class EHRController extends SpringActionController
             List<JSONObject> formJson = new ArrayList<>();
             for (DataEntryForm def : forms)
             {
-                formJson.add(def.toJSON(getContainer(), getUser()));
+                formJson.add(def.toJSON());
             }
 
             resultProperties.put("forms", formJson);
@@ -1126,7 +1126,7 @@ public class EHRController extends SpringActionController
             }
 
             props.put("success", true);
-            props.put("form", def.toJSON(getContainer(), getUser()));
+            props.put("form", def.toJSON());
 
             return new ApiSimpleResponse(props);
         }
@@ -1234,7 +1234,7 @@ public class EHRController extends SpringActionController
             }
 
             JSONObject ret = new JSONObject();
-            ret.put("formConfig", def.toJSON(getContainer(), getUser()));
+            ret.put("formConfig", def.toJSON());
 
             LinkedHashSet<String> jsDependencyPaths = new LinkedHashSet<>();
             LinkedHashSet<String> cssDependencyPaths = new LinkedHashSet<>();

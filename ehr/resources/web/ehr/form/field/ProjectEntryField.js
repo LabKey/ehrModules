@@ -57,19 +57,24 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                 var field = win.down('#projectField');
                                 var project = field.getValue();
                                 var rec = field.findRecord('project', project);
-                                LDK.Assert.assertNotEmpty('Record not found: ' + project, rec);
+                                LDK.Assert.assertTrue('Record not found: ' + project, !!rec);
 
-                                this.onWindowClose({
-                                    project: project,
-                                    displayName: rec.get('displayName'),
-                                    protocolDisplayName: rec.get('protocol/displayName'),
-                                    protocol: rec.get('protocol'),
-                                    title: rec.get('title'),
-                                    shortname: rec.get('shortname'),
-                                    investigator: rec.get('investigatorId/lastName')
-                                });
+                                if (rec){
+                                    this.onWindowClose({
+                                        project: project,
+                                        displayName: rec.get('displayName'),
+                                        protocolDisplayName: rec.get('protocol/displayName'),
+                                        protocol: rec.get('protocol'),
+                                        title: rec.get('title'),
+                                        shortname: rec.get('shortname'),
+                                        investigator: rec.get('investigatorId/lastName')
+                                    });
 
-                                win.close();
+                                    win.close();
+                                }
+                                else {
+                                    Ext4.Msg.alert('Error', 'Unknown Project');
+                                }
                             }
                         },{
                             text: 'Cancel',
@@ -140,7 +145,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     getInnerTpl: function(){
         //(values["protocol"] ? values["protocol"] : "")
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") + ")" : ""))]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : ""))]}&nbsp;</span>'];
     },
 
     trigger1Cls: 'x4-form-search-trigger',
@@ -176,10 +181,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, max(sort_order) as sort_order FROM (";
+        var sql = "SELECT DISTINCT t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, max(sort_order) as sort_order FROM (";
 
         if (id){
-            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.shortname, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
+            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.account as account, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.shortname, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
             "WHERE a.id='"+id+"' ";
 
             if (this.getDisallowedProtocols()){
@@ -199,10 +204,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             if (id)
                 sql += ' UNION ALL ';
 
-            sql += " SELECT p.project, p.displayName, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
+            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
         }
 
-        sql+= " ) t GROUP BY t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
+        sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
 
         return sql;
     },
@@ -246,7 +251,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             }
         }
 
-        this.callOverridden([rec || val]);
+        this.callParent([rec || val]);
     },
 
     resolveProjectFromStore: function(){
@@ -263,6 +268,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             var newRec = this.store.createModel({});
             newRec.set({
                 project: rec.data.project,
+                account: rec.data.account,
                 displayName: rec.data.displayName,
                 protocolDisplayName: rec.data['protocol/displayName'],
                 protocol: rec.data.protocol,
@@ -288,5 +294,18 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         else {
             this.resolveProjectFromStore();
         }
+    },
+
+    beforeBlur: function() {
+        //reject unknown values
+        if (!Ext4.isEmpty(this.getRawValue())){
+            var rec = this.findRecordByDisplay(this.getRawValue());
+            if (!rec){
+                console.log('rejecting');
+                this.setValue(this.lastSelection);
+            }
+        }
+
+        this.callParent(arguments);
     }
 });

@@ -203,13 +203,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         items[0].items = items[0].items.concat([{
             itemId: 'treatments',
             xtype: 'ehr-snapshotchildpanel',
-            headerLabel: 'Current Medications',
+            headerLabel: 'Current Medications / Prescribed Diets',
             emptyText: 'There are no active medications'
-        },{
-            itemId: 'diet',
-            xtype: 'ehr-snapshotchildpanel',
-            headerLabel: 'Prescribed Diets',
-            emptyText: 'There are no active diets'
         }]);
 
         return items;
@@ -249,8 +244,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         this.appendSourceResults(results.getSourceRecord());
-        this.appendTreatments(results.getActiveTreatments());
+        this.appendTreatmentRecords(results.getActiveTreatments());
         this.appendCases(results.getActiveCases());
+        this.appendCaseSummary(results.getActiveCases());
 
         this.appendFlags(results.getActiveFlags());
         this.appendTBResults(results.getTBRecord());
@@ -499,38 +495,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    appendTreatments: function(results){
-        if (!results){
-            return;
-        }
-
-        var treatmentRows = [];
-        var dietRows = [];
-
-        Ext4.Array.forEach(results, function(r){
-            if (r.category == 'Diet')
-                dietRows.push(r);
-            else
-                treatmentRows.push(r);
-        }, this);
-
-
-        this.appendTreatmentRecords(treatmentRows);
-        this.appendDietRecords(dietRows);
-    },
-
     appendTreatmentRecords: function(rows){
         var el = this.down('#treatments');
-        if (!el)
-            return;
-
-        el.appendTable({
-            rows: rows
-        }, this.getTreatmentColumns());
-    },
-
-    appendDietRecords: function(rows){
-        var el = this.down('#diet');
         if (!el)
             return;
 
@@ -571,6 +537,28 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             name: 'category',
             label: 'Category'
         }];
+    },
+
+    appendCaseSummary: function(results){
+        var el = this.down('#caseSummary');
+        if (!el)
+            return;
+
+        el.appendTable({
+            rows: results
+        }, [{
+            name: 'category',
+            label: 'Category'
+        },{
+            name: 'problem',
+            label: 'Problem'
+        },{
+            name: 'date',
+            label: 'Open Date'
+        },{
+            name: 'remark',
+            label: 'Summary'
+        }]);
     },
 
     appendFlags: function(results){
@@ -736,17 +724,16 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
 
     appendTable: function(results, columns){
         var target = this.down('#childPanel');
-        var total = results.rows.length;
+        var total = results && results.rows ? results.rows.length : 0;
         var headerEl = this.down('#headerItem').body;
-        var html = headerEl.getHTML();
-        html = html.replace(this.headerLabel + ':', this.headerLabel + ': ' + total);
-        headerEl.update(html);
+        if (headerEl){
+            var html = headerEl.getHTML();
+            html = html.replace(new RegExp(this.headerLabel + ':( )*([0-9])*'), this.headerLabel + ': ' + total);
+            headerEl.update(html);
+        }
 
+        target.removeAll();
         if (results && results.rows && results.rows.length){
-            var table = target.down('#resultTable');
-            if (table)
-                target.remove(table);
-
             var toAdd = {
                 itemId: 'resultTable',
                 layout: {

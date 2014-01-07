@@ -69,9 +69,12 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             var store = this.down('#gridPanel').store;
             store.on('datachanged', function(){
                 if (!store.isLoadingData){
-                    this.down('grid').setLoading(false);
-                    this.setEmptyText();
-                    this.down('grid').getView().refresh();
+                    var grid = this.down('grid');
+                    if (grid){
+                        grid.setLoading(false);
+                        this.setEmptyText();
+                        grid.getView().refresh();
+                    }
                 }
             }, this);
 

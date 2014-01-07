@@ -44,8 +44,9 @@ Ext4.define('EHR.grid.Panel', {
         }, this);
 
         this.store.on('validation', this.onStoreValidation, this);
+        this.store.on('validation', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
 
-        var width = 0;
+        var width = 20;
         Ext4.Array.forEach(this.columns, function(col){
             if (col.width){
                 if (!col.hidden)
@@ -57,10 +58,39 @@ Ext4.define('EHR.grid.Panel', {
         }, this);
 
         this.minWidth = width;
+        if (this.dataEntryPanel){
+            this.dataEntryPanel.updateMinWidth(this.minWidth);
+        }
+
     },
 
+    pendingChanges: {},
+
     onStoreValidation: function(store, record){
-        this.getView().onUpdate(store, record);
+        var key = store.storeId + '||' + record.internalId;
+
+        this.pendingChanges[key] = {
+            store: store,
+            record: record
+        };
+    },
+
+    onStoreValidationComplete: function(){
+        var keys = Ext4.Object.getKeys(this.pendingChanges);
+        if (keys.length > 5){
+            console.log('grid refresh');
+            this.getView().refresh();
+        }
+        else {
+            Ext4.Array.forEach(keys, function(key){
+                var obj = this.pendingChanges[key];
+
+                //console.log('updating cell: ' + key);
+                this.getView().onUpdate(obj.store, obj.record);
+            }, this);
+        }
+
+        this.pendingChanges = {};
     },
 
     configureColumns: function(){
@@ -108,7 +138,8 @@ Ext4.define('EHR.grid.Panel', {
             }
         }];
 
-        LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field){
+        var firstEditableColumn = -1;
+        LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field, idx){
             var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.configSources);
             var cfg = LABKEY.ExtAdapter.apply({}, field);
             cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.configSources);
@@ -128,9 +159,16 @@ Ext4.define('EHR.grid.Panel', {
                 if (!colCfg.hidden)
                     colCfg.tdCls = 'ldk-wrap-text';
 
+                if (firstEditableColumn == -1 && colCfg.editable !== false){
+                    firstEditableColumn = 1 + idx;
+                }
                 this.columns.push(colCfg);
             }
         }, this);
+
+        if (firstEditableColumn != -1){
+            this.firstEditableColumn = firstEditableColumn;
+        }
     },
 
     getRowEditorPlugin: function(){

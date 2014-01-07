@@ -74,6 +74,8 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         },
         'study.blood': {
             chargetype: {
+                header: 'Assigned To',
+                label: 'Assigned To',
                 hidden: false
             },
             reason: {

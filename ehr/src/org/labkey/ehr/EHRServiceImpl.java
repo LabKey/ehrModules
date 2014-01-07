@@ -27,6 +27,7 @@ import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
+import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.RequestForm;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
@@ -452,45 +453,14 @@ public class EHRServiceImpl extends EHRService
         return EHRSecurityManager.get().getQCStateInfo(c);
     }
 
-    public void registerFormType(DataEntryForm form)
+    public void registerFormType(DataEntryFormFactory fact)
     {
-        DataEntryManager.get().registerFormType(form);
+        DataEntryManager.get().registerFormType(fact);
     }
 
     public DataEntryForm getDataEntryForm(String name, Container c, User u)
     {
         return DataEntryManager.get().getFormByName(name, c, u);
-    }
-
-    public void registerSimpleFormType(FORM_TYPE type, Module m, String category, String label, String schema, String query)
-    {
-        registerFormType(type, m, category, query, label, Collections.<FormSection>singletonList(new SimpleGridPanel(schema, query, StringUtils.capitalize(query))));
-    }
-
-    public void registerFormType(FORM_TYPE type, Module m, String category, String name, String label, List<FormSection> sections)
-    {
-        DataEntryForm form = null;
-        if (FORM_TYPE.Task.equals(type))
-        {
-            form = TaskForm.create(m, category, name, label, sections);
-        }
-        else if (FORM_TYPE.Run.equals(type))
-        {
-            form = RunForm.create(m, category, name, label, sections);
-        }
-        else if (FORM_TYPE.Encounter.equals(type))
-        {
-            throw new IllegalArgumentException("Not yet implemented");
-        }
-        else if (FORM_TYPE.Request.equals(type))
-        {
-            form = RequestForm.create(m, category, name, label, sections);
-        }
-
-        if (form == null)
-            throw new IllegalArgumentException("Unknown form type");
-
-        registerFormType(form);
     }
 
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)

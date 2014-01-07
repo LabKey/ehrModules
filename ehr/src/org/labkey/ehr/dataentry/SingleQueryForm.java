@@ -18,7 +18,9 @@ package org.labkey.ehr.dataentry;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
+import org.labkey.api.ehr.dataentry.DataEntryFormContext;
+import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.SingleQueryFormSection;
 import org.labkey.api.ehr.security.EHRInProgressInsertPermission;
 import org.labkey.api.module.Module;
@@ -39,9 +41,9 @@ public class SingleQueryForm extends AbstractDataEntryForm
 {
     private TableInfo _table;
 
-    private SingleQueryForm(Module owner, String name, String label, String category, TableInfo ti, List<FormSection> sections)
+    private SingleQueryForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, TableInfo ti, List<FormSection> sections)
     {
-        super(owner, name, label, category, sections);
+        super(ctx, owner, name, label, category, sections);
         setJavascriptClass("EHR.panel.SimpleDataEntryPanel");
 
         _table = ti;
@@ -54,17 +56,17 @@ public class SingleQueryForm extends AbstractDataEntryForm
         addClientDependency(ClientDependency.fromFilePath("ehr/model/sources/SingleQuery.js"));
     }
 
-    public static SingleQueryForm create(Module owner, TableInfo ti)
+    public static SingleQueryForm create(DataEntryFormContext ctx, Module owner, TableInfo ti)
     {
         List<FormSection> sections = new ArrayList<>();
         sections.add(new SingleQueryFormSection(ti.getPublicSchemaName(), ti.getPublicName(), ti.getTitle()));
 
-        return new SingleQueryForm(owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, sections);
+        return new SingleQueryForm(ctx, owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, sections);
     }
 
-    public JSONObject toJSON(Container c, User u)
+    public JSONObject toJSON()
     {
-        JSONObject json = super.toJSON(c, u);
+        JSONObject json = super.toJSON();
         json.put("pkCols", _table.getPkColumnNames());
 
         return json;

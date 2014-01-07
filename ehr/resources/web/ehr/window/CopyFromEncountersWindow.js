@@ -45,9 +45,9 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
         if (!this.targetTabs){
             this.targetTabs = [];
             Ext4.each(this.dataEntryPanel.formConfig.sections, function(s){
-                if (this.tableNameMap[s.label]){
-                    var item = this.dataEntryPanel.getSectionByLabel(s.label);
-                    LDK.Assert.assertNotEmpty('Unable to find panel: ' + s.label, item);
+                if (this.tableNameMap[s.name]){
+                    var item = this.dataEntryPanel.getSectionByName(s.name);
+                    LDK.Assert.assertNotEmpty('Unable to find panel: ' + s.name, item);
                     if (item != null)
                         this.targetTabs.push(item);
                 }
@@ -94,10 +94,10 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
     getExistingParentIds: function(){
         var keys = {};
         Ext4.Array.forEach(this.targetTabs, function(tab){
-            keys[tab.title] = {};
+            keys[tab.formConfig.name] = {};
             tab.store.each(function(r){
                 if (r.get('parentid'))
-                    keys[tab.title][r.get('parentid')] = true;
+                    keys[tab.formConfig.name][r.get('parentid')] = true;
             }, this);
         }, this);
 
@@ -105,30 +105,25 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
     },
 
     tableNameMap: {
-        'Medications/Treatments': {
+        'Drug Administration': {
             queryName: 'procedure_default_treatments',
             columns: 'procedureid,code,qualifier,route,frequency,volume,vol_units,dosage,dosage_units,concentration,conc_units,amount,amount_units'
         },
-        'Misc. Charges': {
+        'miscCharges': {
             queryName: 'procedure_default_charges',
             columns: 'procedureid,chargeid,quantity'
         },
-        Flags: {
+        flags: {
             queryName: 'procedure_default_flags',
             columns: 'procedureid,flag,value',
             targetColumns: 'procedureid,category,value'
         },
-        Narrative: {
+        encounter_summaries: {
             queryName: 'procedure_default_comments',
             columns: 'procedureid,comment',
             targetColumns: 'procedureid,remark'
         },
-        'SNOMED Codes': {
-            queryName: 'procedure_default_codes',
-            columns: 'procedureid,code,qualifier',
-            sort: 'sort_order'
-        },
-        'Diagnostic Codes': {
+        snomed_tags: {
             queryName: 'procedure_default_codes',
             columns: 'procedureid,code,qualifier',
             sort: 'sort_order'
@@ -137,10 +132,12 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
 
     loadServices: function(){
         var multi = new LABKEY.MultiRequest();
+        var totalRequests = 0;
         this.panelMap = {};
         Ext4.Array.forEach(this.targetTabs, function(tab){
-            var cfg = this.tableNameMap[tab.title];
+            var cfg = this.tableNameMap[tab.formConfig.name];
             if (cfg){
+                totalRequests++;
                 multi.add(LABKEY.Query.selectRows, {
                     schemaName: 'ehr_lookups',
                     queryName: cfg.queryName,
@@ -148,14 +145,14 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                     columns: cfg.columns,
                     failure: LDK.Utils.getErrorCallback(),
                     success: function(results){
-                        this.panelMap[tab.title] = {};
+                        this.panelMap[tab.formConfig.name] = {};
                         if (results && results.rows && results.rows.length){
                             Ext4.Array.forEach(results.rows, function(r){
                                 var row = new LDK.SelectRowsRow(r);
-                                if (!this.panelMap[tab.title][row.getValue('procedureid')])
-                                    this.panelMap[tab.title][row.getValue('procedureid')] = [];
+                                if (!this.panelMap[tab.formConfig.name][row.getValue('procedureid')])
+                                    this.panelMap[tab.formConfig.name][row.getValue('procedureid')] = [];
 
-                                this.panelMap[tab.title][row.getValue('procedureid')].push(row);
+                                this.panelMap[tab.formConfig.name][row.getValue('procedureid')].push(row);
                             }, this);
                         }
                     },
@@ -164,7 +161,17 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             }
         }, this);
 
-        multi.send(this.onLoad, this);
+        LDK.Assert.assertTrue('No matching tables found in CopyFromEncountersWindow', totalRequests > 0);
+
+        if (totalRequests > 0)
+            multi.send(this.onLoad, this);
+        else {
+            //this should never actually get called
+            this.on('beforeshow', function(window){
+                Ext4.Msg.alert('No Records', 'Add defaults is not supported for this section.');
+                return false;
+            }, this);
+        }
     },
 
     onLoad: function(){
@@ -212,7 +219,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                 xtype: 'checkbox',
                 width: 80,
                 itemId: ignoreId,
-                checked: this.targetTabs.length == 1 ? keys[this.targetTabs[0].title][r.get('objectid')] : false
+                checked: this.targetTabs.length == 1 ? keys[this.targetTabs[0].formConfig.name][r.get('objectid')] : false
             });
         }, this);
 
@@ -251,8 +258,8 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                     var rows;
                     var records = [];
 
-                    if (panel && this.panelMap[targetTab.title] && this.panelMap[targetTab.title][panel]){
-                        rows = this.panelMap[targetTab.title][panel];
+                    if (panel && this.panelMap[targetTab.formConfig.name] && this.panelMap[targetTab.formConfig.name][panel]){
+                        rows = this.panelMap[targetTab.formConfig.name][panel];
                     }
 
                     if (rows && rows.length){
@@ -265,7 +272,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                                 parentid: item.boundRecord.get('objectid')
                             };
 
-                            var cfg = this.tableNameMap[targetTab.title];
+                            var cfg = this.tableNameMap[targetTab.formConfig.name];
                             if (cfg && cfg.columns){
                                 var columns = cfg.columns.split(',');
                                 var targetColumns = (cfg.targetColumns || cfg.columns).split(',');

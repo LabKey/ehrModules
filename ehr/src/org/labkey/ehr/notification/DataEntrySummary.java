@@ -24,6 +24,7 @@ import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ldk.notification.NotificationSection;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
@@ -83,7 +84,7 @@ public class DataEntrySummary implements NotificationSection
         return yesterday.getTime();
     }
 
-    protected void getRequestSummary(Container c, User u, StringBuilder msg, Set<Study> studies)
+    protected void getRequestSummary(Container c, final User u, StringBuilder msg, Set<Study> studies)
     {
         final StringBuilder requestTable  = new StringBuilder();
 
@@ -110,7 +111,10 @@ public class DataEntrySummary implements NotificationSection
                     @Override
                     public void exec(ResultSet rs) throws SQLException
                     {
-                        requestTable.append("<tr><td>" + rs.getString("formType") + "</td><td>" + rs.getInt("total") + "</td></tr>");
+                        DataEntryForm form = EHRService.get().getDataEntryForm(rs.getString("formType"), s.getContainer(), u);
+                        String label = form == null ? rs.getString("formType") + "*" : form.getLabel();
+
+                        requestTable.append("<tr><td>" + label + "</td><td>" + rs.getInt("total") + "</td></tr>");
                     }
                 });
             }
@@ -128,7 +132,7 @@ public class DataEntrySummary implements NotificationSection
         }
     }
 
-    protected void getTaskSummary(Container c, User u, StringBuilder msg, Set<Study> studies)
+    protected void getTaskSummary(Container c, final User u, StringBuilder msg, Set<Study> studies)
     {
         boolean hasTasks = false;
         final StringBuilder taskTable = new StringBuilder();
@@ -155,7 +159,10 @@ public class DataEntrySummary implements NotificationSection
                     @Override
                     public void exec(ResultSet rs) throws SQLException
                     {
-                        taskTable.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + rs.getString("formType") + "</td><td>" + rs.getInt("total") + "</td></tr>");
+                        DataEntryForm form = EHRService.get().getDataEntryForm(rs.getString("formType"), s.getContainer(), u);
+                        String label = form == null ? rs.getString("formType") + "*" : form.getLabel();
+
+                        taskTable.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + label + "</td><td>" + rs.getInt("total") + "</td></tr>");
                     }
                 });
             }

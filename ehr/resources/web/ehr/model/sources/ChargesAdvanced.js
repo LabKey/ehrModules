@@ -10,7 +10,10 @@ EHR.model.DataModelManager.registerMetadata('ChargesAdvanced', {
     byQuery: {
         'onprc_billing.miscCharges': {
             unitcost: {
-                hidden: false
+                hidden: false,
+                editorConfig: {
+                    decimalPrecision: 2
+                }
             }
         }
     }

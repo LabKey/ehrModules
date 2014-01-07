@@ -26,18 +26,24 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'id/curlocation/location': {
-            hidden: true,
-            updateValueFromServer: true,
+            hidden: false,
             allowBlank: true,
             nullable: true,
             shownInGrid: true,
             caption: 'Location',
             header: 'Location',
             lookups: false,
+            //to allow natural sorting
+            sortType: function(val){
+                return val ? LDK.Utils.naturalize(val) : val;
+            },
             allowDuplicateValue: false,
             columnConfig: {
-                width: 75,
+                width: 175,
                 showLink: false
+            },
+            formEditorConfig: {
+                hidden: true
             }
         },
         'id/numroommates/cagemates': {
@@ -65,12 +71,19 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 250
             },
             editorConfig: {
+                caseSensitive: false,
+                anyMatch: true,
                 listConfig: {
                     innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
                     getInnerTpl: function(){
                         return this.innerTpl;
                     }
                 }
+            },
+            lookup: {
+                sort: 'category,name',
+                filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
+                columns: 'rowid,name,category,remark,active'
             }
         },
         chargetype: {
@@ -153,6 +166,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 300
             },
             editorConfig: {
+                caseSensitive: false,
                 anyMatch: true,
                 listConfig: {
                     innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
@@ -186,7 +200,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             shownInInsertView: true,
             columnConfig: {
                 fixed: true,
-                width: 130
+                width: 180,
+                editor: 'xdatetime'
             },
             extFormat: 'Y-m-d H:i',
             editorConfig: {
@@ -479,6 +494,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'study.grossFindings': {
+            sort_order: {
+                hidden: false
+            }
+        },
         'study.parentage': {
             parent: {
                 lookups: false
@@ -600,6 +620,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             tissue: {
+                allowBlank: false,
                 columnConfig: {
                     width: 250
                 }
@@ -621,12 +642,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.tissue_samples': {
+            tissue: {
+                allowBlank: false
+            },
             performedby: {
                 hidden: true
             },
-            preservation: {
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+            tissueCondition: {
+                columnConfig: {
+                    width: 150
+                }
+            },
+            preparation: {
+                columnConfig: {
+                    width: 200
                 }
             },
             qualifier: {
@@ -645,6 +674,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             tissueRemarks : {
                 shownInGrid: false
             },
+            weight: {
+                allowBlank: false
+            },
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
                 editorConfig: {
@@ -656,40 +688,33 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             }
         },
-        'study.Histology': {
-            diagnosis: {
-                editorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                }
-            },
+        'study.pathologyDiagnoses': {
+            performedby: {
+                hidden: true
+            }
+        },
+        'study.histology': {
             slideNum: {
-
+                hidden: true,
+                columnConfig: {
+                    width: 130
+                }
             },
             performedby: {
                 hidden: true
             },
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
+                hidden: true,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 }
             },
-            pathologist: {
-                shownInGrid: false
-            },
-            pathology: {
-                shownInGrid: false
-            },
-            trimdate: {
-                shownInGrid: false
-            },
-            trim_remark: {
-                shownInGrid: false
-            },
-            trimmed_by: {
-                shownInGrid: false
+            tissue: {
+                allowBlank: false
             },
             qualifier: {
+                hidden: true,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 }
@@ -740,8 +765,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'ehr.encounter_participants': {
             Id: {
-                hidden: true,
-                allowBlank: true
+                hidden: false,
+                allowBlank: false
             },
             userid: {
                 hidden: true,
@@ -751,11 +776,13 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             username: {
                 hidden: false,
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
             },
             role: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
@@ -766,13 +793,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'ehr.encounter_summaries': {
             remark: {
+                allowBlank: false,
                 columnConfig: {
-                    width: 500
+                    width: 700
                 }
             }
         },
         'study.encounters': {
             instructions: {
+                height: 100,
                 columnConfig: {
                     width: 200
                 }
@@ -813,6 +842,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             project: {
+                allowBlank: false
+            },
+            procedureid: {
                 allowBlank: false
             }
         },
@@ -947,6 +979,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             instructions: {
+                hidden: true,
                 shownInGrid: true,
                 columnConfig: {
                     width: 200
@@ -959,28 +992,22 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d H:i',
                 allowBlank: false,
                 getInitialValue: function(v, rec){
-                    return v ? v : new Date()
-                },
-                columnConfig: {
-                    width: 100
-                },
-                shownInGrid: true
+                    return v ? v : Ext4.Date.clearTime(new Date());
+                }
             },
             enddate: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
-                columnConfig: {
-                    //fixed: true,
-                    width: 100
-                }
-                //shownInGrid: false
+                allowBlank: false,
+                extFormat: 'Y-m-d H:i'
             },
             project: {
                 allowBlank: false
             },
-            CurrentRoom: {lookups: false},
-            CurrentCage: {lookups: false},
+            reason: {
+                hidden: true
+            },
             volume: {
+                shownInGrid: false,
                 compositeField: 'Volume',
                 xtype: 'ehr-drugvolumefield',
                 noDuplicateByDefault: true,
@@ -994,6 +1021,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             vol_units: {
+                shownInGrid: false,
                 compositeField: 'Volume',
                 header: 'Vol Units',
                 columnConfig: {
@@ -1001,14 +1029,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             concentration: {
-                shownInGrid: false,
+                //shownInGrid: false,
                 compositeField: 'Drug Conc',
                 editorConfig: {
                     decimalPrecision: 10
                 }
             },
             conc_units: {
-                shownInGrid: false,
+                //shownInGrid: false,
                 lookup: {columns: '*'},
                 compositeField: 'Drug Conc',
                 editorConfig: {
@@ -1040,7 +1068,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noSaveInTemplateByDefault: true,
                 //,allowBlank: false
                 columnConfig: {
-                    width: 120
+                    width: 140
                 },
                 editorConfig: {
                     decimalPrecision: 3
@@ -1060,19 +1088,30 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 lookup: {
                     sort: 'sort_order',
                     columns: '*'
+                },
+                editorConfig: {
+                    listConfig: {
+                        innerTpl: '{[(values.meaning) + (values.times ? " (" + values.times + ")" : "")]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
+                },
+                columnConfig: {
+                    width: 180
                 }
             },
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: false,
+                //shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             dosage_units: {
-                shownInGrid: false,
+                //shownInGrid: false,
                 compositeField: 'Dosage',
                 columnConfig: {
                     width: 120
@@ -1081,7 +1120,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             code: {
                 //shownInGrid: false,
                 editorConfig: {
-                    defaultSubset: 'Drugs and Procedures'
+                    defaultSubset: 'Common Treatments'
                 }
             },
             qualifier: {
@@ -1092,6 +1131,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             performedby: {
                 defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            category: {
+                shownInGrid: false
             }
         },
         'ehr.Project': {
@@ -1106,7 +1148,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 xtype: 'combo',
                 lookup: {
-                    filterArray: [LABKEY.Filter.create('protocol/protocol/isActive', true, LABKEY.Filter.Types.EQUALS)],
+                    filterArray: [LABKEY.Filter.create('protocol/protocol/isActive', true, LABKEY.Filter.Types.EQUAL)],
                     columns: 'project,protocol,account'
                 }
             },
@@ -1120,9 +1162,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.flags': {
-
-        },
-        'study.histology': {
 
         },
         'study.measurements': {
@@ -1140,6 +1179,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 150
                 }
+            },
+            tissue: {
+                allowBlank: false,
+                editorConfig: {
+                    defaultSubset: 'Measurements'
+                }
+            },
+            units: {
+                defaultValue: 'cm'
             }
         },
         'ehr.snomed_tags': {
@@ -1152,6 +1200,42 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'onprc_billing.miscCharges': {
+            chargeId: {
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)
+                    ]
+                }
+            },
+            unitcost: {
+                //TODO: enable once ready
+                hidden: true,
+                columnConfig: {
+                    getEditor: function(rec){
+                        if (rec.get('chargeId')){
+                            var refIdx = EHR.DataEntryUtils.getChareableItemsStore().find('rowid', rec.get('chargeId'));
+                            if (refIdx != -1){
+                                var refRec = EHR.DataEntryUtils.getChareableItemsStore().getAt(refIdx);
+                                if (refRec.get('allowscustomunitcost')){
+                                    return {
+                                        xtype: 'numberfield',
+                                        hideTrigger: true,
+                                        decimalPrecision: 2
+                                    }
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+                }
+            },
+            project: {
+                allowBlank: false
+            },
+            quantity: {
+                allowBlank: false
+            },
             comment: {
                 columnConfig: {
                     width: 250
@@ -1179,35 +1263,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             observation: {
                 columnConfig: {
-                    width: 200,
-                    getEditor: function(record){
-                        if (!record){
-                            //NOTE: i think this is an Ext4 core bug.  if you tab between cells
-                            //this method is called w/o arguments
-                            var records = this.up('grid').getSelectionModel().getSelection();
-                            if (records.length)
-                                record = records[0];
-                            else
-                                return;
-                        }
-
-                        var category = record.get('category');
-                        if (!category){
-                            return false;
-                        }
-
-                        var store = this.up('grid').store.observationTypesStore;
-                        var rec = store.findRecord('value', category);
-                        LDK.Assert.assertNotEmpty('Unable to find record matching category: ' + category, rec);
-                        if (!rec){
-                            return false;
-                        }
-
-                        var config = rec.get('description') ? Ext4.decode(rec.get('description')) : null;
-                        return config || {
-                            xtype: 'textfield'
-                        }
-                    }
+                    width: 200
+                }
+            },
+            remark: {
+                columnConfig: {
+                    width: 300
                 }
             }
         },
@@ -1553,7 +1614,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                             if (record){
                                 var rec = recs[0];
                                 var meta = record.store.model.prototype.fields.get('tube_vol');
-                                var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId(meta);
+                                var storeId = LABKEY.ext4.Util.getLookupStoreId(meta);
                                 var store = Ext4.StoreMgr.get(storeId);
                                 if (store){
                                     store.filterArray = [LABKEY.Filter.create('tube_types', rec.get('type'), LABKEY.Filter.Types.CONTAINS)];
@@ -1624,7 +1685,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.drug': {
             lot: {
-                shownInGrid: false
+                shownInGrid: true
             },
             reason: {
                 defaultValue: 'N/A'
@@ -1640,7 +1701,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             code: {
                 editorConfig: {
-                    defaultSubset: 'Drugs and Procedures'
+                    defaultSubset: 'Common Treatments'
                 }
             },
             date: {
@@ -1656,7 +1717,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             dosage: {
                 xtype: 'ehr-drugdosefield',
                 msgTarget: 'under',
-                shownInGrid: false,
+                shownInGrid: true,
                 compositeField: 'Dosage',
                 editorConfig: {
                     decimalPrecision: 3
@@ -1786,25 +1847,30 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             code: {hidden: true},
             problem_no: {shownInInsertView: false}
         },
-        'study.Clinical Observations': {
-            observation: {
-                //xtype: 'ehr-remoteradiogroup',
-                includeNullRecord: false,
-                editorConfig: {columns: 2},
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'normal_abnormal',
-                    displayColumn: 'state',
-                    keyColumn: 'state',
-                    sort: '-state'
-                }
-            },
-            date: {
-                label: 'Time'
-            },
-            performedby: {hidden: true}
-        },
+//        'study.Clinical Observations': {
+//            observation: {
+//                //xtype: 'ehr-remoteradiogroup',
+//                includeNullRecord: false,
+//                editorConfig: {columns: 2},
+//                lookup: {
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'normal_abnormal',
+//                    displayColumn: 'state',
+//                    keyColumn: 'state',
+//                    sort: '-state'
+//                }
+//            },
+//            date: {
+//                label: 'Time'
+//            },
+//            performedby: {
+//                hidden: true
+//            }
+//        },
         'study.tb': {
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            },
             lot: {
                 shownInGrid: false
             },
@@ -1829,6 +1895,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
+            },
+            method: {
+                columnConfig: {
+                    width: 150
+                },
+                defaultValue: 'Intradermal'
             }
         },
         'study.weight': {
@@ -1839,7 +1911,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             performedby: {
-                hidden: true
+                hidden: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
             },
             'id/curlocation/location': {
                 shownInGrid: true

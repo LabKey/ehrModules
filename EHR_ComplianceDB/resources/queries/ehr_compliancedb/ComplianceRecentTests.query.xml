@@ -19,6 +19,7 @@
                         <fkTable>requirements</fkTable>
                         <fkColumnName>requirementName</fkColumnName>
                     </fk>
+                    <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                 </column>
                 <column columnName="timesCompleted">
                     <columnTitle>Times Completed</columnTitle>

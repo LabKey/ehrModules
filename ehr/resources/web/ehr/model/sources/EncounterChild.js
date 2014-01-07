@@ -6,10 +6,10 @@
 EHR.model.DataModelManager.registerMetadata('EncounterChild', {
     allQueries: {
         Id: {
-            editable: false
-        },
-        project: {
-            editable: false
+            editable: false,
+            columnConfig: {
+                editable: false
+            }
         }
     }
 });

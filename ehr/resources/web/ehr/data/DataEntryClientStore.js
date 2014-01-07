@@ -8,13 +8,54 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     alias: 'store.ehr-dataentryclientstore',
     loaded: true,
 
+    hasLocationField: false,
+
     constructor: function(){
         this.callParent(arguments);
+
+        if (this.getFields().get('Id/curLocation/location')){
+            this.hasLocationField = true;
+        }
+
         this.addEvents('validation');
     },
 
     getFields: function(){
         return this.model.prototype.fields;
+    },
+
+    ensureLocation: function(record){
+        var id = record.get('Id');
+        if (id){
+            var cached = EHR.DemographicsCache.getDemographicsSynchronously(id);
+            if (cached && cached[id]){
+                record.suspendEvents();
+                record.set('Id/curLocation/location', cached[id].getCurrentLocation());
+                record.resumeEvents();
+
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        return true; //no action needed
+    },
+
+    retrieveLocation: function(ids){
+        EHR.DemographicsCache.getDemographics(ids, function(idArr, idMap){
+            if (idMap){
+                for (var id in idMap){
+                    var location = idMap[id].getCurrentLocation();
+                    this.each(function(rec){
+                        if (rec.get('Id') == id){
+                            rec.set('Id/curLocation/location', location);
+                        }
+                    }, this);
+                }
+            }
+        }, this, -1);
     },
 
     buildClientToServerRecordMap: function(){
@@ -114,7 +155,30 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             }
         }
 
+        if (this.hasLocationField && !record.get('Id/curLocation/location')){
+            if (!this.ensureLocation(record)){
+                this.retrieveLocation(record.get('Id'));
+            }
+        }
+
         this.callParent(arguments);
+    },
+
+    insert: function(index, records) {
+        if (this.hasLocationField && records && records.length){
+            var idsNeeded = [];
+            for (var i=0;i< records.length;i++){
+                if (!this.ensureLocation(records[i])){
+                    idsNeeded.push(records[i].get('Id'));
+                }
+            };
+
+            if (idsNeeded.length){
+                this.retrieveLocation(idsNeeded);
+            }
+        }
+
+        return this.callParent(arguments);
     },
 
     createModel: function(data){
@@ -244,5 +308,14 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         this.add(model);
 
         return model;
+    },
+
+    checkForServerErrorChanges: function(){
+        this.each(function(rec){
+            if (rec.serverErrors.hasChanges()){
+                rec.serverErrors.setHasChanges(false);
+                this.fireEvent('validation', this, rec);
+            }
+        }, this);
     }
 });

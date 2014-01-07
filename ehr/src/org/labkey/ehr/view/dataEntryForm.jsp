@@ -21,7 +21,7 @@
 <%
     DataEntryForm def = (DataEntryForm)getModelBean();
     String formClass = def.getJavascriptClass();
-    JSONObject json = def.toJSON(getContainer(), getUser());
+    JSONObject json = def.toJSON();
 
     String renderTarget = "ehrDiv-" + def.getName();
 %>

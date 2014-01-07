@@ -48,7 +48,12 @@ EHR.model.DataModelManager.registerMetadata('ClinicalProcedure', {
                 }
             },
             procedureid: {
-
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('category', 'Procedure', LABKEY.Filter.Types.EQUAL),
+                        LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)
+                    ]
+                }
             },
             chargetype: {
                 defaultValue: 'Center Staff'

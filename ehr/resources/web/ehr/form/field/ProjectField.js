@@ -16,6 +16,7 @@ Ext4.define('EHR.form.field.ProjectField', {
     anyMatch: true,
     editable: true,
     forceSelection: true,
+    showInactive: false,
 
     onlyIncludeProjectsWithAssignments: false,
 
@@ -41,7 +42,7 @@ Ext4.define('EHR.form.field.ProjectField', {
 
     //can be overriden by child modules
     getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigatorId/lastName"] ? "(" + (values["investigatorId/lastName"] ? values["investigatorId/lastName"] : "") + ")" : "")]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigatorId/lastName"] ? "(" + (values["investigatorId/lastName"] ? values["investigatorId/lastName"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigatorId/lastName"] ? ")" : "")]}&nbsp;</span>'];
     },
 
     getStoreCfg: function(){
@@ -53,7 +54,7 @@ Ext4.define('EHR.form.field.ProjectField', {
             schemaName: 'ehr',
             queryName: 'project',
             columns: 'project,protocol,protocol/displayName,displayName,account,investigatorId/lastName',
-            filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+            filterArray: this.showInactive ? null : [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
             sort: 'displayName',
             autoLoad: true
         };

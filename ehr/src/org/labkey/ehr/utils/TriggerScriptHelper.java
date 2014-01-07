@@ -70,14 +70,17 @@ import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
+import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.security.EHRSecurityManager;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -152,8 +155,8 @@ public class TriggerScriptHelper
         {
             int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
             DataSet dataset = StudyService.get().getDataSet(container, datasetId);
-            if(dataset == null){
-                _log.warn("Non existent table: study." + queryName);
+            if (dataset == null){
+                _log.info("Non existent table: study." + queryName);
                 continue;
             }
 
@@ -618,49 +621,6 @@ public class TriggerScriptHelper
         return null;
     }
 
-    public void createRequestsForBloodAdditionalServices(String id, Integer project, String performedby, String services) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
-    {
-        if (id == null || project == null)
-            return;
-
-        String[] toAutomaticallyCreate = getAdditionalServicesToCreate(services);
-        if (toAutomaticallyCreate == null || toAutomaticallyCreate.length == 0)
-            return;
-
-        for (String testId : toAutomaticallyCreate)
-        {
-            GUID requestId = new GUID();
-            Date dateRequested = new Date();
-            Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
-            row.put("daterequested", dateRequested);
-            row.put("requestid", requestId.toString());
-            row.put("priority", "Routine");
-            row.put("formtype", "labworkRequest");
-            row.put("title", "Labwork Request From Blood Draw: " + testId);
-            row.put("notify1", getUser().getUserId());
-
-            TableInfo requests = getTableInfo("ehr", "requests");
-            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
-            rows.add(row);
-            requests.getUpdateService().insertRows(getUser(), getContainer(), rows, new BatchValidationException(), getExtraContext());
-
-            TableInfo clinpathRuns = getTableInfo("study", "Clinpath Runs");
-            List<Map<String, Object>> clinpathRows = new ArrayList<Map<String, Object>>();
-            Map<String, Object> clinpathRow = new CaseInsensitiveHashMap<Object>();
-            clinpathRow.put("Id", id);
-            clinpathRow.put("date", dateRequested);
-            clinpathRow.put("project", project);
-            clinpathRow.put("requestId", requestId);
-            clinpathRow.put("sampletype", "Blood - EDTA Whole Blood");
-            clinpathRow.put("collectedBy", performedby);
-            clinpathRow.put("servicerequested", testId);
-            clinpathRow.put("QCStateLabel", "Request: Pending");
-
-            clinpathRows.add(clinpathRow);
-            clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, new BatchValidationException(), getExtraContext());
-        }
-    }
-
     public String[] validateBloodAdditionalServices(String services, String tubeType, Double quantity)
     {
         services = StringUtils.trimToNull(services);
@@ -767,25 +727,6 @@ public class TriggerScriptHelper
         _defaultProjects = Collections.unmodifiableSet(ret);
 
         return _defaultProjects;
-    }
-
-    private String[] getAdditionalServicesToCreate(String services)
-    {
-        services = StringUtils.trimToNull(services);
-        if (services == null)
-            return null;
-
-        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
-        if (testNames.size() == 0)
-            return null;
-
-        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("service"), testNames, CompareType.IN);
-        filter.addCondition(FieldKey.fromString("automaticrequestfromblooddraw"), true);
-
-        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("service"), filter, null);
-
-        return ts.getArray(String.class);
     }
 
     //NOTE: the interval start/stop are inclusive
@@ -1013,7 +954,7 @@ public class TriggerScriptHelper
                         if (sendemail)
                         {
                             String subject = "EHR " + formtype + " Cancelled/Denied";
-                            Set<User> recipients = getRecipients(notify1, notify2, notify3);
+                            Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
                             if (recipients.size() == 0)
                             {
                                 _log.warn("No recipients, unable to send EHR trigger script email");
@@ -1033,7 +974,7 @@ public class TriggerScriptHelper
                         if (def != null)
                         {
                             boolean hasRecords = false;
-                            for (TableInfo ti : def.getTables(getContainer(), getUser()))
+                            for (TableInfo ti : def.getTables())
                             {
                                 if (ti.getName().equalsIgnoreCase("requests"))
                                     continue;
@@ -1090,7 +1031,7 @@ public class TriggerScriptHelper
                         if (sendemail)
                         {
                             String subject = "EHR " + formtype + " Completed";
-                            Set<User> recipients = getRecipients(notify1, notify2, notify3);
+                            Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
                             if (recipients.size() == 0)
                             {
                                 _log.warn("No recipients, unable to send EHR trigger script email");
@@ -1110,7 +1051,7 @@ public class TriggerScriptHelper
                         if (def != null)
                         {
                             boolean hasRecords = false;
-                            for (TableInfo ti : def.getTables(getContainer(), getUser()))
+                            for (TableInfo ti : def.getTables())
                             {
                                 if (ti.getName().equalsIgnoreCase("requests"))
                                     continue;
@@ -1140,9 +1081,9 @@ public class TriggerScriptHelper
         });
     }
 
-    private Set<User> getRecipients(Integer... userIds)
+    private Set<UserPrincipal> getRecipients(Integer... userIds)
     {
-        Set<User> recipients = new HashSet<>();
+        Set<UserPrincipal> recipients = new HashSet<>();
         for (Integer userId : userIds)
         {
             if (userId > 0)
@@ -1417,7 +1358,7 @@ public class TriggerScriptHelper
         return null;
     }
 
-    private void sendMessage(String subject, String bodyHtml, Set<User> recipients)
+    private void sendMessage(String subject, String bodyHtml, Collection<UserPrincipal> recipients)
     {
         try
         {
@@ -1426,10 +1367,17 @@ public class TriggerScriptHelper
             msg.setSubject(subject);
 
             List<String> emails = new ArrayList<>();
-            for (User u : recipients)
+            for (UserPrincipal u : recipients)
             {
-                if (u.getEmail() != null)
-                    emails.add(u.getEmail());
+                List<Address> addresses = NotificationService.get().getEmailsForPrincipal(u);
+                if (addresses != null)
+                {
+                    for (Address a : addresses)
+                    {
+                        if (a.toString() != null)
+                            emails.add(a.toString());
+                    }
+                }
             }
 
             if (emails.size() == 0)
@@ -1450,16 +1398,33 @@ public class TriggerScriptHelper
     }
 
     //TODO
-    private void sendDeathNotification(final String idString)
+    public void sendDeathNotification(final List<String> ids)
     {
         JobRunner.getDefault().execute(new Runnable(){
             public void run()
             {
                 final User user = getUser();
                 final Container container = getContainer();
-                String[] ids = idString.split(";");
+                for (String id : ids)
+                {
+                    String subject = "Death notification: " + id;
 
+                    //TODO: possibly notify the PI
+                    Set<UserPrincipal> recipients = NotificationService.get().getRecipients(new DeathNotification(), getContainer());
+                    if (recipients.size() == 0)
+                    {
+                        _log.warn("No recipients, skipping death notification");
+                        return;
+                    }
 
+                    StringBuilder html = new StringBuilder();
+
+                    html.append("Animal " + id + " has been marked as dead.  ");
+                    html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/participantView.view?participantId=" + id + "'>");
+                    html.append("Click here to view this animal's clinical history</a>.  <p>");
+
+                    sendMessage(subject, html.toString(), recipients);
+                }
             }
         });
     }
@@ -1506,5 +1471,144 @@ public class TriggerScriptHelper
 //        failure: EHR.Server.Utils.onFailure
 //        });
 
+    }
+
+    public void createRequestsForBloodAdditionalServices(String id, Integer project, String performedby, String services) throws Exception
+    {
+        try
+        {
+            if (StringUtils.isEmpty(id) || project == null || StringUtils.isEmpty(services))
+                return;
+
+            Map<String, Object>[] toAutomaticallyCreate = getAdditionalServicesToCreate(services);
+            if (toAutomaticallyCreate == null || toAutomaticallyCreate.length == 0)
+                return;
+
+            for (Map<String, Object> rowMap : toAutomaticallyCreate)
+            {
+                rowMap = new CaseInsensitiveHashMap<>(rowMap);
+                GUID requestId = new GUID();
+                Date dateRequested = new Date();
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.put("daterequested", dateRequested);
+                row.put("requestid", requestId.toString());
+                row.put("priority", "Routine");
+                row.put("formtype", rowMap.get("formtype"));
+                row.put("title", "Labwork Request From Blood Draw: " + rowMap.get("labwork_service"));
+                row.put("notify1", getUser().getUserId());
+
+                if (row.get("formtype") == null)
+                {
+                    _log.error("Unable to determine formtype for automatic lab request for service: " + row.get("service"));
+                    continue;
+                }
+
+                if (rowMap.get("labwork_service") == null)
+                {
+                    _log.error("Unable to determine formtype for automatic lab request for service: " + row.get("service"));
+                    continue;
+                }
+
+                TableInfo requests = getTableInfo("ehr", "requests");
+                List<Map<String, Object>> rows = new ArrayList<>();
+                rows.add(row);
+                requests.getUpdateService().insertRows(getUser(), getContainer(), rows, new BatchValidationException(), getExtraContext());
+
+                TableInfo clinpathRuns = getTableInfo("study", "Clinpath Runs");
+                List<Map<String, Object>> clinpathRows = new ArrayList<>();
+                Map<String, Object> clinpathRow = new CaseInsensitiveHashMap<>();
+                clinpathRow.put("Id", id);
+                clinpathRow.put("date", dateRequested);
+                clinpathRow.put("project", project);
+                clinpathRow.put("requestId", requestId);
+                clinpathRow.put("tissue", getTissueForService((String)rowMap.get("service")));
+                clinpathRow.put("collectedBy", performedby);
+                clinpathRow.put("servicerequested", rowMap.get("service"));
+                clinpathRow.put("QCStateLabel", "Request: Pending");
+
+                clinpathRows.add(clinpathRow);
+                clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, new BatchValidationException(), getExtraContext());
+            }
+        }
+        catch (Exception e)
+        {
+            //Unsure why these are getting swallowed and not logged?
+            _log.error(e);
+            throw e;
+        }
+    }
+
+    private Map<String, String> _cachedTissues = new HashMap<>();
+
+    private String getTissueForService(String service)
+    {
+        if (!_cachedTissues.containsKey(service))
+        {
+            TableInfo ti = getTableInfo("ehr_lookups", "labwork_services");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("servicename"), service, CompareType.EQUAL);
+            TableSelector ts = new TableSelector(ti, Collections.singleton("tissue"), filter, null);
+
+            String[] ret = ts.getArray(String.class);
+            _cachedTissues.put(service, (ret.length == 1 ? ret[0] : null));
+        }
+
+        return _cachedTissues.get(service);
+    }
+
+    private Map<String, Object>[] getAdditionalServicesToCreate(String services)
+    {
+        services = StringUtils.trimToNull(services);
+        if (services == null)
+            return null;
+
+        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
+        if (testNames.size() == 0)
+            return null;
+
+        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
+        assert ti != null : "Unable to find table ehr_lookups.blood_draw_services";
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("service"), testNames, CompareType.IN);
+        filter.addCondition(FieldKey.fromString("automaticrequestfromblooddraw"), true, CompareType.EQUAL);
+
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("service", "formtype", "labwork_service"), filter, null);
+
+        return ts.getMapArray();
+    }
+
+    public void updateSNOMEDTags(String id, String objectid, String codes) throws Exception
+    {
+        codes = StringUtils.trimToNull(codes);
+        objectid = StringUtils.trimToNull(objectid);
+
+        if (objectid == null)
+        {
+            return;
+        }
+
+        TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
+        Table.delete(snomedTags, new SimpleFilter(FieldKey.fromString("recordid"), objectid, CompareType.EQUAL));
+        if (codes != null)
+        {
+            String[] codeList = StringUtils.split(codes, ";");
+            int sort = 0;
+            for (String code : codeList)
+            {
+                sort++;
+                Map<String, Object> toInsert = new CaseInsensitiveHashMap<>();
+                toInsert.put("id", id);
+                toInsert.put("recordid", objectid);
+                toInsert.put("objectid", new GUID());
+                toInsert.put("code", code);
+                toInsert.put("sort", sort);
+
+                toInsert.put("container", getContainer().getId());
+                toInsert.put("created", new Date());
+                toInsert.put("createdby", getUser().getUserId());
+                toInsert.put("modified", new Date());
+                toInsert.put("modifiedby", getUser().getUserId());
+
+                Table.insert(getUser(), snomedTags, toInsert);
+            }
+        }
     }
 }

@@ -16,15 +16,22 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
 
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
-            width: 750,
+            width: 900,
             closeAction: 'destroy',
-            title: 'Copy From Above',
+            title: 'Copy From ' + this.sourceLabel,
             bodyStyle: 'padding: 5px;',
             defaults: {
                 border: false
             },
             items: [{
                 html: 'This helper allows you to populate 1 row for each animal from the ' + this.sourceLabel + ' section.  Choose which IDs to add from the list below.',
+                style: 'margin-bottom: 10px;'
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Bulk Edit Values',
+                labelWidth: 150,
+                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
+                itemId: 'chooseValues',
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'animalIds',
@@ -66,14 +73,25 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
         return records;
     },
 
-    getExistingIds: function(){
+    getExistingIds: function(keyFields){
         var map = {};
         this.targetGrid.store.each(function(r){
+            var key = this.getKeyValue(r, keyFields);
             if (r.get('Id'))
-                map[r.get('Id')] = true;
+                map[key] = true;
         }, this);
 
         return map;
+    },
+
+    getKeyValue: function(record, keyFields){
+        var key = [];
+        Ext4.Array.forEach(keyFields, function(kf){
+            if (record.get(kf))
+                key.push(record.get(kf));
+        }, this);
+
+        return key.join ('||');
     },
 
     getInitialItems: function(){
@@ -82,26 +100,50 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
         },{
             html: '<b>Date</b>'
         },{
+            html: '<b>Project</b>'
+        },{
+            html: '<b>Performed By</b>'
+        },{
             html: '<b>Skip?</b>'
         }];
 
         var keys = {}, key;
+        var keyFields = ['Id'];
+//        if (this.targetGrid.store.getFields().get('parentid')){
+//            keyFields.push('parentid');
+//        }
+//        if (this.targetGrid.store.getFields().get('runid')){
+//            keyFields.push('runid');
+//        }
+
+        //console.log(keyFields);
+        var orderedKeys = [];
         Ext4.Array.forEach(this.parentRecords, function(record){
-            key = record.get('Id');
+            key = this.getKeyValue(record, keyFields);
+            if (orderedKeys.indexOf(key) == -1){
+                orderedKeys.push(key);
+            }
 
             keys[key] = keys[key] || {
                 Id: record.get('Id'),
-                project: record.get('project'),
+//                parentid: keyFields.indexOf('parentid') > -1 ? record.get('parentid') : null,
+//                runid: keyFields.indexOf('runid') > -1 ? record.get('runid') : null,
+                performedby: [],
+                projects: [],
                 dates: [],
                 total: 0
             };
 
             keys[key].total++;
+            if (record.get('performedby'))
+                keys[key].performedby.push(record.get('performedby'));
+            if (record.get('project'))
+                keys[key].projects.push(record.get('project'));
             keys[key].dates.push(record.get('date'))
         }, this);
 
-        var existingIds = this.getExistingIds();
-        Ext4.Array.forEach(Ext4.Object.getKeys(keys), function(key){
+        var existingIds = this.getExistingIds(keyFields);
+        Ext4.Array.forEach(orderedKeys, function(key){
             var o = keys[key];
 
             items.push({
@@ -120,6 +162,9 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 dates.push(date.format('Y-m-d H:i'));
             }, this);
 
+            var performedby = o.performedby.length == 1 ? o.performedby[0] : null;
+            var project = o.projects.length == 1 ? o.projects[0] : null;
+
             items.push({
                 xtype: 'xdatetime',
                 width: 300,
@@ -128,6 +173,24 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 fieldName: 'date',
                 key: key,
                 value: minDate
+            });
+
+            items.push({
+                xtype: 'ehr-projectfield',
+                matchFieldWidth: false,
+                fieldLabel: null,
+                width: 100,
+                fieldName: 'project',
+                key: key,
+                value: project
+            });
+
+            items.push({
+                xtype: 'textfield',
+                width: 200,
+                fieldName: 'performedby',
+                key: key,
+                value: performedby
             });
 
             items.push({
@@ -143,7 +206,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             border: false,
             layout: {
                 type: 'table',
-                columns: 3
+                columns: 5
             },
             defaults: {
                 border: false,
@@ -155,15 +218,24 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
 
     getRows: function(){
         var table = this.down('#theTable');
+        var orderedKeys = [];
         var rowMap = {};
         table.items.each(function(item){
             if (item.fieldName){
+                if (orderedKeys.indexOf(item.key) == -1)
+                    orderedKeys.push(item.key);
+
                 rowMap[item.key] = rowMap[item.key] || {};
                 rowMap[item.key][item.fieldName] = item.getValue ? item.getValue() : item.value;
             }
         }, this);
 
-        return Ext4.Object.getValues(rowMap);
+        var ret = [];
+        Ext4.Array.forEach(orderedKeys, function(key){
+            ret.push(rowMap[key]);
+        }, this);
+
+        return ret;
     },
 
     onSubmit: function(btn){
@@ -174,8 +246,21 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             }
         }, this);
 
-        if (toAdd.length)
-            this.targetGrid.store.add(toAdd);
+        if (toAdd.length){
+            var choose = this.down('#chooseValues').getValue();
+            if (choose){
+                Ext4.create('EHR.window.BulkEditWindow', {
+                    suppressConfirmMsg: true,
+                    records: toAdd,
+                    targetStore: this.targetGrid.store,
+                    formConfig: this.targetGrid.formConfig
+                }).show();
+                this.close();
+            }
+            else {
+                this.targetGrid.store.add(toAdd);
+            }
+        }
 
         this.close();
     }

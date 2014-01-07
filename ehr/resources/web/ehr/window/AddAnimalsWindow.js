@@ -144,12 +144,11 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             if (subjectList.length > this.MAX_ANIMALS){
                 Ext4.Msg.alert('Error', 'Too many animals were returned: ' + subjectList.length);
                 return;
-
             }
 
             var records = [];
             Ext4.Array.forEach(subjectList, function(s){
-                records.push(this.targetStore.createModel({Id: s}));
+                records.push(this.targetStore.createModel(Ext4.isObject(s) ? s : {Id: s}));
             }, this);
 
             var choose = this.down('#chooseValues').getValue();
@@ -338,7 +337,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         //find distinct animals matching criteria
         LABKEY.Query.selectRows(Ext4.applyIf(config, {
             sort: 'Id',
-            columns: 'Id',
+            columns: 'Id,Id/curLocation/location',
             scope: this,
             success: this.onSuccess,
             failure: LDK.Utils.getErrorCallback()
@@ -353,9 +352,19 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         }
 
         var records = [];
+        var hasLocation = this.targetStore.getFields().get('Id/curLocation/location');
         Ext4.Array.forEach(results.rows, function(row){
-            if(row.Id)
-                records.push(row.Id);
+            if(row.Id){
+                var obj = {
+                    Id: row.Id
+                };
+
+                if (hasLocation){
+                    obj['Id/curLocation/location'] = row['Id/curLocation/location'];
+                }
+
+                records.push(obj);
+            }
         }, this);
 
         this.addSubjects(records);

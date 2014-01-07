@@ -21,6 +21,7 @@
         <column name="result"/>
         <column name="comment"/>
         <column name="trainer"/>
+        <column name="employeeid/enddate"/>
     </columns>
     <sorts>
         <sort column="employeeid/lastName" descending="false"/>

@@ -37,6 +37,7 @@ import org.labkey.ehr.EHRManager;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -180,6 +181,21 @@ public class EHRSecurityManager
         public Class<? extends Permission> perm;
     }
 
+    //internally cache datasets by container
+    private List<? extends DataSet> getDataSets(Study s)
+    {
+        String cacheKey = EHRSecurityManager.class.getName() + "||studyDatasets||" + s.getContainer().getId();
+        List<? extends DataSet> datasets = (List<DataSet>) CacheManager.getSharedCache().get(cacheKey);
+        if (datasets != null)
+        {
+            return datasets;
+        }
+
+        datasets = s.getDataSets();
+        CacheManager.getSharedCache().put(cacheKey, datasets);
+        return datasets;
+    }
+
     public SecurableResource getSecurableResource(Container c, User u, String schemaName, String queryName)
     {
         if ("study".equalsIgnoreCase(schemaName))
@@ -188,7 +204,7 @@ public class EHRSecurityManager
             if (s == null)
                 return null;
 
-            for (DataSet sr : s.getDataSets())
+            for (DataSet sr : getDataSets(s))
             {
                 if (sr.getLabel().equalsIgnoreCase(queryName) || sr.getName().equalsIgnoreCase(queryName))
                 {

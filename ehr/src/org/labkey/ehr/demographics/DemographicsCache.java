@@ -139,7 +139,7 @@ public class DemographicsCache
 
     synchronized public void cacheRecord(AnimalRecord record)
     {
-        _log.info("caching demographics record: " + record.getId());
+        //_log.info("caching demographics record: " + record.getId());
         String key = getCacheKey(record.getContainer(), record.getId());
         CacheManager.getSharedCache().put(key, record);
         _totalCached++;
@@ -301,6 +301,14 @@ public class DemographicsCache
 
         TableSelector ts = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL), null);
         List<String> ids = ts.getArrayList(String.class);
+
+        TableSelector ts2 = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("death"), "-30d", CompareType.DATE_GTE), null);
+        List<String> recentlyDeadIds = ts2.getArrayList(String.class);
+        if (recentlyDeadIds.size() > 0)
+        {
+            ids.addAll(recentlyDeadIds);
+        }
+
         if (ids.size() > 0)
         {
             _log.info("Forcing recache of " + ids.size() + " animals");

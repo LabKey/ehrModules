@@ -31,7 +31,6 @@
         <script path="ehr/window/GetDistinctWindow.js"/>
         <script path="ehr/window/MarkCompletedWindow.js"/>
         <script path="ehr/window/ManageCasesWindow.js"/>
-        <script path="ehr/window/EnterRemarkWindow.js"/>
         <script path="ehr/window/ManageTreatmentsWindow.js"/>
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/reports.js" />

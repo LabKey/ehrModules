@@ -34,6 +34,7 @@ Ext4.define('EHR.plugin.RowEditor', {
             itemId: 'formPanel',
             maxFieldHeight: 100,
             maxItemsPerCol: 9,
+            textareaFieldWidth: EHR.form.Panel.defaultFieldWidth,
             bodyStyle: 'padding: 5px;',
             formConfig: this.cmp.formConfig,
             store: this.cmp.getStore(),
@@ -151,6 +152,8 @@ Ext4.define('EHR.plugin.RowEditor', {
         }
 
         sm.select([record]);
+
+        win.center();
     },
 
     initListeners: function(grid){

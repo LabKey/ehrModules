@@ -59,9 +59,6 @@
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
-                    <column columnName="lot">
-                        <columnTitle>Lot</columnTitle>
-                    </column>
                     <column columnName="concentration">
                         <columnTitle>Drug Conc</columnTitle>
                     </column>
@@ -136,6 +133,9 @@
                         </fk>
                         <defaultValue>Normal</defaultValue>
                     </column>
+                    <column columnName="lot">
+                        <columnTitle>Lot</columnTitle>
+                    </column>
                     <column columnName="remark">
                         <columnTitle>Remark</columnTitle>
                     </column>
@@ -162,6 +162,9 @@
                     </column>
                     <column columnName="parentid">
 
+                    </column>
+                    <column columnName="caseid">
+                        <isHidden>true</isHidden>
                     </column>
                 </columns>
             </table>

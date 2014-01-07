@@ -47,6 +47,19 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             }
         });
 
+        multi.add(LABKEY.Query.selectRows, {
+            requiredVersion: 9.1,
+            schemaName: 'ehr_lookups',
+            queryName: 'roomUtilizationByBuilding',
+            sort: '-pctUsed',
+            filterArray: [LABKEY.Filter.create('availableCages', 0, LABKEY.Filter.Types.GT)],
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                this.roomUtilizationByBuildingData = results;
+            }
+        });
+
         multi.send(this.onLoad, this);
     },
 
@@ -57,6 +70,10 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             },
             items: []
         };
+
+        if (this.roomUtilizationByBuildingData){
+            cfg.items.push(this.appendUtilizationSection(this.roomUtilizationByBuildingData));
+        }
 
         if (this.housingTypeSummaryData){
             cfg.items.push(this.appendSection(this.housingTypeSummaryData, {
@@ -76,6 +93,88 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
 
         this.removeAll();
         this.add(cfg);
+    },
+
+    appendUtilizationSection: function(results){
+        if (!results || !results.rows || !results.rows.length){
+            return {
+                html: 'No building were found',
+                style: 'padding-bottom: 10px;'
+            }
+        }
+
+        var headerNames = ['Building', 'Total Cages', 'Empty Cages', '% Used'];
+        var cells = [];
+
+        Ext4.each(headerNames, function(headerName, idx){
+            cells.push({
+                html: '<b>' + headerName + '</b>',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+        }, this);
+
+        Ext4.each(results.rows, function(r){
+            var row = new LDK.SelectRowsRow(r);
+
+            var building = row.getDisplayValue('building');
+            if (!building){
+                building = 'Unknown';
+            }
+
+            cells.push({
+                html: '<a target="_blank" href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {
+                    schemaName: 'ehr_lookups',
+                    'query.queryName': 'roomUtilization',
+                    'query.room/building~eq': building
+                }) + '">' + building + ':</a>',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+
+            cells.push({
+                html: '<a target="_blank" href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {
+                    schemaName: 'ehr_lookups',
+                    'query.queryName': 'availableCages',
+                    'query.room/building~eq': building,
+                    'query.isAvailable~eq': true,
+                    'query.sort': 'cage'
+                }) + '">' + row.getDisplayValue('availableCages') + '</a>',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+
+            cells.push({
+                html: row.getDisplayValue('cagesEmpty') + '',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+
+            cells.push({
+                html: Ext4.util.Format.round(row.getDisplayValue('pctUsed'), 2) + '%',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+        }, this);
+
+        return {
+            border: false,
+            defaults: {
+                border: false
+            },
+            style: 'padding: 5px;',
+            items: [{
+                html: '<b>Cage Usage:</b><hr>'
+            },{
+                border: false,
+                style: 'padding-left: 5px;',
+                layout: {
+                    type: 'table',
+                    columns: 4
+                },
+                items: cells
+            }]
+        }
     },
 
     appendSection: function(results, cfg){
@@ -148,101 +247,5 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 items: cells
             }]
         }
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ext4.define('EHR.panel.RoomUtilizationPanel', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.ehr-roomutilizationpanel',
-    initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                xtype: 'grid',
-                columns: [{
-                    dataIndex: 'room',
-                    header: 'Room',
-                    width: 200
-                },{
-                    dataIndex: 'AvailableCages',
-                    id: 'availCagesCol',
-                    text: 'Total Cages',
-                    width: 200,
-                    summaryType: 'sum'
-                },{
-                    dataIndex: 'CagesEmpty',
-                    id: 'cagesEmptyCol',
-                    text: 'Empty Cages',
-                    width: 200,
-                    summaryType: 'sum'
-                },{
-                    dataIndex: 'pctUsed',
-                    id: 'pctCol',
-                    text: '% Used',
-                    width: 200,
-                    summaryType: 'sum',
-                    summaryRenderer: function(val){
-                        if (val){
-                            val = Ext4.util.Format.round(val, 1);
-                        }
-                        return val;
-                    }
-                },{
-                    dataIndex: 'TotalAnimals',
-                    text: 'Total Animals',
-                    width: 200,
-                    renderer: function(value, attrs, rec){
-                        var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'demographics', 'query.viewName': 'Alive, at Center', 'query.Id/curLocation/room~eq': rec.get('room')});
-                        return '<a href="' + url + '">' + value + '</a>';
-                    },
-                    summaryType: 'sum'
-                }],
-                store: {
-                    type: 'labkey-store',
-                    schemaName: 'ehr_lookups',
-                    queryName: 'roomUtilization',
-                    columns: 'room/area,room,TotalAnimals,CagesEmpty,TotalCages,AvailableCages,CagesUsed,pctUsed',
-                    filterArray: [LABKEY.Filter.create('room/datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
-                    autoLoad: true,
-                    groupers: [{
-                        property: 'room/area'
-                    }]
-                },
-                features: [{
-                    ftype:'groupingsummary',
-                    startCollapsed: true,
-                    groupHeaderTpl: '{name}',
-                    generateSummaryData: function(){
-                        var data = Ext4.grid.feature.GroupingSummary.prototype.generateSummaryData.call(this, arguments);
-                        for (var group in data){
-                            var pct = 1 - (data[group].cagesEmptyCol / data[group].availCagesCol);
-                            pct = pct * 100;
-                            data[group].pctCol = pct;
-                        }
-
-                        return data;
-                    }
-                }]
-            }]
-        });
-
-        this.callParent();
     }
 });

@@ -38,7 +38,7 @@ Ext4.define('EHR.data.LabworkResultsStore', {
             if (!field && !field.lookup)
                 return;
 
-            var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId({
+            var storeId = LABKEY.ext4.Util.getLookupStoreId({
                 lookup: {
                     schemaName: field.lookup.schemaName,
                     queryName: field.lookup.queryName,

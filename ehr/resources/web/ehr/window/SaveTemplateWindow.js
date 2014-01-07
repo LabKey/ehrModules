@@ -235,6 +235,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
                 rows.push({
                     templateId: null,
+                    category: 'Section',
                     storeId: this.getStoreSaveName(store),
                     json: Ext4.encode(json),
                     templateName: tn

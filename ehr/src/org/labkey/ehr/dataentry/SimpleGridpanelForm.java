@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
+import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
@@ -35,23 +36,23 @@ import java.util.Set;
  */
 public class SimpleGridpanelForm extends AbstractDataEntryForm
 {
-    private SimpleGridpanelForm(Module owner, String name, String label, String category, List<FormSection> sections)
+    private SimpleGridpanelForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, List<FormSection> sections)
     {
-        super(owner, name, label, category, sections);
+        super(ctx, owner, name, label, category, sections);
     }
 
-    public static SimpleGridpanelForm create(Module owner, String schemaName, String queryName, String category)
+    public static SimpleGridpanelForm create(DataEntryFormContext ctx, Module owner, String schemaName, String queryName, String category)
     {
         List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new SimpleGridPanel(schemaName, queryName, label));
 
-        return new SimpleGridpanelForm(owner, queryName, label, category, sections);
+        return new SimpleGridpanelForm(ctx, owner, queryName, label, category, sections);
     }
 
-    public JSONObject toJSON(Container c, User u)
+    public JSONObject toJSON()
     {
-        JSONObject json = super.toJSON(c, u);
+        JSONObject json = super.toJSON();
 
 //        Set<TableInfo> tables = getFormSections().get(0).getTables(c, u);
 //        for (TableInfo ti : tables)

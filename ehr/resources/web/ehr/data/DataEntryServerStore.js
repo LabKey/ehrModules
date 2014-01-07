@@ -22,6 +22,22 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         this.callParent(arguments);
     },
 
+    ensureServerErrors: function(record){
+        record.serverErrors = record.serverErrors || Ext4.create('EHR.data.Errors', {
+            record: record.serverErrors
+        });
+    },
+
+    onLoad : function(store, records, success) {
+        if (records){
+            for (var i=0;i<records.length;i++){
+                this.ensureServerErrors(records[i]);
+            }
+        }
+
+        this.callParent(arguments);
+    },
+
     generateBaseParams: function(config){
         var baseParams = this.callParent(arguments);
         baseParams.apiVersion = 13.2;
@@ -176,8 +192,9 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     processResponse: function(records, command){
         //clear server errors
+        //TODO: fire event?
         Ext4.Array.forEach(records, function(record){
-            record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
+            this.ensureServerErrors(record);
             record.serverErrors.clear();
         }, this);
 
@@ -188,7 +205,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     handleServerErrors: function(errors, records, requestId){
         //clear all server errors
         Ext4.Array.forEach(records, function(record){
-            record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
+            this.ensureServerErrors(record);
             record.serverErrors.clear();
         }, this);
 
@@ -239,6 +256,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
                 if (rowError.errors){
                     //now iterate field errors
+                    var serverErrorMap = {};
                     Ext4.Array.forEach(rowError.errors, function(fieldError, idx){
                         //this is a flag used by server-side validation scripts
                         if (fieldError.field == '_validateOnly') {
@@ -257,7 +275,8 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             severity = msg.split(': ').shift();
                         }
 
-                        record.serverErrors.add({
+                        serverErrorMap[fieldError.field] = serverErrorMap[fieldError.field] || [];
+                        serverErrorMap[fieldError.field].push({
                             msg: msg,
                             message: msg,
                             severity: severity,
@@ -266,6 +285,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             serverRecord: record,
                             id: LABKEY.Utils.generateUUID()
                         });
+                    }, this);
+
+                    Ext4.Array.forEach(Ext4.Object.getKeys(serverErrorMap), function(field){
+                        record.serverErrors.replaceErrorsForField(field, serverErrorMap[field]);
                     }, this);
                 }
                 else {
@@ -278,6 +301,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             console.error('unhandled error');
             console.log(errors);
         }
+
         this.fireEvent('validation', this, records);
     },
 
@@ -382,20 +406,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                         }
 
                         //also sync server errors
-                        var se = serverModel.serverErrors ? serverModel.serverErrors.getByField(serverFieldName) : [];
-                        this.removeMatchingErrors(clientModel, clientFieldName, changedStoreIDs, clientStore);
-                        if (se && se.length){
-                            changedStoreIDs[clientStore.storeId] = true;
-                            Ext4.Array.forEach(se, function(e){
-                                var newError = Ext4.apply({}, e);
-                                newError.field = clientFieldName;
-                                clientModel.serverErrors.add(newError);
-                            }, this);
-                        }
-                    }
-
-                    if (!changedData){
-                        toFireValidation.push(clientModel);
+                        LDK.Assert.assertNotEmpty('Server errors is null', serverModel.serverErrors);
+                        var se = serverModel.serverErrors.getByField(serverFieldName) || [];
+                        clientModel.serverErrors.replaceErrorsForField(clientFieldName, se);
+                        changedStoreIDs[clientStore.storeId] = true;
                     }
 
                     clientModel.resumeEvents();
@@ -415,13 +429,6 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             }
         }, this);
 
-        for (var i=0;i<toFireValidation.length;i++){
-            var model = toFireValidation[i];
-            if (model.store){
-                model.store.fireEvent('validation', model.store, model);
-            }
-        }
-        
         if (toRemove.length){
             Ext4.Array.forEach(toRemove, function(r){
                 this.remove(r);
@@ -429,21 +436,15 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         }
     },
 
-    removeMatchingErrors: function(clientModel, clientFieldName, changedStoreIDs, clientStore){
-        clientModel.serverErrors = clientModel.serverErrors || Ext4.create('Ext.data.Errors');
-        clientModel.serverErrors.each(function(err){
-            if (err.fromServer && err.field == clientFieldName){
-                clientModel.serverErrors.remove(err);
-                changedStoreIDs[clientStore.storeId] = true;
-            }
-        }, this);
-    },
-
     //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
     addServerModel: function(data){
         if (EHR.debug)
             console.log('creating server model');
         var model = this.createModel({});
+        model.serverErrors = Ext4.create('EHR.data.Errors', {
+            record: model
+        });
+
         this.add(model);
 
         return model;

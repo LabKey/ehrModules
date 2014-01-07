@@ -3,6 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * @cfg casePrefix
+ * @cfg encounterType
+ */
 Ext4.define('EHR.form.field.PathologyCaseNoField', {
     extend: 'Ext.form.field.Trigger',
     alias: 'widget.ehr-pathologycasenofield',
@@ -18,7 +23,9 @@ Ext4.define('EHR.form.field.PathologyCaseNoField', {
         var record = EHR.DataEntryUtils.getBoundRecord(this);
         if (record){
             Ext4.create('EHR.window.CaseNumberWindow', {
-                targetRecord: record
+                targetRecord: record,
+                encounterType: this.encounterType,
+                casePrefix: this.casePrefix
             }).show();
         }
     }

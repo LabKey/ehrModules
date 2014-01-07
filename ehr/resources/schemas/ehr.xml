@@ -48,14 +48,9 @@
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:pkColumnName>objectid</ns:pkColumnName>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
         <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
             <ns:column columnName="Id">
                 <ns:columnTitle>Id</ns:columnTitle>
                 <ns:fk>
@@ -63,16 +58,6 @@
                     <ns:fkTable>Animal</ns:fkTable>
                     <ns:fkColumnName>Id</ns:fkColumnName>
                 </ns:fk>
-            </ns:column>
-            <ns:column columnName="schemaName">
-                <ns:columnTitle>Schema Name</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="queryName">
-                <ns:columnTitle>Query Name</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="recordid">
                 <ns:columnTitle>Record Id</ns:columnTitle>
@@ -100,24 +85,6 @@
             </ns:column>
             <ns:column columnName="objectid">
                 <ns:columnTitle>Key</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="caseid">
-                <ns:columnTitle>Case Id</ns:columnTitle>
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:fk>
-                    <ns:fkDbSchema>study</ns:fkDbSchema>
-                    <ns:fkTable>case</ns:fkTable>
-                    <ns:fkColumnName>objectid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="parentid">
-                <ns:columnTitle>Encounter Id</ns:columnTitle>
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:fk>
-                    <ns:fkDbSchema>study</ns:fkDbSchema>
-                    <ns:fkTable>encounters</ns:fkTable>
-                    <ns:fkColumnName>objectid</ns:fkColumnName>
-                </ns:fk>
             </ns:column>
             <ns:column columnName="taskid">
                 <ns:columnTitle>Task Id</ns:columnTitle>
@@ -631,13 +598,18 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>entityid</ns:pkColumnName>
+        <ns:titleColumn>title</ns:titleColumn>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="entityid">
                 <!--<ns:isAutoInc>true</ns:isAutoInc>-->
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="formtype">
+                <ns:columnTitle>Form Type</ns:columnTitle>
                 <!--<ns:fk>-->
                 <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
                 <!--<ns:fkTable>formtypes</ns:fkTable>-->
@@ -645,9 +617,6 @@
                 <!--</ns:fk>-->
             </ns:column>
             <ns:column columnName="userId">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="template">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="title">
@@ -853,6 +822,14 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="storeid">
+            </ns:column>
+            <ns:column columnName="targettemplate">
+                <ns:columnTitle>Target Template</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>formtemplates</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="json">
                 <ns:nullable>true</ns:nullable>
@@ -1734,6 +1711,9 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="date"/>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="parentid"/>
             <ns:column columnName="taskid">
                 <ns:columnTitle>Task Id</ns:columnTitle>

@@ -529,6 +529,22 @@ EHR.Utils = new function(){
                 }),
                 success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope)
             });
+        },
+
+        roundToNearest: function(val, round){
+            if (!val || !round){
+                return val;
+            }
+
+            var remainder = val % round;
+            var remainderPct = remainder / round;
+            var base = Math.floor(val / round);
+            if (remainderPct < 0.5){
+                return (base * round);
+            }
+            else {
+                return (base * round) + round;
+            }
         }
     }
 };

@@ -8,6 +8,12 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="Id">
+
+                    </column>
+                    <column columnName="date">
+                        <columnTitle>Birth Date</columnTitle>
+                    </column>
                     <column columnName="gender">
                         <columnTitle>Gender</columnTitle>
                         <fk>

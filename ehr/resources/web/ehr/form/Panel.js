@@ -12,6 +12,8 @@ Ext4.define('EHR.form.Panel', {
         defaultLabelWidth: 150
     },
 
+    textareaFieldWidth: 600,
+
     initComponent: function(){
         Ext4.QuickTips.init();
 
@@ -58,7 +60,7 @@ Ext4.define('EHR.form.Panel', {
             var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
             LABKEY.ExtAdapter.apply(cfg, {
                 labelWidth: EHR.form.Panel.defaultLabelWidth,
-                width: EHR.form.Panel.defaultFieldWidth
+                width: cfg.width || ((cfg.xtype == 'textarea' || cfg.xtype == 'ehr-remarkfield') ? this.textareaFieldWidth : EHR.form.Panel.defaultFieldWidth)
             });
 
             //skip hidden fields
@@ -187,7 +189,7 @@ Ext4.define('EHR.form.Panel', {
 
                 currentIdx++;
 
-                if (item.xtype == 'textarea' || item.height > 50){
+                if (item.xtype == 'textarea' || item.xtype == 'ehr-remarkfield' || item.height > 50){
                     currentIdx += 2;
                 }
             }
@@ -197,24 +199,8 @@ Ext4.define('EHR.form.Panel', {
         }, this);
 
         Ext4.Array.forEach(finalItems, function(col){
-            col.columnWidth = (1 / finalItems.length)
+            col.columnWidth = (1 / finalItems.length);
         }, this);
-
-//        //divide the fields into columns, if selected
-//        var cols = [];
-//        var numColumns = this.maxItemsPerCol ? Math.ceil(items.length / this.maxItemsPerCol) : 1;
-//        for (var i=0;i<numColumns;i++){
-//            var start = this.maxItemsPerCol ? (i * this.maxItemsPerCol) : 0;
-//            var stop = this.maxItemsPerCol ? start + this.maxItemsPerCol : items.length;
-//            cols.push({
-//                border: false,
-//                columnWidth: (1/ numColumns),
-//                defaults: {
-//                    border: false
-//                },
-//                items: items.slice(start, stop)
-//            });
-//        }
 
         items = [{
             xtype: 'panel',

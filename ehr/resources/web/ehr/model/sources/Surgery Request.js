@@ -12,11 +12,6 @@ EHR.model.DataModelManager.registerMetadata('Surgery Request', {
             },
             enddate: {
                 hidden: true
-            },
-            procedureid: {
-                lookup: {
-                    filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)]
-                }
             }
         }
     }

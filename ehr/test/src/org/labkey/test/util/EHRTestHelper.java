@@ -31,6 +31,7 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.tests.EHRReportingAndUITest;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
+import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
 import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
 import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
 import org.openqa.selenium.NoSuchElementException;
@@ -38,8 +39,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_JAVASCRIPT;
 import static org.labkey.test.Locator.NOT_HIDDEN;
@@ -241,6 +246,45 @@ public class EHRTestHelper
     {
         _test.waitForElement(Ext4HelperWD.ext4Window(title));
         _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Locator.ext4Button(label)));
+    }
+
+    public void applyTemplate(Ext4GridRefWD grid, String templateName, boolean bulkEdit, Date date)
+    {
+        grid.clickTbarButton("Templates");
+
+        _test.waitAndClick(Ext4Helper.ext4MenuItem("Templates").notHidden());
+        _test.waitAndClick(Ext4Helper.ext4MenuItem(templateName).notHidden());
+
+        _test.waitForElement(Ext4HelperWD.ext4Window("Apply Template"));
+        Ext4ComboRefWD combo = new Ext4ComboRefWD(Ext4ComboRefWD.getForLabel(_test, "Template Name").getId(), _test);
+        combo.waitForStoreLoad();
+        Assert.assertEquals(combo.getDisplayValue(), templateName);
+
+        if (date != null)
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            _test._ext4Helper.queryOne("window datefield", Ext4FieldRefWD.class).setValue(dateFormat.format(date));
+            _test._ext4Helper.queryOne("window timefield", Ext4FieldRefWD.class).setValue(timeFormat.format(date));
+        }
+
+        if (bulkEdit)
+        {
+            Ext4FieldRefWD.getForLabel(_test, "Bulk Edit Before Applying").setChecked(true);
+            _test.waitAndClick(Locator.ext4Button("Submit"));
+            _test.waitForElement(Ext4HelperWD.ext4Window("Bulk Edit"));
+        }
+        else
+        {
+            _test.waitAndClick(Locator.ext4Button("Submit"));
+        }
+    }
+
+    public void toggleBulkEditField(String label)
+    {
+        Locator l = Ext4HelperWD.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
+        Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
+        _test.click(l);
     }
 }
 

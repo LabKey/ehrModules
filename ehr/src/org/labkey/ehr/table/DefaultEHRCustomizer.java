@@ -215,6 +215,67 @@ public class DefaultEHRCustomizer implements TableCustomizer
             objectId.setUserEditable(false);
         }
 
+        ColumnInfo runId = ti.getColumn("runId");
+        if (runId != null)
+        {
+            runId.setLabel("Run Id");
+            if (runId.getFk() == null)
+            {
+                UserSchema study = getStudyUserSchema(ti);
+                if (study != null)
+                    runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", ID_COL));
+            }
+
+            runId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            runId.setUserEditable(false);
+        }
+
+        ColumnInfo parentId = ti.getColumn("parentId");
+        if (parentId != null)
+        {
+            parentId.setLabel("Encounter Id");
+            if (parentId.getFk() == null)
+            {
+                UserSchema study = getStudyUserSchema(ti);
+                if (study != null)
+                    parentId.setFk(new QueryForeignKey(study, "Clinical Encounters", "objectid", ID_COL));
+            }
+            parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
+
+        ColumnInfo caseId = ti.getColumn("caseId");
+        if (caseId != null)
+        {
+            caseId.setHidden(true);
+            caseId.setLabel("Case Id");
+        }
+
+        ColumnInfo taskId = ti.getColumn("taskId");
+        if (taskId != null)
+        {
+            taskId.setLabel("Task Id");
+            if (taskId.getFk() == null)
+            {
+                UserSchema schema = getUserSchema(ti, "ehr");
+                if (schema != null)
+                    taskId.setFk(new QueryForeignKey(schema, "tasks", "taskid", "rowid"));
+            }
+            taskId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
+
+        ColumnInfo requestId = ti.getColumn("requestId");
+        if (requestId != null)
+        {
+            requestId.setLabel("Request Id");
+            if (requestId.getFk() == null)
+            {
+                UserSchema schema = getUserSchema(ti, "ehr");
+                if (schema != null)
+                    requestId.setFk(new QueryForeignKey(schema, "requests", "requestid", "rowid"));
+            }
+            requestId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
+
         customizeRoomCol(ti, "room");
         customizeRoomCol(ti, "room1");
         customizeRoomCol(ti, "room2");
@@ -331,6 +392,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeEncountersTable(ti);
         }
+        else if (matches(ti, "study", "histology"))
+        {
+            customizeHistology(ti);
+        }
+        else if (matches(ti, "study", "grossFindings") || matches(ti, "study", "Gross Findings"))
+        {
+            customizeGrossFindings(ti);
+        }
+        else if (matches(ti, "study", "pathologyDiagnoses") || matches(ti, "study", "Pathology Diagnoses"))
+        {
+            customizeDiagnoses(ti);
+        }
         else if (matches(ti, "study", "housing"))
         {
             customizeHousing(ti);
@@ -359,29 +432,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
 
         appendHistoryCol(ti);
-
-        ColumnInfo runId = ti.getColumn("runId");
-        if (runId != null)
-        {
-            runId.setLabel("Run Id");
-            UserSchema study = getStudyUserSchema(ti);
-            if (study != null)
-                runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", ID_COL));
-
-            runId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            runId.setUserEditable(false);
-        }
-
-        ColumnInfo parentId = ti.getColumn("parentId");
-        if (parentId != null)
-        {
-            parentId.setLabel("Encounter Id");
-            UserSchema study = getStudyUserSchema(ti);
-            if (study != null)
-                parentId.setFk(new QueryForeignKey(study, "Clinical Encounters", "objectid", ID_COL));
-
-            parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
 
         customizeButtonBar((AbstractTableInfo) ds);
     }
@@ -487,14 +537,30 @@ public class DefaultEHRCustomizer implements TableCustomizer
         appendSNOMEDCol(ti);
     }
 
+    private void customizeGrossFindings(final AbstractTableInfo ti)
+    {
+        appendSNOMEDCol(ti);
+    }
+
+    private void customizeHistology(final AbstractTableInfo ti)
+    {
+        appendSNOMEDCol(ti);
+    }
+
+    private void customizeDiagnoses(final AbstractTableInfo ti)
+    {
+        appendSNOMEDCol(ti);
+    }
+
     private void appendSNOMEDCol(AbstractTableInfo ti)
     {
         String name = "codes";
         ColumnInfo existing = ti.getColumn(name);
         if (existing == null)
         {
+            //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +
+            SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +
                 "FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
                 " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
                 " GROUP BY t.recordid " +
@@ -504,6 +570,21 @@ public class DefaultEHRCustomizer implements TableCustomizer
             newCol.setLabel("SNOMED Codes");
             newCol.setDisplayWidth("250");
             ti.addColumn(newCol);
+
+
+            //programmatic version
+            String name2 = "codesRaw";
+            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'") +
+                    "FROM ehr.snomed_tags t " +
+                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
+                    " GROUP BY t.recordid " +
+                    " )");
+
+            ExprColumn newCol2 = new ExprColumn(ti, name2, sql2, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            newCol2.setLabel("SNOMED Codes");
+            newCol2.setHidden(true);
+            newCol2.setDisplayWidth("250");
+            ti.addColumn(newCol2);
         }
     }
 
@@ -844,11 +925,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
-        ColumnInfo col21 = getWrappedIdCol(us, ds, "activeAnimalGroups", "demographicsActiveAnimalGroups");
-        col21.setLabel("Animal Groups - Active");
-        col21.setDescription("Displays the animal groups to which this animal currently belongs");
-        ds.addColumn(col21);
-
         ColumnInfo col22 = getWrappedIdCol(us, ds, "historicAnimalGroups", "demographicsAnimalGroups");
         col22.setLabel("Animal Groups - Historic");
         col22.setDescription("Displays all animal groups to which this animal has ever belonged");
@@ -926,7 +1002,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         String codeAndMeaning = "codeWithSort";
         if (table.getColumn(codeAndMeaning) == null)
         {
-            SQLFragment sql = new SQLFragment("(" + table.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + ".sort as varchar)", "': '", ExprColumn.STR_TABLE_ALIAS + ".code") + ")");
+            SQLFragment sql = new SQLFragment("(" + table.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + ".sort as varchar(10))", "': '", ExprColumn.STR_TABLE_ALIAS + ".code") + ")");
             ExprColumn col = new ExprColumn(table, codeAndMeaning, sql, JdbcType.VARCHAR, table.getColumn("code"), table.getColumn("sort"));
             col.setLabel("Code(s)");
             table.addColumn(col);

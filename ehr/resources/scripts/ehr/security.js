@@ -240,8 +240,9 @@ EHR.Server.Security = new function(){
 
             //flag public status of rows
             if (oldRow && oldRow.QCStateLabel && row.QCStateLabel){
-                if (!EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData)
+                if (!EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
                     row._becomingPublicData = true;
+                }
             }
 
             if (row.QCStateLabel){
@@ -249,8 +250,9 @@ EHR.Server.Security = new function(){
                     row._publicData = true;
 
                     //a row can be directly inserted as public
-                    if (!oldRow)
+                    if (!oldRow){
                         row._becomingPublicData = true;
+                    }
                 }
                 else {
                     row._publicData = false;

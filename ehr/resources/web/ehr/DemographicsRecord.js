@@ -47,6 +47,17 @@ EHR.DemographicsRecord = function(data){
             return data['activeHousing'];
         },
 
+        getCurrentLocation: function(){
+            if (data['activeHousing'] && data['activeHousing'].length){
+                var ret = data['activeHousing'][0].room;
+                if (data['activeHousing'][0].cage){
+                    ret += '-' + data['activeHousing'][0].cage;
+                }
+
+                return ret;
+            }
+        },
+
         getCurrentRoom: function(){
             if (data['activeHousing'] && data['activeHousing'].length){
                 return data['activeHousing'][0].room;

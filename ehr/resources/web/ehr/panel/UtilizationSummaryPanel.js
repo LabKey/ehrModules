@@ -45,12 +45,13 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
             schemaName: 'study',
             queryName: 'Demographics',
             filterArray: this.filterArray,
-            columns: ['Id', 'Id/utilization/usageCategories', 'species', 'Id/age/ageInYears', 'Id/ageclass/label'].join(','),
+            columns: ['Id', 'Id/utilization/usageCategories', 'Id/utilization/fundingCategories', 'species', 'Id/age/ageInYears', 'Id/ageclass/label'].join(','),
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
                 this.demographicsData = results;
                 this.usageCategoryData = this.aggregateResults(results, 'Id/utilization/usageCategories');
+                this.fundingCategoryData = this.aggregateResults(results, 'Id/utilization/fundingCategories');
             }
         });
 
@@ -71,10 +72,16 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
         var item = this.appendSection('By Category', this.usageCategoryData, 'Id/utilization/usageCategories', 'eq');
         if (item)
             cfg.items.push(item);
-        else
+
+        var item2 = this.appendSection('By Funding Source', this.fundingCategoryData, 'Id/utilization/fundingCategories', 'eq');
+        if (item2)
+            cfg.items.push(item2);
+
+        if (!cfg.items.length){
             cfg.items.push({
                 html: 'No records found'
             });
+        }
 
         target.add(cfg);
     },

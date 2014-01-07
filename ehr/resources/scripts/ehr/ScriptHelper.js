@@ -457,6 +457,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             cacheValue(id, row, 'housing');
         },
 
+        getDeaths: function(){
+            return cachedValues['deaths'];
+        },
+
         /**
          * When an animal dies or leaves the center, this will close any open records (ie. the death/depart time inserted into the enddate field) for any records in assignment, housing, problem list and treatment orders.
          * @param participant The Id of the participant
@@ -465,7 +469,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         onDeathDeparture: function(id, date){
             if (!this.isETL()){
                 //close housing, assignments, treatments
-                this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Problem List'], id, date);
+                this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Problem List', 'Animal Record Flags'], id, date);
             }
         },
 
@@ -495,6 +499,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getErrorSeveritiyForImproperAssignment: function(){
             return scriptOptions.errorSeveritiyForImproperAssignment;
+        },
+
+        getSNOMEDCodeFieldName: function(){
+            return scriptOptions.snomedCodeFieldName;
         }
     }
 };

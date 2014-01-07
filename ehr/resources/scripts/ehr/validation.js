@@ -98,22 +98,24 @@ EHR.Server.Validation = {
             return;
 
         //find if the date is greater than now
-        var cal1 = new java.util.GregorianCalendar();
-        var cal2 = new java.util.GregorianCalendar();
-        cal2.setTimeInMillis(date.getTime());
-
-        if (!helper.isValidateOnly() && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
+        var currentTime = new java.util.GregorianCalendar();
+        var rowTime = new java.util.GregorianCalendar();
+        rowTime.setTimeInMillis(date.getTime());
+        var millsDiff = rowTime.getTimeInMillis() - currentTime.getTimeInMillis();
+        //console.log('mills diff: ' + millsDiff +  ' / ' + rowTime.getTime() + '/' + currentTime.getTime());
+        if (!helper.isValidateOnly() && millsDiff > 6000 && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
             EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
         }
 
         //consider date-only, not date/time
-        var roundedDate1 = new Date(cal1.getTimeInMillis());
-        roundedDate1 = new Date(roundedDate1.getFullYear(), roundedDate1.getMonth(), roundedDate1.getDate());
+        var currentTimeRounded = new Date(currentTime.getTimeInMillis());
+        currentTimeRounded = new Date(currentTimeRounded.getFullYear(), currentTimeRounded.getMonth(), currentTimeRounded.getDate());
 
-        var roundedDate2 = new Date(cal2.getTimeInMillis());
-        roundedDate2 = new Date(roundedDate2.getFullYear(), roundedDate2.getMonth(), roundedDate2.getDate());
+        var rowTimeRounded = new Date(rowTime.getTimeInMillis());
+        rowTimeRounded = new Date(rowTimeRounded.getFullYear(), rowTimeRounded.getMonth(), rowTimeRounded.getDate());
+        var millsDiffRounded = rowTimeRounded.getTime() - currentTimeRounded.getTime();
 
-        if (helper.getEvent() == 'insert' && roundedDate1.getTime() > roundedDate2.getTime() && row.QCStateLabel == 'Scheduled'){
+        if (helper.getEvent() == 'insert' && millsDiffRounded > 6000 && row.QCStateLabel == 'Scheduled'){
             EHR.Server.Utils.addError(errors, 'date', 'Date is in past, but is scheduled', 'WARN');
         }
     },
@@ -398,14 +400,22 @@ EHR.Server.Validation = {
                     if (data.calculated_status != 'Alive' && !helper.isAllowAnyId()){
                         if (data.calculated_status == 'Dead'){
                             if (!helper.isAllowDeadIds())
-                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: '+data.calculated_status, 'INFO');
+                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + data.calculated_status, 'INFO');
                         }
                         else if (data.calculated_status == 'Shipped'){
                             if (!helper.isAllowShippedIds())
-                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: '+data.calculated_status, 'INFO');
+                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + data.calculated_status, 'INFO');
+                        }
+                        else if (data.calculated_status == null){
+                            if (!helper.isAllowAnyId()){
+                                if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
+                                    EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'ERROR');
+                                else
+                                    EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'INFO');
+                            }
                         }
                         else {
-                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: '+data.calculated_status, 'INFO');
+                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + (data.calculated_status || 'Unknown'), 'INFO');
                         }
                     }
                 }

@@ -37,6 +37,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
                     EHR.DataEntryUtils.getProceduresStore();
                 }
 
+                if (cfg.lookup && cfg.lookup.schemaName == 'onprc_billing' && cfg.lookup.queryName == 'chargeableItems'){
+                    EHR.DataEntryUtils.getChareableItemsStore();
+                }
+
                 if (cfg.lookup && cfg.lookup.schemaName == 'ehr_lookups' && cfg.lookup.queryName == 'labwork_services'){
                     EHR.DataEntryUtils.getLabworkServicesStore();
                 }
@@ -85,6 +89,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
         if (this.sectionCfg){
             this.queries = this.sectionCfg.queries;
         }
+
+        this.serverErrors = Ext4.create('EHR.data.Errors', {
+            record: this
+        });
     },
 
     setFieldDefaults: function(){

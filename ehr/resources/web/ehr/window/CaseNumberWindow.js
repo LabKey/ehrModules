@@ -9,7 +9,7 @@
 Ext4.define('EHR.window.CaseNumberWindow', {
     extend: 'Ext.window.Window',
     encounterType: 'Necropsy',
-    prefix: 'a',
+    casePrefix: 'a',
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
@@ -32,7 +32,7 @@ Ext4.define('EHR.window.CaseNumberWindow', {
                 itemId: 'prefix',
                 fieldLabel: 'Prefix',
                 allowBlank: false,
-                value: this.prefix
+                value: this.casePrefix
             },{
                 xtype: 'numberfield',
                 itemId: 'year',

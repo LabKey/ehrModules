@@ -5,6 +5,7 @@
         <!--NOTE: model/metadata sources loaded as part of ehr.lib.xml, which allows proper order when modules override them-->
 
         <!--data-->
+        <script path="ehr/data/Errors.js"/>
         <script path="ehr/data/DataEntryServerStore.js"/>
         <script path="ehr/data/DataEntryClientStore.js"/>
         <script path="ehr/data/BloodDrawClientStore.js"/>
@@ -38,6 +39,7 @@
         <script path="ehr/panel/BulkEditPanel.js"/>
         <script path="ehr/panel/DataEntryErrorPanel.js"/>
         <script path="ehr/window/BulkEditWindow.js"/>
+        <script path="ehr/window/FormTemplateWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewPanel.js"/>
         <script path="ehr/window/CopyFromRunsWindow.js"/>
@@ -50,6 +52,7 @@
         <script path="ehr/window/GuessProjectWindow.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/AnimalDetailsPanel.js"/>
+        <script path="ehr/panel/AnimalDetailsExtendedPanel.js"/>
         <script path="ehr/panel/DataEntryPanel.js"/>
         <script path="ehr/panel/TaskDataEntryPanel.js"/>
         <script path="ehr/panel/RequestDataEntryPanel.js"/>

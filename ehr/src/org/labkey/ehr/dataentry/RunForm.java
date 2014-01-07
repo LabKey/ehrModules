@@ -16,6 +16,7 @@
 package org.labkey.ehr.dataentry;
 
 import org.labkey.api.ehr.dataentry.AnimalDetailsFormSection;
+import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.api.ehr.dataentry.TaskFormSection;
@@ -31,13 +32,13 @@ import java.util.List;
  */
 public class RunForm extends TaskForm
 {
-    protected RunForm(Module owner, String name, String label, String category, List<FormSection> sections)
+    protected RunForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, List<FormSection> sections)
     {
-        super(owner, name, label, category, sections);
+        super(ctx, owner, name, label, category, sections);
         setStoreCollectionClass("EHR.data.RunStoreCollection");
     }
 
-    public static RunForm create(Module owner, String category, String name, String label, List<FormSection> formSections)
+    public static RunForm create(DataEntryFormContext ctx, Module owner, String category, String name, String label, List<FormSection> formSections)
     {
         List<FormSection> sections = new ArrayList<FormSection>();
         sections.add(new TaskFormSection());
@@ -45,6 +46,6 @@ public class RunForm extends TaskForm
         sections.add(new AnimalDetailsFormSection());
         sections.addAll(formSections);
 
-        return new RunForm(owner, name, label, category, sections);
+        return new RunForm(ctx, owner, name, label, category, sections);
     }
 }

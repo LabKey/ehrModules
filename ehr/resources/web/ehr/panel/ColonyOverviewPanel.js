@@ -68,12 +68,12 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                     xtype: 'ehr-housingsummarypanel',
                     itemId: 'housingSummary'
                 },{
-                    title: 'Utilization',
+                    title: 'Utilization Summary',
                     xtype: 'ehr-utilizationsummarypanel',
                     filterArray: this.filterArray,
                     itemId: 'utilizationSummary'
                 },{
-                    title: 'Clinical',
+                    title: 'Clinical Case Summary',
                     xtype: 'ehr-clinicalsummarypanel',
                     demographicsFilterArray: this.filterArray,
                     filterArray: this.childFilterArray,

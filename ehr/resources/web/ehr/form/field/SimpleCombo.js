@@ -15,6 +15,7 @@ Ext4.define('EHR.form.field.SimpleCombo', {
                 queryName: this.queryName,
                 viewName: this.viewName,
                 columns: this.columns,
+                sort: this.sortFields || null,
                 filterArray: this.filterArray,
                 autoLoad: true
             }

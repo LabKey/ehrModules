@@ -70,7 +70,7 @@ Ext4.define('EHR.data.StoreCollection', {
         LABKEY.ExtAdapter.apply(storeConfig, {
             type: 'ehr-dataentryserverstore',
             autoLoad: false,
-            storeId: this.collectionId + '||' + LABKEY.ext.Ext4Helper.getLookupStoreId({lookup: config})
+            storeId: this.collectionId + '||' + LABKEY.ext4.Util.getLookupStoreId({lookup: config})
         });
 
         var store = this.serverStores.get(storeConfig.storeId);
@@ -127,6 +127,12 @@ Ext4.define('EHR.data.StoreCollection', {
 
         if (!this.hasIgnoredClientEvent(store.storeId, 'remove', true)){
             this.fireEvent('clientdatachanged', 'remove');
+        }
+    },
+
+    onClientStoreValidation: function(store){
+        if (!this.hasIgnoredClientEvent(store.storeId, 'validation', true)){
+            this.fireEvent('validation', this);
         }
     },
 
@@ -295,12 +301,7 @@ Ext4.define('EHR.data.StoreCollection', {
             s.loaded = true;
         });
 
-        //TODO: this is a blunt instrument.  should be smarter about which to refresh
-        Ext4.Array.forEach(Ext4.Object.getKeys(changedStoreIDs), function(storeId){
-            var store = this.clientStores.get(storeId);
-            this.addIgnoredClientEvent(storeId, 'datachanged');
-            store.fireEvent('datachanged', store, true);
-        }, this);
+        this.checkForServerErrorChanges();
     },
 
     addIgnoredClientEvent: function(storeId, event){
@@ -351,6 +352,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.mon(store, 'add', this.onClientStoreAdd, this);
         this.mon(store, 'remove', this.onClientStoreRemove, this);
         this.mon(store, 'update', this.onClientStoreUpdate, this);
+        this.mon(store, 'validation', this.onClientStoreValidation, this);
         this.mon(store, 'datachanged', this.onClientStoreDataChanged, this);
         store.storeCollection = this;
 
@@ -511,7 +513,7 @@ Ext4.define('EHR.data.StoreCollection', {
         return ret;
     },
 
-    onServerStoreValidation: function(store, records){
+    onServerStoreValidation: function(){
         this.transformServerToClient(true);
         this.fireEvent('validation', this);
     },
@@ -593,7 +595,6 @@ Ext4.define('EHR.data.StoreCollection', {
                 }
                 else {
                     Ext4.Array.forEach(records, function(r){
-                        r.serverErrors = r.serverErrors || Ext4.create('Ext.data.Errors');
                         r.serverErrors.clear();
                     }, this);
 
@@ -707,5 +708,11 @@ Ext4.define('EHR.data.StoreCollection', {
 
         this.transformClientToServer();
         this.commitChanges(true, extraContext);
+    },
+
+    checkForServerErrorChanges: function(){
+        this.clientStores.each(function(s){
+            s.checkForServerErrorChanges();
+        }, this);
     }
 });

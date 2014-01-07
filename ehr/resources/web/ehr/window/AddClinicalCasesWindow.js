@@ -9,6 +9,9 @@
 Ext4.define('EHR.window.AddClinicalCasesWindow', {
     extend: 'Ext.window.Window',
     caseCategory: 'Clinical',
+    templateName: 'Clinical Rounds',
+    templateStoreId: 'Clinical Observations',
+
     allowNoSelection: false,
 
     initComponent: function(){
@@ -24,11 +27,11 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper allows you to query open cases and add default SOAPs for these animals.',
+                html: 'This helper allows you to query open cases and add records for these animals.' +
+                    this.allowNoSelection ? '  Leave blank to load all areas.' : '',
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'ehr-areafield',
-                multiSelect: false,
                 itemId: 'areaField'
             },{
                 xtype: 'ehr-roomfield',
@@ -54,10 +57,27 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         });
 
         this.callParent(arguments);
+
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            filterArray: [
+                LABKEY.Filter.create('title', this.templateName),
+                LABKEY.Filter.create('formtype', 'Clinical Observations'),
+                LABKEY.Filter.create('category', 'Section')
+            ],
+            scope: this,
+            success: function(results){
+                LDK.Assert.assertTrue('Unable to find template: ' + this.templateName, results.rows && results.rows.length == 1);
+
+                this.obsTemplateId = results.rows[0].entityid;
+            },
+            failure: LDK.Utils.getErrorCallback()
+        });
     },
 
     getFilterArray: function(){
-        var area = this.down('#areaField') ? this.down('#areaField').getValue() : null;
+        var area = this.down('#areaField') ? this.down('#areaField').getValue() : [];
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
 
         if (!this.allowNoSelection && !area && !rooms.length){
@@ -70,8 +90,8 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
         filterArray.push(LABKEY.Filter.create('category', this.caseCategory, LABKEY.Filter.Types.EQUAL));
 
-        if (area)
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
+        if (area.length)
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         if (rooms.length)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/room', rooms.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
@@ -94,7 +114,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'Id,caseid,mostRecentP2',
+            columns: 'Id,objectid,mostRecentP2',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -114,19 +134,23 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         var records = [];
         var performedby = this.down('#performedBy').getValue();
 
+        var ids = [];
+        var date = new Date();
+
         Ext4.Array.each(results.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
+            ids.push(row.getValue('Id'));
 
             var obj = {
                 Id: row.getValue('Id'),
-                date: new Date(),
+                date: date,
                 category: 'Clinical',
                 s: null,
                 o: null,
                 a: null,
                 p: null,
                 p2: row.getValue('mostRecentP2'),
-                caseid: row.getValue('caseid'),
+                caseid: row.getValue('objectid'),
                 remark: null,
                 performedby: performedby
             };
@@ -136,7 +160,38 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
         this.targetStore.add(records);
 
-        Ext4.Msg.hide();
+        if (this.obsTemplateId){
+            this.applyObsTemplate(ids, date);
+        }
+        else {
+            Ext4.Msg.hide();
+        }
+    },
+
+    applyObsTemplate: function(ids, date){
+        ids = Ext4.Array.unique(ids);
+        var records = [];
+        Ext4.Array.forEach(ids, function(id){
+            records.push({
+                Id: id,
+                date: date
+            });
+        }, this);
+
+        EHR.window.ApplyTemplateWindow.loadTemplateRecords(function(recMap){
+            if (!recMap || LABKEY.Utils.isEmptyObj(recMap)){
+                Ext4.Msg.hide();
+                return;
+            }
+
+            for (var i in recMap){
+                var store = Ext4.StoreMgr.get(i);
+                store.add(recMap[i]);
+            }
+
+            Ext4.Msg.hide();
+
+        }, this, this.targetStore.storeCollection, this.obsTemplateId, records);
     }
 });
 

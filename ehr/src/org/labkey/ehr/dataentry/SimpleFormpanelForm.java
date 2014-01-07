@@ -17,6 +17,7 @@ package org.labkey.ehr.dataentry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
+import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.module.Module;
 
@@ -30,17 +31,17 @@ import java.util.List;
  */
 public class SimpleFormpanelForm extends AbstractDataEntryForm
 {
-    private SimpleFormpanelForm(Module owner, String name, String label, String category, List<FormSection> sections)
+    private SimpleFormpanelForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, List<FormSection> sections)
     {
-        super(owner, name, label, category, sections);
+        super(ctx, owner, name, label, category, sections);
     }
 
-    public static SimpleFormpanelForm create(Module owner, String schemaName, String queryName, String category)
+    public static SimpleFormpanelForm create(DataEntryFormContext ctx, Module owner, String schemaName, String queryName, String category)
     {
         List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
 
-        return new SimpleFormpanelForm(owner, queryName, label, category, sections);
+        return new SimpleFormpanelForm(ctx, owner, queryName, label, category, sections);
     }
 }

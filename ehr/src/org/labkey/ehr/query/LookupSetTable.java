@@ -51,6 +51,8 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
         if (map.containsKey("titleColumn") && map.get("titleColumn") != null)
             _titleColumn = (String)map.get("titleColumn");
+        else
+            _titleColumn = VALUE_COL;
     }
 
     public LookupSetTable init()

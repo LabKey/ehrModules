@@ -68,8 +68,8 @@ Ext4.define('EHR.form.field.DrugDoseField', {
 
     showWeight: function(weight){
         var fc = this.up('fieldcontainer');
+        //this will occur for grid cells
         if (!fc){
-            console.log('unable to find field container');
             return;
         }
 

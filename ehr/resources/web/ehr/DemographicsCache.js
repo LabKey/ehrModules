@@ -46,6 +46,26 @@ EHR.DemographicsCache = new function(){
     }
 
     return {
+        getDemographicsSynchronously: function(animalIds){
+            if (Ext4.isEmpty(animalIds)){
+                return;
+            }
+
+            if (!Ext4.isArray(animalIds)){
+                animalIds = [animalIds];
+            }
+
+            var ret = {};
+            Ext4.Array.forEach(animalIds, function(animalId){
+                if (demographicsCache[animalId]){
+                    var ms = (new Date()) - demographicsCache[animalId].loadTime;
+                    ret[animalId] = new EHR.DemographicsRecord(demographicsCache[animalId]);
+                }
+            }, this);
+
+            return ret;
+        },
+
         getDemographics: function(animalIds, callback, scope, threshold){
             if (Ext4.isEmpty(animalIds)){
                 callback.call(scope || this, animalIds, null);
@@ -57,14 +77,14 @@ EHR.DemographicsCache = new function(){
             }
 
             //reuse cached info if less than threshold
-            threshold = threshold || expireThreshold;
+            threshold = Ext4.isNumeric(threshold) ? threshold : expireThreshold;
 
             var ret = {};
             var found = 0;
             Ext4.Array.forEach(animalIds, function(animalId){
                 if (demographicsCache[animalId]){
                     var ms = (new Date()) - demographicsCache[animalId].loadTime;
-                    if (ms < expireThreshold || expireThreshold == -1){
+                    if (ms < threshold || threshold == -1){
                         ret[animalId] = new EHR.DemographicsRecord(demographicsCache[animalId]);
                         found++;
                     }

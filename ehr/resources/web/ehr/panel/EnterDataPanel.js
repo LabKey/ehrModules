@@ -36,15 +36,18 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             }
         }, this);
 
+        var sectionNames = Ext4.Object.getKeys(formMap);
+        sectionNames = sectionNames.sort();
+
         var sections = [];
-        for (var i in formMap){
-            var items = formMap[i];
+        Ext4.Array.forEach(sectionNames, function(section){
+            var items = formMap[section];
             items = LDK.Utils.sortByProperty(items, 'name', false);
             sections.push({
-                header: i,
+                header: section,
                 items: items
             });
-        }
+        }, this);
 
         var tab = this.down('#enterNew');
         tab.removeAll();

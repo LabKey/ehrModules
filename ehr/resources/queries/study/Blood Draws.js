@@ -6,6 +6,12 @@
 
 require("ehr/triggers").initScript(this);
 
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.AFTER_BECOME_PUBLIC, 'study', 'Blood Draws', function(errors, helper, row, oldRow){
+    if (row && row.additionalServices){
+        helper.getJavaHelper().createRequestsForBloodAdditionalServices(row.Id, row.project, row.performedby, row.additionalServices);
+    }
+});
+
 function onInit(event, helper){
     helper.decodeExtraContextProperty('bloodInTransaction');
     helper.decodeExtraContextProperty('weightInTransaction');
@@ -50,14 +56,6 @@ function onInit(event, helper){
 
         helper.setProperty('bloodInTransaction', bloodInTransaction);
     });
-}
-
-function afterBecomePublic(scriptErrors, helper, row, oldRow){
-console.log('creating requests');
-
-    if (row.additionalServices && row.requestid == null){
-        helper.getJavaHelper().createRequestsForBloodAdditionalServices(row.Id, row.project, row.additionalServices);
-    }
 }
 
 function onUpsert(helper, scriptErrors, row, oldRow){

@@ -174,88 +174,6 @@ EHR.DataEntryUtils = new function(){
                     }).show();
                 }
             }, config);
-        },
-        TEMPLATE: function(config){
-            return Ext4.Object.merge({
-                text: 'Templates',
-                itemId: 'templatesBtn',
-                listeners: {
-                    beforerender: function(btn){
-                        var grid = btn.up('gridpanel');
-                        LDK.Assert.assertNotEmpty('Unable to find gridpanel in TEMPLATE button', grid);
-
-                        btn.grid = grid;
-                        btn.formType = grid.formConfig.name;
-
-                        btn.populateFromDatabase.call(btn);
-                    }
-                },
-                populateFromDatabase: function(){
-                    LABKEY.Query.selectRows({
-                        schemaName: 'ehr',
-                        queryName: 'my_formtemplates',
-                        sort: 'title',
-                        autoLoad: true,
-                        filterArray: [LABKEY.Filter.create('formtype', this.grid.formConfig.name, LABKEY.Filter.Types.EQUAL)],
-                        failure: LDK.Utils.getErrorCallback(),
-                        scope: this,
-                        success: this.onLoad
-                    });
-                },
-                onLoad: function(results){
-                    var btn = this.menu.items.get('templatesMenu');
-                    btn.menu.removeAll();
-
-                    var toAdd = [];
-                    if (results.rows && results.rows.length){
-                        Ext4.Array.forEach(results.rows, function(row){
-                            toAdd.push({
-                                text: row.title,
-                                templateId: row.entityid,
-                                scope: this,
-                                handler: function(menu){
-                                    Ext4.create('EHR.window.ApplyTemplateWindow', {
-                                        targetGrid: this.grid,
-                                        formType: this.grid.formConfig.name,
-                                        defaultTemplate: menu.templateId
-                                    }).show();
-                                }
-                            })
-                        }, this);
-                    }
-                    else {
-                        toAdd.push({
-                            text: 'There are no saved templates'
-                        });
-                    }
-
-                    btn.menu.add(toAdd);
-                },
-                menu: [{
-                    text: 'Save As Template',
-                    hidden: !LABKEY.Security.currentUser.isAdmin,
-                    handler: function(btn){
-                        var grid = btn.up('gridpanel');
-                        Ext4.create('EHR.window.SaveTemplateWindow', {
-                            targetGrid: grid,
-                            formType: grid.formConfig.name
-                        }).show();
-                    }
-                },{
-                    text: 'Apply Template',
-                    handler: function(btn){
-                        var grid = btn.up('gridpanel');
-                        Ext4.create('EHR.window.ApplyTemplateWindow', {
-                            targetGrid: grid,
-                            formType: grid.formConfig.name
-                        }).show();
-                    }
-                },{
-                    text: 'Templates',
-                    itemId: 'templatesMenu',
-                    menu: []
-                }]
-            }, config);
         }
     };
 
@@ -298,6 +216,24 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Completed',
             errorThreshold: 'INFO',
             successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            disabled: true,
+            itemId: 'submitBtn',
+            handler: function(btn){
+                var panel = btn.up('ehr-dataentrypanel');
+                Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+                    if(v == 'yes')
+                        this.onSubmit(btn);
+                }, this);
+            },
+            disableOn: 'WARN'
+        },
+        SUBMITANDNEXT: {
+            text: 'Submit And Reload',
+            name: 'submit',
+            requiredQC: 'Completed',
+            targetQC: 'Completed',
+            errorThreshold: 'INFO',
+            successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
             disabled: true,
             itemId: 'submitBtn',
             handler: function(btn){
@@ -420,6 +356,77 @@ EHR.DataEntryUtils = new function(){
             disableOn: 'ERROR'
         },
         /**
+         * Will submit/save the form and then return to the enterData page.  It does not alter the QCState of records.
+         */
+        OPENCLINICALCASE: {
+            text: 'Open Clinical Case',
+            name: 'openClinicalCase',
+            //requiredQC: 'In Progress',
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            disabled: false,
+            itemId: 'openClinicalCase',
+            handler: function(btn){
+                var panel = btn.up('ehr-dataentrypanel');
+                LDK.Assert.assertNotEmpty('Unable to find dataentrypanel from OPENCLINICALCASE button', panel);
+
+                //find id
+                var clientStore = panel.storeCollection.getClientStoreByName('Clinical Encounters') || panel.storeCollection.getClientStoreByName('Clinical Remarks');
+                LDK.Assert.assertNotEmpty('Unable to find clientStore from OPENCLINICALCASE button', clientStore);
+
+                var rec = clientStore.getAt(0);
+                if (!rec){
+                    Ext4.Msg.alert('Error', 'No Animal Entered');
+                    return;
+                }
+                LDK.Assert.assertEquality('Record count was not 1 in OPENCLINICALCASE button.', 1, clientStore.getCount());
+
+                var animalId = rec.get('Id');
+                if (!animalId){
+                    Ext4.Msg.alert('Error', 'No Animal Entered');
+                    return;
+                }
+
+                var win = Ext4.create('EHR.window.ManageCasesWindow', {
+                    animalId: animalId
+                });
+
+                win.down('panel').showCreateWindow('Clinical');
+            }
+        },
+        OPENSURGERYCASES: {
+            text: 'Open Cases',
+            name: 'openSurgeryCase',
+            //requiredQC: 'In Progress',
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            disabled: false,
+            itemId: 'openSurgeryCases',
+            handler: function(btn){
+                var panel = btn.up('ehr-dataentrypanel');
+                LDK.Assert.assertNotEmpty('Unable to find dataentrypanel from OPENSURGERYCASES button', panel);
+
+                //find id
+                var clientStore = panel.storeCollection.getClientStoreByName('Clinical Encounters') || panel.storeCollection.getClientStoreByName('Clinical Remarks');
+                LDK.Assert.assertNotEmpty('Unable to find clientStore from OPENSURGERYCASES button', clientStore);
+
+                if (!clientStore.getCount()){
+                    Ext4.Msg.alert('Error', 'No Animals Entered');
+                    return;
+                }
+
+//                var animalId = rec.get('Id');
+//                if (!animalId){
+//                    Ext4.Msg.alert('Error', 'No Animal Entered');
+//                    return;
+//                }
+//
+//                var win = Ext4.create('EHR.window.ManageCasesWindow', {
+//                    animalId: animalId
+//                });
+//
+//                win.down('panel').showCreateWindow('Surgery');
+            }
+        },
+        /**
          * This button will attempt to convert the QCState of records to 'Request: Pending' and submit the form.  Default button for request pages.
          */
         REQUEST: {
@@ -459,7 +466,7 @@ EHR.DataEntryUtils = new function(){
 
     return {
         getFormEditorConfig: function(columnInfo){
-            var cfg = LABKEY.ext.Ext4Helper.getFormEditorConfig(columnInfo);
+            var cfg = LABKEY.ext4.Util.getFormEditorConfig(columnInfo);
 
             if (cfg.xtype == 'numberfield'){
                 cfg.hideTrigger = true;
@@ -484,7 +491,7 @@ EHR.DataEntryUtils = new function(){
             col.editable = meta.userEditable;
 
             if(col.editable && !col.editor){
-                col.editor = LABKEY.ext.Ext4Helper.getGridEditorConfig(meta);
+                col.editor = LABKEY.ext4.Util.getGridEditorConfig(meta);
                 col.editor.fieldLabel = null;
             }
 
@@ -492,7 +499,7 @@ EHR.DataEntryUtils = new function(){
                 col.editor.hideTrigger = true;
             }
 
-            col.renderer = LABKEY.ext.Ext4Helper.getDefaultRenderer(col, meta, grid);
+            col.renderer = LABKEY.ext4.Util.getDefaultRenderer(col, meta, grid);
 
             //HTML-encode the column header
             col.text = Ext4.util.Format.htmlEncode(meta.label || meta.name || col.header);
@@ -508,10 +515,10 @@ EHR.DataEntryUtils = new function(){
             return col;
         },
 
-        getGridButton: function(name){
+        getGridButton: function(name, config){
             LDK.Assert.assertNotEmpty('Unknown grid button: ' + name, gridButtons[name]);
             if (gridButtons[name]){
-                return gridButtons[name]()
+                return gridButtons[name](config)
             }
         },
 
@@ -624,7 +631,7 @@ EHR.DataEntryUtils = new function(){
             if (EHR._proceduresStore)
                 return EHR._proceduresStore;
 
-            var storeId = ['ehr_lookups', 'procedures', 'rowid', 'name'].join('||');
+            var storeId = ['ehr_lookups', 'procedures', 'rowid', 'name', 'ref'].join('||');
 
             EHR._proceduresStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.data.Store', {
                 type: 'labkey-store',
@@ -639,6 +646,44 @@ EHR.DataEntryUtils = new function(){
             return EHR._proceduresStore;
         },
 
+        getChareableItemsStore: function(){
+            if (EHR._chargeableItemsStore)
+                return EHR._chargeableItemsStore;
+
+            var storeId = ['onprc_billing', 'chargeableItems', 'rowid', 'name', 'ref'].join('||');
+
+            EHR._chargeableItemsStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+                type: 'labkey-store',
+                schemaName: 'onprc_billing',
+                queryName: 'chargeableItems',
+                columns: 'rowid,name,category,allowscustomunitcost',
+                sort: 'category,name',
+                storeId: storeId,
+                autoLoad: true
+            });
+
+            return EHR._chargeableItemsStore;
+        },
+
+        getFormularyStore: function(){
+            if (EHR._formularyStore)
+                return EHR._formularyStore;
+
+            var storeId = ['ehr_lookups', 'drug_defaults', 'code', 'code'].join('||');
+
+            EHR._formularyStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+                type: 'labkey-store',
+                schemaName: 'ehr_lookups',
+                queryName: 'drug_defaults',
+                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,volume,vol_units,route,frequency,duration,offset',
+                sort: 'code',
+                storeId: storeId,
+                autoLoad: true
+            });
+
+            return EHR._formularyStore;
+        },
+
         getProjectStore: function(){
             if (EHR._projectStore)
                 return EHR._projectStore;
@@ -649,7 +694,7 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr',
                 queryName: 'project',
-                columns: 'project,displayName,name,protocol,protocol/displayName,title,investigatorId/lastName',
+                columns: 'project,displayName,account,name,protocol,protocol/displayName,title,investigatorId/lastName',
                 //filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
                 sort: 'displayName',
                 storeId: storeId,
@@ -657,6 +702,19 @@ EHR.DataEntryUtils = new function(){
             });
 
             return EHR._projectStore;
+        },
+
+        getDefaultClinicalProject: function(){
+            var defaultProject = null;
+            var store = EHR.DataEntryUtils.getProjectStore();
+            if (store){
+                var recIdx = store.find('displayName', '0492');
+                if (recIdx != -1){
+                    defaultProject = store.getAt(recIdx).get('project');
+                }
+            }
+
+            return defaultProject;
         },
 
         calculateQuantity: function(field, values){
@@ -758,6 +816,39 @@ EHR.DataEntryUtils = new function(){
             }
 
             return hasPermission;
+        },
+
+        getEncountersRecords: function(dataEntryPanel){
+            var encountersStore = dataEntryPanel.storeCollection.getClientStoreByName('encounters');
+            LDK.Assert.assertNotEmpty('Unable to find encounters store in SurgeryAddRecordWindow button', encountersStore);
+
+            var data = [];
+            encountersStore.each(function(r){
+                if (r.get('Id') && r.get('date')){
+                    var procedureStore = EHR.DataEntryUtils.getProceduresStore();
+                    var procedureName;
+                    LDK.Assert.assertNotEmpty('Unable to find procedureStore from SurgeryAddRecordWindow', procedureStore);
+                    if (r.get('procedureid')){
+                        var procRecIdx = procedureStore.find('rowid', r.get('procedureid'));
+                        var procedureRec = procedureStore.getAt(procRecIdx);
+                        LDK.Assert.assertNotEmpty('Unable to find procedure record from SurgeryAddRecordWindow', procedureRec);
+                        procedureName = procedureRec.get('name');
+                    }
+                    else {
+                        procedureName = 'None'
+                    }
+
+                    var title = r.get('Id') + ': ' + procedureName;
+                    data.push({
+                        title: title,
+                        parentid: r.get('objectid'),
+                        Id: r.get('Id'),
+                        date: r.get('date')
+                    });
+                }
+            }, this);
+
+            return data;
         }
     }
 };

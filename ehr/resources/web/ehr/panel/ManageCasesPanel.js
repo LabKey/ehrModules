@@ -170,7 +170,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                         itemId: 'dateField',
                                         fieldLabel: 'Review Date',
                                         minValue: new Date(),
-                                        value: rec.get('reviewdate') || Ext4.Date.add(new Date(), Ext4.Date.DAY, 7)
+                                        value: rec.get('reviewdate') || Ext4.Date.add(new Date(), Ext4.Date.DAY, 14)
                                     }],
                                     buttons: [{
                                         text: 'Submit',

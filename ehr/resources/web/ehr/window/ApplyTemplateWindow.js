@@ -11,14 +11,19 @@
  * @cfg targetGrid
  * @cfg formType
  * @cfg defaultTemplate
+ * @cfg allowChooseIds
+ * @cfg idSelectionMode
  */
 Ext4.define('EHR.window.ApplyTemplateWindow', {
     extend: 'Ext.window.Window',
+    allowChooseIds: true,
+    idSelectionMode: 'multi',
+    title: 'Apply Template',
+    closeAction: 'destroy',
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
-            closeAction: 'destroy',
             border: true,
             bodyStyle: 'padding:5px',
             defaults: {
@@ -27,40 +32,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                 border: false,
                 bodyBorder: false
             },
-            items: [{
-                xtype: 'combo',
-                value: this.defaultTemplate,
-                forceSelection: true,
-                displayField: 'title',
-                valueField: 'entityid',
-                queryMode: 'local',
-                fieldLabel: 'Template Name',
-                itemId: 'templateName',
-                store: {
-                    type: 'labkey-store',
-                    schemaName: 'ehr',
-                    queryName: 'my_formtemplates',
-                    sort: 'title',
-                    autoLoad: true,
-                    filterArray: [LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL)]
-                }
-            },{
-                xtype: 'checkbox',
-                fieldLabel: 'Bulk Edit Before Applying',
-                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
-                itemId: 'customizeValues',
-                checked: false
-            },{
-                xtype: 'textarea',
-                fieldLabel: 'Animal Ids (optional)',
-                helpPopup: 'If provided, this template will be applied once per animal Id.  Otherwise the template will be added once with a blank Id',
-                itemId: 'subjectIds'
-            },{
-                xtype: 'xdatetime',
-                fieldLabel: 'Date (optional)',
-                itemId: 'dateField',
-                value: new Date()
-            }],
+            items: this.getItems(),
             buttons: [{
                 text:'Submit',
                 scope: this,
@@ -74,6 +46,107 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         });
 
         this.callParent(arguments);
+
+        if (this.idSelectionMode == 'encounter'){
+            var dataEntryPanel = this.targetGrid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in ApplyTemplateWindow', dataEntryPanel);
+
+            var data = EHR.DataEntryUtils.getEncountersRecords(dataEntryPanel);
+            if (!data.length) {
+                this.on('beforeshow', function(){
+                    Ext4.Msg.alert('No Records', 'Cannot add results to this section without a corresponding procedure above.  Note: the procedure must have an Id/date in order to enter results');
+                    this.close();
+                    return false;
+                }, this);
+            }
+        }
+    },
+
+    getItems: function(){
+        var items = [{
+            xtype: 'combo',
+            value: this.defaultTemplate,
+            forceSelection: true,
+            displayField: 'title',
+            valueField: 'entityid',
+            queryMode: 'local',
+            fieldLabel: 'Template Name',
+            itemId: 'templateName',
+            store: {
+                type: 'labkey-store',
+                schemaName: 'ehr',
+                queryName: 'my_formtemplates',
+                sort: 'title',
+                autoLoad: true,
+                filterArray: [
+                    LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('category', 'Section', LABKEY.Filter.Types.EQUAL)
+                ]
+            }
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'Bulk Edit Before Applying',
+            helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
+            itemId: 'customizeValues',
+            checked: false
+        },this.getIdSelectionItems(),{
+            xtype: 'xdatetime',
+            fieldLabel: 'Date (optional)',
+            itemId: 'dateField',
+            value: new Date()
+        }];
+
+        return items;
+    },
+
+    getIdSelectionItems: function(){
+        if (this.idSelectionMode == 'single'){
+            return {
+                xtype: 'textfield',
+                fieldLabel: 'Animal Id (optional)',
+                itemId: 'subjectIds'
+            }
+        }
+        else if (this.idSelectionMode == 'multi'){
+            return {
+                xtype: 'textarea',
+                fieldLabel: 'Animal Ids (optional)',
+                helpPopup: 'If provided, this template will be applied once per animal Id.  Otherwise the template will be added once with a blank Id',
+                itemId: 'subjectIds'
+            }
+        }
+        else if (this.idSelectionMode == 'none'){
+            return {
+
+            }
+        }
+        else if (this.idSelectionMode == 'encounter'){
+            var dataEntryPanel = this.targetGrid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in ApplyTemplateWindow', dataEntryPanel);
+
+            var data = EHR.DataEntryUtils.getEncountersRecords(dataEntryPanel);
+
+            return {
+                xtype: 'checkcombo',
+                fieldLabel: 'Choose Procedure',
+                itemId: 'encounterRecords',
+                addAllSelector: true,
+                mutliSelect: true,
+                width: 400,
+                displayField: 'title',
+                valueField: 'parentid',
+                value: data.length == 1 ? data[0].parentid : null,
+                store: {
+                    type: 'store',
+                    fields: ['title', 'parentid', 'Id', 'date'],
+                    data: data
+                },
+                forceSelection: true
+            }
+        }
+        else {
+            console.error('Unknown ID selection mode: ' + this.idSelectionMode);
+        }
     },
 
     onSubmit: function(){
@@ -87,103 +160,162 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         this.loadTemplate(templateId);
     },
 
+    statics: {
+        loadTemplateRecords: function(callback, scope, storeCollection, templateId, initialValues){
+            //subjectArray, date
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'formtemplaterecords',
+                filterArray: [
+                    LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)
+                ],
+                sort: 'rowid',
+                success: function(data){
+                    if (!data || !data.rows.length){
+                        return null;
+                    }
+
+                    initialValues = initialValues || [];
+
+                    var toAdd = {};
+                    if (!initialValues.length){
+                        initialValues.push({});
+                    }
+
+                    Ext4.Array.forEach(initialValues, function(obj){
+                        Ext4.Array.forEach(data.rows, function(row){
+                            var data = Ext4.decode(row.json);
+                            var store = storeCollection.getClientStoreByName(row.storeid);
+
+                            //verify store exists
+                            if (!store){
+                                LDK.Utils.logToServer({
+                                    level: 'ERROR',
+                                    message: 'ApplyTemplateWindow.onLoadTemplate is unable to find store: ' + row.storeid
+                                });
+
+                                return;
+                            }
+
+                            //also verify it is loaded
+                            if (store.loading || !store.getFields() || !store.getFields().getCount()){
+                                LDK.Utils.logToServer({
+                                    level: 'ERROR',
+                                    message: 'ApplyTemplateWindow.onLoadTemplate called prior to store load'
+                                });
+                            }
+
+                            if (!toAdd[store.storeId])
+                                toAdd[store.storeId] = [];
+
+                            var newData = LABKEY.ExtAdapter.apply({}, data);
+                            newData = LABKEY.ExtAdapter.apply(newData, obj);
+
+                            toAdd[store.storeId].push(newData);
+                        }, this);
+                    }, this);
+
+                    var recMap = {};
+
+                    for (var i in toAdd){
+                        var store = Ext4.StoreMgr.get(i);
+                        var recs = [];
+                        Ext4.Array.forEach(toAdd[i], function(data){
+                            recs.push(store.createModel(data));
+                        }, this);
+                        recMap[store.storeId] = recs;
+                    }
+
+                    if (callback){
+                        callback.call(scope, recMap);
+                    }
+                },
+                failure: LDK.Utils.getErrorCallback(),
+                scope: this
+            });
+        }
+    },
+
+    getInitialRecordValues: function(){
+        var ret = [];
+        var date = this.down('#dateField').getValue();
+        var obj = {
+            date: date
+        };
+
+        if (this.down('#subjectIds')){
+            var subjectArray = this.down('#subjectIds').getValue();
+            if (subjectArray){
+                subjectArray = Ext4.String.trim(subjectArray);
+                subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
+                subjectArray = subjectArray.replace(/(^;|;$)/g, '');
+                subjectArray = subjectArray.toLowerCase();
+
+                if (subjectArray){
+                    subjectArray = subjectArray.split(';');
+                }
+
+                Ext4.Array.each(subjectArray, function(subj){
+                    ret.push(LABKEY.ExtAdapter.apply({
+                        Id: subj
+                    }, obj));
+                }, this);
+            }
+        }
+        else if (this.down('#encounterRecords')){
+            var combo = this.down('#encounterRecords');
+            var encounterIds = combo.getValue() || [];
+            Ext4.Array.forEach(encounterIds, function(encounterId){
+                var recIdx = combo.store.find('parentid', encounterId);
+                if (recIdx != -1){
+                    var rec = combo.store.getAt(recIdx);
+                    ret.push({
+                        Id: rec.get('Id'),
+                        date: rec.get('date'),
+                        parentid: rec.get('parentid')
+                    });
+                }
+            }, this);
+        }
+        else {
+            ret.push(obj);
+        }
+
+        return ret;
+    },
+
     loadTemplate: function(templateId){
         if (!templateId)
             return;
 
-        LABKEY.Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'formtemplaterecords',
-            filterArray: [
-                LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)
-            ],
-            sort: 'rowid',
-            success: this.onLoadTemplate,
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this
-        });
-
         Ext4.Msg.wait("Loading Template...");
+
+        EHR.window.ApplyTemplateWindow.loadTemplateRecords(this.afterLoadTemplate, this, this.targetGrid.store.storeCollection, templateId, this.getInitialRecordValues());
     },
 
-    onLoadTemplate: function(data){
-        if (!data || !data.rows.length){
+    afterLoadTemplate: function(recMap){
+        if (!recMap || LABKEY.Utils.isEmptyObj(recMap)){
             Ext4.Msg.hide();
+            this.close();
             return;
         }
 
-        //find subjectIds and date
-        var date = this.down('#dateField').getValue();
-        var subjectArray = this.down('#subjectIds').getValue();
-        if (subjectArray){
-            subjectArray = Ext4.String.trim(subjectArray);
-            subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
-            subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-            subjectArray = subjectArray.toLowerCase();
-
-            if (subjectArray){
-                subjectArray = subjectArray.split(';');
-            }
+        if (this.down('#customizeValues').checked){
+            this.customizeData(recMap);
         }
-        subjectArray = subjectArray || [];
-
-        var toAdd = {};
-        if (!subjectArray.length){
-            subjectArray.push(null);
+        else {
+            this.loadTemplateData(recMap);
         }
-
-        Ext4.Array.forEach(subjectArray, function(subjectId){
-            Ext4.Array.forEach(data.rows, function(row){
-                var data = Ext4.decode(row.json);
-                var store = this.targetGrid.store.storeCollection.getClientStoreByName(row.storeid);
-
-                //verify store exists
-                if (!store){
-                    Ext4.StoreMgr.on('add', function(){
-                        this.onLoadTemplate(data);
-                    }, this, {single: true, delay: 200});
-                    return;
-                }
-
-                //also verify it is loaded
-                if (store.loading || !store.getFields() || !store.getFields().getCount()){
-                    store.on('load', function(){
-                        this.onLoadTemplate(data);
-                    }, this, {single: true, delay: 200});
-                    return false;
-                }
-
-                if (!toAdd[store.storeId])
-                    toAdd[store.storeId] = [];
-
-                if (date){
-                    data.date = date;
-                }
-
-                var newData = LABKEY.ExtAdapter.apply({}, data);
-                if (subjectId)
-                    newData.Id = subjectId;
-
-                toAdd[store.storeId].push(newData);
-            }, this);
-        }, this);
-
-        if (this.down('#customizeValues').checked)
-            this.customizeData(toAdd);
-        else
-            this.loadTemplateData(toAdd);
     },
 
-    customizeData: function(toAdd){
+    customizeData: function(recMap){
         Ext4.Msg.hide();
 
-        //TODO
-        var recMap = this.getRecordMap(toAdd);
         var storeIds = Ext4.Object.getKeys(recMap);
         LDK.Assert.assertEquality('Attempt to customize values on a template with more than 1 store.  The UI should prevent this.', 1, storeIds.length);
         if (storeIds.length != 1){
             Ext4.Msg.alert('Error', 'This type of template cannot be customized');
-            this.loadTemplateData(toAdd);
+            this.loadTemplateData(recMap);
             return;
         }
 
@@ -257,29 +389,14 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         });
     },
 
-    loadTemplateData: function(toAdd){
-        var recMap = this.getRecordMap(toAdd);
-        for (var i in toAdd){
+    loadTemplateData: function(recMap){
+        for (var i in recMap){
             var store = Ext4.StoreMgr.get(i);            
-            store.add(toAdd[i]);            
+            store.add(recMap[i]);
         }
 
         Ext4.Msg.hide();
-    },
-    
-    getRecordMap: function(toAdd){
-        var recMap = {};
-
-        for (var i in toAdd){
-            var store = Ext4.StoreMgr.get(i);
-            var recs = [];
-            Ext4.Array.forEach(toAdd[i], function(data){
-                recs.push(store.createModel(data));
-            }, this);
-            recMap[store.storeId] = recs;
-        }
-
-        return recMap;        
+        this.close();
     },
 
     onCustomize: function(){
@@ -296,4 +413,118 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         this.loadTemplateData(toAdd);
         this.theWindow.close();
     }
+});
+
+
+EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
+    config = config || {};
+
+    return Ext4.Object.merge({
+        text: 'Templates',
+        itemId: 'templatesBtn',
+        listeners: {
+            beforerender: function(btn){
+                var grid = btn.up('gridpanel');
+                LDK.Assert.assertNotEmpty('Unable to find gridpanel in TEMPLATE button', grid);
+
+                btn.grid = grid;
+                btn.formType = grid.formConfig.name;
+
+                btn.populateFromDatabase.call(btn);
+            }
+        },
+        populateFromDatabase: function(){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'my_formtemplates',
+                sort: 'title',
+                autoLoad: true,
+                filterArray: [
+                    LABKEY.Filter.create('formtype', this.grid.formConfig.name, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('category', 'Section', LABKEY.Filter.Types.EQUAL)
+                ],
+                failure: LDK.Utils.getErrorCallback(),
+                scope: this,
+                success: this.onLoad
+            });
+        },
+        onLoad: function(results){
+            var menuBtn = this.menu.items.get('templatesMenu');
+            menuBtn.menu.removeAll();
+
+            var toAdd = [];
+            if (results.rows && results.rows.length){
+                Ext4.Array.forEach(results.rows, function(row){
+                    toAdd.push({
+                        text: row.title,
+                        templateId: row.entityid,
+                        scope: this,
+                        handler: function(btn){
+                            Ext4.create('EHR.window.ApplyTemplateWindow', {
+                                idSelectionMode: menuBtn.idSelectionMode || 'multi',
+                                targetGrid: this.grid,
+                                formType: this.grid.formConfig.name,
+                                defaultTemplate: btn.templateId
+                            }).show();
+                        }
+                    })
+                }, this);
+            }
+            else {
+                toAdd.push({
+                    text: 'There are no saved templates'
+                });
+            }
+
+            menuBtn.menu.add(toAdd);
+        },
+        menu: {
+            xtype: 'menu',
+            ignoreParentClicks: true,
+            items: [{
+                text: 'Save As Template',
+                hidden: !LABKEY.Security.currentUser.isAdmin,
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    Ext4.create('EHR.window.SaveTemplateWindow', {
+                        targetGrid: grid,
+                        formType: grid.formConfig.name
+                    }).show();
+                }
+            },{
+                text: 'Apply Template',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    var menu = this.up('menu').items.get('templatesMenu');
+
+                    Ext4.create('EHR.window.ApplyTemplateWindow', {
+                        targetGrid: grid,
+                        formType: grid.formConfig.name,
+                        idSelectionMode: menu.idSelectionMode || 'multi'
+                    }).show();
+                }
+            },{
+                text: 'Templates',
+                itemId: 'templatesMenu',
+                idSelectionMode: config.idSelectionMode,
+                menu: []
+            }]
+        }
+    }, config);
+});
+
+EHR.DataEntryUtils.registerGridButton('TEMPLATE_NO_ID', function(config){
+    var cfg = EHR.DataEntryUtils.getGridButton('TEMPLATE', {
+        idSelectionMode: 'none'
+    });
+
+    return Ext4.apply(cfg, config);
+});
+
+EHR.DataEntryUtils.registerGridButton('TEMPLATE_ENCOUNTER', function(config){
+    var cfg = EHR.DataEntryUtils.getGridButton('TEMPLATE', {
+        idSelectionMode: 'encounter'
+    });
+
+    return Ext4.apply(cfg, config);
 });

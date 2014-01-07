@@ -220,6 +220,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         refreshAnimalHistoryReport();
         waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
         waitForText("Rhesus"); //a proxy for the loading of the dataRegion
+        waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
+
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
 
@@ -300,7 +302,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         refreshAnimalHistoryReport();
         waitAndClick(Ext4HelperWD.ext4Tab("General"));
         waitAndClick(Ext4HelperWD.ext4Tab("Snapshot"));
-        waitForElement(Locator.tagContainingText("span", "Dead"));
+        waitForElement(Locator.tagContainingText("span", "Dead"), WAIT_FOR_JAVASCRIPT * 2);
         waitForElement(Locator.tagContainingText("div", "1 year, 308 days"));
         waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
 
@@ -408,6 +410,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[2]);
         waitAndClick(Locator.ext4Button("Append -->"));
         refreshAnimalHistoryReport();
+        waitForElement(Ext4HelperWD.ext4Tab("Demographics"));
+        waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[2] + " (X)"));
         waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));

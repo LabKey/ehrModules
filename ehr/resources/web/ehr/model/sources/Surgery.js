@@ -13,6 +13,29 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
         }
     },
     byQuery: {
+        'onprc_billing.miscCharges': {
+            chargeId: {
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL),
+                        LABKEY.Filter.create('category', 'Lease Fee', LABKEY.Filter.Types.NEQ),
+                        LABKEY.Filter.create('category', 'Animal Per Diem', LABKEY.Filter.Types.NEQ),
+                        LABKEY.Filter.create('category', 'Small Animal Per Diem', LABKEY.Filter.Types.NEQ),
+                        LABKEY.Filter.create('category', 'Timed Mated Breeders', LABKEY.Filter.Types.NEQ)
+                    ]
+                }
+            }
+        },
+        'study.treatment_order': {
+            category: {
+                defaultValue: 'Surgery'
+            }
+        },
+        'study.drug': {
+            reason: {
+                defaultValue: 'Procedure'
+            }
+        },
         'study.encounters': {
             type: {
                 defaultValue: 'Surgery',
@@ -26,8 +49,25 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             },
             procedureid: {
                 lookup: {
-                    filterArray: [LABKEY.Filter.create('category', 'Clinical', LABKEY.Filter.Types.EQUAL)]
+                    filterArray: [
+                        LABKEY.Filter.create('category', 'Surgery', LABKEY.Filter.Types.EQUAL),
+                        LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)
+                    ]
                 }
+            }
+        },
+        'ehr.snomed_tags': {
+            code: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Diagnostic Codes'
+                }
+            },
+            set_number: {
+                hidden: true
+            },
+            sort: {
+                hidden: true
             }
         }
     }

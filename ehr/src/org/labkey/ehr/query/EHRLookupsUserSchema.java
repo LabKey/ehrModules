@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
@@ -77,7 +78,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         if (nameMap != null)
             return nameMap;
 
-        nameMap = new HashMap<>();
+        nameMap = new CaseInsensitiveHashMap<>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS));
         Map<String, Object>[] rows = ts.getMapArray();
@@ -104,7 +105,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         if (nameMap != null)
             return nameMap;
 
-        nameMap = new HashMap<>();
+        nameMap = new CaseInsensitiveHashMap<>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES));
         Map<String, Object>[] rows = ts.getMapArray();

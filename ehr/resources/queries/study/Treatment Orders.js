@@ -7,11 +7,12 @@
 require("ehr/triggers").initScript(this);
 
 function onInit(event, helper){
-    //TODO: I dont think this should be set, but it used to be.  Might need in WNPRC_Overrides?
-//    helper.setScriptOptions({
+    helper.setScriptOptions({
+        isAllowFutureDates: true
+        //TODO: I dont think this should be set, but it used to be.  Might need in WNPRC_Overrides?
 //        removeTimeFromDate: true,
 //        removeTimeFromEndDate: true
-//    });
+    });
 }
 
 function onUpsert(helper, scriptErrors, row, oldRow){

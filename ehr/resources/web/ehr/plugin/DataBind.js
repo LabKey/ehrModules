@@ -86,9 +86,11 @@ Ext4.define('EHR.plugin.Databind', {
         else
             this.mon(store, 'load', this.onStoreLoad, this);
 
+        this.mon(store, 'add', this.onRecordAdd, this);
         this.mon(store, 'remove', this.onRecordRemove, this);
         this.mon(store, 'datachanged', this.onDataChanged, this);
         this.mon(store, 'update', this.onRecordUpdate, this);
+        this.mon(store, 'validation', this.onDataChanged, this);
     },
 
     onStoreLoad: function(store){
@@ -117,6 +119,17 @@ Ext4.define('EHR.plugin.Databind', {
         var boundRecord = this.panel.getForm().getRecord();
         if (boundRecord && rec == boundRecord){
             this.unbindRecord();
+        }
+    },
+
+    onRecordAdd: function(store, rec){
+        var boundRecord = this.panel.getForm().getRecord();
+        if (boundRecord){
+            return;
+        }
+
+        if (this.panel.bindConfig.autoBindFirstRecord){
+            this.bindRecord(store.getAt(0));
         }
     },
 

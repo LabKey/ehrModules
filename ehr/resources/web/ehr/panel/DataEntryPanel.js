@@ -35,6 +35,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         Ext4.apply(this, {
             border: false,
+            layout: 'anchor',
             defaults: {
                 border: false
             },
@@ -132,7 +133,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     onStoreCollectionCommitException: function(sc, response){
         console.log(arguments);
-        var msg = 'There was an error saving data';
+        var serverMsg = 'There was an error saving data';
         var errorMsgs = [];
         if (response && response.result){
             Ext4.Array.forEach(response.result, function(command){
@@ -143,15 +144,26 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
             errorMsgs = Ext4.Array.unique(errorMsgs);
 
-            msg += '.  The error messages were: ' + errorMsgs.join('\n') + '\n\n';
-            msg += '.  The response JSON was:\n' + Ext4.encode(response.result);
+            serverMsg += '.  The error messages were: ' + errorMsgs.join('\n') + '\n\n';
+            serverMsg += '.  The response JSON was:\n' + Ext4.encode(response.result);
+        }
+        else if (!response){
+            serverMsg += '.  The response argument was null';
+        }
+
+        if (response && response.exception){
+            serverMsg += '.  Exception: ' + response.exception + '\n\n';
+        }
+
+        if (response && response.stack && response.stackTrace.length){
+            serverMsg += '.  Stack: ' + response.stackTrace.join('\n') + '\n\n';
         }
 
         Ext4.Msg.hide();
         Ext4.Msg.alert('Error', 'There was an error saving the data' + (errorMsgs.length ? '.  The errors were:<br><br>' + errorMsgs.join('<br>') : ''));
         LDK.Utils.logToServer({
             level: 'ERROR',
-            message: msg
+            message: serverMsg
         });
     },
 
@@ -234,6 +246,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.hasStoreCollectionLoaded = true;
     },
 
+    updateMinWidth: function(minWidth){
+        if (minWidth && (!this.minWidth || this.minWidth < minWidth)){
+            this.minWidth = minWidth;
+        }
+    },
+
     getItems: function(){
         if (this._cachedItems){
             var items = this._cachedItems;
@@ -270,9 +288,35 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         if (tabItems.length){
+            var newTabs = [];
+            var tabMap = {};
+            Ext4.Array.forEach(tabItems, function(tab){
+                if (!tab.formConfig.tabName){
+                    newTabs.push(tab);
+                }
+                else {
+                    if (tabMap[tab.formConfig.tabName]){
+                        tabMap[tab.formConfig.tabName].items.push(tab);
+                    }
+                    else {
+                        var i = {
+                            title: tab.formConfig.tabName,
+                            defaults: {
+                                style: 'padding-bottom: 10px;'
+                            },
+                            items: [tab]
+                        }
+
+                        tabMap[tab.formConfig.tabName] = i;
+
+                        newTabs.push(i);
+                    }
+                }
+            }, this);
+
             items.push({
                 xtype: 'tabpanel',
-                items: tabItems
+                items: newTabs
             });
         }
 
@@ -295,9 +339,53 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         if (!ret){
             var tabPanel = this.down('tabpanel');
             if (tabPanel){
-                tabPanel.items.each(function(item){
-                    if (item.title == label){
-                        ret = item;
+                tabPanel.items.each(function(tab){
+                    if (!tab.formConfig){
+                        tab.items.each(function(subTab){
+                            if (subTab.formConfig && subTab.formConfig.name == name){
+                                ret = subTab;
+                                return false;
+                            }
+                        }, this);
+                    }
+                    else if (tab.formConfig && tab.formConfig.name == name){
+                        ret = tab;
+                        return false;
+                    }
+                }, this);
+            }
+        }
+
+        return ret;
+    },
+
+    getSectionByName: function(name){
+        var up = this.getUpperPanel();
+        if (!up)
+            return;
+
+        var ret;
+        up.items.each(function(item){
+            if (item.formConfig && item.formConfig.name == name){
+                ret = item;
+                return false;
+            }
+        }, this);
+
+        if (!ret){
+            var tabPanel = this.down('tabpanel');
+            if (tabPanel){
+                tabPanel.items.each(function(tab){
+                    if (!tab.formConfig){
+                        tab.items.each(function(subTab){
+                            if (subTab.formConfig && subTab.formConfig.name == name){
+                                ret = subTab;
+                                return false;
+                            }
+                        }, this);
+                    }
+                    else if (tab.formConfig && tab.formConfig.name == name){
+                        ret = tab;
                         return false;
                     }
                 }, this);

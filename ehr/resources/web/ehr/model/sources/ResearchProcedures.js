@@ -41,7 +41,12 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
                 }
             },
             procedureid: {
-
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('category', 'Surgery', LABKEY.Filter.Types.NEQ),
+                        LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)
+                    ]
+                }
             }
         },
         'study.blood': {
@@ -60,6 +65,18 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
         'study.drug': {
             project: {
                 allowBlank: false
+            },
+            code: {
+                editorConfig: {
+                    defaultSubset: 'Drugs and Procedures'
+                }
+            }
+        },
+        'study.treatment_order': {
+            code: {
+                editorConfig: {
+                    defaultSubset: 'Drugs and Procedures'
+                }
             }
         }
     }
