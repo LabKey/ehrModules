@@ -98,7 +98,7 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
             EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
 
             //TODO: best method to find action name?
-            Resource r = service.getActionOverride(getViewContext().getActionURL().getAction(), getViewContext().getContainer());
+            Resource r = service.getActionOverride(getViewContext().getActionURL().getAction(), getContainer());
             if (r != null)
             {
                 ModuleHtmlView view = new ModuleHtmlView(r);
