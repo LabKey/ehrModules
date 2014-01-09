@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This window will allow users to query open cases and add records to a task based on them
  */

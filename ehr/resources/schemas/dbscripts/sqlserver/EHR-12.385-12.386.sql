@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --removed after monitoring usage on site
 DROP INDEX encounter_summaries_parentid ON ehr.encounter_summaries;
 DROP INDEX encounter_summaries_parentid_objectid_container_id ON ehr.encounter_summaries;

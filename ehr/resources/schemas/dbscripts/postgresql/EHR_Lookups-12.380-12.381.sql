@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER TABLE ehr_lookups.drug_defaults ADD route varchar(100);
 ALTER TABLE ehr_lookups.drug_defaults ADD frequency int;
 ALTER TABLE ehr_lookups.drug_defaults ADD volume double precision;

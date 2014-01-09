@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER TABLE ehr.snomed_tags DROP CONSTRAINT PK_snomed_tags;
 DROP INDEX ehr.snomed_tags_recordid_rowid_id;
 DROP INDEX ehr.snomed_tags_code_rowid_id_recordid;
