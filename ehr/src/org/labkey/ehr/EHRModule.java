@@ -32,7 +32,7 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
@@ -197,16 +197,19 @@ public class EHRModule extends ExtendedSimpleModule
         return Arrays.asList(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
     }
 
+    @NotNull
     @Override
-    public JSONObject getPageContextJson(User u, Container c)
+    public JSONObject getPageContextJson(ViewContext context)
     {
         Map<String, Object> ret = new HashMap<>();
-        Map<String, String> map = getDefaultPageContextJson(u, c);
-        if (map != null)
-            ret.putAll(map);
+        Container c = context.getContainer();
+        Map<String, String> map = getDefaultPageContextJson(c);
+        ret.putAll(map);
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
+            User u = context.getUser();
+
             //normalize line endings
             String newPath = map.get(EHRManager.EHRStudyContainerPropName);
             newPath = "/" + newPath.replaceAll("^/|/$", "");
@@ -232,7 +235,7 @@ public class EHRModule extends ExtendedSimpleModule
             {
                 if (c.getActiveModules().contains(m))
                 {
-                    JSONObject json = m.getPageContextJson(u, c);
+                    JSONObject json = m.getPageContextJson(context);
                     for (String prop : json.keySet())
                     {
                         ret.put(prop, json.get(prop));
@@ -251,7 +254,7 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    public LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
+    public @NotNull LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
         LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
