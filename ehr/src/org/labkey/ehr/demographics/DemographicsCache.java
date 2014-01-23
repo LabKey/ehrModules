@@ -51,6 +51,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -68,7 +69,7 @@ public class DemographicsCache
     private int _totalUncached = 0;
     private List<String> _cachedIds = new ArrayList<>();
     private boolean _onStartupCalled = false;
-    private ScheduledExecutorService _executor;
+    private ScheduledExecutorService _executor = null;
     private static ScheduledFuture _future = null;
 
     private Map<Container, Set<String>> _toCache = new HashMap<>();
@@ -338,7 +339,12 @@ public class DemographicsCache
         _onStartupCalled = true;
 
         //schedule the background process to inspect the queue
-        _executor = Executors.newSingleThreadScheduledExecutor();
+        _executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "EHR Demographics Service");
+            }
+        });
+
         _future = _executor.scheduleWithFixedDelay(new Runnable(){
             public void run()
             {
@@ -370,5 +376,11 @@ public class DemographicsCache
                 }
             }
         }
+    }
+
+    public void shutdown()
+    {
+        if (_executor != null)
+            _executor.shutdownNow();
     }
 }

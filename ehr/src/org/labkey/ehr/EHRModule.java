@@ -163,6 +163,13 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
+    public void destroy()
+    {
+        DemographicsCache.get().shutdown();
+        super.destroy();
+    }
+
+    @Override
     public void registerSchemas()
     {
         for (final String schemaName : getSchemaNames())
