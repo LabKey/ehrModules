@@ -16,15 +16,9 @@
 package org.labkey.ehr;
 
 import org.labkey.api.action.SpringActionController;
-import org.labkey.api.ehr.EHRService;
-import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleHtmlView;
-import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.SimpleAction;
 import org.labkey.api.resource.Resource;
-import org.labkey.api.util.Path;
-import org.labkey.api.view.HtmlView;
-import org.labkey.api.view.WebPartView;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
