@@ -25,22 +25,18 @@ Ext4.define('EHR.form.field.DrugDoseField', {
     onTriggerClick: function(){
         var record = EHR.DataEntryUtils.getBoundRecord(this);
         if (!record){
-            console.log('unable to resolve record');
             return;
         }
 
-        var dosage = record.get('dosage');
-        var id = record.get('Id');
-
-        if (!dosage || !id){
-            Ext4.Msg.alert('Error', 'Must supply at least Id and dosage');
-            return
+        if (!record.get('code') || !record.get('Id')){
+            Ext4.Msg.alert('Error', 'Must enter the Animal Id and treatment');
+            return;
         }
 
-        var sc = record.store.storeCollection;
-        if (sc){
-            this.calculateDose(id, record, sc);
-        }
+        Ext4.create('EHR.window.DrugAmountWindow', {
+            targetStore: record.store,
+            formConfig: record.sectionCfg
+        }).show();
     },
 
     calculateDose: function(id, record, sc){

@@ -39,6 +39,10 @@
                         </conditionalFormat>
                     </conditionalFormats>
                 </column>
+                <column columnName="isRequired">
+                    <columnTitle>Is Required?</columnTitle>
+                    <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                </column>
             </columns>
         </table>
     </tables>

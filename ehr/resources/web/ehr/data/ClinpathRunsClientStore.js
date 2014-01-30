@@ -54,7 +54,7 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
                 return;
             }
 
-            var lookupRecIdx = store.find('servicename', record.get('servicerequested'));
+            var lookupRecIdx = store.findExact('servicename', record.get('servicerequested'));
             if (lookupRecIdx == -1){
                 LDK.Utils.logToServer({
                     message: 'Unable to find lookup record in ClinpathRunsClientStore'
@@ -70,8 +70,11 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
                 params.type = lookupRec.get('dataset');
 
             //NOTE: if setting both service and chargetype simultaneously, do not override that selection
-            if (modifiedFieldNames.indexOf('servicerequested') > -1 && modifiedFieldNames.indexOf('chargetype') == -1 && lookupRec.get('chargetype'))
-                params.chargetype = lookupRec.get('chargetype');
+            if (modifiedFieldNames.indexOf('servicerequested') > -1 && modifiedFieldNames.indexOf('chargetype') == -1 && lookupRec.get('chargetype')){
+                //only update if using a standard value
+                if (!record.get('chargetype') || record.get('chargetype') == 'Clinpath' || record.get('chargetype') == 'SPF Surveillance Lab')
+                    params.chargetype = lookupRec.get('chargetype');
+            }
 
             if (modifiedFieldNames.indexOf('servicerequested') > -1 && lookupRec.get('tissue')){
                 params.tissue = lookupRec.get('tissue');

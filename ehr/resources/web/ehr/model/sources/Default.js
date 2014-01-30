@@ -86,6 +86,107 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columns: 'rowid,name,category,remark,active'
             }
         },
+        //drug fields
+        dosage: {
+            xtype: 'ehr-drugdosefield',
+            msgTarget: 'under',
+            shownInGrid: false,
+            compositeField: 'Dosage',
+            editorConfig: {
+                decimalPrecision: 3
+            }
+        },
+        dosage_units: {
+            shownInGrid: false,
+            lookup: {columns: '*'},
+            compositeField: 'Dosage',
+            editorConfig: {
+                plugins: ['ldk-usereditablecombo']
+            },
+            columnConfig: {
+                width: 120
+            }
+        },
+        concentration: {
+            shownInGrid: false,
+            compositeField: 'Drug Conc',
+            editorConfig: {
+                decimalPrecision: 10
+            }
+        },
+        conc_units: {
+            shownInGrid: false,
+            lookup: {columns: '*'},
+            compositeField: 'Drug Conc',
+            editorConfig: {
+                plugins: ['ldk-usereditablecombo'],
+                listeners: {
+                    select: function(combo, recs){
+                        if (!recs || recs.length != 1)
+                            return;
+
+                        var rec = recs[0];
+                        var vals = {
+                            amount_units: rec.get('numerator'),
+                            conc_units: rec.get('unit'),
+                            vol_units: rec.get('denominator')
+                        };
+
+                        if (rec.get('numerator'))
+                            vals.dosage_units = rec.get('numerator')+'/kg';
+                        else
+                            vals.dosage_units = null;
+
+                        EHR.DataEntryUtils.setSiblingFields(combo, vals);
+                    }
+                }
+            }
+        },
+        volume: {
+            shownInGrid: true,
+            compositeField: 'Volume',
+            xtype: 'ehr-drugvolumefield',
+            noDuplicateByDefault: true,
+            noSaveInTemplateByDefault: true,
+            editorConfig: {
+                decimalPrecision: 3
+            },
+            header: 'Vol',
+            columnConfig: {
+                width: 90
+            }
+        },
+        vol_units: {
+            shownInGrid: true,
+            compositeField: 'Volume',
+            header: 'Vol Units',
+            editorConfig: {
+                plugins: ['ldk-usereditablecombo']
+            },
+            columnConfig: {
+                width: 90
+            }
+        },
+        amount: {
+            compositeField: 'Amount',
+            noDuplicateByDefault: true,
+            noSaveInTemplateByDefault: true,
+            columnConfig: {
+                width: 120
+            },
+            editorConfig: {
+                decimalPrecision: 10
+            }
+        },
+        amount_units: {
+            compositeField: 'Amount',
+            columnConfig: {
+                width: 120
+            },
+            editorConfig: {
+                plugins: ['ldk-usereditablecombo']
+            }
+        },
         chargetype: {
             columnConfig: {
                 width: 160
@@ -105,7 +206,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             columnConfig: {
                 fixed: true,
                 width: 180,
-                editor: 'xdatetime'
+                editor: {
+                    xtype: 'xdatetime'
+                }
             },
             getInitialValue: function(v, rec){
                 return v ? v : new Date()
@@ -201,7 +304,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             columnConfig: {
                 fixed: true,
                 width: 180,
-                editor: 'xdatetime'
+                editor: {
+                    xtype: 'xdatetime'
+                }
             },
             extFormat: 'Y-m-d H:i',
             editorConfig: {
@@ -397,6 +502,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 getInitialValue: function(val){
                     return val || LABKEY.Security.currentUser.id
                 },
+                xtype: 'ehr-usersandgroupscombo',
                 lookup: {
                     sort: 'Type,DisplayName'
                 },
@@ -563,6 +669,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             antibiotic: {
+                allowBlank: false,
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Antibiotics'
@@ -574,10 +681,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             project: {
                 hidden: true
+            },
+            result: {
+                allowBlank: false
             }
         },
         'study.parasitologyResults': {
             organism: {
+                allowBlank: false,
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Parasitology Results'
@@ -613,6 +724,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.tissueDistributions': {
+            project: {
+                hidden: false,
+                allowBlank: false
+            },
             qualifier: {
                 hidden: true
             },
@@ -779,6 +894,19 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 columnConfig: {
                     width: 200
+                },
+                lookup: {
+                    columns: 'UserId,DisplayName,FirstName,LastName',
+                    sort: 'Type,DisplayName'
+                },
+                editorConfig: {
+                    anyMatch: true,
+                    listConfig: {
+                        innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
                 }
             },
             role: {
@@ -796,6 +924,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 columnConfig: {
                     width: 700
+                }
+            },
+            category: {
+                columnConfig: {
+                    width: 150
                 }
             }
         },
@@ -866,6 +999,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             hx: {
+                xtype: 'ehr-hxtextarea',
                 height: 100,
                 hidden: true
             },
@@ -885,11 +1019,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 height: 75
             },
             p2: {
+                xtype: 'ehr-plantextarea',
                 height: 75
             },
             remark: {
                 height: 75,
-                hidden: false,
                 label: 'Other Remark'
             }
         },
@@ -991,14 +1125,27 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'xdatetime',
                 extFormat: 'Y-m-d H:i',
                 allowBlank: false,
-                getInitialValue: function(v, rec){
-                    return v ? v : Ext4.Date.clearTime(new Date());
+                editorConfig: {
+                    defaultHour: 8,
+                    defaultMinutes: 0
                 }
+//                getInitialValue: function(v, rec){
+//                    if (v)
+//                        return v;
+//
+//                    var ret = Ext4.Date.clearTime(new Date());
+//                    ret.setHours(0, 0);
+//                    return ret;
+//                }
             },
             enddate: {
                 xtype: 'xdatetime',
                 allowBlank: false,
-                extFormat: 'Y-m-d H:i'
+                extFormat: 'Y-m-d H:i',
+                editorConfig: {
+                    defaultHour: 23,
+                    defaultMinutes: 59
+                }
             },
             project: {
                 allowBlank: false
@@ -1006,87 +1153,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             reason: {
                 hidden: true
             },
-            volume: {
-                shownInGrid: false,
-                compositeField: 'Volume',
-                xtype: 'ehr-drugvolumefield',
-                noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true,
-                editorConfig: {
-                    decimalPrecision: 3
-                },
-                header: 'Vol',
-                columnConfig: {
-                    width: 50
-                }
-            },
-            vol_units: {
-                shownInGrid: false,
-                compositeField: 'Volume',
-                header: 'Vol Units',
-                columnConfig: {
-                    width: 50
-                }
-            },
-            concentration: {
-                //shownInGrid: false,
-                compositeField: 'Drug Conc',
-                editorConfig: {
-                    decimalPrecision: 10
-                }
-            },
-            conc_units: {
-                //shownInGrid: false,
-                lookup: {columns: '*'},
-                compositeField: 'Drug Conc',
-                editorConfig: {
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            var vals = {
-                                amount_units: rec.get('numerator'),
-                                vol_units: rec.get('denominator'),
-                                conc_units: rec.get('unit')
-                            }
-
-                            if (rec.get('numerator'))
-                                vals.dosage_units = rec.get('numerator')+'/kg';
-                            else
-                                vals.dosage_units = null;
-
-                            EHR.DataEntryUtils.setSiblingFields(combo, vals);
-                        }
-                    }
-                }
-            },
-            amount: {
-                compositeField: 'Amount',
-                noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true,
-                //,allowBlank: false
-                columnConfig: {
-                    width: 140
-                },
-                editorConfig: {
-                    decimalPrecision: 3
-                }
-            },
-            amount_units: {
-                compositeField: 'Amount',
-                columnConfig: {
-                    width: 120
-                }
-            },
             route: {
-                shownInGrid: true
+                shownInGrid: true,
+                allowBlank: false
             },
             frequency: {
                 allowBlank: false,
                 lookup: {
                     sort: 'sort_order',
+                    filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
                     columns: '*'
                 },
                 editorConfig: {
@@ -1099,22 +1174,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 columnConfig: {
                     width: 180
-                }
-            },
-            dosage: {
-                xtype: 'ehr-drugdosefield',
-                msgTarget: 'under',
-                //shownInGrid: false,
-                compositeField: 'Dosage',
-                editorConfig: {
-                    decimalPrecision: 3
-                }
-            },
-            dosage_units: {
-                //shownInGrid: false,
-                compositeField: 'Dosage',
-                columnConfig: {
-                    width: 120
                 }
             },
             code: {
@@ -1133,6 +1192,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             category: {
+                allowBlank: false,
                 shownInGrid: false
             }
         },
@@ -1166,6 +1226,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.measurements': {
             measurement1: {
+                allowBlank: false,
                 columnConfig: {
                     width: 150
                 }
@@ -1207,18 +1268,21 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     ]
                 }
             },
+            chargetype: {
+                allowBlank: true
+            },
             unitcost: {
                 //TODO: enable once ready
                 hidden: true,
                 columnConfig: {
                     getEditor: function(rec){
                         if (rec.get('chargeId')){
-                            var refIdx = EHR.DataEntryUtils.getChareableItemsStore().find('rowid', rec.get('chargeId'));
+                            var refIdx = EHR.DataEntryUtils.getChareableItemsStore().findExact('rowid', rec.get('chargeId'));
                             if (refIdx != -1){
                                 var refRec = EHR.DataEntryUtils.getChareableItemsStore().getAt(refIdx);
                                 if (refRec.get('allowscustomunitcost')){
                                     return {
-                                        xtype: 'numberfield',
+                                        xtype: 'ldk-numberfield',
                                         hideTrigger: true,
                                         decimalPrecision: 2
                                     }
@@ -1336,6 +1400,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 }
+            },
+            result: {
+                allowBlank: false
             }
         },
         'study.chemistryResults': {
@@ -1357,6 +1424,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             result: {
+                allowBlank: false,
                 compositeField: 'Result',
                 editorConfig: {
                     decimalPrecision: 4
@@ -1387,6 +1455,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             result: {
+                allowBlank: false,
                 compositeField: 'Result'
             },
             units: {
@@ -1506,8 +1575,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             project: {
-                hidden: false,
-                allowBlank: false
+                hidden: true,
+                allowBlank: true
             },
             account: {hidden: true},
             necropsy: {lookups: false},
@@ -1516,6 +1585,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     helpPopup: 'Please enter the color and number of the tag and/or all visible tattoos'
                 }
+            },
+            roomattime: {
+                hidden: true
+            },
+            cageattime: {
+                hidden: true
             }
             //manner: {allowBlank: false}
         },
@@ -1714,102 +1789,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true,
                 shownInGrid: false
             },
-            dosage: {
-                xtype: 'ehr-drugdosefield',
-                msgTarget: 'under',
-                shownInGrid: true,
-                compositeField: 'Dosage',
-                editorConfig: {
-                    decimalPrecision: 3
-                }
-            },
-            dosage_units: {
-                shownInGrid: false,
-                compositeField: 'Dosage',
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
-                },
-                columnConfig: {
-                    width: 120
-                }
-            },
-            concentration: {
-                shownInGrid: false,
-                compositeField: 'Drug Conc',
-                editorConfig: {
-                    decimalPrecision: 10
-                }
-            },
-            conc_units: {
-                shownInGrid: false,
-                lookup: {columns: '*'},
-                compositeField: 'Drug Conc',
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo'],
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            var vals = {
-                                amount_units: rec.get('numerator'),
-                                conc_units: rec.get('unit'),
-                                vol_units: rec.get('denominator')                                
-                            };
-                            
-                            if (rec.get('numerator'))
-                                vals.dosage_units = rec.get('numerator')+'/kg';
-                            else
-                                vals.dosage_units = null;
-
-                            EHR.DataEntryUtils.setSiblingFields(combo, vals);
-                        }
-                    }
-                }
-            },
             route: {
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
-                }
-            },
-            volume: {
-                shownInGrid: false,
-                compositeField: 'Volume',
-                xtype: 'ehr-drugvolumefield',
-                noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true,
-                editorConfig: {
-                    decimalPrecision: 3
-                }
-            },
-            vol_units: {
-                shownInGrid: false,
-                compositeField: 'Volume',
-                header: 'Vol Units',
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
-                }
-            },
-            amount: {
-                compositeField: 'Amount Given',
-                noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true,
-                columnConfig: {
-                    width: 120
                 },
-                editorConfig: {
-                    decimalPrecision: 10
-                }
-            },
-            amount_units: {
-                compositeField: 'Amount Given',
-                columnConfig: {
-                    width: 120
-                },
-                editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
-                }
+                allowBlank: false
             },
             performedby: {
                 allowBlank: false,

@@ -5,7 +5,12 @@
  */
 EHR.model.DataModelManager.registerMetadata('SurgicalRounds', {
     allQueries: {
-
+        Id: {
+            editable: false,
+            columnConfig: {
+                editable: false
+            }
+        }
     },
     byQuery: {
         'study.clinremarks': {

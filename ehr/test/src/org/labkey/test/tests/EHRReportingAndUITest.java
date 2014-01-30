@@ -210,6 +210,9 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         subjField.setValue(PROTOCOL_MEMBER_IDS[0]);
 
         refreshAnimalHistoryReport();
+        waitForElement(Locator.tagContainingText("th", "Overview: " + PROTOCOL_MEMBER_IDS[0]));
+        waitForElement(Locator.tagContainingText("div", "There are no active medications"));
+        waitForElement(Locator.tagContainingText("div", "5.62 kg")); //loading of the weight section
         _helper.waitForCmp(query);
         subjField = _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
         assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
@@ -217,11 +220,10 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
         waitAndClick(Locator.ext4Radio("Entire Database"));
-        refreshAnimalHistoryReport();
         waitAndClick(Ext4HelperWD.ext4Tab("Demographics"));
-        waitForText("Rhesus"); //a proxy for the loading of the dataRegion
+        waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
-
+        sleep(2000); //allow page to resize
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
 
@@ -234,7 +236,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         _ext4Helper.queryOne("#roomField", Ext4FieldRefWD.class).setValue(ROOM_ID);
         _ext4Helper.queryOne("#cageField", Ext4FieldRefWD.class).setValue(CAGE_ID);
         refreshAnimalHistoryReport();
-        waitForText("9794992", WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
+        waitForElement(Locator.tagContainingText("a", "9794992"), WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
 
         log("Verify Project search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));

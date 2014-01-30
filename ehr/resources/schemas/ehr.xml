@@ -94,6 +94,11 @@
                     <ns:fkColumnName>taskid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
+            <ns:column columnName="parentid">
+                <ns:columnTitle>Parent Id</ns:columnTitle>
+                <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="container">
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>

@@ -16,10 +16,16 @@
 package org.labkey.ehr_compliancedb.query;
 
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.ExprColumn;
+import org.labkey.api.query.QueryForeignKey;
+import org.labkey.ehr_compliancedb.EHR_ComplianceDBModule;
 
 /**
  * User: bimber
@@ -34,16 +40,50 @@ public class EHRComplianceTableCustomizer implements TableCustomizer
 
         if (table instanceof AbstractTableInfo)
         {
-            if (table.getName().equalsIgnoreCase("employees"))
+            if (table.getName().equalsIgnoreCase("employees") && table.getUserSchema().getName().equalsIgnoreCase(EHR_ComplianceDBModule.SCHEMA_NAME))
             {
                 ((AbstractTableInfo) table).setDetailsURL(DetailsURL.fromString("/ehr_compliancedb/employeeDetails.view?employeeid=${employeeid}"));
 
                 LDKService.get().appendEnddateColumns((AbstractTableInfo)table);
+
+                addIsActiveCol((AbstractTableInfo) table);
             }
-            else if (table.getName().equalsIgnoreCase("requirements"))
+            else if (table.getName().equalsIgnoreCase("employees") && table.getUserSchema().getName().equalsIgnoreCase("EmployeeData"))
+            {
+                ((AbstractTableInfo) table).setDetailsURL(DetailsURL.fromString("/ehr_compliancedb/employeeDetailsPublic.view?employeeid=${employeeid}"));
+            }
+            else if (table.getName().equalsIgnoreCase("requirements") && table.getUserSchema().getName().equalsIgnoreCase(EHR_ComplianceDBModule.SCHEMA_NAME))
             {
                 ((AbstractTableInfo) table).setDetailsURL(DetailsURL.fromString("/ehr_compliancedb/requirementDetails.view?requirementname=${requirementname}"));
             }
+
+            doSharedCustomization((AbstractTableInfo) table);
+        }
+    }
+
+    private void doSharedCustomization(AbstractTableInfo ti)
+    {
+        if (ti.getColumn("employeeid") != null && !ti.getName().equalsIgnoreCase("employees"))
+        {
+            ti.getColumn("employeeid").setFk(new QueryForeignKey(ti.getUserSchema(), "employees", "employeeid", "employeeid"));
+        }
+
+        if (ti.getColumn("requirementname") != null && !ti.getName().equalsIgnoreCase("requirements"))
+        {
+            ti.getColumn("requirementname").setFk(new QueryForeignKey(ti.getUserSchema(), "requirements", "requirementname", "requirementname"));
+        }
+    }
+
+    private void addIsActiveCol(AbstractTableInfo ti)
+    {
+        String isActive = "isActive";
+        ColumnInfo isActiveCol = ti.getColumn(isActive);
+        if (isActiveCol == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL OR " + ExprColumn.STR_TABLE_ALIAS + ".enddate >= {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END)");
+            ExprColumn newCol = new ExprColumn(ti, isActive, sql, JdbcType.BOOLEAN, ti.getColumn("enddate"));
+            newCol.setLabel("Is Employee Active?");
+            ti.addColumn(newCol);
         }
     }
 }

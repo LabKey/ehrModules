@@ -21,9 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
@@ -33,12 +37,14 @@ import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryDataSource;
 import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -62,8 +68,10 @@ import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.ehr.security.EHRSecurityManager;
+import org.labkey.ehr.table.DefaultEHRCustomizer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -600,5 +608,67 @@ public class EHRServiceImpl extends EHRService
         }
 
         return EHRSecurityManager.get().testPermission(u, sr, perm, qcState);
+    }
+
+    public void customizeDateColumn(AbstractTableInfo ti, String colName)
+    {
+        ColumnInfo dateCol = ti.getColumn(colName);
+        if (dateCol == null)
+            return;
+
+        String calendarYear = "calendarYear";
+        if (ti.getColumn(calendarYear) == null)
+        {
+            String colSql = dateCol.getValueSql(ExprColumn.STR_TABLE_ALIAS).getSQL();
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDatePart(Calendar.YEAR, colSql));
+            ExprColumn calCol = new ExprColumn(ti, calendarYear, sql, JdbcType.INTEGER, dateCol);
+            calCol.setLabel("Calendar Year");
+            calCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            calCol.setHidden(true);
+            ti.addColumn(calCol);
+
+            String fiscalYear = "fiscalYear";
+            SQLFragment sql2 = new SQLFragment("(" + ti.getSqlDialect().getDatePart(Calendar.YEAR, colSql) + " + CASE WHEN " + ti.getSqlDialect().getDatePart(Calendar.MONTH, colSql) + " < 5 THEN -1 ELSE 0 END)");
+            ExprColumn fiscalYearCol = new ExprColumn(ti, fiscalYear, sql2, JdbcType.INTEGER, dateCol);
+            fiscalYearCol.setLabel("Fiscal Year (May 1)");
+            fiscalYearCol.setDescription("This column will calculate the fiscal year of the record, based on a May 1 cycle");
+            fiscalYearCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            fiscalYearCol.setHidden(true);
+            ti.addColumn(fiscalYearCol);
+
+            String fiscalYearJuly = "fiscalYearJuly";
+            SQLFragment sql3 = new SQLFragment("(" + ti.getSqlDialect().getDatePart(Calendar.YEAR, colSql) + " + CASE WHEN " + ti.getSqlDialect().getDatePart(Calendar.MONTH, colSql) + " < 7 THEN -1 ELSE 0 END)");
+            ExprColumn fiscalYearJulyCol = new ExprColumn(ti, fiscalYearJuly, sql3, JdbcType.INTEGER, dateCol);
+            fiscalYearJulyCol.setLabel("Fiscal Year (July 1)");
+            fiscalYearJulyCol.setDescription("This column will calculate the fiscal year of the record, based on a July 1 cycle");
+            fiscalYearJulyCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            fiscalYearJulyCol.setHidden(true);
+            ti.addColumn(fiscalYearJulyCol);
+        }
+
+        addDatePartCol(ti, dateCol, "Year", "This column shows the year portion of the record's date", Calendar.YEAR);
+        addDatePartCol(ti, dateCol, "Month Number", "This column shows the month number (based on the record's date)", Calendar.MONTH);
+        addDatePartCol(ti, dateCol, "Day Of Month", "This column shows the day of month (based on the record's date)", Calendar.DATE);
+    }
+
+    private void addDatePartCol(AbstractTableInfo ti, ColumnInfo dateCol, String label, String description, Integer datePart)
+    {
+        String colName = dateCol.getName() + label.replaceAll(" ", "");
+        if (ti.getColumn(colName) == null)
+        {
+            String colSql = dateCol.getValueSql(ExprColumn.STR_TABLE_ALIAS).getSQL();
+            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDatePart(datePart, colSql) + ")");
+            ExprColumn newCol = new ExprColumn(ti, colName, sql, JdbcType.INTEGER, dateCol);
+            newCol.setLabel(label);
+            newCol.setDescription(description);
+            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            newCol.setHidden(true);
+            ti.addColumn(newCol);
+        }
+    }
+
+    public TableCustomizer getEHRCustomizer()
+    {
+        return new DefaultEHRCustomizer();
     }
 }

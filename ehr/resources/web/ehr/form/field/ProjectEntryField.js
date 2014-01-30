@@ -237,10 +237,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     setValue: function(val){
         var rec;
-        if (val){
+        if (val && Ext4.isPrimitive(val)){
             rec = this.store.findRecord('project', val);
             if (!rec){
-                rec = this.store.findRecord('displayField', val);
+                rec = this.store.findRecord('displayName', val);
 
                 if (rec)
                     console.log('resolved project entry field by display value')
@@ -296,16 +296,32 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
     },
 
-    beforeBlur: function() {
+    verifyFieldValue: function(){
         //reject unknown values
         if (!Ext4.isEmpty(this.getRawValue())){
             var rec = this.findRecordByDisplay(this.getRawValue());
             if (!rec){
                 console.log('rejecting');
-                this.setValue(this.lastSelection);
+                this.clearValue();
             }
         }
+    },
+
+    beforeBlur: function() {
+        this.verifyFieldValue();
 
         this.callParent(arguments);
+    },
+
+    onKeyUp: function(e) {
+        this.callParent(arguments);
+
+        if (e.getKey() == e.ENTER){
+            this.verifyFieldValue();
+        }
     }
+
+//    getErrors: function(val){
+//        return this.callParent();
+//    }
 });

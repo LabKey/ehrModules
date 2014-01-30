@@ -29,7 +29,10 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'services',
-                html: 'Loading...'
+                items: [{
+                    border: false,
+                    html: 'Loading...'
+                }]
             }],
             buttons: [{
                 text: 'Submit',

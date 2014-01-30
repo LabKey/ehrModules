@@ -1,0 +1,1 @@
+ALTER TABLE ehr.snomed_tags ADD parentid entityid;

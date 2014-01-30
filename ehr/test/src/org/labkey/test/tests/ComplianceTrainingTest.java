@@ -378,13 +378,13 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
 
         checkCheckbox(Locator.id("sopCheck"));
         uncheckCheckbox(Locator.id("sopCheck"));
-        clickButton("Submit", 0);
+        click(Locator.button("Submit"));
         assertAlert("You must check the box above the submit button to certify you have read your SOPs");
 
         checkCheckbox(Locator.id("sopCheck"));
-        clickButton("Submit", 0);
+        click(Locator.button("Submit"));
         waitForElement(Ext4Helper.ext4Window("SOPs Complete"));
-        clickButton("OK");
+        click(Locator.ext4Button("OK"));
     }
 
     private void reloadPage()

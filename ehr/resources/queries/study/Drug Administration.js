@@ -15,16 +15,6 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 //            EHR.Server.Utils.addError(scriptErrors, 'volume', 'Must supply either amount or volume', 'INFO');
 //        }
 
-    if (row.volume && row.concentration){
-        var expected = Math.round(row.volume * row.concentration * 1000) / 1000;
-        if (Math.abs(row.amount - expected) > 0.2){ //allow for rounding
-            EHR.Server.Utils.addError(scriptErrors, 'amount', 'Amount does not match volume for this concentration. Expected: '+expected, 'INFO');
-            //EHR.Server.Utils.addError(scriptErrors, 'volume', 'Volume does not match amount for this concentration. Expected: '+expected, 'WARN');
-        }
-    }
-
-    EHR.Server.Validation.checkRestraint(row, scriptErrors);
-
     if (row.qualifier && row.qualifier.match(/\//)){
         EHR.Server.Utils.addError(scriptErrors, 'qualifier', 'This field contains a /. This likely means you need to pick one of the options', 'INFO');
     }

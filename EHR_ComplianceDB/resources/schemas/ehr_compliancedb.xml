@@ -505,7 +505,7 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="date">
-                <ns:nullable>true</ns:nullable>
+                <ns:nullable>false</ns:nullable>
                 <ns:columnTitle>Date Completed</ns:columnTitle>
             </ns:column>
             <ns:column columnName="result">

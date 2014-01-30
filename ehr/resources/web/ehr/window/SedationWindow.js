@@ -251,12 +251,13 @@ Ext4.define('EHR.window.SedationWindow', {
             });
 
             items.push({
-                xtype: 'numberfield',
+                xtype: 'ldk-numberfield',
                 hideTrigger: true,
+                decimalPrecision: 3,
                 width: 70,
                 fieldName: 'weight',
                 key: key,
-                value: this.weights[o.Id],
+                value: this.weights[o.Id] ? this.weights[o.Id].weight: null,
                 listeners: {
                     scope: this,
                     change: function(field, val){
@@ -276,9 +277,10 @@ Ext4.define('EHR.window.SedationWindow', {
             });
 
             items.push({
-                xtype: 'numberfield',
+                xtype: 'ldk-numberfield',
                 hideTrigger: true,
                 fieldName: 'dosage',
+                decimalPrecision: 3,
                 width: 80,
                 key: key,
                 value: 10,
@@ -301,12 +303,13 @@ Ext4.define('EHR.window.SedationWindow', {
             });
 
             items.push({
-                xtype: 'numberfield',
+                xtype: 'ldk-numberfield',
                 hideTrigger: true,
                 fieldName: 'amount',
+                decimalPrecision: 3,
                 width: 80,
                 key: key,
-                value: this.weights[o.Id] ? EHR.Utils.roundToNearest(this.weights[o.Id] * 10, this.defaultRound) : null,
+                value: (this.weights[o.Id] && this.weights[o.Id].weight) ? EHR.Utils.roundToNearest(this.weights[o.Id].weight * 10, this.defaultRound) : null,
                 listeners: {
                     change: function(field, value){
                         var round = field.up('ehr-sedationwindow').down('#roundField').getValue();
@@ -370,10 +373,13 @@ Ext4.define('EHR.window.SedationWindow', {
             toAdd.push(this.targetGrid.store.createModel(data));
         }, this);
 
-        if (toAdd.length)
-            this.targetGrid.store.add(toAdd);
-
         this.close();
+        if (toAdd.length){
+            this.targetGrid.store.add(toAdd);
+        }
+        else {
+            Ext4.Msg.alert('', 'There are no records to add.  If you expected to add sedation records, please look at the \'Skip\' checkbox on the right.');
+        }
     }
 });
 

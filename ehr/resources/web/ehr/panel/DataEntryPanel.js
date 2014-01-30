@@ -31,7 +31,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.createServerStores();
 
         //NOTE: this is done to instantiate the clientStores.  this isnt the best way to do this and should get reworked eventually
-        this._cachedItems = this.getItems();
+        this._cachedItems = this.getItemConfig();
 
         Ext4.apply(this, {
             border: false,
@@ -225,13 +225,22 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     onStoreCollectionInitialLoad: function(){
         this.removeAll();
-        var toAdd = [{
+        var toAdd = [];
+
+        if (Ext4.isIE){
+            toAdd.push({
+                html: '<span style="background-color: yellow;">NOTE: You are currently using Internet Explorer.  While the forms should work in IE, they respond much quicker using any other major browser, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
+                style: 'padding-bottom: 20px;padding-top: 20px;'
+            });
+        }
+
+        toAdd.push({
             xtype: 'panel',
             itemId: 'upperPanel',
-            items: this.getItems(),
+            items: this.getItemConfig(),
             buttonAlign: 'left',
             buttons: this.getButtons()
-        }];
+        });
 
         if (!this.hideErrorPanel){
             toAdd.push({
@@ -252,7 +261,13 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
     },
 
+    //TODO: eventually remove this in favor of getItemConfig()
     getItems: function(){
+        console.log('should switch to use getItemConfig() to reduce potential for conflicts');
+        return this.getItemConfig();
+    },
+
+    getItemConfig: function(){
         if (this._cachedItems){
             var items = this._cachedItems;
             this._cachedItems = null;
@@ -264,6 +279,25 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         var items = [];
+        if (this.formConfig.upperButtons){
+            var buttons = [];
+            Ext4.Array.forEach(this.formConfig.upperButtons, function(name){
+                var btnCfg = EHR.DataEntryUtils.getDataEntryFormButton(name);
+                if (btnCfg){
+                    btnCfg = this.configureButton(btnCfg);
+                    if (btnCfg)
+                        buttons.push(btnCfg);
+                }
+            }, this);
+
+            if (buttons.length){
+                items.push({
+                    xtype: 'container',
+                    layout: 'hbox',
+                    items: buttons
+                });
+            }
+        }
         var tabItems = [];
         for (var i=0; i<this.formConfig.sections.length; i++){
             var section = this.formConfig.sections[i];
@@ -275,6 +309,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
+                hidden: section.hidden,
                 extraMetaData: this.extraMetaData,
                 store: this.storeCollection.getClientStoreForSection(this, section)
             }, section.formConfig);
@@ -411,7 +446,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     getButtons: function(){
         var buttons = [{
             xtype: 'container',
-            cls: 'x4-form-invalid-tip-body',
+            cls: 'x4-tip-body-form-invalid',
             hidden: false,
             itemId: 'dirtyStateIcon',
             height: 20,
@@ -476,6 +511,18 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 //buttonCfg.tooltip = 'You do not have permission to perform this action';
                 return null;
             }
+        }
+
+        if (buttonCfg.requiredPermissions){
+            var disabled = false;
+            for (var i=0;i<buttonCfg.requiredPermissions.length;i++){
+                if (!EHR.Security.hasPermission.apply(this, buttonCfg.requiredPermissions[i])){
+                    disabled = true;
+                    break;
+                }
+            }
+
+            buttonCfg.disabled = disabled;
         }
 
         return buttonCfg;

@@ -56,6 +56,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
@@ -1409,7 +1410,6 @@ public class TriggerScriptHelper
                 {
                     String subject = "Death notification: " + id;
 
-                    //TODO: possibly notify the PI
                     Set<UserPrincipal> recipients = NotificationService.get().getRecipients(new DeathNotification(), getContainer());
                     if (recipients.size() == 0)
                     {
@@ -1421,7 +1421,13 @@ public class TriggerScriptHelper
 
                     html.append("Animal " + id + " has been marked as dead.  ");
                     html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/participantView.view?participantId=" + id + "'>");
+
                     html.append("Click here to view this animal's clinical history</a>.  <p>");
+
+                    AnimalRecord ar = DemographicsCache.get().getAnimal(container, user, id);
+                    html.append("Species: ").append(ar.getSpecies()).append("<br>");
+                    html.append("Gender: ").append(ar.getGenderMeaning()).append("<br>");
+                    html.append("Age: ").append(ar.getAgeInYearsAndDays()).append("<br>");
 
                     sendMessage(subject, html.toString(), recipients);
                 }
@@ -1484,6 +1490,13 @@ public class TriggerScriptHelper
             if (toAutomaticallyCreate == null || toAutomaticallyCreate.length == 0)
                 return;
 
+            //test permission first
+            if (!EHRService.get().hasPermission("study", "clinpathRuns", getContainer(), getUser(), InsertPermission.class, EHRService.QCSTATES.RequestPending.getQCState(getContainer())))
+            {
+                _log.warn("User does not have permission to insert requests into Clinpath Runs follow blood draw: " + getUser().getEmail());
+                return;
+            }
+
             for (Map<String, Object> rowMap : toAutomaticallyCreate)
             {
                 rowMap = new CaseInsensitiveHashMap<>(rowMap);
@@ -1533,7 +1546,7 @@ public class TriggerScriptHelper
         catch (Exception e)
         {
             //Unsure why these are getting swallowed and not logged?
-            _log.error(e);
+            _log.error(e.getMessage(), e);
             throw e;
         }
     }

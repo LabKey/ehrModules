@@ -78,7 +78,7 @@ Ext4.define('EHR.grid.Panel', {
     onStoreValidationComplete: function(){
         var keys = Ext4.Object.getKeys(this.pendingChanges);
         if (keys.length > 5){
-            console.log('grid refresh');
+            console.log('grid refresh: ' + this.store.storeId);
             this.getView().refresh();
         }
         else {
@@ -152,7 +152,7 @@ Ext4.define('EHR.grid.Panel', {
             if (colCfg){
                 if (cfg.jsonType == 'date' && cfg.extFormat){
                     if (Ext4.Date.formatContainsHourInfo(cfg.extFormat)){
-                        colCfg.editor = 'xdatetime';
+                        colCfg.editor.xtype = 'xdatetime';
                     }
                 }
 

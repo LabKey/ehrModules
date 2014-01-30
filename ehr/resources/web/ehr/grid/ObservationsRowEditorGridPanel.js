@@ -14,27 +14,16 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             columns: this.getColumns(),
-            plugins: [{
-                ptype: 'cellediting',
-                pluginId: 'cellediting',
-                clicksToEdit: 1,
-                startEdit: function(record, columnHeader) {
-                    this.editors.clear();
-                    Ext4.grid.plugin.CellEditing.prototype.startEdit.apply(this, arguments);
-                }
-            }],
-            listeners: {
-                scope: this,
-                cellclick: function(grid, cell, cellIdx, rec){
-                    //because we show a different editor depending on the field value,
-                    //we need to clear the cached editor
-                    var grid = grid.up('grid');
-                    var column = grid.columns[cellIdx];
-                    var plugin = grid.getPlugin('cellediting');
-                    if (plugin.editors)
-                        plugin.editors.removeAtKey(column.getItemId());
-                }
+            boundRecord: null,
+            boundRecordId: null,
+            selModel: {
+                mode: 'MULTI'
             },
+            plugins: [{
+                ptype: 'clinicalobservationscellediting',
+                pluginId: 'cellediting',
+                clicksToEdit: 1
+            }],
             dockedItems: [{
                 xtype: 'toolbar',
                 position: 'top',
@@ -101,10 +90,12 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
             },
             editor: {
                 xtype: 'labkey-combo',
-                editable: false,
+                editable: true,
                 displayField: 'value',
                 valueField: 'value',
                 forceSelection: true,
+                queryMode: 'local',
+                anyMaych: true,
                 store: {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
@@ -123,6 +114,8 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
                 displayField: 'value',
                 valueField: 'value',
                 forceSelection: true,
+                queryMode: 'local',
+                anyMaych: true,
                 value: 'N/A',
                 store: {
                     type: 'labkey-store',
@@ -137,42 +130,17 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
             editable: true,
             dataIndex: 'observation',
             renderer: function(value, cellMetaData, record){
-                if (Ext4.isEmpty(value)){
+                if (Ext4.isEmpty(value) && ['Vet Attention'].indexOf(record.get('category')) == -1){
                     cellMetaData.tdCls = 'labkey-grid-cell-invalid';
                 }
 
                 return value;
             },
-            getEditor: function(record){
-                if (!record){
-                    //NOTE: i think this is an Ext4 core bug.  if you tab between cells
-                    //this method is called w/o arguments
-                    var records = this.up('grid').getSelectionModel().getSelection();
-                    if (records.length)
-                        record = records[0];
-                    else
-                        return;
-                }
-
-                var category = record.get('category');
-                if (!category){
-                    return false;
-                }
-
-                var store = this.up('grid').store.observationTypesStore;
-                var rec = store.findRecord('value', category);
-                LDK.Assert.assertNotEmpty('Unable to find record matching category: ' + category, rec);
-
-                var config = rec.get('description') ? Ext4.decode(rec.get('description')) : null;
-                return config || {
-                    xtype: 'textfield'
-                }
+            editor: {
+                xtype: 'textfield'
             }
         }]
     },
-
-    boundRecord: null,
-    boundRecordId: null,
 
     onRecordUpdate: function(store, rec){
         if (rec === this.boundRecord){

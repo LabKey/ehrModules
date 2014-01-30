@@ -10,8 +10,17 @@ EHR.model.DataModelManager.registerMetadata('SingleQuery', {
         }
     },
     byQuery: {
-     'study.clinremarks': {
+        'study.clinremarks': {
 
+        },
+        'study.treatment_order': {
+            frequency: {
+                lookup: {
+                    //added to allow legacy frequencies
+                    storeId: 'study||treatment_frequency||rowid||meaning||unfiltered',
+                    filterArray: []
+                }
+            }
         }
     }
 });

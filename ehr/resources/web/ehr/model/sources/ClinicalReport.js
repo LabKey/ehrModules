@@ -10,7 +10,7 @@ EHR.model.DataModelManager.registerMetadata('ClinicalReport', {
                 hidden: false,
                 allowBlank: false
             },
-            p2: {
+            hx: {
                 hidden: false
             }
         }

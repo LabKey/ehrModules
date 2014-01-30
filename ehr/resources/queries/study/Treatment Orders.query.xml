@@ -35,6 +35,7 @@
                             <fkColumnName>value</fkColumnName>
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
+                        <description>Depending on what is selected, the treatment will appear on a different schedule (ie. Clinical, Surgical, etc)</description>
                     </column>
                     <column columnName="reason">
                         <columnTitle>Reason</columnTitle>
@@ -109,7 +110,7 @@
                         </fk>
                     </column>
                     <column columnName="amount">
-                        <columnTitle>Amount To Give</columnTitle>
+                        <columnTitle>Amount</columnTitle>
                     </column>
                     <column columnName="amount_units">
                         <columnTitle>Amount Units</columnTitle>

@@ -9,10 +9,11 @@
 Ext4.define('EHR.window.AddClinicalCasesWindow', {
     extend: 'Ext.window.Window',
     caseCategory: 'Clinical',
-    templateName: 'Clinical Rounds',
+    templateName: 'Limited Visual Exam',
     templateStoreId: 'Clinical Observations',
 
     allowNoSelection: false,
+    allowReviewAnimals: true,
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
@@ -28,7 +29,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             },
             items: [{
                 html: 'This helper allows you to query open cases and add records for these animals.' +
-                    this.allowNoSelection ? '  Leave blank to load all areas.' : '',
+                    (this.allowNoSelection ? '  Leave blank to load all areas.' : ''),
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'ehr-areafield',
@@ -37,10 +38,20 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField'
             },{
+                xtype: 'xdatetime',
+                fieldLabel: 'Date',
+                value: new Date(),
+                itemId: 'date'
+            },{
                 xtype: 'textfield',
                 fieldLabel: 'Entered By',
                 value: LABKEY.Security.currentUser.displayName,
                 itemId: 'performedBy'
+            },{
+                xtype: 'checkbox',
+                hidden: !this.allowReviewAnimals,
+                fieldLabel: 'Review Animals First',
+                itemId: 'reviewAnimals'
             }],
             buttons: [{
                 text:'Submit',
@@ -76,19 +87,26 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         });
     },
 
-    getFilterArray: function(){
-        var area = this.down('#areaField') ? this.down('#areaField').getValue() : [];
+    getCasesFilterArray: function(){
+        var filterArray = this.getBaseFilterArray();
+        if (!filterArray)
+            return;
+
+        filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
+        filterArray.push(LABKEY.Filter.create('category', this.caseCategory, LABKEY.Filter.Types.EQUAL));
+        return filterArray;
+    },
+
+    getBaseFilterArray: function(){
+        var area = this.down('#areaField').getValue() || [];
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
 
-        if (!this.allowNoSelection && !area && !rooms.length){
-            alert('Must provide at least one room or an area');
+        if (!this.allowNoSelection && !area.length && !rooms.length){
+            Ext4.Msg.alert('Error', 'Must provide at least one room or an area');
             return;
         }
 
         var filterArray = [];
-
-        filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
-        filterArray.push(LABKEY.Filter.create('category', this.caseCategory, LABKEY.Filter.Types.EQUAL));
 
         if (area.length)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
@@ -100,7 +118,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     },
 
     getCases: function(button){
-        var filterArray = this.getFilterArray();
+        var filterArray = this.getCasesFilterArray();
         if (!filterArray || !filterArray.length){
             return;
         }
@@ -114,7 +132,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'Id,objectid,mostRecentP2',
+            columns: 'Id,objectid,mostRecentP2,Id/Utilization/use',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -125,6 +143,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     onSuccess: function(results){
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
+            this.close();
             Ext4.Msg.alert('', 'No active cases were found.');
             return;
         }
@@ -132,18 +151,20 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         LDK.Assert.assertNotEmpty('Unable to find targetStore in AddClinicalCasesWindow', this.targetStore);
 
         var records = [];
-        var performedby = this.down('#performedBy').getValue();
+        this.recordData = {
+            performedby: this.down('#performedBy').getValue(),
+            date: this.down('#date').getValue()
+        }
 
-        var ids = [];
-        var date = new Date();
+        var idMap = {};
 
         Ext4.Array.each(results.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
-            ids.push(row.getValue('Id'));
+            idMap[row.getValue('Id')] = row;
 
             var obj = {
                 Id: row.getValue('Id'),
-                date: date,
+                date: this.recordData.date,
                 category: 'Clinical',
                 s: null,
                 o: null,
@@ -152,35 +173,133 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 p2: row.getValue('mostRecentP2'),
                 caseid: row.getValue('objectid'),
                 remark: null,
-                performedby: performedby
+                performedby: this.recordData.performedby
             };
 
             records.push(this.targetStore.createModel(obj));
         }, this);
 
-        this.targetStore.add(records);
-
-        if (this.obsTemplateId){
-            this.applyObsTemplate(ids, date);
+        if (this.down('#reviewAnimals').getValue()){
+            this.doReviewAnimals(records, idMap);
         }
         else {
-            Ext4.Msg.hide();
+            this.addRecords(records);
         }
     },
 
-    applyObsTemplate: function(ids, date){
-        ids = Ext4.Array.unique(ids);
+    doReviewAnimals: function(caseRecords, idMap){
+        var toAdd = [{
+            html: 'Id'
+        },{
+            html: 'Projects/Groups'
+        },{
+            html: 'Include'
+        }];
+
+        Ext4.Array.forEach(caseRecords, function(rec){
+            var ar = idMap[rec.get('Id')];
+
+            toAdd.push({
+                html: rec.get('Id')
+            });
+
+            toAdd.push({
+                html: ar.getDisplayValue('Id/Utilization/use') ? ar.getDisplayValue('Id/Utilization/use') : 'None'
+            });
+
+            toAdd.push({
+                xtype: 'checkbox',
+                record: rec,
+                checked: true
+            });
+        }, this);
+
+        Ext4.Msg.hide();
+        Ext4.create('Ext.window.Window', {
+            title: 'Choose Animals To Add',
+            ownerWindow: this,
+            closeAction: 'destroy',
+            width: 450,
+            modal: true,
+            items: [{
+                border: false,
+                bodyStyle: 'padding: 5px;',
+                defaults: {
+                    border: false,
+                    style: 'margin-right: 10px;'
+                },
+                maxHeight: Ext4.getBody().getHeight() * 0.8,
+                autoScroll: true,
+                layout: {
+                    type: 'table',
+                    columns: 3
+                },
+                items: toAdd
+            }],
+            buttons: [{
+                xtype: 'button',
+                text: 'Submit',
+                scope: this,
+                handler: this.onSubmit
+            },{
+                xtype: 'button',
+                text: 'Cancel',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
+        }).show();
+    },
+
+    onSubmit: function(btn){
+        var win = btn.up('window');
+        var cbs = win.query('checkbox');
+
         var records = [];
-        Ext4.Array.forEach(ids, function(id){
+        Ext4.Array.forEach(cbs, function(cb){
+            if (cb.getValue()){
+                records.push(cb.record);
+            }
+        }, this);
+
+        win.close();
+
+        if (records.length){
+            Ext4.Msg.wait('Loading...');
+            this.addRecords(records);
+        }
+        else {
+            win.ownerWindow.close();
+        }
+    },
+
+    addRecords: function(records){
+        this.targetStore.add(records);
+
+        if (this.obsTemplateId){
+            this.applyObsTemplate(records);
+        }
+        else {
+            Ext4.Msg.hide();
+            this.close();
+        }
+    },
+
+    applyObsTemplate: function(caseRecords){
+        var records = [];
+        Ext4.Array.forEach(caseRecords, function(rec){
             records.push({
-                Id: id,
-                date: date
+                Id: rec.get('Id'),
+                caseid: rec.get('caseid'),
+                date: this.recordData.date,
+                performedby: this.recordData.performedby
             });
         }, this);
 
         EHR.window.ApplyTemplateWindow.loadTemplateRecords(function(recMap){
             if (!recMap || LABKEY.Utils.isEmptyObj(recMap)){
                 Ext4.Msg.hide();
+                this.close();
                 return;
             }
 
@@ -190,6 +309,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             }
 
             Ext4.Msg.hide();
+            this.close();
 
         }, this, this.targetStore.storeCollection, this.obsTemplateId, records);
     }

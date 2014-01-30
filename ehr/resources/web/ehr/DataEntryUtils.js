@@ -64,39 +64,6 @@ EHR.DataEntryUtils = new function(){
                 }
             }, config);
         },
-        ADDANIMALS: function(config){
-            return Ext4.Object.merge({
-                text: 'Add Batch',
-                tooltip: 'Click to add a batch of animals, either as a list or by location',
-                handler: function(btn){
-                    var grid = btn.up('gridpanel');
-
-                    Ext4.create('EHR.window.AddAnimalsWindow', {
-                        targetStore: grid.store,
-                        formConfig: grid.formConfig
-                    }).show();
-                }
-            }, config);
-        },
-        GUESSPROJECT: function(config){
-            return Ext4.Object.merge({
-                text: 'Guess Projects',
-                tooltip: 'Click to automatically set the project on the selected records',
-                handler: function(btn){
-                    var grid = btn.up('gridpanel');
-                    var selected = grid.getSelectionModel().getSelection();
-                    if (!selected || !selected.length){
-                        Ext4.Msg.alert('Error', 'No records selected');
-                        return;
-                    }
-
-                    Ext4.create('EHR.window.GuessProjectWindow', {
-                        targetGrid: grid,
-                        records: selected
-                    }).show();
-                }
-            }, config);
-        },
         SELECTALL: function(config){
             return Ext4.Object.merge({
                 text: 'Select All',
@@ -114,44 +81,6 @@ EHR.DataEntryUtils = new function(){
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     grid.getView().refresh();
-                }
-            }, config);
-        },
-        DUPLICATE: function(config){
-            return Ext4.Object.merge({
-                text: 'Duplicate Selected',
-                tooltip: 'Click to duplicate selected rows',
-                handler: function(btn){
-                    var grid = btn.up('gridpanel');
-                    var selected = grid.getSelectionModel().getSelection();
-                    if (!selected || !selected.length){
-                        Ext4.Msg.alert('Error', 'No records selected');
-                        return;
-                    }
-
-                    Ext4.create('EHR.window.RecordDuplicatorWindow', {
-                        targetGrid: grid
-                    }).show();
-                }
-            }, config);
-        },
-        BULKEDIT: function(config){
-            return Ext4.Object.merge({
-                text: 'Bulk Edit',
-                tooltip: 'Click to edit the selected rows in bulk',
-                handler: function(btn){
-                    var grid = btn.up('gridpanel');
-                    var selected = grid.getSelectionModel().getSelection();
-                    if (!selected || !selected.length){
-                        Ext4.Msg.alert('Error', 'No records selected');
-                        return;
-                    }
-
-                    Ext4.create('EHR.window.BulkEditWindow', {
-                        targetStore: grid.store,
-                        formConfig: grid.formConfig,
-                        records: selected
-                    }).show();
                 }
             }, config);
         },
@@ -312,7 +241,7 @@ EHR.DataEntryUtils = new function(){
          * Re-runs server-side validation on all records.  Primarily useful if something goes wrong in the normal validation process and an error will not disappear as it should
          */
         VALIDATEALL: {
-            text: 'Validate',
+            text: 'Re-Validate',
             name: 'validate',
             disabled: false,
             itemId: 'validateBtn',
@@ -359,7 +288,7 @@ EHR.DataEntryUtils = new function(){
          * Will submit/save the form and then return to the enterData page.  It does not alter the QCState of records.
          */
         OPENCLINICALCASE: {
-            text: 'Open Clinical Case',
+            text: 'Open/Manage Clinical Case',
             name: 'openClinicalCase',
             //requiredQC: 'In Progress',
             successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
@@ -386,44 +315,23 @@ EHR.DataEntryUtils = new function(){
                     return;
                 }
 
-                var win = Ext4.create('EHR.window.ManageCasesWindow', {
-                    animalId: animalId
-                });
+                Ext4.Msg.wait('Loading...');
+                EHR.DemographicsCache.getDemographics(animalId, function(ids, idMap){
+                    Ext4.Msg.hide();
 
-                win.down('panel').showCreateWindow('Clinical');
-            }
-        },
-        OPENSURGERYCASES: {
-            text: 'Open Cases',
-            name: 'openSurgeryCase',
-            //requiredQC: 'In Progress',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
-            disabled: false,
-            itemId: 'openSurgeryCases',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-                LDK.Assert.assertNotEmpty('Unable to find dataentrypanel from OPENSURGERYCASES button', panel);
+                    var ar = idMap[animalId];
+                    if (!ar){
+                        Ext4.Msg.alert('Error', 'Unknown Id: ' + animalId);
+                        return;
+                    }
 
-                //find id
-                var clientStore = panel.storeCollection.getClientStoreByName('Clinical Encounters') || panel.storeCollection.getClientStoreByName('Clinical Remarks');
-                LDK.Assert.assertNotEmpty('Unable to find clientStore from OPENSURGERYCASES button', clientStore);
+                    var win = Ext4.create('EHR.window.ManageCasesWindow', {
+                        animalId: animalId
+                    });
+                    win.show();
 
-                if (!clientStore.getCount()){
-                    Ext4.Msg.alert('Error', 'No Animals Entered');
-                    return;
-                }
-
-//                var animalId = rec.get('Id');
-//                if (!animalId){
-//                    Ext4.Msg.alert('Error', 'No Animal Entered');
-//                    return;
-//                }
-//
-//                var win = Ext4.create('EHR.window.ManageCasesWindow', {
-//                    animalId: animalId
-//                });
-//
-//                win.down('panel').showCreateWindow('Surgery');
+                    win.down('panel').showCreateWindow('Clinical');
+                }, this);
             }
         },
         /**
@@ -469,7 +377,7 @@ EHR.DataEntryUtils = new function(){
             var cfg = LABKEY.ext4.Util.getFormEditorConfig(columnInfo);
 
             if (cfg.xtype == 'numberfield'){
-                cfg.hideTrigger = true;
+                cfg.xtype = 'ldk-numberfield';
             }
 
             return cfg;
@@ -496,6 +404,7 @@ EHR.DataEntryUtils = new function(){
             }
 
             if (col.editor && col.editor.xtype == 'numberfield'){
+                col.editor.xtype = 'ldk-numberfield';
                 col.editor.hideTrigger = true;
             }
 
@@ -621,7 +530,13 @@ EHR.DataEntryUtils = new function(){
                 columns: 'code,meaning,categories',
                 sort: 'meaning',
                 storeId: storeId,
-                autoLoad: true
+                autoLoad: true,
+                getRecordForCode: function(code){
+                    var recIdx = this.findExact('code', code);
+                    if (recIdx != -1){
+                        return this.getAt(recIdx);
+                    }
+                }
             });
 
             return EHR._snomedStore;
@@ -637,7 +552,7 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'procedures',
-                columns: 'rowid,name,active,category,remark',
+                columns: 'rowid,name,active,category,remark,major,incision,recoveryDays,followupDays,analgesiaRx,antibioticRx',
                 sort: 'category,name',
                 storeId: storeId,
                 autoLoad: true
@@ -675,10 +590,77 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'drug_defaults',
-                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,volume,vol_units,route,frequency,duration,offset',
+                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,amount_rounding,volume,vol_units,volume_rounding,route,frequency,duration,offset',
                 sort: 'code',
                 storeId: storeId,
-                autoLoad: true
+                autoLoad: true,
+                listeners: {
+                    delay: 100,
+                    load: function(store){
+                        store.getFormularyMap();
+                    }
+                },
+                getFormularyRecords: function(code){
+                    var ret = this.getFormularyMap() ? this.getFormularyMap()[code] : null;
+
+                    return ret || [];
+                },
+                getFormularyValues: function(code){
+                    var records = this.getFormularyRecords(code);
+
+                    var values = {};
+                    for (var i=0;i<records.length;i++){
+                        records[i].fields.each(function(f){
+                            values[f.name] = values[f.name] || [];
+                            values[f.name].push(records[i].get(f.name));
+                        }, this);
+                    }
+
+                    var uniqueValues = {}, arr;
+                    for (var fieldName in values){
+                        arr = Ext4.unique(values[fieldName]);
+                        if (arr.length == 1){
+                            uniqueValues[fieldName] = arr[0];
+                        }
+                        else {
+                            console.log('not unique: ' + fieldName);
+                            console.log(arr);
+                        }
+                    }
+
+                    return uniqueValues;
+                },
+                getFormularyMap: function(){
+                    if (this.formularyMap){
+                        return this.formularyMap;
+                    }
+
+                    var map = {};
+                    this.each(function(r){
+                        var code = r.get('code');
+                        if (!code){
+                            return;
+                        }
+
+                        //TODO: allow config to filter on category
+
+                        if (!map[code]){
+                            map[code] = [];
+                        }
+
+                        map[code].push(r);
+                    }, this);
+
+                    if (this.isLoading()){
+                        console.log('getFormularyMap() called prior to store load')
+                        return map;
+                    }
+
+                    this.formularyMap = map;
+                    LDK.Assert.assertTrue('Formulary is an empty map', !Ext4.Object.isEmpty(this.formularyMap));
+
+                    return this.formularyMap;
+                }
             });
 
             return EHR._formularyStore;
@@ -708,7 +690,7 @@ EHR.DataEntryUtils = new function(){
             var defaultProject = null;
             var store = EHR.DataEntryUtils.getProjectStore();
             if (store){
-                var recIdx = store.find('displayName', '0492');
+                var recIdx = store.findExact('displayName', '0492');
                 if (recIdx != -1){
                     defaultProject = store.getAt(recIdx).get('project');
                 }
@@ -734,6 +716,52 @@ EHR.DataEntryUtils = new function(){
             });
         },
 
+        calculateDrugAmount: function(valMap, rounding, fixedVolume){
+            var amount;
+            if (!fixedVolume){
+                // amount = weight * dosage (ie. mg/kg * kg)
+                if (valMap.dosage && valMap.weight){
+                    amount = valMap.dosage * valMap.weight;
+                }
+            }
+            else {
+                // back-calculate using the vol provided
+                // amount = vol * conc (ie. ml * mg/ml)
+                if (valMap.volume && valMap.concentration){
+                    amount = valMap.volume * valMap.concentration
+                }
+            }
+
+            if (!amount && Ext4.isEmpty(rounding)){
+                amount = EHR.Utils.roundToNearest(amount, rounding);
+            }
+
+            return amount;
+        },
+
+        calculateDrugVolume: function(valMap, rounding, fixedAmount){
+            var vol;
+            if (!fixedAmount){
+                // vol = dosage * weight / conc (ie. mg/kg * kg / mg/ml)
+                if (valMap.concentration && valMap.dosage && valMap.weight){
+                    vol = valMap.dosage * valMap.weight / valMap.concentration;
+                }
+            }
+            else {
+                // back-calculate vol based on fixed amount
+                // vol = amount / concentration (ie. mg / mg/ml)
+                if (valMap.concentration && valMap.amount){
+                    vol = valMap.amount / valMap.concentration;
+                }
+            }
+
+            if (vol && !Ext4.isEmpty(rounding)){
+                vol = EHR.Utils.roundToNearest(vol, rounding);
+            }
+
+            return vol;
+        },
+
         setDataEntryPanel: function(panel){
             dataEntryPanel = panel;
         },
@@ -746,7 +774,10 @@ EHR.DataEntryUtils = new function(){
 
                 Ext4.Array.forEach(ids, function(id){
                     var data = dataMap[id];
-                    ret[id] = clientWeightMap[id] || (data ? data.getMostRecentWeight() : null);
+                    ret[id] = {
+                        weight: clientWeightMap[id] || (data ? data.getMostRecentWeight() : null),
+                        weightType: clientWeightMap[id] ? 'From Form' : (data ? 'Latest Saved' : null)
+                    };
                 }, this);
 
                 if (callback)
@@ -829,7 +860,7 @@ EHR.DataEntryUtils = new function(){
                     var procedureName;
                     LDK.Assert.assertNotEmpty('Unable to find procedureStore from SurgeryAddRecordWindow', procedureStore);
                     if (r.get('procedureid')){
-                        var procRecIdx = procedureStore.find('rowid', r.get('procedureid'));
+                        var procRecIdx = procedureStore.findExact('rowid', r.get('procedureid'));
                         var procedureRec = procedureStore.getAt(procRecIdx);
                         LDK.Assert.assertNotEmpty('Unable to find procedure record from SurgeryAddRecordWindow', procedureRec);
                         procedureName = procedureRec.get('name');
@@ -843,6 +874,8 @@ EHR.DataEntryUtils = new function(){
                         title: title,
                         parentid: r.get('objectid'),
                         Id: r.get('Id'),
+                        project: r.get('project'),
+                        performedby: r.get('performedby'),
                         date: r.get('date')
                     });
                 }

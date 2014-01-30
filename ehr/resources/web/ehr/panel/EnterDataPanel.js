@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 Ext4.define('EHR.panel.EnterDataPanel', {
-    extend: 'Ext.tab.Panel',
+    extend: 'LDK.panel.QueryTabPanel',
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {

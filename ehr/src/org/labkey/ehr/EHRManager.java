@@ -94,6 +94,9 @@ public class EHRManager
     public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exception";
     public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exception";
 
+    public static final String VET_ATTENTION = "Vet Attention";
+    public static final String OBS_REVIEWED = "Reviewed";
+
     private static final Logger _log = Logger.getLogger(EHRManager.class);
 
     private EHRManager()

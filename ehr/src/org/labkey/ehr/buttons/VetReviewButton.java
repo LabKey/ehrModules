@@ -16,34 +16,28 @@
 package org.labkey.ehr.buttons;
 
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
+import org.labkey.api.ehr.security.EHRVeternarianPermission;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
-import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.view.template.ClientDependency;
 
 /**
  * User: bimber
- * Date: 8/21/13
- * Time: 7:09 PM
+ * Date: 8/2/13
+ * Time: 12:26 PM
  */
-public class DuplicateTaskButton extends SimpleButtonConfigFactory
+public class VetReviewButton extends SimpleButtonConfigFactory
 {
-    public DuplicateTaskButton(Module owner)
+    public VetReviewButton(Module owner)
     {
-        super(owner, "Discard Tasks", "EHR.DatasetButtons.duplicateTaskHandler(dataRegion);");
-
-
+        super(owner, "Mark Vet Review", "EHR.window.VetReviewWindow.buttonHandler(dataRegionName);");
+        setClientDependencies(ClientDependency.fromFilePath("ehr/window/VetReviewWindow.js"));
     }
 
     public boolean isAvailable(TableInfo ti)
     {
-        if (!super.isAvailable(ti))
-            return false;
-
-        if (ti.getUserSchema().getName().equalsIgnoreCase("ehr") && ti.getPublicName().equalsIgnoreCase("tasks"))
-        {
-            return ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), DeletePermission.class);
-        }
-
-        return false;
+        return super.isAvailable(ti) && ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), EHRVeternarianPermission.class);
     }
 }
+

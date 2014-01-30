@@ -14,7 +14,23 @@
  * limitations under the License.
  */
 
---NOTE: this is created to use for lookups.  The Administrators group causes problems for combos and lookups
-SELECT * FROM core.UsersAndGroups
-WHERE userid > 0
---WHERE name != 'Administrators' AND name != 'Guests' AND name != 'Users' AND name != 'Developers'
+SELECT
+  u.UserId,
+  u.DisplayName,
+  'u' as Type,
+  u.FirstName,
+  u.LastName
+
+FROM core.Users u
+WHERE u.userid > 0
+
+UNION ALL
+
+SELECT
+  g.UserId,
+  g.Name as DisplayName,
+  'g' as Type,
+  null as FirstName,
+  null as LastName
+FROM core.groups g
+WHERE g.userid > 0

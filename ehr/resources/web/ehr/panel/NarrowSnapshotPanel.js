@@ -34,17 +34,6 @@ Ext4.define('EHR.panel.NarrowSnapshotPanel', {
         var extended = this.getExtendedItems();
         thirdCol.items = thirdCol.items.concat(extended[0].items[1].items[0].items);
 
-        if (!this.redacted){
-            items[0].items.push({
-                xtype: 'displayfield',
-                style: 'margin-left: 5px;',
-                labelWidth: this.defaultLabelWidth,
-                fieldLabel: 'Medications',
-                itemId: 'medications',
-                width: 800
-            });
-        }
-
         return items;
     }
 });

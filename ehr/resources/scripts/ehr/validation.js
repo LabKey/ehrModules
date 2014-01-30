@@ -97,14 +97,16 @@ EHR.Server.Validation = {
         if (!date)
             return;
 
-        //find if the date is greater than now
         var currentTime = new java.util.GregorianCalendar();
         var rowTime = new java.util.GregorianCalendar();
         rowTime.setTimeInMillis(date.getTime());
-        var millsDiff = rowTime.getTimeInMillis() - currentTime.getTimeInMillis();
-        //console.log('mills diff: ' + millsDiff +  ' / ' + rowTime.getTime() + '/' + currentTime.getTime());
-        if (!helper.isValidateOnly() && millsDiff > 6000 && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
-            EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
+
+        //find if the date is greater than now
+        if (!helper.isValidateOnly() && !helper.isAllowFutureDates()){
+            var millsDiff = rowTime.getTimeInMillis() - currentTime.getTimeInMillis();
+            if (millsDiff > 6000 && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
+                EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
+            }
         }
 
         //consider date-only, not date/time

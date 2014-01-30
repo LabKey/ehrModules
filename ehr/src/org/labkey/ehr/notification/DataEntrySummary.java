@@ -38,6 +38,7 @@ import org.labkey.ehr.EHRManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -194,7 +195,8 @@ public class DataEntrySummary implements NotificationSection
 
         for (final Study s : studies)
         {
-            List<? extends DataSet> datasets = s.getDataSets();
+            List<DataSet> datasets = new ArrayList<>();
+            datasets.addAll(s.getDataSets());
             Collections.sort(datasets, new Comparator<DataSet>()
             {
                 @Override

@@ -13,6 +13,28 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
     selectField: 'lsid',
     title: 'Create Task',
 
+    statics: {
+        /**
+         * This add a button that allows the user to create a task from a list of IDs, that contains one record per ID.  It was originally
+         * created to allow users to create a weight task based on a list of IDs (like animals needed weights).
+         */
+        createTaskFromRecordHandler: function(dataRegionName, formType, taskLabel){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                Ext4.Msg.alert('Error', 'No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.CreateTaskFromRecordsWindow', {
+                dataRegionName: dataRegionName,
+                title: 'Schedule ' + taskLabel + " For Selected Rows",
+                formType: formType,
+                taskLabel: taskLabel
+            }).show();
+        }
+    },
+
     initComponent: function(){
         LDK.Assert.assertNotEmpty('Missing formtype in CreateTaskFromRecordsWindow', this.formType);
 

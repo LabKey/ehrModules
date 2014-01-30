@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
@@ -25,6 +26,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -44,9 +46,17 @@ public class DefaultProblemListCloseDataSource extends AbstractDataSource
     @Override
     protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
+        Date start = rs.getDate(FieldKey.fromString("date"));
+        Date end = rs.getDate(FieldKey.fromString("enddate"));
+        if (DateUtils.isSameDay(start, end))
+        {
+            return null;
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(safeAppend(rs, "Category", "category"));
+        sb.append("Opened On: ").append(_dateFormat.format(start));
 
         return sb.toString();
     }

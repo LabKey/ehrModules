@@ -40,6 +40,7 @@ import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.table.AbstractTableCustomizer;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
@@ -74,7 +75,7 @@ import java.util.Set;
  * Date: 12/7/12
  * Time: 2:29 PM
  */
-public class DefaultEHRCustomizer implements TableCustomizer
+public class DefaultEHRCustomizer extends AbstractTableCustomizer
 {
     public static final String ID_COL = "Id";
     public static final String PARTICIPANT_CONCEPT_URI = "http://cpas.labkey.com/Study#ParticipantId";
@@ -189,6 +190,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 ati.removeColumn(qc);
                 ati.addColumn(qc);
             }
+
+            customizeButtonBar((AbstractTableInfo) table);
         }
 
         LDKService.get().getColumnsOrderCustomizer().customize(table);
@@ -221,7 +224,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             runId.setLabel("Run Id");
             if (runId.getFk() == null)
             {
-                UserSchema study = getStudyUserSchema(ti);
+                UserSchema study = getEHRStudyUserSchema(ti);
                 if (study != null)
                     runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", ID_COL));
             }
@@ -236,7 +239,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             parentId.setLabel("Encounter Id");
             if (parentId.getFk() == null)
             {
-                UserSchema study = getStudyUserSchema(ti);
+                UserSchema study = getEHRStudyUserSchema(ti);
                 if (study != null)
                     parentId.setFk(new QueryForeignKey(study, "Clinical Encounters", "objectid", ID_COL));
             }
@@ -250,13 +253,15 @@ public class DefaultEHRCustomizer implements TableCustomizer
             caseId.setLabel("Case Id");
         }
 
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+
         ColumnInfo taskId = ti.getColumn("taskId");
         if (taskId != null)
         {
             taskId.setLabel("Task Id");
             if (taskId.getFk() == null)
             {
-                UserSchema schema = getUserSchema(ti, "ehr");
+                UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                 if (schema != null)
                     taskId.setFk(new QueryForeignKey(schema, "tasks", "taskid", "rowid"));
             }
@@ -269,7 +274,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             requestId.setLabel("Request Id");
             if (requestId.getFk() == null)
             {
-                UserSchema schema = getUserSchema(ti, "ehr");
+                UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                 if (schema != null)
                     requestId.setFk(new QueryForeignKey(schema, "requests", "requestid", "rowid"));
             }
@@ -295,7 +300,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (project != null && !ti.getName().equalsIgnoreCase("project"))
         {
             project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            UserSchema us = getUserSchema(ti, "ehr");
+            UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
             if (us != null)
                 project.setFk(new QueryForeignKey(us, "project", "project", "project"));
         }
@@ -313,15 +318,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                 if (col.getFk() == null)
                 {
-                    Container c = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-                    if (c != null)
+                    UserSchema us = getEHRStudyUserSchema(ti);
+                    if (us != null)
                     {
-                        UserSchema us = getUserSchema(ti, "study", c);
-                        if (us != null)
-                        {
-                            col.setFk(new QueryForeignKey(us, "Animal", "Id", "Id"));
-                            col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", c));
-                        }
+                        col.setFk(new QueryForeignKey(us, "Animal", "Id", "Id"));
+                        col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", us.getContainer()));
                     }
                 }
             }
@@ -337,9 +338,13 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
             if (!ti.getName().equalsIgnoreCase("rooms"))
             {
-                UserSchema us = getUserSchema(ti, "ehr_lookups");
-                if (us != null){
-                    room.setFk(new QueryForeignKey(us, "rooms", "room", "room"));
+                Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+                if (ehrContainer != null)
+                {
+                    UserSchema us = getUserSchema(ti, "ehr_lookups", ehrContainer);
+                    if (us != null){
+                        room.setFk(new QueryForeignKey(us, "rooms", "room", "room"));
+                    }
                 }
                 room.setLabel("Room");
 
@@ -432,8 +437,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
 
         appendHistoryCol(ti);
-
-        customizeButtonBar((AbstractTableInfo) ds);
     }
 
     private void addIsActiveCol(AbstractTableInfo ti)
@@ -444,14 +447,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay)
     {
         addIsActiveCol(ti, allowSameDay, false);
-    }
-
-    private boolean matches(TableInfo ti, String schema, String query)
-    {
-        if (ti instanceof DataSetTable)
-            return ti.getSchema().getName().equalsIgnoreCase(schema) && (ti.getName().equalsIgnoreCase(query) || ti.getTitle().equalsIgnoreCase(query));
-        else
-            return ti.getSchema().getName().equalsIgnoreCase(schema) && ti.getName().equalsIgnoreCase(query);
     }
 
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
@@ -508,7 +503,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ti.getColumn(dateFieldName) == null || ti.getColumn(ID_COL) == null)
             return;
 
-        UserSchema us = getStudyUserSchema(ti);
+        UserSchema us = getEHRStudyUserSchema(ti);
         if (us != null){
 
             //needs date/time
@@ -631,13 +626,14 @@ public class DefaultEHRCustomizer implements TableCustomizer
             @Override
             public DisplayColumn createRenderer(final ColumnInfo colInfo)
             {
-                return new DataColumn(colInfo){
+                return new DataColumn(colInfo)
+                {
 
                     public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
                     {
-                        String objectid = (String)ctx.get("objectid");
-                        Date date = (Date)ctx.get("date");
-                        String id = (String)ctx.get(ID_COL);
+                        String objectid = (String) ctx.get("objectid");
+                        Date date = (Date) ctx.get("date");
+                        String id = (String) ctx.get(ID_COL);
 
                         out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
                     }
@@ -683,9 +679,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void addUnitColumns(AbstractTableInfo ds)
     {
-        addUnitsConcatCol(ds, "amount", "amount_units", "Amount To Give");
+        addUnitsConcatCol(ds, "amount", "amount_units", "Amount");
         addUnitsConcatCol(ds, "volume", "vol_units", "Volume");
         addUnitsConcatCol(ds, "concentration", "conc_units", "Concentration");
+
+        addAmountAndVolCol(ds);
     }
 
     private void addUnitsConcatCol(AbstractTableInfo ds, String colName, String unitColName, String label)
@@ -703,6 +701,42 @@ public class DefaultEHRCustomizer implements TableCustomizer
             );
             ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
             newCol.setLabel(label);
+            newCol.setHidden(true);
+            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            ds.addColumn(newCol);
+        }
+    }
+
+    private void addAmountAndVolCol(AbstractTableInfo ds)
+    {
+        ColumnInfo amountCol = ds.getColumn("amount");
+        ColumnInfo amountUnitCol = ds.getColumn("amount_units");
+        ColumnInfo volumeCol = ds.getColumn("volume");
+        ColumnInfo volumeUnitCol = ds.getColumn("vol_units");
+
+        if (amountCol != null && amountUnitCol != null && volumeCol != null && volumeUnitCol != null)
+        {
+            String name = "amountAndVolume";
+            SQLFragment sql = new SQLFragment("CASE " +
+                    //when both are null, return null
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL) THEN NULL" +
+
+                    //when volume is null, show amount only.  behave differently depending on whether units are null
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + " IS NULL) THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)" +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + " IS NOT NULL) THEN " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+
+                    //if volume is not null and amount is null
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NULL) THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)" +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName()) +
+
+                    //otherwise show both
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " +
+                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), getChr(ds) + "(10)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+                    " END"
+            );
+
+            ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, amountCol, amountUnitCol, volumeCol, volumeUnitCol);
+            newCol.setLabel("Amount And Volume");
             newCol.setHidden(true);
             newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             ds.addColumn(newCol);
@@ -849,7 +883,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         hideStudyColumns(ds);
         
-        UserSchema us = getStudyUserSchema(ds);
+        UserSchema us = getEHRStudyUserSchema(ds);
         if (us == null){            
             return;
         }
@@ -966,7 +1000,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         if (ti.getColumn("previousLocation") == null)
         {
-            UserSchema us = getStudyUserSchema(ti);
+            UserSchema us = getEHRStudyUserSchema(ti);
             if (us != null)
             {
                 ColumnInfo lsidCol = ti.getColumn("lsid");
@@ -1456,44 +1490,13 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ds.addColumn(col);
     }
 
-    public UserSchema getStudyUserSchema(AbstractTableInfo ds)
+    public UserSchema getEHRStudyUserSchema(AbstractTableInfo ti)
     {
-        return getUserSchema(ds, "study");
-    }
-
-    public UserSchema getUserSchema(AbstractTableInfo ds, String name)
-    {
-        Container c = ds.getUserSchema().getContainer();
-        return getUserSchema(ds, name, c);
-    }
-
-    // NOTE: we now cache userSchemas per container, since we want to allow tables in containers outside of the primary EHR container
-    // to get FKs that point to tables in the main EHR container
-    public UserSchema getUserSchema(AbstractTableInfo ds, String name, Container c)
-    {
-        assert c != null : "No container provided";
-
-        String key = c.getEntityId() + "||" + name;
-        if (_userSchemas.containsKey(key))
-            return _userSchemas.get(key);
-
-        UserSchema us = ds.getUserSchema();
-        if (us != null)
-        {
-            String tableKey = us.getContainer().getEntityId() + "||" + us.getName();
-            _userSchemas.put(tableKey, us);
-
-            if (name.equalsIgnoreCase(us.getName()) && c.equals(us.getContainer()))
-                return us;
-
-            UserSchema us2 = QueryService.get().getUserSchema(us.getUser(), c, name);
-            if (us2 != null)
-                _userSchemas.put(key, us2);
-
-            return us2;
-        }
-
-        return null;
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+        if (ehrContainer == null)
+            return getUserSchema(ti, "study");
+        
+        return getUserSchema(ti, "study", ehrContainer);
     }
 
     private void hideStudyColumns(AbstractTableInfo ds)

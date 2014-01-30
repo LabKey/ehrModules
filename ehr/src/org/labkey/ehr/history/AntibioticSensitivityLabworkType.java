@@ -127,7 +127,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
                 sb.append("<table>");
                 for (String line : runMap.get(microbe))
                 {
-                    sb.append("<tr>").append(line).append("</tr>");
+                    sb.append("<tr><td>").append(line).append("</td></tr>");
                 }
                 sb.append("</table>");
                 lines.add(sb.toString());

@@ -13,6 +13,26 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
     allowBlankQCState: false,
     title: 'Change Request Status',
 
+    statics: {
+        /**
+         * This add a button to a dataset that allows the user to change the QCState of the records, designed to approve or deny clinpath requests.
+         * @param dataRegionName
+         * @param menu
+         */
+        changeQCStateHandler: function(dataRegionName, className){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            Ext4.create(className || 'EHR.window.ChangeRequestStatusWindow', {
+                dataRegionName: dataRegionName
+            }).show();
+        }
+    },
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             modal: true,

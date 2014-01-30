@@ -13,6 +13,7 @@ Ext4.define('EHR.form.Panel', {
     },
 
     textareaFieldWidth: 600,
+    maxFieldWidth: null,
 
     initComponent: function(){
         Ext4.QuickTips.init();
@@ -53,7 +54,6 @@ Ext4.define('EHR.form.Panel', {
             }
 
             if (!field.name){
-                console.log(field);
                 field.name = field.itemId;
             }
 
@@ -62,6 +62,10 @@ Ext4.define('EHR.form.Panel', {
                 labelWidth: EHR.form.Panel.defaultLabelWidth,
                 width: cfg.width || ((cfg.xtype == 'textarea' || cfg.xtype == 'ehr-remarkfield') ? this.textareaFieldWidth : EHR.form.Panel.defaultFieldWidth)
             });
+
+            if (this.maxFieldWidth && cfg.width > this.maxFieldWidth){
+                cfg.width = this.maxFieldWidth;
+            }
 
             //skip hidden fields
             if (cfg.hidden)
@@ -204,6 +208,7 @@ Ext4.define('EHR.form.Panel', {
 
         items = [{
             xtype: 'panel',
+            itemId: 'columnPanel',
             layout: 'column',
             defaults: {
                 border: false

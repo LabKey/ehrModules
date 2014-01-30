@@ -18,19 +18,19 @@ SELECT
   w.numLast30,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    WHEN (abs((d.MostRecentWeight - w.MinLast30) * 100 / d.MostRecentWeight) > abs((d.MostRecentWeight - w.MaxLast30) * 100 / d.MostRecentWeight))
-    THEN Round(((d.MostRecentWeight-w.MinLast30) * 100 / d.MostRecentWeight), 1)
-    ELSE Round(((d.MostRecentWeight - w.MaxLast30) * 100 / d.MostRecentWeight), 1)
+    WHEN (abs((d.MostRecentWeight - w.MinLast30) * 100 / w.MinLast30) > abs((d.MostRecentWeight - w.MaxLast30) * 100 / w.MaxLast30))
+    THEN Round(((d.MostRecentWeight-w.MinLast30) * 100 / w.MinLast30), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast30) * 100 / w.MaxLast30), 1)
   END as MaxChange30,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight-w.MinLast30) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight-w.MinLast30) * 100 / w.MinLast30), 1)
   END as MaxGain30,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight - w.MaxLast30) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight - w.MaxLast30) * 100 / w.MaxLast30), 1)
   END as MaxLoss30,
   
   --90 days
@@ -40,18 +40,18 @@ SELECT
   w.numLast90,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    WHEN (abs((d.MostRecentWeight - w.MinLast90) * 100 / d.MostRecentWeight) > abs((d.MostRecentWeight - w.MaxLast90) * 100 / d.MostRecentWeight)) THEN Round(((d.MostRecentWeight-w.MinLast90) * 100 / d.MostRecentWeight), 1)
-    ELSE Round(((d.MostRecentWeight - w.MaxLast90) * 100 / d.MostRecentWeight), 1)
+    WHEN (abs((d.MostRecentWeight - w.MinLast90) * 100 / w.MinLast90) > abs((d.MostRecentWeight - w.MaxLast90) * 100 / w.MaxLast90)) THEN Round(((d.MostRecentWeight-w.MinLast90) * 100 / w.MinLast90), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast90) * 100 / w.MaxLast90), 1)
   END as MaxChange90,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight-w.MinLast90) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight-w.MinLast90) * 100 / w.MinLast90), 1)
   END as MaxGain90,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight - w.MaxLast90) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight - w.MaxLast90) * 100 / w.MaxLast90), 1)
   END as MaxLoss90,
 
   --180 days
@@ -61,18 +61,18 @@ SELECT
   w.numLast180,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    WHEN (abs((d.MostRecentWeight - w.MinLast180) * 100 / d.MostRecentWeight) > abs((d.MostRecentWeight - w.MaxLast180) * 100 / d.MostRecentWeight)) THEN Round(((d.MostRecentWeight-w.MinLast180) * 100 / d.MostRecentWeight), 1)
-    ELSE Round(((d.MostRecentWeight - w.MaxLast180) * 100 / d.MostRecentWeight), 1)
+    WHEN (abs((d.MostRecentWeight - w.MinLast180) * 100 / w.MinLast180) > abs((d.MostRecentWeight - w.MaxLast180) * 100 / w.MaxLast180)) THEN Round(((d.MostRecentWeight-w.MinLast180) * 100 / w.MinLast180), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast180) * 100 / w.MaxLast180), 1)
   END as MaxChange180,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight-w.MinLast180) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight-w.MinLast180) * 100 / w.MinLast180), 1)
   END as MaxGain180,
 
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight - w.MaxLast180) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight - w.MaxLast180) * 100 / w.MaxLast180), 1)
   END as MaxLoss180,
 
   --365 days
@@ -82,16 +82,16 @@ SELECT
   w.numLast365,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    WHEN (abs((d.MostRecentWeight - w.MinLast365) * 100 / d.MostRecentWeight) > abs((d.MostRecentWeight - w.MaxLast365) * 100 / d.MostRecentWeight)) THEN Round(((d.MostRecentWeight-w.MinLast365) * 100 / d.MostRecentWeight), 1)
-    ELSE Round(((d.MostRecentWeight - w.MaxLast365) * 100 / d.MostRecentWeight), 1)
+    WHEN (abs((d.MostRecentWeight - w.MinLast365) * 100 / w.MinLast365) > abs((d.MostRecentWeight - w.MaxLast365) * 100 / w.MaxLast365)) THEN Round(((d.MostRecentWeight-w.MinLast365) * 100 / w.MinLast365), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast365) * 100 / w.MaxLast365), 1)
   END as MaxChange365,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight-w.MinLast365) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight-w.MinLast365) * 100 / w.MinLast365), 1)
   END as MaxGain365,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight - w.MaxLast365) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight - w.MaxLast365) * 100 / w.MaxLast365), 1)
   END as MaxLoss365,
 
   --2 years
@@ -101,16 +101,16 @@ SELECT
   w.numLast2Years,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    WHEN (abs((d.MostRecentWeight - w.MinLast2Years) * 100 / d.MostRecentWeight) > abs((d.MostRecentWeight - w.MaxLast2Years) * 100 / d.MostRecentWeight)) THEN Round(((d.MostRecentWeight-w.MinLast2Years) * 100 / d.MostRecentWeight), 1)
-    ELSE Round(((d.MostRecentWeight - w.MaxLast2Years) * 100 / d.MostRecentWeight), 1)
+    WHEN (abs((d.MostRecentWeight - w.MinLast2Years) * 100 / w.MinLast2Years) > abs((d.MostRecentWeight - w.MaxLast2Years) * 100 / w.MaxLast2Years)) THEN Round(((d.MostRecentWeight-w.MinLast2Years) * 100 / w.MinLast2Years), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast2Years) * 100 / w.MaxLast2Years), 1)
   END as MaxChange2Years,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight-w.MinLast2Years) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight-w.MinLast2Years) * 100 / w.MinLast2Years), 1)
   END as MaxGain2Years,
   CASE
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
-    else Round(((d.MostRecentWeight - w.MaxLast2Years) * 100 / d.MostRecentWeight), 1)
+    else Round(((d.MostRecentWeight - w.MaxLast2Years) * 100 / w.MaxLast2Years), 1)
   END as MaxLoss2Years
 
 FROM study.demographicsMostRecentWeight d     

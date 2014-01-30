@@ -9,6 +9,9 @@
 Ext4.define('EHR.window.ManageCasesWindow', {
     extend: 'Ext.window.Window',
 
+    width: 1100,
+    minHeight: 50,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             title: 'Manage Cases: ' + this.animalId,

@@ -184,7 +184,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 }, this);
             }
 
-            repeats = repeats * valueArray.length;
+            repeats = valueArray ? repeats * valueArray.length : 0;
         }, this);
 
         //now append the data rows
@@ -208,7 +208,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
 
             var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
             rows.push({
-                html: '<a href="' + url + '">' + this.aggregateData.rowMap[rowName].total + '</a>'
+                html: '<a href="' + url + '">' + (this.aggregateData.rowMap[rowName] ? this.aggregateData.rowMap[rowName].total : 0) + '</a>'
             });
 
             var parentData = this.aggregateData.rowMap[rowName];
@@ -278,7 +278,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         var total = 1;
         Ext4.each(this.colFields, function(colField){
             var valueArray = this.valueMap[colField];
-            total = total * valueArray.length;
+            total = valueArray ? total * valueArray.length : 0;
         }, this);
 
         total += 2;
@@ -292,7 +292,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         var length = 1;
         for (var i=idx;i<colFields.length;i++){
             var name = colFields[i];
-            length = length * this.valueMap[name].length;
+            length = this.valueMap[name] ? length * this.valueMap[name].length : 0;
         }
         return length;
     },

@@ -26,7 +26,10 @@ Ext4.define('EHR.window.GuessProjectWindow', {
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'projects',
-                html: 'Loading...'
+                items: [{
+                    html: 'Loading...',
+                    border: false
+                }]
             }],
             buttons: [{
                 text: 'Submit',
@@ -158,4 +161,24 @@ Ext4.define('EHR.window.GuessProjectWindow', {
 
         this.close();
     }
+});
+
+EHR.DataEntryUtils.registerGridButton('GUESSPROJECT', function(config){
+    return Ext4.Object.merge({
+        text: 'Guess Projects',
+        tooltip: 'Click to automatically set the project on the selected records',
+        handler: function(btn){
+            var grid = btn.up('gridpanel');
+            var selected = grid.getSelectionModel().getSelection();
+            if (!selected || !selected.length){
+                Ext4.Msg.alert('Error', 'No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.GuessProjectWindow', {
+                targetGrid: grid,
+                records: selected
+            }).show();
+        }
+    }, config);
 });

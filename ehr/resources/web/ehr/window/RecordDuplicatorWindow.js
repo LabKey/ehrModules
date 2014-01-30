@@ -148,3 +148,22 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
         }
     }
 });
+
+EHR.DataEntryUtils.registerGridButton('DUPLICATE', function(config){
+    return Ext4.Object.merge({
+        text: 'Duplicate Selected',
+        tooltip: 'Click to duplicate selected rows',
+        handler: function(btn){
+            var grid = btn.up('gridpanel');
+            var selected = grid.getSelectionModel().getSelection();
+            if (!selected || !selected.length){
+                Ext4.Msg.alert('Error', 'No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.RecordDuplicatorWindow', {
+                targetGrid: grid
+            }).show();
+        }
+    }, config);
+});

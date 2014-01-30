@@ -9,6 +9,12 @@ EHR.model.DataModelManager.registerMetadata('ClinicalRounds', {
     },
     byQuery: {
         'study.clinremarks': {
+            Id: {
+                editable: false,
+                columnConfig: {
+                    editable: false
+                }
+            },
             category: {
                 defaultValue: 'Clinical',
                 hidden: true
@@ -37,6 +43,14 @@ EHR.model.DataModelManager.registerMetadata('ClinicalRounds', {
         'study.encounters': {
             instructions: {
                 hidden: true
+            }
+        },
+        'study.clinical_observations': {
+            Id: {
+                editable: false,
+                columnConfig: {
+                    editable: false
+                }
             }
         }
     }

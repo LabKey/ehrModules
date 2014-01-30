@@ -399,6 +399,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
 
     protected void setupStudyPermissions() throws Exception
     {
+        goToEHRFolder();
         enterPermissionsUI();
         _ext4Helper.clickTabContainingText("Study Security");
         waitAndClickButton("Study Security");

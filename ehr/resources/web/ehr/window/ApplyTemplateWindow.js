@@ -128,6 +128,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
 
             return {
                 xtype: 'checkcombo',
+                labelWidth: 130,
                 fieldLabel: 'Choose Procedure',
                 itemId: 'encounterRecords',
                 addAllSelector: true,
@@ -156,7 +157,6 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             return;
         }
 
-        this.hide();
         this.loadTemplate(templateId);
     },
 
@@ -171,7 +171,11 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                 ],
                 sort: 'rowid',
                 success: function(data){
-                    if (!data || !data.rows.length){
+                    if (!data || !data.rows || !data.rows.length){
+                        if (callback){
+                            callback.call(scope, {});
+                        }
+
                         return null;
                     }
 
@@ -265,8 +269,13 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         else if (this.down('#encounterRecords')){
             var combo = this.down('#encounterRecords');
             var encounterIds = combo.getValue() || [];
+            if (!encounterIds.length){
+                Ext4.Msg.alert('Error', 'Must choose at least one procedure');
+                return;
+            }
+
             Ext4.Array.forEach(encounterIds, function(encounterId){
-                var recIdx = combo.store.find('parentid', encounterId);
+                var recIdx = combo.store.findExact('parentid', encounterId);
                 if (recIdx != -1){
                     var rec = combo.store.getAt(recIdx);
                     ret.push({
@@ -288,9 +297,15 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         if (!templateId)
             return;
 
+        var records = this.getInitialRecordValues();
+        if (!records){
+            return;
+        }
+
+        this.hide();
         Ext4.Msg.wait("Loading Template...");
 
-        EHR.window.ApplyTemplateWindow.loadTemplateRecords(this.afterLoadTemplate, this, this.targetGrid.store.storeCollection, templateId, this.getInitialRecordValues());
+        EHR.window.ApplyTemplateWindow.loadTemplateRecords(this.afterLoadTemplate, this, this.targetGrid.store.storeCollection, templateId, records);
     },
 
     afterLoadTemplate: function(recMap){
@@ -391,7 +406,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
 
     loadTemplateData: function(recMap){
         for (var i in recMap){
-            var store = Ext4.StoreMgr.get(i);            
+            var store = Ext4.StoreMgr.get(i);
             store.add(recMap[i]);
         }
 

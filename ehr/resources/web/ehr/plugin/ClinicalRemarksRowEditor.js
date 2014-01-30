@@ -32,6 +32,13 @@ Ext4.define('EHR.plugin.ClinicalRemarksRowEditor', {
 
     },
 
+    getFormPanelCfg: function(){
+        var ret = this.callParent(arguments);
+        ret.maxFieldWidth = 500;
+
+        return ret;
+    },
+
     getWindowCfg: function(){
         var ret = this.callParent(arguments);
 
@@ -46,8 +53,40 @@ Ext4.define('EHR.plugin.ClinicalRemarksRowEditor', {
             items: [formCfg, this.getObservationPanelCfg()]
         };
 
-        ret.width = 950;
+        ret.width = 1050;
         return ret;
+    },
+
+    getWindowButtons: function(){
+        var buttons = this.callParent(arguments);
+
+        buttons.unshift({
+            text: 'Mark Reviewed',
+            handler: function(btn){
+                var win = btn.up('window');
+                var form = win.down('#formPanel');
+                var record = form.getBoundRecord();
+                if (!record){
+                    return;
+                }
+
+                var obsStore = record.store.storeCollection.getClientStoreByName('Clinical Observations');
+                LDK.Assert.assertNotEmpty('Unable to find clinical_observations store in ClinicalRemarksRowEditor', obsStore);
+                LDK.Assert.assertNotEmpty('No caseid in bound record in ClinicalRemarksRowEditor', form.getRecord().get('caseid'));
+
+                obsStore.add(obsStore.createModel({
+                    Id: form.getRecord().get('Id'),
+                    date: new Date(),
+                    caseid: form.getRecord().get('caseid'),
+                    category: 'Reviewed',
+                    area: 'N/A',
+                    observation: LABKEY.Security.currentUser.displayName
+                }));
+            },
+            scope: this
+        });
+
+        return buttons;
     },
 
     loadRecord: function(record){

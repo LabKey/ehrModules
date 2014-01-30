@@ -211,10 +211,15 @@ public class EHRController extends SpringActionController
                 }
                 else
                 {
-
+                    errors.reject(ERROR_MSG, "You do not have permission to delete one or more of these tasks");
+                    return null;
                 }
             }
-
+            else
+            {
+                errors.reject(ERROR_MSG, "No tasks provided");
+                return null;
+            }
 
             resultProperties.put("success", true);
 

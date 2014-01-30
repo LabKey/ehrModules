@@ -16,20 +16,18 @@ Ext4.define('EHR.form.field.DrugVolumeField', {
 
     onTriggerClick: function(){
         var record = EHR.DataEntryUtils.getBoundRecord(this);
-        if (record){
-            //recalculate amount if needed:
-            var conc = record.get('concentration');
-            var volume = this.getValue();
-
-            if (!volume || !conc){
-                Ext4.Msg.alert('Error', 'Must supply volume and concentration');
-                return;
-            }
-
-            if (volume && conc){
-                var amount = conc * volume;
-                record.set('amount', amount);
-            }
+        if (!record){
+            return;
         }
+
+        if (!record.get('code') || !record.get('Id')){
+            Ext4.Msg.alert('Error', 'Must enter the Animal Id and treatment');
+            return;
+        }
+
+        Ext4.create('EHR.window.DrugAmountWindow', {
+            targetStore: record.store,
+            formConfig: record.sectionCfg
+        }).show();
     }
 });

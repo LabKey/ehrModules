@@ -4,7 +4,9 @@
         <column name="employeeId/email"/>
         <column name="employeeId/lastName"/>
         <column name="employeeId/firstName"/>
+        <column name="employeeId/isActive"/>
         <column name="requirementName"/>
+        <column name="isRequired"/>
         <column name="timesCompleted"/>
         <column name="ExpirePeriod"/>
         <column name="MostRecentDate"/>

@@ -34,6 +34,7 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
     public ActiveTreatmentsDemographicsProvider()
     {
         super("study", "Treatment Orders", "activeTreatments");
+        _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()
@@ -56,6 +57,7 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
         keys.add(FieldKey.fromString("concentration_units"));
         keys.add(FieldKey.fromString("volume"));
         keys.add(FieldKey.fromString("vol_units"));
+        keys.add(FieldKey.fromString("amountAndVolume"));
 
         keys.add(FieldKey.fromString("remark"));
         keys.add(FieldKey.fromString("frequency"));
@@ -73,7 +75,6 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
     {
         SimpleFilter filter = super.getFilter(ids);
         filter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
-        filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
     }

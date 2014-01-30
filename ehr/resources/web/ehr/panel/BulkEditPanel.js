@@ -103,6 +103,11 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         Ext4.Array.forEach(fields, function(item){
             item.originalDisabled = item.disabled;
             item.disabled = true;
+            if (item.value || item.defaultValue){
+                delete item.defaultValue;
+                delete item.value;
+            }
+
             item = Ext4.widget(item);
 
             item.on('render', function(field){

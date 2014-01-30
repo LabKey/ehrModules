@@ -91,6 +91,11 @@ public class AnimalRecord
         return (String)_props.get(FieldKey.fromString("gender/origGender").toString());
     }
 
+    public String getAgeInYearsAndDays()
+    {
+        return (String)_props.get(FieldKey.fromString("Id/age/yearAndDays").toString());
+    }
+
     public String getSpecies()
     {
         return (String)_props.get("species");

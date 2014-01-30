@@ -60,9 +60,7 @@ public class DeathNotification extends AbstractEHRNotification
     @Override
     public String getMessage(Container c, User u)
     {
-        final StringBuilder msg = new StringBuilder();
-        msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
-
-        return msg.toString();
+        //this is never actually called as a notification.  it is used as a placeholder so we can use it to track the list of subscribed users
+        return null;
     }
 }

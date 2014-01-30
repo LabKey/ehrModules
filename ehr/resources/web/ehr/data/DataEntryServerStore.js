@@ -46,7 +46,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     },
 
     findRecord: function(fieldName, value){
-        var idx = this.find(fieldName, value);
+        var idx = this.findExact(fieldName, value);
         if (idx != -1){
             return this.getAt(idx);
         }
@@ -56,7 +56,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         this.callParent(arguments);
     },
 
-    getCommands: function(records, forceUpdate){
+    getCommands: function(records, forceUpdate, validateOnly){
         var commands = [];
         var recordsPerCommand = [];
 
@@ -72,11 +72,13 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             recMap.create = this.getNewRecords();
             recMap.update = this.getUpdatedRecords();
 
-            var removed = this.getRemovedRecordsToSync();
-            if (removed.destroy.length)
-                recMap.destroy = removed.destroy;
-            if (removed.update.length)
-                recMap.update = recMap.update.concat(removed.update);
+            if (!validateOnly){
+                var removed = this.getRemovedRecordsToSync();
+                if (removed.destroy.length)
+                    recMap.destroy = removed.destroy;
+                if (removed.update.length)
+                    recMap.update = recMap.update.concat(removed.update);
+            }
         }
         else {
             var r;
@@ -89,10 +91,12 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             }
 
             var removed = this.getRemovedRecordsToSync();
-            if (removed.destroy.length)
-                recMap.destroy = removed.destroy;
-            if (removed.update.length)
-                recMap.update = recMap.update.concat(removed.update);
+            if (!validateOnly){
+                if (removed.destroy.length)
+                    recMap.destroy = removed.destroy;
+                if (removed.update.length)
+                    recMap.update = recMap.update.concat(removed.update);
+            }
         }
 
         for (var action in recMap){
@@ -173,7 +177,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             record.serverValidationInProgress = true;
 
             //build one command per record so failures on one dont block subsequent records
-            var result = this.getCommands([record], true);
+            var result = this.getCommands([record], true, true);
             commands = commands.concat(result.commands);
             recordArr = recordArr.concat(result.records);
 

@@ -54,7 +54,8 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             text: 'Full Screen',
             scope: this,
             handler: function(btn){
-                window.location = LABKEY.ActionURL.buildURL('ehr', 'clinicalManagement', this.containerPath, {subjectId: this.subjectId})
+                window.open(LABKEY.ActionURL.buildURL('ehr', 'animalHistory', this.containerPath) + '#subjects:' + this.subjectId + '&inputType:singleSubject&showReport:1&activeReport:clinicalHistory', '_blank');
+                btn.up('window').close();
             }
         }];
 

@@ -18,17 +18,35 @@ package org.labkey.ehr.query;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.module.Module;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.FilteredTable;
+import org.labkey.api.query.QueryForeignKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.Queryable;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.Group;
+import org.labkey.api.security.MemberType;
+import org.labkey.api.security.RoleAssignment;
+import org.labkey.api.security.SecurityManager;
+import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.User;
+import org.labkey.api.security.UserManager;
+import org.labkey.api.security.UserPrincipal;
+import org.labkey.api.security.roles.RoleManager;
 import org.labkey.ehr.EHRSchema;
+import org.labkey.ehr.security.EHRVeternarianRole;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +61,8 @@ import java.util.Set;
  */
 public class EHRLookupsUserSchema extends SimpleUserSchema
 {
+    public static final String TABLE_VETERINARIANS = "veterinarians";
+
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
     {
         super(EHRSchema.EHR_LOOKUPS, null, user, container, dbschema);
@@ -57,6 +77,9 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         available.addAll(getPropertySetNames().keySet());
         available.addAll(getLabworkTypeNames().keySet());
 
+        assert !available.contains(TABLE_VETERINARIANS) : "There is a table using the reserved name " + TABLE_VETERINARIANS;
+        available.add(TABLE_VETERINARIANS);
+        
         return Collections.unmodifiableSet(available);
     }
 
@@ -68,7 +91,8 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
         available.addAll(getPropertySetNames().keySet());
         available.addAll(getLabworkTypeNames().keySet());
-
+        available.add(TABLE_VETERINARIANS);
+        
         return Collections.unmodifiableSet(available);
     }
 
@@ -136,7 +160,11 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             return createSNOMEDTable(name);
         }
-
+        if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
+        {
+            return createVeterinariansTable(name);
+        }
+        
         if (available.contains(name))
             return super.createTable(name);
 
@@ -160,6 +188,54 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     {
         SchemaTableInfo table = _dbSchema.getTable(name);
         return new ContainerScopedTable(this, table, "code").init();
+    }
+
+    private TableInfo createVeterinariansTable(String name)
+    {
+        FilteredTable ti = new FilteredTable(CoreSchema.getInstance().getTableInfoUsersData(), this);
+
+        Set<Integer> userIds = new HashSet<>();
+        Set<Group> groupsToExpand = new HashSet<>();
+
+        SecurityPolicy policy = getContainer().getPolicy();
+        for (RoleAssignment r : policy.getAssignments())
+        {
+            if (r.getRole().getClass() == EHRVeternarianRole.class)
+            {
+                User user = UserManager.getUser(r.getUserId());
+                if (user != null)
+                {
+                    userIds.add(user.getUserId());
+                }
+                else
+                {
+                    Group assignedGroup = SecurityManager.getGroup(r.getUserId());
+                    if (assignedGroup != null && !assignedGroup.isProjectGroup())
+                    {
+                        // Add all site groups
+                        groupsToExpand.add(assignedGroup);
+                    }
+                }
+            }
+        }
+
+        for (Group group : groupsToExpand)
+        {
+            Set<User> groupMembers = SecurityManager.getAllGroupMembers(group, MemberType.ACTIVE_USERS);
+            for (User groupMember : groupMembers)
+            {
+                userIds.add(groupMember.getUserId());
+            }
+        }
+
+        ti.addCondition(new SimpleFilter(FieldKey.fromString("UserId"), userIds, CompareType.IN));
+
+        ti.addWrapColumn(ti.getRealTable().getColumn("UserId"));
+        ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), "Users", "UserId", "DisplayName"));
+        ti.setName(name);
+        ti.setTitle("Veternarians");
+
+        return ti;
     }
 
     private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)

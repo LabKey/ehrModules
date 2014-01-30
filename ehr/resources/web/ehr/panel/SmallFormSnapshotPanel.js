@@ -20,72 +20,13 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
 
         if (!this.redacted){
             items[0].items.push({
-                xtype: 'displayfield',
-                style: 'margin-left: 5px;',
-                labelWidth: this.defaultLabelWidth,
-                fieldLabel: 'Medications',
-                itemId: 'medications',
-                width: 800
+                itemId: 'treatments',
+                xtype: 'ehr-snapshotchildpanel',
+                headerLabel: 'Current Medications / Prescribed Diets',
+                emptyText: 'There are no active medications'
             });
         }
 
         return items;
-    },
-
-    appendTreatments: function(results){
-        if (results && results.length){
-            var values = [];
-            Ext4.Array.forEach(results, function(row){
-                var code = row['code/meaning'];
-                var amount = row.amountWithUnits;
-                var route = row.route;
-                var frequency = row['frequency/meaning'];
-                var category = row.category;
-                var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate).format('Y-m-d') : null;
-
-                var text = '';
-                if (code){
-                    var style = 'style="padding-right: 15px;"';
-
-                    text +='<td ' + style + '>';
-                    text += code;
-
-                    text += '</td><td ' + style + '>';
-
-                    if (amount)
-                        text += amount;
-
-                    text += '</td><td ' + style + '>';
-
-                    if (route)
-                        text += route;
-
-                    text += '</td><td ' + style + '>';
-
-                    if (frequency)
-                        text += frequency;
-
-                    text += '</td><td ' + style + '>';
-
-                    if (enddate)
-                        text += 'End: ' + enddate;
-
-                    text += '</td>';
-                }
-
-                if (text)
-                    values.push('<tr>' + text + '</tr>');
-            }, this);
-
-            if (values.length)
-                this.safeAppend('#medications', '<table>' + values.join('') + '</table>');
-        }
-        else {
-            this.safeAppend('#medications', 'None');
-        }
-    },
-
-    appendDiet: function(results){
-        //ignore for now
     }
 });

@@ -79,7 +79,7 @@ Ext4.define('EHR.window.LabworkAddRecordWindow', {
 
     processRunId: function(runId){
         var combo = this.down('#comboField');
-        var recIdx = combo.store.find('runid', runId);
+        var recIdx = combo.store.findExact('runid', runId);
 
         LDK.Assert.assertTrue('Unable to find record', recIdx != -1);
         var rec = combo.store.getAt(recIdx);

@@ -5,8 +5,11 @@
                 <!--<tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>-->
                 <titleColumn>DisplayName</titleColumn>
                 <columns>
+                    <column columnName="UserId">
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="DisplayName">
-                        <isDisplayColumn>true</isDisplayColumn>
+
                     </column>
                 </columns>
             </table>

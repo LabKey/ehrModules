@@ -13,6 +13,22 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
     extend: 'EHR.window.ClinicalHistoryWindow',
     alias: 'widget.ehr-casehistorywindow',
 
+    statics: {
+        showCaseHistory: function(objectId, subjectId, el){
+            var ctx = EHR.Utils.getEHRContext();
+            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+            if (!ctx){
+                return;
+            }
+
+            Ext4.create('EHR.window.CaseHistoryWindow', {
+                subjectId: subjectId,
+                caseId: objectId,
+                containerPath: ctx['EHRStudyContainer']
+            }).show(el);
+        }
+    },
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             title: 'Case History:'

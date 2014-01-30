@@ -1,63 +1,59 @@
- <query xmlns="http://labkey.org/data/xml/query">
-    <metadata> 
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Deaths" tableDbType="TABLE">
+            <table tableName="Deaths" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="parentid">
-                        <!--<fk>-->
-                          <!--<fkDbSchema>study</fkDbSchema>-->
-                          <!--<fkTable>studyDataParent</fkTable>-->
-                          <!--<fkColumnName>objectid</fkColumnName>-->
-                        <!--</fk>-->
+                    <column columnName="Id">
+
                     </column>
                     <column columnName="date">
                         <columnTitle>Time of Death</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
-                  <column columnName="cause">
-                    <columnTitle>Type of Death</columnTitle>
-                    <fk>
-                      <fkDbSchema>ehr_lookups</fkDbSchema>
-                      <fkTable>death_cause</fkTable>
-                      <fkColumnName>value</fkColumnName>
-                    </fk>
-                  </column>
-                  <column columnName="manner">
-                    <columnTitle>Manner of Death</columnTitle>
-                    <fk>
-                      <fkDbSchema>ehr_lookups</fkDbSchema>
-                      <fkTable>death_manner</fkTable>
-                      <fkColumnName>value</fkColumnName>
-                    </fk>
-                  </column>
-                  <column columnName="necropsy">
-                    <columnTitle>Necropsy Case No</columnTitle>
-                    <url>/query/executeQuery.view?schemaName=study&amp;
-                        query.queryName=Necropsies&amp;
-                        query.caseno~eq=${necropsy}&amp;
-                    </url>
-                  </column>
-                  <column columnName="remark">
-                    <!--<columnTitle>Remark</columnTitle>-->
-                    <displayWidth>110</displayWidth>
-                    <inputType>textarea</inputType>
-                  </column>
-                  <column columnName="cageattime">
-                      <columnTitle>Cage At Time</columnTitle>
-                  </column>
-                  <column columnName="objectid">
-                    <columnTitle>Key</columnTitle>
-                    <shownInInsertView>false</shownInInsertView>
-                    <shownInUpdateView>false</shownInUpdateView>
-                    <shownInDetailsView>false</shownInDetailsView>
-                    <isHidden>true</isHidden>
-                    <!--<isKeyField>true</isKeyField>-->
-                  </column>
+                    <column columnName="cause">
+                        <columnTitle>Type of Death</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>death_cause</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="manner">
+                        <columnTitle>Manner of Death</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>death_manner</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="necropsy">
+                        <columnTitle>Necropsy Case No</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=Necropsies&amp;
+                            query.caseno~eq=${necropsy}&amp;
+                        </url>
+                    </column>
+                    <column columnName="remark">
+                        <!--<columnTitle>Remark</columnTitle>-->
+                        <displayWidth>110</displayWidth>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="cageattime">
+                        <columnTitle>Cage At Time</columnTitle>
+                    </column>
+                    <column columnName="objectid">
+                        <columnTitle>Key</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <!--<isKeyField>true</isKeyField>-->
+                    </column>
                     <column columnName="tattoo">
                         <columnTitle>Tattoo/Tag Number</columnTitle>
                     </column>
@@ -70,8 +66,8 @@
                     <column columnName="roomattime">
                         <columnTitle>Room At Time</columnTitle>
                         <!--<url>/EHR/cageDetails.view?-->
-                            <!--room=${room}&amp;-->
-                            <!--cage=${cage}&amp;-->
+                        <!--room=${room}&amp;-->
+                        <!--cage=${cage}&amp;-->
                         <!--</url>-->
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

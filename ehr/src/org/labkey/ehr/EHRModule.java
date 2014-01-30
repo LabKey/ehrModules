@@ -36,6 +36,7 @@ import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
+import org.labkey.ehr.buttons.VetReviewButton;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
@@ -65,6 +66,7 @@ import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
+import org.labkey.ehr.security.EHRVeternarianRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
 import java.util.Arrays;
@@ -88,7 +90,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.388;
+        return 12.393;
     }
 
     public boolean hasScripts()
@@ -129,6 +131,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRFullUpdaterRole());
         RoleManager.registerRole(new EHRRequestAdminRole());
 
+        RoleManager.registerRole(new EHRVeternarianRole());
         RoleManager.registerRole(new EHRDataEntryRole());
         RoleManager.registerRole(new EHRRequestorRole());
 
@@ -157,6 +160,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls"), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
+        EHRService.get().registerMoreActionsButton(new VetReviewButton(this), "study", "cases");
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
         NotificationService.get().registerNotification(new DeathNotification());

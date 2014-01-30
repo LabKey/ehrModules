@@ -33,6 +33,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>bloodChargeType</fkTable>
                             <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="reason">

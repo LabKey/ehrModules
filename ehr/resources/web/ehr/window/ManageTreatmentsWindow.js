@@ -10,6 +10,9 @@
 Ext4.define('EHR.window.ManageTreatmentsWindow', {
     extend: 'Ext.window.Window',
 
+    width: 1200,
+    minHeight: 50,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             title: 'Manage Treatments: ' + this.animalId,
@@ -27,7 +30,7 @@ Ext4.define('EHR.window.ManageTreatmentsWindow', {
     },
 
     getButtonConfig: function(){
-        var buttons = EHR.panel.ManageTreatmentsPanel.getButtonConfig(this);
+        var buttons = EHR.panel.ManageTreatmentsPanel.getOrderTreatmentButtonConfig(this);
         buttons.push({
             text: 'Close',
             handler: function(btn){

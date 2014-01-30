@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr.pipeline;
 
-import org.labkey.api.gwt.client.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
@@ -27,6 +27,9 @@ import org.labkey.api.pipeline.RecordedAction;
 import org.labkey.api.pipeline.RecordedActionSet;
 import org.labkey.api.pipeline.WorkDirectoryTask;
 import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
+import org.labkey.api.reports.ExternalScriptEngineDefinition;
+import org.labkey.api.reports.LabkeyScriptEngineManager;
+import org.labkey.api.reports.RScriptEngineFactory;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.util.FileType;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: bbimber
@@ -105,7 +109,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
 
         job.getLogger().info("Preparing to run R script");
 
-        String exePath = getExePath("Rscript", "R");
+        String exePath = getRPath();
 
         String scriptPath = getScriptPath(scriptName);
         File tsvFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
@@ -132,13 +136,60 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         return action;
     }
 
-    private String getExePath(String exePath, String packageName)
+    // NOTE: this pipeline is primarily run as a remote pipeline, but on TeamCity it runs
+    // locally.  this is primarily designed to guess the location of the R exe, without
+    // needing extra TeamCity config for this to run.
+    private String inferRPath()
     {
-        String packagePath = PipelineJobService.get().getConfigProperties().getSoftwarePackagePath(packageName);
-        if (packagePath != null && packagePath.length() > 0)
+        String path;
+
+        //preferentially use R config setup in scripting props.  only works if running locally.
+        if (PipelineJobService.get().getLocationType() == PipelineJobService.LocationType.WebServer)
+        {
+            for (ExternalScriptEngineDefinition def : LabkeyScriptEngineManager.getEngineDefinitions())
+            {
+                if (RScriptEngineFactory.isRScriptEngine(def.getExtensions()))
+                {
+                    path = new File(def.getExePath()).getParent();
+                    getJob().getLogger().info("Using RSciptEngine path: " + path);
+                    return path;
+                }
+            }
+        }
+
+        //then pipeline config
+        String packagePath = PipelineJobService.get().getConfigProperties().getSoftwarePackagePath("R");
+        if (StringUtils.trimToNull(packagePath) != null)
+        {
+            getJob().getLogger().info("Using path from pipeline config: " + packagePath);
+            return packagePath;
+        }
+
+        //then RHOME
+        Map<String, String> env = System.getenv();
+        if (env.containsKey("RHOME"))
+        {
+            getJob().getLogger().info("Using path from RHOME: " + env.get("RHOME"));
+            return env.get("RHOME");
+        }
+
+        //else assume it's in the PATH
+        getJob().getLogger().info("Unable to infer R path, using null");
+
+        return null;
+    }
+
+    private String getRPath()
+    {
+        String exePath = "Rscript";
+
+        //NOTE: this was added to better support team city agents, where R is not in the PATH, but RHOME is defined
+        String packagePath = inferRPath();
+        if (StringUtils.trimToNull(packagePath) != null)
         {
             exePath = (new File(packagePath, exePath)).getPath();
         }
+
         return exePath;
     }
 

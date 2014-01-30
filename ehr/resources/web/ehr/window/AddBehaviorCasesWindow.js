@@ -14,7 +14,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
     allowNoSelection: true,
 
     getCases: function(button){
-        var filterArray = this.getFilterArray();
+        var filterArray = this.getCasesFilterArray();
         if (!filterArray || !filterArray.length){
             return;
         }
@@ -46,10 +46,12 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
         LDK.Assert.assertNotEmpty('Unable to find targetStore in AddBehaviorCasesWindow', this.targetStore);
 
         var records = [];
-        var performedby = this.down('#performedBy').getValue();
+        this.recordData = {
+            performedby: this.down('#performedBy').getValue(),
+            date: this.down('#date').getValue()
+        }
 
         var ids = [];
-        var date = new Date();
 
         Ext4.Array.each(results.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
@@ -57,7 +59,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
 
             var obj = {
                 Id: row.getValue('Id'),
-                date: date,
+                date: this.recordData.date,
                 category: this.caseCategory,
                 s: null,
                 o: null,
@@ -65,7 +67,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
                 p: null,
                 caseid: row.getValue('objectid'),
                 //remark: row.getValue('todaysRemarks'),
-                performedby: performedby
+                performedby: this.recordData.performedby
             };
 
             records.push(this.targetStore.createModel(obj));
@@ -74,7 +76,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
         this.targetStore.add(records);
 
         if (this.obsTemplateId){
-            this.applyObsTemplate(ids, date);
+            this.applyObsTemplate(records);
         }
         else {
             Ext4.Msg.hide();

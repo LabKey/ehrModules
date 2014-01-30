@@ -28,7 +28,7 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
         },
         'study.treatment_order': {
             category: {
-                defaultValue: 'Surgery'
+                defaultValue: 'Surgical'
             }
         },
         'study.drug': {
@@ -54,6 +54,12 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
                         LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)
                     ]
                 }
+            },
+            performedby: {
+                hidden: true
+            },
+            remark: {
+                hidden: true
             }
         },
         'ehr.snomed_tags': {

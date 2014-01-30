@@ -35,7 +35,7 @@
                         <fk>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>PrincipalsWithoutAdmin</fkTable>
-                            <fkColumnName>userid</fkColumnName>
+                            <fkColumnName>UserId</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="duedate">

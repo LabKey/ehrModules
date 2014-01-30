@@ -37,7 +37,7 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
             value = value.split(';');
             var rec, recIdx;
             Ext4.Array.forEach(value, function(code){
-                recIdx = this.snomedStore.find('code', code);
+                recIdx = this.snomedStore.findExact('code', code);
                 rec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
 
                 if (rec && rec.get('meaning')){
@@ -142,7 +142,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
     },
 
     getCodeItem: function(code, idx){
-        var recIdx = this.snomedStore.find('code', code);
+        var recIdx = this.snomedStore.findExact('code', code);
         var rec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
 
         return {

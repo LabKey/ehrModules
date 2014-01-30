@@ -73,6 +73,9 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
             }
         },
         'study.treatment_order': {
+            category: {
+                defaultValue: 'Research'
+            },
             code: {
                 editorConfig: {
                     defaultSubset: 'Drugs and Procedures'

@@ -58,6 +58,7 @@
         <script path="ehr/panel/RequestDataEntryPanel.js"/>
         <script path="ehr/panel/SimpleDataEntryPanel.js"/>
         <script path="ehr/window/TaskWindow.js"/>
+        <script path="ehr/window/DrugAmountWindow.js"/>
     </library>
     <dependencies>
         <dependency path="ehr.context"/>

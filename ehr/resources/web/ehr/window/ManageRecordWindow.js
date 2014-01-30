@@ -32,6 +32,17 @@ Ext4.define('EHR.window.ManageRecordWindow', {
                 disabled: true,
                 handler: this.onSubmit
             },{
+                text: 'Re-validate Form',
+                scope: this,
+                handler: function(btn){
+                    var form = this.down('#formPanel');
+                    var rec = form.getRecord();
+                    if (!rec)
+                        return;
+
+                    this.down('#dataEntryPanel').storeCollection.validateAll();
+                }
+            },{
                 text: 'Cancel',
                 handler: function(btn){
                     btn.up('window').close();
@@ -80,7 +91,6 @@ Ext4.define('EHR.window.ManageRecordWindow', {
     },
 
     onJsLoad: function(){
-        this.removeAll();
         var name = Ext4.id();
 
         Ext4.define(name, {
@@ -95,22 +105,30 @@ Ext4.define('EHR.window.ManageRecordWindow', {
                 return cfg;
             },
             onStoreCollectionInitialLoad: function(){
-                this.removeAll();
-                var item = this.getItems()[0];
+                var item = this.getItemConfig()[0];
                 item.itemId = 'formPanel';
-                this.add(item);
+                item.maxFieldWidth = EHR.form.Panel.defaultFieldWidth;
 
-                var size = this.getSize();
-                this.setWidth(size.width + 10);
+                var formPanel = Ext4.widget(item);
+                var win = this.ownerWindow;
+                var cols = formPanel.items.get(0).items.getCount();
+                var width = cols * (EHR.form.Panel.defaultFieldWidth + 10);
+
+                formPanel.down('#columnPanel').setWidth(width);
+
+                this.removeAll();
+                this.add(formPanel);
+                win.removeAll();
+                win.setWidth(width + 20);
+                win.add(this);
+                win.center();
+
                 this.hasStoreCollectionLoaded = true;
-
-                this.up('window').center();
             },
             getToolbarItems: function(){
                 var win = this.up('window');
                 if (!win){
                     //NOTE: this can occur once after the window is closed, but before the store returns
-                    console.log('no window');
                     return;
                 }
 
@@ -121,8 +139,9 @@ Ext4.define('EHR.window.ManageRecordWindow', {
             }
         });
 
-        this.add({
+        var dataEntryPanel = Ext4.widget({
             xtype: name,
+            ownerWindow: this,
             itemId: 'dataEntryPanel',
             pkCol: this.pkCol,
             pkValue: this.pkValue,

@@ -76,3 +76,24 @@ Ext4.define('EHR.window.BulkEditWindow', {
         this.close();
     }
 });
+
+EHR.DataEntryUtils.registerGridButton('BULKEDIT', function(config){
+    return Ext4.Object.merge({
+        text: 'Bulk Edit',
+        tooltip: 'Click to edit the selected rows in bulk',
+        handler: function(btn){
+            var grid = btn.up('gridpanel');
+            var selected = grid.getSelectionModel().getSelection();
+            if (!selected || !selected.length){
+                Ext4.Msg.alert('Error', 'No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.BulkEditWindow', {
+                targetStore: grid.store,
+                formConfig: grid.formConfig,
+                records: selected
+            }).show();
+        }
+    }, config);
+});

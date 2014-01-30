@@ -215,7 +215,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     onLoad: function(ids, resultMap){
-        Ext4.suspendLayouts();
+        if (this.isDestroyed){
+            console.log('is destroyed');
+            return;
+        }
+
+        this.suspendLayouts();
 
         this.getForm().reset();
         var id = ids[0];
@@ -258,7 +263,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
         this.afterLoad();
 
-        Ext4.resumeLayouts();
+        this.resumeLayouts();
         this.doLayout();
     },
 
@@ -509,15 +514,18 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         return [{
             name: 'code/meaning',
             label: 'Medication'
-        },{
-            name: 'performedby',
-            label: 'Ordered By'
+//        },{
+//            name: 'performedby',
+//            label: 'Ordered By'
         },{
             name: 'frequency/meaning',
             label: 'Frequency'
         },{
-            name: 'amountWithUnits',
-            label: 'Amount'
+            name: 'amountAndVolume',
+            label: 'Amount',
+            attrs: {
+                style: 'white-space: normal !important;"'
+            }
         },{
             name: 'route',
             label: 'Route'
@@ -550,14 +558,61 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             name: 'category',
             label: 'Category'
         },{
-            name: 'problem',
-            label: 'Problem'
+            name: 'problemCategories',
+            label: 'Problem(s)'
         },{
             name: 'date',
-            label: 'Open Date'
+            label: 'Open Date',
+            dateFormat: 'Y-m-d'
+        },{
+            name: 'reviewdate',
+            label: 'Reopen Date',
+            dateFormat: 'Y-m-d'
         },{
             name: 'remark',
-            label: 'Summary'
+            label: 'Case Notes',
+            maxWidth: 350,
+            attrs: {
+                style: 'white-space: normal !important;"',
+                cls: 'ldk-clickable',
+                listeners: {
+                    render: function(item){
+                        item.el.on('click', function(e, el){
+                            var panel = this.up('#resultTable');
+                            LDK.Assert.assertNotEmpty('Unable to find resultTable', panel);
+
+                            var row = panel.results.rows[this.resultRowIdx];
+                            LDK.Assert.assertNotEmpty('Unable to find resultTable row', row);
+
+                            var animalId = this.up('ehr-snapshotpanel').subjectId;
+                            if (!animalId){
+                                console.log('no animal id');
+                                return;
+                            }
+
+                            var win = Ext4.create('EHR.window.ManageCasesWindow', {
+                                animalId: animalId
+                            });
+                            win.show();
+
+                            win.down('ehr-managecasespanel').on('storeloaded', function(panel){
+                                var store = panel.down('grid').store;
+                                var recIdx = store.findExact('lsid', row.lsid);
+                                var rec = store.getAt(recIdx);
+                                LDK.Assert.assertNotEmpty('Unable to find record in SnapshotPanel', rec);
+                                if (!rec){
+                                    return;
+                                }
+
+                                panel.showEditCaseWindow(rec);
+                            }, this, {single: true});
+                        }, this);
+                    }
+                }
+            }
+        },{
+            name: 'assignedvet/DisplayName',
+            label: 'Vet'
         }]);
     },
 
@@ -725,21 +780,17 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
     appendTable: function(results, columns){
         var target = this.down('#childPanel');
         var total = results && results.rows ? results.rows.length : 0;
-        var headerEl = this.down('#headerItem').body;
-        if (headerEl){
-            var html = headerEl.getHTML();
-            html = html.replace(new RegExp(this.headerLabel + ':( )*([0-9])*'), this.headerLabel + ': ' + total);
-            headerEl.update(html);
-        }
 
         target.removeAll();
         if (results && results.rows && results.rows.length){
             var toAdd = {
                 itemId: 'resultTable',
+                results: results,
                 layout: {
                     type: 'table',
                     columns: columns.length,
                     tdAttrs: {
+                        valign: 'top',
                         style: 'padding: 5px;'
                     }
                 },
@@ -752,19 +803,43 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
 
             //first the header
             var colKeys = [];
+            var colMap = {};
             Ext4.each(columns, function(col){
-                toAdd.items.push({
+                colMap[col.name] = col;
+
+                var obj = {
                     html: '<i>' + col.label + '</i>'
-                });
+                };
+
+                if (colMap[col.name].maxWidth)
+                    obj.maxWidth = colMap[col.name].maxWidth;
+
+                toAdd.items.push(obj);
                 colKeys.push(col.name);
             }, this);
 
-            Ext4.Array.forEach(results.rows, function(row){
+            Ext4.Array.forEach(results.rows, function(row, rowIdx){
                 Ext4.each(colKeys, function(name){
                     if (!Ext4.isEmpty(row[name])){
-                        toAdd.items.push({
-                            html: (row[name]) + ''
-                        });
+                        var value = row[name];
+                        if (value && colMap[name].dateFormat){
+                            value = LDK.ConvertUtils.parseDate(value);
+                            value = Ext4.Date.format(value, colMap[name].dateFormat);
+                        }
+
+                        var obj = {
+                            html: value + '',
+                            resultRowIdx: rowIdx
+                        };
+
+                        if (colMap[name].maxWidth)
+                            obj.maxWidth = colMap[name].maxWidth;
+
+                        if (colMap[name].attrs){
+                            LABKEY.ExtAdapter.apply(obj, colMap[name].attrs);
+                        }
+
+                        toAdd.items.push(obj);
                     }
                     else {
                         toAdd.items.push({

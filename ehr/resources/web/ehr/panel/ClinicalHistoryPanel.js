@@ -277,6 +277,19 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             minWidth: 300,
             tdCls: 'ldk-wrap-text',
             flex: 10
+        },{
+            text: 'Status',
+            dataIndex: 'qcStateLabel',
+            tdCls: 'ldk-wrap-text',
+            width: 120,
+            renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
+                if (record.get('publicData') === false){
+                    cellMetaData.style = cellMetaData.style ? cellMetaData.style + ';' : '';
+                    cellMetaData.style += 'background-color: yellow;';
+                }
+
+                return value == EHR.QCStates.COMPLETED ? '' : value;
+            }
         }];
     },
 

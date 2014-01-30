@@ -330,7 +330,7 @@ public class DefaultLabworkType implements LabworkType
     {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
-        sb.append("<tr>").append(StringUtils.join(results, "</tr><tr>")).append("</tr>");
+        sb.append("<tr><td>").append(StringUtils.join(results, "</td></tr><tr><td>")).append("</td></tr>");
         sb.append("</table>");
         return sb.toString();
     }

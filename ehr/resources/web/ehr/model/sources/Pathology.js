@@ -52,6 +52,31 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
                     width: 1000
                 }
             }
+        },
+        'ehr.encounter_summaries': {
+            Id: {
+                hidden: true
+            },
+            date: {
+                hidden: true
+            },
+            category: {
+                defaultValue: 'Gross Findings',
+                hidden: true
+            },
+            remark: {
+                height: 300,
+                editorConfig: {
+                    fieldLabel: 'Gross Findings',
+                    width: 1000
+                }
+            }
+        },
+        'study.drug': {
+            project: {
+                allowBlank: true,
+                hidden: true
+            }
         }
     }
 });

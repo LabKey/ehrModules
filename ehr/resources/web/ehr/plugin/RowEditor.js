@@ -35,6 +35,7 @@ Ext4.define('EHR.plugin.RowEditor', {
             maxFieldHeight: 100,
             maxItemsPerCol: 9,
             textareaFieldWidth: EHR.form.Panel.defaultFieldWidth,
+            maxFieldWidth: EHR.form.Panel.defaultFieldWidth,
             bodyStyle: 'padding: 5px;',
             formConfig: this.cmp.formConfig,
             store: this.cmp.getStore(),
@@ -61,33 +62,36 @@ Ext4.define('EHR.plugin.RowEditor', {
         this.getEditorWindow().addEvents('animalchange');
     },
 
+    getWindowButtons: function(){
+        return [{
+            text: 'Previous',
+            handler: function(){
+                this.loadPreviousRecord();
+            },
+            scope: this
+        },{
+            text: 'Next',
+            handler: function(){
+                this.loadNextRecord();
+            },
+            scope: this
+        },{
+            text: 'Close',
+            handler: function(btn){
+                var win = btn.up('window');
+                win.close();
+            },
+            scope: this
+        }];
+    },
     getWindowCfg: function(){
         return {
             modal: true,
             width: 800,
             items: [{
-                items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()],
-                buttons: [{
-                    text: 'Previous',
-                    handler: function(){
-                        this.loadPreviousRecord();
-                    },
-                    scope: this
-                },{
-                    text: 'Next',
-                    handler: function(){
-                        this.loadNextRecord();
-                    },
-                    scope: this
-                },{
-                    text: 'Close',
-                    handler: function(btn){
-                        var win = btn.up('window');
-                        win.close();
-                    },
-                    scope: this
-                }]
+                items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()]
             }],
+            buttons: this.getWindowButtons(),
             closeAction: 'destroy',
             listeners: {
                 scope: this,
@@ -182,6 +186,9 @@ Ext4.define('EHR.plugin.RowEditor', {
             nextRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) + 1);
             if (nextRec){
                 this.loadRecord(nextRec);
+            }
+            else {
+                Ext4.Msg.alert('', 'There are no more records');
             }
         }
     }

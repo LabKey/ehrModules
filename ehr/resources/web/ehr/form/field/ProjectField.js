@@ -72,5 +72,30 @@ Ext4.define('EHR.form.field.ProjectField', {
         }
 
         return storeCfg;
+    },
+
+    verifyFieldValue: function(){
+        //reject unknown values
+        if (!Ext4.isEmpty(this.getRawValue())){
+            var rec = this.findRecordByDisplay(this.getRawValue());
+            if (!rec){
+                console.log('rejecting');
+                this.clearValue();
+            }
+        }
+    },
+
+    beforeBlur: function() {
+        this.verifyFieldValue();
+
+        this.callParent(arguments);
+    },
+
+    onKeyUp: function(e) {
+        this.callParent(arguments);
+
+        if (e.getKey() == e.ENTER){
+            this.verifyFieldValue();
+        }
     }
 });

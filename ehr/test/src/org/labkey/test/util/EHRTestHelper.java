@@ -168,14 +168,6 @@ public class EHRTestHelper
         }, "Component did not appear for query: " + query, BaseSeleniumWebTest.WAIT_FOR_JAVASCRIPT);
     }
 
-    @LogMethod(quiet = true)
-    public void selectSnomedComboBoxItem(Locator.XPathLocator parentLocator, @LoggedParam String selection)
-    {
-        _test.click(Locator.xpath(parentLocator.getPath() + "//*[contains(@class, 'x-form-arrow-trigger')]"));
-        _test.waitAndClick(Locator.xpath("//div["+NOT_HIDDEN+"]/div/div[contains(normalize-space(), '" + selection + "')]"));
-        _test.waitForElementToDisappear(Locator.xpath("//div["+NOT_HIDDEN+"]/div/div[contains(normalize-space(), '" + selection + "')]"), WAIT_FOR_JAVASCRIPT);
-    }
-
     public Boolean waitForElementWithValue(final BaseWebDriverTest test, final String name, final String value, final int msTimeout)
     {
         final Locator l = Locator.name(name);
@@ -285,6 +277,16 @@ public class EHRTestHelper
         Locator l = Ext4HelperWD.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
         Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
         _test.click(l);
+    }
+
+    public void discardForm()
+    {
+        _test.waitAndClick(getDataEntryButton("More Actions"));
+        _test._ext4Helper.clickExt4MenuItem("Discard");
+        _test.waitForElement(Ext4HelperWD.ext4Window("Discard Form"));
+        _test.clickAndWait(Locator.ext4Button("Yes"));
+
+        _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
     }
 }
 

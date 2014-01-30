@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -7,7 +7,7 @@
  * @cfg targetGrid
  * @cfg dataEntryPanel
  */
-Ext4.define('EHR.window.SurgeryAddRecordWindow', {
+Ext4.define('EHR.window.EncounterAddRecordWindow', {
     extend: 'Ext.window.Window',
     width: 500,
 
@@ -88,14 +88,14 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
 
         var toAdd = [];
         Ext4.Array.forEach(parentids, function(parentid){
-            var recIdx = combo.store.find('parentid', parentid);
+            var recIdx = combo.store.findExact('parentid', parentid);
 
             LDK.Assert.assertTrue('Unable to find record', recIdx != -1);
             var rec = combo.store.getAt(recIdx);
 
             var model = this.targetGrid.store.createModel({});
             var obj = {};
-            Ext4.Array.forEach(['Id', 'date', 'parentid'], function(field){
+            Ext4.Array.forEach(['Id', 'date', 'parentid', 'project'], function(field){
                 if (this.targetGrid.store.getFields().get(field)){
                     obj[field] = rec.get(field);
                 }
@@ -112,4 +112,29 @@ Ext4.define('EHR.window.SurgeryAddRecordWindow', {
 
         this.close();
     }
+});
+
+EHR.DataEntryUtils.registerGridButton('ENCOUNTERADD', function(config){
+    return Ext4.Object.merge({
+        text: 'Add Record',
+        tooltip: 'Click to add a row',
+        handler: function(btn){
+            var grid = btn.up('gridpanel');
+            if(!grid.store || !grid.store.hasLoaded()){
+                console.log('no store or store hasnt loaded');
+                return;
+            }
+
+            var panel = grid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in ENCOUNTERADD button', panel);
+
+            var store = panel.storeCollection.getClientStoreByName('encounters');
+            LDK.Assert.assertNotEmpty('Unable to find encounters store in ENCOUNTERADD button', store);
+
+            Ext4.create('EHR.window.EncounterAddRecordWindow', {
+                targetGrid: grid,
+                dataEntryPanel: panel
+            }).show();
+        }
+    }, config);
 });

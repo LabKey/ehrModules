@@ -22,7 +22,7 @@ EHR.model.DataModelManager.registerMetadata('Biopsy', {
                     LDK.Assert.assertNotEmpty('Unable to find procedureStore from Biopsy.js', procedureStore);
 
                     if (LABKEY.ext4.Util.hasStoreLoaded(procedureStore)){
-                        var procRecIdx = procedureStore.find('name', 'Biopsy');
+                        var procRecIdx = procedureStore.findExact('name', 'Biopsy');
                         var procedureRec = procedureStore.getAt(procRecIdx);
                         LDK.Assert.assertNotEmpty('Unable to find procedure record with name Biopsy from Biopsy.js', procedureRec);
 
@@ -31,7 +31,7 @@ EHR.model.DataModelManager.registerMetadata('Biopsy', {
                     else {
                         console.log('procedure store not loaded');
                         procedureStore.on('load', function(store){
-                            var procRecIdx = store.find('name', 'Biopsy');
+                            var procRecIdx = store.findExact('name', 'Biopsy');
                             var procedureRec = store.getAt(procRecIdx);
                             LDK.Assert.assertNotEmpty('Unable to find procedure record with name Biopsy after load from Biopsy.js', procedureRec);
 

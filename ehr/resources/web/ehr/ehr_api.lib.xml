@@ -16,6 +16,10 @@
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/panel/ClinicalManagementPanel.js"/>
+        <script path="ehr/form/field/VetFieldCombo.js"/>
+        <script path="ehr/form/field/UsersAndGroupsCombo.js" />
+        <script path="ehr/form/field/HxTextArea.js"/>
+        <script path="ehr/form/field/PlanTextArea.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>
         <script path="ehr/panel/ManageCasesPanel.js"/>
         <script path="ehr/panel/ClinicalRemarkPanel.js"/>

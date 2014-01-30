@@ -12,32 +12,60 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
     templateName: 'Surgical Rounds',
 
     allowNoSelection: true,
+    allowReviewAnimals: false,
+
+    initComponent: function(){
+        this.callParent(arguments);
+
+        this.obsStore = this.targetStore.storeCollection.getClientStoreByName('Clinical Observations');
+        LDK.Assert.assertNotEmpty('Unable to find targetStore in AddSurgicalCasesWindow', this.obsStore);
+    },
 
     getCases: function(button){
-        var filterArray = this.getFilterArray();
-        if (!filterArray || !filterArray.length){
-            return;
-        }
-
         Ext4.Msg.wait("Loading...");
         this.hide();
 
+        var casesFilterArray = this.getCasesFilterArray();
+        var obsFilterArray = this.getBaseFilterArray();
+        obsFilterArray.push(LABKEY.Filter.create('caseCategory', this.caseCategory, LABKEY.Filter.Types.EQUAL));
+        obsFilterArray.push(LABKEY.Filter.create('date', '-1d', LABKEY.Filter.Types.DATE_EQUAL));
+        obsFilterArray.push(LABKEY.Filter.create('category', 'Reviewed', LABKEY.Filter.Types.NOT_EQUAL_OR_MISSING));
+
         //find distinct animals matching criteria
-        LABKEY.Query.selectRows({
+        var multi = new LABKEY.MultiRequest();
+
+        multi.add(LABKEY.Query.selectRows, {
+            requiredVersion: 9.1,
+            schemaName: 'study',
+            queryName: 'previousObservations',
+            columns: 'Id,date,category,area,observation,remark,caseid',
+            filterArray: obsFilterArray,
+            scope: this,
+            success: function(results){
+                this.obsResults = results;
+            },
+            failure: LDK.Utils.getErrorCallback()
+        });
+
+        multi.add(LABKEY.Query.selectRows, {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            sort: 'Id', //Id/curlocation/room,Id/curlocation/cage,
-            columns: 'Id,objectid,todaysRemarks',
-            filterArray: filterArray,
+            sort: 'Id/curLocation/room,Id/curLocation/cage,Id',
+            columns: 'Id,objectid',
+            filterArray: casesFilterArray,
             scope: this,
-            success: this.onSuccess,
+            success: function(results){
+                this.casesResults = results;
+            },
             failure: LDK.Utils.getErrorCallback()
         });
+
+        multi.send(this.onSuccess, this);
     },
 
-    onSuccess: function(results){
-        if (!results || !results.rows || !results.rows.length){
+    onSuccess: function(){
+        if (!this.casesResults || !this.casesResults.rows || !this.casesResults.rows.length){
             Ext4.Msg.hide();
             Ext4.Msg.alert('', 'No active cases were found.');
             return;
@@ -46,38 +74,86 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
         LDK.Assert.assertNotEmpty('Unable to find targetStore in AddSurgicalCasesWindow', this.targetStore);
 
         var records = [];
-        var performedby = this.down('#performedBy').getValue();
+        var idMap = {};
+        this.recordData = {
+            performedby: this.down('#performedBy').getValue(),
+            date: this.down('#date').getValue()
+        }
 
-        var ids = [];
-        var date = new Date();
-
-        Ext4.Array.each(results.rows, function(sr){
+        Ext4.Array.each(this.casesResults.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
-            ids.push(row.getValue('Id'));
+            idMap[row.getValue('Id')] = row;
 
             var obj = {
                 Id: row.getValue('Id'),
-                date: date,
-                category: 'Surgery',
+                date: this.recordData.date,
+                category: this.caseCategory,
                 s: null,
                 o: null,
                 a: null,
                 p: null,
                 caseid: row.getValue('objectid'),
-                remark: row.getValue('todaysRemarks'),
-                performedby: performedby
+                remark: 'Surgical rounds performed.',
+                performedby: this.recordData.performedby
             };
 
             records.push(this.targetStore.createModel(obj));
         }, this);
 
+        //next process previous obs
         this.targetStore.add(records);
 
-        if (this.obsTemplateId){
-            this.applyObsTemplate(ids, date);
+        this.processObservations(records, idMap);
+    },
+
+    processObservations: function(records, idMap){
+        var previousObsMap = {};
+        if (this.obsResults && this.obsResults.rows && this.obsResults.rows.length){
+            Ext4.Array.forEach(this.obsResults.rows, function(sr){
+                var row = new LDK.SelectRowsRow(sr);
+
+                var caseId = row.getValue('caseid');
+                if (!previousObsMap[caseId])
+                    previousObsMap[caseId] = [];
+
+                previousObsMap[caseId].push({
+                    Id: row.getValue('Id'),
+                    date: this.recordData.date,
+                    performedby: this.recordData.performedby,
+                    caseid: row.getValue('caseid'),
+                    category: row.getValue('category'),
+                    area: row.getValue('area'),
+                    observation: row.getValue('observation'),
+                    remark: row.getValue('remark')
+                });
+            }, this);
+        }
+
+        var toAdd = [];
+        var recordsNeedingTemplate = [];
+        Ext4.Array.forEach(records, function(rec){
+            var caseId = rec.get('caseid');
+            if (previousObsMap[caseId]){
+                Ext4.Array.forEach(previousObsMap[caseId], function(obsRec){
+                    toAdd.push(this.obsStore.createModel(obsRec));
+                }, this);
+            }
+            else {
+                console.log('no existing obs');
+                recordsNeedingTemplate.push(rec)
+            }
+        }, this);
+
+        if (toAdd.length){
+            this.obsStore.add(toAdd);
+        }
+
+        if (recordsNeedingTemplate.length){
+            this.applyObsTemplate(recordsNeedingTemplate);
         }
         else {
             Ext4.Msg.hide();
+            this.close();
         }
     }
 });

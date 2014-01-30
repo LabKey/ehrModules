@@ -25,8 +25,25 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.callParent(arguments);
 
         if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalchange', this.loadAnimal, this, {buffer: 500});
+            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 500});
         }
+
+        this.mon(EHR.DemographicsCache, 'cachechange', this.demographicsListener, this);
+    },
+
+    demographicsListener: function(animalId){
+        if (this.isDestroyed){
+            console.log('is destroyed');
+            return;
+        }
+
+        if (animalId == this.subjectId){
+            this.loadAnimal(animalId, true);
+        }
+    },
+
+    onAnimalChange: function(animalId){
+        this.loadAnimal(animalId);
     },
 
     loadAnimal: function(animalId, forceReload){
@@ -81,7 +98,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                     itemId: 'assignmentsAndGroups'
                 }]
             },{
-                minWidth: 200,
+                width: 350,
                 defaults: {
                     xtype: 'displayfield'
                 },
@@ -123,7 +140,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                     }
                 },{
                     xtype: 'ldk-linkbutton',
-                    style: 'margin-top: 5px;',
+                    style: 'margin-top: 5px;margin-bottom:10px;',
                     scope: this,
                     text: '[Manage Cases]',
                     hidden: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),

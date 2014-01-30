@@ -633,7 +633,11 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     //dont allow future dates on completed records
     if (row.date && row.QCStateLabel == 'Completed' && !helper.isAllowFutureDates()){
-        var millsDiff = row.date.getTime() - (new Date).getTime();
+        var now = new Date();
+        if (helper.shouldRemoveTimeFromDate())
+            now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        var millsDiff = row.date.getTime() - now.getTime();
         if (millsDiff > 6000){
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is in the future', 'INFO');
         }

@@ -29,7 +29,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                 handler: function(btn){
                     Ext4.create('EHR.window.ManageCasesWindow', {
                         animalId: animalId
-                    }).show(btn);
+                    }).show();
                 }
             }]
         }

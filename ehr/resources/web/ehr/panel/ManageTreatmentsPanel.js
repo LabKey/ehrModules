@@ -10,11 +10,8 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-managetreatmentspanel',
 
-    minWidth: 1000,
-    minHeight: 50,
-
     statics: {
-        getButtonConfig: function(owner){
+        getOrderTreatmentButtonConfig: function(owner){
             return [{
                 xtype: 'button',
                 text: 'Order Treatment',
@@ -66,6 +63,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     handler: function(btn){
                         Ext4.create('Ext.window.Window', {
                             modal: true,
+                            closeAction: 'destroy',
                             bodyStyle: 'padding: 5px',
                             width: 420,
                             items: [{
@@ -127,16 +125,6 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         });
 
         this.callParent();
-
-        this.on('render', function(){
-            if (this.store.loading){
-                this.store.on('load', function(){
-                    this.setLoading(false);
-                }, this);
-
-                this.setLoading(true);
-            }
-        }, this, {delay: 100});
     },
 
     getStore: function(){
@@ -146,7 +134,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'treatment_order',
-            columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,dose,dose_units,amount,amount_units,concentration,conc_units',
+            columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,amountAndVolume',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
@@ -155,7 +143,11 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             listeners: {
                 scope: this,
                 synccomplete: function(store){
-                    this.down('grid').getView().refresh();
+                    var grid = this.down('grid');
+                    if (grid)
+                        grid.getView().refresh();
+
+                    EHR.DemographicsCache.clearCache(this.animalId);
                 }
             }
         });
@@ -190,8 +182,9 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 dataIndex: 'enddate'
             },{
                 header: 'Code',
-                width: 200,
+                width: 300,
                 dataIndex: 'code',
+                tdCls: 'ldk-wrap-text',
                 renderer: function(value, cellMetaData, record){
                     if(record && record.raw && record.raw['code']){
                         if(Ext4.isDefined(record.raw['code'].displayValue))
@@ -201,21 +194,21 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     return value;
                 }
             },{
+                header: 'Frequency',
+                width: 160,
+                dataIndex: 'frequency'
+            },{
                 header: 'Route',
+                width: 60,
                 dataIndex: 'route'
             },{
                 header: 'Amount',
-                dataIndex: 'amount'
-            },{
-                header: 'Units',
-                dataIndex: 'amount_units'
+                width: 120,
+                dataIndex: 'amountAndVolume'
             },{
                 header: 'Ordered By',
                 width: 160,
                 dataIndex: 'performedby'
-            },{
-                header: 'Category',
-                dataIndex: 'category'
             }]
         }
     }

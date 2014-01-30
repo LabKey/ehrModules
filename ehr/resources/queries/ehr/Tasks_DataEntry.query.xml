@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Tasks_DataEntry" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <insertUrl />
                 <updateUrl />
                 <titleColumn>rowid</titleColumn>
@@ -135,7 +136,6 @@
                 <buttonBarOptions includeStandardButtons="false">
                     <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
-                    <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
@@ -150,9 +150,6 @@
                     <!--</item>-->
                     <item text="Page Size">
                         <originalText>Page Size</originalText>
-                    </item>
-                    <item text="Duplicate" requiresSelection="true">
-                        <onClick>EHR.DatasetButtons.duplicateTaskHandler(dataRegion)</onClick>
                     </item>
                 </buttonBarOptions>
             </table>

@@ -95,6 +95,9 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
                 hidden: true
             },
             p2: {
+                //hidden: true
+            },
+            remark: {
                 hidden: true
             }
         },

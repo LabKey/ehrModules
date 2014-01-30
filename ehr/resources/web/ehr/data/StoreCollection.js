@@ -130,6 +130,21 @@ Ext4.define('EHR.data.StoreCollection', {
         }
     },
 
+    onClientStoreBulkRemove: function(store, records){
+        //note: stores do not normally keep track of removed phantom records
+        if (records){
+            for (var i=0;i<records.length;i++){
+                if (records[i].phantom){
+                    store.removed.push(records[i]);
+                }
+            }
+        }
+
+        if (!this.hasIgnoredClientEvent(store.storeId, 'bulkremove', true)){
+            this.fireEvent('clientdatachanged', 'bulkremove');
+        }
+    },
+
     onClientStoreValidation: function(store){
         if (!this.hasIgnoredClientEvent(store.storeId, 'validation', true)){
             this.fireEvent('validation', this);
@@ -351,6 +366,7 @@ Ext4.define('EHR.data.StoreCollection', {
     addClientStore: function(store){
         this.mon(store, 'add', this.onClientStoreAdd, this);
         this.mon(store, 'remove', this.onClientStoreRemove, this);
+        this.mon(store, 'bulkremove', this.onClientStoreBulkRemove, this);
         this.mon(store, 'update', this.onClientStoreUpdate, this);
         this.mon(store, 'validation', this.onClientStoreValidation, this);
         this.mon(store, 'datachanged', this.onClientStoreDataChanged, this);
@@ -426,6 +442,8 @@ Ext4.define('EHR.data.StoreCollection', {
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
             timeout: 500000,  //a little extreme?
+            transacted: true,
+            startTime: new Date(),
             jsonData : {
                 apiVersion: 13.2,
                 transacted: true,
@@ -571,10 +589,63 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     //private
+    reportLongRequest: function(duration, response, options, json){
+        var msg = ['Long running request: ' + duration];
+        if (this.formConfig){
+            msg.push('Form Type: ' + this.formConfig.name);
+        }
+        if (this.taskId){
+            msg.push('TaskId: ' + this.taskId);
+        }
+
+        if (this.requestId){
+            msg.push('RequestId: ' + this.requestId);
+        }
+
+        if (!json || !json.result){
+            msg.push('Unable to decode JSON');
+        }
+
+        if (response){
+            msg.push('Status: ' + response.status);
+        }
+
+        if (json){
+            msg.push('Error Count: ' + json.errorCount);
+        }
+
+        if (options && options.jsonData){
+            if (options.jsonData.commands){
+                msg.push('Total Commands: ' + options.jsonData.commands.length);
+                msg.push('Validate Only: ' + options.jsonData.validateOnly)
+
+                Ext4.Array.forEach(options.jsonData.commands, function(command){
+                    msg.push('\ttype: ' + command.command + ', table: ' + command.schemaName + '.' + command.queryName + ', rows: ' + command.rows.length);
+                }, this);
+            }
+        }
+
+        LDK.Utils.logToServer({
+            level: 'ERROR',
+            message: msg.join('\n')
+        });
+    },
+
+    //private
     getOnCommitSuccess: function(recordArr, validateOnly){
         return function(response, options){
             var json = this.getJson(response);
-            if(!json || !json.result)
+
+            //provide logging for especially long running requests
+            if (options && options.startTime){
+                var duration = (new Date() - options.startTime) / 1000;
+                //too short?
+                if (duration > 15){
+                    this.reportLongRequest(duration, response, options, json);
+                }
+            }
+
+            if (!json || !json.result)
                 return;
 
             if (json.errorCount > 0){

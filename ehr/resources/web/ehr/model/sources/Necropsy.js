@@ -22,7 +22,7 @@ EHR.model.DataModelManager.registerMetadata('Necropsy', {
                     LDK.Assert.assertNotEmpty('Unable to find procedureStore from Necropsy.js', procedureStore);
 
                     if (LABKEY.ext4.Util.hasStoreLoaded(procedureStore)){
-                        var procRecIdx = procedureStore.find('name', 'Necropsy');
+                        var procRecIdx = procedureStore.findExact('name', 'Necropsy');
                         var procedureRec = procedureStore.getAt(procRecIdx);
                         LDK.Assert.assertNotEmpty('Unable to find procedure record with name Necropsy from Necropsy.js', procedureRec);
 
@@ -31,7 +31,7 @@ EHR.model.DataModelManager.registerMetadata('Necropsy', {
                     else {
                         console.log('procedure store not loaded');
                         procedureStore.on('load', function(store){
-                            var procRecIdx = store.find('name', 'Necropsy');
+                            var procRecIdx = store.findExact('name', 'Necropsy');
                             var procedureRec = store.getAt(procRecIdx);
                             LDK.Assert.assertNotEmpty('Unable to find procedure record with name Necropsy after load from Necropsy.js', procedureRec);
 

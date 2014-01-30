@@ -96,7 +96,7 @@
                         </fk>
                     </column>
                     <column columnName="amount">
-                        <columnTitle>Amount Given</columnTitle>
+                        <columnTitle>Amount</columnTitle>
                     </column>
                     <column columnName="amount_units">
                         <columnTitle>Amount Units</columnTitle>

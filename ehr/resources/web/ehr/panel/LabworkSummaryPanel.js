@@ -11,6 +11,30 @@ Ext4.define('EHR.panel.LabworkSummaryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-labworksummarypanel',
 
+    statics: {
+        showRunSummary: function(runId, Id, el){
+            Ext4.create('Ext.window.Window', {
+                title: 'Labwork Results: ' + Id,
+                bodyStyle: 'padding: 3px;',
+                width: 600,
+                minHeight: 300,
+                modal: true,
+                items: [{
+                    xtype: 'ehr-labworksummarypanel',
+                    border: true,
+                    hideHeader: true,
+                    runId: runId
+                }],
+                buttons: [{
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }]
+            }).show(el);
+        }
+    },
+
     initComponent: function(){
         Ext4.apply(this, {
             border: false,

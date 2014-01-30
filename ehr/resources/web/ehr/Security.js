@@ -24,7 +24,9 @@ EHR.Security = new function(){
             throw "Must provide a success callback"
         }
 
+        var ctx = EHR.Utils.getEHRContext();
         LABKEY.Query.selectRows({
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
             schemaName: 'study',
             queryName: 'qcState',
             columns: '*',
@@ -51,7 +53,7 @@ EHR.Security = new function(){
                 }
                 config.success.apply(config.scope || this, [qcmap]);
             },
-            failure: EHR.Utils.onError
+            failure: LDK.Utils.getErrorCallback()
         });
     };
 
@@ -85,24 +87,27 @@ EHR.Security = new function(){
                 return;
             }
 
+            var ctx = EHR.Utils.getEHRContext();
             var multi = new LABKEY.MultiRequest();
 
             multi.add(getQCStateMap, {
+                containerPath: ctx ? ctx['EHRStudyContainer'] : null,
                 scope: this,
                 success: function(results){
                     qcMap = results;
                 },
-                failure: EHR.Utils.onError
+                failure: LDK.Utils.getErrorCallback()
             });
 
             //TODO: eventually accept other schemas
             multi.add(LABKEY.Security.getSchemaPermissions, {
+                containerPath: ctx ? ctx['EHRStudyContainer'] : null,
                 schemaName: schemaName,
                 scope: this,
                 success: function(map){
                     schemaMap = map;
                 },
-                failure: EHR.Utils.onError
+                failure: LDK.Utils.getErrorCallback()
             });
 
             function onSuccess(){

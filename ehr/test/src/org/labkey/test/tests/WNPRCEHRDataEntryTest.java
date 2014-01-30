@@ -24,6 +24,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
 import org.openqa.selenium.WebDriver;
@@ -228,7 +229,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _helper.setDataEntryField("title", MPR_TASK_TITLE);
         waitAndClick(Locator.name("title"));
 
-        clickButton("Save & Close");
+        waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
 
         waitForText("No data to show.", WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
@@ -270,19 +271,32 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 
         waitForElement(Locator.xpath("//div[./div/span[text()='Treatments & Procedures']]//input[@name='code' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
         sleep(250);
+
         _extHelper.selectComboBoxItem("Code:", "Antibiotic");
         sleep(250);
 
-        //this is a poor solution, but the normal helper was unreliable.  when converting to Ext4 this should be removed
-        _helper.selectSnomedComboBoxItem(Locator.xpath("//input[@name='code']/.."), "amoxicillin (c-54620)");
+        //this store can take a long time to load, which is problematic for the combo helper
+        waitFor(new Checker()
+        {
+            @Override
+            public boolean check()
+            {
+                return (Boolean) executeScript("return !Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").isLoading && Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").getCount() > 0");
+            }
+        }, "SNOMED Store did not load", WAIT_FOR_PAGE);
+
+        //not an ideal solution, but the custom template isnt being selected with the standard helper
+        String selection = "amoxicillin (c-54620)";
+        click(Locator.xpath("//input[@name='code']/..").append("//*[contains(@class, 'x-form-arrow-trigger')]"));
+        Locator.XPathLocator listItem = Locator.xpath("//div").withClass("x-combo-list-item").notHidden().containing(selection);
+        executeScript("arguments[0].scrollIntoView(true);", listItem.waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT));
+        click(listItem);
+        waitForElementToDisappear(Locator.xpath("//div[" + Locator.NOT_HIDDEN + "]/div/div[contains(text(), '" + selection + "')]"), WAIT_FOR_JAVASCRIPT);
 
         _extHelper.selectComboBoxItem("Route:", "oral\u00a0");
-        _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
-        sleep(150);
         _extHelper.selectComboBoxItem(Locator.xpath("//input[@name='conc_units']/.."), "mg/tablet\u00a0");
 
-        //TODO: assert units
-
+        _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "dosage", "2");
         click(Locator.xpath("//img["+VISIBLE+" and contains(@class, 'x-form-search-trigger')]"));
         waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);

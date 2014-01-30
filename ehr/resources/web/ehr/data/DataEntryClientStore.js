@@ -139,7 +139,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     },
 
     findRecord: function(fieldName, value){
-        var idx = this.find(fieldName, value);
+        var idx = this.findExact(fieldName, value);
         if (idx != -1){
             return this.getAt(idx);
         }
@@ -148,12 +148,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     //private
     // NOTE: the gridpanel will attempt to cache display values, so we need to clear them on update
     onUpdate: function(record, operation) {
-        for (var field  in record.getChanges()){
-            if (record.raw && record.raw[field]){
-                delete record.raw[field].displayValue;
-                delete record.raw[field].mvValue;
-            }
-        }
+        this.clearCachedData(record);
 
         if (this.hasLocationField && !record.get('Id/curLocation/location')){
             if (!this.ensureLocation(record)){
@@ -162,6 +157,15 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         }
 
         this.callParent(arguments);
+    },
+
+    clearCachedData: function(record) {
+        for (var field  in record.getChanges()){
+            if (record.raw && record.raw[field]){
+                delete record.raw[field].displayValue;
+                delete record.raw[field].mvValue;
+            }
+        }
     },
 
     insert: function(index, records) {

@@ -6,6 +6,6 @@
     </sorts>
     <filters>
         <filter column="MonthsUntilRenewal" operator="lte" value="2"/>
-        <filter column="employeeid/enddate" operator="isblank"/>
+        <filter column="employeeid/isActive" operator="eq" value="true"/>
     </filters>
 </customView>

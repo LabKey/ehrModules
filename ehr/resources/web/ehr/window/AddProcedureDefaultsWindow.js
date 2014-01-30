@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -8,15 +8,16 @@
  * @cfg runsStore
  * @cfg [] targetTabs
  */
-Ext4.define('EHR.window.CopyFromEncountersWindow', {
+Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
     extend: 'Ext.window.Window',
+    applyStaffTemplate: false,
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
             width: 750,
             closeAction: 'destroy',
-            title: 'Copy From Above',
+            title: 'Add Procedure Defaults',
             bodyStyle: 'padding: 5px;',
             defaults: {
                 border: false
@@ -26,7 +27,10 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
                 style: 'margin-bottom: 10px;'
             },{
                 itemId: 'services',
-                html: 'Loading...'
+                items: [{
+                    border: false,
+                    html: 'Loading...'
+                }]
             }],
             buttons: [{
                 text: 'Submit',
@@ -44,6 +48,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
 
         if (!this.targetTabs){
             this.targetTabs = [];
+            this.applyStaffTemplate = true;
             Ext4.each(this.dataEntryPanel.formConfig.sections, function(s){
                 if (this.tableNameMap[s.name]){
                     var item = this.dataEntryPanel.getSectionByName(s.name);
@@ -59,7 +64,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
         this.callParent();
 
         this.on('beforeshow', function(){
-            if (!this.procedureRecords.length){
+            if (!this.encountersRecords.length){
                 Ext4.Msg.alert('No Records', 'There are no available procedures, nothing to add');
                 return false;
             }
@@ -67,20 +72,20 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
     },
 
     inferPanels: function(){
-        this.procedureRecords = this.getProcedureRecords();
-        if (!this.procedureRecords.length){
+        this.encountersRecords = this.getEncountersRecords();
+        if (!this.encountersRecords.length){
             return;
         }
 
         var services = {};
-        Ext4.Array.forEach(this.procedureRecords, function(r){
+        Ext4.Array.forEach(this.encountersRecords, function(r){
             services[r.get('procedureid')] = true;
         }, this);
 
         this.loadServices(Ext4.Object.getKeys(services));
     },
 
-    getProcedureRecords: function(){
+    getEncountersRecords: function(){
         var records = [];
         this.encountersStore.each(function(r){
             if (r.get('Id') && r.get('date') && r.get('procedureid')){
@@ -161,7 +166,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             }
         }, this);
 
-        LDK.Assert.assertTrue('No matching tables found in CopyFromEncountersWindow', totalRequests > 0);
+        LDK.Assert.assertTrue('No matching tables found in AddProcedureDefaultsWindow', totalRequests > 0);
 
         if (totalRequests > 0)
             multi.send(this.onLoad, this);
@@ -186,7 +191,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
         }];
 
         var keys = this.getExistingParentIds();
-        Ext4.Array.forEach(this.procedureRecords, function(r){
+        Ext4.Array.forEach(this.encountersRecords, function(r){
             toAdd.push({
                 html: r.get('Id'),
                 width: 60
@@ -199,6 +204,7 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             var ignoreId = 'ignore_' + Ext4.id();
             toAdd.push({
                 xtype: 'labkey-combo',
+                anyMatch: true,
                 width: 250,
                 boundRecord: r,
                 ignoreCheckbox: ignoreId,
@@ -295,8 +301,188 @@ Ext4.define('EHR.window.CopyFromEncountersWindow', {
             }
         }, this);
 
+        //add templates
+        if (this.applyStaffTemplate){
+            var majorSurg = [];
+            var minorSurg = [];
+            var procedureStore = EHR.DataEntryUtils.getProceduresStore();
+            Ext4.Array.forEach(this.encountersRecords, function(r){
+                if (r.get('procedureid')){
+                    var obj = {
+                        Id: r.get('Id'),
+                        date: r.get('date'),
+                        parentid: r.get('objectid')
+                    }
+
+                    var recIdx = procedureStore.findExact('rowid', r.get('procedureid'));
+                    LDK.Assert.assertTrue('Unable to find procedure with rowid: ' + r.get('procedureid'), recIdx > -1);
+                    if (recIdx > -1){
+                        var procRec = procedureStore.getAt(recIdx);
+
+                        if (procRec.get('major')){
+                            majorSurg.push(obj);
+                        }
+                        else {
+                            minorSurg.push(obj);
+                        }
+                    }
+                }
+            }, this);
+
+            this.minorSurgToLoad = minorSurg;
+            this.majorSurgToLoad = majorSurg;
+
+            if (minorSurg.length || majorSurg.length){
+                this.loadTemplateIds();
+            }
+            else {
+                this.finalize(true);
+            }
+        }
+        else {
+            this.finalize(hasRecords);
+        }
+    },
+
+    loadTemplateIds: function(){
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            requiredVersion: 9.1,
+            scope: this,
+            filterArray: [
+                LABKEY.Filter.create('title', 'Major Surgery;Minor Surgery', LABKEY.Filter.Types.EQUALS_ONE_OF),
+                LABKEY.Filter.create('category', 'Section', LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('formtype', 'encounter_participants', LABKEY.Filter.Types.EQUAL)
+
+            ],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                if (results && results.rows && results.rows.length){
+                    Ext4.Array.forEach(results.rows, function(r){
+                        var row = new LDK.SelectRowsRow(r);
+                        if (row.getValue('title') == 'Major Surgery'){
+                            this.majorSurgTemplateId = row.getValue('entityid');
+                        }
+                        else if (row.getValue('title') == 'Minor Surgery'){
+                            this.minorSurgTemplateId = row.getValue('entityid');
+                        }
+                    }, this);
+
+                    LDK.Assert.assertEquality('Wrong row count found in AddProcedureDefaultsWindow', 2, results.rows.length);
+                }
+
+                LDK.Assert.assertNotEmpty('Unable to find template for Major Surgery', this.majorSurgTemplateId);
+                LDK.Assert.assertNotEmpty('Unable to find template for Minor Surgery', this.minorSurgTemplateId);
+
+                this.loadMinorSurg();
+            }
+        })
+    },
+
+    loadMinorSurg: function(){
+        if (this.minorSurgToLoad && this.minorSurgToLoad.length){
+            EHR.window.ApplyTemplateWindow.loadTemplateRecords(this.afterLoadMinorSurgTemplate, this, this.dataEntryPanel.storeCollection, this.minorSurgTemplateId, this.minorSurgToLoad);
+        }
+        else {
+            this.afterLoadMinorSurgTemplate();
+        }
+    },
+
+    queueTemplateRecords: function(recMap){
+        if (!recMap)
+            return;
+
+        this.templateRecordsToAdd = this.templateRecordsToAdd || {};
+        for (var i in recMap){
+            this.templateRecordsToAdd[i] = this.templateRecordsToAdd[i] || [];
+            this.templateRecordsToAdd[i] = this.templateRecordsToAdd[i].concat(recMap[i]);
+        }
+    },
+
+    addQueuedTemplateRecords: function(){
+        if (!this.templateRecordsToAdd)
+            return;
+
+        for (var i in this.templateRecordsToAdd){
+            var store = Ext4.StoreMgr.get(i);
+            store.add(this.templateRecordsToAdd[i]);
+            delete this.templateRecordsToAdd[i];
+        }
+    },
+
+    afterLoadMinorSurgTemplate: function(recMap){
+        delete this.minorSurgToLoad;
+
+        this.queueTemplateRecords(recMap);
+
+        if (!this.majorSurgToLoad || !this.majorSurgToLoad.length){
+            this.afterLoadMajorSurgTemplate();
+        }
+        else {
+            EHR.window.ApplyTemplateWindow.loadTemplateRecords(this.afterLoadMajorSurgTemplate, this, this.dataEntryPanel.storeCollection, this.majorSurgTemplateId, this.majorSurgToLoad);
+        }
+    },
+
+    afterLoadMajorSurgTemplate: function(recMap){
+        delete this.majorSurgToLoad;
+        this.queueTemplateRecords(recMap);
+
+        this.finalize(true);
+    },
+
+    finalize: function(hasRecords){
         this.close();
-        if (!hasRecords)
+        this.addQueuedTemplateRecords();
+
+        if (!this.applyStaffTemplate && !hasRecords){
             Ext4.Msg.alert('No Records', 'There are no records to add');
+        }
+    }
+});
+
+EHR.DataEntryUtils.registerGridButton('ADDPROCEDUREDEFAULTS', function(config){
+    return Ext4.Object.merge({
+        text: 'Add Procedure Defaults',
+        xtype: 'button',
+        tooltip: 'Click to copy records from the encounters section',
+        handler: function(btn){
+            var grid = btn.up('grid');
+            LDK.Assert.assertNotEmpty('Unable to find grid in ADDPROCEDUREDEFAULTS button', grid);
+
+            var panel = grid.up('ehr-dataentrypanel');
+            LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in ADDPROCEDUREDEFAULTS button', panel);
+
+            var store = panel.storeCollection.getClientStoreByName('encounters');
+            LDK.Assert.assertNotEmpty('Unable to find encounters store in ADDPROCEDUREDEFAULTS button', store);
+
+            if (store){
+                Ext4.create('EHR.window.AddProcedureDefaultsWindow', {
+                    dataEntryPanel: panel,
+                    targetTabs: [grid],
+                    encountersStore: store
+                }).show();
+            }
+        }
+    });
+});
+
+EHR.DataEntryUtils.registerDataEntryFormButton('APPLYENCOUNTERDEFAULTS', {
+    text: 'Add Procedure Defaults',
+    xtype: 'button',
+    tooltip: 'Click to copy records from the encounters section',
+    handler: function(btn){
+        var panel = btn.up('ehr-dataentrypanel');
+        LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in APPLYENCOUNTERDEFAULTS button', panel);
+
+        var store = panel.storeCollection.getClientStoreByName('encounters');
+        LDK.Assert.assertNotEmpty('Unable to find encounters store in APPLYENCOUNTERDEFAULTS button', store);
+
+        if (store){
+            Ext4.create('EHR.window.AddProcedureDefaultsWindow', {
+                dataEntryPanel: panel,
+                encountersStore: store
+            }).show();
+        }
     }
 });

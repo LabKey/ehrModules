@@ -8,7 +8,7 @@ require("ehr/triggers").initScript(this);
 
 function onInit(event, helper){
     helper.setScriptOptions({
-        isAllowFutureDates: true
+        allowFutureDates: true
         //TODO: I dont think this should be set, but it used to be.  Might need in WNPRC_Overrides?
 //        removeTimeFromDate: true,
 //        removeTimeFromEndDate: true
@@ -26,3 +26,10 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         }
     }
 }
+
+//NOTE: any changes should trigger a re-calc, since ActiveTreatmentsDemographicsProvider shows non-public records
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.COMPLETE, 'study', 'Treatment Orders', function(event, errors, helper){
+    if (helper.getParticipantsModified().length){
+        helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getParticipantsModified());
+    }
+});

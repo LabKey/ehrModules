@@ -28,7 +28,6 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             trigger1Cls: 'x4-form-search-trigger',
             xtype: 'labkey-combo',
             queryMode: 'local',
-            tabIndex: 1,
             name: this.name,
             snomedStore: this.snomedStore,
             displayField: 'meaning',
@@ -122,9 +121,9 @@ Ext4.define('EHR.form.field.SnomedCombo', {
     },
 
     ensureRecord: function(val){
-        var recIdx = this.store.find('code', val);
+        var recIdx = this.store.findExact('code', val);
         if (recIdx == -1){
-            recIdx = this.snomedStore.find('code', val);
+            recIdx = this.snomedStore.findExact('code', val);
 
             if (recIdx != -1){
                 this.store.add(this.snomedStore.getAt(recIdx));

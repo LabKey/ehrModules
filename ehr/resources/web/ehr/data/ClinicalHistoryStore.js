@@ -16,7 +16,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             proxy: {
                 type: 'memory'
             },
-            fields: ['idfield', 'dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId']
+            fields: ['idfield', 'dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId', 'qcStateLabel', 'publicData']
         });
 
         this.actionName = config.actionName || this.actionName;
@@ -61,11 +61,11 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             },
             scope: this,
             failure: LDK.Utils.getErrorCallback(),
-            success: LABKEY.Utils.getCallbackWrapper(this.onLoad, this)
+            success: LABKEY.Utils.getCallbackWrapper(this.onDataLoad, this)
         });
     },
 
-    onLoad: function(results){
+    onDataLoad: function(results){
         var toAdd = [];
 
         if (results.distinctTypes)
@@ -104,22 +104,24 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
     },
 
     changeMode: function(mode){
+        var sorters, groupers;
         if (mode == 'date'){
-            var sorters = [
+            sorters = [
                 {property: 'dateGroup', direction: 'DESC'},
-                {property: 'timeString'}
+                {property: 'timeString', direction: 'ASC'}
             ];
-            this.sort(sorters);
-            this.group('dateGroup');
+            groupers = [{property: 'dateGroup', direction: 'DESC'}];
         }
         else {
-            var sorters = [
-                {property: 'typeGroup'},
-                {property: 'timeString'}
+            sorters = [
+                {property: 'typeGroup', direction: 'ASC'},
+                {property: 'timeString', direction: 'ASC'}
             ];
-            this.sort(sorters);
-            this.group('typeGroup');
+            groupers = [{property: 'typeGroup', direction: 'ASC'}];
         }
+
+        this.group(groupers);
+        this.sort(sorters);
     },
 
     applyFilter: function(types){

@@ -46,7 +46,7 @@ Ext4.define('EHR.window.SubmitForReviewPanel', {
             items: [{
                 bodyStyle: 'padding:5px;',
                 items: [{
-                    xtype: 'combo',
+                    xtype: 'ehr-usersandgroupscombo',
                     forceSelection: true,
                     fieldLabel: 'Assign To',
                     width: 400,
@@ -62,7 +62,7 @@ Ext4.define('EHR.window.SubmitForReviewPanel', {
                             scope: this,
                             load: function(store){
                                 if (this.reviewRequiredRecipient){
-                                    var recIdx = store.find('DisplayName', this.reviewRequiredRecipient);
+                                    var recIdx = store.findExact('DisplayName', this.reviewRequiredRecipient);
                                     if(recIdx!=-1){
                                         this.down('#assignedTo').setValue(store.getAt(recIdx).get('UserId'));
                                     }

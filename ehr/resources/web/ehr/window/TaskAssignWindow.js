@@ -34,20 +34,10 @@ Ext4.define('EHR.window.TaskAssignWindow', {
                 html: 'This will allow you to re-assign the selected tasks to the individual or group selected below.',
                 style: 'padding-bottom: 10px;'
             },{
-                xtype: 'labkey-combo',
+                xtype: 'ehr-usersandgroupscombo',
                 itemId: 'assignedTo',
                 fieldLabel: 'Assigned To',
-                width: 400,
-                valueField: 'UserId',
-                displayField: 'DisplayName',
-                store: {
-                    type: 'labkey-store',
-                    schemaName: 'core',
-                    queryName: 'PrincipalsWithoutAdmin',
-                    columns: 'UserId,DisplayName',
-                    sort: 'Type,DisplayName'
-                }
-
+                width: 400
             }],
             buttons: [{
                 text: 'Submit',
