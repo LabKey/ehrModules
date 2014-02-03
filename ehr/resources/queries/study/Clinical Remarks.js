@@ -13,10 +13,11 @@ function onInit(event, helper){
 }
 
 function onUpsert(helper, scriptErrors, row, oldRow){
-    //TODO: split by center
-    if(!row.so && !row.s && !row.p2 && !row.a && !row.p && !row.remark){
+    //NOTE: each center has slightly different names on the SOAP fields.  this check tests all, and should not get in the way of either
+    if(!row.hx && !row.so && !row.s && !row.p2 && !row.o && !row.a && !row.p && !row.remark){
         EHR.Server.Utils.addError(scriptErrors, 'remark', 'Must enter at least one comment', 'WARN');
         EHR.Server.Utils.addError(scriptErrors, 'so', 'Must enter at least one comment', 'WARN');
+        EHR.Server.Utils.addError(scriptErrors, 's', 'Must enter at least one comment', 'WARN');
     }
 
     //for compatibility with old system

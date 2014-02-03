@@ -66,8 +66,8 @@ Ext4.define('EHR.data.DrugAdministrationRunsClientStore', {
                 return;
             }
 
-            var records = this.formularyStore.getFormularyRecords(record.get('code'));
-            if (records.length == 1){
+            var values = this.formularyStore.getFormularyValues(record.get('code'));
+            if (!Ext4.Object.isEmpty(values)){
                 var params = {};
 
                 for (var fieldName in this.fieldMap){
@@ -80,8 +80,8 @@ Ext4.define('EHR.data.DrugAdministrationRunsClientStore', {
                         continue;
                     }
 
-                    var def = records[0].get(fieldName);
-                    if (def){
+                    var def = values[fieldName];
+                    if (Ext4.isDefined(def)){
                         params[this.fieldMap[fieldName]] = def;
                     }
                 }

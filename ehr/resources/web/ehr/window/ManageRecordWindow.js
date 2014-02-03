@@ -20,6 +20,7 @@ Ext4.define('EHR.window.ManageRecordWindow', {
             minHeight: 200,
             items: [{
                 border: false,
+                style: 'padding: 5px;',
                 html: 'Loading...'
             }],
             buttons: [{
@@ -107,10 +108,14 @@ Ext4.define('EHR.window.ManageRecordWindow', {
             onStoreCollectionInitialLoad: function(){
                 var item = this.getItemConfig()[0];
                 item.itemId = 'formPanel';
+                item.maxItemsPerCol = item.maxItemsPerCol || 9;
                 item.maxFieldWidth = EHR.form.Panel.defaultFieldWidth;
 
-                var formPanel = Ext4.widget(item);
                 var win = this.ownerWindow;
+                if (win.maxItemsPerCol)
+                    item.maxItemsPerCol = win.maxItemsPerCol;
+
+                var formPanel = Ext4.widget(item);
                 var cols = formPanel.items.get(0).items.getCount();
                 var width = cols * (EHR.form.Panel.defaultFieldWidth + 10);
 

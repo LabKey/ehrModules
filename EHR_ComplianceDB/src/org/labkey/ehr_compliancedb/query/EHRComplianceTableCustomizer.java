@@ -44,7 +44,7 @@ public class EHRComplianceTableCustomizer implements TableCustomizer
             {
                 ((AbstractTableInfo) table).setDetailsURL(DetailsURL.fromString("/ehr_compliancedb/employeeDetails.view?employeeid=${employeeid}"));
 
-                LDKService.get().appendEnddateColumns((AbstractTableInfo)table);
+                LDKService.get().appendCalculatedDateColumns((AbstractTableInfo)table, null, "enddate");
 
                 addIsActiveCol((AbstractTableInfo) table);
             }

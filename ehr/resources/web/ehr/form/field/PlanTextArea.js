@@ -55,6 +55,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
 
     setupMask: function(){
         if (this.getValue()){
+            this.showTextArea();
             return;
         }
 
@@ -73,15 +74,36 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         this.updateDisplayEl();
     },
 
+    showTextArea: function(){
+        if (!this.rendered){
+            return;
+        }
+
+        if (this.displayEl){
+            this.displayEl.remove();
+        }
+
+        if (this.linkEl){
+            this.linkEl.update('Copy Latest P2');
+        }
+
+        if (this.inputEl)
+            this.inputEl.setVisible(true);
+    },
+
     updateDisplayEl: function(){
+        if (!this.displayEl){
+            return;
+        }
+
         var rec = EHR.DataEntryUtils.getBoundRecord(this);
         if (rec && rec.get('Id')){
             this.getMostRecentP2(rec, function(ret){
-                if (ret && ret.mostRecentP2){
+                if (ret && ret.mostRecentP2 && ret.isActive){
                     this.displayEl.update(ret.mostRecentP2);
                 }
                 else {
-                    this.displayEl.update('No open case for ' + rec.get('Id'));
+                    this.displayEl.update('Either no active case or no P2 for ' + rec.get('Id'));
                 }
             });
         }
@@ -99,10 +121,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         }
 
         Ext4.Msg.wait('Loading...');
-        if (this.displayEl){
-            this.displayEl.remove();
-        }
-        this.inputEl.setVisible(true);
+        this.showTextArea();
 
         this.getMostRecentP2(rec, function(ret){
             Ext4.Msg.hide();
@@ -128,7 +147,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         this.pendingIdRequest = rec.get('Id');
         LABKEY.Query.executeSql({
             schemaName: 'study',
-            sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid FROM study.clinRemarks c WHERE c.caseid.isActive = true and c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
+            sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid, c.caseid.category as caseCategory, c.caseid.isActive as isActive FROM study.clinRemarks c WHERE c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
             failure: LDK.Utils.getErrorCallback,
             scope: this,
             success: function(results){
@@ -168,5 +187,13 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         }
 
         this.callParent(this);
+    },
+
+    setValue: function(){
+        this.callParent(arguments);
+
+        if (this.getValue()){
+            this.showTextArea();
+        }
     }
 });

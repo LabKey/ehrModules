@@ -469,8 +469,11 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         onDeathDeparture: function(id, date){
             if (!this.isETL()){
                 //close housing, assignments, treatments
-                this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Problem List', 'Animal Record Flags'], id, date);
+                this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Problem List'], id, date);
             }
+
+            //note: these are entered direct in LK, so separate from above until the ETL is done
+            this.getJavaHelper().closeActiveDatasetRecords(['Animal Record Flags'], id, date);
         },
 
         isRequiresStatusRecalc: function(){

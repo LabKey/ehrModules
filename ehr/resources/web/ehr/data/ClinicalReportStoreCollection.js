@@ -7,11 +7,23 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
     extend: 'EHR.data.TaskStoreCollection',
 
     setClientModelDefaults: function(model){
-        //set animalId?
-        var id = this.getAnimalId();
-        if (id){
+        var vals = this.getDefaultValues();
+        if (Ext4.Object.isEmpty(vals)){
+            return;
+        }
+
+        var toSet = {};
+
+        if (model.fields.get('Id') != null){
+            toSet.Id = vals.Id;
+        }
+        if (model.fields.get('caseid') != null){
+            toSet.caseid = vals.caseid;
+        }
+
+        if (!Ext4.isEmpty(toSet)){
             model.suspendEvents();
-            model.set('Id', id);
+            model.set(toSet);
             model.resumeEvents();
         }
 
@@ -29,12 +41,16 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
         return this.remarkStore;
     },
 
-    getAnimalId: function(){
+    getDefaultValues: function(){
         var remarkStore = this.getRemarksStore();
         if (remarkStore){
             LDK.Assert.assertTrue('More than 1 record found in Clinical remarks store, actual: ' + remarkStore.getCount(), remarkStore.getCount() <= 1);
             if (remarkStore.getCount() == 1){
-                return remarkStore.getAt(0).get('Id');
+                var rec = remarkStore.getAt(0);
+                return {
+                    Id: rec.get('Id'),
+                    caseid: rec.get('caseid')
+                }
             }
         }
 
@@ -47,26 +63,48 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
     },
 
     doUpdateRecords: function(){
-        var newId = this.getAnimalId();
-        if (newId !== this._cachedId){
+        var newValues = this.getDefaultValues() || {};
+        var cacheKey = newValues ? (newValues.Id + '||' + newValues.caseid) : null;
+
+        if (cacheKey !== this._cachedKey){
             var remarkStore = this.getRemarksStore();
             this.clientStores.each(function(cs){
                 if (cs.storeId == remarkStore.storeId){
                     return;
                 }
 
-                if (cs.getFields().get('Id') == null){
+                var toSet = {};
+
+                if (cs.getFields().get('Id') != null){
+                    toSet.Id = newValues.Id;
+                }
+                if (cs.getFields().get('caseid') != null){
+                    toSet.caseid = newValues.caseid;
+                }
+
+                if (Ext4.Object.isEmpty(toSet)){
                     return;
                 }
 
+                cs.suspendEvents();
                 cs.each(function(rec){
-                    if (rec.get('Id') !== newId){
-                        rec.set('Id', newId);
+                    var needsUpdate = false;
+                    for (var field in toSet){
+                        if (toSet[field] !== rec.get(field)){
+                            needsUpdate = true;
+                        }
                     }
+
+                    if (needsUpdate)
+                        rec.set(toSet);
+                    else
+                        console.log('no update needed');
                 }, this);
+                cs.resumeEvents();
+                cs.fireEvent('datachanged', cs);
             }, this);
         }
 
-        this._cachedId = newId;
+        this._cachedKey = cacheKey;
     }
 });

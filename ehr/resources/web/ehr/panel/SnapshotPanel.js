@@ -124,7 +124,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Weights',
-                        width: 450,
                         itemId: 'weights'
                     }]
                 }]
@@ -403,7 +402,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
             var text = [];
             Ext4.each(rows, function(r){
-                text.push('<tr><td>' + r.weight + ' kg' + '</td><td style="padding-left: 5px;">' + r.date.format('Y-m-d') + '</td><td style="padding-left: 5px;">' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
+                text.push('<tr><td nowrap>' + r.weight + ' kg' + '</td><td style="padding-left: 5px;" nowrap>' + r.date.format('Y-m-d') + '</td><td style="padding-left: 5px;" nowrap>' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
 
             this.safeAppend('#weights', '<table>' + text.join('') + '</table>');
@@ -485,15 +484,21 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 var text = row.category;
                 if (text){
                     var date = LDK.ConvertUtils.parseDate(row.date);
-                    if (date)
-                        text = text + ' (' + date.format('Y-m-d') + ')';
+                    if (date){
+                        var reviewdate = row.reviewdate ? LDK.ConvertUtils.parseDate(row.reviewdate) : null;
+                        if (!reviewdate || reviewdate.getTime() < Ext4.Date.clearTime(new Date())){
+                            text = text + ' (' + date.format('Y-m-d') + ')';
 
-                    values.push(text);
+                            values.push(text);
+                        }
+                    }
                 }
             }, this);
 
             if (values.length)
                 this.safeAppend('#activeCases', values.join(', '));
+            else
+                this.safeAppend('#activeCases', 'None');
         }
         else {
             this.safeAppend('#activeCases', 'None');
@@ -611,7 +616,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 }
             }
         },{
-            name: 'assignedvet/DisplayName',
+            name: 'assignedvet/UserId/DisplayName',
             label: 'Vet'
         }]);
     },

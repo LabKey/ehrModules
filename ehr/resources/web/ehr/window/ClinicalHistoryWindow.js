@@ -31,10 +31,14 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             console.log('EHR.Security.init() has not been called.  Cannot show insert UI');
         }
 
+        Ext4.QuickTips.init({
+            constrainPosition: true
+        });
+
         LABKEY.ExtAdapter.apply(this, {
             title: 'Clinical History:',
             bodyStyle: 'padding: 3px;',
-            width: 1210,
+            width: 1260,
             modal: true,
             closeAction: 'destroy',
             items: this.getItems(),
@@ -81,7 +85,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
                 xtype: 'ehr-clinicalhistorypanel',
                 title: 'History',
                 border: true,
-                width: 1180,
+                width: 1230,
                 gridHeight: 400,
                 height: 400,
                 autoLoadRecords: true,
@@ -94,7 +98,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
                 title: 'Weights',
                 subjectId: this.subjectId,
                 containerPath: this.containerPath,
-                width: 1180,
+                width: 1230,
                 border: true
             }]
         }];

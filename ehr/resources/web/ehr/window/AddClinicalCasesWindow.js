@@ -38,6 +38,10 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField'
             },{
+                xtype: 'textarea',
+                fieldLabel: 'Animal(s)',
+                itemId: 'idField'
+            },{
                 xtype: 'xdatetime',
                 fieldLabel: 'Date',
                 value: new Date(),
@@ -100,9 +104,16 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     getBaseFilterArray: function(){
         var area = this.down('#areaField').getValue() || [];
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
+        var ids = this.down('#idField').getValue();
+        ids = EHR.Utils.splitIds(ids);
 
-        if (!this.allowNoSelection && !area.length && !rooms.length){
+        if (!this.allowNoSelection && !area.length && !rooms.length && !ids.length){
             Ext4.Msg.alert('Error', 'Must provide at least one room or an area');
+            return;
+        }
+
+        if (ids.length && (rooms.length || area.length)){
+            Ext4.Msg.alert('Error', 'Cannot search on both location and IDs at the same time');
             return;
         }
 
@@ -113,6 +124,9 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
         if (rooms.length)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/room', rooms.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+        if (ids.length)
+            filterArray.push(LABKEY.Filter.create('Id', ids.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -221,20 +235,53 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             closeAction: 'destroy',
             width: 450,
             modal: true,
+            defaults: {
+                border: false
+            },
             items: [{
                 border: false,
                 bodyStyle: 'padding: 5px;',
-                defaults: {
+                items: [{
                     border: false,
-                    style: 'margin-right: 10px;'
-                },
-                maxHeight: Ext4.getBody().getHeight() * 0.8,
-                autoScroll: true,
-                layout: {
-                    type: 'table',
-                    columns: 3
-                },
-                items: toAdd
+                    defaults: {
+                        border: false,
+                        style: 'margin-right: 10px;'
+                    },
+                    maxHeight: Ext4.getBody().getHeight() * 0.8,
+                    autoScroll: true,
+                    layout: {
+                        type: 'table',
+                        columns: 3
+                    },
+                    items: toAdd
+                },{
+                    layout: 'hbox',
+                    style: 'padding-top: 15px;',
+                    border: false,
+                    items: [{
+                        xtype: 'ldk-linkbutton',
+                        text: '[Check All]',
+                        handler: function(btn){
+                            var cbs = btn.up('window').query('checkbox');
+                            Ext4.Array.forEach(cbs, function(item){
+                                item.setValue(true);
+                            });
+                        }
+                    },{
+                        border: false,
+                        html: '&nbsp;'
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        style: 'margin-left:5px;',
+                        text: '[Uncheck All]',
+                        handler: function(btn){
+                            var cbs = btn.up('window').query('checkbox');
+                            Ext4.Array.forEach(cbs, function(item){
+                                item.setValue(false);
+                            });
+                        }
+                    }]
+                }]
             }],
             buttons: [{
                 xtype: 'button',

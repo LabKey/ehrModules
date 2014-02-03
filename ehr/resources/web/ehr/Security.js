@@ -306,7 +306,37 @@ EHR.Security = new function(){
         },
 
         Permissions: {
-            DATA_ENTRY: classPrefix + '.EHRDataEntryPermission'
+            DATA_ENTRY: classPrefix + '.EHRDataEntryPermission',
+            VET: classPrefix + '.EHRVeternarianPermission',
+            SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
+            CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission'
+        },
+
+        hasVetPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.VET) > -1;
+
+        },
+
+        hasSurgeryEntryPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.SURGERY_ENTRY) > -1;
+
+        },
+
+        hasClinicalEntryPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.CLINICAL_ENTRY) > -1;
+
         }
     }
 }

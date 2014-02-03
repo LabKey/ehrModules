@@ -39,10 +39,12 @@
                     <column columnName="category">
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Category</columnTitle>
+                        <isHidden>true</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>clinremarks_category</fkTable>
                             <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="hx">

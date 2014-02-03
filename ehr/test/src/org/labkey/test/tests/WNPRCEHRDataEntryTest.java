@@ -256,6 +256,18 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForElement(Locator.name("Id"), WAIT_FOR_PAGE);
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-drug_administration-records-grid')]"), WAIT_FOR_JAVASCRIPT);
+
+        final Locator fieldLocator = Locator.tag("input").withAttribute("name", "Id").withClass("x-form-field");
+        waitForElement(fieldLocator, WAIT_FOR_JAVASCRIPT);
+        waitFor(new Checker()
+        {
+            @Override
+            public boolean check()
+            {
+                return PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator.toBy()).getAttribute("value"));
+            }
+        }, "Id field did not populate", WAIT_FOR_PAGE);
+
         _extHelper.selectComboBoxItem("Project:", PROJECT_ID + " (" + DUMMY_PROTOCOL + ")\u00A0");
         _extHelper.selectComboBoxItem("Type:", "Physical Exam\u00A0");
         _helper.setDataEntryField("remark", "Bonjour");
@@ -283,7 +295,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
             {
                 return (Boolean) executeScript("return !Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").isLoading && Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").getCount() > 0");
             }
-        }, "SNOMED Store did not load", WAIT_FOR_PAGE);
+        }, "SNOMED Store did not load", WAIT_FOR_PAGE * 2);
 
         //not an ideal solution, but the custom template isnt being selected with the standard helper
         String selection = "amoxicillin (c-54620)";

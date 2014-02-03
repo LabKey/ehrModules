@@ -70,11 +70,11 @@ Ext4.define('EHR.grid.RoundsRemarksGridPanel', {
                             line += r.get('category') + ': ';
 
                             if (r.get('category') == 'Vet Attention'){
-                                prefix = '<br><span style="margin-top: 2px;background-color: yellow;">';
+                                prefix = '<span style="margin-top: 2px;background-color: yellow;line-height: 1.2;">';
                                 suffix = '</span>';
                             }
                             else if (r.get('category') == 'Reviewed'){
-                                prefix = '<br><span style="margin-top: 2px;background-color: green;">';
+                                prefix = '<span style="margin-top: 2px;background-color: green;line-height: 1.2;">';
                                 suffix = '</span>';
                             }
                         }
@@ -85,6 +85,11 @@ Ext4.define('EHR.grid.RoundsRemarksGridPanel', {
 
                         if (r.get('remark')){
                             line += '.  ' + r.get('remark');
+                        }
+
+                        if (!r.get('remark') && Ext4.isEmpty(r.get('observation'))){
+                            if (['Vet Attention', 'Reviewed'].indexOf(r.get('category')) == -1)
+                                line += '<span style="margin-top: 2px;background-color: red;line-height: 1.2;">&nbsp;&nbsp;</span>';
                         }
 
                         if (line){

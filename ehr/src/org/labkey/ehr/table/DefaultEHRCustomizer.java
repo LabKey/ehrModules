@@ -199,7 +199,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void doSharedCustomization(AbstractTableInfo ti)
     {
-        LDKService.get().appendEnddateColumns(ti);
+        LDKService.get().appendCalculatedDateColumns(ti, (ti.getColumn("date") == null ? null : "date"), (ti.getColumn("enddate") == null ? null : "enddate"));
         appendDuration(ti);
 
         if (_addLinkDisablers)
@@ -731,7 +731,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                     //otherwise show both
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " +
-                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), getChr(ds) + "(10)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), "','", getChr(ds) + "(10)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
                     " END"
             );
 

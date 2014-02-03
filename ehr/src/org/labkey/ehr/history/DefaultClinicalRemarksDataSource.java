@@ -30,6 +30,9 @@ import java.util.Set;
  */
 public class DefaultClinicalRemarksDataSource extends AbstractDataSource
 {
+    public static final String REPLACED_SOAP = "Replaced SOAP";
+    public static final String REPLACEMENT_SOAP = "Replacement SOAP";
+
     public DefaultClinicalRemarksDataSource()
     {
         super("study", "Clinical Remarks", "Clinical Remark", "Clinical");
@@ -39,7 +42,7 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     protected String getCategoryText(Results rs) throws SQLException
     {
         String category = rs.getString("category");
-        return (category == null ?  "Clinical" : category) + " Remark";
+        return (category == null || REPLACED_SOAP.equals(category) || REPLACEMENT_SOAP.equals(category) ?  "Clinical" : category) + " Remark";
     }
 
 //    @Override
@@ -73,9 +76,27 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
 
-        if (!redacted)
+        String category = rs.getString(FieldKey.fromString("category"));
+
+        //this is a mechanism to allow individual notes to be replaced, yet remain in the record
+        if (REPLACED_SOAP.equals(category))
         {
-            appendNote(rs, "performedby", "<span style='white-space:nowrap'>Entered By</span>", sb);
+            return null;
+        }
+
+        if (!redacted && rs.getObject(FieldKey.fromString("performedby")) != null)
+        {
+            String label;
+            if ("Replacement SOAP".equals(category))
+            {
+                label = "Ammended By";
+            }
+            else
+            {
+                label = "Entered By";
+            }
+
+            appendNote(rs, "performedby", "<span style='white-space:nowrap'>" + label + "</span>", sb);
         }
 
         appendNote(rs, "hx", "Hx", sb);

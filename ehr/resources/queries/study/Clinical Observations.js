@@ -11,4 +11,8 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         EHR.Server.Utils.addError(scriptErrors, 'observation', 'Must enter an observation or remark', 'WARN');
         EHR.Server.Utils.addError(scriptErrors, 'remark', 'Must enter an observation or remark', 'WARN');
     }
+
+    if (row.id && row.category == 'Menses'){
+        EHR.Server.Validation.verifyIsFemale(row, scriptErrors, helper);
+    }
 }

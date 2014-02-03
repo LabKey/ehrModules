@@ -442,11 +442,11 @@ Ext4.define('EHR.data.StoreCollection', {
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
             timeout: 500000,  //a little extreme?
-            transacted: true,
+            transacted: !validateOnly,  //not necessary for validation, and shouldnt lock up the DB
             startTime: new Date(),
             jsonData : {
                 apiVersion: 13.2,
-                transacted: true,
+                transacted: !validateOnly,
                 containerPath: this.containerPath,
                 commands: commands,
                 extraContext: this.getExtraContext(extraContext)
@@ -617,17 +617,27 @@ Ext4.define('EHR.data.StoreCollection', {
         if (options && options.jsonData){
             if (options.jsonData.commands){
                 msg.push('Total Commands: ' + options.jsonData.commands.length);
-                msg.push('Validate Only: ' + options.jsonData.validateOnly)
+                msg.push('Validate Only: ' + !!options.jsonData.validateOnly);
 
+                var totalRows = 0;
                 Ext4.Array.forEach(options.jsonData.commands, function(command){
-                    msg.push('\ttype: ' + command.command + ', table: ' + command.schemaName + '.' + command.queryName + ', rows: ' + command.rows.length);
+                    totalRows += command.rows.length;
                 }, this);
+
+                msg.push('Total Rows: ' + totalRows);
             }
         }
 
         LDK.Utils.logToServer({
             level: 'ERROR',
             message: msg.join('\n')
+        });
+
+        LDK.Utils.logMetric({
+            category: 'EHR',
+            metricName: 'DataEntryPanelRequest',
+            numericValue1: options.jsonData.commands ? options.jsonData.commands.length : null,
+            stringValue1: this.formConfig ? this.formConfig.name : null
         });
     },
 
@@ -670,7 +680,7 @@ Ext4.define('EHR.data.StoreCollection', {
                     }, this);
 
                     if (!validateOnly){
-                        store.processResponse(command.rows, command[i]);
+                        store.processResponse(command.rows, command);
                     }
                 }
             }

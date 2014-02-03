@@ -11,6 +11,26 @@ Ext4.define('EHR.form.field.HxTextArea', {
             style: 'vertical-align:top;'
         }, this.inputEl);
 
+        var panel = this.up('ehr-formpanel');
+        if (panel){
+            this.mon(panel, 'bindrecord', this.onAnimalChange, this, {buffer: 100});
+        }
+        else {
+            LDK.Utils.logToServer({
+                message: 'Unable to find ehr-formpanel in PlanTextArea'
+            })
+        }
+
+        var dataEntryPanel = this.up('ehr-dataentrypanel');
+        if (dataEntryPanel){
+            this.mon(dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 100});
+        }
+        else {
+            LDK.Utils.logToServer({
+                message: 'Unable to find ehr-dataentrypanel in PlanTextArea'
+            })
+        }
+
         this.linkEl = this.linkDiv.createChild({
             tag: 'a',
             cls: 'labkey-text-link',
@@ -47,6 +67,10 @@ Ext4.define('EHR.form.field.HxTextArea', {
                 }
             });
         }, this);
+    },
+
+    onAnimalChange: function(){
+
     },
 
     onDestroy : function(){

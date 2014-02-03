@@ -105,9 +105,9 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
+    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String categoryColor, String subjectId, Date date, String html, String taskId, Integer taskRowId, String formType, String objectId) throws SQLException
     {
-        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
+        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, categoryColor, subjectId, date, html, taskId, taskRowId, formType, objectId);
         if (row != null)
             row.setShowTime(true);
 
@@ -152,7 +152,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             }
 
             HistoryRowImpl rec = records.get(0);
-            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategoryText(), rec.getPrimaryGroup(), rec.getSubjectId(), rec.getDate(), sb.toString(), rec.getQcStateLabel(), rec.getPublicData());
+            HistoryRowImpl newRow = new HistoryRowImpl(this, rec.getCategoryText(), rec.getPrimaryGroup(), rec.getCategoryColor(), rec.getSubjectId(), rec.getDate(), sb.toString(), rec.getQcStateLabel(), rec.getPublicData(), rec.getTaskId(), rec.getTaskRowId(), rec.getFormType(), rec.getObjectId());
             newRow.setShowTime(true);
             newRows.add(newRow);
         }

@@ -303,7 +303,8 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         var record = form.getRecord();
         if (record){
-            this.ignoreNextUpdateEvent = true;
+            //NOTE: disabled since it no longer appears encessary and this interferes with store-level updates like DrugAdministrationStore
+            //this.ignoreNextUpdateEvent = true;
             form.updateRecord(record);
         }
     }

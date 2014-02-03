@@ -196,10 +196,37 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     processResponse: function(records, command){
         //clear server errors
-        //TODO: fire event?
         Ext4.Array.forEach(records, function(record){
             this.ensureServerErrors(record);
             record.serverErrors.clear();
+        }, this);
+
+        //then update local records based on the server's response.  this is important in case the server assigned keys or altered values
+        Ext4.Array.forEach(command.rows, function(row){
+            var record = this.getById(row.oldKeys[this.proxy.reader.idProperty]);
+            LDK.Assert.assertNotEmpty('Unable to find record using key: ' + this.proxy.reader.idProperty + ', with value: ' + row.oldKeys, record);
+            if (record){
+                var toSet = {};
+                for (var fieldName in row.values){
+                    var field = record.fields.get(fieldName);
+                    if (field){
+                        var newVal = field.convert(row.values[fieldName]);
+                        if (field.type.type == 'date'){
+                            if (!Ext4.Date.isEqual(newVal, record.get(fieldName))){
+                                toSet[fieldName] = row.values[fieldName];
+                            }
+                        }
+                        else if (newVal !== record.get(fieldName)){
+                            toSet[fieldName] = row.values[fieldName];
+                        }
+                    }
+                }
+
+                if (!Ext4.Object.isEmpty(toSet)){
+                    console.log(toSet);
+                    record.set(toSet);
+                }
+            }
         }, this);
 
         this.callParent(arguments);

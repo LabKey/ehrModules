@@ -7,6 +7,8 @@ Ext4.define('EHR.window.VetReviewWindow', {
     extend: 'Ext.window.Window',
 
     statics: {
+        VET_REVIEW: 'Vet Review',
+
         buttonHandler: function(dataRegionName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
@@ -78,7 +80,7 @@ Ext4.define('EHR.window.VetReviewWindow', {
                         Id: row.Id,
                         caseid: row.objectid,
                         performedby: LABKEY.Security.currentUser.displayName,
-                        category: 'Vet Review',
+                        category: EHR.window.VetReviewWindow.VET_REVIEW,
                         date: new Date()
                     });
                 }, this);

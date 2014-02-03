@@ -46,27 +46,27 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "Reason", "reason"));
         sb.append(safeAppend(rs, "Route", "route"));
 
-        if (rs.hasColumn(FieldKey.fromString("concentration")) && rs.getObject("concentration") != null)
-        {
-            sb.append("Concentration: " + rs.getString("concentration"));
-
-            if (rs.hasColumn(FieldKey.fromString("conc_units")) && rs.getObject("conc_units") != null)
-            {
-                sb.append(" " + rs.getString("conc_units"));
-            }
-
-            sb.append("\n");
-        }
-
-        if (rs.hasColumn(FieldKey.fromString("dosage")) && rs.getObject("dosage") != null)
-        {
-            sb.append("Dosage: " + rs.getString("dosage"));
-
-            if (rs.hasColumn(FieldKey.fromString("dosage_units")) && rs.getObject("dosage_units") != null)
-                sb.append(" " + rs.getString("dosage_units"));
-
-            sb.append("\n");
-        }
+//        if (rs.hasColumn(FieldKey.fromString("concentration")) && rs.getObject("concentration") != null)
+//        {
+//            sb.append("Concentration: " + rs.getString("concentration"));
+//
+//            if (rs.hasColumn(FieldKey.fromString("conc_units")) && rs.getObject("conc_units") != null)
+//            {
+//                sb.append(" " + rs.getString("conc_units"));
+//            }
+//
+//            sb.append("\n");
+//        }
+//
+//        if (rs.hasColumn(FieldKey.fromString("dosage")) && rs.getObject("dosage") != null)
+//        {
+//            sb.append("Dosage: " + rs.getString("dosage"));
+//
+//            if (rs.hasColumn(FieldKey.fromString("dosage_units")) && rs.getObject("dosage_units") != null)
+//                sb.append(" " + rs.getString("dosage_units"));
+//
+//            sb.append("\n");
+//        }
 
         if (rs.hasColumn(FieldKey.fromString("volume")) && rs.getObject("volume") != null)
         {
@@ -111,9 +111,9 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     }
 
     @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
+    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String categoryColor, String subjectId, Date date, String html, String taskId, Integer taskRowId, String formType, String objectId) throws SQLException
     {
-        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
+        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, categoryColor, subjectId, date, html, taskId, taskRowId, formType, objectId);
         if (row != null)
             row.setShowTime(true);
 

@@ -330,7 +330,14 @@ EHR.DataEntryUtils = new function(){
                     });
                     win.show();
 
-                    win.down('panel').showCreateWindow('Clinical');
+                    var panel = win.down('panel');
+
+                    //TODO: consider attempting to update caseid of the local record
+                    //panel.on('casecreated', function(animalId, category, caseId){
+                    //    console.log(arguments);
+                    //}, this);
+
+                    panel.showCreateWindow('Clinical');
                 }, this);
             }
         },

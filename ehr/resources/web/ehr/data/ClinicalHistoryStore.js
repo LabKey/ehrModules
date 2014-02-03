@@ -16,7 +16,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             proxy: {
                 type: 'memory'
             },
-            fields: ['idfield', 'dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId', 'qcStateLabel', 'publicData']
+            fields: ['idfield', 'dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'categoryColor', 'type', 'html', 'lsid', 'caseId', 'qcStateLabel', 'publicData', 'taskId', 'taskRowId', 'taskFormType', 'objectId', 'source']
         });
 
         this.actionName = config.actionName || this.actionName;
@@ -37,8 +37,8 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.checkedItems
      */
     reloadData: function(config){
+        this.loading = true;
         this.removeAll();
-        this.isLoadingData = true;
 
         if (config.sortMode){
             this.changeMode(config.sortMode);
@@ -78,8 +78,8 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             toAdd.push(this.createModel(row));
         }, this);
 
-        this.isLoadingData = false;
-        if(toAdd.length){
+        this.loading = false;
+        if (toAdd.length){
             this.add(toAdd);
             this.applyFilter(this.checkedItems);
         }
@@ -108,14 +108,14 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
         if (mode == 'date'){
             sorters = [
                 {property: 'dateGroup', direction: 'DESC'},
-                {property: 'timeString', direction: 'ASC'}
+                {property: 'timeString', direction: 'DESC'}
             ];
             groupers = [{property: 'dateGroup', direction: 'DESC'}];
         }
         else {
             sorters = [
                 {property: 'typeGroup', direction: 'ASC'},
-                {property: 'timeString', direction: 'ASC'}
+                {property: 'timeString', direction: 'DESC'}
             ];
             groupers = [{property: 'typeGroup', direction: 'ASC'}];
         }

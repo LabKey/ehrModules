@@ -134,10 +134,10 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'treatment_order',
-            columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,amountAndVolume',
+            columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,frequency,frequency/meaning,amountAndVolume',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+                LABKEY.Filter.create('enddateTimeCoalesced', new Date(), LABKEY.Filter.Types.GTE)
             ],
             autoLoad: true,
             listeners: {
@@ -160,6 +160,9 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             xtype: 'grid',
             border: true,
             store: this.getStore(),
+            viewConfig: {
+                loadMask: !(Ext4.isIE && Ext4.ieVersion <= 8)
+            },
             columns: [{
                 xtype: 'actioncolumn',
                 width: 40,
@@ -185,6 +188,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 width: 300,
                 dataIndex: 'code',
                 tdCls: 'ldk-wrap-text',
+                noWrap: false,
                 renderer: function(value, cellMetaData, record){
                     if(record && record.raw && record.raw['code']){
                         if(Ext4.isDefined(record.raw['code'].displayValue))
@@ -196,7 +200,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             },{
                 header: 'Frequency',
                 width: 160,
-                dataIndex: 'frequency'
+                dataIndex: 'frequency/meaning'
             },{
                 header: 'Route',
                 width: 60,
@@ -204,7 +208,16 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             },{
                 header: 'Amount',
                 width: 120,
-                dataIndex: 'amountAndVolume'
+                tdCls: 'ldk-wrap-text',
+                noWrap: false,
+                dataIndex: 'amountAndVolume',
+                renderer: function(value, cellMetaData, record){
+                    if (value){
+                        return value.replace(/\n/, '<br>');
+                    }
+
+                    return value;
+                }
             },{
                 header: 'Ordered By',
                 width: 160,

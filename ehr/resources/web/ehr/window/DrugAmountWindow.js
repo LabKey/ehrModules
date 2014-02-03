@@ -41,6 +41,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                     autoScroll: true,
                     items: [{
                         itemId: 'drugTab',
+                        xtype: 'form',
                         border: false,
                         items: this.getInitialItems()
                     },{
@@ -94,7 +95,16 @@ Ext4.define('EHR.window.DrugAmountWindow', {
             },{
                 text: 'Close',
                 handler: function(btn){
-                    btn.up('window').close();
+                    if (btn.up('window').down('#drugTab').isDirty()){
+                        Ext4.Msg.confirm('Close?', 'You will lose any changes to these records.  Do you want to continue?', function(val){
+                            if (val == 'yes'){
+                                btn.up('window').close();
+                            }
+                        }, this);
+                    }
+                    else {
+                        btn.up('window').close();
+                    }
                 }
             }]
         });

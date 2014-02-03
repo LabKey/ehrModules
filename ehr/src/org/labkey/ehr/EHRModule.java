@@ -60,12 +60,16 @@ import org.labkey.ehr.query.buttons.MarkCompletedButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
 import org.labkey.ehr.query.buttons.ShowAuditHistoryButton;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
+import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
+import org.labkey.ehr.security.EHRLabworkEntryRole;
+import org.labkey.ehr.security.EHRPathologyEntryRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
+import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRVeternarianRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
@@ -134,6 +138,10 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRVeternarianRole());
         RoleManager.registerRole(new EHRDataEntryRole());
         RoleManager.registerRole(new EHRRequestorRole());
+        RoleManager.registerRole(new EHRClinicalEntryRole());
+        RoleManager.registerRole(new EHRSurgeryEntryRole());
+        RoleManager.registerRole(new EHRLabworkEntryRole());
+        RoleManager.registerRole(new EHRPathologyEntryRole());
 
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");

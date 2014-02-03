@@ -21,6 +21,8 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
+import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
@@ -47,6 +49,7 @@ public class DataEntryManager
 
     private List<DataEntryFormFactory> _forms = new ArrayList<>();
     private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
+    private List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
 
     private DataEntryManager()
     {
@@ -99,6 +102,16 @@ public class DataEntryManager
             throw new IllegalArgumentException("Unable to find table: " + schemaName + "." + queryName);
 
         DataEntryFormContext ctx = new DataEntryFormContextImpl(c, u);
+
+        //allow modules to override specific tables
+        for (SingleQueryFormProvider p : _queryProviders)
+        {
+            if (p.isAvailable(c, ti))
+            {
+                return SingleQueryForm.create(ctx, ModuleLoader.getInstance().getModule(EHRModule.class), ti, p.getSection());
+            }
+        }
+
         return SingleQueryForm.create(ctx, ModuleLoader.getInstance().getModule(EHRModule.class), ti);
     }
 
@@ -143,6 +156,11 @@ public class DataEntryManager
     public static String getTableKey(TableInfo ti)
     {
         return getTableKey(ti.getPublicSchemaName(), ti.getPublicName());
+    }
+
+    public void registerSingleFormOverride(SingleQueryFormProvider p)
+    {
+        _queryProviders.add(p);
     }
 
     public class DataEntryFormContextImpl implements DataEntryFormContext

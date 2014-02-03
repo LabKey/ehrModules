@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Results;
@@ -32,6 +33,7 @@ import org.labkey.ehr.EHRManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +54,20 @@ public class DefaultObservationsDataSource extends AbstractDataSource
     }
 
     @Override
+    protected String getCategoryText(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return EHRManager.VET_REVIEW.equals(category) ? EHRManager.VET_REVIEW : super.getCategoryText(rs);
+    }
+
+    @Override
+    protected String getCategoryColor(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return EHRManager.VET_REVIEW.equals(category) ? "yellow" : super.getCategoryText(rs);
+    }
+
+    @Override
     protected List<HistoryRow> processRows(TableSelector ts, final boolean redacted, final Collection<ColumnInfo> cols)
     {
         final Map<String, List<Map<String, Object>>> idMap = new HashMap<>();
@@ -63,20 +79,26 @@ public class DefaultObservationsDataSource extends AbstractDataSource
                 Results results = new ResultsImpl(rs, cols);
 
                 String html = getObservationLine(results, redacted);
-                if (!StringUtils.isEmpty(html))
+                if (!StringUtils.isEmpty(html) || EHRManager.VET_REVIEW.equals(results.getString("category")))
                 {
                     Map<String, Object> rowMap = new CaseInsensitiveHashMap<>();
 
                     rowMap.put("date", results.getTimestamp(getDateField()));
                     rowMap.put("categoryText", getCategoryText(results));
                     rowMap.put("categoryGroup", getPrimaryGroup(results));
+                    rowMap.put("categoryColor", getCategoryColor(results));
                     rowMap.put("performedBy", results.getString(FieldKey.fromString("performedby")));
                     rowMap.put("qcStateLabel", results.getString(FieldKey.fromString("qcState/Label")));
                     rowMap.put("publicData", results.getBoolean(FieldKey.fromString("qcState/PublicData")));
                     rowMap.put("subjectId", results.getString(FieldKey.fromString(_subjectIdField)));
+                    rowMap.put("taskId", results.getString(FieldKey.fromString("taskId")));
+                    rowMap.put("taskRowId", results.getInt(FieldKey.fromString("taskId/rowid")));
+                    rowMap.put("formType", results.getString(FieldKey.fromString("taskId/formtype")));
+                    rowMap.put("objectId", results.getString(FieldKey.fromString("objectId")));
                     rowMap.put("html", html);
 
-                    String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + rowMap.get("date").toString();
+                    Date roundedDate = DateUtils.round((Date)rowMap.get("date"), Calendar.DATE);
+                    String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate.toString();
                     List<Map<String, Object>> obsRows = idMap.get(key);
                     if (obsRows == null)
                         obsRows = new ArrayList<>();
@@ -95,10 +117,15 @@ public class DefaultObservationsDataSource extends AbstractDataSource
             Date date = null;
             String subjectId = null;
             String categoryGroup = null;
+            String categoryColor = null;
             String categoryText = null;
             String performedBy = null;
             String qcStateLabel = null;
             Boolean publicData = null;
+            String taskId = null;
+            Integer taskRowId = null;
+            String formType = null;
+            String objectId = null;
             StringBuilder html = new StringBuilder();
 
             for (Map<String, Object> rowMap : toAdd)
@@ -108,8 +135,13 @@ public class DefaultObservationsDataSource extends AbstractDataSource
                 performedBy = (String)rowMap.get("performedBy");
                 categoryText = (String)rowMap.get("categoryText");
                 categoryGroup = (String)rowMap.get("categoryGroup");
+                categoryColor = (String)rowMap.get("categoryColor");
                 qcStateLabel = (String)rowMap.get("qcStateLabel");
                 publicData = (Boolean)rowMap.get("publicData");
+                taskId = (String)rowMap.get("taskId");
+                taskRowId = (Integer)rowMap.get("taskRowId");
+                formType = (String)rowMap.get("formType");
+                objectId = (String)rowMap.get("objectId");
 
                 html.append(rowMap.get("html"));
             }
@@ -119,7 +151,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
                 html.append("Performed By: ").append(performedBy).append("\n");
             }
 
-            HistoryRow row = new HistoryRowImpl(categoryText, categoryGroup, subjectId, date, html.toString(), qcStateLabel, publicData);
+            HistoryRow row = new HistoryRowImpl(this, categoryText, categoryGroup, categoryColor, subjectId, date, html.toString(), qcStateLabel, publicData, taskId, taskRowId, formType, objectId);
             if (row != null)
                 rows.add(row);
         }
@@ -132,18 +164,34 @@ public class DefaultObservationsDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
 
         String category = rs.getString(FieldKey.fromString("category"));
-        if (category == null || EHRManager.OBS_REVIEWED.equals(category) || EHRManager.VET_ATTENTION.equals(category))
+        if (category == null || EHRManager.OBS_REVIEWED.equals(category) || (EHRManager.VET_ATTENTION.equals(category) && redacted) || (EHRManager.VET_REVIEW.equals(category) && redacted))
         {
             return null;
         }
 
         //note: the following is added as 1 line
-        sb.append(category).append(": ");
-
         String area = rs.getString(FieldKey.fromString("area"));
-        if (area != null && !"N/A".equalsIgnoreCase(area))
+
+        //when doing a PE, obs are categorized as 'Observations', which is redundant to show in history
+        if (EHRManager.VET_REVIEW.equals(category))
         {
-            sb.append(area).append(", ");
+
+        }
+        else if (!EHRManager.OBS_CATEGORY_OBSERVATIONS.equals(category))
+        {
+            sb.append(category).append(": ");
+
+            if (area != null && !"N/A".equalsIgnoreCase(area))
+            {
+                sb.append(area).append(", ");
+            }
+        }
+        else
+        {
+            if (area != null && !"N/A".equalsIgnoreCase(area))
+            {
+                sb.append(area).append(": ");
+            }
         }
 
         if (rs.getString(FieldKey.fromString("observation")) != null)
@@ -154,6 +202,12 @@ public class DefaultObservationsDataSource extends AbstractDataSource
             if (sb.length() > 0)
                 sb.append(".  ");
             sb.append(rs.getString(FieldKey.fromString("remark")));
+        }
+
+        if (EHRManager.VET_ATTENTION.equals(category))
+        {
+            sb.insert(0, "<span style=\"background-color: yellow;line-spacing: 1.2\">");
+            sb.append("</span>");
         }
 
         if (sb.length() > 0)

@@ -33,6 +33,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.RequestForm;
+import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryDataSource;
@@ -670,5 +671,10 @@ public class EHRServiceImpl extends EHRService
     public TableCustomizer getEHRCustomizer()
     {
         return new DefaultEHRCustomizer();
+    }
+
+    public void registerSingleFormOverride(SingleQueryFormProvider p)
+    {
+        DataEntryManager.get().registerSingleFormOverride(p);
     }
 }

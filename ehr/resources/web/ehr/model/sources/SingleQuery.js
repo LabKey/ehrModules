@@ -20,6 +20,9 @@ EHR.model.DataModelManager.registerMetadata('SingleQuery', {
                     storeId: 'study||treatment_frequency||rowid||meaning||unfiltered',
                     filterArray: []
                 }
+            },
+            category: {
+                defaultValue: 'Clinical'
             }
         }
     }

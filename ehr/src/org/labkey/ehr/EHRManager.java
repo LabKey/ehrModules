@@ -54,6 +54,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
+import org.labkey.api.query.Queryable;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
@@ -94,8 +95,14 @@ public class EHRManager
     public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exception";
     public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exception";
 
+    @Queryable
+    public static final String VET_REVIEW = "Vet Review";
+    @Queryable
     public static final String VET_ATTENTION = "Vet Attention";
+    @Queryable
     public static final String OBS_REVIEWED = "Reviewed";
+    @Queryable
+    public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
 
     private static final Logger _log = Logger.getLogger(EHRManager.class);
 

@@ -100,6 +100,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
             if (Ext4.isFunction(field.getInitialValue)){
                 this.data[field.name] = field.getInitialValue.call(this, this.data[field.name], this);
             }
+//            else if (Ext4.isEmpty(this.data[field.name]) && !Ext4.isEmpty(field.defaultValue)){
+//                console.log('default: ' + field.name);
+//                this.data[field.name] = field.defaultValue;
+//            }
         }, this);
     },
 

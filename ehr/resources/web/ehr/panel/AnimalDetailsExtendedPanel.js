@@ -129,7 +129,7 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                     style: 'margin-top: 5px;',
                     scope: this,
                     text: '[Manage Treatments]',
-                    hidden: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                    hidden: EHR.Security.hasClinicalEntryPermission() && !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(){
                         if (this.subjectId){
                             Ext4.create('EHR.window.ManageTreatmentsWindow', {animalId: this.subjectId}).show();
@@ -143,7 +143,7 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                     style: 'margin-top: 5px;margin-bottom:10px;',
                     scope: this,
                     text: '[Manage Cases]',
-                    hidden: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
+                    hidden: EHR.Security.hasClinicalEntryPermission() && !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
                     handler: function(){
                         if (this.subjectId){
                             Ext4.create('EHR.window.ManageCasesWindow', {animalId: this.subjectId}).show();
@@ -191,7 +191,7 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
             }
 
             var text = row.weight + ' kg, ' + date.format('Y-m-d') + (Ext4.isDefined(interval) ? ' (' + interval + ')' : '');
-            this.safeAppend('#weights', '<table>' + text + '</table>');
+            this.safeAppend('#weights', text);
         }
     },
 

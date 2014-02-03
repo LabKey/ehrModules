@@ -168,6 +168,24 @@ public class TriggerScriptHelper
         }
     }
 
+    public void closeActiveProblemsForCase(String id, Date enddate, String caseId)
+    {
+        Container container = getContainer();
+        User user = getUser();
+
+        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        DataSet dataset = StudyService.get().getDataSet(container, datasetId);
+        if (dataset == null){
+            _log.info("Unable to find problem list dataset");
+            return;
+        }
+
+        //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
+        TableInfo ti = dataset.getTableInfo(user);
+        SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND caseid = ? AND enddate IS NULL", enddate, id, caseId);
+        new SqlExecutor(ti.getSchema()).execute(sql);
+    }
+
     public static List<String> getScriptsToLoad(String containerId)
     {
         Container c = ContainerManager.getForId(containerId);

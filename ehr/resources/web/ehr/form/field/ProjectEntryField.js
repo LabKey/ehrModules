@@ -15,7 +15,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     fieldLabel: 'Project',
     typeAhead: true,
-    forceSelection: false, //allows project to be set prior to store loading
+    forceSelection: true, //NOTE: has been re-enabled, but it is important to let the field get set prior to loading
     emptyText:'',
     disabled: false,
     matchFieldWidth: false,
@@ -222,13 +222,14 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             id = boundRecord.get('Id');
 
         var date;
-        if(boundRecord){
+        if (boundRecord){
             date = boundRecord.get('date');
         }
 
         this.emptyText = 'Select project...';
         var sql = this.makeSql(id, date);
         if (sql){
+            this.store.loading = true;
             this.store.sql = sql;
             this.store.removeAll();
             this.store.load();
@@ -237,10 +238,14 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     setValue: function(val){
         var rec;
+        if (Ext4.isArray(val)){
+            val = val[0];
+        }
+
         if (val && Ext4.isPrimitive(val)){
             rec = this.store.findRecord('project', val);
             if (!rec){
-                rec = this.store.findRecord('displayName', val);
+                rec = this.store.findRecord('displayName', val, null, false, false, true);
 
                 if (rec)
                     console.log('resolved project entry field by display value')
@@ -251,7 +256,17 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             }
         }
 
-        this.callParent([rec || val]);
+        if (rec){
+            val = rec;
+        }
+
+        // NOTE: if the store is loading, Combo will set this.value to be the actual model.
+        // this causes problems downstream when other code tries to convert that into the raw datatype
+        if (val && val.isModel){
+            val = val.get(this.valueField);
+        }
+
+        this.callParent([val]);
     },
 
     resolveProjectFromStore: function(){
@@ -260,8 +275,9 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             return;
 
         var rec = this.store.findRecord('project', val);
-        if (rec)
+        if (rec){
             return;
+        }
 
         rec = this.allProjectStore.findRecord('project', val);
         if (rec){
@@ -284,7 +300,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     },
 
     resolveProject: function(val){
-        if (this.allProjectStore.loading){
+        if (this.allProjectStore.isLoading()){
             this.allProjectStore.on('load', function(store){
                 var newRec = this.resolveProjectFromStore();
                 if (newRec)
@@ -294,34 +310,5 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         else {
             this.resolveProjectFromStore();
         }
-    },
-
-    verifyFieldValue: function(){
-        //reject unknown values
-        if (!Ext4.isEmpty(this.getRawValue())){
-            var rec = this.findRecordByDisplay(this.getRawValue());
-            if (!rec){
-                console.log('rejecting');
-                this.clearValue();
-            }
-        }
-    },
-
-    beforeBlur: function() {
-        this.verifyFieldValue();
-
-        this.callParent(arguments);
-    },
-
-    onKeyUp: function(e) {
-        this.callParent(arguments);
-
-        if (e.getKey() == e.ENTER){
-            this.verifyFieldValue();
-        }
     }
-
-//    getErrors: function(val){
-//        return this.callParent();
-//    }
 });

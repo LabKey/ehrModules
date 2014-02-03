@@ -990,9 +990,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             date: {
-                getInitialValue: function(v, rec){
-                    return v ? v : (new Date((new Date().toDateString())));
-                },
                 noDuplicateByDefault: false
             },
             account: {
@@ -1000,8 +997,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             hx: {
                 xtype: 'ehr-hxtextarea',
-                height: 100,
-                hidden: true
+                height: 100
             },
             s: {
                 height: 75
@@ -1019,7 +1015,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 height: 75
             },
             p2: {
-                xtype: 'ehr-plantextarea',
+                formEditorConfig: {
+                    xtype: 'ehr-plantextarea'
+                },
                 height: 75
             },
             remark: {
@@ -1128,15 +1126,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     defaultHour: 8,
                     defaultMinutes: 0
+                },
+                getInitialValue: function(v, rec){
+                    if (v)
+                        return v;
+
+                    var ret = Ext4.Date.clearTime(new Date());
+                    ret = Ext4.Date.add(ret, Ext4.Date.DAY, 1);
+                    ret.setHours(8);
+                    return ret;
                 }
-//                getInitialValue: function(v, rec){
-//                    if (v)
-//                        return v;
-//
-//                    var ret = Ext4.Date.clearTime(new Date());
-//                    ret.setHours(0, 0);
-//                    return ret;
-//                }
             },
             enddate: {
                 xtype: 'xdatetime',
@@ -1183,9 +1182,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             qualifier: {
-                shownInGrid: false
-            },
-            remark: {
                 shownInGrid: false
             },
             performedby: {

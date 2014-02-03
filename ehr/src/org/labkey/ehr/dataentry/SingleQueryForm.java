@@ -29,6 +29,7 @@ import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,10 +59,12 @@ public class SingleQueryForm extends AbstractDataEntryForm
 
     public static SingleQueryForm create(DataEntryFormContext ctx, Module owner, TableInfo ti)
     {
-        List<FormSection> sections = new ArrayList<>();
-        sections.add(new SingleQueryFormSection(ti.getPublicSchemaName(), ti.getPublicName(), ti.getTitle()));
+        return create(ctx, owner, ti, new SingleQueryFormSection(ti.getPublicSchemaName(), ti.getPublicName(), ti.getTitle()));
+    }
 
-        return new SingleQueryForm(ctx, owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, sections);
+    public static SingleQueryForm create(DataEntryFormContext ctx, Module owner, TableInfo ti, FormSection section)
+    {
+        return new SingleQueryForm(ctx, owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, Arrays.asList(section));
     }
 
     public JSONObject toJSON()

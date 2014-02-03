@@ -59,7 +59,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         }
         else {
             grid.on('afterrender', function(grid){
-                if (grid.store.isLoadingData){
+                if (grid.store.loading){
                     grid.setLoading(true);
                 }
             }, this, {delay: 120, single: true});
@@ -68,11 +68,10 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         if(this.subjectId || this.caseId){
             var store = this.down('#gridPanel').store;
             store.on('datachanged', function(){
-                if (!store.isLoadingData){
+                if (!store.loading){
                     var grid = this.down('grid');
                     if (grid){
                         grid.setLoading(false);
-                        this.setEmptyText();
                         grid.getView().refresh();
                     }
                 }
@@ -97,9 +96,10 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             maxHeight: this.maxGridHeight,
             height: this.gridHeight,
             hideHeaders: true,
+            deferEmptyText: true,
             viewConfig : {
                 emptyText: this.minDate ? 'No records found since: ' + this.minDate.format('m/d/Y') : 'There are no records to display',
-                derferEmptyText: true,
+                deferEmptyText: true,
                 enableTextSelection: true,
                 border: false,
                 stripeRows : true
@@ -135,24 +135,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     text: 'Reload',
                     handler: function(btn){
                         var panel = btn.up('ehr-clinicalhistorypanel');
-                        var minDateField = panel.down('#minDate');
-                        var maxDateField = panel.down('#maxDate');
-                        if (!minDateField.isValid()){
-                            Ext4.Msg.alert('Error', 'Invalid value for min date');
-                            return;
-                        }
-                        if (!maxDateField.isValid()){
-                            Ext4.Msg.alert('Error', 'Invalid value for max date');
-                            return;
-                        }
-
-                        panel.minDate = minDateField.getValue();
-                        panel.maxDate = maxDateField.getValue();
-
-                        panel.reloadData({
-                            minDate: panel.minDate,
-                            maxDate: panel.maxDate
-                        });
+                        panel.doReload();
                     }
                 },{
                     text: 'Show/Hide Types',
@@ -240,8 +223,25 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         });
     },
 
-    setEmptyText: function(){
-        this.down('grid').getView().emptyText = this.minDate ? 'No records found since: ' + this.minDate.format('m/d/Y') : 'There are no records to display';
+    doReload: function(){
+        var minDateField = this.down('#minDate');
+        var maxDateField = this.down('#maxDate');
+        if (!minDateField.isValid()){
+            Ext4.Msg.alert('Error', 'Invalid value for min date');
+            return;
+        }
+        if (!maxDateField.isValid()){
+            Ext4.Msg.alert('Error', 'Invalid value for max date');
+            return;
+        }
+
+        this.minDate = minDateField.getValue();
+        this.maxDate = maxDateField.getValue();
+
+        this.reloadData({
+            minDate: this.minDate,
+            maxDate: this.maxDate
+        });
     },
 
     getStoreConfig: function(){
@@ -258,7 +258,15 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             text: 'Category',
             dataIndex: 'category',
             tdCls: 'ldk-wrap-text',
-            width: 180
+            width: 180,
+            renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
+                if (record.get('categoryColor')){
+                    cellMetaData.style = cellMetaData.style ? cellMetaData.style + ';' : '';
+                    cellMetaData.style += 'background-color: ' + record.get('categoryColor') + ';';
+                }
+
+                return value;
+            }
         },{
             text: 'Date',
             xtype: 'datecolumn',
@@ -289,6 +297,17 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                 }
 
                 return value == EHR.QCStates.COMPLETED ? '' : value;
+            }
+        },{
+            text: '',
+            dataIndex: 'taskId',
+            width: 60,
+            renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
+                if (record.get('taskId')){
+                    return '<a href="' + LABKEY.ActionURL.buildURL('ehr', 'dataEntryFormDetails', null, {formType: record.get('taskFormType'), taskid: record.get('taskId')}) + '" target="_blank">' + record.get('taskRowId') + '</a>';
+                }
+
+                return '';
             }
         }];
     },

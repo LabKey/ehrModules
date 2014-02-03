@@ -420,6 +420,7 @@ ehr/resources/queries/study/demographicsWeightChange/.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]180[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
+ehr/resources/queries/study/demographicsWeightChange/By[!!-~]Location.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
 ehr/resources/queries/study/housing/.qview.xml -text
@@ -1029,6 +1030,7 @@ ehr/resources/web/ehr/model/sources/Default.js -text
 ehr/resources/web/ehr/model/sources/Encounter.js -text
 ehr/resources/web/ehr/model/sources/EncounterChild.js -text
 ehr/resources/web/ehr/model/sources/LabworkChild.js -text
+ehr/resources/web/ehr/model/sources/Menses.js -text
 ehr/resources/web/ehr/model/sources/Necropsy.js -text
 ehr/resources/web/ehr/model/sources/Pathology.js -text
 ehr/resources/web/ehr/model/sources/Request.js -text
@@ -1229,13 +1231,17 @@ ehr/src/org/labkey/ehr/query/buttons/ShowAuditHistoryButton.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRDatasetRole.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text
 ehr/src/org/labkey/ehr/security/EHRBasicSubmitterRole.java -text
+ehr/src/org/labkey/ehr/security/EHRClinicalEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
+ehr/src/org/labkey/ehr/security/EHRLabworkEntryRole.java -text
+ehr/src/org/labkey/ehr/security/EHRPathologyEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text
+ehr/src/org/labkey/ehr/security/EHRSurgeryEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
