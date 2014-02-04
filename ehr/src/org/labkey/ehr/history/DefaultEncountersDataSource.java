@@ -153,7 +153,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             return null;
 
         final TableInfo snomed = QueryService.get().getUserSchema(u, c, "ehr").getTable(EHRSchema.TABLE_SNOMED_TAGS);
-        snomed.getColumn("recordid").setFk(new QueryForeignKey("study", c, u, "Clinical Encounters", "objectid", "objectid"));
+        snomed.getColumn("recordid").setFk(new QueryForeignKey("study", c, null, u, "Clinical Encounters", "objectid", "objectid"));
 
         SimpleFilter newFilter = new SimpleFilter();
         for (SimpleFilter.FilterClause fc : filter.getClauses())

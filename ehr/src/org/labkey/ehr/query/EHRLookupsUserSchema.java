@@ -26,14 +26,11 @@ import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ldk.table.ContainerScopedTable;
-import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
-import org.labkey.api.query.Queryable;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.Group;
@@ -43,13 +40,10 @@ import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
-import org.labkey.api.security.UserPrincipal;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.security.EHRVeternarianRole;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -231,7 +225,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         ti.addCondition(new SimpleFilter(FieldKey.fromString("UserId"), userIds, CompareType.IN));
 
         ti.addWrapColumn(ti.getRealTable().getColumn("UserId"));
-        ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), "Users", "UserId", "DisplayName"));
+        ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
         ti.setName(name);
         ti.setTitle("Veternarians");
 

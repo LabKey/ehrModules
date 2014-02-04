@@ -73,7 +73,7 @@ public class WrappingTableCustomizer implements TableCustomizer
                         newCol.setIsUnselectable(true);
                         newCol.setLabel(name);
                         newCol.setUserEditable(false);
-                        newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
+                        newCol.setFk(new QueryForeignKey(us, null, "Animal", ID_FIELD, ID_FIELD));
                         if (ti instanceof AbstractTableInfo)
                             ((AbstractTableInfo) ti).addColumn(newCol);
                     }
