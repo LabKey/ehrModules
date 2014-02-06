@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 EHR.DataEntryUtils.registerGridButton('ROUNDSDELETE', function(config){
     return Ext4.Object.merge({
         text: 'Delete Selected',
