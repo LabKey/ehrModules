@@ -1189,7 +1189,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             category: {
                 allowBlank: false,
-                shownInGrid: false
+                shownInGrid: false,
+                defaultValue: 'Clinical'
             }
         },
         'ehr.Project': {

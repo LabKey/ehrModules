@@ -137,9 +137,25 @@ Ext4.define('EHR.plugin.Databind', {
     onRecordUpdate: function(store, record, operation){
         var form = this.panel.getForm();
         if (form.getRecord() && record == form.getRecord()){
-            //this flag is used to skip the record update events caused by this plugin
-            if (this.ignoreNextUpdateEvent){
-                this.ignoreNextUpdateEvent = null;
+            // this flag is used to skip the record update events caused by this plugin
+            // NOTE: normally immediately after the form commits changes to the form, we want to ignore this event
+            // however, some stores set the values of fields internally, and we dont want to lose this.  see DrugAdministrationClientStore as an example
+            // this is a problem for combos, since typeahead constantly sends updates to the record, and we dont want these getting pushed back to the field
+            // this causes the user to lose their typeahead value (note, partial words would be invalid).
+            // therefore if we triggered the update event, do a selective reload.
+            if (this.expectNextUpdateEvent){
+                this.expectNextUpdateEvent = null;
+
+                var field;
+                for (var fieldName in record.data){
+                    field = form.findField(fieldName);
+                    if (field && !field.isEqual(record.data[fieldName], field.getValue())){
+                        if (!field.hasFocus){
+                            this.setFormField(fieldName, record.data[fieldName]);
+                        }
+                    }
+                }
+
                 return;
             }
 
@@ -152,7 +168,7 @@ Ext4.define('EHR.plugin.Databind', {
 
     bindRecord: function(record){
         var form = this.panel.getForm();
-        this.ignoreNextUpdateEvent = null;
+        this.expectNextUpdateEvent = null;
 
         if (form.getRecord()){
             if (form.getRecord().id == record.id){
@@ -172,7 +188,7 @@ Ext4.define('EHR.plugin.Databind', {
 
     unbindRecord: function(){
         var form = this.panel.getForm();
-        this.ignoreNextUpdateEvent = null;
+        this.expectNextUpdateEvent = null;
 
         if (form.getRecord()){
             form.updateRecord(form.getRecord());
@@ -226,6 +242,7 @@ Ext4.define('EHR.plugin.Databind', {
         }
 
         this.mon(f, 'change', this.onFieldChange, this);
+        this.mon(f, 'blur', this.onFieldChange, this);
 
         var form = f.up('form');
         if (form.getRecord() && this.panel.bindConfig.disableUnlessBound && !this.panel.bindConfig.autoCreateRecordOnChange)
@@ -259,41 +276,41 @@ Ext4.define('EHR.plugin.Databind', {
     //unfortunate consequence of moving the cursor to the end of the text, so we want to avoid this
     setFormValuesFromRecord: function(record) {
         var values = record.data;
-        var form = this.panel.getForm();
-
-        function setVal(fieldId, val) {
-            var field = form.findField(fieldId);
-            if (!field){
-                return;
-            }
-
-            var fieldVal = field.getValue();
-            if (fieldVal !== val) {
-                if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal)){
-                    console.error(fieldVal);
-                }
-
-                //TODO: combos and other multi-valued fields represent data differently in the store vs the field.  need to reconcile here
-                field.suspendEvents();
-                field.setValue(val);
-                field.resumeEvents();
-                if (form.trackResetOnLoad) {
-                    field.resetOriginalValue();
-                }
-                //field.isValid();
-            }
-        }
 
         if (Ext4.isArray(values)) {
             // array of objects
             Ext4.Array.forEach(values, function(val) {
-                setVal(val.id, val.value);
-            });
+                this.setFormField(val.id, val.value);
+            }, this);
         } else {
             // object hash
-            Ext4.iterate(values, setVal);
+            Ext4.iterate(values, this.setFormField, this);
         }
         return this;
+    },
+
+    setFormField: function (fieldId, val) {
+        var form = this.panel.getForm();
+        var field = form.findField(fieldId);
+        if (!field){
+            return;
+        }
+
+        var fieldVal = field.getValue();
+        if (!field.isEqual(fieldVal, val)) {
+            if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal)){
+                console.error(fieldVal);
+            }
+
+            //TODO: combos and other multi-valued fields represent data differently in the store vs the field.  need to reconcile here
+            field.suspendEvents();
+            field.setValue(val);
+            field.resumeEvents();
+            if (form.trackResetOnLoad) {
+                field.resetOriginalValue();
+            }
+            //field.isValid();
+        }
     },
 
     // updates the values in the record based on the current state of the form.
@@ -303,8 +320,7 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         var record = form.getRecord();
         if (record){
-            //NOTE: disabled since it no longer appears encessary and this interferes with store-level updates like DrugAdministrationStore
-            //this.ignoreNextUpdateEvent = true;
+            this.expectNextUpdateEvent = true;
             form.updateRecord(record);
         }
     }

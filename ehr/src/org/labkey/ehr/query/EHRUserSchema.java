@@ -20,9 +20,16 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.security.EHRProjectEditPermission;
+import org.labkey.api.ehr.security.EHRProtocolEditPermission;
+import org.labkey.api.ldk.table.CustomPermissionsTable;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.ehr.EHRSchema;
 
 /**
@@ -53,6 +60,10 @@ public class EHRUserSchema extends SimpleUserSchema
             return getDataEntryTable(schemaTable);
         else if (EHRSchema.TABLE_SNOMED_TAGS.equalsIgnoreCase(name))
             return getDataEntryTable(schemaTable);
+        else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name) || EHRSchema.TABLE_PROTOCOL_COUNTS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
+        else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
+            return getCustomPermissionTable(schemaTable, EHRProjectEditPermission.class);
         else
             return super.createWrappedTable(name, schemaTable);
     }
@@ -60,5 +71,15 @@ public class EHRUserSchema extends SimpleUserSchema
     private TableInfo getDataEntryTable(TableInfo schemaTable)
     {
         return new DataEntryTable(this, schemaTable).init();
+    }
+
+    private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
+    {
+        CustomPermissionsTable ret = new CustomPermissionsTable(this, schemaTable);
+        ret.addPermissionMapping(InsertPermission.class, perm);
+        ret.addPermissionMapping(UpdatePermission.class, perm);
+        ret.addPermissionMapping(DeletePermission.class, perm);
+
+        return ret.init();
     }
 }

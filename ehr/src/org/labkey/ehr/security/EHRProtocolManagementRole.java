@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 LabKey Corporation
+ * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
-import org.labkey.api.ehr.security.EHRPathologyEntryPermission;
-import org.labkey.api.ehr.security.EHRSurgeryEntryPermission;
+import org.labkey.api.ehr.security.EHRProjectEditPermission;
+import org.labkey.api.ehr.security.EHRProtocolEditPermission;
+import org.labkey.api.ehr.security.EHRVeternarianPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -28,17 +29,18 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * Date: 1/17/13
  * Time: 7:42 PM
  */
-public class EHRPathologyEntryRole extends AbstractEHRRole
+public class EHRProtocolManagementRole extends AbstractEHRRole
 {
-    public EHRPathologyEntryRole()
+    public EHRProtocolManagementRole()
     {
-        super("EHR Pathology Entry", "This role is used to track which users can enter pathology data.",
+        super("EHR Protocol Management", "This role is used to grants the ability to manage IACUC protocols and associated data.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,
             DeletePermission.class,
             EHRDataEntryPermission.class,
-            EHRPathologyEntryPermission.class
+            EHRProjectEditPermission.class,
+            EHRProtocolEditPermission.class
         );
     }
 }

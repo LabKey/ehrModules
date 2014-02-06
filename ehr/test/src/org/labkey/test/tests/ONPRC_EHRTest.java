@@ -473,23 +473,25 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         _ext4Helper.clickExt4MenuItem("Apply Form Template");
         waitForElement(Ext4HelperWD.ext4Window("Apply Template To Form"));
         waitForTextToDisappear("Loading...");
-        String templateName = "Achilles Tendon Repair";
+        String templateName1 = "Bone Marrow Biopsy";
+        String templateName2 = "Achilles Tendon Repair";
         waitForElement(Ext4HelperWD.ext4Window("Apply Template To Form").append(Locator.tagContainingText("label", "Choose Template")));
-        _ext4Helper.selectComboBoxItem("Choose Template:", templateName, true);
+        _ext4Helper.selectComboBoxItem("Choose Template:", templateName1, true);
+        _ext4Helper.selectComboBoxItem("Choose Template:", templateName2, true);
 
         //these should not be shown
         Assert.assertFalse(Ext4FieldRefWD.isFieldPresent(this, "Task"));
         Assert.assertFalse(Ext4FieldRefWD.isFieldPresent(this, "Animal Details"));
 
         Ext4ComboRefWD combo = Ext4ComboRefWD.getForLabel(this, "SOAP");
-        if (!templateName.equals(combo.getDisplayValue()))
+        if (!templateName2.equals(combo.getDisplayValue()))
         {
             log("combo value not set initially, retrying");
-            combo.setComboByDisplayValue(templateName);
+            combo.setComboByDisplayValue(templateName2);
         }
         sleep(100); //allow field to cascade
 
-        Assert.assertEquals("Section template not set", templateName, Ext4ComboRefWD.getForLabel(this, "SOAP").getDisplayValue());
+        Assert.assertEquals("Section template not set", templateName2, Ext4ComboRefWD.getForLabel(this, "SOAP").getDisplayValue());
         Assert.assertEquals("Section template not set", "Vitals", Ext4ComboRefWD.getForLabel(this, "Observations").getDisplayValue());
 
         waitAndClick(Locator.ext4Button("Submit"));
@@ -548,12 +550,12 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         Ext4GridRefWD ordersGrid = _helper.getExt4GridForFormSection("Medication/Treatment Orders");
         Assert.assertEquals("Incorrect row count", 3, ordersGrid.getRowCount());
-        Assert.assertEquals("E-YY732", ordersGrid.getFieldValue(4, "code"));
-        Assert.assertEquals("PO", ordersGrid.getFieldValue(4, "route"));
-        Assert.assertEquals(50L, ordersGrid.getFieldValue(4, "concentration"));
-        Assert.assertEquals("mg/tablet", ordersGrid.getFieldValue(4, "conc_units"));
-        Assert.assertEquals(3L, ordersGrid.getFieldValue(4, "dosage"));
-        Assert.assertEquals("mg/kg", ordersGrid.getFieldValue(4, "dosage_units"));
+        Assert.assertEquals("E-YY732", ordersGrid.getFieldValue(3, "code"));   //tramadol
+        Assert.assertEquals("PO", ordersGrid.getFieldValue(3, "route"));
+        Assert.assertEquals(50L, ordersGrid.getFieldValue(3, "concentration"));
+        Assert.assertEquals("mg/tablet", ordersGrid.getFieldValue(3, "conc_units"));
+        Assert.assertEquals(3L, ordersGrid.getFieldValue(3, "dosage"));
+        Assert.assertEquals("mg/kg", ordersGrid.getFieldValue(3, "dosage_units"));
 
         //TODO: test amount calculation
 

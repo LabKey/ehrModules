@@ -187,6 +187,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     private TableInfo createVeterinariansTable(String name)
     {
         FilteredTable ti = new FilteredTable(CoreSchema.getInstance().getTableInfoUsersData(), this);
+        ti.setPublicSchemaName(EHRSchema.EHR_LOOKUPS);
 
         Set<Integer> userIds = new HashSet<>();
         Set<Group> groupsToExpand = new HashSet<>();

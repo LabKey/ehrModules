@@ -204,7 +204,21 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         //then update local records based on the server's response.  this is important in case the server assigned keys or altered values
         Ext4.Array.forEach(command.rows, function(row){
             var record = this.getById(row.oldKeys[this.proxy.reader.idProperty]);
-            LDK.Assert.assertNotEmpty('Unable to find record using key: ' + this.proxy.reader.idProperty + ', with value: ' + row.oldKeys, record);
+            if (!record && row.oldKeys[this.proxy.reader.idProperty]){
+                record = this.getById(row.oldKeys[this.proxy.reader.idProperty].toLowerCase());
+            }
+
+            if (!record && row.oldKeys.internalId){
+                var clientModelIdx = this.findBy(function(record){
+                    return record.internalId === row.oldKeys.internalId;
+                });
+                if (clientModelIdx != -1){
+                    record = this.getAt(clientModelIdx);
+                    console.log('found by internal id');
+                }
+            }
+
+            LDK.Assert.assertNotEmpty('Unable to find record using key: ' + this.proxy.reader.idProperty + ', with value: ' + row.oldKeys[this.proxy.reader.idProperty] + '.  keys were: ' + Ext4.Object.getKeys(row.oldKeys).join(';'), record);
             if (record){
                 var toSet = {};
                 for (var fieldName in row.values){
@@ -223,7 +237,6 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
 
                 if (!Ext4.Object.isEmpty(toSet)){
-                    console.log(toSet);
                     record.set(toSet);
                 }
             }

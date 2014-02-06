@@ -38,7 +38,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                         if (owner)
                             owner = owner.down('panel');
 
-                        owner.showCreateWindow('Behavior', true);
+                        owner.showCreateWindow('Behavior');
                     }
                 },{
                     text: 'Open Clinical Case',
@@ -47,7 +47,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                         if (owner)
                             owner = owner.down('panel');
 
-                        owner.showCreateWindow('Clinical', true);
+                        owner.showCreateWindow('Clinical');
                     }
                 },{
                     text: 'Open Surgery Case',
@@ -56,7 +56,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                         if (owner)
                             owner = owner.down('panel');
 
-                        owner.showCreateWindow('Surgery', true);
+                        owner.showCreateWindow('Surgery');
                     }
                 }]
             }]
@@ -72,7 +72,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
 
         this.callParent();
 
-        this.addEvents('storeloaded', 'casecreated');
+        this.addEvents('storeloaded');
     },
 
     getStore: function(){
@@ -232,6 +232,18 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                 }).show();
                             }
                         },{
+                            text: 'Delete Case',
+                            disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'delete', [{schemaName: 'study', queryName: 'Cases'}]),
+                            handler: function(btn){
+                                Ext4.Msg.confirm('Delete Case', 'This will delete all record of this case.  If you just want to close the case, you should choose this option instead.  Are you sure you want to do this?', function(val){
+                                    if (val == 'yes'){
+                                        var store = rec.store;
+                                        store.remove(rec);
+                                        store.sync();
+                                    }
+                                }, this);
+                            }
+                        },{
                             text: 'Edit Case',
                             disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Cases'}]),
                             scope: this,
@@ -264,7 +276,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 format: 'Y-m-d',
                 width: 130
             },{
-                header: 'Case Notes',
+                header: 'Description/Notes',
                 dataIndex: 'remark',
                 tdCls: 'ldk-wrap-text',
                 width: 250
@@ -354,13 +366,13 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
         }
     },
 
-    showCreateWindow: function(category, blockUpdate){
+    showCreateWindow: function(category, defaultRemark){
         var store = this.getStore();
         if (store.isLoading()){
             Ext4.Msg.wait('Loading...');
             store.on('load', function(){
                 Ext4.Msg.hide();
-                this.showCreateWindow(category, blockUpdate);
+                this.showCreateWindow(category, defaultRemark);
             }, this, {single: true});
             return;
         }
@@ -386,7 +398,8 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                             caseCategory: category,
                             ownerPanel: this,
                             animalId: this.animalId,
-                            defaultVet: existingRecs[0].get('assignedvet')
+                            defaultVet: existingRecs[0].get('assignedvet'),
+                            defaultRemark: defaultRemark
                         }).show();
                     }
                     else if (val == 'no'){
@@ -438,7 +451,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     value: this.boundRecord.get('reviewdate')
                 },{
                     xtype: 'textarea',
-                    fieldLabel: 'Case Notes',
+                    fieldLabel: 'Description/Notes',
                     allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.boundRecord.get('category')].requiredFields.indexOf('remark') == -1,
                     width: 560,
                     height: 75,
@@ -614,6 +627,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
  * @cfg ownerPanel,
  * @cfg animalId
  * @cfg defaultVet
+ * @cfg defaultRemark
  */
 Ext4.define('EHR.window.OpenCaseWindow', {
     extend: 'Ext.window.Window',
@@ -662,8 +676,9 @@ Ext4.define('EHR.window.OpenCaseWindow', {
                     }
                 },{
                     xtype: 'textarea',
-                    fieldLabel: 'Case Notes',
+                    fieldLabel: 'Description/Notes',
                     name: 'remark',
+                    value: this.defaultRemark,
                     allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.caseCategory].requiredFields.indexOf('remark') == -1,
                     height: 75
                 }]
@@ -744,6 +759,8 @@ Ext4.define('EHR.window.OpenCaseWindow', {
             success: function(results){
                 this.close();
                 Ext4.Msg.hide();
+
+                EHR.DemographicsCache.reportCaseCreated(this.animalId, this.caseCategory, caseId);
 
                 if (panel){
                     panel.fireEvent('casecreated', this.animalId, this.caseCategory, caseId);

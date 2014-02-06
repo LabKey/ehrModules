@@ -50,7 +50,10 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                     var location = idMap[id].getCurrentLocation();
                     this.each(function(rec){
                         if (rec.get('Id') == id){
+                            rec.beginEdit();
                             rec.set('Id/curLocation/location', location);
+                            rec.endEdit(true);
+                            this.fireEvent('validation', this, rec);
                         }
                     }, this);
                 }

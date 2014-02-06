@@ -22,6 +22,8 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.security.EHRProjectEditPermission;
+import org.labkey.api.ehr.security.EHRProtocolEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
@@ -59,6 +61,7 @@ import org.labkey.ehr.query.buttons.JumpToHistoryButton;
 import org.labkey.ehr.query.buttons.MarkCompletedButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
 import org.labkey.ehr.query.buttons.ShowAuditHistoryButton;
+import org.labkey.api.ldk.buttons.ShowEditUIButton;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
@@ -67,6 +70,7 @@ import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRLabworkEntryRole;
 import org.labkey.ehr.security.EHRPathologyEntryRole;
+import org.labkey.ehr.security.EHRProtocolManagementRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 import org.labkey.ehr.security.EHRSurgeryEntryRole;
@@ -142,6 +146,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRSurgeryEntryRole());
         RoleManager.registerRole(new EHRLabworkEntryRole());
         RoleManager.registerRole(new EHRPathologyEntryRole());
+        RoleManager.registerRole(new EHRProtocolManagementRole());
 
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
@@ -162,13 +167,17 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new CompareWeightsButton(this), "study", "weight");
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "my_tasks");
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "tasks");
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order"), "study", "treatment_order");
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem"), "study", "problem");
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "assignment"), "study", "assignment");
+        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order", "Set End Date"), "study", "treatment_order");
+        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem", "Set End Date"), "study", "problem");
+        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "assignment", "Set End Date"), "study", "assignment");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls"), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new VetReviewButton(this), "study", "cases");
+
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "protocol", EHRProtocolEditPermission.class), "ehr", "protocol");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "protocol_counts", EHRProtocolEditPermission.class), "ehr", "protocol_counts");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "project", EHRProjectEditPermission.class), "ehr", "project");
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
         NotificationService.get().registerNotification(new DeathNotification());

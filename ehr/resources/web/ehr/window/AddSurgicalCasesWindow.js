@@ -13,6 +13,8 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
 
     allowNoSelection: true,
     allowReviewAnimals: false,
+    caseDisplayField: 'remark',
+    caseEmptyText: 'No description available',
 
     initComponent: function(){
         this.callParent(arguments);
@@ -51,7 +53,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            sort: 'Id/curLocation/room,Id/curLocation/cage,Id',
+            sort: 'Id/curLocation/room,Id/curLocation/cage,Id,remark',
             columns: 'Id,objectid',
             filterArray: casesFilterArray,
             scope: this,
@@ -67,7 +69,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
     onSuccess: function(){
         if (!this.casesResults || !this.casesResults.rows || !this.casesResults.rows.length){
             Ext4.Msg.hide();
-            Ext4.Msg.alert('', 'No active cases were found.');
+            Ext4.Msg.alert('', 'No active cases were found' + (this.down('#excludeToday').getValue() ? ', excluding those reviewed today.' : '.'));
             return;
         }
 
@@ -75,14 +77,16 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
 
         var records = [];
         var idMap = {};
+        this.caseRecordMap = {};
         this.recordData = {
             performedby: this.down('#performedBy').getValue(),
             date: this.down('#date').getValue()
-        }
+        };
 
         Ext4.Array.each(this.casesResults.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
             idMap[row.getValue('Id')] = row;
+            this.caseRecordMap[row.getValue('objectid')] = row;
 
             var obj = {
                 Id: row.getValue('Id'),
@@ -100,13 +104,22 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             records.push(this.targetStore.createModel(obj));
         }, this);
 
-        //next process previous obs
-        this.targetStore.add(records);
-
-        this.processObservations(records, idMap);
+        //check for dupes
+        this.addRecords(records);
     },
 
-    processObservations: function(records, idMap){
+    doAddRecords: function(records){
+        var toAdd = this.checkForExistingCases(records);
+        this.targetStore.add(toAdd);
+        if (toAdd.length){
+            this.processObservations(records);
+        }
+        else {
+            this.onComplete();
+        }
+    },
+
+    processObservations: function(records){
         var previousObsMap = {};
         if (this.obsResults && this.obsResults.rows && this.obsResults.rows.length){
             Ext4.Array.forEach(this.obsResults.rows, function(sr){

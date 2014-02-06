@@ -42,6 +42,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
         sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
+        sb.append(safeAppend(rs, "Remark", "remark"));
         sb.append(safeAppend(rs, "Frequency", "frequency/meaning"));
         sb.append(safeAppend(rs, "Reason", "reason"));
         sb.append(safeAppend(rs, "Route", "route"));
@@ -130,6 +131,6 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration", "frequency/meaning", "category", "reason");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration", "frequency/meaning", "category", "reason", "remark");
     }
 }

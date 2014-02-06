@@ -89,7 +89,7 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
             String label;
             if ("Replacement SOAP".equals(category))
             {
-                label = "Ammended By";
+                label = "Amended By";
             }
             else
             {

@@ -191,7 +191,7 @@ public class DataEntrySummary implements NotificationSection
         StringBuilder results = new StringBuilder();
         boolean hasResults = false;
         results.append("Records created yesterday:<br>");
-        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows With TaskId or RequestId</td><td>Rows Without TaskId/RequestId</td><td>Public Records Modified</td></tr>");
+        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows Created By Admin</td><td>Rows Not Created By Admin</td><td>Public Records Modified</td></tr>");
 
         for (final Study s : studies)
         {
@@ -206,6 +206,13 @@ public class DataEntrySummary implements NotificationSection
                 }
             });
 
+            User ehrUser = EHRService.get().getEHRUser(c);
+            if (ehrUser == null)
+            {
+                msg.append("EHRUser not defined in this container, aborting");
+                return;
+            }
+
             DbSchema schema = DbSchema.get("studydataset");
             for (DataSet ds : datasets)
             {
@@ -213,16 +220,9 @@ public class DataEntrySummary implements NotificationSection
 
                 long withTask = 0;
                 SimpleFilter filter1 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
-                if (ti.getColumn("taskid") != null)
+                if (ti.getColumn("createdby") != null)
                 {
-                    if (ti.getColumn("requestid") == null)
-                    {
-                        filter1.addCondition(FieldKey.fromString("taskid"), null, CompareType.NONBLANK);
-                    }
-                    else
-                    {
-                        filter1.addCondition(new SimpleFilter.OrClause(new CompareType.CompareClause(FieldKey.fromString("taskid"), CompareType.NONBLANK, null), new CompareType.CompareClause(FieldKey.fromString("requestid"), CompareType.NONBLANK, null)));
-                    }
+                    filter1.addCondition(FieldKey.fromString("createdby"), ehrUser.getUserId(), CompareType.NEQ_OR_NULL);
 
                     TableSelector ts1 = new TableSelector(ti, Collections.singleton("lsid"), filter1, null);
                     withTask = ts1.getRowCount();
@@ -230,13 +230,9 @@ public class DataEntrySummary implements NotificationSection
 
                 long withoutTask = 0;
                 SimpleFilter filter2 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
-                if (ti.getColumn("taskid") != null)
+                if (ti.getColumn("createdby") != null)
                 {
-                    filter2.addCondition(FieldKey.fromString("taskid"), null, CompareType.ISBLANK);
-                    if (ti.getColumn("requestid") != null)
-                    {
-                        filter2.addCondition(FieldKey.fromString("requestid"), null, CompareType.ISBLANK);
-                    }
+                    filter2.addCondition(FieldKey.fromString("createdby"), ehrUser.getUserId(), CompareType.EQUAL);
 
                     TableSelector ts2 = new TableSelector(ti, Collections.singleton("lsid"), filter2, null);
                     withoutTask = ts2.getRowCount();

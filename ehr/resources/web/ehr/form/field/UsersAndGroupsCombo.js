@@ -23,6 +23,7 @@ Ext4.define('EHR.form.field.UsersAndGroupsCombo', {
                 autoLoad: true
             },
             anyMatch: true,
+            caseSensitive: false,
             listConfig: {
                 innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
                 getInnerTpl: function(){
@@ -30,7 +31,6 @@ Ext4.define('EHR.form.field.UsersAndGroupsCombo', {
                 }
             }
         });
-
 
         this.callParent(arguments);
     }

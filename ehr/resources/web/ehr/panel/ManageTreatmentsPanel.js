@@ -98,6 +98,18 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                         }).show();
                     }
                 },{
+                    text: 'Delete Treatment',
+                    disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'delete', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
+                    handler: function(btn){
+                        Ext4.Msg.confirm('Delete Treatment', 'This will delete all record of this treatment.  If the treatment has already been given, you should end it rather than delete it.  Do you want to do this?', function(val){
+                            if (val == 'yes'){
+                                var store = rec.store;
+                                store.remove(rec);
+                                store.sync();
+                            }
+                        }, this);
+                    }
+                },{
                     text: 'Edit Treatment',
                     disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(btn){

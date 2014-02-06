@@ -442,11 +442,13 @@ Ext4.define('EHR.data.StoreCollection', {
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
             timeout: 500000,  //a little extreme?
-            transacted: !validateOnly,  //not necessary for validation, and shouldnt lock up the DB
+            transacted: true,
+            //transacted: !validateOnly,  //not necessary for validation, and shouldnt lock up the DB
             startTime: new Date(),
             jsonData : {
                 apiVersion: 13.2,
-                transacted: !validateOnly,
+                transacted: true,
+                //transacted: !validateOnly,
                 containerPath: this.containerPath,
                 commands: commands,
                 extraContext: this.getExtraContext(extraContext)

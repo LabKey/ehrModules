@@ -21,6 +21,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Aggregate;
 import org.labkey.api.data.ColumnInfo;
@@ -102,9 +103,6 @@ public class TriggerScriptHelper
     private User _user = null;
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
-    private Map<String, Map<String, Object>> _weightRanges = new HashMap<String, Map<String, Object>>();
-    private Map<String, Map<String, Object>> _bloodDrawServices = null;
-    private Map<String, Map<String, Object>> _labworkServices = null;
     private Map<Integer, String> _cachedAccounts = new HashMap<>();
 
     private static final Logger _log = Logger.getLogger(TriggerScriptHelper.class);
@@ -293,11 +291,6 @@ public class TriggerScriptHelper
         return DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
     }
 
-    public void uncacheDemographicRecords(String[] ids)
-    {
-        DemographicsCache.get().uncacheRecords(getContainer(), Arrays.asList(ids));
-    }
-
     public String validateAssignment(String id, Integer projectId, Date date) throws SQLException
     {
         if (id == null || projectId == null || date == null)
@@ -428,45 +421,47 @@ public class TriggerScriptHelper
 
     public Map<String, Map<String, Object>> getLabworkServices()
     {
-        if (_labworkServices == null)
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices";
+        if (CacheManager.getSharedCache().get(cacheKey) == null)
         {
             TableInfo ti = getTableInfo("ehr_lookups", "labwork_services");
             TableSelector ts = new TableSelector(ti);
-            final Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+            final Map<String, Map<String, Object>> ret = new HashMap<>();
             for (Map<String, Object> row : ts.getMapArray())
             {
                 ret.put((String)row.get("servicename"), row);
             }
 
-            _labworkServices = ret;
+            CacheManager.getSharedCache().put(cacheKey, ret);
         }
 
-        return _labworkServices;
+        return (Map)CacheManager.getSharedCache().get(cacheKey);
     }
 
     public Map<String, Object> getWeightRangeForSpecies(String species)
     {
-        if (_weightRanges.containsKey(species))
-            return _weightRanges.get(species);
-
-        TableInfo ti = getTableInfo("ehr_lookups", "weight_ranges");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), species, CompareType.EQUAL);
-        TableSelector ts = new TableSelector(ti, filter, null);
-        Map<String, Object>[] ret = ts.getMapArray();
-
-        if (ret.length > 1)
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||weightRanges||" + species;
+        if (CacheManager.getSharedCache().get(cacheKey) == null)
         {
-            _log.warn("More than 1 row returned from ehr_lookups.weight_ranges for the species: " + species);
-            return null;
-        }
-        else if (ret.length == 0)
-        {
-            return null;
+            TableInfo ti = getTableInfo("ehr_lookups", "weight_ranges");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), species, CompareType.EQUAL);
+            TableSelector ts = new TableSelector(ti, filter, null);
+            Map<String, Object>[] ret = ts.getMapArray();
+
+            if (ret.length > 1)
+            {
+                _log.warn("More than 1 row returned from ehr_lookups.weight_ranges for the species: " + species);
+                return null;
+            }
+            else if (ret.length == 0)
+            {
+                return null;
+            }
+
+            CacheManager.getSharedCache().put(cacheKey, ret[0]);
         }
 
-        _weightRanges.put(species, ret[0]);
-
-        return _weightRanges.get(species);
+        return (Map)CacheManager.getSharedCache().get(cacheKey);
     }
 
     public String verifyWeightRange(String id, Double weight, String species)
@@ -500,7 +495,6 @@ public class TriggerScriptHelper
     public void announceIdsModified(String schema, String query, List<String> ids)
     {
         DemographicsCache.get().reportDataChange(getContainer(), schema, query, ids);
-        DemographicsCache.get().asyncCache(getContainer(), ids);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -704,21 +698,22 @@ public class TriggerScriptHelper
 
     private Map<String, Map<String, Object>> getBloodDrawServicesMap()
     {
-        if (_bloodDrawServices != null)
-            return _bloodDrawServices;
-
-        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-        Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
-
-        TableSelector ts = new TableSelector(ti);
-        for (Map<String, Object> row : ts.getMapArray())
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "bloodDrawServices";
+        if (CacheManager.getSharedCache().get(cacheKey) == null)
         {
-            map.put((String)row.get("service"), row);
+            TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
+            Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+
+            TableSelector ts = new TableSelector(ti);
+            for (Map<String, Object> row : ts.getMapArray())
+            {
+                map.put((String)row.get("service"), row);
+            }
+
+            CacheManager.getSharedCache().put(cacheKey, map);
         }
 
-        _bloodDrawServices = map;
-
-        return map;
+        return (Map)CacheManager.getSharedCache().get(cacheKey);
     }
 
     public boolean isDefaultProject(Integer project)
@@ -729,23 +724,23 @@ public class TriggerScriptHelper
         return getDefaultProjects().contains(project);
     }
 
-    private Set<Integer> _defaultProjects = null;
-
     public Set<Integer> getDefaultProjects()
     {
-        if (_defaultProjects != null)
-            return _defaultProjects;
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "defaultProjects";
+        if (CacheManager.getSharedCache().get(cacheKey) == null)
+        {
+            TableInfo ti = getTableInfo("ehr", "project");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("alwaysavailable"), true, CompareType.EQUAL);
+            filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
 
-        TableInfo ti = getTableInfo("ehr", "project");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("alwaysavailable"), true, CompareType.EQUAL);
-        filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
+            TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
+            Set<Integer> ret = new HashSet<Integer>();
+            ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
 
-        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
-        Set<Integer> ret = new HashSet<Integer>();
-        ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
-        _defaultProjects = Collections.unmodifiableSet(ret);
+            CacheManager.getSharedCache().put(cacheKey, Collections.unmodifiableSet(ret));
+        }
 
-        return _defaultProjects;
+        return (Set)CacheManager.getSharedCache().get(cacheKey);
     }
 
     //NOTE: the interval start/stop are inclusive
@@ -1186,7 +1181,7 @@ public class TriggerScriptHelper
     public Set<String> hasDemographicsRecord(List<String> ids)
     {
         TableInfo ti = getTableInfo("study", "Demographics");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), new HashSet<String>(ids), CompareType.IN);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), new HashSet<>(ids), CompareType.IN);
         filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true);
 
         TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
@@ -1504,8 +1499,8 @@ public class TriggerScriptHelper
             if (StringUtils.isEmpty(id) || project == null || StringUtils.isEmpty(services))
                 return;
 
-            Map<String, Object>[] toAutomaticallyCreate = getAdditionalServicesToCreate(services);
-            if (toAutomaticallyCreate == null || toAutomaticallyCreate.length == 0)
+            List<Map<String, Object>> toAutomaticallyCreate = getAdditionalServicesToCreate(services);
+            if (toAutomaticallyCreate == null || toAutomaticallyCreate.isEmpty())
                 return;
 
             //test permission first
@@ -1586,7 +1581,7 @@ public class TriggerScriptHelper
         return _cachedTissues.get(service);
     }
 
-    private Map<String, Object>[] getAdditionalServicesToCreate(String services)
+    private List<Map<String, Object>> getAdditionalServicesToCreate(String services)
     {
         services = StringUtils.trimToNull(services);
         if (services == null)
@@ -1596,14 +1591,21 @@ public class TriggerScriptHelper
         if (testNames.size() == 0)
             return null;
 
-        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-        assert ti != null : "Unable to find table ehr_lookups.blood_draw_services";
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("service"), testNames, CompareType.IN);
-        filter.addCondition(FieldKey.fromString("automaticrequestfromblooddraw"), true, CompareType.EQUAL);
+        Map<String, Map<String, Object>> serviceMap = getBloodDrawServicesMap();
+        List<Map<String, Object>> toCreate = new ArrayList<>();
+        for (String service : testNames)
+        {
+            if (serviceMap.containsKey(service))
+            {
+                Map<String, Object> row = new HashMap<>();
+                row.put("sevice", service);
+                row.put("formtype", serviceMap.get(service).get("formtype"));
+                row.put("labwork_service", serviceMap.get(service).get("v"));
+                toCreate.add(row);
+            }
+        }
 
-        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("service", "formtype", "labwork_service"), filter, null);
-
-        return ts.getMapArray();
+        return toCreate;
     }
 
     public void updateSNOMEDTags(String id, String objectid, String codes) throws Exception

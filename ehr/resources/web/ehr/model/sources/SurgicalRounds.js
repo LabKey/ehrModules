@@ -18,6 +18,9 @@ EHR.model.DataModelManager.registerMetadata('SurgicalRounds', {
                 defaultValue: 'Surgery',
                 hidden: true
             },
+            hx: {
+                hidden: true
+            },
             s: {
                 hidden: true
             },

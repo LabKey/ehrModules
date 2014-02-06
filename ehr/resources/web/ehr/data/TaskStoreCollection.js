@@ -28,5 +28,43 @@ Ext4.define('EHR.data.TaskStoreCollection', {
         }
 
         return this.callParent([model]);
+    },
+
+    commitChanges: function(){
+        // ensure all records are using this taskId and alert if not
+        var taskid = this.getTaskId();
+        if (taskid){
+            taskid = taskid.toLowerCase();
+            this.clientStores.each(function(cs){
+                if (cs.getFields().get('taskid') != null){
+                    cs.each(function(r){
+                        var toTest = (r.get('taskid') ? r.get('taskid').toLowerCase() : r.get('taskid'));
+                        LDK.Assert.assertEquality('Incorrect taskid for client store:' + cs.storeId, taskid, toTest);
+                        if (taskid != toTest){
+                            console.log('had to set taskid: ' + r.get('taskid'));
+                            r.beginEdit();
+                            r.set('taskid', this.getTaskId());
+                            r.endEdit(true);
+                        }
+                    }, this);
+                }
+            }, this);
+
+            this.serverStores.each(function(cs){
+                if (cs.getFields().get('taskid') != null){
+                    cs.each(function(r){
+                        var toTest = (r.get('taskid') ? r.get('taskid').toLowerCase() : r.get('taskid'));
+                        LDK.Assert.assertEquality('Incorrect taskid for server store:' + cs.storeId, taskid, toTest);
+                        if (taskid != r.get('taskid')){
+                            r.beginEdit();
+                            r.set('taskid', this.getTaskId());
+                            r.endEdit(true);
+                        }
+                    }, this);
+                }
+            }, this);
+        }
+
+        return this.callParent(arguments);
     }
 });

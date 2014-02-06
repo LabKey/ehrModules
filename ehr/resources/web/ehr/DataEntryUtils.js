@@ -315,6 +315,12 @@ EHR.DataEntryUtils = new function(){
                     return;
                 }
 
+                //if creating this from a remarks record, use assessment as the default remark
+                var defaultRemark;
+                if (rec.fields.get('a')){
+                    defaultRemark = rec.get('a');
+                }
+
                 Ext4.Msg.wait('Loading...');
                 EHR.DemographicsCache.getDemographics(animalId, function(ids, idMap){
                     Ext4.Msg.hide();
@@ -331,13 +337,7 @@ EHR.DataEntryUtils = new function(){
                     win.show();
 
                     var panel = win.down('panel');
-
-                    //TODO: consider attempting to update caseid of the local record
-                    //panel.on('casecreated', function(animalId, category, caseId){
-                    //    console.log(arguments);
-                    //}, this);
-
-                    panel.showCreateWindow('Clinical');
+                    panel.showCreateWindow('Clinical', defaultRemark);
                 }, this);
             }
         },

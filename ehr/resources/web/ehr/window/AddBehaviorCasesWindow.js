@@ -66,7 +66,6 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
                 a: null,
                 p: null,
                 caseid: row.getValue('objectid'),
-                //remark: row.getValue('todaysRemarks'),
                 performedby: this.recordData.performedby
             };
 

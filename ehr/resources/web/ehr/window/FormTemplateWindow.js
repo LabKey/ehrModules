@@ -75,7 +75,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                     timeFormat: 'H:i',
                     labelWidth: 150,
                     width: 400,
-                    value: new Date()
+                    value: null
                 }]
             };
         }

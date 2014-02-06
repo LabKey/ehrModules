@@ -42,7 +42,7 @@
                         <columnTitle>Review Frequency</columnTitle>
                     </column>
                     <column columnName="remark">
-                        <columnTitle>Case Notes</columnTitle>
+                        <columnTitle>Description/Notes</columnTitle>
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="plan">

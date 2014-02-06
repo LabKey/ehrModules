@@ -575,7 +575,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             dateFormat: 'Y-m-d'
         },{
             name: 'remark',
-            label: 'Case Notes',
+            label: 'Description/Notes',
             maxWidth: 350,
             attrs: {
                 style: 'white-space: normal !important;"',

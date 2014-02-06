@@ -1238,6 +1238,7 @@ ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRLabworkEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRPathologyEntryRole.java -text
+ehr/src/org/labkey/ehr/security/EHRProtocolManagementRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text

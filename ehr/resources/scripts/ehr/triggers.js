@@ -646,7 +646,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     if (row._becomingPublicData){
         //set account based on project.  do differently depending on insert/update.
         //we only do this one time when the row becomes public, b/c project/account relationships can change
-        if (!helper.isETL() && !row.account && row.project){
+        if (helper.doCacheAccount() && !helper.isETL() && !row.account && row.project){
             var account = helper.getJavaHelper().getAccountForProject(row.project);
             helper.logDebugMsg('setting account to: ' + account);
             row.account = account;

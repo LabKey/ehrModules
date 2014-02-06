@@ -14,6 +14,8 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
     allowNoSelection: false,
     allowReviewAnimals: true,
+    caseDisplayField: 'problemCategories',
+    caseEmptyText: 'There are no problems associated with this case',
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
@@ -22,9 +24,10 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             title: 'Add Open ' + this.caseCategory + ' Cases',
             border: true,
             bodyStyle: 'padding: 5px',
-            width: 350,
+            width: 420,
             defaults: {
-                width: 330,
+                width: 400,
+                labelWidth: 150,
                 border: false
             },
             items: [{
@@ -51,6 +54,11 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 fieldLabel: 'Entered By',
                 value: LABKEY.Security.currentUser.displayName,
                 itemId: 'performedBy'
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Exclude Animals w/ Obs Entered Today',
+                itemId: 'excludeToday',
+                checked: true
             },{
                 xtype: 'checkbox',
                 hidden: !this.allowReviewAnimals,
@@ -98,6 +106,11 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
         filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
         filterArray.push(LABKEY.Filter.create('category', this.caseCategory, LABKEY.Filter.Types.EQUAL));
+
+        if (this.down('#excludeToday').getValue()){
+            filterArray.push(LABKEY.Filter.create('daysSinceLastRounds', 0, LABKEY.Filter.Types.GT));
+        }
+
         return filterArray;
     },
 
@@ -146,7 +159,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'Id,objectid,mostRecentP2,Id/Utilization/use',
+            columns: 'Id,objectid,mostRecentP2,Id/Utilization/use,problemCategories',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -158,13 +171,14 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
             this.close();
-            Ext4.Msg.alert('', 'No active cases were found.');
+            Ext4.Msg.alert('', 'No active cases were found' + (this.down('#excludeToday').getValue() ? ', excluding those reviewed today.' : '.'));
             return;
         }
 
         LDK.Assert.assertNotEmpty('Unable to find targetStore in AddClinicalCasesWindow', this.targetStore);
 
         var records = [];
+        this.caseRecordMap = {};
         this.recordData = {
             performedby: this.down('#performedBy').getValue(),
             date: this.down('#date').getValue()
@@ -175,6 +189,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         Ext4.Array.each(results.rows, function(sr){
             var row = new LDK.SelectRowsRow(sr);
             idMap[row.getValue('Id')] = row;
+            this.caseRecordMap[row.getValue('objectid')] = row;
 
             var obj = {
                 Id: row.getValue('Id'),
@@ -321,14 +336,155 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     },
 
     addRecords: function(records){
-        this.targetStore.add(records);
+        //check for duplicates
+        var ids = [];
+        var duplicateIds = [];
+        Ext4.Array.forEach(records, function(r){
+            if (ids.indexOf(r.get('Id')) > -1){
+                duplicateIds.push(r.get('Id'));
+            }
+            else {
+                ids.push(r.get('Id'));
+            }
+        }, this);
 
-        if (this.obsTemplateId){
-            this.applyObsTemplate(records);
+        if (!duplicateIds.length){
+            this.doAddRecords(records);
         }
         else {
+            var items = [{
+                html: 'Below are animals with multiple open cases.  For each animal, select the case to review.  Leave blank to skip that animal.',
+                style: 'padding-bottom: 10px;',
+                border: false
+            }];
+
+            duplicateIds = duplicateIds.sort();
+            Ext4.Array.forEach(duplicateIds, function(id){
+                //find matching records
+                var data = [];
+                Ext4.Array.forEach(records, function(r){
+                    if (r.get('Id') == id){
+                        var caseRec = this.caseRecordMap[r.get('caseid')];
+                        LDK.Assert.assertNotEmpty('Unable to find case record', caseRec);
+
+                        data.push({
+                            value: r.get('caseid'),
+                            display: caseRec.getValue(this.caseDisplayField) || this.caseEmptyText,
+                            caseRecord: r
+                        });
+                    }
+                }, this);
+
+                items.push({
+                    xtype: 'combo',
+                    fieldLabel: id,
+                    animalId: id,
+                    width: 400,
+                    queryMode: 'local',
+                    valueField: 'value',
+                    displayField: 'display',
+                    store: {
+                        type: 'store',
+                        fields: ['value', 'display', 'record'],
+                        data: data
+                    }
+                });
+            }, this);
+
             Ext4.Msg.hide();
-            this.close();
+            Ext4.create('Ext.window.Window', {
+                modal: true,
+                title: 'Duplicate Open Cases',
+                bodyStyle: 'padding: 5px',
+                width: 450,
+                items: items,
+                buttons: [{
+                    text: 'Submit',
+                    scope: this,
+                    handler: function(btn){
+                        var win = btn.up('window');
+                        var combos = win.query('combo');
+                        var map = {};
+                        Ext4.Array.forEach(combos, function(c){
+                            map[c.animalId] = c.getValue();
+                        }, this);
+
+                        var nonDupes = [];
+                        Ext4.Array.forEach(records, function(r){
+                            if (!r){
+                                console.log('no record');
+                                return;
+                            }
+
+                            if (map.hasOwnProperty(r.get('Id')) && r.get('caseid') != map[r.get('Id')]){
+                                //no need to actually remove.
+                                //records.remove(r);
+                            }
+                            else {
+                                nonDupes.push(r);
+                            }
+                        }, this);
+
+                        win.close();
+                        this.doAddRecords(nonDupes);
+                    }
+                },{
+                    text: 'Cancel',
+                    scope: this,
+                    handler: function(btn){
+                        btn.up('window').close();
+                        this.close();
+                    }
+                }]
+            }).show();
+        }
+    },
+
+    doAddRecords: function(records){
+        var toAdd = this.checkForExistingCases(records);
+        if (toAdd.length){
+            this.targetStore.add(toAdd);
+
+            if (this.obsTemplateId){
+                this.applyObsTemplate(toAdd);
+            }
+            else {
+                this.onComplete();
+            }
+        }
+        else {
+            this.onComplete();
+        }
+    },
+
+    checkForExistingCases: function(records){
+        //check for existing caseids
+        var existingIds = {};
+        this.targetStore.each(function(r){
+            if (r.get('caseid')){
+                existingIds[r.get('caseid')] = true;
+            }
+        }, this);
+
+        var toAdd = [];
+        Ext4.Array.forEach(records, function(r){
+            if (!existingIds[r.get('caseid')]){
+                toAdd.push(r);
+            }
+            else {
+                this.hasSkippedDuplicates = true;
+            }
+        }, this);
+
+        return toAdd;
+    },
+
+    onComplete: function(){
+        Ext4.Msg.hide();
+        this.close();
+
+        if (this.hasSkippedDuplicates){
+            Ext4.Msg.alert('Skipped Animals', 'One or more cases were skipped because they are already in this form');
         }
     },
 
@@ -345,8 +501,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
         EHR.window.ApplyTemplateWindow.loadTemplateRecords(function(recMap){
             if (!recMap || LABKEY.Utils.isEmptyObj(recMap)){
-                Ext4.Msg.hide();
-                this.close();
+                this.onComplete();
                 return;
             }
 
@@ -355,9 +510,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 store.add(recMap[i]);
             }
 
-            Ext4.Msg.hide();
-            this.close();
-
+            this.onComplete();
         }, this, this.targetStore.storeCollection, this.obsTemplateId, records);
     }
 });

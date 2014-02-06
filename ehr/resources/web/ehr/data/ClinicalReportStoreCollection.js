@@ -6,6 +6,25 @@
 Ext4.define('EHR.data.ClinicalReportStoreCollection', {
     extend: 'EHR.data.TaskStoreCollection',
 
+    constructor: function(){
+        this.callParent(arguments);
+
+        this.mon(EHR.DemographicsCache, 'casecreated', this.onCaseCreated, this);
+    },
+
+    onCaseCreated: function(id, category, caseId){
+        if (category != 'Clinical')
+            return;
+
+        //NOTE: if we opened a case from this form, tag the SOAP note
+        var rec = this.getRemarksRec();
+        if (rec && id == rec.get('Id')){
+            if (!rec.get('caseid')){
+                rec.set('caseid', caseId);
+            }
+        }
+    },
+
     setClientModelDefaults: function(model){
         var vals = this.getDefaultValues();
         if (Ext4.Object.isEmpty(vals)){
@@ -41,16 +60,22 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
         return this.remarkStore;
     },
 
-    getDefaultValues: function(){
+    getRemarksRec: function(){
         var remarkStore = this.getRemarksStore();
         if (remarkStore){
             LDK.Assert.assertTrue('More than 1 record found in Clinical remarks store, actual: ' + remarkStore.getCount(), remarkStore.getCount() <= 1);
             if (remarkStore.getCount() == 1){
-                var rec = remarkStore.getAt(0);
-                return {
-                    Id: rec.get('Id'),
-                    caseid: rec.get('caseid')
-                }
+                return remarkStore.getAt(0);
+            }
+        }
+    },
+
+    getDefaultValues: function(){
+        var rec = this.getRemarksRec();
+        if (rec){
+            return {
+                Id: rec.get('Id'),
+                caseid: rec.get('caseid')
             }
         }
 
@@ -97,8 +122,6 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
 
                     if (needsUpdate)
                         rec.set(toSet);
-                    else
-                        console.log('no update needed');
                 }, this);
                 cs.resumeEvents();
                 cs.fireEvent('datachanged', cs);

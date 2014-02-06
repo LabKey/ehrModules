@@ -24,6 +24,7 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
                 style: 'padding-bottom: 10px;'
             },{
                 itemId: 'runArea',
+                xtype: 'form',
                 items: [{
                     html: 'Loading...'
                 }]
@@ -39,7 +40,17 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
             },{
                 text: 'Cancel',
                 handler: function(btn){
-                    btn.up('window').close();
+                    var win = btn.up('window');
+                    if (win.down('form').isDirty()){
+                        Ext4.Msg.confirm('Close', 'Closing this window will lose any changes.  Continue?', function(val){
+                            if (val == 'yes'){
+                                win.close();
+                            }
+                        }, this);
+                    }
+                    else {
+                        win.close();
+                    }
                 }
             }]
         });
@@ -60,12 +71,16 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
     },
 
     getPanelForService: function(runId, callback){
-        var encountersRec = this.getEncounterRec(runId);
-        LDK.Assert.assertNotEmpty('Unable to find encounters record', encountersRec);
+        var clinpathRunRec = this.getClinpathRunRec(runId);
+        LDK.Assert.assertNotEmpty('Unable to find clinpathRun record', clinpathRunRec);
+        if (!clinpathRunRec){
+            Ext4.Msg.alert('Error', 'There was an error finding the panel associated with this record.  Please contact your administrator if you think this is an error.');
+            return;
+        }
 
         this.cachedPanels = this.cachedPanels || {};
 
-        var service = encountersRec.get('servicerequested');
+        var service = clinpathRunRec.get('servicerequested');
         if (this.cachedPanels[service]){
             return callback.call(this, this.cachedPanels[service]);
         }
@@ -131,7 +146,7 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
         this.getPanelForService(resultRecord.get('runid'), this.onPanelLoad);
     },
 
-    getEncounterRec: function(runId){
+    getClinpathRunRec: function(runId){
         var store = this.targetGrid.store.storeCollection.getClientStoreByName('Clinpath Runs');
         LDK.Assert.assertNotEmpty('Unable to find Clinpath Runs store', store);
 
@@ -143,7 +158,13 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
     },
 
     getItemsCfg: function(runId, panelMap){
-        var encountersRec = this.getEncounterRec(runId);
+        var clinpathRunRec = this.getClinpathRunRec(runId);
+        if (!clinpathRunRec){
+            return [{
+                html: 'There was an error finding the panel associated with this record.  Please contact your administrator if you think this is an error.'
+            }];
+        }
+
         var items = [{
             xtype: 'container',
             defaults: {
@@ -152,15 +173,19 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
             items: [{
                 xtype: 'displayfield',
                 fieldLabel: 'Id',
-                value: encountersRec.get('Id')
+                value: clinpathRunRec.get('Id')
             },{
                 xtype: 'displayfield',
                 fieldLabel: 'Date',
-                value: encountersRec.get('date') ? encountersRec.get('date').format('Y-m-d') : null
+                value: clinpathRunRec.get('date') ? clinpathRunRec.get('date').format('Y-m-d') : null
             },{
                 xtype: 'displayfield',
                 fieldLabel: 'Service/Panel',
-                value: encountersRec.get('servicerequested')
+                value: clinpathRunRec.get('servicerequested')
+            },{
+                xtype: 'displayfield',
+                fieldLabel: 'Panel Remark',
+                value: clinpathRunRec.get('remark')
             }]
         }];
 

@@ -17,7 +17,7 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
             modal: true,
             width: 750,
             closeAction: 'destroy',
-            title: 'Add Procedure Defaults',
+            title: ((!this.targetTabs || this.targetTabs.length != 1) ? 'Add Procedure Defaults' : 'Add Procedure Defaults For Section'),
             bodyStyle: 'padding: 5px;',
             defaults: {
                 border: false

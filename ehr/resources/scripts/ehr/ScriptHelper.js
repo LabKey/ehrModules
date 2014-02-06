@@ -67,7 +67,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         errorSeveritiyForImproperAssignment: 'INFO',
         requiresStatusRecalc: false,
         allowDatesInDistantPast: false,
-        lookupValidationFields: []
+        lookupValidationFields: [],
+        cacheAccount: true
     };
 
     var cachedValues = {
@@ -467,13 +468,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
          * @param date The date of the event.
          */
         onDeathDeparture: function(id, date){
-            if (!this.isETL()){
-                //close housing, assignments, treatments
-                this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Problem List'], id, date);
-            }
-
-            //note: these are entered direct in LK, so separate from above until the ETL is done
-            this.getJavaHelper().closeActiveDatasetRecords(['Animal Record Flags'], id, date);
+            //close housing, assignments, treatments
+            this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Animal Record Flags', 'Diet'], id, date);
         },
 
         isRequiresStatusRecalc: function(){
@@ -506,6 +502,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getSNOMEDCodeFieldName: function(){
             return scriptOptions.snomedCodeFieldName;
+        },
+
+        doCacheAccount: function(){
+            return scriptOptions.cacheAccount;
         }
     }
 };

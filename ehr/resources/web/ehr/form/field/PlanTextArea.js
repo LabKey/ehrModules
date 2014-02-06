@@ -134,16 +134,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
             if (ret){
                 this.setValue(ret.mostRecentP2);
                 this.linkEl.update('Refresh P2');
-
-                if (rec.get('caseid')){
-                    LDK.Assert.assertEquality('Case Id does not match', rec.get('caseid'), ret.caseid);
-                }
-
-                rec.set('caseid', ret.caseid);
             }
-//            else {
-//                Ext4.Msg.alert('No P2', 'No active clinical case found');
-//            }
         });
     },
 

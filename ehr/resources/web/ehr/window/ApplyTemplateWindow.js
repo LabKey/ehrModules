@@ -93,7 +93,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             xtype: 'xdatetime',
             fieldLabel: 'Date (optional)',
             itemId: 'dateField',
-            value: new Date()
+            value: null
         }];
 
         return items;

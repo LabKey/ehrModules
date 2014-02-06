@@ -127,6 +127,8 @@ public class DemographicsCache
             if (p.requiresRecalc(schema, query))
             {
                 uncacheRecords(c, ids);
+                DemographicsCache.get().asyncCache(c, ids);
+
                 break;
             }
         }

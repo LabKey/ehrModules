@@ -13,7 +13,7 @@ Ext4.define('EHR.DemographicsCache', {
     constructor: function(){
         this.callParent(arguments);
 
-        this.addEvents('cachechange');
+        this.addEvents('cachechange', 'casecreated');
     },
 
     loadDemographics: function(animalIds, callback, scope){
@@ -127,5 +127,9 @@ Ext4.define('EHR.DemographicsCache', {
 
     onCacheChange: function(animalId){
         this.fireEvent('cachechange', animalId);
+    },
+
+    reportCaseCreated: function(animalId, category, caseId){
+        this.fireEvent('casecreated', animalId, category, caseId);
     }
 });

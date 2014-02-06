@@ -52,13 +52,14 @@ Ext4.define('EHR.grid.RoundsRemarksGridPanel', {
 
                 if (this.obsStore){
                     var id = record.get('Id');
+                    var caseid = record.get('caseid');
                     var date = record.get('date') ? record.get('date').format('Y-m-d') : null;
                     var data = this.obsStore.snapshot || this.obsStore.data;
 
                     var lines = [];
                     data.each(function(r){
                         var rowDate = r.get('date') ? r.get('date').format('Y-m-d') : null;
-                        if (id !== r.get('Id') || rowDate !== date){
+                        if (id !== r.get('Id') || rowDate !== date || caseid != r.get('caseid')){
                             return;
                         }
 

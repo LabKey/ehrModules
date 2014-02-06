@@ -81,7 +81,6 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         if (!redacted)
             sb.append(safeAppend(rs, "Case #", "caseno"));
 
-        sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
         if (!redacted)

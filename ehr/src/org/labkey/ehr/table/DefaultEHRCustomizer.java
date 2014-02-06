@@ -258,7 +258,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                 if (schema != null)
-                    taskId.setFk(new QueryForeignKey(schema, null, "tasks", "taskid", "rowid"));
+                    taskId.setFk(new QueryForeignKey(schema, ehrContainer, "tasks", "taskid", "rowid"));
             }
             taskId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
@@ -271,7 +271,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                 if (schema != null)
-                    requestId.setFk(new QueryForeignKey(schema, null, "requests", "requestid", "rowid"));
+                    requestId.setFk(new QueryForeignKey(schema, ehrContainer, "requests", "requestid", "rowid"));
             }
             requestId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
@@ -297,7 +297,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
             if (us != null)
-                project.setFk(new QueryForeignKey(us, null, "project", "project", "project"));
+                project.setFk(new QueryForeignKey(us, ehrContainer, "project", "project", "project"));
         }
 
         ColumnInfo code = ti.getColumn("code");
@@ -338,7 +338,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 {
                     UserSchema us = getUserSchema(ti, "ehr_lookups", ehrContainer);
                     if (us != null){
-                        room.setFk(new QueryForeignKey(us, null, "rooms", "room", "room"));
+                        room.setFk(new QueryForeignKey(us, ehrContainer, "rooms", "room", "room"));
                     }
                 }
                 room.setLabel("Room");
@@ -505,7 +505,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             appendHousingAtTimeCol(us, ti, "date");
 
             //date only
-            appendAgeAtTimeCol(us, ti, "dateOnly");
+            appendAgeAtTimeCol(us, ti, "date");
 
             appendSurvivorshipCol(us, ti);
             appendTimeSinceCol(us, ti);
@@ -726,7 +726,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                     //otherwise show both
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " +
-                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), "','", getChr(ds) + "(10)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), "' / '", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
                     " END"
             );
 
@@ -752,6 +752,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         setScriptIncludes(cfg);
         configureTbarBtns(ti, cfg);
         configureMoreActionsBtn(ti, cfg);
+
+        ti.setButtonBarConfig(cfg);
     }
 
     private void configureTbarBtns(AbstractTableInfo ti, ButtonBarConfig cfg)
@@ -1352,13 +1354,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  age(c.dateOnly, coalesce(c.id.demographics.death, curdate()))\n" +
+                    "  age(CAST(c.date as DATE), coalesce(c.id.demographics.death, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  timestampdiff('SQL_TSI_DAY', c.dateOnly, coalesce(c.id.demographics.death, curdate()))\n" +
+                    "  timestampdiff('SQL_TSI_DAY', CAST(c.date as DATE), coalesce(c.id.demographics.death, curdate()))\n" +
                     "END as survivorshipInDays,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
@@ -1442,7 +1444,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")), DOUBLE) / 12, 1)\n" +
+                    "  ROUND(CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
                     "CAST(\n" +
@@ -1450,7 +1452,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  floor(age(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")))\n" +
+                    "  floor(age(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " as DATE))))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
                     "CAST(\n" +
@@ -1458,7 +1460,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, c." + dateColName + ")), INTEGER)\n" +
+                    "  CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
