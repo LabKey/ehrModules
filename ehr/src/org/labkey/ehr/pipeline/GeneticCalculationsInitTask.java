@@ -118,7 +118,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
         {
             UserSchema us = QueryService.get().getUserSchema(job.getUser(), job.getContainer(), "study");
             TableInfo pedTable = us.getTable("pedigree");
-            TableSelector ts = new TableSelector(pedTable, new HashSet<>(PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species")), null, null);
+            TableSelector ts = new TableSelector(pedTable, PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species"));
 
             File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
             final CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER);
