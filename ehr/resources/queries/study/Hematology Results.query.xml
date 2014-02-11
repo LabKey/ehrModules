@@ -12,7 +12,7 @@
 
                     </column>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd</formatString>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="project">
                         <isHidden>true</isHidden>

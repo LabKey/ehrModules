@@ -47,5 +47,13 @@ EHR.Metadata.registerMetadata('Task', {
                 allowBlank: false
             }
         }
+        ,'Irregular Observations': {
+            inRoom: {
+                hidden: true
+            }
+            ,'id/curlocation/cond': {
+                hidden: true
+            }
+        }
     }
 });

@@ -309,12 +309,13 @@ EHR.Metadata.registerMetadata('Default', {
         ,project: {
             xtype: 'ehr-project'
             ,editorConfig: {
-                defaultProjects: ['00300901']
+                defaultProjects: [00300901,00400901]
             }
             ,shownInGrid: false
             ,useNull: true
             ,lookup: {
-                columns: 'project,account'
+                columns: 'project,account',
+                displayColumn: 'project'
             }
         }
         ,account: {
@@ -769,6 +770,7 @@ EHR.Metadata.registerMetadata('Default', {
             ,cond: {
                 allowBlank: false
                 ,shownInGrid: false
+                ,lookup:{ schemaName: 'ehr_lookups', queryName: 'housing_condition_codes', displayColumn: 'value', keyColumn: 'value'}
             }
             ,reason: {
                 shownInGrid: false
@@ -849,8 +851,14 @@ EHR.Metadata.registerMetadata('Default', {
         },
         'Clinpath Runs': {
             date: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                xtype: 'xdatetime',
+                //xtype: 'datefield',
+                extFormat: 'Y-m-d H:i',
+                editorConfig: {
+                    dateFormat: 'Y-m-d',
+                    timeFormat: 'H:i'
+                }
+                //extFormat: 'Y-m-d'
             },
             collectionMethod : {
                 shownInGrid: false
@@ -1135,7 +1143,9 @@ EHR.Metadata.registerMetadata('Default', {
                 xtype: 'combo',
                 lookup: {
                     filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)],
-                    columns: 'project,protocol,account'
+                    columns: 'project,protocol,account',
+                    displayColumn: 'project'
+
                 },
                 editorConfig: {
                     plugins: ['ehr-participantfield-events']
@@ -1622,7 +1632,8 @@ EHR.Metadata.registerMetadata('Default', {
 //                setInitialValue: function(v){
 //                    return v || false;
 //                }
-            }
+            },
+            score:{lookup:{ schemaName: 'ehr_lookups', queryName: 'bcs_score', displayColumn: 'value', keyColumn: 'value'}}
         },
         Alopecia: {
             head: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
@@ -1768,7 +1779,9 @@ EHR.Metadata.registerMetadata('Default', {
             ,testid: {
                 lookup: {
                     columns: '*',
+                    displayColumn: 'testid',
                     filterArray: [LABKEY.Filter.create('categories', 'chemistry', LABKEY.Filter.Types.CONTAINS)]
+
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -1784,8 +1797,20 @@ EHR.Metadata.registerMetadata('Default', {
                 }
             }
             ,date: {
-                xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                xtype: 'xdatetime',
+                extFormat: 'Y-m-d H:i',
+                editorConfig: {
+                    dateFormat: 'Y-m-d',
+                    timeFormat: 'H:i'
+                   /* listeners: {
+                      click: function(){
+                          console.log ('testing chemitry date');
+                      }
+                    }*/
+                }
+                //setValue: null
+                //defaultValue: 1
+                //,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -1941,6 +1966,7 @@ EHR.Metadata.registerMetadata('Default', {
             testid: {
                 lookup: {
                     columns: '*',
+                    displayColumn: 'testid',
                     filterArray: [LABKEY.Filter.create('categories', 'hematology', LABKEY.Filter.Types.CONTAINS)]
                 },
                 editorConfig: {
@@ -1957,8 +1983,15 @@ EHR.Metadata.registerMetadata('Default', {
                 }
             }
             ,date: {
-                xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                xtype: 'xdatetime',
+                extFormat: 'Y-m-d H:i',
+                editorConfig: {
+                    dateFormat: 'Y-m-d',
+                    timeFormat: 'H:i',
+                    defaultValue: '00:00'
+                }
+                //defaultValue: null
+                //,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -1991,7 +2024,9 @@ EHR.Metadata.registerMetadata('Default', {
             ,testid: {
                 lookup: {
                     columns: '*',
-                    filterArray: [LABKEY.Filter.create('categories', 'urinalysis', LABKEY.Filter.Types.CONTAINS)]
+                    filterArray: [LABKEY.Filter.create('categories', 'urinalysis', LABKEY.Filter.Types.CONTAINS)],
+                    displayColumn: 'testid',
+                    keyColumn: 'testid'
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -2022,6 +2057,9 @@ EHR.Metadata.registerMetadata('Default', {
                 xtype: 'datefield'
                 ,extFormat: 'Y-m-d'
             },
+            virus: {
+                lookup: {schemaName: 'ehr_lookups', queryName: 'virology_tests', displayColumn: 'testid', keyColumn: 'testid'}
+            },
             method: {
                 shownInGrid: false
             },
@@ -2031,8 +2069,15 @@ EHR.Metadata.registerMetadata('Default', {
         },
         'Hematology Morphology': {
             date: {
-                xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                xtype: 'xdatetime',
+                extFormat: 'Y-m-d H:i',
+                editorConfig: {
+                    dateFormat: 'Y-m-d',
+                    timeFormat: 'H:i'
+                  //  defaultValue: '00:00'
+                }
+                //xtype: 'datefield'
+                //,extFormat: 'Y-m-d'
             }
         },
         'Irregular Observations': {
@@ -2175,8 +2220,19 @@ EHR.Metadata.registerMetadata('Default', {
             },
             p: {
                 shownInGrid: false
-            },
-            category : {
+            }
+    /*        behatype :{
+                xtype: 'ehr-behaviorcombo',
+                editorConfig: {
+                    defaultSubset: 'SIB'
+                },
+                colModel: {
+                    width: 150,
+                    showLink: false
+                }
+
+            }*/
+            /*category : {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'behavior_category',
@@ -2187,7 +2243,7 @@ EHR.Metadata.registerMetadata('Default', {
                     tpl: null,
                     plugins: ['ehr-usereditablecombo']
                 }
-            }
+            }*/
         },
         Arrival: {
             Id: {
@@ -2262,6 +2318,7 @@ EHR.Metadata.registerMetadata('Default', {
             account: {hidden: true},
             necropsy: {lookups: false},
             cause: {allowBlank: false},
+            gender: {includeNullRecord: false, allowBlank: false},
             tattoo: {
                 editorConfig: {
                     helpPopup: 'Please enter the color and number of the tag and/or all visible tattoos'
@@ -2281,11 +2338,14 @@ EHR.Metadata.registerMetadata('Default', {
             dam: {shownInGrid: false, lookups: false},
             sire: {shownInGrid: false, lookups: false},
             gender: {includeNullRecord: false, allowBlank: false},
-            weight: {shownInGrid: false},
+            weight: {shownInGrid: false ,editorConfig: { forcePrecision: true, decimalPrecision : 3 }},
             wdate: {shownInGrid: false},
             room: {shownInGrid: false},
             cage: {shownInGrid: false},
-            cond: {shownInGrid: false},
+            cond: {
+                shownInGrid: false
+                ,lookup:{ schemaName: 'ehr_lookups', queryName: 'housing_condition_codes', displayColumn: 'value', keyColumn: 'value'}
+            },
             origin: {shownInGrid: false},
             estimated: {shownInGrid: false},
             conception: {shownInGrid: false}
@@ -2293,7 +2353,7 @@ EHR.Metadata.registerMetadata('Default', {
         'Blood Draws' : {
             billedby: {shownInGrid: false}
             ,remark: {shownInGrid: false}
-            ,project: {shownInGrid: false, allowBlank: false}
+            ,project: {shownInGrid: true, allowBlank: false}
             ,requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}}
             ,performedby: {shownInGrid: false}
             ,instructions: {shownInGrid: false}

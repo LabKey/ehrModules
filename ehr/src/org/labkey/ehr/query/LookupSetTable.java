@@ -17,7 +17,6 @@ package org.labkey.ehr.query;
 
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.SchemaTableInfo;
-import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 
 import java.util.Map;
@@ -39,6 +38,8 @@ public class LookupSetTable extends AbstractDataDefinedTable
     public LookupSetTable(UserSchema schema, SchemaTableInfo table, String setName, Map<String, Object> map)
     {
         super(schema, table, FILTER_COL, VALUE_COL, setName, setName);
+
+        setTitleColumn(VALUE_COL);
 
         if (map.containsKey("label"))
             setTitle((String)map.get("label"));
@@ -74,7 +75,6 @@ public class LookupSetTable extends AbstractDataDefinedTable
             getColumn("rowid").setKeyField(true);
         }
 
-        setTitleColumn(VALUE_COL);
         if (_titleColumn != null)
         {
             ColumnInfo titleCol = getColumn(_titleColumn);

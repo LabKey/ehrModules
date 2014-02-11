@@ -26,6 +26,7 @@
                     </column>
                     <column columnName="duedate">
                         <columnTitle>Due Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <nullable>true</nullable>
                     </column>
                     <column columnName="createdby">

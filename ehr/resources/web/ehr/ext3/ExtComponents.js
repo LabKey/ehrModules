@@ -851,6 +851,20 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
         }
     },
 
+    removeStoreFilter: function(columnName, type) {
+        var newFilters = [];
+        if (this.store.filterArray) {
+            for (var i = 0; i < this.store.filterArray.length; i++) {
+                var filter = this.store.filterArray[i];
+                if (filter.getColumnName() != columnName || filter.getFilterType().getURLSuffix() != type.getURLSuffix()) {
+                    newFilters.push(filter);
+                }
+            }
+        }
+        this.store.filterArray = newFilters;
+        return newFilters;
+    },
+
     applyFilter: function(combo, subset){
         this.store.removeAll();
         delete this.store.baseParams['query.maxRows'];
@@ -861,7 +875,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             this.store.baseParams['query.sort'] = 'meaning';
             if(this.store.sortInfo){
                 this.store.sortInfo.field = 'meaning';
-                delete this.store.baseParams['query.primaryCategory~eq'];
+                this.removeStoreFilter('primaryCategory', LABKEY.Filter.Types.EQUAL);
             }
             this.displayField = 'meaning';
         }
@@ -871,13 +885,12 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             this.store.baseParams['query.sort'] = 'code';
             if(this.store.sortInfo){
                 this.store.sortInfo.field = 'code';
-                delete this.store.baseParams['query.primaryCategory~eq'];
+                this.removeStoreFilter('primaryCategory', LABKEY.Filter.Types.EQUAL);
             }
             this.displayField = 'code';
         }
         else {
-            delete this.store.baseParams['query.primaryCategory~eq'];
-            LABKEY.Filter.appendFilterParams(this.store.baseParams, [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)]);
+            this.removeStoreFilter('primaryCategory', LABKEY.Filter.Types.EQUAL).push(LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL));
             this.store.baseParams['query.queryName'] = 'snomed_subset_codes';
             this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning';
             this.store.baseParams['query.sort'] = 'secondaryCategory,code/meaning';

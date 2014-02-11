@@ -14,6 +14,11 @@
                     </column>
                     <column columnName="room">
                         <displayWidth>40</displayWidth>
+                        <fk>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>

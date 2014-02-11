@@ -49,7 +49,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>housing_condition_codes</fkTable>
-                            <fkColumnName>value</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="species">

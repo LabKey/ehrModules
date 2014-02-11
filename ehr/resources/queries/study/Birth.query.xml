@@ -70,6 +70,12 @@
                     </column>
                     <column columnName="cond">
                         <columnTitle>Condition</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>housing_condition_codes</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName>value</fkDisplayColumnName>
+                        </fk>
                     </column>
                     <column columnName="origin">
                         <columnTitle>Origin</columnTitle>

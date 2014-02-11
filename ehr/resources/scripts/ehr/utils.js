@@ -39,15 +39,15 @@ EHR.Server.Utils = new function(){
 
             LABKEY.Query.selectRows({
                 schemaName: 'core',
-                queryName: 'principals',
-                columns: 'UserId,Name',
+                queryName: 'Users',
+                columns: 'UserId,DisplayName',
                 filterArray: [
                     LABKEY.Filter.create('UserId', id, LABKEY.Filter.Types.EQUAL)
                 ],
                 scope: this,
                 success: function(data){
                     if (data.rows && data.rows.length)
-                        principalMap[id] = data.rows[0].Name;
+                        principalMap[id] = data.rows[0].DisplayName;
                 },
                 failure: EHR.Server.Utils.onFailure
             });
