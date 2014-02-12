@@ -27,23 +27,21 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
 
     setClientModelDefaults: function(model){
         var vals = this.getDefaultValues();
-        if (Ext4.Object.isEmpty(vals)){
-            return;
-        }
+        if (!Ext4.Object.isEmpty(vals)){
+            var toSet = {};
 
-        var toSet = {};
+            if (model.fields.get('Id') != null){
+                toSet.Id = vals.Id;
+            }
+            if (model.fields.get('caseid') != null){
+                toSet.caseid = vals.caseid;
+            }
 
-        if (model.fields.get('Id') != null){
-            toSet.Id = vals.Id;
-        }
-        if (model.fields.get('caseid') != null){
-            toSet.caseid = vals.caseid;
-        }
-
-        if (!Ext4.isEmpty(toSet)){
-            model.suspendEvents();
-            model.set(toSet);
-            model.resumeEvents();
+            if (!Ext4.isEmpty(toSet)){
+                model.suspendEvents();
+                model.set(toSet);
+                model.resumeEvents();
+            }
         }
 
         return this.callParent([model]);

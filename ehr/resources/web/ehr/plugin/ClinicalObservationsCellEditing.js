@@ -32,7 +32,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
 
         var store = this.observationTypesStore;
         var rec = store.findRecord('value', category);
-        LDK.Assert.assertNotEmpty('Unable to find record matching category: ' + category, rec);
+        LDK.Assert.assertNotEmpty('Unable to find observation types record matching category: ' + category, rec);
         if (!rec){
             return false;
         }

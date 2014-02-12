@@ -76,7 +76,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     public static final String PARTICIPANT_CONCEPT_URI = "http://cpas.labkey.com/Study#ParticipantId";
 
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
-    private Map<String, UserSchema> _userSchemas = new HashMap<>();
     private boolean _addLinkDisablers = true;
     private static final String MORE_ACTIONS = "More Actions";
 
@@ -87,8 +86,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     public void customize(TableInfo table)
     {
-        _userSchemas = new HashMap<>();
-
         LDKService.get().getBuiltInColumnsCustomizer(false).customize(table);
         UserSchema us = table.getUserSchema();
         if (us != null)
@@ -379,6 +376,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         doSharedCustomization(ti);
+
+        //then customization specific to a given dataset
         if (matches(ti, "study", "Drug Administration") || matches(ti, "study", "Treatment Orders"))
         {
             addUnitColumns(ti);
@@ -449,6 +448,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "isActive";
         if (ti.getColumn(name) == null)
         {
+            if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
+            {
+                _log.error("Unable to find either date or enddate column for table: " + ti.getName());
+                return;
+            }
+
             SQLFragment sql = new SQLFragment("(CASE " +
                     // when the start is in the future, using whole-day increments, it is not active
                     " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
@@ -486,6 +491,21 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
             col.setLabel("Is Active?");
+            ti.addColumn(col);
+        }
+
+        String expired = "isExpired";
+        if (ti.getColumn(expired) == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE " +
+                    // any record with a null or future enddate (considering time) is active
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate < {fn now()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                    " END)");
+
+            ExprColumn col = new ExprColumn(ti, expired, sql, JdbcType.BOOLEAN, ti.getColumn("enddate"));
+            col.setLabel("Is Expired?");
             ti.addColumn(col);
         }
     }
@@ -586,7 +606,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName, String targetColName)
     {
         ColumnInfo existing = ti.getColumn(name);
-        if (existing == null)
+        if (existing == null && ti.getColumn("objectid") != null)
         {
             final UserSchema us = getUserSchema(ti, EHRSchema.EHR_SCHEMANAME);
 

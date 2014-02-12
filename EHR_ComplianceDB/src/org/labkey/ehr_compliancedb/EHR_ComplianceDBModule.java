@@ -20,6 +20,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
+import org.labkey.api.module.ModuleContext;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 
@@ -60,6 +61,12 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     protected void init()
     {
         addController(CONTROLLER_NAME, EHR_ComplianceDBController.class);
+    }
+
+    @Override
+    protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
+    {
+        LDKService.get().registerContainerScopedTable(EHR_ComplianceDBModule.SCHEMA_NAME, EHR_ComplianceDBUserSchema.TABLE_REQUIREMENTS, "requirementname");
     }
 
     @Override

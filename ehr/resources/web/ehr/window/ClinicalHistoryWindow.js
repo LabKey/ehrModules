@@ -76,6 +76,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
     getItems: function(){
         return [{
             xtype: 'ehr-smallformsnapshotpanel',
+            showActionsButton: false,
             subjectId: this.subjectId,
             hideHeader: true,
             style: 'padding: 5px;'

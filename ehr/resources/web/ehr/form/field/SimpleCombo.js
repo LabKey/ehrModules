@@ -9,6 +9,8 @@ Ext4.define('EHR.form.field.SimpleCombo', {
 
     initComponent: function(){
         Ext4.apply(this, {
+            triggerAction: 'all',
+            queryMode: 'local',
             store: {
                 type: 'labkey-store',
                 schemaName: this.schemaName,

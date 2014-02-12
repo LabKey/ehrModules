@@ -191,7 +191,7 @@ public class DataEntrySummary implements NotificationSection
         StringBuilder results = new StringBuilder();
         boolean hasResults = false;
         results.append("Records created yesterday:<br>");
-        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows Created By Admin</td><td>Rows Not Created By Admin</td><td>Public Records Modified</td></tr>");
+        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows Not Created By Admin</td><td>Rows Created By Admin</td><td>Public Records Modified</td></tr>");
 
         for (final Study s : studies)
         {

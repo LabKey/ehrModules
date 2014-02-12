@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.query;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
@@ -26,7 +27,9 @@ import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
+import org.labkey.api.ldk.table.CustomPermissionsTable;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.QueryForeignKey;
@@ -40,6 +43,9 @@ import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
+import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.security.EHRVeternarianRole;
 
@@ -154,7 +160,11 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             return createSNOMEDTable(name);
         }
-        if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
+        else if ("procedures".equalsIgnoreCase(name) || "procedure_default_flags".equalsIgnoreCase(name) || "procedure_default_treatments".equalsIgnoreCase(name) || "procedure_default_charges".equalsIgnoreCase(name) || "procedure_default_codes".equalsIgnoreCase(name) || "procedure_default_comments".equalsIgnoreCase(name))
+        {
+            return createProceduresTable(name);
+        }
+        else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
         {
             return createVeterinariansTable(name);
         }
@@ -178,10 +188,19 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return null;
     }
 
+    private TableInfo createProceduresTable(String name)
+    {
+        CustomPermissionsTable ret = new CustomPermissionsTable(this, super.createSourceTable(name));
+        ret.addPermissionMapping(InsertPermission.class, EHRProcedureManagementPermission.class);
+        ret.addPermissionMapping(UpdatePermission.class, EHRProcedureManagementPermission.class);
+        ret.addPermissionMapping(DeletePermission.class, EHRProcedureManagementPermission.class);
+
+        return ret.init();
+    }
+
     private TableInfo createSNOMEDTable(String name)
     {
-        SchemaTableInfo table = _dbSchema.getTable(name);
-        return new ContainerScopedTable(this, table, "code").init();
+        return new ContainerScopedTable(this, this.createSourceTable(name), "code").init();
     }
 
     private TableInfo createVeterinariansTable(String name)

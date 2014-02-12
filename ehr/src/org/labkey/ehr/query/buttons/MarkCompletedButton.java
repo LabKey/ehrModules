@@ -63,7 +63,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
     {
         ColumnInfo col = ti.getColumn("enddate");
         String xtype = "datefield";
-        if (col.getFormat().contains("HH"))
+        if (col != null && col.getFormat().contains("HH"))
             xtype = "xdatetime";
 
         return "EHR.window.MarkCompletedWindow.buttonHandler(dataRegionName, " + PageFlowUtil.jsString(_schemaName) + ", " + PageFlowUtil.jsString(_queryName) + ", " + PageFlowUtil.jsString(xtype) + ");";

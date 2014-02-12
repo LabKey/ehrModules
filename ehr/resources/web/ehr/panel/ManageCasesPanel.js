@@ -59,6 +59,31 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                         owner.showCreateWindow('Surgery');
                     }
                 }]
+            },{
+                xtype: 'button',
+                text: 'Show Inactive',
+                handler: function(btn){
+                    var owner = btn.up('window');
+                    if (owner)
+                        owner = owner.down('panel');
+
+                    var store = owner.getStore();
+                    LDK.Assert.assertNotEmpty('Unable to find animalId in ManageCasesPanel', owner.animalId);
+                    var filterArray = [
+                        LABKEY.Filter.create('Id', owner.animalId, LABKEY.Filter.Types.EQUAL)
+                    ];
+
+                    if (btn.text == 'Show Inactive'){
+                        btn.setText('Hide Inactive');
+                    }
+                    else {
+                        btn.setText('Show Inactive');
+                        filterArray.push(LABKEY.Filter.create('isOpen', true, LABKEY.Filter.Types.EQUAL));
+                    }
+
+                    store.filterArray = filterArray;
+                    store.load();
+                }
             }]
         }
     },
@@ -85,7 +110,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
             columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,problemCategories,encounterid,assignedvet,assignedvet/UserId/DisplayName,isOpen,isActive',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)
+                LABKEY.Filter.create('isOpen', true, LABKEY.Filter.Types.EQUAL)
             ],
             autoLoad: true,
             listeners: {
@@ -433,6 +458,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                 xtype: 'form',
                 border: false,
                 defaults: {
+                    labelWidth: 140,
                     border: false
                 },
                 items: [{
@@ -644,6 +670,7 @@ Ext4.define('EHR.window.OpenCaseWindow', {
                 border: false,
                 defaults: {
                     border: false,
+                    labelWidth: 140,
                     width: 550
                 },
                 items: [{

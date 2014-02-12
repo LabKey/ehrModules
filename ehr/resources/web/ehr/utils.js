@@ -512,6 +512,7 @@ EHR.Utils = new function(){
 
         /**
          * Retrieve the list of available data entry forms
+         * @param [config.includeFormElements] true to include form elements (which is slower).  defaults to false.
          * @param [config.containerPath] the container to test
          * @param config.success Success callback
          * @param config.scope Scope for the callback
@@ -527,7 +528,10 @@ EHR.Utils = new function(){
                     callback: config.failure,
                     scope: config.scope
                 }),
-                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope)
+                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope),
+                params: {
+                    includeFormElements: !!config.includeFormElements
+                }
             });
         },
 

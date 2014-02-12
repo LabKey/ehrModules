@@ -211,11 +211,10 @@ EHR.DataEntryUtils = new function(){
             disableOn: 'ERROR',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                var ctx = EHR.Utils.getEHRContext();
                 Ext4.create('EHR.window.SubmitForReviewPanel', {
                     dataEntryPanel: panel,
                     dataEntryBtn: btn,
-                    reviewRequiredRecipient: ctx ? ctx['EHRSubmitForReviewPrincipal'] : null
+                    reviewRequiredRecipient: panel.formConfig.defaultReviewRequiredPrincipal
                 }).show();
             }
         },
@@ -628,10 +627,6 @@ EHR.DataEntryUtils = new function(){
                         arr = Ext4.unique(values[fieldName]);
                         if (arr.length == 1){
                             uniqueValues[fieldName] = arr[0];
-                        }
-                        else {
-                            console.log('not unique: ' + fieldName);
-                            console.log(arr);
                         }
                     }
 

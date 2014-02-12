@@ -31,6 +31,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
@@ -161,7 +162,7 @@ public class TriggerScriptHelper
 
             //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
             TableInfo ti = dataset.getTableInfo(user);
-            SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND enddate IS NULL", enddate, id);
+            SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND (enddate IS NULL OR enddate > ?)", enddate, id, enddate);
             new SqlExecutor(ti.getSchema()).execute(sql);
         }
     }
@@ -1411,7 +1412,6 @@ public class TriggerScriptHelper
         }
     }
 
-    //TODO
     public void sendDeathNotification(final List<String> ids)
     {
         JobRunner.getDefault().execute(new Runnable(){
@@ -1430,7 +1430,7 @@ public class TriggerScriptHelper
                         return;
                     }
 
-                    StringBuilder html = new StringBuilder();
+                    final StringBuilder html = new StringBuilder();
 
                     html.append("Animal " + id + " has been marked as dead.  ");
                     html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/participantView.view?participantId=" + id + "'>");
@@ -1441,6 +1441,91 @@ public class TriggerScriptHelper
                     html.append("Species: ").append(ar.getSpecies()).append("<br>");
                     html.append("Gender: ").append(ar.getGenderMeaning()).append("<br>");
                     html.append("Age: ").append(ar.getAgeInYearsAndDays()).append("<br>");
+
+                    //find housing overlapping date of death
+                    TableInfo housing = getTableInfo("study", "demographicsLastHousing");
+                    TableSelector housingTs = new TableSelector(housing, PageFlowUtil.set("room", "cage"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+                    housingTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                    {
+                        @Override
+                        public void exec(ResultSet rs) throws SQLException
+                        {
+                            if (rs.getString("room") != null)
+                            {
+                                html.append("Location: ").append(rs.getString("room"));
+
+                                if (rs.getString("cage") != null)
+                                {
+                                    html.append(", ").append(rs.getString("cage"));
+                                }
+
+                                html.append("<br>");
+                            }
+                        }
+                    });
+
+                    //find assignments overlapping date of death
+                    TableInfo assignment = getTableInfo("study", "assignment");
+                    final Map<FieldKey, ColumnInfo> assignmentCols = QueryService.get().getColumns(assignment, PageFlowUtil.set(FieldKey.fromString("project/displayName"), FieldKey.fromString("project/investigatorId/lastName")));
+                    SimpleFilter assignmentFilter = new SimpleFilter(FieldKey.fromString("Id"), id);
+                    assignmentFilter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
+                    TableSelector assignmentTs = new TableSelector(assignment, assignmentCols.values(), assignmentFilter, null);
+                    html.append("<br>Assignments: ").append("<br>");
+
+                    if (assignmentTs.exists())
+                    {
+                        assignmentTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                        {
+                            @Override
+                            public void exec(ResultSet object) throws SQLException
+                            {
+                                Results rs = new ResultsImpl(object, assignmentCols);
+                                if (rs.getString(FieldKey.fromString("project/displayName")) != null)
+                                {
+                                    html.append(rs.getString(FieldKey.fromString("project/displayName")));
+
+                                    if (rs.getString(FieldKey.fromString("project/investigatorId/lastName")) != null)
+                                    {
+                                        html.append(" (").append(rs.getString(FieldKey.fromString("project/investigatorId/lastName"))).append(")");
+                                    }
+
+                                    html.append("<br>");
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        html.append("No assignments").append("<br>");
+                    }
+
+                    //find groups overlapping date of death
+                    TableInfo groups = getTableInfo("ehr", "animal_group_members");
+                    final Map<FieldKey, ColumnInfo> groupCols = QueryService.get().getColumns(groups, PageFlowUtil.set(FieldKey.fromString("groupId/name")));
+                    SimpleFilter groupFilter = new SimpleFilter(FieldKey.fromString("Id"), id);
+                    groupFilter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
+                    TableSelector groupTs = new TableSelector(groups, groupCols.values(), groupFilter, null);
+                    html.append("<br>Groups: ").append("<br>");
+
+                    if (groupTs.exists())
+                    {
+                        groupTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                        {
+                            @Override
+                            public void exec(ResultSet object) throws SQLException
+                            {
+                                Results rs = new ResultsImpl(object, groupCols);
+                                if (rs.getString(FieldKey.fromString("groupId/name")) != null)
+                                {
+                                    html.append(rs.getString(FieldKey.fromString("groupId/name"))).append("<br>");
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        html.append("No groups").append("<br>");
+                    }
 
                     sendMessage(subject, html.toString(), recipients);
                 }
@@ -1600,7 +1685,7 @@ public class TriggerScriptHelper
                 Map<String, Object> row = new HashMap<>();
                 row.put("sevice", service);
                 row.put("formtype", serviceMap.get(service).get("formtype"));
-                row.put("labwork_service", serviceMap.get(service).get("v"));
+                row.put("labwork_service", serviceMap.get(service).get("labwork_service"));
                 toCreate.add(row);
             }
         }

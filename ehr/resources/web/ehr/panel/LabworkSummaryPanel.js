@@ -13,6 +13,8 @@ Ext4.define('EHR.panel.LabworkSummaryPanel', {
 
     statics: {
         showRunSummary: function(runId, Id, el){
+            LDK.Assert.assertNotEmpty('No runId provided in LabworkSummaryPanel', runId);
+
             Ext4.create('Ext.window.Window', {
                 title: 'Labwork Results: ' + Id,
                 bodyStyle: 'padding: 3px;',
@@ -52,8 +54,10 @@ Ext4.define('EHR.panel.LabworkSummaryPanel', {
     },
 
     loadData: function(){
+        var ctx = EHR.Utils.getEHRContext();
+
         LABKEY.Ajax.request({
-            url: LABKEY.ActionURL.buildURL('ehr', 'getLabResultSummary'),
+            url: LABKEY.ActionURL.buildURL('ehr', 'getLabResultSummary', (ctx ? ctx['EHRStudyContainer'] : null)),
             params: {
                 runId: this.runId
             },

@@ -19,6 +19,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
 
     loadData: function(){
         EHR.Utils.getDataEntryItems({
+            includeFormElements: false,
             scope: this,
             success: this.onLoad
         });

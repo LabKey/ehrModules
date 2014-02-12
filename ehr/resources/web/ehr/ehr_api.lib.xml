@@ -26,6 +26,7 @@
         <script path="ehr/panel/EnterRemarkPanel.js"/>
         <script path="ehr/panel/ObservationsPanel.js"/>
         <script path="ehr/panel/ManageTreatmentsPanel.js"/>
+        <script path="ehr/buttons/ClinicalActionsButton.js"/>
 
         <script path="ehr/window/ChangeRequestStatusWindow.js"/>
         <script path="ehr/window/ClinicalHistoryWindow.js"/>

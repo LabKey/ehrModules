@@ -123,6 +123,8 @@ ehr/resources/queries/auditLog/audit/EHR[!!-~]Client[!!-~]Errors.qview.xml -text
 ehr/resources/queries/core/Principals/Without[!!-~]Administrator.qview.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.query.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.sql -text
+ehr/resources/queries/core/userNames.query.xml -text
+ehr/resources/queries/core/userNames.sql -text
 ehr/resources/queries/ehr/CageUtilization.query.xml -text
 ehr/resources/queries/ehr/CageUtilization.sql -text
 ehr/resources/queries/ehr/Tasks.js -text
@@ -163,6 +165,7 @@ ehr/resources/queries/ehr/cage_observations/.qview.xml -text
 ehr/resources/queries/ehr/encounter_flags_summary.query.xml -text
 ehr/resources/queries/ehr/encounter_flags_summary.sql -text
 ehr/resources/queries/ehr/encounter_participants.js -text
+ehr/resources/queries/ehr/encounter_participants.query.xml -text
 ehr/resources/queries/ehr/encounter_participants_summary.query.xml -text
 ehr/resources/queries/ehr/encounter_participants_summary.sql -text
 ehr/resources/queries/ehr/encounter_summaries.query.xml -text
@@ -907,6 +910,7 @@ ehr/resources/web/ehr/DemographicsCache.js -text
 ehr/resources/web/ehr/DemographicsRecord.js -text
 ehr/resources/web/ehr/ExtOverrides.js -text
 ehr/resources/web/ehr/Security.js -text
+ehr/resources/web/ehr/buttons/ClinicalActionsButton.js -text
 ehr/resources/web/ehr/buttons/encounterButtons.js -text
 ehr/resources/web/ehr/buttons/roundsButtons.js -text
 ehr/resources/web/ehr/data/AssignmentClientStore.js -text
@@ -1230,6 +1234,7 @@ ehr/src/org/labkey/ehr/query/buttons/ShowAuditHistoryButton.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRDatasetRole.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text
 ehr/src/org/labkey/ehr/security/EHRBasicSubmitterRole.java -text
+ehr/src/org/labkey/ehr/security/EHRBehaviorEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRClinicalEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataEntryRole.java -text
@@ -1237,6 +1242,7 @@ ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRLabworkEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRPathologyEntryRole.java -text
+ehr/src/org/labkey/ehr/security/EHRProcedureManagementRole.java -text
 ehr/src/org/labkey/ehr/security/EHRProtocolManagementRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text

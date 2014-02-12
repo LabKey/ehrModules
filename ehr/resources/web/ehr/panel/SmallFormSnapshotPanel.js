@@ -8,6 +8,7 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
     alias: 'widget.ehr-smallformsnapshotpanel',
 
     showLocationDuration: false,
+    showActionsButton: false,
 
     initComponent: function(){
 

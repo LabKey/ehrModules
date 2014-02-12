@@ -382,7 +382,7 @@ EHR.reports.treatmentSchedule = function(panel, tab){
     });
 };
 
-EHR.reports.snapshot = function(panel, tab){
+EHR.reports.snapshot = function(panel, tab, showActionsBtn){
     if (tab.filters.subjects){
         renderSubjects(tab.filters.subjects, tab);
     }
@@ -407,6 +407,7 @@ EHR.reports.snapshot = function(panel, tab){
                     items: [{
                         xtype: 'ehr-snapshotpanel',
                         showExtendedInformation: true,
+                        showActionsButton: !!showActionsBtn,
                         hrefTarget: '_blank',
                         border: false,
                         subjectId: subjects[i]
@@ -449,11 +450,11 @@ EHR.reports.snapshot = function(panel, tab){
 
 };
 
-EHR.reports.fullClinicalHistory = function(panel, tab){
-    EHR.reports.clinicalHistory(panel, tab, true);
+EHR.reports.fullClinicalHistory = function(panel, tab, showActionsBtn){
+    EHR.reports.clinicalHistory(panel, tab, showActionsBtn, true);
 }
 
-EHR.reports.clinicalHistory = function(panel, tab, includeAll){
+EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
     if (tab.filters.subjects){
         renderSubjects(tab.filters.subjects, tab);
     }
@@ -507,6 +508,7 @@ EHR.reports.clinicalHistory = function(panel, tab, includeAll){
 
             toAdd.push({
                 xtype: 'ehr-smallformsnapshotpanel',
+                showActionsButton: !!showActionsBtn,
                 hrefTarget: '_blank',
                 border: false,
                 subjectId: s

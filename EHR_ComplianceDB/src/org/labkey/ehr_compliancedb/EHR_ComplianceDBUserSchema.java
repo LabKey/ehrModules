@@ -35,6 +35,8 @@ import java.util.Set;
  */
 public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
 {
+    public static final String TABLE_REQUIREMENTS = "requirements";
+
     public EHR_ComplianceDBUserSchema(User user, Container container, DbSchema dbschema)
     {
         super(EHR_ComplianceDBModule.SCHEMA_NAME, null, user, container, dbschema);
@@ -43,7 +45,7 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
     @Override
     protected TableInfo createTable(String name)
     {
-        if ("requirements".equalsIgnoreCase(name))
+        if (TABLE_REQUIREMENTS.equalsIgnoreCase(name))
         {
             SchemaTableInfo table = _dbSchema.getTable(name);
             return new ContainerScopedTable(this, table, "requirementname").init();

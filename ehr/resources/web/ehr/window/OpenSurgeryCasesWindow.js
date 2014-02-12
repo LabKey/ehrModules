@@ -57,7 +57,7 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
         var columns = 6;
 
         this.sourceStore.each(function(rec, recIdx){
-            if (!rec.get('Id')){
+            if (!rec.get('Id') || !rec.get('procedureid')){
                 return;
             }
 
@@ -145,10 +145,11 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
             });
 
             toAdd.push({
-                html: hasSurgCase ? 'Y' : 'N',
+                xtype: 'displayfield',
+                value: hasSurgCase ? 'Y' : 'N',
                 rowIdx: rowIdx,
                 fieldName: 'caseId',
-                value: caseRec ? caseRec.lsid : null
+                caseId: caseRec ? caseRec.lsid : null
             });
 
             toAdd.push({
@@ -211,7 +212,7 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
             if (!cb.getValue()){
                 var id = this.query('field[rowIdx=' + cb.rowIdx + '][fieldName=Id]')[0].getValue();
                 var remark = this.query('field[rowIdx=' + cb.rowIdx + '][fieldName=remark]')[0].getValue();
-                var existingCase = this.query('component[rowIdx=' + cb.rowIdx + '][fieldName=caseId]')[0].getValue();
+                var existingCase = this.query('component[rowIdx=' + cb.rowIdx + '][fieldName=caseId]')[0].caseId;
                 recordMap[id] = recordMap[id] || [];
                 recordMap[id] = recordMap[id].concat(cb.encounterRecords);
 

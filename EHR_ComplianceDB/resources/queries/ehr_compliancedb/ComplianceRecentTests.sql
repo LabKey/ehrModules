@@ -46,19 +46,30 @@ FROM ehr_compliancedb.Employees e
 LEFT JOIN ehr_compliancedb.Requirements rn ON (1=1)
 
 --we add in category/unit specific requirements
-LEFT JOIN ehr_compliancedb.requirementspercategory rc ON (
-    rc.RequirementName=rn.RequirementName AND (
-    rc.Category = e.category AND rc.unit = e.unit OR
-    rc.Category = e.category AND rc.unit IS NULL OR
-    rc.Category IS NULL AND rc.unit = e.unit
-    )
-)
+LEFT JOIN (
+  SELECT e.employeeid, rc.requirementname
+  FROM ehr_compliancedb.employees e
+  JOIN ehr_compliancedb.requirementspercategory rc ON (
+      (rc.Category = e.category AND rc.unit = e.unit) OR
+      (rc.Category = e.category AND rc.unit IS NULL) OR
+      (rc.Category IS NULL AND rc.unit = e.unit)
+  )
+  GROUP BY e.employeeid, rc.requirementname
+) rc ON (rc.employeeid = e.employeeid AND rn.requirementname = rc.requirementname)
 
 --we add in misc requirements specific per employee
-LEFT JOIN ehr_compliancedb.requirementsperemployee mt ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.employeeid)
+LEFT JOIN (
+  SELECT mt.employeeid, mt.requirementname
+  FROM ehr_compliancedb.requirementsperemployee mt
+  GROUP BY mt.employeeid, mt.requirementname
+) mt ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.employeeid)
 
 --we add employee exemptions
-LEFT JOIN ehr_compliancedb.EmployeeRequirementExemptions ee ON (ee.RequirementName=rn.RequirementName AND ee.EmployeeId = e.employeeid)
+LEFT JOIN (
+  SELECT ee.employeeid, ee.requirementname
+  FROM ehr_compliancedb.EmployeeRequirementExemptions ee
+  GROUP BY ee.employeeid, ee.requirementname
+) ee ON (ee.RequirementName=rn.RequirementName AND ee.EmployeeId = e.employeeid)
 
 --we add the dates employees completed each requirement
 LEFT JOIN (

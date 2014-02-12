@@ -559,7 +559,7 @@ Ext4.define('EHR.data.StoreCollection', {
             }, this);
 
             var json = this.getJson(response);
-            if(json){
+            if (json){
                 //this indicates we had a typical command array that failed.  we inspect each command for errors
                 if (json.result){
                     //each error should represent 1 row.  there can be multiple errors per row
@@ -585,7 +585,7 @@ Ext4.define('EHR.data.StoreCollection', {
                 this.fireEvent('validation', this);
             }
             else {
-                this.fireEvent('commitexception', this, json);
+                this.fireEvent('commitexception', this, response);
             }
         };
     },
@@ -709,11 +709,16 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     //private
-    getJson : function(response) {
-        return (response && undefined != response.getResponseHeader && undefined != response.getResponseHeader('Content-Type')
+    getJson: function(response) {
+        var ret = (response && undefined != response.getResponseHeader && undefined != response.getResponseHeader('Content-Type')
                 && response.getResponseHeader('Content-Type').indexOf('application/json') >= 0)
                 ? LABKEY.ExtAdapter.decode(response.responseText)
                 : null;
+
+        if (response && ret)
+            response.json = ret;
+
+        return ret;
     },
 
     //private

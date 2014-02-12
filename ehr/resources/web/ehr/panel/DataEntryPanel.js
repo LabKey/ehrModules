@@ -59,6 +59,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return this.storeCollection.isDirty();
     },
 
+    destroy: function(){
+        window.onbeforeunload = null;
+
+        return this.callParent(arguments);
+    },
+
     onStoreCollectionCommitComplete: function(sc, extraContext){
         Ext4.Msg.hide();
 
@@ -135,8 +141,9 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         console.log(arguments);
         var serverMsg = 'There was an error saving data';
         var errorMsgs = [];
-        if (response && response.result){
-            Ext4.Array.forEach(response.result, function(command){
+        var responseJson = response ? response.json : null;
+        if (responseJson && responseJson.result){
+            Ext4.Array.forEach(responseJson.result, function(command){
                 if (command.errors && command.errors.exception){
                     errorMsgs.push(command.errors.exception);
                 }
@@ -145,18 +152,30 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             errorMsgs = Ext4.Array.unique(errorMsgs);
 
             serverMsg += '.  The error messages were: ' + errorMsgs.join('\n') + '\n\n';
-            serverMsg += '.  The response JSON was:\n' + Ext4.encode(response.result);
+            serverMsg += '.  The response JSON was:\n' + Ext4.encode(responseJson.result);
         }
-        else if (!response){
-            serverMsg += '.  The response argument was null';
+        else if (!responseJson){
+            if (response){
+                if (response.statusText){
+                    serverMsg += '.  statusText: ' + response.statusText;
+                    errorMsgs.push(response.statusText);
+                }
+            }
+            else {
+                serverMsg += '.  The response argument was null';
+            }
+        }
+
+        if (responseJson && responseJson.exception){
+            serverMsg += '.  Exception: ' + responseJson.exception + '\n\n';
         }
 
         if (response && response.exception){
             serverMsg += '.  Exception: ' + response.exception + '\n\n';
         }
 
-        if (response && response.stack && response.stackTrace.length){
-            serverMsg += '.  Stack: ' + response.stackTrace.join('\n') + '\n\n';
+        if (responseJson && responseJson.stack && responseJson.stackTrace.length){
+            serverMsg += '.  Stack: ' + responseJson.stackTrace.join('\n') + '\n\n';
         }
 
         Ext4.Msg.hide();

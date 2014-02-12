@@ -114,15 +114,6 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
             queryName: 'procedure_default_treatments',
             columns: 'procedureid,code,qualifier,route,frequency,volume,vol_units,dosage,dosage_units,concentration,conc_units,amount,amount_units'
         },
-        'miscCharges': {
-            queryName: 'procedure_default_charges',
-            columns: 'procedureid,chargeid,quantity'
-        },
-        flags: {
-            queryName: 'procedure_default_flags',
-            columns: 'procedureid,flag,value',
-            targetColumns: 'procedureid,category,value'
-        },
         encounter_summaries: {
             queryName: 'procedure_default_comments',
             columns: 'procedureid,comment',

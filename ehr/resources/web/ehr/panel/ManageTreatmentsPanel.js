@@ -35,6 +35,31 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                         }
                     }, (owner ? owner.animalId : null));
                 }
+            },{
+                xtype: 'button',
+                text: 'Show Inactive',
+                handler: function(btn){
+                    var owner = btn.up('window');
+                    if (owner)
+                        owner = owner.down('panel');
+
+                    var store = owner.getStore();
+                    LDK.Assert.assertNotEmpty('Unable to find animalId in ManageTreatmentsPanel', owner.animalId);
+                    var filterArray = [
+                        LABKEY.Filter.create('Id', owner.animalId, LABKEY.Filter.Types.EQUAL)
+                    ];
+
+                    if (btn.text == 'Show Inactive'){
+                        btn.setText('Hide Inactive');
+                    }
+                    else {
+                        btn.setText('Show Inactive');
+                        filterArray.push(LABKEY.Filter.create('isExpired', false, LABKEY.Filter.Types.EQUAL));
+                    }
+
+                    store.filterArray = filterArray;
+                    store.load();
+                }
             }]
         },
 
@@ -133,7 +158,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         Ext4.apply(this, {
             border: false,
             items: [this.getGridConfig()],
-            buttons: this.hideButtons ? null : this.getButtonConfig(this)
+            buttons: this.hideButtons ? null : this.getOrderTreatmentButtonConfig(this)
         });
 
         this.callParent();
@@ -149,7 +174,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             columns: 'lsid,objectid,Id,date,enddate,project,category,remark,performedby,code,route,frequency,frequency/meaning,amountAndVolume',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('enddateTimeCoalesced', new Date(), LABKEY.Filter.Types.GTE)
+                LABKEY.Filter.create('isExpired', false, LABKEY.Filter.Types.EQUAL)
             ],
             autoLoad: true,
             listeners: {

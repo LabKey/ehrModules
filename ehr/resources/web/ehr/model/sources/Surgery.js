@@ -24,6 +24,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
                         LABKEY.Filter.create('category', 'Timed Mated Breeders', LABKEY.Filter.Types.NEQ)
                     ]
                 }
+            },
+            chargetype: {
+                allowBlank: true
             }
         },
         'study.treatment_order': {

@@ -119,7 +119,6 @@ Ext4.define('EHR.form.field.PlanTextArea', {
 
     copyMostRecentP2: function(){
         var rec = EHR.DataEntryUtils.getBoundRecord(this);
-        LDK.Assert.assertNotEmpty('Unable to find record in PlanTextArea', rec);
         if (!rec || !rec.get('Id')){
             Ext4.Msg.alert('Error', 'No Id Entered');
             return;
@@ -143,7 +142,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         this.pendingIdRequest = rec.get('Id');
         LABKEY.Query.executeSql({
             schemaName: 'study',
-            sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid, c.caseid.category as caseCategory, c.caseid.isActive as isActive FROM study.clinRemarks c WHERE c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
+            sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid, c.caseid.category as caseCategory, c.caseid.isActive as isActive FROM study.clinRemarks c WHERE (c.category != \'Replaced SOAP\' OR c.category IS NULL) AND c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
             failure: LDK.Utils.getErrorCallback,
             scope: this,
             success: function(results){

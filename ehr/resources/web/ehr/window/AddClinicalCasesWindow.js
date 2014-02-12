@@ -14,6 +14,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
     allowNoSelection: false,
     allowReviewAnimals: true,
+    showAssignedVetCombo: true,
     caseDisplayField: 'problemCategories',
     caseEmptyText: 'There are no problems associated with this case',
 
@@ -44,6 +45,12 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 xtype: 'textarea',
                 fieldLabel: 'Animal(s)',
                 itemId: 'idField'
+            },{
+                xtype: 'ehr-vetfieldcombo',
+                fieldLabel: 'Assigned Vet (blank for all)',
+                itemId: 'assignedVet',
+                hidden: !this.showAssignedVetCombo,
+                checked: true
             },{
                 xtype: 'xdatetime',
                 fieldLabel: 'Date',
@@ -111,6 +118,11 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             filterArray.push(LABKEY.Filter.create('daysSinceLastRounds', 0, LABKEY.Filter.Types.GT));
         }
 
+        var assignedVetField = this.down('#assignedVet');
+        if (assignedVetField && assignedVetField.getValue()){
+            filterArray.push(LABKEY.Filter.create('assignedvet', assignedVetField.getValue(), LABKEY.Filter.Types.EQUAL));
+        }
+
         return filterArray;
     },
 
@@ -170,8 +182,9 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     onSuccess: function(results){
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
+            Ext4.Msg.alert('', 'No active cases were found' + (this.down('#excludeToday').getValue() ? '.  Note: you selected to exclude those with obs today.' : '.'));
             this.close();
-            Ext4.Msg.alert('', 'No active cases were found' + (this.down('#excludeToday').getValue() ? ', excluding those reviewed today.' : '.'));
+
             return;
         }
 

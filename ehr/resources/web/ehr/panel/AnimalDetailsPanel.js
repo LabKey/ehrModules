@@ -11,6 +11,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
 
     border: true,
     showExtendedInformation: false,
+    showActionsButton: false,
 
     initComponent: function(){
         Ext4.apply(this, {

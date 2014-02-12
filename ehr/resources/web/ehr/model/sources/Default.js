@@ -499,8 +499,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             assignedto: {
                 useNull: true,
                 facetingBehaviorType: "AUTO",
-                getInitialValue: function(val){
-                    return val || LABKEY.Security.currentUser.id
+                getInitialValue: function(val, rec){
+                    LDK.Assert.assertNotEmpty('No dataEntryPanel for model', rec.dataEntryPanel);
+                    return val || rec.dataEntryPanel.formConfig.defaultAssignedTo || LABKEY.Security.currentUser.id
                 },
                 xtype: 'ehr-usersandgroupscombo',
                 lookup: {

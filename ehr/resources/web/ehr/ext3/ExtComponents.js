@@ -1128,7 +1128,26 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
                 schemaName: 'study',
                 sql: this.makeSql(),
                 sort: 'project',
-                autoLoad: true
+                autoLoad: true,
+                listeners: {
+                    scope: this,
+                    // NOTE: WNPRCDataEntryTest intermittently fails when this combo fails to load
+                    // this is an attempt to increase visibility on errors, if they exist
+                    exception: function(proxy, request, response, error){
+                        var store = this.store;
+                        if (!store.loadError){
+                            store.onLoadException(proxy, request, response, error);
+                        }
+
+                        if (store.loadError){
+                            LDK.Utils.logToServer({
+                                level: 'ERROR',
+                                message: 'Error in ProjectField: ' + Ext.encode(store.loadError),
+                                includeContext: true
+                            });
+                        }
+                    }
+                }
             })
             ,listeners: {
                 select: function(combo, rec){

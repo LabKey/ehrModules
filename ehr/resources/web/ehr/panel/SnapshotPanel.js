@@ -16,6 +16,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     alias: 'widget.ehr-snapshotpanel',
 
     showLocationDuration: true,
+    showActionsButton: true,
     defaultLabelWidth: 120,
     border: false,
 
@@ -205,6 +206,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             headerLabel: 'Current Medications / Prescribed Diets',
             emptyText: 'There are no active medications'
         }]);
+
+        if (this.showActionsButton){
+            items.push({
+                xtype: 'ehr-clinicalactionsbutton',
+                border: true
+            });
+        }
 
         return items;
     },

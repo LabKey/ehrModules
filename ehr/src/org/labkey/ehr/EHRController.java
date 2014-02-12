@@ -96,9 +96,9 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermissionClass(ReadPermission.class)
-    public class GetDataEntryItemsAction extends ApiAction<Object>
+    public class GetDataEntryItemsAction extends ApiAction<GetDataEntryItemsForm>
     {
-        public ApiResponse execute(Object form, BindException errors)
+        public ApiResponse execute(GetDataEntryItemsForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
 
@@ -106,13 +106,28 @@ public class EHRController extends SpringActionController
             List<JSONObject> formJson = new ArrayList<>();
             for (DataEntryForm def : forms)
             {
-                formJson.add(def.toJSON());
+                formJson.add(def.toJSON(form.isIncludeFormElements()));
             }
 
             resultProperties.put("forms", formJson);
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class GetDataEntryItemsForm
+    {
+        private boolean _includeFormElements = false;
+
+        public boolean isIncludeFormElements()
+        {
+            return _includeFormElements;
+        }
+
+        public void setIncludeFormElements(boolean includeFormElements)
+        {
+            _includeFormElements = includeFormElements;
         }
     }
 

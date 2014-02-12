@@ -22,6 +22,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
@@ -63,6 +64,7 @@ import org.labkey.ehr.query.buttons.ReturnDistinctButton;
 import org.labkey.ehr.query.buttons.ShowAuditHistoryButton;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
+import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
@@ -70,6 +72,7 @@ import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRLabworkEntryRole;
 import org.labkey.ehr.security.EHRPathologyEntryRole;
+import org.labkey.ehr.security.EHRProcedureManagementRole;
 import org.labkey.ehr.security.EHRProtocolManagementRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
@@ -147,6 +150,8 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRLabworkEntryRole());
         RoleManager.registerRole(new EHRPathologyEntryRole());
         RoleManager.registerRole(new EHRProtocolManagementRole());
+        RoleManager.registerRole(new EHRBehaviorEntryRole());
+        RoleManager.registerRole(new EHRProcedureManagementRole());
 
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
@@ -179,8 +184,17 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "protocol_counts", EHRProtocolEditPermission.class), "ehr", "protocol_counts");
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "project", EHRProjectEditPermission.class), "ehr", "project");
 
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedures", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedures");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_flags", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedure_default_flags");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_treatments", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedure_default_treatments");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_charges", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedure_default_charges");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_codes", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedure_default_codes");
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_comments", EHRProcedureManagementPermission.class), EHRSchema.EHR_LOOKUPS, "procedure_default_comments");
+
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
         NotificationService.get().registerNotification(new DeathNotification());
+
+        LDKService.get().registerContainerScopedTable(EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_SNOMED, "code");
     }
 
     @Override

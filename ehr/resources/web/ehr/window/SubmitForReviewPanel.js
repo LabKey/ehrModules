@@ -57,19 +57,9 @@ Ext4.define('EHR.window.SubmitForReviewPanel', {
                         queryName: 'PrincipalsWithoutAdmin',
                         columns: 'UserId,DisplayName',
                         sort: 'Type,DisplayName',
-                        autoLoad: true,
-                        listeners: {
-                            scope: this,
-                            load: function(store){
-                                if (this.reviewRequiredRecipient){
-                                    var recIdx = store.findExact('DisplayName', this.reviewRequiredRecipient);
-                                    if(recIdx!=-1){
-                                        this.down('#assignedTo').setValue(store.getAt(recIdx).get('UserId'));
-                                    }
-                                }
-                            }
-                        }
+                        autoLoad: true
                     },
+                    value: this.reviewRequiredRecipient,
                     displayField: 'DisplayName',
                     valueField: 'UserId',
                     itemId: 'assignedTo'

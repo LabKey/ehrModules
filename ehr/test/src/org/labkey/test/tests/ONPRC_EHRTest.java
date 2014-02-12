@@ -476,6 +476,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         String templateName1 = "Bone Marrow Biopsy";
         String templateName2 = "Achilles Tendon Repair";
         waitForElement(Ext4HelperWD.ext4Window("Apply Template To Form").append(Locator.tagContainingText("label", "Choose Template")));
+        Ext4ComboRefWD templateCombo = Ext4ComboRefWD.getForLabel(this, "Choose Template");
+        templateCombo.waitForStoreLoad();
         _ext4Helper.selectComboBoxItem("Choose Template:", templateName1, true);
         _ext4Helper.selectComboBoxItem("Choose Template:", templateName2, true);
 

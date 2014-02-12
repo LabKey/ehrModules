@@ -12,6 +12,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
     templateName: 'BSU Rounds',
 
     allowNoSelection: true,
+    showAssignedVetCombo: false,
 
     getCases: function(button){
         var filterArray = this.getCasesFilterArray();

@@ -376,9 +376,8 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
         clickButton("Mark Reread");
         reloadPage();
 
-        checkCheckbox(Locator.id("sopCheck"));
-        uncheckCheckbox(Locator.id("sopCheck"));
-        click(Locator.button("Submit"));
+        waitForElement(Locator.xpath("//button[@id='SOPsubmitButton' and not(@disabled)]"));
+        click(Locator.id("SOPsubmitButton"));
         assertAlert("You must check the box above the submit button to certify you have read your SOPs");
 
         checkCheckbox(Locator.id("sopCheck"));

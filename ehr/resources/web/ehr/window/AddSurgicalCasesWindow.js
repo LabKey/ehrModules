@@ -13,6 +13,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
 
     allowNoSelection: true,
     allowReviewAnimals: false,
+    showAssignedVetCombo: false,
     caseDisplayField: 'remark',
     caseEmptyText: 'No description available',
 
@@ -30,8 +31,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
         var casesFilterArray = this.getCasesFilterArray();
         var obsFilterArray = this.getBaseFilterArray();
         obsFilterArray.push(LABKEY.Filter.create('caseCategory', this.caseCategory, LABKEY.Filter.Types.EQUAL));
-        obsFilterArray.push(LABKEY.Filter.create('date', '-1d', LABKEY.Filter.Types.DATE_EQUAL));
-        obsFilterArray.push(LABKEY.Filter.create('category', 'Reviewed', LABKEY.Filter.Types.NOT_EQUAL_OR_MISSING));
+        obsFilterArray.push(LABKEY.Filter.create('caseIsActive', true, LABKEY.Filter.Types.EQUAL));
 
         //find distinct animals matching criteria
         var multi = new LABKEY.MultiRequest();
@@ -39,7 +39,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
         multi.add(LABKEY.Query.selectRows, {
             requiredVersion: 9.1,
             schemaName: 'study',
-            queryName: 'previousObservations',
+            queryName: 'latestObservationsForCase',
             columns: 'Id,date,category,area,observation,remark,caseid',
             filterArray: obsFilterArray,
             scope: this,

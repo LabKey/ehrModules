@@ -78,7 +78,8 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         log("Add blank weight entries");
-        clickButton("Add Record", 0);
+        click(Locator.extButton("Add Record"));
+        waitForElement(Locator.tag("td").withClass("x-grid3-cell-invalid"));
         waitForElement(Locator.xpath("//input[@name='Id' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
         // Form input doesn't seem to be enabled yet, so wait
         sleep(500);
@@ -91,12 +92,12 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         waitForElement(Locator.button("Add Batch"), WAIT_FOR_JAVASCRIPT);
-        clickButton("Add Batch", 0);
+        click(Locator.extButton("Add Batch"));
         _extHelper.waitForExtDialog("");
         _extHelper.setExtFormElementByLabel("", "Room(s):", ROOM_ID);
         _extHelper.clickExtButton("", "Submit", 0);
         waitForText(PROJECT_MEMBER_ID, WAIT_FOR_JAVASCRIPT);
-        clickButton("Add Batch", 0);
+        click(Locator.extButton("Add Batch"));
         _extHelper.waitForExtDialog("");
         _extHelper.setExtFormElementByLabel("", "Id(s):", MORE_ANIMAL_IDS[0]+","+MORE_ANIMAL_IDS[1]+";"+MORE_ANIMAL_IDS[2]+" "+MORE_ANIMAL_IDS[3]+"\n"+MORE_ANIMAL_IDS[4]);
         _extHelper.clickExtButton("", "Submit", 0);
@@ -109,21 +110,21 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[0], true);
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[1], true);
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[2], true);
-        clickButton("Delete Selected", 0);
+        click(Locator.extButton("Delete Selected"));
         _extHelper.waitForExtDialog("Confirm");
-        _extHelper.clickExtButton("Yes", 0);
+        click(Locator.extButton("Yes"));
         waitForElementToDisappear(Locator.tagWithText("div", PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
         waitForElementToDisappear(Locator.tagWithText("div", MORE_ANIMAL_IDS[0]), WAIT_FOR_JAVASCRIPT);
         waitForElementToDisappear(Locator.tagWithText("div", MORE_ANIMAL_IDS[1]), WAIT_FOR_JAVASCRIPT);
 
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[4], true);
-        clickButton("Duplicate Selected", 0);
+        click(Locator.extButton("Duplicate Selected"));
         _extHelper.waitForExtDialog("Duplicate Records");
         _extHelper.clickExtButton("Duplicate Records", "Submit", 0);
         _extHelper.waitForLoadingMaskToDisappear(WAIT_FOR_JAVASCRIPT);
         //TODO: verify this worked
 
-        clickButton("Save & Close");
+        waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
 
         waitForText("No data to show.", WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
@@ -151,9 +152,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForTextToDisappear("Loading...", WAIT_FOR_JAVASCRIPT);
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[4], false);
         waitForElement(Locator.linkWithText(MORE_ANIMAL_IDS[4]), WAIT_FOR_JAVASCRIPT);
-        clickButton("Delete Selected", 0); // Delete duplicate record. It has served its purpose.
+        click(Locator.extButton("Delete Selected")); // Delete duplicate record. It has served its purpose.
         _extHelper.waitForExtDialog("Confirm");
-        _extHelper.clickExtButton("Yes", 0);
+        click(Locator.extButton("Yes"));
         waitForText("No Animal Selected", WAIT_FOR_JAVASCRIPT);
         _helper.selectDataEntryRecord("weight", PROJECT_MEMBER_ID, false);
         _extHelper.setExtFormElementByLabel("Weight (kg):", "3.333");
@@ -162,7 +163,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[4], false);
         _extHelper.setExtFormElementByLabel("Weight (kg):", "5.555");
 
-        clickButton("Submit for Review", 0);
+        click(Locator.extButton("Submit for Review"));
         _extHelper.waitForExtDialog("Submit For Review");
         _extHelper.selectComboBoxItem("Assign To:", DATA_ADMIN.getGroup());
         _extHelper.clickExtButton("Submit For Review", "Submit");
@@ -184,9 +185,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         String href2 = getAttribute(Locator.linkWithText(TASK_TITLE), "href");
         beginAt(href2); // Clicking opens in a new window.
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-weight-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-        clickButton("Validate", 0);
+        click(Locator.extButton("Validate"));
         waitForElement(Locator.xpath("//button[text() = 'Submit Final' and "+Locator.ENABLED+"]"), WAIT_FOR_JAVASCRIPT);
-        clickButton("Submit Final", 0);
+        click(Locator.extButton("Submit Final"));
         _extHelper.waitForExtDialog("Finalize Form");
         _extHelper.clickExtButton("Finalize Form", "Yes");
         waitForText("Enter Blood Draws");
@@ -345,7 +346,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 //        waitForElement(Locator.xpath("/*//*["+VISIBLE+" and not(contains(@class, 'x-hide-display')) and contains(@class,'ehr-charges-records-grid')]"), WAIT_FOR_JAVASCRIPT);
 //        clickVisibleButton("Add Record");
 
-        clickButton("Save & Close");
+        waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
         waitForText("Data Entry");
 
         stopImpersonating();

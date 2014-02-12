@@ -229,6 +229,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
     getItems: function(){
         return [{
             xtype: 'ehr-smallformsnapshotpanel',
+            showActionsButton: false,
             subjectId: this.subjectId,
             hideHeader: true,
             style: 'padding: 5px;'

@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.dataentry;
 
+import org.apache.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
@@ -28,6 +29,10 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.study.DataSet;
+import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.Study;
+import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
@@ -46,7 +51,7 @@ import java.util.Set;
 public class DataEntryManager
 {
     private static final DataEntryManager _instance = new DataEntryManager();
-
+    private static final Logger _log = Logger.getLogger(DataEntryManager.class);
     private List<DataEntryFormFactory> _forms = new ArrayList<>();
     private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
     private List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
@@ -169,6 +174,7 @@ public class DataEntryManager
         private Container _container;
         private Map<String, TableInfo> _tableMap = new HashMap<>();
         private Map<String, UserSchema> _userSchemas = new HashMap<>();
+        private Map<String, DataSet> _dataSetMap = null;
 
         public DataEntryFormContextImpl(Container c, User u)
         {
@@ -180,7 +186,9 @@ public class DataEntryManager
         {
             String key = schemaName + "||" + queryName;
             if (_tableMap.containsKey(key))
+            {
                 return _tableMap.get(key);
+            }
 
             UserSchema us = getUserSchema(schemaName);
             if (us == null)
@@ -190,6 +198,12 @@ public class DataEntryManager
 
             TableInfo ti = us.getTable(queryName);
             _tableMap.put(key, ti);
+
+            if (ti instanceof DataSetTable)
+            {
+                String key2 = schemaName + "||" + ti.getTitle();
+                _tableMap.put(key2, ti);
+            }
 
             return ti;
         }
@@ -213,6 +227,25 @@ public class DataEntryManager
         public User getUser()
         {
             return _user;
+        }
+
+        public Map<String, DataSet> getDatasetMap()
+        {
+            if (_dataSetMap == null)
+            {
+                Study s = StudyService.get().getStudy(getContainer());
+                List<? extends DataSet> datasets = s.getDataSets();
+                Map<String, DataSet> dataSetMap = new HashMap<>();
+                for (DataSet d : datasets)
+                {
+                    dataSetMap.put(d.getName(), d);
+                    dataSetMap.put(d.getLabel(), d);
+                }
+
+                _dataSetMap = dataSetMap;
+            }
+
+            return _dataSetMap;
         }
     }
 }

@@ -311,7 +311,10 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                         if (json){
                             json = Ext4.decode(json);
 
-                            var date = timeField.getValue();
+                            var date = Ext4.Date.clone(encountersRec.get('date'));
+                            date = Ext4.Date.clearTime(date);
+                            date.setHours(timeField.getValue().getHours());
+
                             var frequencyRec = this.getFrequencyRec(json.frequency_meaning);
                             var frequency = frequencyRec ?  frequencyRec.get('rowid') : null;
 

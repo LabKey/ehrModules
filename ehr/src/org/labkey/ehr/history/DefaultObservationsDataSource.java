@@ -204,7 +204,9 @@ public class DefaultObservationsDataSource extends AbstractDataSource
             sb.append(rs.getString(FieldKey.fromString("remark")));
         }
 
-        if (EHRManager.VET_ATTENTION.equals(category))
+        //only highlight if within the past 3 days
+        long diff = (new Date()).getTime() - rs.getDate(FieldKey.fromString("date")).getTime();
+        if (EHRManager.VET_ATTENTION.equals(category) && diff < (DateUtils.MILLIS_PER_DAY * 3))
         {
             sb.insert(0, "<span style=\"background-color: yellow;line-spacing: 1.2\">");
             sb.append("</span>");
