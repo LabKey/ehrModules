@@ -84,9 +84,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         // Form input doesn't seem to be enabled yet, so wait
         sleep(500);
         _extHelper.setExtFormElementByLabel("Id:", "noSuchAnimal");
-        waitForText("Id not found", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagContainingText("div", "Id not found"), WAIT_FOR_JAVASCRIPT);
         _extHelper.setExtFormElementByLabel("Id:", DEAD_ANIMAL_ID);
-        waitForText(DEAD_ANIMAL_ID, WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.linkWithText(DEAD_ANIMAL_ID), WAIT_FOR_JAVASCRIPT);
 
         //these fields seem to be forgetting their values, so verify they show the correct value
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
@@ -96,16 +96,16 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _extHelper.waitForExtDialog("");
         _extHelper.setExtFormElementByLabel("", "Room(s):", ROOM_ID);
         _extHelper.clickExtButton("", "Submit", 0);
-        waitForText(PROJECT_MEMBER_ID, WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", PROJECT_MEMBER_ID).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
         click(Locator.extButton("Add Batch"));
         _extHelper.waitForExtDialog("");
         _extHelper.setExtFormElementByLabel("", "Id(s):", MORE_ANIMAL_IDS[0]+","+MORE_ANIMAL_IDS[1]+";"+MORE_ANIMAL_IDS[2]+" "+MORE_ANIMAL_IDS[3]+"\n"+MORE_ANIMAL_IDS[4]);
         _extHelper.clickExtButton("", "Submit", 0);
-        waitForText(MORE_ANIMAL_IDS[0], WAIT_FOR_JAVASCRIPT);
-        waitForText(MORE_ANIMAL_IDS[1], WAIT_FOR_JAVASCRIPT);
-        waitForText(MORE_ANIMAL_IDS[2], WAIT_FOR_JAVASCRIPT);
-        waitForText(MORE_ANIMAL_IDS[3], WAIT_FOR_JAVASCRIPT);
-        waitForText(MORE_ANIMAL_IDS[4], WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[0]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[1]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[2]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[3]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[4]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
 
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[0], true);
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[1], true);
@@ -122,11 +122,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _extHelper.waitForExtDialog("Duplicate Records");
         _extHelper.clickExtButton("Duplicate Records", "Submit", 0);
         _extHelper.waitForLoadingMaskToDisappear(WAIT_FOR_JAVASCRIPT);
-        //TODO: verify this worked
-
         waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
 
-        waitForText("No data to show.", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("em", "No data to show."), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
         waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
@@ -139,7 +137,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 
         stopImpersonating();
 
-        log("Fulfil measurement task");
+        log("Fulfill measurement task");
         impersonate(BASIC_SUBMITTER.getEmail());
         recallLocation();
         waitAndClickAndWait(Locator.linkWithText("Enter Data"));
@@ -155,7 +153,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         click(Locator.extButton("Delete Selected")); // Delete duplicate record. It has served its purpose.
         _extHelper.waitForExtDialog("Confirm");
         click(Locator.extButton("Yes"));
-        waitForText("No Animal Selected", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("div", "No Animal Selected"), WAIT_FOR_JAVASCRIPT);
         _helper.selectDataEntryRecord("weight", PROJECT_MEMBER_ID, false);
         _extHelper.setExtFormElementByLabel("Weight (kg):", "3.333");
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[3], false);
@@ -167,7 +165,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _extHelper.waitForExtDialog("Submit For Review");
         _extHelper.selectComboBoxItem("Assign To:", DATA_ADMIN.getGroup());
         _extHelper.clickExtButton("Submit For Review", "Submit");
-        waitForText("Enter Blood Draws");
+        waitForElement(Locator.linkWithText("Enter Blood Draws"));
         waitForElement(Locator.id("userMenuPopupText"));
 
         sleep(1000); // Weird
@@ -190,7 +188,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         click(Locator.extButton("Submit Final"));
         _extHelper.waitForExtDialog("Finalize Form");
         _extHelper.clickExtButton("Finalize Form", "Yes");
-        waitForText("Enter Blood Draws");
+        waitForElement(Locator.linkWithText("Enter Blood Draws"));
         waitForElement(Locator.id("userMenuPopupText"));
 
         sleep(1000); // Weird
@@ -220,7 +218,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         log("Create MPR task.");
         waitAndClickAndWait(Locator.linkWithText("Enter MPR"));
         // Wait for page to fully render.
-        waitForText("Treatments", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("span", "Treatments & Procedures"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.name("Id"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)
@@ -232,7 +230,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 
         waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
 
-        waitForText("No data to show.", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("em", "No data to show."), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
         waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
@@ -244,7 +242,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
         stopImpersonating();
 
-        log("Fulfil MPR task");
+        log("Fulfill MPR task");
         impersonate(BASIC_SUBMITTER.getEmail());
         recallLocation();
         waitAndClickAndWait(Locator.linkWithText("Enter Data"));
@@ -253,7 +251,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         beginAt(href);
 
         // Wait for page to fully render.
-        waitForText("Treatments", WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.tagWithText("span", "Treatments & Procedures"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.name("Id"), WAIT_FOR_PAGE);
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-drug_administration-records-grid')]"), WAIT_FOR_JAVASCRIPT);
@@ -315,39 +313,8 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "remark", "Yum");
 
-        //TODO: Test more procedures.
-//        log("Add blood draw record.");
-//        _extHelper.clickExtTab(this, "Blood Draws");
-//        waitForElement(Locator.xpath("//*["+VISIBLE+" and contains(@class,'ehr-blood_draws-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-//
-//        log("Add recovery observation");
-//        _extHelper.clickExtTab(this, "Recovery Observations");
-//        waitForElement(Locator.xpath("//*["+VISIBLE+" and contains(@class,'ehr-clinical_observations-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-//
-//        log("Add procedure code");
-//        _extHelper.clickExtTab(this, "Procedure Codes");
-//        waitForElement(Locator.xpath("//*["+VISIBLE+" and contains(@class,'ehr-procedure_codes-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-//
-//        log("Add housing record.");
-//        _extHelper.clickExtTab(this, "Housing Moves/Restraint");
-//        waitForElement(Locator.xpath("//*["+VISIBLE+" and contains(@class,'ehr-housing-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-//
-//        log("Add weight record.");
-//        _extHelper.clickExtTab(this, "Weight");
-//        waitForElement(Locator.xpath("//*["+VISIBLE+" and contains(@class,'ehr-weight-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-//
-//        log("Add charge");
-//        _extHelper.clickExtTab(this, "Charges");
-//        waitForElement(Locator.xpath("/*//*["+VISIBLE+" and not(contains(@class, 'x-hide-display')) and contains(@class,'ehr-charges-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-//        clickVisibleButton("Add Record");
-
         waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
-        waitForText("Data Entry");
+        waitForElement(Locator.tagWithText("span", "Data Entry"));
 
         stopImpersonating();
     }
