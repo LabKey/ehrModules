@@ -242,7 +242,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
-        _ext4Helper.selectComboBoxItem("Center Project:", PROJECT_ID, true);
+        Ext4FieldRefWD.waitForComponent(this, "Center Project");
+        Ext4ComboRefWD.getForLabel(this, "Center Project").setComboByDisplayValue(PROJECT_ID);
         _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
 
         waitForElement(Locator.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
@@ -253,8 +254,9 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
-        _ext4Helper.selectComboBoxItem("IACUC Protocol:", PROTOCOL_ID, true);
-        clickButton("Submit", 0);
+        Ext4FieldRefWD.waitForComponent(this, "IACUC Protocol");
+        Ext4ComboRefWD.getForLabel(this, "IACUC Protocol").setComboByDisplayValue(PROTOCOL_ID);
+        waitAndClick(Locator.ext4Button("Submit"));
         waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
 
         // Check protocol search results.
@@ -294,7 +296,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Ext4Helper.ext4Window("Error"));
         assertElementNotPresent(Locator.ext4ButtonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");
-        click(Locator.ext4Button("OK"));
+        waitAndClick(Locator.ext4Button("OK"));
 
         log("checking specific tabs");
 
@@ -440,7 +442,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
-        clickButton("Show Animal");
+        waitAndClickAndWait(Locator.ext4Button("Show Animal"));
         assertTitleContains("Animal Details: "+MORE_ANIMAL_IDS[0]);
 
         log("Quick Search - Show Project");
@@ -448,7 +450,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#projectField", Ext4ComboRefWD.class).setComboByDisplayValue(PROJECT_ID);
-        clickButton("Show Project");
+        waitAndClickAndWait(Locator.ext4Button("Show Project"));
         waitForElement(Locator.linkWithText(DUMMY_PROTOCOL), WAIT_FOR_JAVASCRIPT);
 
         log("Quick Search - Show Protocol");
@@ -456,7 +458,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#protocolField", Ext4ComboRefWD.class).setComboByDisplayValue(PROTOCOL_ID);
-        clickButton("Show Protocol");
+        waitAndClickAndWait(Locator.ext4Button("Show Protocol"));
         waitForElement(Locator.linkWithText(PROTOCOL_ID), WAIT_FOR_JAVASCRIPT);
 
         log("Quick Search - Show Room");
@@ -464,7 +466,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#roomField", Ext4FieldRefWD.class).setValue(ROOM_ID);
-        clickButton("Show Room");
+        waitAndClickAndWait(Locator.ext4Button("Show Room"));
         waitForElement(Locator.linkWithText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT);
     }
 
