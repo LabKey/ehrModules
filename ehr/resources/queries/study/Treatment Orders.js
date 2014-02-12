@@ -9,9 +9,6 @@ require("ehr/triggers").initScript(this);
 function onInit(event, helper){
     helper.setScriptOptions({
         allowFutureDates: true
-        //TODO: I dont think this should be set, but it used to be.  Might need in WNPRC_Overrides?
-//        removeTimeFromDate: true,
-//        removeTimeFromEndDate: true
     });
 }
 
