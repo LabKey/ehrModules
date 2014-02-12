@@ -24,13 +24,6 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 //EHR.Server.Utils.addError(scriptErrors, 'volume', 'Volume does not match amount for this concentration. Expected: '+expected, 'WARN');
             }
         }
-
-        var startDate = EHR.Server.Utils.normalizeDate(row.date);
-        var endDate = EHR.Server.Utils.normalizeDate(row.enddate);
-
-        if (startDate - endDate == 0 ){
-            EHR.Server.Validation.addError(errors, 'enddate', 'Single Day Treatment', 'INFO');
-        }
     }
 }
 
