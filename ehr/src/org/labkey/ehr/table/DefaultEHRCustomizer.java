@@ -451,6 +451,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
             {
                 _log.error("Unable to find either date or enddate column for table: " + ti.getName());
+                _log.error("Columns were: " + ti.getColumnNameSet().toString());
+                _log.error("Classname: " + ti.getClass().getName());
                 return;
             }
 
@@ -568,6 +570,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ColumnInfo existing = ti.getColumn(name);
         if (existing == null)
         {
+            if (ti.getColumn("objectid") == null)
+            {
+                _log.error("Unable to find objectid column for table: " + ti.getName());
+                _log.error("Columns were: " + ti.getColumnNameSet().toString());
+                _log.error("Classname: " + ti.getClass().getName());
+                return;
+            }
+
             //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
             SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +

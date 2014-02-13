@@ -315,7 +315,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Ext4HelperWD.ext4Tab("Weights"));
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
         waitAndClick(Ext4HelperWD.ext4Tab("Raw Data"));
-        waitForText("Percent Change", WAIT_FOR_PAGE * 3);
+        waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);
 
         //chronological history
         waitAndClick(Ext4HelperWD.ext4Tab("Clinical"));
