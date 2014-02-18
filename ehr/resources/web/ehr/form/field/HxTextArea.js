@@ -22,7 +22,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
         }
         else {
             LDK.Utils.logToServer({
-                message: 'Unable to find ehr-formpanel in PlanTextArea'
+                message: 'Unable to find ehr-formpanel in HxTextArea'
             })
         }
 
@@ -32,7 +32,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
         }
         else {
             LDK.Utils.logToServer({
-                message: 'Unable to find ehr-dataentrypanel in PlanTextArea'
+                message: 'Unable to find ehr-dataentrypanel in HxTextArea'
             })
         }
 
@@ -44,7 +44,6 @@ Ext4.define('EHR.form.field.HxTextArea', {
 
         this.linkEl.on('click', function(el){
             var rec = EHR.DataEntryUtils.getBoundRecord(this);
-            LDK.Assert.assertNotEmpty('Unable to find record in HxTextArea', rec);
             if (!rec || !rec.get('Id')){
                 Ext4.Msg.alert('Error', 'No Id Entered');
                 return;

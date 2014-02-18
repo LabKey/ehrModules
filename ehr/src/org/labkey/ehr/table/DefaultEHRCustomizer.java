@@ -445,17 +445,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
     {
+        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
+        {
+            return;
+        }
+
         String name = "isActive";
         if (ti.getColumn(name) == null)
         {
-            if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
-            {
-                _log.error("Unable to find either date or enddate column for table: " + ti.getName());
-                _log.error("Columns were: " + ti.getColumnNameSet().toString());
-                _log.error("Classname: " + ti.getClass().getName());
-                return;
-            }
-
             SQLFragment sql = new SQLFragment("(CASE " +
                     // when the start is in the future, using whole-day increments, it is not active
                     " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
@@ -568,16 +565,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         String name = "codes";
         ColumnInfo existing = ti.getColumn(name);
-        if (existing == null)
+        if (existing == null && ti.getColumn("objectid") != null)
         {
-            if (ti.getColumn("objectid") == null)
-            {
-                _log.error("Unable to find objectid column for table: " + ti.getName());
-                _log.error("Columns were: " + ti.getColumnNameSet().toString());
-                _log.error("Classname: " + ti.getClass().getName());
-                return;
-            }
-
             //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
             SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +
@@ -793,9 +782,25 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (existingBtns == null)
             existingBtns = new ArrayList<>();
 
+        //NOTE: guard against double-adding buttons
+        Set<String> existingBtnNames = new HashSet<>();
+        for (ButtonConfig b : existingBtns)
+        {
+            if (b instanceof UserDefinedButtonConfig)
+            {
+                existingBtnNames.add(((UserDefinedButtonConfig)b).getText());
+            }
+        }
+
         for (ButtonConfigFactory fact : buttons)
         {
             UserDefinedButtonConfig newButton = fact.createBtn(ti);
+            if (existingBtnNames.contains(newButton.getText()))
+            {
+                continue;
+            }
+            existingBtnNames.add(newButton.getText());
+
             existingBtns.add(newButton);
             for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
             {

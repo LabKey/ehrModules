@@ -15,7 +15,6 @@
         <script path="ehr/data/TaskStoreCollection.js"/>
         <script path="ehr/data/RequestStoreCollection.js"/>
         <script path="ehr/data/EncounterStoreCollection.js"/>
-        <script path="ehr/data/RunStoreCollection.js"/>
 
         <!--plugins-->
         <script path="ehr/plugin/DataBind.js"/>

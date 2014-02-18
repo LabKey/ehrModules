@@ -40,6 +40,7 @@ import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.buttons.VetReviewButton;
+import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
@@ -47,7 +48,7 @@ import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
-import org.labkey.ehr.demographics.DemographicsCache;
+import org.labkey.ehr.demographics.DemographicsService;
 import org.labkey.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
@@ -161,7 +162,7 @@ public class EHRModule extends ExtendedSimpleModule
         GeneticCalculationsJob.schedule();
         RecordDeleteRunner.schedule();
 
-        DemographicsCache.get().onStartup();
+        DemographicsService.get().onStartup();
 
         //buttons
         EHRService.get().registerMoreActionsButton(new JumpToHistoryButton(this), "study", LDKService.ALL_TABLES);
@@ -195,13 +196,8 @@ public class EHRModule extends ExtendedSimpleModule
         NotificationService.get().registerNotification(new DeathNotification());
 
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_SNOMED, "code");
-    }
 
-    @Override
-    public void destroy()
-    {
-        DemographicsCache.get().shutdown();
-        super.destroy();
+        DataEntryManager.get().primeAllCaches();
     }
 
     @Override

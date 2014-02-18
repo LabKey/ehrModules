@@ -723,6 +723,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
             var values = [];
             Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
+                parentMap[text] = parentMap[text].unique();
                 var method = parentMap[text].join(', ');
                 values.push(text + (method ? ' (' + method + ')' : ''));
             }, this);

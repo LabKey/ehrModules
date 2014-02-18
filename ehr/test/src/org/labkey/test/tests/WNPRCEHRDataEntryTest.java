@@ -313,8 +313,11 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "remark", "Yum");
 
+        log("clicking save button and waiting");
         waitAndClickAndWait(Locator.extButtonEnabled("Save & Close"));
+        log("MPR save complete");
         waitForElement(Locator.tagWithText("span", "Data Entry"));
+        log("returned to data entry page");
 
         stopImpersonating();
     }

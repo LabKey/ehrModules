@@ -63,7 +63,7 @@ import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.AnimalRecord;
-import org.labkey.ehr.demographics.DemographicsCache;
+import org.labkey.ehr.demographics.DemographicsService;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -146,43 +146,38 @@ public class EHRController extends SpringActionController
 
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will force the EHR to cache demographics data on all living animals.  This can save significant time during data entry or other screens.  There are currently " + DemographicsCache.get().getCacheSize() + " animals cached.  Do you want to do this?<br><br>");
+            return new HtmlView("This action will force the EHR to cache demographics data on all living animals.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
         }
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            DemographicsCache.get().cacheLivingAnimals(getContainer(), getUser());
+            DemographicsService.get().cacheLivingAnimals(getContainer(), getUser(), false);
             return true;
         }
     }
 
     @RequiresPermissionClass(AdminPermission.class)
-    public class GetCacheInfoAction extends SimpleViewAction<Object>
+    public class PrimeDataEntryCacheAction extends ConfirmAction<Object>
     {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
+        public void validateCommand(Object form, Errors errors)
         {
-            StringBuilder msg = new StringBuilder();
-            msg.append("There are " + DemographicsCache.get().getCacheSize() + " animals currently cached.  There have been a total of " + DemographicsCache.get().getTotalCached() + " total caches and " + DemographicsCache.get().getTotalUncached() + " total records uncached.  The Ids currently cached are:<br><br>");
-            TreeSet<String> sorted = new TreeSet<>(DemographicsCache.get().getCachedIds());
-            msg.append(StringUtils.join(sorted, "<br>"));
 
-            Set<String> missing = DemographicsCache.get().verifyCache();
-            if (missing.size() > 0)
-            {
-                msg.append("<p>The following items are reported as cached, but missing:<br>");
-                msg.append(StringUtils.join(missing, "<br>"));
-            }
-
-            DemographicsCache.get().getCachedIds();
-
-            return new HtmlView(msg.toString());
         }
 
-        @Override
-        public NavTree appendNavTrail(NavTree root)
+        public URLHelper getSuccessURL(Object form)
         {
-            return root.addChild("Demographics Cache Information");
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            return new HtmlView("This action will cause the EHR to populate several cached items used in data entry, such as reference tables.  Do you want to do this?<br><br>");
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            DataEntryManager.get().primeCachesForContainer(getContainer(), getUser());
+            return true;
         }
     }
 
@@ -395,7 +390,7 @@ public class EHRController extends SpringActionController
             try
             {
                 JSONObject json = new JSONObject();
-                for (AnimalRecord r : DemographicsCache.get().getAnimals(getContainer(), getUser(), Arrays.asList(form.getIds())))
+                for (AnimalRecord r : DemographicsService.get().getAnimals(getContainer(), Arrays.asList(form.getIds())))
                 {
                     json.put(r.getId(), r.getProps());
                 }

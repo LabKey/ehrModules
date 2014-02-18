@@ -931,7 +931,6 @@ ehr/resources/web/ehr/data/MiscChargesClientStore.js -text
 ehr/resources/web/ehr/data/PairingClientStore.js -text
 ehr/resources/web/ehr/data/PathologyDiagnosesStore.js -text
 ehr/resources/web/ehr/data/RequestStoreCollection.js -text
-ehr/resources/web/ehr/data/RunStoreCollection.js -text
 ehr/resources/web/ehr/data/StoreCollection.js -text
 ehr/resources/web/ehr/data/TaskStoreCollection.js -text
 ehr/resources/web/ehr/data/WeightClientStore.js -text
@@ -1150,7 +1149,6 @@ ehr/src/org/labkey/ehr/buttons/TaskAssignButton.java -text
 ehr/src/org/labkey/ehr/buttons/VetReviewButton.java -text
 ehr/src/org/labkey/ehr/dataentry/DataEntryManager.java -text
 ehr/src/org/labkey/ehr/dataentry/RecordDeleteRunner.java -text
-ehr/src/org/labkey/ehr/dataentry/RunForm.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormPanel.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormpanelForm.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleGridPanel.java -text
@@ -1163,7 +1161,7 @@ ehr/src/org/labkey/ehr/demographics/AnimalRecord.java -text
 ehr/src/org/labkey/ehr/demographics/BasicDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/BirthDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/DeathsDemographicsProvider.java -text
-ehr/src/org/labkey/ehr/demographics/DemographicsCache.java -text
+ehr/src/org/labkey/ehr/demographics/DemographicsService.java -text
 ehr/src/org/labkey/ehr/demographics/DepartureDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/HousingDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/MostRecentWeightDemographicsProvider.java -text
@@ -1252,7 +1250,6 @@ ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
-ehr/src/org/labkey/ehr/utils/DescriptionUpdateService.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text

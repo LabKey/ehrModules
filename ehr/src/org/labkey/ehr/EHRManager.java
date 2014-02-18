@@ -88,13 +88,17 @@ public class EHRManager
     private static final EHRManager _instance = new EHRManager();
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
+    public static final String EHRDefaultClinicalProjectName = "EHRDefaultClinicalProjectName";
     public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
-    public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exception";
-    public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exception";
-
+    @Queryable
+    public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exemption";
+    @Queryable
+    public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exemption";
+    @Queryable
+    public static final String CAGE_MEDICAL_EXEMPTION_FLAG = "Medical management, Cage Exemption";
     @Queryable
     public static final String VET_REVIEW = "Vet Review";
     @Queryable
@@ -396,6 +400,9 @@ public class EHRManager
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), c));
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI(), c));
 
             List<? extends DataSet> datasets = study.getDataSets();
             boolean shouldClearCaches = false;
@@ -527,6 +534,9 @@ public class EHRManager
                     toAdd.add(cols);
                 }
 
+                if (realTable.getColumn("vetreview") != null && !d.getName().equalsIgnoreCase("drug"))
+                    toAdd.add(new String[]{"qcstate", "include:vetreview"});
+
                 if (d.getLabel().equalsIgnoreCase("Housing"))
                 {
                     toAdd.add(new String[]{"participantid", "enddate"});
@@ -564,7 +574,10 @@ public class EHRManager
                 else if (d.getName().equalsIgnoreCase("drug"))
                 {
                     toAdd.add(new String[]{"treatmentid"});
-                    toAdd.add(new String[]{"qcstate", "include:treatmentid"});
+                    if (realTable.getColumn("vetreview") == null)
+                        toAdd.add(new String[]{"qcstate", "include:treatmentid"});
+                    else
+                        toAdd.add(new String[]{"qcstate", "include:treatmentid,vetreview"});
                 }
 
                 //ensure indexes removed, unless explicitly requested by a table
@@ -701,7 +714,7 @@ public class EHRManager
                         }
                         else
                         {
-                            messages.add("Missing index on column(s): " + StringUtils.join(indexCols, ", ") + (includedCols != null ? " include: " + StringUtils.join(includedCols, ",") : "") + " for dataset: " + d.getLabel());
+                            messages.add("Missing index on column(s): " + StringUtils.join(indexCols, ", ") + " for dataset: " + d.getLabel());
                         }
                     }
                 }

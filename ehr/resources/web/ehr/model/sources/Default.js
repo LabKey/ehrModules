@@ -757,6 +757,21 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'study.pregnancyConfirmation': {
+            confirmationType: {
+                columnConfig: {
+                    width: 150
+                }
+            },
+            estDeliveryDate: {
+                columnConfig: {
+                    width: 150
+                }
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            }
+        },
         'study.tissue_samples': {
             tissue: {
                 allowBlank: false
@@ -955,20 +970,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             type: {
                 allowBlank: false
             },
-            encounterid: {
-                getInitialValue: function(v, rec){
-                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.encounterId ? rec.dataEntryPanel.encounterId : LABKEY.Utils.generateUUID());
-                    rec.dataEntryPanel.encounterId = v;
-                    return v;
-                }
-            },
-            parentid: {
-                getInitialValue: function(v, rec){
-                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.encounterId ? rec.dataEntryPanel.encounterId : LABKEY.Utils.generateUUID());
-                    rec.dataEntryPanel.encounterId = v;
-                    return v;
-                }
-            },
             caseno: {
                 hidden: true
             },
@@ -1105,11 +1106,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             collectedby: {
                 shownInGrid: false
-            },
-            runid: {
-                getInitialValue: function(v, rec){
-                    return v || LABKEY.Utils.generateUUID();
-                }
             },
             instructions: {
                 hidden: true,

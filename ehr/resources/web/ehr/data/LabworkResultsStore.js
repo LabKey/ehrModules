@@ -74,7 +74,7 @@ Ext4.define('EHR.data.LabworkResultsStore', {
         var lookupRecIdx = store.findExact(keyCol, testId);
         if (lookupRecIdx == -1){
             LDK.Utils.logToServer({
-                message: 'Unable to find lookup record in ClinpathRunsClientStore'
+                message: 'Unable to find lookup record in LabworkResultsStore'
             });
 
             return;

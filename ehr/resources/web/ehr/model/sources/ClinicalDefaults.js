@@ -107,6 +107,10 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
             },
             instructions: {
                 hidden: true
+            },
+            chargetype: {
+                allowBlank: false,
+                defaultValue: 'No Charge'
             }
         }
     }

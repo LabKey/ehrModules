@@ -11,7 +11,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
             modal: true,
             closeAction: 'destroy',
             title: 'Order Post-Op Meds',
-            minWidth: 800,
+            minWidth: 820,
             bodyStyle: 'padding: 5px;',
             buttons: [{
                 text: 'Submit',
@@ -161,6 +161,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
 
             items.push({
                 xtype: 'labkey-combo',
+                forceSelection: true,
                 width: 225,
                 valueField: 'entityid',
                 displayField: 'title',
@@ -172,6 +173,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
 
             items.push({
                 xtype: 'labkey-combo',
+                forceSelection: true,
                 width: 225,
                 valueField: 'entityid',
                 displayField: 'title',
@@ -240,8 +242,6 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
     },
 
     onSubmit: function(){
-        this.hide();
-
         var combos = this.query('combo[encountersRec]');
         this.templateMap = {};
         Ext4.Array.forEach(combos, function(combo){
@@ -256,6 +256,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
             return;
         }
 
+        this.hide();
         LABKEY.Query.selectRows({
             requiredVersion: 9.1,
             schemaName: 'ehr',

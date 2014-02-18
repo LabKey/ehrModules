@@ -12,6 +12,30 @@
 Ext4.define('EHR.window.ManageRecordWindow', {
     extend: 'Ext.window.Window',
 
+    statics: {
+        buttonHandler: function(Id, objectId, queryName, dataRegionName){
+            console.log(arguments);
+            LDK.Assert.assertNotEmpty('No objectid provided to ManageRecordWindow.buttonHandler', objectId);
+            LDK.Assert.assertNotEmpty('No queryName provided to ManageRecordWindow.buttonHandler', queryName);
+
+            Ext4.create('EHR.window.ManageRecordWindow', {
+                schemaName: 'study',
+                queryName: queryName,
+                maxItemsPerCol: 11,
+                pkCol: 'objectid',
+                pkValue: objectId,
+                listeners: {
+                    scope: this,
+                    save: function(){
+                        if (dataRegionName && LABKEY.DataRegions[dataRegionName]){
+                            LABKEY.DataRegions[dataRegionName].refresh();
+                        }
+                    }
+                }
+            }).show();
+        }
+    },
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             modal: true,

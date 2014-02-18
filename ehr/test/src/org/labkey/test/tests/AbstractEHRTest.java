@@ -199,6 +199,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         defineQCStates();
 
         populateHardTableRecords();
+        primeCaches();
     }
 
     @LogMethod
@@ -209,6 +210,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         clickButton("Populate All", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+    }
+
+    @LogMethod
+    protected void primeCaches()
+    {
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/primeDataEntryCache.view");
+        waitAndClickAndWait(Locator.navButton("OK"));
+
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/cacheLivingAnimals.view");
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.navButton("OK"), WAIT_FOR_PAGE * 2);
     }
 
     @LogMethod

@@ -86,5 +86,47 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
                 record.endEdit(true);
             }
         }
+
+        //also cascade update children if Id/date changes
+        if (modifiedFieldNames && (modifiedFieldNames.indexOf('Id') > -1 || modifiedFieldNames.indexOf('project') > -1)){
+            if (record.get('objectid')){
+                this.storeCollection.clientStores.each(function(cs){
+                    if (cs.storeId == this.storeId){
+                        return;
+                    }
+
+                    var hasProject = cs.getFields().get('project') != null;
+                    var hasChanges = false;
+
+                    if (cs.getFields().get('runid')){
+                        if (cs.getFields().get('Id') || cs.getFields().get('project')){
+                            cs.each(function(r){
+                                if (r.get('runid') === record.get('objectid')){
+                                    var obj = {};
+                                    if (hasProject && r.get('project') !== record.get('project')){
+                                        obj.project = record.get('project');
+                                    }
+
+                                    if (r.get('Id') !== record.get('Id')){
+                                        obj.Id = record.get('Id');
+                                    }
+
+                                    if (!Ext4.Object.isEmpty(obj)){
+                                        r.beginEdit();
+                                        r.set(obj);
+                                        r.endEdit(true);
+                                        hasChanges = true;
+                                    }
+                                }
+                            }, this);
+                        }
+                    }
+
+                    if (hasChanges){
+                        cs.fireEvent('datachanged', cs);
+                    }
+                }, this);
+            }
+        }
     }
 });

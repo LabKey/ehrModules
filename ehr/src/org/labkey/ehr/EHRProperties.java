@@ -250,6 +250,54 @@ public class EHRProperties
         }
     };
 
+    public static SystemProperty VETREVIEW = new SystemProperty(URI + "VetReview", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("vetreview");
+            pd.setLabel("Vet Reviewer");
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
+    public static SystemProperty VETREVIEWDATE = new SystemProperty(URI + "VetReviewDate", PropertyType.DATE_TIME)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("vetreviewdate");
+            pd.setLabel("Vet Review Date");
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
+    public static SystemProperty DATEFINALIZED = new SystemProperty(URI + "DateFinalized", PropertyType.DATE_TIME)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("datefinalized");
+            pd.setLabel("Date Finalized");
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
     static public void register()
     {
         // do nothing

@@ -16,8 +16,12 @@
 package org.labkey.ehr.dataentry;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.cache.BlockingStringKeyCache;
+import org.labkey.api.cache.CacheManager;
+import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
@@ -33,7 +37,10 @@ import org.labkey.api.study.DataSet;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
+import org.labkey.ehr.security.EHRSecurityManager;
+import org.labkey.ehr.utils.TriggerScriptHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,15 +62,21 @@ public class DataEntryManager
     private List<DataEntryFormFactory> _forms = new ArrayList<>();
     private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
     private List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
+    private final StringKeyCache<Object> _cache;
 
     private DataEntryManager()
     {
-
+        _cache = CacheManager.getStringKeyCache(1000, CacheManager.UNLIMITED, "EHRDataEntryManagerCache");
     }
 
     public static DataEntryManager get()
     {
         return _instance;
+    }
+
+    public StringKeyCache getCache()
+    {
+        return _cache;
     }
 
     public void registerFormType(DataEntryFormFactory fact)
@@ -166,6 +179,31 @@ public class DataEntryManager
     public void registerSingleFormOverride(SingleQueryFormProvider p)
     {
         _queryProviders.add(p);
+    }
+
+    public void primeAllCaches()
+    {
+        User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
+        if (rootUser == null)
+            return;
+
+        _cache.clear();
+        for (Study s : EHRManager.get().getEhrStudies(rootUser))
+        {
+            TriggerScriptHelper helper = TriggerScriptHelper.create(rootUser.getUserId(), s.getContainer().getId());
+            helper.primeCache();
+
+            EHRSecurityManager.get().primeCache(s.getContainer());
+        }
+    }
+
+    public void primeCachesForContainer(Container c, User u)
+    {
+        _cache.clear();  //this will result in all containers getting cleared, but this is a reasonable assumption if you have 1 EHR instance per site
+        TriggerScriptHelper helper = TriggerScriptHelper.create(u.getUserId(), c.getId());
+        helper.primeCache();
+
+        EHRSecurityManager.get().primeCache(c);
     }
 
     public class DataEntryFormContextImpl implements DataEntryFormContext

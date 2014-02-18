@@ -33,6 +33,7 @@ import org.labkey.api.study.DataSetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
+import org.labkey.ehr.dataentry.DataEntryManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +59,17 @@ public class EHRSecurityManager
     public static EHRSecurityManager get()
     {
         return _instance;
+    }
+
+    public void primeCache(Container c)
+    {
+        Study s = StudyService.get().getStudy(c);
+        if (s != null)
+        {
+            getDataSets(s);
+        }
+
+        getQCStateInfo(c);
     }
 
     public boolean testPermission (User u, TableInfo ti, Class<? extends Permission> perm, EHRQCState qcState)
@@ -185,14 +197,14 @@ public class EHRSecurityManager
     private List<? extends DataSet> getDataSets(Study s)
     {
         String cacheKey = EHRSecurityManager.class.getName() + "||studyDatasets||" + s.getContainer().getId();
-        List<? extends DataSet> datasets = (List<DataSet>) CacheManager.getSharedCache().get(cacheKey);
+        List<? extends DataSet> datasets = (List<DataSet>) DataEntryManager.get().getCache().get(cacheKey);
         if (datasets != null)
         {
             return datasets;
         }
 
         datasets = s.getDataSets();
-        CacheManager.getSharedCache().put(cacheKey, datasets);
+        DataEntryManager.get().getCache().put(cacheKey, datasets);
         return datasets;
     }
 
@@ -223,7 +235,7 @@ public class EHRSecurityManager
             return Collections.emptyMap();
 
         String cacheKey = getCacheKey(study, QCSTATE_CACHE_ID);
-        Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>) CacheManager.getSharedCache().get(cacheKey);
+        Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>) DataEntryManager.get().getCache().get(cacheKey);
         if (qcStates != null)
             return qcStates;
 
@@ -233,7 +245,7 @@ public class EHRSecurityManager
             qcStates.put(qc.getLabel(), qc);
         }
 
-        CacheManager.getSharedCache().put(getCacheKey(study, QCSTATE_CACHE_ID), qcStates);
+        DataEntryManager.get().getCache().put(getCacheKey(study, QCSTATE_CACHE_ID), qcStates);
 
         return qcStates;
     }

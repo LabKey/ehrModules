@@ -16,25 +16,17 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 xtype: 'button',
                 text: 'Order Treatment',
                 disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'insert', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
-                handler: function(btn){
-                    EHR.panel.ManageTreatmentsPanel.createTreatmentWindow(btn, {
-                        listeners: {
-                            scope: this,
-                            save: function(){
-                                var win = btn.up('window');
-                                var panel;
-                                if (win){
-                                    panel = win.down('ehr-managetreatmentspanel');
-                                }
-                                else {
-                                    panel = btn.up('ehr-managetreatmentspanel');
-                                }
-
-                                panel.down('grid').store.load();
-                            }
-                        }
-                    }, (owner ? owner.animalId : null));
-                }
+                menu: [{
+                    text: 'Clinical Treatment',
+                    handler: function(btn){
+                        EHR.panel.ManageTreatmentsPanel.createNewTreatmentWindow(owner, btn, 'Clinical');
+                    }
+                },{
+                    text: 'Surgical Treatment',
+                    handler: function(btn){
+                        EHR.panel.ManageTreatmentsPanel.createNewTreatmentWindow(owner, btn, 'Surgical');
+                    }
+                }]
             },{
                 xtype: 'button',
                 text: 'Show Inactive',
@@ -63,7 +55,27 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             }]
         },
 
-        createTreatmentWindow: function(btn, config, animalId){
+        createNewTreatmentWindow: function(owner, btn, category){
+            EHR.panel.ManageTreatmentsPanel.createTreatmentWindow(btn, {
+                listeners: {
+                    scope: this,
+                    save: function(){
+                        var win = btn.up('window');
+                        var panel;
+                        if (win){
+                            panel = win.down('ehr-managetreatmentspanel');
+                        }
+                        else {
+                            panel = btn.up('ehr-managetreatmentspanel');
+                        }
+
+                        panel.down('grid').store.load();
+                    }
+                }
+            }, (owner ? owner.animalId : null), category);
+        },
+
+        createTreatmentWindow: function(btn, config, animalId, category){
             var cfg = LABKEY.ExtAdapter.apply({
                 schemaName: 'study',
                 queryName: 'treatment_order',
@@ -73,6 +85,9 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     Id: {
                         defaultValue: animalId,
                         editable: false
+                    },
+                    category: {
+                        defaultValue: category
                     }
                 }
             }, config);

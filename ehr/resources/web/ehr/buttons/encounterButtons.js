@@ -17,20 +17,21 @@ EHR.DataEntryUtils.registerGridButton('ENCOUNTERDELETE', function(config){
 
             var hasPermission = true;
             var runIds = [];
-            var fieldName = 'parentid';
             Ext4.Array.each(selections, function(r){
                 if (!r.canDelete()){
                     hasPermission = false;
                     return false;
                 }
 
-                LDK.Assert.assertNotEmpty('No encounterid in encounters record', r.get(fieldName));
-                runIds.push(r.get(fieldName));
+                LDK.Assert.assertNotEmpty('No objectid in encounters record', r.get('objectid'));
+                if (r.get('objectid'))
+                    runIds.push(r.get('objectid').toLowerCase());
             }, this);
 
             //find children
             var childrenToDelete = {};
             var totalChildren = 0;
+            var fieldName = 'parentid';
             if (hasPermission){
                 grid.dataEntryPanel.storeCollection.clientStores.each(function(s){
                     if (!hasPermission)
@@ -43,12 +44,16 @@ EHR.DataEntryUtils.registerGridButton('ENCOUNTERDELETE', function(config){
                         }
 
                         s.each(function(childRec){
-                            if (runIds.indexOf(childRec.get(fieldName)) != -1){
+                            var parentid = childRec.get(fieldName);
+                            parentid = parentid ? parentid.toLowerCase() : parentid;
+
+                            if (runIds.indexOf(parentid) != -1){
                                 childrenToDelete[s.storeId] = childrenToDelete[s.storeId] || [];
                                 childrenToDelete[s.storeId].push(childRec);
                                 totalChildren++;
 
                                 if (!childRec.canDelete()){
+                                    console.log('no delete permission, aborting');
                                     hasPermission = false;
                                     return false;
                                 }

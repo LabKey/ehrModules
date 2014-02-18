@@ -17,8 +17,10 @@ package org.labkey.ehr.demographics;
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.query.FieldKey;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +33,7 @@ import java.util.Map;
  */
 public class AnimalRecord
 {
-    private Map<String, Object> _props = new CaseInsensitiveHashMap<Object>();
+    private Map<String, Object> _props = new CaseInsensitiveHashMap<>();
     private Container _container;
     private String _id;
     private Date _created;
@@ -51,9 +53,29 @@ public class AnimalRecord
         return rec;
     }
 
+    public AnimalRecord createCopy()
+    {
+        AnimalRecord ret = new AnimalRecord(getContainer(), getId());
+        ret.applyAll(_props);
+
+        return ret;
+    }
+
+    public synchronized void update(DemographicsProvider p, Map<String, Object> props)
+    {
+        for (String key : p.getKeys())
+        {
+            _props.remove(key);
+        }
+
+        if (props != null)
+            _props.putAll(props);
+    }
+
     private void applyAll(Map<String, Object> props)
     {
-        _props.putAll(props);
+        if (props != null)
+            _props.putAll(props);
     }
 
     public String getId()
@@ -73,7 +95,7 @@ public class AnimalRecord
 
     public Map<String, Object> getProps()
     {
-        return _props;
+        return Collections.unmodifiableMap(_props);
     }
 
     public String getGender()
@@ -139,7 +161,7 @@ public class AnimalRecord
     private List<Map<String, Object>> getListProperty(String prop)
     {
         if (_props.containsKey(prop) && _props.get(prop) instanceof List)
-            return (List)_props.get(prop);
+            return Collections.unmodifiableList((List)_props.get(prop));
 
         return null;
     }

@@ -30,6 +30,9 @@ EHR.model.DataModelManager.registerMetadata('ClinicalRounds', {
             },
             p: {
                 hidden: true
+            },
+            remark: {
+                hidden: false
             }
         },
         'study.blood': {

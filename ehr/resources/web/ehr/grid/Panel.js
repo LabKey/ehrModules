@@ -43,9 +43,10 @@ Ext4.define('EHR.grid.Panel', {
             this.fireEvent('animalchange', id);
         }, this);
 
-//        this.store.on('datachanged', function(){
-//            console.log('store data changed');
-//        }, this);
+        this.store.on('datachanged', function(){
+            this.pendingChanges = {};
+            this.getView().refresh();
+        }, this);
 
         this.store.on('validation', this.onStoreValidation, this);
         this.store.on('validation', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});

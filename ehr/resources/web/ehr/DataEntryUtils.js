@@ -689,10 +689,15 @@ EHR.DataEntryUtils = new function(){
         },
 
         getDefaultClinicalProject: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx['EHRDefaultClinicalProjectName']){
+                return null;
+            }
+
             var defaultProject = null;
             var store = EHR.DataEntryUtils.getProjectStore();
             if (store){
-                var recIdx = store.findExact('displayName', '0492');
+                var recIdx = store.findExact('displayName', ctx['EHRDefaultClinicalProjectName']);
                 if (recIdx != -1){
                     defaultProject = store.getAt(recIdx).get('project');
                 }

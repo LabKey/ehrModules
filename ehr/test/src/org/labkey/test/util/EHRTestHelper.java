@@ -90,7 +90,9 @@ public class EHRTestHelper
     public void setDataEntryFieldInTab(String tabName, String fieldName, String value)
     {
         value += "\t"; //force blur event
+        _test.log("setting data entry field: " + fieldName);
         _test.setFormElement(Locator.xpath("//div[./div/span[text()='" + tabName + "']]//*[(self::input or self::textarea) and @name='" + fieldName + "']"), value);
+        _test.log("finished setting data entry field: " + fieldName);
         _test.sleep(100);
     }
 

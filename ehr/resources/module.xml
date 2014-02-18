@@ -20,6 +20,13 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRDefaultClinicalProjectName">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>The is the display name of the default clinical project, which is typically used to handle no-cost and general clinical case.</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
         <propertyDescriptor name="CacheDemographicsOnStartup">
             <canSetPerContainer>true</canSetPerContainer>
             <defaultValue>false</defaultValue>

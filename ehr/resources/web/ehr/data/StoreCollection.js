@@ -592,7 +592,9 @@ Ext4.define('EHR.data.StoreCollection', {
 
     //private
     reportLongRequest: function(duration, response, options, json){
-        var msg = ['Long running request: ' + duration];
+        var msg = ['Long running request:'];
+        msg.push('Duration: ' + duration);
+
         if (this.formConfig){
             msg.push('Form Type: ' + this.formConfig.name);
         }
@@ -626,7 +628,7 @@ Ext4.define('EHR.data.StoreCollection', {
                     totalRows += command.rows.length;
                 }, this);
 
-                msg.push('Total Rows: ' + totalRows);
+                msg.push('Total Rows: ' + totalRows + (totalRows ? ' (' + (duration / totalRows) + ' sec/row)' : null));
             }
         }
 

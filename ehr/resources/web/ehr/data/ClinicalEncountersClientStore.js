@@ -50,20 +50,36 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
                     if (cs.storeId == this.storeCollection.collectionId + '-' + 'encounters'){
                         return;
                     }
+
                     var hasProject = cs.getFields().get('project') != null;
+                    var hasChanges = false;
 
                     if (cs.getFields().get('parentid')){
                         if (cs.getFields().get('Id') || cs.getFields().get('project')){
                             cs.each(function(r){
                                 if (r.get('parentid') === record.get('objectid')){
-                                    var obj = Ext4.apply({}, toApply);
-                                    if (!hasProject)
-                                        delete obj.project;
+                                    var obj = {};
+                                    if (hasProject && r.get('project') !== record.get('project')){
+                                        obj.project = record.get('project');
+                                    }
 
-                                    r.set(obj);
+                                    if (r.get('Id') !== record.get('Id')){
+                                        obj.Id = record.get('Id');
+                                    }
+
+                                    if (!Ext4.Object.isEmpty(obj)){
+                                        r.beginEdit();
+                                        r.set(obj);
+                                        r.endEdit(true);
+                                        hasChanges = true;
+                                    }
                                 }
                             }, this);
                         }
+                    }
+
+                    if (hasChanges){
+                        cs.fireEvent('datachanged', cs);
                     }
                 }, this);
             }

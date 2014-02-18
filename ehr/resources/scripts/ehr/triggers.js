@@ -250,6 +250,14 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
         return;
     }
 
+    // NOTE: this is designed to merge the old row into the new one.  this would be important if you do an update and only provide
+    // the property to be changed.  the other properties would remain unchanged
+    for (var prop in oldRow){
+        if (!row.hasOwnProperty(prop) && LABKEY.ExtAdapter.isDefined(oldRow[prop])){
+            row[prop] = oldRow[prop];
+        }
+    }
+
     EHR.Server.Triggers.rowInit(helper, scriptErrors, row, oldRow);
 
     //dataset-specific beforeUpdate
@@ -276,14 +284,6 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
     }
 
     EHR.Server.Triggers.rowEnd(helper, errors, scriptErrors, row, oldRow);
-
-    //NOTE: this is designed to merge the old row into the new one.
-    //TODO: should this happen earlier??
-    for (var prop in oldRow){
-        if (!row.hasOwnProperty(prop) && LABKEY.ExtAdapter.isDefined(oldRow[prop])){
-            row[prop] = oldRow[prop];
-        }
-    }
 };
 exports.beforeUpdate = EHR.Server.Triggers.beforeUpdate;
 
@@ -643,7 +643,21 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
+    //if the current user is a vet, review is implied, otherwise null out vetreview
+    if (!helper.isETL() && !helper.isValidateOnly()){
+        if (helper.isVet()){
+            row.vetreview = LABKEY.Security.currentUser.displayName;
+            row.vetreviewdate = new Date();
+        }
+        else {
+            row.vetreview = null;
+        }
+    }
+
     if (row._becomingPublicData){
+        //automatically track the date the record was finalized, which may be important for billing or general auditing
+        row.datefinalized = new Date();
+
         //set account based on project.  do differently depending on insert/update.
         //we only do this one time when the row becomes public, b/c project/account relationships can change
         if (helper.doCacheAccount() && !helper.isETL() && !row.account && row.project){

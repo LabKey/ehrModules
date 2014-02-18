@@ -21,7 +21,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
-import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Aggregate;
 import org.labkey.api.data.ColumnInfo;
@@ -68,11 +67,10 @@ import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.UnauthorizedException;
-import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.demographics.AnimalRecord;
-import org.labkey.ehr.demographics.DemographicsCache;
+import org.labkey.ehr.demographics.DemographicsService;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.security.EHRSecurityManager;
 
@@ -289,7 +287,7 @@ public class TriggerScriptHelper
 
     public AnimalRecord getDemographicRecord(String id)
     {
-        return DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        return DemographicsService.get().getAnimal(getContainer(), id);
     }
 
     public String validateAssignment(String id, Integer projectId, Date date) throws SQLException
@@ -423,46 +421,48 @@ public class TriggerScriptHelper
     public Map<String, Map<String, Object>> getLabworkServices()
     {
         String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices";
-        if (CacheManager.getSharedCache().get(cacheKey) == null)
+        Map<String, Map<String, Object>> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
         {
+            _log.info("caching labwork_services in TriggerScriptHelper");
             TableInfo ti = getTableInfo("ehr_lookups", "labwork_services");
             TableSelector ts = new TableSelector(ti);
-            final Map<String, Map<String, Object>> ret = new HashMap<>();
+            ret = new HashMap<>();
             for (Map<String, Object> row : ts.getMapArray())
             {
                 ret.put((String)row.get("servicename"), row);
             }
 
-            CacheManager.getSharedCache().put(cacheKey, ret);
+            DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
-        return (Map)CacheManager.getSharedCache().get(cacheKey);
+        return ret;
     }
 
     public Map<String, Object> getWeightRangeForSpecies(String species)
     {
-        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||weightRanges||" + species;
-        if (CacheManager.getSharedCache().get(cacheKey) == null)
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||weightRangeMap";
+        Map<String, Map<String, Object>> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
         {
+            _log.info("caching weight_ranges in TriggerScriptHelper");
+            ret = new HashMap<>();
             TableInfo ti = getTableInfo("ehr_lookups", "weight_ranges");
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), species, CompareType.EQUAL);
-            TableSelector ts = new TableSelector(ti, filter, null);
-            Map<String, Object>[] ret = ts.getMapArray();
-
-            if (ret.length > 1)
+            TableSelector ts = new TableSelector(ti);
+            Map<String, Object>[] result = ts.getMapArray();
+            for (Map<String, Object> row : result)
             {
-                _log.warn("More than 1 row returned from ehr_lookups.weight_ranges for the species: " + species);
-                return null;
-            }
-            else if (ret.length == 0)
-            {
-                return null;
-            }
+                if (row.containsKey(row.get("species")))
+                {
+                    _log.warn("More than 1 row found per species in ehr_lookups.weight_ranges");
+                }
 
-            CacheManager.getSharedCache().put(cacheKey, ret[0]);
+                ret.put((String)row.get("species"), row);
+            }
+            DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
-        return (Map)CacheManager.getSharedCache().get(cacheKey);
+        return ret.get(species);
     }
 
     public String verifyWeightRange(String id, Double weight, String species)
@@ -495,7 +495,7 @@ public class TriggerScriptHelper
 
     public void announceIdsModified(String schema, String query, List<String> ids)
     {
-        DemographicsCache.get().reportDataChange(getContainer(), schema, query, ids);
+        DemographicsService.get().reportDataChange(getContainer(), schema, query, ids);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -561,7 +561,7 @@ public class TriggerScriptHelper
         if (id == null)
             return;
 
-        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        AnimalRecord ar = DemographicsService.get().getAnimal(getContainer(), id);
         if (ar != null && ar.getProps().size() > 0)
         {
             _log.info("Id already exists, no need to create demographics record: " + id);
@@ -569,22 +569,22 @@ public class TriggerScriptHelper
         }
 
         TableInfo ti = getTableInfo("study", "demographics");
-        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
         EHRQCState qc = getQCStateForLabel("Completed");
         if (qc != null)
             row.put("qcstate", qc.getRowId());
 
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
-        DemographicsCache.get().uncacheRecords(getContainer(), id);
+        DemographicsService.get().getAnimal(getContainer(), id);
     }
 
     public Map<String, Object> getExtraContext()
     {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("quickValidation", true);
         map.put("generatedByServer", true);
 
@@ -611,7 +611,7 @@ public class TriggerScriptHelper
         if (id == null)
             return null;
 
-        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        AnimalRecord ar = DemographicsService.get().getAnimal(getContainer(), id);
         if (ar == null)
             return "Unknown";
 
@@ -646,7 +646,7 @@ public class TriggerScriptHelper
             return null;
 
         Map<String, Map<String, Object>> serviceMap = getBloodDrawServicesMap();
-        Set<String> msgs = new HashSet<String>();
+        Set<String> msgs = new HashSet<>();
 
         Double accumulatedMinVol = 0.0;
         for (String testName : testNames)
@@ -700,21 +700,23 @@ public class TriggerScriptHelper
     private Map<String, Map<String, Object>> getBloodDrawServicesMap()
     {
         String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "bloodDrawServices";
-        if (CacheManager.getSharedCache().get(cacheKey) == null)
+        Map<String, Map<String, Object>> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
         {
             TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-            Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+            ret = new HashMap<String, Map<String, Object>>();
 
+            _log.info("caching blood_draw_services in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti);
             for (Map<String, Object> row : ts.getMapArray())
             {
-                map.put((String)row.get("service"), row);
+                ret.put((String)row.get("service"), row);
             }
 
-            CacheManager.getSharedCache().put(cacheKey, map);
+            DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
-        return (Map)CacheManager.getSharedCache().get(cacheKey);
+        return ret;
     }
 
     public boolean isDefaultProject(Integer project)
@@ -728,20 +730,22 @@ public class TriggerScriptHelper
     public Set<Integer> getDefaultProjects()
     {
         String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "defaultProjects";
-        if (CacheManager.getSharedCache().get(cacheKey) == null)
+        Set<Integer> ret = (Set)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
         {
             TableInfo ti = getTableInfo("ehr", "project");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("alwaysavailable"), true, CompareType.EQUAL);
             filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
 
+            _log.info("caching projects in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
-            Set<Integer> ret = new HashSet<Integer>();
+            ret = new HashSet<>();
             ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
 
-            CacheManager.getSharedCache().put(cacheKey, Collections.unmodifiableSet(ret));
+            DataEntryManager.get().getCache().put(cacheKey, Collections.unmodifiableSet(ret));
         }
 
-        return (Set)CacheManager.getSharedCache().get(cacheKey);
+        return ret;
     }
 
     //NOTE: the interval start/stop are inclusive
@@ -883,7 +887,7 @@ public class TriggerScriptHelper
         if (id == null || date == null || quantity == null)
             return null;
 
-        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        AnimalRecord ar = DemographicsService.get().getAnimal(getContainer(), id);
         if (ar == null)
             return null;
 
@@ -898,14 +902,13 @@ public class TriggerScriptHelper
         if (weight == null)
             return "Unknown weight, unable to calculate allowable blood volume";
 
-        TableSelector allowable = new TableSelector(getTableInfo("ehr_lookups", "species"), new SimpleFilter(FieldKey.fromString("common"), species), null);
-        Map<String, Object>[] rows = allowable.getMapArray();
-        if (rows.length != 1)
+        Map<String, Object> bloodBySpecies = getBloodForSpecies(species);
+        if (bloodBySpecies == null)
             return "Unable to calculate allowable blood volume";
 
-        Double bloodPerKg = (Double)rows[0].get("blood_per_kg");
-        Integer interval = ((Double)rows[0].get("blood_draw_interval")).intValue();
-        Double maxDrawPct = (Double)rows[0].get("max_draw_pct");
+        Double bloodPerKg = (Double)bloodBySpecies.get("blood_per_kg");
+        Integer interval = ((Double)bloodBySpecies.get("blood_draw_interval")).intValue();
+        Double maxDrawPct = (Double)bloodBySpecies.get("max_draw_pct");
         if (bloodPerKg == null || interval == null || maxDrawPct == null)
             return "Unable to calculate allowable blood volume";
 
@@ -940,6 +943,27 @@ public class TriggerScriptHelper
         }
 
         return null;
+    }
+
+    private Map<String, Object> getBloodForSpecies(String species)
+    {
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "bloodBySpecies";
+        Map<String, Map<String, Object>> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            _log.info("caching blood by species in TriggerScriptHelper");
+            TableInfo ti = getTableInfo("ehr_lookups", "species");
+            TableSelector ts = new TableSelector(ti);
+            ret = new HashMap<>();
+            for (Map<String, Object> row : ts.getMapArray())
+            {
+                ret.put((String)row.get("common"), row);
+            }
+
+            DataEntryManager.get().getCache().put(cacheKey, ret);
+        }
+
+        return ret.get(species);
     }
 
     public void processDeniedRequests(final List<String> requestIds)
@@ -1206,6 +1230,7 @@ public class TriggerScriptHelper
                 continue;
             }
 
+            String existingStatus = getDemographicRecord(id).getCalculatedStatus();
             Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, "Arrival"), arrivals);
             Date lastBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth"), births);
             Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, "Deaths"), deaths);
@@ -1236,17 +1261,26 @@ public class TriggerScriptHelper
                 status = "Unknown";
             }
 
-            Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
-            row.put("Id", id);
-            row.put("calculated_status", status);
-
-            rows.add(row);
+            if (!status.equals(existingStatus))
+            {
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.put("Id", id);
+                row.put("calculated_status", status);
+                rows.add(row);
+            }
         }
 
         //now perform the actual update
-        TableInfo ti = getTableInfo("study", "Demographics");
-        ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, getExtraContext());
-        DemographicsCache.get().uncacheRecords(getContainer(), ids);
+        if (!rows.isEmpty())
+        {
+            TableInfo ti = getTableInfo("study", "Demographics");
+            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, getExtraContext());
+            DemographicsService.get().getAnimals(getContainer(), ids);
+        }
+        else
+        {
+            _log.info("No need to update calculated_status");
+        }
     }
 
     //find most recent record date for the passed Id/table
@@ -1437,7 +1471,7 @@ public class TriggerScriptHelper
 
                     html.append("Click here to view this animal's clinical history</a>.  <p>");
 
-                    AnimalRecord ar = DemographicsCache.get().getAnimal(container, user, id);
+                    AnimalRecord ar = DemographicsService.get().getAnimal(container, id);
                     html.append("Species: ").append(ar.getSpecies()).append("<br>");
                     html.append("Gender: ").append(ar.getGenderMeaning()).append("<br>");
                     html.append("Age: ").append(ar.getAgeInYearsAndDays()).append("<br>");
@@ -1649,21 +1683,16 @@ public class TriggerScriptHelper
         }
     }
 
-    private Map<String, String> _cachedTissues = new HashMap<>();
-
     private String getTissueForService(String service)
     {
-        if (!_cachedTissues.containsKey(service))
+        Map<String, Map<String, Object>> serviceMap = getLabworkServices();
+        if (serviceMap != null && serviceMap.containsKey(service))
         {
-            TableInfo ti = getTableInfo("ehr_lookups", "labwork_services");
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("servicename"), service, CompareType.EQUAL);
-            TableSelector ts = new TableSelector(ti, Collections.singleton("tissue"), filter, null);
-
-            String[] ret = ts.getArray(String.class);
-            _cachedTissues.put(service, (ret.length == 1 ? ret[0] : null));
+            Map<String, Object> row = serviceMap.get(service);
+            return (String)row.get("tissue");
         }
 
-        return _cachedTissues.get(service);
+        return null;
     }
 
     private List<Map<String, Object>> getAdditionalServicesToCreate(String services)
@@ -1682,11 +1711,15 @@ public class TriggerScriptHelper
         {
             if (serviceMap.containsKey(service))
             {
-                Map<String, Object> row = new HashMap<>();
-                row.put("sevice", service);
-                row.put("formtype", serviceMap.get(service).get("formtype"));
-                row.put("labwork_service", serviceMap.get(service).get("labwork_service"));
-                toCreate.add(row);
+                Boolean shouldCreate = (Boolean)serviceMap.get(service).get("automaticrequestfromblooddraw");
+                if (shouldCreate)
+                {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("sevice", service);
+                    row.put("formtype", serviceMap.get(service).get("formtype"));
+                    row.put("labwork_service", serviceMap.get(service).get("labwork_service"));
+                    toCreate.add(row);
+                }
             }
         }
 
@@ -1728,5 +1761,36 @@ public class TriggerScriptHelper
                 Table.insert(getUser(), snomedTags, toInsert);
             }
         }
+    }
+
+    public boolean isVet()
+    {
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "vets";
+        Set<Integer> ret = (Set)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            _log.info("caching vets in TriggerScriptHelper");
+            TableInfo ti = getTableInfo("ehr_lookups", "veterinarians");
+            TableSelector ts = new TableSelector(ti);
+            ret = new HashSet<>();
+            for (Map<String, Object> row : ts.getMapArray())
+            {
+                ret.add((Integer)row.get("UserId"));
+            }
+
+            DataEntryManager.get().getCache().put(cacheKey, ret);
+        }
+
+        return ret.contains(getUser().getUserId());
+    }
+
+    public void primeCache()
+    {
+        isVet();
+        getBloodDrawServicesMap();
+        getDefaultProjects();
+        getBloodDrawServicesMap();
+        getWeightRangeForSpecies("Cyno");
+        getLabworkServices();
     }
 }

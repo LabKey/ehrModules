@@ -89,6 +89,7 @@ Ext4.define('EHR.window.LabworkAddRecordWindow', {
             cellEditing.completeEdit();
 
         var model = this.targetGrid.store.createModel({});
+        LDK.Assert.assertNotEmpty('runid is null in LabworkAddRecordWindow', rec.get('runid'));
         model.set({
             Id: rec.get('Id'),
             date: rec.get('date'),
@@ -110,7 +111,7 @@ Ext4.define('EHR.window.LabworkAddRecordWindow', {
                 var title = r.get('Id') + ': ' + r.get('servicerequested');
                 data.push({
                     title: title,
-                    runid: r.get('runid'),
+                    runid: r.get('objectid'),
                     Id: r.get('Id'),
                     date: r.get('date')
                 });

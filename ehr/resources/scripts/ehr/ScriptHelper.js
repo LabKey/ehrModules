@@ -438,6 +438,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             }
         },
 
+        isVet: function(){
+            return this.getJavaHelper().isVet();
+        },
+
         registerBirth: function(id, date){
             cacheValue(id, date, 'births');
         },

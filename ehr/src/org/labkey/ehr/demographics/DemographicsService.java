@@ -16,7 +16,10 @@
 package org.labkey.ehr.demographics;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.cache.BlockingStringKeyCache;
+import org.labkey.api.cache.CacheLoader;
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -35,6 +38,7 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.study.Study;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
+import org.labkey.api.util.Pair;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 import org.springframework.dao.DeadlockLoserDataAccessException;
@@ -43,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,56 +64,71 @@ import java.util.concurrent.TimeUnit;
  * Date: 9/17/12
  * Time: 8:35 PM
  */
-public class DemographicsCache
+public class DemographicsService
 {
-    private static final DemographicsCache _instance = new DemographicsCache();
-    private static final Logger _log = Logger.getLogger(DemographicsCache.class);
+    private static final DemographicsService _instance = new DemographicsService();
+    private static final Logger _log = Logger.getLogger(DemographicsService.class);
 
-    //track stats
-    private int _totalCached = 0;
-    private int _totalUncached = 0;
-    private List<String> _cachedIds = new ArrayList<>();
-    private boolean _onStartupCalled = false;
-    private ScheduledExecutorService _executor = null;
-    private static ScheduledFuture _future = null;
+    private StringKeyCache<AnimalRecord> _cache;
 
-    private Map<Container, Set<String>> _toCache = new HashMap<>();
+//    private static class DemographicsCacheLoader implements CacheLoader<String, AnimalRecord>
+//    {
+//        @Override
+//        public AnimalRecord load(String key, Object argument)
+//        {
+//            //expects: container, animalId
+//            Pair<Container, String> pair = (Pair)argument;
+//
+//            _log.info("loading animal: " + pair.second);
+//            List<AnimalRecord> ret = DemographicsService.get().createRecords(pair.first, Collections.singleton(pair.second));
+//
+//            return ret.isEmpty() ? null : ret.get(0);
+//        }
+//    }
 
-    private DemographicsCache()
+    private DemographicsService()
     {
-
+        _cache = CacheManager.getStringKeyCache(10000, CacheManager.UNLIMITED, "DemographicsService");
     }
 
-    public static DemographicsCache get()
+    public static DemographicsService get()
     {
         return _instance;
     }
 
-    public AnimalRecord getAnimal(Container c, User u, String id)
+    private String getCacheKey(Container c, String id)
     {
-        List<AnimalRecord> ret = getAnimals(c, u, Collections.singletonList(id));
-        return ret.size() > 0 ? ret.get(0) : null;
+        assert c != null && c.getId() != null : "Attempting to cache a record without a container: " + id;
+        return getClass().getName() + "||" + c.getId() + "||" + id;
     }
 
-    public List<AnimalRecord> getAnimals(Container c, User u, Collection<String> ids)
+    /**
+     * Queries the cache for the animal record, creating if not found
+     */
+    public AnimalRecord getAnimal(Container c, String id)
     {
-        return getAnimals(c, u, ids, false);
+        List<AnimalRecord> ret = getAnimals(c, Collections.singletonList(id));
+
+        return ret.size() > 0 ? ret.get(0).createCopy() : null;
     }
 
-    protected List<AnimalRecord> getAnimals(Container c, User u, Collection<String> ids, boolean forceRecache)
+    /**
+     * Queries the cache for the animal record, creating if not found
+     */
+    public List<AnimalRecord> getAnimals(Container c, Collection<String> ids)
     {
         List<AnimalRecord> records = new ArrayList<>();
         Set<String> toCreate = new HashSet<>();
         for (String id : ids)
         {
-            String key = getCacheKey(c, id);
-            if (forceRecache || CacheManager.getSharedCache().get(key) == null)
+            AnimalRecord ret = getRecordFromCache(c, id);
+            if (ret != null)
             {
-                toCreate.add(id);
+                records.add(ret.createCopy());
             }
             else
             {
-                records.add((AnimalRecord)CacheManager.getSharedCache().get(key));
+                toCreate.add(id);
             }
         }
 
@@ -120,104 +140,96 @@ public class DemographicsCache
         return records;
     }
 
-    public void reportDataChange(Container c, String schema, String query, List<String> ids)
+    private synchronized void cacheRecord(AnimalRecord record)
     {
-        for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
-        {
-            if (p.requiresRecalc(schema, query))
-            {
-                uncacheRecords(c, ids);
-                DemographicsCache.get().asyncCache(c, ids);
-
-                break;
-            }
-        }
-    }
-
-    private String getCacheKey(Container c, String id)
-    {
-        assert c != null && c.getId() != null : "Attempting to cache a record without a container: " + id;
-        return getClass().getName() + "||" + c.getId() + "||" + id;
-    }
-
-    synchronized public void cacheRecord(AnimalRecord record)
-    {
-        //_log.info("caching demographics record: " + record.getId());
         String key = getCacheKey(record.getContainer(), record.getId());
-        CacheManager.getSharedCache().put(key, record);
-        _totalCached++;
-        _cachedIds.add(key);
+        _cache.put(key, record);
     }
 
-    synchronized public void uncacheRecords(Container c, String... ids)
-    {
-        uncacheRecords(c, Arrays.asList(ids));
-    }
-
-    synchronized public void uncacheRecords(Container c, Collection<String> ids)
+    private void recacheRecords(Container c, List<String> ids)
     {
         for (String id : ids)
         {
-            _log.info("attempting to uncache: " + id);
-            String key = getCacheKey(c, id);
-            CacheManager.getSharedCache().remove(key);
-            _cachedIds.remove(key);
+            _cache.remove(getCacheKey(c, id));
         }
-        _totalUncached += ids.size();
+
+        asyncCache(c, ids);
     }
 
-    // IDs to recache are placed into a queue that is inspected and processed on a schedule
-    public synchronized void asyncCache(Container c, List<String> ids)
+    public void reportDataChange(final Container c, final String schema, final String query, final List<String> ids)
     {
-        _log.info("Request async cache for " + ids.size() + " animals");
-
-        Set<String> queue = _toCache.get(c);
-        if (queue == null)
-            queue = new HashSet<>();
-
-        queue.addAll(ids);
-        _toCache.put(c, queue);
-    }
-
-    // This is intended to run as a background process
-    private void processCache()
-    {
-        for (Container c : _toCache.keySet())
+        final User u = EHRService.get().getEHRUser(c);
+        if (u == null)
         {
-            Set<String> ids;
-            synchronized (this)
+            _log.error("EHRUser not configured, cannot run demographics service");
+            return;
+        }
+
+        doUpdateRecords(c, u, schema, query, ids);
+    }
+
+    private void doUpdateRecords(Container c, User u, String schema, String query, List<String> ids)
+    {
+        try
+        {
+            for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {
-                ids = _toCache.get(c);
-                if (ids.size() == 0)
-                    continue;
-            }
-
-            User u = EHRService.get().getEHRUser(c);
-            if (u == null)
-                continue;
-
-            _log.info("Perform async cache for " + ids.size() + " animals");
-
-            //note, if the record is re-requested between the point of uncaching, but prior to commit, we can end up with inconsistent values, so force a re-calculation here
-            try
-            {
-                DemographicsCache.get().getAnimals(c, u, ids, true);
-                synchronized (this)
+                if (p.requiresRecalc(schema, query))
                 {
-                    _toCache.get(c).removeAll(ids);
-                    if (_toCache.get(c).size() == 0)
-                        _toCache.remove(c);
+                    Map<String, Map<String, Object>> props = p.getProperties(c, u, ids);
+                    for (String id : ids)
+                    {
+                        synchronized (this)
+                        {
+                            String key = getCacheKey(c, id);
+                            AnimalRecord ar = _cache.get(key);
+                            if (ar != null)
+                            {
+                                if (props.containsKey(id))
+                                    ar.update(p, props.get(id));
+                            }
+                            else
+                            {
+                                ar = AnimalRecord.create(c, id, props.get(id));
+                            }
+
+                            cacheRecord(ar);
+                        }
+                    }
                 }
             }
-            catch (DeadlockLoserDataAccessException e)
-            {
-                //if we hit a deadlock, the IDs will not be removed from the cache and therefore re-cached on the next cycle
-                _log.error("DemographicsCache encountered a deadlock", e);
-            }
+        }
+        catch (Exception e)
+        {
+            _log.error(e.getMessage(), e);
+            recacheRecords(c, ids);
         }
     }
 
-    public List<AnimalRecord> createRecords(Container c, Collection<String> ids)
+    // Create and cache IDs in the background
+    private void asyncCache(final Container c, final List<String> ids)
+    {
+        _log.info("Perform async cache for " + ids.size() + " animals");
+
+        JobRunner.getDefault().execute(new Runnable(){
+            public void run()
+            {
+                try
+                {
+                    DemographicsService.get().createRecords(c, ids);
+                }
+                catch (DeadlockLoserDataAccessException e)
+                {
+                    _log.error("DemographicsService encountered a deadlock", e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Queries the DB directly, bypassing the cache.  records are put in the cache on complete
+     */
+    private List<AnimalRecord> createRecords(Container c, Collection<String> ids)
     {
         User u = EHRService.get().getEHRUser(c);
         if (u == null)
@@ -225,6 +237,7 @@ public class DemographicsCache
             throw new ConfigurationException("EHRUser not set in the container: " + c.getPath());
         }
 
+        Date startTime = new Date();
         Map<String, Map<String, Object>> ret = new HashMap<>();
         //NOTE: SQLServer can complain if requesting more than 2000 at a time, so break into smaller sets
         int start = 0;
@@ -234,7 +247,7 @@ public class DemographicsCache
         {
             List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
             start = start + batchSize;
-            _log.info("caching demographics records for " + sublist.size() + " animals");
+            _log.info("creating demographics records for " + sublist.size() + " animals");
 
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {
@@ -252,7 +265,9 @@ public class DemographicsCache
             }
         }
 
-        //NOTE: we want to keep track of attempt to find an ID.  requesting a non-existing ID still requires a query, so make note of the fact it doesnt exist
+        // NOTE: the above fill only create an AnimalRecord for IDs that exist in the demographics table.
+        // we also want to cache each attempt to find an ID.  requesting a non-existing ID still requires a query,
+        // so make note of the fact it doesnt exist
         for (String id : ids)
         {
             if (!ret.containsKey(id))
@@ -264,35 +279,20 @@ public class DemographicsCache
         {
             Map<String, Object> props = ret.get(id);
             AnimalRecord record = AnimalRecord.create(c, id, props);
-
             cacheRecord(record);
+
             records.add(record);
         }
 
+        double duration = ((new Date()).getTime() - startTime.getTime()) / 1.0;
+        if (duration > (2.0 * ids.size()))
+        {
+            _log.warn("recached " + ids.size() + " records in " + duration + " seconds");
+        }
         return records;
     }
 
-    public int getTotalCached()
-    {
-        return _totalCached;
-    }
-
-    public int getTotalUncached()
-    {
-        return _totalUncached;
-    }
-
-    public int getCacheSize()
-    {
-        return _cachedIds.size();
-    }
-
-    public List<String> getCachedIds()
-    {
-        return Collections.unmodifiableList(_cachedIds);
-    }
-
-    public void cacheLivingAnimals(Container c, User u)
+    public void cacheLivingAnimals(Container c, User u, boolean async)
     {
         UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         if (us == null)
@@ -315,46 +315,28 @@ public class DemographicsCache
         if (ids.size() > 0)
         {
             _log.info("Forcing recache of " + ids.size() + " animals");
-            asyncCache(c, ids);
+            if (async)
+            {
+                asyncCache(c, ids);
+            }
+            else
+            {
+                createRecords(c, ids);
+            }
         }
     }
 
-    public Set<String> verifyCache()
+    /**
+     * A helper to query the cache, which will create the record if not present
+     */
+    private AnimalRecord getRecordFromCache(Container c, String animalId)
     {
-        Set<String> missing = new HashSet<>();
-        for (String key : _cachedIds)
-        {
-            if (CacheManager.getSharedCache().get(key) == null)
-                missing.add(key);
-        }
-
-        return missing;
+        return _cache.get(getCacheKey(c, animalId));
     }
 
     public void onStartup()
     {
-        if (_onStartupCalled)
-        {
-            throw new IllegalArgumentException("DemographicsCache.onStartup() has already been called");
-        }
-
-        _onStartupCalled = true;
-
-        //schedule the background process to inspect the queue
-        _executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "EHR Demographics Service");
-            }
-        });
-
-        _future = _executor.scheduleWithFixedDelay(new Runnable(){
-            public void run()
-            {
-                processCache();
-            }
-        }, 60, 10, TimeUnit.SECONDS);
-
-        //also cause all living animals to be cached, if set
+        //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
         User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
         if (rootUser == null)
@@ -374,15 +356,9 @@ public class DemographicsCache
                         continue;
                     }
 
-                    DemographicsCache.get().cacheLivingAnimals(s.getContainer(), u);
+                    DemographicsService.get().cacheLivingAnimals(s.getContainer(), u, true);
                 }
             }
         }
-    }
-
-    public void shutdown()
-    {
-        if (_executor != null)
-            _executor.shutdownNow();
     }
 }
