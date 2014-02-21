@@ -265,9 +265,18 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     var found;
                     if (this.model.prototype.idProperty && rowError.row[this.model.prototype.idProperty]){
                         found = this.findRecord(this.model.prototype.idProperty, rowError.row[this.model.prototype.idProperty]);
+                        // this is a hack to deal w/ SQLServer converting GUIDs into uppercase, even if generated initially as lowercase
+                        // we should not be creating GUIDs in upper case, but retain this check as a fallback
+                        if (!found){
+                            found = this.findRecord(this.model.prototype.idProperty, rowError.row[this.model.prototype.idProperty].toLowerCase());
+                        }
                     }
                     else if (this.model.prototype.fields.get('objectid')){
                         found = this.findRecord('objectid', rowError.row['objectid']);
+                        //this is a hack to deal w/ SQLServer converting GUIDs into uppercase, even if generated initially as lowercase
+                        if (!found && rowError.row['objectid']){
+                            found = this.findRecord('objectid', rowError.row['objectid'].toLowerCase());
+                        }
                     }
 
                     if (found && record && found != record){

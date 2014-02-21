@@ -10,7 +10,7 @@ Ext4.define('EHR.panel.TaskDataEntryPanel', {
     taskId: null,
 
     initComponent: function(){
-        this.taskId = this.taskId || LABKEY.ActionURL.getParameter('taskid') || LABKEY.ActionURL.getParameter('taskId') || LABKEY.Utils.generateUUID();
+        this.taskId = this.taskId || LABKEY.ActionURL.getParameter('taskid') || LABKEY.ActionURL.getParameter('taskId') || LABKEY.Utils.generateUUID().toUpperCase();
         this.callParent();
 
         this.storeCollection.taskId = this.taskId;

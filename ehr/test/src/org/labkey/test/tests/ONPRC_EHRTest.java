@@ -731,7 +731,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         for (int i=1;i<=5;i++)
         {
-            Assert.assertEquals(PasswordUtil.getUsername(), tbGrid.getFieldValue(i, "performedby"));
+            Assert.assertEquals(getDisplayName(), tbGrid.getFieldValue(i, "performedby"));
             i++;
         }
         Assert.assertEquals("me", tbGrid.getFieldValue(6, "performedby"));

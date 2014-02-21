@@ -49,7 +49,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                             queryName: 'clinRemarks',
                             maxItemsPerCol: 11,
                             pkCol: 'objectid',
-                            pkValue: LABKEY.Utils.generateUUID(),
+                            pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
                             extraMetaData: {
                                 Id: {
                                     defaultValue: animalId,
@@ -110,7 +110,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                                     queryName: 'clinRemarks',
                                     maxItemsPerCol: 11,
                                     pkCol: 'objectid',
-                                    pkValue: LABKEY.Utils.generateUUID(),
+                                    pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
                                     extraMetaData: {
                                         Id: {
                                             defaultValue: results.rows[0]['Id']

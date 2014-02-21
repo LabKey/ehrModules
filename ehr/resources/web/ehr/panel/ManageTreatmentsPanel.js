@@ -80,7 +80,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 schemaName: 'study',
                 queryName: 'treatment_order',
                 pkCol: 'objectid',
-                pkValue: LABKEY.Utils.generateUUID(),
+                pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
                 extraMetaData: {
                     Id: {
                         defaultValue: animalId,

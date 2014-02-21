@@ -217,7 +217,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         objectid: {
             noSaveInTemplateByDefault: true,
             getInitialValue: function(v, rec){
-                return v || LABKEY.Utils.generateUUID();
+                return v || LABKEY.Utils.generateUUID().toUpperCase();
             }
         },
         room: {
@@ -490,7 +490,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'ehr.tasks': {
             taskid: {
                 getInitialValue: function(v, rec){
-                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.taskId ? rec.dataEntryPanel.taskId : LABKEY.Utils.generateUUID());
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.taskId ? rec.dataEntryPanel.taskId : LABKEY.Utils.generateUUID().toUpperCase());
                     rec.dataEntryPanel.taskId = v;
                     return v;
                 },
@@ -550,7 +550,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             requestid: {
                 getInitialValue: function(v, rec){
-                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.requestId ? rec.dataEntryPanel.requestId : LABKEY.Utils.generateUUID());
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.requestId ? rec.dataEntryPanel.requestId : LABKEY.Utils.generateUUID().toUpperCase());
                     rec.dataEntryPanel.requestId = v;
                     return v;
                 },

@@ -98,7 +98,7 @@ Ext4.define('EHR.buttons.ClinicalActionsButton', {
                     queryName: 'clinRemarks',
                     maxItemsPerCol: 11,
                     pkCol: 'objectid',
-                    pkValue: LABKEY.Utils.generateUUID(),
+                    pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
                     extraMetaData: {
                         Id: {
                             defaultValue: animalId,

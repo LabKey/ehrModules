@@ -43,7 +43,7 @@ Ext4.define('EHR.panel.EnterRemarkPanel', {
         Ext4.apply(this, {
             border: false,
             items: this.getItemsCfg(),
-            taskId: this.taskId || LABKEY.Utils.generateUUID(),
+            taskId: this.taskId || LABKEY.Utils.generateUUID().toUpperCase(),
             buttons: this.hideButtons ? null : this.getButtonConfig(this)
         });
 

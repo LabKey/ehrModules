@@ -41,6 +41,18 @@ import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.Pair;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.DailyTimeIntervalScheduleBuilder;
+import org.quartz.Job;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
+import org.quartz.TimeOfDay;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.dao.DeadlockLoserDataAccessException;
 
 import java.util.ArrayList;
@@ -68,6 +80,7 @@ public class DemographicsService
 {
     private static final DemographicsService _instance = new DemographicsService();
     private static final Logger _log = Logger.getLogger(DemographicsService.class);
+    private static JobDetail _job = null;
 
     private StringKeyCache<AnimalRecord> _cache;
 
@@ -334,13 +347,17 @@ public class DemographicsService
         return _cache.get(getCacheKey(c, animalId));
     }
 
-    public void onStartup()
+    private int cacheLivingAnimalsForAllContainers()
     {
+        _log.info("attempting to reache demographics for all living animals on all containers set to do so");
+
         //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
         User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
         if (rootUser == null)
-            return;
+            return 0;
+
+        int totalCached = 0;
 
         for (Study s : EHRManager.get().getEhrStudies(rootUser))
         {
@@ -357,8 +374,56 @@ public class DemographicsService
                     }
 
                     DemographicsService.get().cacheLivingAnimals(s.getContainer(), u, true);
+                    totalCached++;
                 }
             }
+        }
+
+        return totalCached;
+    }
+
+    public void onStartup()
+    {
+        int totalCached = cacheLivingAnimalsForAllContainers();
+        if (totalCached > 0)
+        {
+            try
+            {
+                if (_job == null)
+                {
+                    _job = JobBuilder.newJob(DemographicServiceRefreshRunner.class)
+                            .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
+                            .usingJobData("demographicsService", DemographicsService.class.getName())
+                            .build();
+                }
+
+                Trigger trigger = TriggerBuilder.newTrigger()
+                        .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
+                        .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(1, 0))
+                        .forJob(_job)
+                        .build();
+
+                StdSchedulerFactory.getDefaultScheduler().scheduleJob(_job, trigger);
+
+                _log.info("DemographicsService scheduled a refresh daily at 1AM");
+            }
+            catch (SchedulerException e)
+            {
+                _log.error("Unable to schedule DemographicsService", e);
+            }
+        }
+    }
+
+    public static class DemographicServiceRefreshRunner implements Job
+    {
+        public DemographicServiceRefreshRunner()
+        {
+
+        }
+
+        public void execute(JobExecutionContext context) throws JobExecutionException
+        {
+            DemographicsService.get().cacheLivingAnimalsForAllContainers();
         }
     }
 }

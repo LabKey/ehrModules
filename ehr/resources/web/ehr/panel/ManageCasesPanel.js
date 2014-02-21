@@ -748,7 +748,7 @@ Ext4.define('EHR.window.OpenCaseWindow', {
         }
 
         var values = this.down('form').getForm().getValues();
-        var caseId = LABKEY.Utils.generateUUID();
+        var caseId = LABKEY.Utils.generateUUID().toUpperCase();
         values.date = new Date();
         values.category = this.caseCategory;
         values.Id = this.ownerPanel.animalId;

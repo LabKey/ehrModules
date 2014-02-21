@@ -258,7 +258,7 @@ EHR.Utils = new function(){
         createTask: function(config){
             config.initialQCState = config.initialQCState || 'In Progress';
             config.taskRecord = config.taskRecord || {};
-            config.taskId = config.taskRecord.taskId || config.taskId || LABKEY.Utils.generateUUID();
+            config.taskId = config.taskRecord.taskId || config.taskId || LABKEY.Utils.generateUUID().toUpperCase();
             config.taskRecord.taskId = config.taskId;
 
             if (!config.doUpdateTask)

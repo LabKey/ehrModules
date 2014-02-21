@@ -246,6 +246,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+        //if not set, default to current container
+        if (ehrContainer == null)
+            ehrContainer = ti.getUserSchema().getContainer();
 
         ColumnInfo taskId = ti.getColumn("taskId");
         if (taskId != null)
