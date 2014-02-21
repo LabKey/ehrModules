@@ -81,6 +81,14 @@ Ext4.define('EHR.window.FormTemplateWindow', {
         }
         else if (this.idSelectionMode == 'encounter'){
             var data = EHR.DataEntryUtils.getEncountersRecords(this.dataEntryPanel);
+            var allData = EHR.DataEntryUtils.getEncountersRecords(this.dataEntryPanel, true);
+
+            var value = data.length == 1 ? data[0].parentid : null;
+            var comboData = data;
+            if (!value && allData.length == 1){
+                value = allData[0].parentid;
+                comboData = allData;
+            }
 
             return {
                 xtype: 'checkcombo',
@@ -92,11 +100,12 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 width: 400,
                 displayField: 'title',
                 valueField: 'parentid',
-                value: data.length == 1 ? data[0].parentid : null,
+                value: value,
+                hidden: value && comboData.length == 1,
                 store: {
                     type: 'store',
                     fields: ['title', 'parentid', 'Id', 'date'],
-                    data: data
+                    data: comboData
                 },
                 forceSelection: true
             }
@@ -258,7 +267,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
             var combo = this.down('#encounterRecords');
             var encounterIds = combo.getValue() || [];
             if (!encounterIds.length){
-                Ext4.Msg.alert('Error', 'Must choose at least one procedure');
+                Ext4.Msg.alert('Error', 'Must choose at least one procedure.  If performing a surgery or necropsy, this indicates you may need to enter animals into the top section.');
                 return;
             }
 

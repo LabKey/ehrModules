@@ -17,6 +17,7 @@ Ext4.define('EHR.form.field.ProjectField', {
     editable: true,
     forceSelection: true,
     showInactive: false,
+    matchFieldWidth: false,
 
     onlyIncludeProjectsWithAssignments: false,
 

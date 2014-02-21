@@ -516,6 +516,9 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.385-12.386.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.386-12.387.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.387-12.388.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.388-12.389.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.393-12.394.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.394-12.395.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.395-12.396.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -721,6 +724,9 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.385-12.386.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.386-12.387.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.387-12.388.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.388-12.389.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.393-12.394.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.394-12.395.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.395-12.396.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -1040,6 +1046,7 @@ ehr/resources/web/ehr/model/sources/SingleQuery.js -text
 ehr/resources/web/ehr/model/sources/Surgery[!!-~]Request.js -text
 ehr/resources/web/ehr/model/sources/Surgery.js -text
 ehr/resources/web/ehr/model/sources/SurgicalRounds.js -text
+ehr/resources/web/ehr/model/sources/TBProcedure.js -text
 ehr/resources/web/ehr/model/sources/Task.js -text
 ehr/resources/web/ehr/model/sources/Weight.js -text
 ehr/resources/web/ehr/panel/AnimalDetailsExtendedPanel.js -text
@@ -1130,7 +1137,7 @@ ehr/resources/web/ehr/window/OpenSurgeryCasesWindow.js -text
 ehr/resources/web/ehr/window/RecordDuplicatorWindow.js -text
 ehr/resources/web/ehr/window/SaveTemplateWindow.js -text
 ehr/resources/web/ehr/window/SedationWindow.js -text
-ehr/resources/web/ehr/window/SubmitForReviewPanel.js -text
+ehr/resources/web/ehr/window/SubmitForReviewWindow.js -text
 ehr/resources/web/ehr/window/SurgeryPostOpMedsWindow.js -text
 ehr/resources/web/ehr/window/TaskAssignWindow.js -text
 ehr/resources/web/ehr/window/TaskWindow.js -text

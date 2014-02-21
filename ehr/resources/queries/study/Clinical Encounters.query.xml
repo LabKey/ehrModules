@@ -48,6 +48,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>procedures</fkTable>
                             <fkColumnName>rowid</fkColumnName>
+                            <fkDisplayColumnName>name</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="major">

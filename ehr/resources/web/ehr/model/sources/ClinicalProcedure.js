@@ -56,7 +56,7 @@ EHR.model.DataModelManager.registerMetadata('ClinicalProcedure', {
                 }
             },
             chargetype: {
-                defaultValue: 'Center Staff'
+                defaultValue: 'Clinic Staff'
             },
             instructions: {
                 hidden: true

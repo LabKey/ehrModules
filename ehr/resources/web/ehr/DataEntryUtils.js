@@ -197,28 +197,6 @@ EHR.DataEntryUtils = new function(){
             disableOn: 'SEVERE'
         },
         /**
-         * Will attempt to convert all records to the QCState 'Review Required' and submit the form.
-         */
-        REVIEW: {
-            text: 'Submit for Review',
-            name: 'review',
-            requiredQC: 'Review Required',
-            targetQC: 'Review Required',
-            errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
-            disabled: true,
-            itemId: 'reviewBtn',
-            disableOn: 'ERROR',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-                Ext4.create('EHR.window.SubmitForReviewPanel', {
-                    dataEntryPanel: panel,
-                    dataEntryBtn: btn,
-                    reviewRequiredRecipient: panel.formConfig.defaultReviewRequiredPrincipal
-                }).show();
-            }
-        },
-        /**
          * Will attempt to convert all records to a QCState of 'scheduled' and submit the form.
          */
         SCHEDULE: {
@@ -497,9 +475,6 @@ EHR.DataEntryUtils = new function(){
                         boundRecord = records[0];
                 }
             }
-
-            if (!boundRecord)
-                console.log('unable to find bound record: ' + cmp.name);
 
             return boundRecord;
         },
@@ -856,13 +831,13 @@ EHR.DataEntryUtils = new function(){
             return hasPermission;
         },
 
-        getEncountersRecords: function(dataEntryPanel){
+        getEncountersRecords: function(dataEntryPanel, includeAll){
             var encountersStore = dataEntryPanel.storeCollection.getClientStoreByName('encounters');
             LDK.Assert.assertNotEmpty('Unable to find encounters store in SurgeryAddRecordWindow button', encountersStore);
 
             var data = [];
             encountersStore.each(function(r){
-                if (r.get('Id') && r.get('date')){
+                if (includeAll || (r.get('Id') && r.get('date'))){
                     var procedureStore = EHR.DataEntryUtils.getProceduresStore();
                     var procedureName;
                     LDK.Assert.assertNotEmpty('Unable to find procedureStore from SurgeryAddRecordWindow', procedureStore);
@@ -889,6 +864,35 @@ EHR.DataEntryUtils = new function(){
             }, this);
 
             return data;
+        },
+
+        /**
+         * returns the next time this medication would be given, after the provided start time
+         * Note: times are expected in military, such as 0800 or 2000
+         */
+        getNextDoseTime: function(date, times){
+            if (!times || !times.length){
+                return date;
+            }
+
+            date = Ext4.Date.clone(date);
+            times = times.sort();
+            times = times.reverse();
+
+            var toTest, earliestHour;
+            for (var i=0;i<times.length;i++){
+                toTest = Math.floor(times[i] / 100.0);
+                if (toTest >= date.getHours()){
+                    earliestHour = toTest;
+                }
+            }
+
+            if (!earliestHour){
+                date = Ext4.Date.add(date, Ext4.Date.DAY, 1);
+                date.setHours(Math.floor(times[times.length - 1] / 100));
+            }
+
+            return date;
         }
     }
 };

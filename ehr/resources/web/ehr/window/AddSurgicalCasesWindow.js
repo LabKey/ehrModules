@@ -54,7 +54,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curLocation/room,Id/curLocation/cage,Id,remark',
-            columns: 'Id,objectid',
+            columns: 'Id,objectid,Id/curLocation/location',
             filterArray: casesFilterArray,
             scope: this,
             success: function(results){
@@ -98,7 +98,8 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
                 p: null,
                 caseid: row.getValue('objectid'),
                 remark: 'Surgical rounds performed.',
-                performedby: this.recordData.performedby
+                performedby: this.recordData.performedby,
+                'Id/curLocation/location': row.getValue('Id/curLocation/location')
             };
 
             records.push(this.targetStore.createModel(obj));

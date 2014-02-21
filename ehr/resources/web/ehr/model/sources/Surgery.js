@@ -78,6 +78,11 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             sort: {
                 hidden: true
             }
+        },
+        'ehr.encounter_summaries': {
+            category: {
+                defaultValue: 'Narrative'
+            }
         }
     }
 });

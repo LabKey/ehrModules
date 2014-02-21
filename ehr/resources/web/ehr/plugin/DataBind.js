@@ -90,7 +90,7 @@ Ext4.define('EHR.plugin.Databind', {
         this.mon(store, 'remove', this.onRecordRemove, this);
         this.mon(store, 'datachanged', this.onDataChanged, this);
         this.mon(store, 'update', this.onRecordUpdate, this);
-        this.mon(store, 'validation', this.onDataChanged, this);
+        this.mon(store, 'validation', this.onRecordUpdate, this);
     },
 
     onStoreLoad: function(store){

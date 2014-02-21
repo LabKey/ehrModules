@@ -22,6 +22,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
+import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.ldk.table.CustomPermissionsTable;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.SimpleUserSchema;
@@ -61,9 +62,9 @@ public class EHRUserSchema extends SimpleUserSchema
         else if (EHRSchema.TABLE_SNOMED_TAGS.equalsIgnoreCase(name))
             return getDataEntryTable(schemaTable);
         else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name) || EHRSchema.TABLE_PROTOCOL_COUNTS.equalsIgnoreCase(name))
-            return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
+            return getProtocolTable(schemaTable);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
-            return getCustomPermissionTable(schemaTable, EHRProjectEditPermission.class);
+            return getProjectTable(schemaTable);
         else
             return super.createWrappedTable(name, schemaTable);
     }
@@ -79,6 +80,26 @@ public class EHRUserSchema extends SimpleUserSchema
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
+
+        return ret.init();
+    }
+
+    private TableInfo getProjectTable(TableInfo schemaTable)
+    {
+        ContainerScopedTable ret = new ContainerScopedTable(this, schemaTable, "project");
+        ret.addPermissionMapping(InsertPermission.class, EHRProjectEditPermission.class);
+        ret.addPermissionMapping(UpdatePermission.class, EHRProjectEditPermission.class);
+        ret.addPermissionMapping(DeletePermission.class, EHRProjectEditPermission.class);
+
+        return ret.init();
+    }
+
+    private TableInfo getProtocolTable(TableInfo schemaTable)
+    {
+        ContainerScopedTable ret = new ContainerScopedTable(this, schemaTable, "protocol");
+        ret.addPermissionMapping(InsertPermission.class, EHRProtocolEditPermission.class);
+        ret.addPermissionMapping(UpdatePermission.class, EHRProtocolEditPermission.class);
+        ret.addPermissionMapping(DeletePermission.class, EHRProtocolEditPermission.class);
 
         return ret.init();
     }

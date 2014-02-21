@@ -184,6 +184,9 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
             });
         }, this);
 
+        //prime demographics
+        EHR.DemographicsCache.getDemographics(ids);
+
         return {
             border: false,
             style: 'padding-top: 10px',
@@ -316,18 +319,20 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                             date = Ext4.Date.clearTime(date);
                             date.setHours(timeField.getValue().getHours());
 
-                            var frequencyRec = this.getFrequencyRec(json.frequency_meaning);
-                            var frequency = frequencyRec ?  frequencyRec.get('rowid') : null;
-
-                            //add the desired set of hours to the start, then round to next available start time.
-                            if (json.offset && frequencyRec && frequencyRec.get('times')){
-                                var times = frequencyRec.get('times').split(',');
-
+                            if (json.offset){
                                 console.log('offset: ' + json.offset);
                                 var offsetDate = Ext4.Date.add(Ext4.Date.clone(date), Ext4.Date.DAY, json.offset);
                                 offsetDate = Ext4.Date.clearTime(offsetDate);
                                 offsetDate.setHours(times[0] / 100);
                                 date = offsetDate;
+                            }
+
+                            //always set start to be the first normal dose after the start time
+                            var frequencyRec = this.getFrequencyRec(json.frequency_meaning);
+                            var frequency = frequencyRec ?  frequencyRec.get('rowid') : null;
+                            if (frequencyRec && frequencyRec.get('times')){
+                                var times = frequencyRec.get('times').split(',');
+                                date = EHR.DataEntryUtils.getNextDoseTime(date, times);
                             }
 
                             var enddate = null;
@@ -356,6 +361,46 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                             };
 
                             LABKEY.ExtAdapter.apply(obj, json);
+
+                            //this isnt great, but hard code amount on hydro and buprenex for now
+                            if (obj.code == 'E-77851' || obj.code == 'E-YY792'){
+                                var ret = EHR.DemographicsCache.getDemographicsSynchronously([encountersRec.get('Id')]);
+                                LDK.Assert.assertNotEmpty('Unable to find demographics record in PostOpMedsWindow for animal: ' + encountersRec.get('Id'), ret && ret[encountersRec.get('Id')]);
+                                if (ret && ret[encountersRec.get('Id')]){
+                                    var weight = ret[encountersRec.get('Id')].getMostRecentWeight();
+                                    if (weight){
+                                        obj.amount_units = 'mg';
+                                        obj.vol_units = 'mL';
+
+                                        //hyrdo
+                                        if (obj.code == 'E-77851'){
+                                            if (weight < 3.0){
+                                                obj.amount = 0.5;
+                                                obj.volume = 0.25;
+                                            }
+                                            else if (weight < 10.0){
+                                                obj.amount = 1.0;
+                                                obj.volume = 0.5;
+                                            }
+                                            else {
+                                                obj.amount = 2.0;
+                                                obj.volume = 1.0;
+                                            }
+                                        }
+                                        //buprenex
+                                        else if (obj.code == 'E-YY792'){
+                                            if (weight < 3.0){
+                                                obj.amount = 0.15;
+                                                obj.volume = 0.5;
+                                            }
+                                            else {
+                                                obj.amount = 0.3;
+                                                obj.volume = 1.0;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
                             records.push(this.targetStore.createModel(obj));
                         }

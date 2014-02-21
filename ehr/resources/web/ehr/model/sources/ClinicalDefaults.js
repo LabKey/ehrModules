@@ -80,7 +80,7 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
                 }
             },
             chargetype: {
-                defaultValue: 'Center Staff'
+                defaultValue: 'Clinic Staff'
             },
             instructions: {
                 hidden: true

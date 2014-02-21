@@ -1307,8 +1307,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 else
                     _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
 
-                ti.getColumn(pkCol.getSelectName()).setHidden(true);
-                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
+                ti.getColumn(pkCol.getName()).setHidden(true);
+                ti.getColumn(pkCol.getName()).setKeyField(true);
 
                 return ti;
             }
@@ -1411,8 +1411,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     }
                 }
 
-                ti.getColumn(pkCol.getSelectName()).setHidden(true);
-                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
+                ti.getColumn(pkCol.getName()).setHidden(true);
+                ti.getColumn(pkCol.getName()).setKeyField(true);
 
                 return ti;
             }
@@ -1512,8 +1512,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     }
                 }
 
-                ti.getColumn(pkCol.getSelectName()).setHidden(true);
-                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
+                ti.getColumn(pkCol.getName()).setHidden(true);
+                ti.getColumn(pkCol.getName()).setKeyField(true);
 
                 return ti;
             }

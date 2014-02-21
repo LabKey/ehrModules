@@ -603,7 +603,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.grossFindings': {
             sort_order: {
-                hidden: false
+                hidden: true
             }
         },
         'study.parentage': {
@@ -757,6 +757,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'study.matings': {
+            matingtype: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            }
+        },
         'study.pregnancyConfirmation': {
             confirmationType: {
                 columnConfig: {
@@ -805,9 +815,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             tissueRemarks : {
                 shownInGrid: false
             },
-            weight: {
-                allowBlank: false
-            },
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
                 editorConfig: {
@@ -822,6 +829,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.pathologyDiagnoses': {
             performedby: {
                 hidden: true
+            },
+            remark: {
+                columnConfig: {
+                    width: 400
+                }
             }
         },
         'study.histology': {
@@ -848,6 +860,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true,
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
+                }
+            },
+            remark: {
+                columnConfig: {
+                    width: 400
                 }
             }
         },
@@ -1213,6 +1230,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             enddate: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
+            },
+            projectedRelease: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            assignCondition: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            projectedReleaseCondition: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            releaseCondition: {
+                columnConfig: {
+                    width: 200
+                }
             }
         },
         'study.flags': {

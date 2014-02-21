@@ -1021,15 +1021,13 @@
             </ns:column>
             <ns:column columnName="maxAnimals">
             </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-            <!--<ns:fkTable>containers</ns:fkTable>-->
-            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-            <!--</ns:fk>-->
-            <!--</ns:column>-->
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Key</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="container">
+
+            </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
@@ -1082,7 +1080,7 @@
                 <ns:columnTitle>Investigator</ns:columnTitle>
             </ns:column>
             <ns:column columnName="investigatorId">
-                <ns:columnTitle>Project Contact</ns:columnTitle>
+                <ns:columnTitle>Project Coordinator</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="inves2">
@@ -1126,6 +1124,13 @@
             </ns:column>
             <ns:column columnName="shortname">
                 <ns:columnTitle>Short Name (Used In Data Entry)</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Key</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="container">
+
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>

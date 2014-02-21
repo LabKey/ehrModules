@@ -65,7 +65,10 @@ Ext4.onReady(function (){
             showRecordSelectors: true,
             buttonBarPosition: 'top',
             filters: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
-            //sort: '-Date',
+            parameters: {
+                StartDate: row.date,
+                NumDays: 999
+            },
             scope: this,
             failure: EHR.Utils.onError
          }).render('treatmentSchedule_' + webpart.wrapperDivId );

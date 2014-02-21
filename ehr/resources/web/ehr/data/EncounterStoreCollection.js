@@ -97,6 +97,14 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                         obj.project = encountersRec.get('project');
                     }
 
+                    var df = rec.fields.get('date');
+                    if (df && encountersRec.get('date')){
+                        if (!rec.get('date') || df.inheritDateFromParent){
+                            if (!Ext4.Date.isEqual(rec.get('date'), encountersRec.get('date')))
+                                obj.date = encountersRec.get('date');
+                        }
+                    }
+
                     if (!Ext4.Object.isEmpty(obj)){
                         rec.beginEdit();
                         rec.set(obj);

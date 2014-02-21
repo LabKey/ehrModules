@@ -17,7 +17,7 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
             columnConfig: {
                 xtype: 'ehr-snomedcolumn',
                 editable: true,
-                width: 600
+                width: 500
             }
         }
     },
@@ -37,9 +37,6 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
             },
             instructions: {
                 hidden: true
-            },
-            chargetype: {
-                defaultValue: 'Center Staff'
             },
             performedby: {
                 hidden: true
@@ -61,13 +58,13 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
                 hidden: true
             },
             category: {
-                defaultValue: 'Gross Findings',
+                defaultValue: 'Pathology Notes',
                 hidden: true
             },
             remark: {
                 height: 300,
                 editorConfig: {
-                    fieldLabel: 'Gross Findings',
+                    fieldLabel: 'Notes',
                     width: 1000
                 }
             }
@@ -75,6 +72,21 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
         'study.drug': {
             project: {
                 allowBlank: true,
+                hidden: true
+            }
+        },
+        'study.grossFindings': {
+            remark: {
+                height: 300,
+                editorConfig: {
+                    fieldLabel: 'Notes',
+                    width: 1000
+                }
+            },
+            Id: {
+                hidden: true
+            },
+            date: {
                 hidden: true
             }
         }

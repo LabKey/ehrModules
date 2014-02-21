@@ -428,6 +428,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     }
                     else {
                         clientModel = clientStore.addClientModel({});
+                        clientModel.raw = clientModel.raw || {};
                     }
                 }
 
@@ -450,6 +451,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             if (serverVal != clientVal){
                                 changedData = true;
                                 clientModel.set(clientFieldName, serverVal);
+                                if (serverModel.raw && serverModel.raw[serverFieldName]){
+                                    clientModel.raw[clientFieldName] = clientModel.raw[clientFieldName] || {};
+                                    Ext4.apply(clientModel.raw[clientFieldName], serverModel.raw[serverFieldName]);
+                                    delete clientModel.raw[clientFieldName].url;
+                                }
                                 changedStoreIDs[clientStore.storeId] = true;
                             }
                         }

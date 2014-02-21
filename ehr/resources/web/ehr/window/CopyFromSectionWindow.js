@@ -162,7 +162,10 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 dates.push(date.format('Y-m-d H:i'));
             }, this);
 
+            o.performedby = Ext4.unique(o.performedby);
             var performedby = o.performedby.length == 1 ? o.performedby[0] : null;
+
+            o.projects = Ext4.unique(o.projects);
             var project = o.projects.length == 1 ? o.projects[0] : null;
 
             items.push({

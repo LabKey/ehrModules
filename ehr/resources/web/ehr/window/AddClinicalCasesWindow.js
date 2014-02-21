@@ -171,7 +171,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'Id,objectid,mostRecentP2,Id/Utilization/use,problemCategories',
+            columns: 'Id,Id/curLocation/location,objectid,mostRecentP2,Id/Utilization/use,problemCategories',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -215,7 +215,8 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 p2: row.getValue('mostRecentP2'),
                 caseid: row.getValue('objectid'),
                 remark: null,
-                performedby: this.recordData.performedby
+                performedby: this.recordData.performedby,
+                'Id/curLocation/location': row.getValue('Id/curLocation/location')
             };
 
             records.push(this.targetStore.createModel(obj));

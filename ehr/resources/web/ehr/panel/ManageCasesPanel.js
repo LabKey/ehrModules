@@ -470,6 +470,13 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     value: this.boundRecord.get('assignedvet')
                 },{
                     xtype: 'datefield',
+                    fieldLabel: 'Initial Open Date',
+                    itemId: 'date',
+                    allowBlank: false,
+                    width: 560,
+                    value: this.boundRecord.get('date')
+                },{
+                    xtype: 'datefield',
                     fieldLabel: 'Reopen Date',
                     itemId: 'reviewdate',
                     allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.boundRecord.get('category')].requiredFields.indexOf('reviewdate') == -1,
@@ -624,6 +631,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     win.boundRecord.set({
                         remark: win.down('#remark').getValue(),
                         assignedvet: win.down('#assignedvet').getValue(),
+                        date: win.down('#date').getValue(),
                         reviewdate: win.down('#reviewdate').getValue()
                     });
 

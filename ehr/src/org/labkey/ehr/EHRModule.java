@@ -102,7 +102,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.393;
+        return 12.396;
     }
 
     public boolean hasScripts()
@@ -196,6 +196,8 @@ public class EHRModule extends ExtendedSimpleModule
         NotificationService.get().registerNotification(new DeathNotification());
 
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_SNOMED, "code");
+        LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROJECT, "project");
+        LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROTOCOL, "protocol");
 
         DataEntryManager.get().primeAllCaches();
     }

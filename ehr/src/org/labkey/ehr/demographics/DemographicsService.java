@@ -284,7 +284,7 @@ public class DemographicsService
             records.add(record);
         }
 
-        double duration = ((new Date()).getTime() - startTime.getTime()) / 1.0;
+        double duration = ((new Date()).getTime() - startTime.getTime()) / 1000.0;
         if (duration > (2.0 * ids.size()))
         {
             _log.warn("recached " + ids.size() + " records in " + duration + " seconds");

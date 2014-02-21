@@ -40,7 +40,7 @@
         <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/FormTemplateWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
-        <script path="ehr/window/SubmitForReviewPanel.js"/>
+        <script path="ehr/window/SubmitForReviewWindow.js"/>
         <script path="ehr/window/CopyFromRunsWindow.js"/>
         <script path="ehr/window/RecordDuplicatorWindow.js"/>
         <script path="ehr/window/ApplyTemplateWindow.js"/>

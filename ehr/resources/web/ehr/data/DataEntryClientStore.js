@@ -26,7 +26,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     ensureLocation: function(record){
         var id = record.get('Id');
-        if (id){
+        if (id && !record.get('Id/curLocation/location')){
             var cached = EHR.DemographicsCache.getDemographicsSynchronously(id);
             if (cached && cached[id]){
                 record.suspendEvents();
@@ -150,8 +150,8 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     //private
     // NOTE: the gridpanel will attempt to cache display values, so we need to clear them on update
-    onUpdate: function(record, operation) {
-        this.clearCachedData(record);
+    onUpdate: function(record, operation, modified) {
+        this.clearCachedData(record, modified);
 
         if (this.hasLocationField && !record.get('Id/curLocation/location')){
             if (!this.ensureLocation(record)){
@@ -162,8 +162,10 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         this.callParent(arguments);
     },
 
-    clearCachedData: function(record) {
-        for (var field  in record.getChanges()){
+    clearCachedData: function(record, modified) {
+        modified = modified || Ext4.Object.getKeys(record.getChanges());
+        for (var i=0;i<modified.length;i++){
+            var field  = modified[i];
             if (record.raw && record.raw[field]){
                 delete record.raw[field].displayValue;
                 delete record.raw[field].mvValue;

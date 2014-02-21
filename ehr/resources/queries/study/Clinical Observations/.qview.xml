@@ -12,7 +12,6 @@
         <column name="area" />
         <column name="observation" />
         <column name="remark"/>
-        <column name="description" />
         <column name="performedby"/>
         <column name="qcstate" />
         <column name="taskid" />

@@ -10,6 +10,16 @@ EHR.model.DataModelManager.registerMetadata('EncounterChild', {
             columnConfig: {
                 editable: false
             }
+        },
+        date: {
+            inheritDateFromParent: true
+        }
+    },
+    byQuery: {
+        'study.treatment_order': {
+            date: {
+                inheritDateFromParent: false
+            }
         }
     }
 });

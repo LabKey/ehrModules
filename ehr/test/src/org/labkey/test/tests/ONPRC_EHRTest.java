@@ -17,6 +17,7 @@ package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -495,6 +496,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         Assert.assertEquals("Section template not set", templateName2, Ext4ComboRefWD.getForLabel(this, "SOAP").getDisplayValue());
         Assert.assertEquals("Section template not set", "Vitals", Ext4ComboRefWD.getForLabel(this, "Observations").getDisplayValue());
+        String obsTemplate = (String)Ext4ComboRefWD.getForLabel(this, "Observations").getValue();
 
         waitAndClick(Locator.ext4Button("Submit"));
         waitForElementToDisappear(Ext4HelperWD.ext4Window("Apply Template To Form"));
@@ -504,20 +506,26 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         //observations section
         waitAndClick(Ext4HelperWD.ext4Tab("Observations"));
         Ext4GridRefWD observationsGrid = _helper.getExt4GridForFormSection("Observations");
-        int expectedObsRows = 6;
+        SelectRowsCommand cmd = new SelectRowsCommand("ehr", "formtemplaterecords");
+        cmd.addFilter(new Filter("templateid", obsTemplate));
+        cmd.addSort(new Sort("rowid"));
+        SelectRowsResponse srr = cmd.execute(new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+
+        int expectedObsRows = srr.getRowCount().intValue();
         observationsGrid.waitForRowCount(expectedObsRows);
         Assert.assertEquals("Incorrect row count", expectedObsRows, observationsGrid.getRowCount());
         for (int i=0;i<expectedObsRows;i++)
         {
-            Assert.assertEquals("Id not copied property", MORE_ANIMAL_IDS[0], observationsGrid.getFieldValue(1 + i, "Id"));
+            Assert.assertEquals("Id not copied properly", MORE_ANIMAL_IDS[0], observationsGrid.getFieldValue(1 + i, "Id"));
         }
 
-        Assert.assertEquals("Temp", observationsGrid.getFieldValue(1, "category"));
-        Assert.assertEquals("Pulse", observationsGrid.getFieldValue(2, "category"));
-        Assert.assertEquals("Resp", observationsGrid.getFieldValue(3, "category"));
-        Assert.assertEquals("MM", observationsGrid.getFieldValue(4, "category"));
-        Assert.assertEquals("CRT", observationsGrid.getFieldValue(5, "category"));
-        Assert.assertEquals("BCS", observationsGrid.getFieldValue(6, "category"));
+        int i = 1;
+        for (Map<String, Object> row :srr.getRows())
+        {
+            JSONObject json = new JSONObject((String)row.get("json"));
+            Assert.assertEquals(json.getString("category"), observationsGrid.getFieldValue(i, "category"));
+            i++;
+        }
 
         //weight section
         waitAndClick(Ext4HelperWD.ext4Tab("Weights"));
@@ -644,6 +652,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForElement(Ext4HelperWD.ext4Window("Add Sedations"));
         Ext4FieldRefWD.getForLabel(this, "Lot # (optional)").setValue("Lot");
         Ext4CmpRefWD.waitForComponent(this, "field[fieldName='weight']");
+        waitForElement(Ext4HelperWD.ext4Window("Add Sedations").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[4])));
 
         //set weights
         for (Ext4FieldRefWD field : _ext4Helper.componentQuery("field[fieldName='weight']", Ext4FieldRefWD.class))
@@ -715,10 +724,17 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         Ext4FieldRefWD.getForLabel(this, "Bulk Edit Values").setChecked(true);
         waitAndClick(Locator.ext4Button("Submit"));
         waitForElement(Ext4HelperWD.ext4Window("Bulk Edit"));
-        _helper.toggleBulkEditField("Method");
-        Ext4FieldRefWD.getForLabel(this, "Method").setValue("Intradermal");
+        _helper.toggleBulkEditField("Performed By");
+        Ext4FieldRefWD.getForLabel(this, "Performed By").setValue("me");
         waitAndClick(Locator.ext4Button("Submit"));
         waitForElementToDisappear(Ext4HelperWD.ext4Window("Bulk Edit"));
+
+        for (int i=1;i<=5;i++)
+        {
+            Assert.assertEquals(PasswordUtil.getUsername(), tbGrid.getFieldValue(i, "performedby"));
+            i++;
+        }
+        Assert.assertEquals("me", tbGrid.getFieldValue(6, "performedby"));
 
         Assert.assertEquals(tbGrid.getRowCount(), MORE_ANIMAL_IDS.length + 1);
 

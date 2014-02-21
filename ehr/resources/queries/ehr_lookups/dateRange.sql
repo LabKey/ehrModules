@@ -18,7 +18,7 @@ cast(NumDays as integer) as numDays @hidden
 
 FROM (SELECT
 
-timestampadd('SQL_TSI_DAY', i.value, CAST(COALESCE(StartDate, curdate()) AS TIMESTAMP)) as date,
+timestampadd('SQL_TSI_DAY', i.value, CAST(COALESCE(CAST(StartDate as date), curdate()) AS TIMESTAMP)) as date,
 
 FROM ldk.integers i
 

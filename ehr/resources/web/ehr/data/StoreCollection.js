@@ -653,8 +653,7 @@ Ext4.define('EHR.data.StoreCollection', {
             //provide logging for especially long running requests
             if (options && options.startTime){
                 var duration = (new Date() - options.startTime) / 1000;
-                //too short?
-                if (duration > 15){
+                if (duration > 20){
                     this.reportLongRequest(duration, response, options, json);
                 }
             }

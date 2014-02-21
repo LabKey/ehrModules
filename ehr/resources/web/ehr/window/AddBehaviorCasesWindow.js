@@ -28,8 +28,8 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            sort: 'Id', //Id/curlocation/room,Id/curlocation/cage,
-            columns: 'Id,objectid,remark',
+            sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
+            columns: 'Id,Id/curLocation/location,objectid,remark',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -67,7 +67,8 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
                 a: null,
                 p: null,
                 caseid: row.getValue('objectid'),
-                performedby: this.recordData.performedby
+                performedby: this.recordData.performedby,
+                'Id/curLocation/location': row.getValue('Id/curLocation/location')
             };
 
             records.push(this.targetStore.createModel(obj));

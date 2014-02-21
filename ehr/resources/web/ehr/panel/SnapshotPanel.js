@@ -491,8 +491,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.each(results, function(row){
                 var text = row.category;
                 if (text){
+                    //NOTE: this may have been cached in the past, so verify whether this is really still active
                     var date = LDK.ConvertUtils.parseDate(row.date);
-                    if (date){
+                    var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate) : null;
+                    if (date && (!enddate || enddate.getTime() > (new Date()).getTime())){
                         var reviewdate = row.reviewdate ? LDK.ConvertUtils.parseDate(row.reviewdate) : null;
                         if (!reviewdate || reviewdate.getTime() < Ext4.Date.clearTime(new Date())){
                             text = text + ' (' + date.format('Y-m-d') + ')';
@@ -565,8 +567,16 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (!el)
             return;
 
+        var filteredResults = [];
+        Ext4.Array.forEach(results, function(row){
+            var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate) : null;
+            if (!enddate || enddate.getTime() > (new Date()).getTime()){
+                filteredResults.push(row);
+            }
+        }, this);
+
         el.appendTable({
-            rows: results
+            rows: filteredResults
         }, [{
             name: 'category',
             label: 'Category'
@@ -723,7 +733,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
             var values = [];
             Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
-                parentMap[text] = parentMap[text].unique();
+                parentMap[text] = Ext4.unique(parentMap[text]);
                 var method = parentMap[text].join(', ');
                 values.push(text + (method ? ' (' + method + ')' : ''));
             }, this);

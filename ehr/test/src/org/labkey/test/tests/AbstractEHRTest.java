@@ -299,27 +299,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     {
         log("Deleting initial records from EHR hard tables");
 
-        //first ehr.protocol
-        Map<String,Object> rowMap1 = new HashMap<>();
-        rowMap1.put("protocol", PROTOCOL_ID);
-        deleteIfNeeded("ehr", "protocol", rowMap1, "protocol");
-
-        Map<String,Object> rowMap2 = new HashMap<>();
-        rowMap2.put("protocol", DUMMY_PROTOCOL);
-        deleteIfNeeded("ehr", "protocol", rowMap2, "protocol");
-
-        //then ehr.project
-        Map<String,Object> rowMap3 = new HashMap<>();
-        rowMap3.put("project", PROTOCOL_PROJECT_ID);
-        rowMap3.put("protocol", PROTOCOL_ID);
-        deleteIfNeeded("ehr", "project", rowMap3, "project");
-
-        Map<String,Object> rowMap4 = new HashMap<>();
-        rowMap4.put("project", PROJECT_ID);
-        rowMap4.put("protocol", DUMMY_PROTOCOL);
-        deleteIfNeeded("ehr", "project", rowMap4, "project");
-
-        //then ehr_lookups.room
+        //ehr_lookups.room
         Map<String,Object> rowMap5 = new HashMap<>();
         rowMap5.put("room", ROOM_ID);
         deleteIfNeeded("ehr_lookups", "rooms", rowMap5, "room");
