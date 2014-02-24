@@ -5,12 +5,13 @@
  */
 /**
  * @cfg dataEntryPanel
- * @cfg runsStore
+ * @cfg encountersStore
  * @cfg [] targetTabs
  */
 Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
     extend: 'Ext.window.Window',
     applyStaffTemplate: false,
+    allowAddWeightRecord: false,
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
@@ -49,6 +50,7 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
         if (!this.targetTabs){
             this.targetTabs = [];
             this.applyStaffTemplate = true;
+            this.allowAddWeightRecord = true;
             Ext4.each(this.dataEntryPanel.formConfig.sections, function(s){
                 if (this.tableNameMap[s.name]){
                     var item = this.dataEntryPanel.getSectionByName(s.name);
@@ -238,11 +240,21 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
             items: toAdd
         });
 
+        if (this.allowAddWeightRecord){
+            this.add({
+                xtype: 'checkbox',
+                fieldLabel: 'Add Weight Record',
+                itemId: 'addWeightRecord',
+                checked: true
+            });
+        }
+
         this.down('#submitBtn').setDisabled(false);
     },
 
     onSubmit: function(){
         var hasRecords = false;
+        var distinctIds = [];
         this.down('#fieldPanel').items.each(function(item){
             if (item.boundRecord){
                 var ignoreCheckbox = this.down('#' + item.ignoreCheckbox);
@@ -250,6 +262,7 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
                     return;
                 }
 
+                distinctIds.push(item.boundRecord.get('Id'));
                 var panel = item.getValue();
                 Ext4.Array.forEach(this.targetTabs, function(targetTab){
                     var rows;
@@ -291,6 +304,23 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
                 }, this);
             }
         }, this);
+
+        //add weight
+        distinctIds = Ext4.unique(distinctIds);
+        if (this.allowAddWeightRecord && this.down('#addWeightRecord').getValue()){
+            var weightStore = this.dataEntryPanel.storeCollection.getClientStoreByName('weight');
+            LDK.Assert.assertNotEmpty('Unable to find weight store in AddProcedureDefaultsWindow', weightStore);
+            var toAdd = [];
+            Ext4.Array.forEach(distinctIds, function(id){
+                toAdd.push(weightStore.createModel({
+                    Id: id
+                }));
+            }, this);
+
+            if (toAdd.length){
+                weightStore.add(toAdd);
+            }
+        }
 
         //add templates
         if (this.applyStaffTemplate){

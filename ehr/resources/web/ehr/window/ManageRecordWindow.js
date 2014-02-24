@@ -14,7 +14,6 @@ Ext4.define('EHR.window.ManageRecordWindow', {
 
     statics: {
         buttonHandler: function(Id, objectId, queryName, dataRegionName){
-            console.log(arguments);
             LDK.Assert.assertNotEmpty('No objectid provided to ManageRecordWindow.buttonHandler', objectId);
             LDK.Assert.assertNotEmpty('No queryName provided to ManageRecordWindow.buttonHandler', queryName);
 

@@ -9,6 +9,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     loaded: true,
 
     hasLocationField: false,
+    hasFormSortField: false,
 
     constructor: function(){
         this.callParent(arguments);
@@ -17,11 +18,30 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             this.hasLocationField = true;
         }
 
+        if (this.getFields().get('formSort')){
+            this.hasFormSortField = true;
+        }
+
         this.addEvents('validation');
+
+        if (this.hasFormSortField){
+            this.on('datachanged', this.updateFormSortField, this);
+        }
     },
 
     getFields: function(){
         return this.model.prototype.fields;
+    },
+
+    //this field is designed to preserve the form's sort order between sessions
+    updateFormSortField: function(){
+        this.each(function(r, idx){
+            if (Number(r.get('formSort')) !== (idx+1)){
+                r.beginEdit();
+                r.set('formSort', (idx+1));
+                r.endEdit(true);
+            }
+        }, this);
     },
 
     ensureLocation: function(record){
@@ -187,7 +207,13 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             }
         }
 
-        return this.callParent(arguments);
+        var ret = this.callParent(arguments);
+
+        if (this.hasFormSortField){
+            this.updateFormSortField();
+        }
+
+        return ret;
     },
 
     createModel: function(data){

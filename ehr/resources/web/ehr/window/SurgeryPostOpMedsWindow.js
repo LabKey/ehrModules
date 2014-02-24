@@ -50,19 +50,38 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
     },
 
     onStoreLoad: function(store){
+        var ids = [];
+        this.encountersStore.each(function(r, recIdx){
+            if (!r.get('Id') || !r.get('procedureid')){
+                return;
+            }
+
+            ids.push(r.get('Id'));
+        });
+
+        ids = Ext4.unique(ids);
+
+        EHR.DataEntryUtils.getWeights(this.targetStore.storeCollection, ids, this.onDemographicsLoad, this, false);
+    },
+
+    onDemographicsLoad: function(weightMap){
+        this.weightMap = weightMap;
         this.removeAll();
         this.add(this.getItems());
         this.center();
     },
 
     getItems: function(){
-        var numCols = 6;
+        var numCols = 7;
         var items = [{
             xtype: 'displayfield',
             value: 'Animal Id'
         },{
             xtype: 'displayfield',
             value: 'Procedure'
+        },{
+            xtype: 'displayfield',
+            value: 'Weight'
         },{
             xtype: 'displayfield',
             value: 'Surg. Time'
@@ -109,6 +128,12 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                 return;
             }
             ids.push(r.get('Id'));
+
+            items.push({
+                xtype: 'displayfield',
+                value: this.weightMap[r.get('Id')] ? this.weightMap[r.get('Id')].weight : '',
+                recIdx: recIdx
+            });
 
             if (r.get('date')){
                 items.push({
@@ -183,9 +208,6 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                 recIdx: recIdx
             });
         }, this);
-
-        //prime demographics
-        EHR.DemographicsCache.getDemographics(ids);
 
         return {
             border: false,
@@ -320,7 +342,6 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                             date.setHours(timeField.getValue().getHours());
 
                             if (json.offset){
-                                console.log('offset: ' + json.offset);
                                 var offsetDate = Ext4.Date.add(Ext4.Date.clone(date), Ext4.Date.DAY, json.offset);
                                 offsetDate = Ext4.Date.clearTime(offsetDate);
                                 offsetDate.setHours(times[0] / 100);
@@ -364,39 +385,35 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
 
                             //this isnt great, but hard code amount on hydro and buprenex for now
                             if (obj.code == 'E-77851' || obj.code == 'E-YY792'){
-                                var ret = EHR.DemographicsCache.getDemographicsSynchronously([encountersRec.get('Id')]);
-                                LDK.Assert.assertNotEmpty('Unable to find demographics record in PostOpMedsWindow for animal: ' + encountersRec.get('Id'), ret && ret[encountersRec.get('Id')]);
-                                if (ret && ret[encountersRec.get('Id')]){
-                                    var weight = ret[encountersRec.get('Id')].getMostRecentWeight();
-                                    if (weight){
-                                        obj.amount_units = 'mg';
-                                        obj.vol_units = 'mL';
+                                var weight = this.weightMap[encountersRec.get('Id')] ? this.weightMap[encountersRec.get('Id')].weight : null;
+                                if (weight){
+                                    obj.amount_units = 'mg';
+                                    obj.vol_units = 'mL';
 
-                                        //hyrdo
-                                        if (obj.code == 'E-77851'){
-                                            if (weight < 3.0){
-                                                obj.amount = 0.5;
-                                                obj.volume = 0.25;
-                                            }
-                                            else if (weight < 10.0){
-                                                obj.amount = 1.0;
-                                                obj.volume = 0.5;
-                                            }
-                                            else {
-                                                obj.amount = 2.0;
-                                                obj.volume = 1.0;
-                                            }
+                                    //hyrdo
+                                    if (obj.code == 'E-77851'){
+                                        if (weight < 3.0){
+                                            obj.amount = 0.5;
+                                            obj.volume = 0.25;
                                         }
-                                        //buprenex
-                                        else if (obj.code == 'E-YY792'){
-                                            if (weight < 3.0){
-                                                obj.amount = 0.15;
-                                                obj.volume = 0.5;
-                                            }
-                                            else {
-                                                obj.amount = 0.3;
-                                                obj.volume = 1.0;
-                                            }
+                                        else if (weight < 10.0){
+                                            obj.amount = 1.0;
+                                            obj.volume = 0.5;
+                                        }
+                                        else {
+                                            obj.amount = 2.0;
+                                            obj.volume = 1.0;
+                                        }
+                                    }
+                                    //buprenex
+                                    else if (obj.code == 'E-YY792'){
+                                        if (weight < 3.0){
+                                            obj.amount = 0.15;
+                                            obj.volume = 0.5;
+                                        }
+                                        else {
+                                            obj.amount = 0.3;
+                                            obj.volume = 1.0;
                                         }
                                     }
                                 }

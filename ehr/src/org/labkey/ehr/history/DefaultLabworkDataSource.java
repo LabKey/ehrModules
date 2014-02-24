@@ -64,7 +64,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
         if (!redacted)
             sb.append(safeAppend(rs, "Performed By", "performedby"));
 
-        sb.append(safeAppend(rs, "Type", "type"));
+        //sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Service/Panel", "servicerequested"));
         sb.append(safeAppend(rs, "Sample Type", "sampletype"));
 

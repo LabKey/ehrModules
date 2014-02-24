@@ -1153,7 +1153,6 @@ ehr/src/org/labkey/ehr/buttons/CompareWeightsButton.java -text
 ehr/src/org/labkey/ehr/buttons/DiscardTaskButton.java -text
 ehr/src/org/labkey/ehr/buttons/ScheduleTaskButton.java -text
 ehr/src/org/labkey/ehr/buttons/TaskAssignButton.java -text
-ehr/src/org/labkey/ehr/buttons/VetReviewButton.java -text
 ehr/src/org/labkey/ehr/dataentry/DataEntryManager.java -text
 ehr/src/org/labkey/ehr/dataentry/RecordDeleteRunner.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormPanel.java -text

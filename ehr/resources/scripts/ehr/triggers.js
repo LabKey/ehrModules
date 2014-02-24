@@ -465,7 +465,10 @@ EHR.Server.Triggers.complete = function(event, errors) {
         }
     }
 
-    if (helper.getPublicParticipantsModified().length){
+    if (helper.announceAllModifiedParticipants() && helper.getParticipantsModified().length){
+        helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getParticipantsModified());
+    }
+    else if (helper.getPublicParticipantsModified().length){
         helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getPublicParticipantsModified());
     }
 

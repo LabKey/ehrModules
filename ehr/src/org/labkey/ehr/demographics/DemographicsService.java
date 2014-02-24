@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.demographics;
 
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
 import org.labkey.api.cache.BlockingStringKeyCache;
 import org.labkey.api.cache.CacheLoader;
@@ -130,6 +132,11 @@ public class DemographicsService
      */
     public List<AnimalRecord> getAnimals(Container c, Collection<String> ids)
     {
+        return getAnimals(c, ids, false);
+    }
+
+    private List<AnimalRecord> getAnimals(Container c, Collection<String> ids, boolean validateOnCreate)
+    {
         List<AnimalRecord> records = new ArrayList<>();
         Set<String> toCreate = new HashSet<>();
         for (String id : ids)
@@ -147,15 +154,53 @@ public class DemographicsService
 
         if (toCreate.size() > 0)
         {
-            records.addAll(createRecords(c, toCreate));
+            records.addAll(createRecords(c, toCreate, validateOnCreate));
         }
 
         return records;
     }
 
-    private synchronized void cacheRecord(AnimalRecord record)
+    private synchronized void cacheRecord(AnimalRecord record, boolean validateOnCreate)
     {
         String key = getCacheKey(record.getContainer(), record.getId());
+
+        if (validateOnCreate)
+        {
+            AnimalRecord existing = _cache.get(key);
+            if (existing != null)
+            {
+                if (existing.getProps() == null && record.getProps() != null)
+                {
+                    _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has properties, but new record does not");
+                }
+                else if (existing.getProps() != null && record.getProps() == null)
+                {
+                    _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has no properties, but new record does");
+                }
+                else if (existing.getProps() == null && record.getProps() == null)
+                {
+                    //ignore
+                }
+                else
+                {
+                    MapDifference diff = Maps.difference(existing.getProps(), record.getProps());
+                    if (!diff.areEqual())
+                    {
+                        _log.error("mismatch for cached record for animal: " + record.getId());
+                        Map<String, MapDifference.ValueDifference> diffEntries = diff.entriesDiffering();
+                        for (String prop : diffEntries.keySet())
+                        {
+                            _log.error("property: " + prop);
+                            _log.error("original: ");
+                            _log.error(diffEntries.get(prop).leftValue());
+                            _log.error("new value: ");
+                            _log.error(diffEntries.get(prop).rightValue());
+                        }
+                    }
+                }
+            }
+        }
+
         _cache.put(key, record);
     }
 
@@ -198,15 +243,15 @@ public class DemographicsService
                             AnimalRecord ar = _cache.get(key);
                             if (ar != null)
                             {
-                                if (props.containsKey(id))
-                                    ar.update(p, props.get(id));
+                                //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
+                                ar.update(p, props.get(id));
                             }
                             else
                             {
                                 ar = AnimalRecord.create(c, id, props.get(id));
                             }
 
-                            cacheRecord(ar);
+                            cacheRecord(ar, false);
                         }
                     }
                 }
@@ -229,7 +274,7 @@ public class DemographicsService
             {
                 try
                 {
-                    DemographicsService.get().createRecords(c, ids);
+                    DemographicsService.get().createRecords(c, ids, false);
                 }
                 catch (DeadlockLoserDataAccessException e)
                 {
@@ -242,7 +287,7 @@ public class DemographicsService
     /**
      * Queries the DB directly, bypassing the cache.  records are put in the cache on complete
      */
-    private List<AnimalRecord> createRecords(Container c, Collection<String> ids)
+    private List<AnimalRecord> createRecords(Container c, Collection<String> ids, boolean validateOnCreate)
     {
         User u = EHRService.get().getEHRUser(c);
         if (u == null)
@@ -292,7 +337,7 @@ public class DemographicsService
         {
             Map<String, Object> props = ret.get(id);
             AnimalRecord record = AnimalRecord.create(c, id, props);
-            cacheRecord(record);
+            cacheRecord(record, validateOnCreate);
 
             records.add(record);
         }
@@ -305,7 +350,7 @@ public class DemographicsService
         return records;
     }
 
-    public void cacheLivingAnimals(Container c, User u, boolean async)
+    public void cacheLivingAnimals(Container c, User u, boolean validateOnCreate)
     {
         UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         if (us == null)
@@ -328,14 +373,7 @@ public class DemographicsService
         if (ids.size() > 0)
         {
             _log.info("Forcing recache of " + ids.size() + " animals");
-            if (async)
-            {
-                asyncCache(c, ids);
-            }
-            else
-            {
-                createRecords(c, ids);
-            }
+            createRecords(c, ids, validateOnCreate);
         }
     }
 
@@ -347,7 +385,7 @@ public class DemographicsService
         return _cache.get(getCacheKey(c, animalId));
     }
 
-    private int cacheLivingAnimalsForAllContainers()
+    private int cacheLivingAnimalsForAllContainers(boolean validateOnCreate)
     {
         _log.info("attempting to reache demographics for all living animals on all containers set to do so");
 
@@ -373,7 +411,7 @@ public class DemographicsService
                         continue;
                     }
 
-                    DemographicsService.get().cacheLivingAnimals(s.getContainer(), u, true);
+                    DemographicsService.get().cacheLivingAnimals(s.getContainer(), u, validateOnCreate);
                     totalCached++;
                 }
             }
@@ -384,34 +422,39 @@ public class DemographicsService
 
     public void onStartup()
     {
-        int totalCached = cacheLivingAnimalsForAllContainers();
-        if (totalCached > 0)
-        {
-            try
+        JobRunner.getDefault().execute(new Runnable(){
+            public void run()
             {
-                if (_job == null)
+                int totalCached = cacheLivingAnimalsForAllContainers(false);
+                if (totalCached > 0)
                 {
-                    _job = JobBuilder.newJob(DemographicServiceRefreshRunner.class)
-                            .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
-                            .usingJobData("demographicsService", DemographicsService.class.getName())
-                            .build();
+                    try
+                    {
+                        if (_job == null)
+                        {
+                            _job = JobBuilder.newJob(DemographicServiceRefreshRunner.class)
+                                    .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
+                                    .usingJobData("demographicsService", DemographicsService.class.getName())
+                                    .build();
+                        }
+
+                        Trigger trigger = TriggerBuilder.newTrigger()
+                                .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
+                                .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(1, 0))
+                                .forJob(_job)
+                                .build();
+
+                        StdSchedulerFactory.getDefaultScheduler().scheduleJob(_job, trigger);
+
+                        _log.info("DemographicsService scheduled a refresh daily at 1AM");
+                    }
+                    catch (SchedulerException e)
+                    {
+                        _log.error("Unable to schedule DemographicsService", e);
+                    }
                 }
-
-                Trigger trigger = TriggerBuilder.newTrigger()
-                        .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
-                        .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(1, 0))
-                        .forJob(_job)
-                        .build();
-
-                StdSchedulerFactory.getDefaultScheduler().scheduleJob(_job, trigger);
-
-                _log.info("DemographicsService scheduled a refresh daily at 1AM");
             }
-            catch (SchedulerException e)
-            {
-                _log.error("Unable to schedule DemographicsService", e);
-            }
-        }
+        }, 30000); //30-sec delay, allowing all modules to start
     }
 
     public static class DemographicServiceRefreshRunner implements Job
@@ -423,7 +466,7 @@ public class DemographicsService
 
         public void execute(JobExecutionContext context) throws JobExecutionException
         {
-            DemographicsService.get().cacheLivingAnimalsForAllContainers();
+            DemographicsService.get().cacheLivingAnimalsForAllContainers(true);
         }
     }
 }

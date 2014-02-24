@@ -68,7 +68,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         requiresStatusRecalc: false,
         allowDatesInDistantPast: false,
         lookupValidationFields: [],
-        cacheAccount: true
+        cacheAccount: true,
+        announceAllModifiedParticipants: false
     };
 
     var cachedValues = {
@@ -284,8 +285,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
             if (props.participantsModified.indexOf(id) == -1){
                 props.participantsModified.push(id);
+            }
 
-                if (qcLabel && EHR.Server.Security.getQCStateByLabel(qcLabel).PublicData){
+            if (qcLabel && EHR.Server.Security.getQCStateByLabel(qcLabel).PublicData){
+                if (props.publicParticipantsModified.indexOf(id) == -1){
                     props.publicParticipantsModified.push(id);
                 }
             }            
@@ -376,6 +379,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         isSkipHousingCheck: function(){
             return scriptOptions.skipHousingCheck
+        },
+
+        announceAllModifiedParticipants: function(){
+            return scriptOptions.announceAllModifiedParticipants;
         },
 
         isSkipAssignmentCheck: function(){

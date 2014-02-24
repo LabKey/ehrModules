@@ -394,6 +394,7 @@ public class EHRManager
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), c));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI(), c));
 
             List<PropertyDescriptor> optionalProperties = new ArrayList<>();
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), c));

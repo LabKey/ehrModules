@@ -23,10 +23,3 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         }
     }
 }
-
-//NOTE: any changes should trigger a re-calc, since ActiveTreatmentsDemographicsProvider shows non-public records
-EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.COMPLETE, 'study', 'Treatment Orders', function(event, errors, helper){
-    if (helper.getParticipantsModified().length){
-        helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getParticipantsModified());
-    }
-});

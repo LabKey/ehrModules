@@ -67,7 +67,7 @@ Ext4.define('EHR.window.VetReviewWindow', {
 
         LABKEY.Query.selectRows({
             schemaName: 'study',
-            queryName: 'cases',
+            queryName: dataRegion.queryName,
             method: 'POST',
             filterArray: [LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
             scope: this,
@@ -78,31 +78,41 @@ Ext4.define('EHR.window.VetReviewWindow', {
                 Ext4.Array.forEach(results.rows, function(row){
                     rows.push({
                         Id: row.Id,
-                        caseid: row.objectid,
-                        performedby: LABKEY.Security.currentUser.displayName,
-                        category: EHR.window.VetReviewWindow.VET_REVIEW,
-                        date: new Date()
+                        caseid: dataRegion.queryName.toLowerCase() == 'cases' ? row.objectid : null
                     });
                 }, this);
 
-                LDK.Assert.assertTrue('No matching rows found in VetReviewPanel', rows.length > 0);
-                if (rows.length){
-                    LABKEY.Query.insertRows({
-                        method: 'POST',
-                        schemaName: 'study',
-                        queryName: 'clinical_observations',
-                        rows: rows,
-                        failure: LDK.Utils.getErrorCallback(),
-                        success: this.onSuccess,
-                        scope: this
-                    });
-                }
-                else {
-                    Ext4.Msg.hide();
-                    Ext4.Msg.alert('Error', 'No matching rows found.  This may indicate a problem.  Please alert your administrator about this issue');
-                }
+                this.addReview(rows);
             }
         });
+    },
+
+    addReview: function(rows){
+        LDK.Assert.assertTrue('No matching rows found in VetReviewPanel', rows.length > 0);
+        if (rows.length){
+            var date = new Date();
+            Ext4.Array.forEach(rows, function(row){
+                LABKEY.ExtAdapter.apply(row, {
+                    performedby: LABKEY.Security.currentUser.displayName,
+                    category: EHR.window.VetReviewWindow.VET_REVIEW,
+                    date: date
+                });
+            }, this);
+
+            LABKEY.Query.insertRows({
+                method: 'POST',
+                schemaName: 'study',
+                queryName: 'clinical_observations',
+                rows: rows,
+                failure: LDK.Utils.getErrorCallback(),
+                success: this.onSuccess,
+                scope: this
+            });
+        }
+        else {
+            Ext4.Msg.hide();
+            Ext4.Msg.alert('Error', 'No matching rows found.  This may indicate a problem.  Please alert your administrator about this issue');
+        }
     },
 
     onSuccess: function(){

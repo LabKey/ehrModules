@@ -119,6 +119,21 @@ public class EHRProperties
         }
     };
 
+    public static SystemProperty FORMSORT = new SystemProperty(URI + "FormSort", PropertyType.INTEGER)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setName("formSort");
+            pd.setLabel("Form Sort Order");
+            return pd;
+        }
+    };
+
     public static SystemProperty REQUESTID = new SystemProperty(URI + "RequestId", PropertyType.STRING)
     {
         @Override

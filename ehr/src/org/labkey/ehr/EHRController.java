@@ -146,12 +146,12 @@ public class EHRController extends SpringActionController
 
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will force the EHR to cache demographics data on all living animals.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
+            return new HtmlView("This action will force the EHR to cache demographics data on all living animals, and log errors if there is an existing record that does not match the current record.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
         }
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            DemographicsService.get().cacheLivingAnimals(getContainer(), getUser(), false);
+            DemographicsService.get().cacheLivingAnimals(getContainer(), getUser(), true);
             return true;
         }
     }

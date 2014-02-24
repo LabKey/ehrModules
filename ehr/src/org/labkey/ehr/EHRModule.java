@@ -39,7 +39,6 @@ import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
-import org.labkey.ehr.buttons.VetReviewButton;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
@@ -179,7 +178,6 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls"), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
-        EHRService.get().registerMoreActionsButton(new VetReviewButton(this), "study", "cases");
 
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "protocol", EHRProtocolEditPermission.class), "ehr", "protocol");
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, "ehr", "protocol_counts", EHRProtocolEditPermission.class), "ehr", "protocol_counts");
