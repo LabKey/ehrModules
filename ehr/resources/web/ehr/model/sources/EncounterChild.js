@@ -13,12 +13,20 @@ EHR.model.DataModelManager.registerMetadata('EncounterChild', {
         },
         date: {
             inheritDateFromParent: true
+        },
+        project: {
+            inheritFromParent: true
         }
     },
     byQuery: {
         'study.treatment_order': {
             date: {
                 inheritDateFromParent: false
+            }
+        },
+        'study.blood': {
+            project: {
+                inheritFromParent: false
             }
         }
     }

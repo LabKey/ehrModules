@@ -68,6 +68,10 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                     model.set('date', parentRec.get('date'));
                 }
 
+                if (model.fields.get('project') && !model.get('project') && parentRec.get('project')){
+                    model.set('project', parentRec.get('project'));
+                }
+
                 model.endEdit(true);
             }
         }
@@ -84,7 +88,6 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                 return;
             }
 
-            var hasProject = cs.getFields().get('project') != null;
             cs.each(function(rec){
                 var encountersRec = this.getEncountersRecord(rec.get('parentid'));
                 if (encountersRec != null){
@@ -93,8 +96,14 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                         obj.Id = encountersRec.get('Id')
                     }
 
-                    if (hasProject && rec.get('project') !== encountersRec.get('project')){
-                        obj.project = encountersRec.get('project');
+                    var pf = rec.fields.get('project');
+                    if (pf && encountersRec.get('project')){
+                        if (!rec.get('project')){
+                            obj.project = encountersRec.get('project');
+                        }
+                        else if (pf.inheritFromParent && encountersRec.get('project') !== rec.get('project')){
+                            obj.project = encountersRec.get('project');
+                        }
                     }
 
                     var df = rec.fields.get('date');

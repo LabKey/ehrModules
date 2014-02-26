@@ -93,7 +93,9 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                     queryConfig: {
                         schemaName: q.schemaName,
                         queryName: q.queryName,
-                        filters: filterArray
+                        filters: filterArray,
+                        scope: this,
+                        success: this.onDataRegionLoad
                     }
                 }]
             })
@@ -108,5 +110,14 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
 
         this.removeAll();
         this.add(toAdd);
+    },
+
+    onDataRegionLoad: function(dr){
+        var drEl = Ext4.get('dataregion_'+dr.id);
+        LDK.Assert.assertNotEmpty('Unable to find dataRegion element in DataEntryFormDetailsPanel', drEl);
+        var itemWidth = drEl.getSize().width + 150;
+        if (itemWidth > this.getWidth()){
+            this.setWidth(itemWidth + 20);
+        }
     }
 });

@@ -13,8 +13,8 @@ function afterUpdate(row, oldRow, errors){
     for (var i=0;i<fields.length;i++){
         fieldName = fields[i];
         if (row[fieldName] && oldRow[fieldName] && row[fieldName] != oldRow[fieldName]){
-            helper.cascadeUpdate('ehr_compliancedb', 'requirementspercategory', 'requirementname', row[fieldName], oldRow[fieldName]);
-            helper.cascadeUpdate('ehr_compliancedb', 'employees', 'requirementname', row[fieldName], oldRow[fieldName]);
+            helper.cascadeUpdate('ehr_compliancedb', 'requirementspercategory', 'unit', row[fieldName], oldRow[fieldName]);
+            helper.cascadeUpdate('ehr_compliancedb', 'employees', 'unit', row[fieldName], oldRow[fieldName]);
         }
     }
 }

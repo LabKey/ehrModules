@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-EHR.model.DataModelManager.registerMetadata('BehaviorRounds', {
+EHR.model.DataModelManager.registerMetadata('BehaviorDefaults', {
     allQueries: {
 
     },
@@ -11,6 +11,9 @@ EHR.model.DataModelManager.registerMetadata('BehaviorRounds', {
         'study.clinremarks': {
             category: {
                 defaultValue: 'Behavior',
+                hidden: true
+            },
+            hx: {
                 hidden: true
             },
             s: {

@@ -234,24 +234,33 @@ public class DemographicsService
             {
                 if (p.requiresRecalc(schema, query))
                 {
-                    Map<String, Map<String, Object>> props = p.getProperties(c, u, ids);
-                    for (String id : ids)
+                    int start = 0;
+                    int batchSize = 500;
+                    List<String> allIds = new ArrayList<>(ids);
+                    while (start < ids.size())
                     {
-                        synchronized (this)
-                        {
-                            String key = getCacheKey(c, id);
-                            AnimalRecord ar = _cache.get(key);
-                            if (ar != null)
-                            {
-                                //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
-                                ar.update(p, props.get(id));
-                            }
-                            else
-                            {
-                                ar = AnimalRecord.create(c, id, props.get(id));
-                            }
+                        List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
+                        start = start + batchSize;
 
-                            cacheRecord(ar, false);
+                        Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+                        for (String id : ids)
+                        {
+                            synchronized (this)
+                            {
+                                String key = getCacheKey(c, id);
+                                AnimalRecord ar = _cache.get(key);
+                                if (ar != null)
+                                {
+                                    //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
+                                    ar.update(p, props.get(id));
+                                }
+                                else
+                                {
+                                    ar = AnimalRecord.create(c, id, props.get(id));
+                                }
+
+                                cacheRecord(ar, false);
+                            }
                         }
                     }
                 }

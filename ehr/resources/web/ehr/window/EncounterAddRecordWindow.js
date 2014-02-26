@@ -35,7 +35,7 @@ Ext4.define('EHR.window.EncounterAddRecordWindow', {
                 valueField: 'parentid',
                 store: {
                     type: 'store',
-                    fields: ['title', 'parentid', 'Id', 'date'],
+                    fields: ['title', 'parentid', 'Id', 'date', 'project'],
                     data: data
                 },
                 forceSelection: true

@@ -5,6 +5,12 @@
 EHR.model.DataModelManager.registerMetadata('TBProcedure', {
     byQuery: {
         'study.encounters': {
+            project: {
+                hidden: true,
+                getInitialValue: function(v, rec){
+                    return v ? v : EHR.DataEntryUtils.getDefaultClinicalProject();
+                }
+            },
             procedureid: {
                 getInitialValue: function(val, record){
                     if (val){
@@ -36,9 +42,6 @@ EHR.model.DataModelManager.registerMetadata('TBProcedure', {
 
                     return null;
                 }
-            },
-            project: {
-                hidden: true
             },
             type: {
                 defaultValue: 'Procedure',

@@ -263,6 +263,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
         }, this);
 
         var toUpdate = [];
+        var date = this.down('#date').getValue();
         Ext4.each(this.dataSets, function(q){
             var obj = {
                 schemaName: 'study',

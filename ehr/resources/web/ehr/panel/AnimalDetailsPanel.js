@@ -17,7 +17,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         Ext4.apply(this, {
             border: true,
             bodyStyle: 'padding: 5px;',
-            minHeight: 200,
+            minHeight: 240,
             defaults: {
                 border: false
             }
@@ -94,6 +94,10 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 },{
                     fieldLabel: 'Age',
                     itemId: 'age'
+                },{
+                    xtype: 'displayfield',
+                    fieldLabel: 'Source',
+                    itemId: 'source'
                 },{
                     fieldLabel: 'Projects / Groups',
                     itemId: 'assignmentsAndGroups'

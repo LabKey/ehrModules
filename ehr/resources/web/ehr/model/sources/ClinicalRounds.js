@@ -19,6 +19,9 @@ EHR.model.DataModelManager.registerMetadata('ClinicalRounds', {
                 defaultValue: 'Clinical',
                 hidden: true
             },
+            hx: {
+                hidden: true
+            },
             s: {
                 hidden: true
             },

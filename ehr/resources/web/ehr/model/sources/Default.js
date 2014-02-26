@@ -414,6 +414,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 200
             }
         },
+        hx: {
+            columnConfig: {
+                width: 200
+            }
+        },
         s: {
             xtype: 'ehr-remarkfield',
             editorConfig: {

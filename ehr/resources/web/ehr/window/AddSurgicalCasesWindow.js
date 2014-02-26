@@ -16,6 +16,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
     showAssignedVetCombo: false,
     caseDisplayField: 'remark',
     caseEmptyText: 'No description available',
+    defaultRemark: 'Surgical rounds performed.',
 
     initComponent: function(){
         this.callParent(arguments);
@@ -54,7 +55,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             schemaName: 'study',
             queryName: 'cases',
             sort: 'Id/curLocation/room,Id/curLocation/cage,Id,remark',
-            columns: 'Id,objectid,Id/curLocation/location',
+            columns: 'Id,objectid,remark,Id/curLocation/location',
             filterArray: casesFilterArray,
             scope: this,
             success: function(results){
@@ -97,7 +98,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
                 a: null,
                 p: null,
                 caseid: row.getValue('objectid'),
-                remark: 'Surgical rounds performed.',
+                remark: this.defaultRemark,
                 performedby: this.recordData.performedby,
                 'Id/curLocation/location': row.getValue('Id/curLocation/location')
             };

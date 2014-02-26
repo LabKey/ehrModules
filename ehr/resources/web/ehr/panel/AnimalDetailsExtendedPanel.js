@@ -17,7 +17,7 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
         Ext4.apply(this, {
             border: true,
             bodyStyle: 'padding: 5px;',
-            minHeight: 200,
+            minHeight: 240,
             defaults: {
                 border: false
             }

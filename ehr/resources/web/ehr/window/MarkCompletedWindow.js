@@ -11,9 +11,12 @@
  */
 Ext4.define('EHR.window.MarkCompletedWindow', {
     extend: 'Ext.window.Window',
+    pkColName: null,
+    targetField: 'enddate',
+    skipNonNull: true,
 
     statics: {
-        buttonHandler: function(dataRegionName, schemaName, queryName, fieldXtype){
+        buttonHandler: function(dataRegionName, schemaName, queryName, fieldXtype, pkColName, skipNonNull, targetField){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
 
             var checked = dataRegion.getChecked();
@@ -26,7 +29,10 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
                 dataRegionName: dataRegionName,
                 schemaName: schemaName,
                 queryName: queryName,
-                fieldXtype: fieldXtype
+                fieldXtype: fieldXtype,
+                pkColName: pkColName,
+                skipNonNull: skipNonNull !== false,
+                targetField: targetField || 'enddate'
             }).show();
         }
     },
@@ -51,72 +57,7 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
                 text:'Submit',
                 disabled:false,
                 scope: this,
-                handler: function(btn){
-                    Ext4.Msg.wait('Loading...');
-                    var date = btn.up('window').down('#dateField').getValue();
-                    if(!date){
-                        Ext4.Msg.alert('Error', 'Must enter a date');
-                        return;
-                    }
-
-                    var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-                    var checked = dataRegion.getChecked();
-
-                    LABKEY.Query.selectRows({
-                        schemaName: this.schemaName,
-                        queryName: this.queryName,
-                        filterArray: [
-                            LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
-                        ],
-                        scope: this,
-                        success: function(data){
-                            var toUpdate = [];
-                            var skipped = [];
-                            var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-
-                            if(!data.rows || !data.rows.length){
-                                Ext4.Msg.hide();
-                                dataRegion.selectNone();
-                                dataRegion.refresh();
-                                return;
-                            }
-
-                            Ext4.Array.forEach(data.rows, function(row){
-                                if(!row.enddate)
-                                    toUpdate.push({lsid: row.lsid, enddate: date});
-                                else
-                                    skipped.push(row.lsid)
-                            }, this);
-
-                            if(toUpdate.length){
-                                LABKEY.Query.updateRows({
-                                    method: 'POST',
-                                    schemaName: this.schemaName,
-                                    queryName: this.queryName,
-                                    rows: toUpdate,
-                                    scope: this,
-                                    success: function(){
-                                        this.close();
-                                        Ext4.Msg.hide();
-                                        dataRegion.selectNone();
-                                        dataRegion.refresh();
-                                    },
-                                    failure: LDK.Utils.getErrorCallback()
-                                });
-                            }
-                            else {
-                                Ext4.Msg.hide();
-                                dataRegion.selectNone();
-                                dataRegion.refresh();
-                            }
-
-                            if(skipped.length){
-                                Ext4.Msg.alert('', 'One or more rows was skipped because it already has an end date');
-                            }
-                        },
-                        failure: LDK.Utils.getErrorCallback()
-                    });
-                }
+                handler: this.onSubmit
             },{
                 text: 'Close',
                 handler: function(btn){
@@ -126,5 +67,83 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
         });
 
         this.callParent();
+
+        LDK.Assert.assertNotEmpty('No pkColName provided to MarkCompletedWindow', this.pkColName);
+    },
+
+    onSubmit: function(btn){
+        Ext4.Msg.wait('Loading...');
+        var date = btn.up('window').down('#dateField').getValue();
+        if (!date){
+            Ext4.Msg.alert('Error', 'Must enter a date');
+            return;
+        }
+
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        var checked = dataRegion.getChecked();
+
+        LABKEY.Query.selectRows({
+            schemaName: this.schemaName,
+            queryName: this.queryName,
+            columns: this.pkColName + ',' + this.targetField,
+            filterArray: [
+                LABKEY.Filter.create(this.pkColName, checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+            ],
+            scope: this,
+            success: this.onSuccess,
+            failure: LDK.Utils.getErrorCallback()
+        });
+    },
+
+    onSuccess: function(data){
+        var toUpdate = [];
+        var skipped = [];
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        var date = this.down('#dateField').getValue();
+
+        if (!data.rows || !data.rows.length){
+            Ext4.Msg.hide();
+            dataRegion.selectNone();
+            dataRegion.refresh();
+            return;
+        }
+
+        Ext4.Array.forEach(data.rows, function(row){
+            if (!row[this.targetField] || !this.skipNonNull){
+                var obj = {};
+                obj[this.targetField] = date;
+                obj[this.pkColName] = row[this.pkColName];
+                toUpdate.push(obj);
+            }
+            else {
+                skipped.push(row[this.pkColName]);
+            }
+        }, this);
+
+        if (toUpdate.length){
+            LABKEY.Query.updateRows({
+                method: 'POST',
+                schemaName: this.schemaName,
+                queryName: this.queryName,
+                rows: toUpdate,
+                scope: this,
+                success: function(){
+                    this.close();
+                    Ext4.Msg.hide();
+                    dataRegion.selectNone();
+                    dataRegion.refresh();
+                },
+                failure: LDK.Utils.getErrorCallback()
+            });
+        }
+        else {
+            Ext4.Msg.hide();
+            dataRegion.selectNone();
+            dataRegion.refresh();
+        }
+
+        if (skipped.length){
+            Ext4.Msg.alert('', 'One or more rows was skipped because it already has an end date');
+        }
     }
 });
