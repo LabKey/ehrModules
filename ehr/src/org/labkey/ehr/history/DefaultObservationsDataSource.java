@@ -61,13 +61,6 @@ public class DefaultObservationsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getCategoryColor(Results rs) throws SQLException
-    {
-        String category = rs.getString("category");
-        return EHRManager.VET_REVIEW.equals(category) ? "yellow" : super.getCategoryText(rs);
-    }
-
-    @Override
     protected List<HistoryRow> processRows(TableSelector ts, final boolean redacted, final Collection<ColumnInfo> cols)
     {
         final Map<String, List<Map<String, Object>>> idMap = new HashMap<>();

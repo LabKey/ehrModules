@@ -223,7 +223,7 @@ Ext4.define('EHR.window.SedationWindow', {
                     fields: ['code', 'displayField', 'dosage'],
                     data: [
                         {code: 'E-70590', displayField: 'Ketamine', dosage: 10},
-                        {code: 'E-YY928', displayField: 'Telazol', dosage: 3},
+                        {code: 'E-YY992', displayField: 'Telazol', dosage: 3},
                         {code: 'none', displayField: 'None', dosage: null}
                     ]
                 },

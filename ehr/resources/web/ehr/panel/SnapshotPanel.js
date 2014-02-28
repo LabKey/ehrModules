@@ -564,7 +564,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
     appendCaseSummary: function(results){
         var el = this.down('#caseSummary');
-        if (!el)
+        if (!el || !results)
             return;
 
         var filteredResults = [];

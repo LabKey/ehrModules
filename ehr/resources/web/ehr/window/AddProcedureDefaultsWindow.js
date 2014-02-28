@@ -255,6 +255,8 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
     onSubmit: function(){
         var hasRecords = false;
         var distinctIds = [];
+        var parentIdMap = {};
+
         this.down('#fieldPanel').items.each(function(item){
             if (item.boundRecord){
                 var ignoreCheckbox = this.down('#' + item.ignoreCheckbox);
@@ -263,6 +265,9 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
                 }
 
                 distinctIds.push(item.boundRecord.get('Id'));
+                parentIdMap[item.boundRecord.get('Id')] = parentIdMap[item.boundRecord.get('Id')] || [];
+                parentIdMap[item.boundRecord.get('Id')].push(item.boundRecord.get('objectid'));
+
                 var panel = item.getValue();
                 Ext4.Array.forEach(this.targetTabs, function(targetTab){
                     var rows;
@@ -312,8 +317,10 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
             LDK.Assert.assertNotEmpty('Unable to find weight store in AddProcedureDefaultsWindow', weightStore);
             var toAdd = [];
             Ext4.Array.forEach(distinctIds, function(id){
+                //arbitrarily assign parentid based on the first matching procedure, in the case of multiple procedures
                 toAdd.push(weightStore.createModel({
-                    Id: id
+                    Id: id,
+                    parentid: parentIdMap[id][0]
                 }));
             }, this);
 

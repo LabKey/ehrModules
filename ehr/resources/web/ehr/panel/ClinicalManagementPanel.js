@@ -87,82 +87,12 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                             return;
                         }
 
-                        Ext4.Msg.wait('Loading...');
-                        LABKEY.Query.selectRows({
-                            schemaName: 'study',
-                            queryName: 'clinremarks',
-                            columns: 'lsid,objectid,Id,date,project,s,o,a,p,p2,hx,remark,caseid',
-                            filterArray: [LABKEY.Filter.create('objectid', rows[0].get('objectId'), LABKEY.Filter.Types.EQUAL)],
+                        EHR.panel.ClinicalManagementPanel.replaceSoap({
+                            objectid: rows[0].get('objectId'),
                             scope: this,
-                            failure: LDK.Utils.getErrorCallback(),
-                            success: function(results){
-                                Ext4.Msg.hide();
-                                if (!results || !results.rows || !results.rows.length){
-                                    Ext4.Msg.alert('Error', 'Record not found');
-                                    LDK.Utils.logToServer({
-                                        message: 'ERROR: unable to find clinremarks record with objectid: ' + rows[0].get('objectId')
-                                    });
-                                    return;
-                                }
-
-                                Ext4.create('EHR.window.ManageRecordWindow', {
-                                    schemaName: 'study',
-                                    queryName: 'clinRemarks',
-                                    maxItemsPerCol: 11,
-                                    pkCol: 'objectid',
-                                    pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
-                                    extraMetaData: {
-                                        Id: {
-                                            defaultValue: results.rows[0]['Id']
-                                        },
-                                        date: {
-                                            defaultValue: LDK.ConvertUtils.parseDate(results.rows[0]['date'])
-                                        },
-                                        hx: {
-                                            defaultValue: results.rows[0]['hx']
-                                        },
-                                        s: {
-                                            defaultValue: results.rows[0]['s']
-                                        },
-                                        o: {
-                                            defaultValue: results.rows[0]['o']
-                                        },
-                                        a: {
-                                            defaultValue: results.rows[0]['a']
-                                        },
-                                        p: {
-                                            defaultValue: results.rows[0]['p']
-                                        },
-                                        p2: {
-                                            defaultValue: results.rows[0]['p2']
-                                        },
-                                        remark: {
-                                            defaultValue: results.rows[0]['remark']
-                                        },
-                                        caseid: {
-                                            defaultValue: results.rows[0]['caseid']
-                                        },
-                                        project: {
-                                            defaultValue: results.rows[0]['project']
-                                        },
-                                        performedby: {
-                                            defaultValue: LABKEY.Security.currentUser.displayName
-                                        },
-                                        category: {
-                                            defaultValue: 'Replacement SOAP'
-                                        },
-                                        parentid: {
-                                            defaultValue: results.rows[0]['objectid']
-                                        }
-                                    },
-                                    listeners: {
-                                        scope: this,
-                                        save: function(){
-                                            var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
-                                            var grid = panel.down('ehr-clinicalhistorypanel').doReload();
-                                        }
-                                    }
-                                }).show();
+                            callback: function(){
+                                var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
+                                var grid = panel.down('ehr-clinicalhistorypanel').doReload();
                             }
                         });
                     }
@@ -202,6 +132,94 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                     }
                 }]
             }
+        },
+
+        replaceSoap: function(config){
+            config = config || {};
+            if (!config){
+                Ext4.Msg.alert('Error', 'Must provide the objectid to edit');
+                return;
+            }
+
+            Ext4.Msg.wait('Loading...');
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: 'clinremarks',
+                columns: 'lsid,objectid,Id,date,project,s,o,a,p,p2,hx,remark,caseid',
+                filterArray: [LABKEY.Filter.create('objectid', config.objectid, LABKEY.Filter.Types.EQUAL)],
+                scope: this,
+                failure: LDK.Utils.getErrorCallback(),
+                success: function(results){
+                    Ext4.Msg.hide();
+                    if (!results || !results.rows || !results.rows.length){
+                        Ext4.Msg.alert('Error', 'Record not found');
+                        LDK.Utils.logToServer({
+                            message: 'ERROR: unable to find clinremarks record with objectid: ' + config.objectid
+                        });
+                        return;
+                    }
+
+                    Ext4.create('EHR.window.ManageRecordWindow', {
+                        schemaName: 'study',
+                        queryName: 'clinRemarks',
+                        maxItemsPerCol: 11,
+                        pkCol: 'objectid',
+                        pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
+                        extraMetaData: {
+                            Id: {
+                                defaultValue: results.rows[0]['Id']
+                            },
+                            date: {
+                                defaultValue: LDK.ConvertUtils.parseDate(results.rows[0]['date'])
+                            },
+                            hx: {
+                                defaultValue: results.rows[0]['hx']
+                            },
+                            s: {
+                                defaultValue: results.rows[0]['s']
+                            },
+                            o: {
+                                defaultValue: results.rows[0]['o']
+                            },
+                            a: {
+                                defaultValue: results.rows[0]['a']
+                            },
+                            p: {
+                                defaultValue: results.rows[0]['p']
+                            },
+                            p2: {
+                                defaultValue: results.rows[0]['p2']
+                            },
+                            remark: {
+                                defaultValue: results.rows[0]['remark']
+                            },
+                            caseid: {
+                                defaultValue: results.rows[0]['caseid']
+                            },
+                            project: {
+                                defaultValue: results.rows[0]['project']
+                            },
+                            performedby: {
+                                defaultValue: LABKEY.Security.currentUser.displayName
+                            },
+                            category: {
+                                defaultValue: 'Replacement SOAP'
+                            },
+                            parentid: {
+                                defaultValue: config.objectid
+                            }
+                        },
+                        listeners: {
+                            scope: this,
+                            save: function(){
+                                if (config.callback){
+                                    config.callback.call((config.scope || this));
+                                }
+                            }
+                        }
+                    }).show();
+                }
+            });
         }
     },
 

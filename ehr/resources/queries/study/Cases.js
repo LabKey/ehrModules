@@ -16,3 +16,9 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
     }
 });
 
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'Cases', function(helper, errors, row, oldRow){
+    //the objective is to null out the review date if there is an enddate for this case
+    if (!helper.isValidateOnly() && !helper.isETL() && row.enddate && row.reviewdate){
+        row.reviewdate = null;
+    }
+});
