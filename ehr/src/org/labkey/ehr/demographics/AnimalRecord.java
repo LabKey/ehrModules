@@ -17,6 +17,7 @@ package org.labkey.ehr.demographics;
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.query.FieldKey;
 
@@ -96,6 +97,23 @@ public class AnimalRecord
     public Map<String, Object> getProps()
     {
         return Collections.unmodifiableMap(_props);
+    }
+
+    public Map<String, Object> getPropsForValidation()
+    {
+        Map<String, Object> ret = new HashMap<>(_props);
+        for (DemographicsProvider p : EHRService.get().getDemographicsProviders(getContainer()))
+        {
+            if (p.getSkippedFieldKeys() != null)
+            {
+                for (FieldKey key : p.getSkippedFieldKeys())
+                {
+                    ret.remove(key.toString());
+                }
+            }
+        }
+
+        return Collections.unmodifiableMap(ret);
     }
 
     public String getGender()

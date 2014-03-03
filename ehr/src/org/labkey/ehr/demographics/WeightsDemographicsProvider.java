@@ -52,7 +52,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("date"));
@@ -65,10 +65,10 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
     @Override
     public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)
     {
-        final Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+        final Map<String, Map<String, Object>> ret = new HashMap<>();
         final TableInfo ti = getTableInfo(c, u);
         final Map<FieldKey, ColumnInfo> cols = getColumns(ti);
-        Sort sort = new Sort("-date");
+        Sort sort = getSort();
 
         for (String id : ids)
         {
@@ -89,7 +89,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
 
                     Map<String, Object> map = ret.get(id);
                     if (map == null)
-                        map = new HashMap<String, Object>();
+                        map = new HashMap<>();
 
                     processRow(rs, cols, map);
 
@@ -99,6 +99,12 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
         }
 
         return ret;
+    }
+
+    @Override
+    protected Sort getSort()
+    {
+        return new Sort("-date");
     }
 
     @Override

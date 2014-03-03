@@ -56,6 +56,15 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
     }
 
     @Override
+    public Collection<FieldKey> getSkippedFieldKeys()
+    {
+        Set<FieldKey> keys = new HashSet<>();
+        keys.add(FieldKey.fromString("daysSinceWeight"));
+
+        return keys;
+    }
+
+    @Override
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);

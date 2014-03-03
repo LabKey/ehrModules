@@ -33,6 +33,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>veterinarians</fkTable>
                             <fkColumnName>UserId</fkColumnName>
+                            <fkDisplayColumnName>DisplayName</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="problem">

@@ -25,8 +25,13 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
 
     cachedText: null,
 
-    updateErrorMessages: function(sc){
-        var errorObj = sc.getErrorMessages(true);
+    updateErrorMessages: function(){
+        if (this.dataEntryPanel.isEditing()){
+            this.updateErrorMessages.defer(2000, this);
+            return;
+        }
+
+        var errorObj = this.storeCollection.getErrorMessages(true);
 
         var items = [];
         var texts = [];

@@ -74,6 +74,43 @@ EHR.DataEntryUtils = new function(){
                 }
             }, config);
         },
+        COPY_IDS: function(config){
+            return Ext4.Object.merge({
+                text: 'Copy Ids',
+                tooltip: 'Click to copy all distinct Ids',
+                handler: function(btn){
+                    var store = btn.up('gridpanel').store;
+                    if (store.getFields().get('Id')){
+                        var distinct = [];
+                        store.each(function(r){
+                            if (distinct.indexOf(r.get('Id')) == -1){
+                                distinct.push(r.get('Id'));
+                            }
+                        }, this);
+
+                        Ext4.create('Ext.window.Window', {
+                            title: 'Distinct IDs',
+                            modal: true,
+                            items: [{
+                                xtype: 'textarea',
+                                height: 200,
+                                width: 300,
+                                value: distinct.join('\n')
+                            }],
+                            buttons: [{
+                                text: 'Close',
+                                handler: function(btn){
+                                    btn.up('window').close();
+                                }
+                            }]
+                        }).show();
+                    }
+                    else {
+                        Ext4.Msg.alert('No Id', 'This section does not have an animal Id field');
+                    }
+                }
+            }, config);
+        },
         REFRESH: function(config){
             return Ext4.Object.merge({
                 text: 'Refresh Grid',
@@ -802,7 +839,7 @@ EHR.DataEntryUtils = new function(){
                     for (var query in permMap[schemaName]){
                         if (!permMap[schemaName][query][permissionToTest]){
                             hasPermission = false;
-                            console.log('no permission');
+                            console.log('no permission: ' + schemaName + '.' + query + ' with ' + permissionToTest);
                             break;
                         }
                     }

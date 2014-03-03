@@ -266,7 +266,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 xtype: 'ehr-dataentryerrorpanel',
                 itemId: 'errorPanel',
                 style: 'padding-top: 10px;',
-                storeCollection: this.storeCollection
+                storeCollection: this.storeCollection,
+                dataEntryPanel: this
             });
         }
 
@@ -278,6 +279,17 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         if (minWidth && (!this.minWidth || this.minWidth < minWidth)){
             this.minWidth = minWidth;
         }
+    },
+
+    isEditing: function(){
+        var sections = this.query('[isDataEntrySection]');
+        for (var i=0;i<sections.length;i++){
+            if (sections[i].editingPlugin && sections[i].editingPlugin.editing){
+                return true;
+            }
+        }
+
+        return false;
     },
 
     //TODO: eventually remove this in favor of getItemConfig()
@@ -328,6 +340,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
+                isDataEntrySection: true,
                 hidden: section.hidden,
                 extraMetaData: this.extraMetaData,
                 store: this.storeCollection.getClientStoreForSection(this, section)

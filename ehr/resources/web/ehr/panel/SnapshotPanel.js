@@ -520,6 +520,19 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (!el)
             return;
 
+        if (rows && rows.length){
+            Ext4.Array.forEach(rows, function(row){
+                if (row.date){
+                    var date = LDK.ConvertUtils.parseDate(row.date);
+                    date = Ext4.Date.clearTime(date);
+
+                    var now = Ext4.Date.clearTime(new Date());
+
+                    row.daysElapsed = Ext4.Date.getElapsed(date, now) / (1000 * 60 * 60 * 24);
+                }
+            }, this);
+        }
+
         el.appendTable({
             rows: rows
         }, this.getTreatmentColumns());
@@ -634,7 +647,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 }
             }
         },{
-            name: 'assignedvet/UserId/DisplayName',
+            name: 'assignedvet/DisplayName',
             label: 'Vet'
         }]);
     },

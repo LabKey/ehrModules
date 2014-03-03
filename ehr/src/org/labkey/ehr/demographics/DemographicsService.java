@@ -103,7 +103,9 @@ public class DemographicsService
 
     private DemographicsService()
     {
-        _cache = CacheManager.getStringKeyCache(10000, CacheManager.UNLIMITED, "DemographicsService");
+        // NOTE: we expect to recache all living animals each night.  the purpose of a 25HR window is to make sure the
+        // existing record is present so we can validate.  any other incidental cached records would expire shortly after
+        _cache = CacheManager.getStringKeyCache(10000, (CacheManager.DAY + CacheManager.HOUR), "DemographicsService");
     }
 
     public static DemographicsService get()
@@ -169,21 +171,21 @@ public class DemographicsService
             AnimalRecord existing = _cache.get(key);
             if (existing != null)
             {
-                if (existing.getProps() == null && record.getProps() != null)
+                if (existing.getPropsForValidation() == null && record.getPropsForValidation() != null)
                 {
                     _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has properties, but new record does not");
                 }
-                else if (existing.getProps() != null && record.getProps() == null)
+                else if (existing.getPropsForValidation() != null && record.getPropsForValidation() == null)
                 {
                     _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has no properties, but new record does");
                 }
-                else if (existing.getProps() == null && record.getProps() == null)
+                else if (existing.getPropsForValidation() == null && record.getPropsForValidation() == null)
                 {
                     //ignore
                 }
                 else
                 {
-                    MapDifference diff = Maps.difference(existing.getProps(), record.getProps());
+                    MapDifference diff = Maps.difference(existing.getPropsForValidation(), record.getPropsForValidation());
                     if (!diff.areEqual())
                     {
                         _log.error("mismatch for cached record for animal: " + record.getId());

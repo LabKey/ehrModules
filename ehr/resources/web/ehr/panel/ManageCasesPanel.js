@@ -107,7 +107,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
         this.store = Ext4.create('LABKEY.ext4.data.Store', {
             schemaName: 'study',
             queryName: 'Cases',
-            columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,problemCategories,encounterid,assignedvet,assignedvet/UserId/DisplayName,isOpen,isActive',
+            columns: 'lsid,objectid,Id,date,enddate,reviewdate,category,remark,performedby,problemCategories,encounterid,assignedvet,assignedvet/DisplayName,isOpen,isActive',
             filterArray: [
                 LABKEY.Filter.create('Id', this.animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isOpen', true, LABKEY.Filter.Types.EQUAL)
@@ -310,8 +310,8 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 dataIndex: 'assignedvet',
                 width: 130,
                 renderer: function(value, cellMetaData, record){
-                    if (Ext4.isDefined(record.get('assignedvet/UserId/DisplayName'))){
-                        return record.get('assignedvet/UserId/DisplayName');
+                    if (Ext4.isDefined(record.get('assignedvet/DisplayName'))){
+                        return record.get('assignedvet/DisplayName');
                     }
 
                     return value ? '[' + value + ']' : value;
@@ -635,7 +635,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                         reviewdate: win.down('#reviewdate').getValue()
                     });
 
-                    win.boundRecord.set('assignedvet/UserId/DisplayName', win.down('#assignedvet').getDisplayValue());
+                    win.boundRecord.set('assignedvet/DisplayName', win.down('#assignedvet').getDisplayValue());
                     win.boundRecord.store.sync();
 
                     var problemGrid = win.down('#problemGrid');

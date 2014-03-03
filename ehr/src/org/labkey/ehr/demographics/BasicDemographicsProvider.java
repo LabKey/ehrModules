@@ -47,7 +47,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
 
     protected Collection<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         //Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/curLocation/date,
 
         keys.add(FieldKey.fromString("lsid"));
@@ -64,6 +64,17 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.add(FieldKey.fromString("dam"));
         keys.add(FieldKey.fromString("sire"));
 
+        keys.add(FieldKey.fromString("Id/age/yearAndDays"));
+        keys.add(FieldKey.fromString("Id/age/ageInDays"));
+        keys.add(FieldKey.fromString("Id/age/ageInYears"));
+
+        return keys;
+    }
+
+    @Override
+    public Collection<FieldKey> getSkippedFieldKeys()
+    {
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("Id/age/yearAndDays"));
         keys.add(FieldKey.fromString("Id/age/ageInDays"));
         keys.add(FieldKey.fromString("Id/age/ageInYears"));

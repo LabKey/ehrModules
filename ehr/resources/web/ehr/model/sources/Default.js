@@ -731,8 +731,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.tissueDistributions': {
             project: {
-                hidden: false,
-                allowBlank: false
+                hidden: false
             },
             qualifier: {
                 hidden: true

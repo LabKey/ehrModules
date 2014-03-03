@@ -146,6 +146,11 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                 var hour = r.get('date').getHours();
                 hour += 3;
 
+                //note: if more than 30 mins past the hour, round up
+                if (r.get('date').getMinutes() >= 30){
+                    hour++;
+                }
+
                 if (hour > 16){
                     hour = 20;
                 }

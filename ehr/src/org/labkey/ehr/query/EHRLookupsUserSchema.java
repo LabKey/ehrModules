@@ -245,6 +245,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         ti.addCondition(new SimpleFilter(FieldKey.fromString("UserId"), userIds, CompareType.IN));
 
         ti.addWrapColumn(ti.getRealTable().getColumn("UserId"));
+        ti.addWrapColumn(ti.getRealTable().getColumn("DisplayName"));
         ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
         ti.setName(name);
         ti.setTitle("Veternarians");

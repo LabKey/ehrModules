@@ -66,7 +66,6 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
 
         keys.add(FieldKey.fromString("amountWithUnits"));
         keys.add(FieldKey.fromString("category"));
-        keys.add(FieldKey.fromString("daysElapsed"));
 
         return keys;
     }

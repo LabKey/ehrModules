@@ -81,16 +81,22 @@ Ext4.define('EHR.grid.Panel', {
     },
 
     onStoreValidationComplete: function(){
+        if (this.editingPlugin.editing){
+            //console.log('defer grid refresh: ' + this.store.storeId);
+            this.onStoreValidationComplete.defer(2000, this);
+            return;
+        }
+
         var keys = Ext4.Object.getKeys(this.pendingChanges);
         if (keys.length > 5){
-            console.log('grid refresh: ' + this.store.storeId);
+            //console.log('grid refresh: ' + this.store.storeId);
             this.getView().refresh();
         }
         else {
             Ext4.Array.forEach(keys, function(key){
                 var obj = this.pendingChanges[key];
 
-                //console.log('updating cell: ' + key);
+                //console.log('updating row: ' + key);
                 this.getView().onUpdate(obj.store, obj.record);
             }, this);
         }
