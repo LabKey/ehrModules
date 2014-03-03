@@ -56,6 +56,8 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
 
         if (animalId)
             EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this);
+        else
+            this.getForm().reset();
     },
 
     onLoad: function(ids, resultMap){

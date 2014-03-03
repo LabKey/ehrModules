@@ -126,6 +126,10 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 load: function(store){
                     //NOTE: consumed by SnapshotPanel
                     this.fireEvent('storeloaded', this);
+                },
+                exception: function(store){
+                    //NOTE: refresh the store in order to avoid invalid data on the client
+                    store.load();
                 }
             }
         });
@@ -462,6 +466,9 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     border: false
                 },
                 items: [{
+                    html: 'There are three dates for a case.  The open date is the date is was created.  If you enter a value for \'Date Closed\' means the date this case is completely closed, and will never re-open.  If you want to temporarily close this case and reopen at a future date, enter a date in the \'Reopen Date\' field',
+                    bodyStyle: 'padding-bottom: 10px;'
+                },{
                     xtype: 'ehr-vetfieldcombo',
                     fieldLabel: 'Assigned Vet',
                     itemId: 'assignedvet',
@@ -482,6 +489,13 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.boundRecord.get('category')].requiredFields.indexOf('reviewdate') == -1,
                     width: 560,
                     value: this.boundRecord.get('reviewdate')
+                },{
+                    xtype: 'datefield',
+                    fieldLabel: 'Date Closed',
+                    itemId: 'enddate',
+                    allowBlank: true,
+                    width: 560,
+                    value: this.boundRecord.get('enddate')
                 },{
                     xtype: 'textarea',
                     fieldLabel: 'Description/Notes',
@@ -505,7 +519,13 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     sort: 'date',
                     columns: 'Id,date,lsid,objectid,category,enddate,caseid',
                     filterArray: [LABKEY.Filter.create('caseid', this.boundRecord.get('objectid'), LABKEY.Filter.Types.EQUAL)],
-                    autoLoad: true
+                    autoLoad: true,
+                    listeners: {
+                        exception: function(store){
+                            //NOTE: refresh the store in order to avoid invalid data on the client
+                            store.load();
+                        }
+                    }
                 },
                 columns: [{
                     dataIndex: 'category',
