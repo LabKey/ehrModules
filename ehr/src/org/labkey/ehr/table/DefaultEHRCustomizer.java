@@ -1298,6 +1298,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
@@ -1392,13 +1393,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  age(CAST(c.date as DATE), coalesce(c.id.demographics.death, curdate()))\n" +
+                    "  age(CAST(c.date as DATE), coalesce(c.Id.demographics.death, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  timestampdiff('SQL_TSI_DAY', CAST(c.date as DATE), coalesce(c.id.demographics.death, curdate()))\n" +
+                    "  timestampdiff('SQL_TSI_DAY', CAST(c.date as DATE), coalesce(c.Id.demographics.death, curdate()))\n" +
                     "END as survivorshipInDays,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
@@ -1408,6 +1409,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
@@ -1479,26 +1481,26 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
+                    "  ROUND(CONVERT(age_in_months(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  floor(age(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " as DATE))))\n" +
+                    "  floor(age(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " as DATE))))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  CONVERT(age_in_months(c.id.demographics.birth, COALESCE(c.id.demographics.death, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
+                    "  CONVERT(age_in_months(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
@@ -1508,7 +1510,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName);
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
