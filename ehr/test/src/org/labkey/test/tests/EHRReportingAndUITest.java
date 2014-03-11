@@ -316,7 +316,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
         waitForElement(Locator.tagWithText("div", "3.73 kg")); //first animal
         waitForElement(Locator.tagWithText("div", "3.56 kg")); //second animal
-        //TODO: actually check for graph loading
+        waitForElements(Locator.css("svg tspan"), 30);  //kinda ugly proxy for graphs loading
+        waitForElements(Ext4HelperWD.ext4Tab("Raw Data"), 2);
         waitAndClick(Ext4HelperWD.ext4Tab("Raw Data"));
         waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);
 
