@@ -39,7 +39,7 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
-import org.labkey.test.util.RReportHelperWD;
+import org.labkey.test.util.RReportHelper;
 import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
 import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
@@ -94,7 +94,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         initTest.doCleanup(false);
 
         initTest.initProject();
-        RReportHelperWD rHelper = new RReportHelperWD(initTest);
+        RReportHelper rHelper = new RReportHelper(initTest);
         rHelper.ensureRConfig();
 
         currentTest = initTest;
