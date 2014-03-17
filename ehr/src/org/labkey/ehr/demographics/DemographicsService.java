@@ -18,8 +18,6 @@ package org.labkey.ehr.demographics;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
-import org.labkey.api.cache.BlockingStringKeyCache;
-import org.labkey.api.cache.CacheLoader;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.CompareType;
@@ -28,8 +26,8 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.FieldKey;
@@ -40,25 +38,21 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.study.Study;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
-import org.labkey.api.util.Pair;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 import org.quartz.CronScheduleBuilder;
-import org.quartz.DailyTimeIntervalScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
-import org.quartz.TimeOfDay;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.dao.DeadlockLoserDataAccessException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -67,11 +61,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: bimber
@@ -398,7 +387,7 @@ public class DemographicsService
 
     private int cacheLivingAnimalsForAllContainers(boolean validateOnCreate)
     {
-        _log.info("attempting to reache demographics for all living animals on all containers set to do so");
+        _log.info("attempting to recache demographics for all living animals on all containers set to do so");
 
         //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
