@@ -35,7 +35,6 @@ import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.EHRClientAPIHelper;
-import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
@@ -574,8 +573,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         Ext4GridRefWD bloodGrid = _helper.getExt4GridForFormSection("Blood Draws");
         Assert.assertEquals("Incorrect row count", 0, bloodGrid.getRowCount());
         bloodGrid.clickTbarButton("Templates");
-        waitAndClick(Ext4Helper.ext4MenuItem("Apply Template").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Apply Template"));
+        waitAndClick(Ext4HelperWD.ext4MenuItem("Apply Template").notHidden());
+        waitForElement(Ext4HelperWD.Locators.window("Apply Template"));
         waitAndClick(Locator.ext4Button("Close"));
 
         Date date = DateUtils.round(new Date(), Calendar.DATE);

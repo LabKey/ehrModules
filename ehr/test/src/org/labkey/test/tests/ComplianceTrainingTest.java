@@ -35,7 +35,7 @@ import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
@@ -382,7 +382,7 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
 
         checkCheckbox(Locator.id("sopCheck"));
         click(Locator.button("Submit"));
-        waitForElement(Ext4Helper.ext4Window("SOPs Complete"));
+        waitForElement(Ext4HelperWD.Locators.window("SOPs Complete"));
         click(Locator.ext4Button("OK"));
     }
 
@@ -501,12 +501,6 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
     public String getAssociatedModuleDirectory()
     {
         return null;
-    }
-
-    @Override
-    public boolean isFileUploadTest()
-    {
-        return true;
     }
 
     @Override public BrowserType bestBrowser()

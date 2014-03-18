@@ -26,7 +26,6 @@ import org.labkey.remoteapi.security.CreateUserResponse;
 import org.labkey.remoteapi.security.DeleteUserCommand;
 import org.labkey.remoteapi.security.GetUsersCommand;
 import org.labkey.remoteapi.security.GetUsersResponse;
-import org.labkey.test.BaseSeleniumWebTest;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.tests.EHRReportingAndUITest;
@@ -167,7 +166,7 @@ public class EHRTestHelper
             {
                 return null != _test._ext4Helper.queryOne(query, Ext4CmpRefWD.class);
             }
-        }, "Component did not appear for query: " + query, BaseSeleniumWebTest.WAIT_FOR_JAVASCRIPT);
+        }, "Component did not appear for query: " + query, WAIT_FOR_JAVASCRIPT);
     }
 
     public Boolean waitForElementWithValue(final BaseWebDriverTest test, final String name, final String value, final int msTimeout)
@@ -246,8 +245,8 @@ public class EHRTestHelper
     {
         grid.clickTbarButton("Templates");
 
-        _test.waitAndClick(Ext4Helper.ext4MenuItem("Templates").notHidden());
-        _test.waitAndClick(Ext4Helper.ext4MenuItem(templateName).notHidden());
+        _test.waitAndClick(Ext4HelperWD.ext4MenuItem("Templates").notHidden());
+        _test.waitAndClick(Ext4HelperWD.ext4MenuItem(templateName).notHidden());
 
         _test.waitForElement(Ext4HelperWD.ext4Window("Apply Template"));
         Ext4ComboRefWD combo = new Ext4ComboRefWD(Ext4ComboRefWD.getForLabel(_test, "Template Name").getId(), _test);

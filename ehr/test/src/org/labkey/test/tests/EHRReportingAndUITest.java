@@ -21,12 +21,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
-import org.labkey.test.TestTimeoutException;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Ext4HelperWD;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
@@ -241,7 +239,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         log("Verify Project search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
-        waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
+        waitForElement(Ext4HelperWD.Locators.window("Search By Project/Protocol"));
         Ext4FieldRefWD.waitForComponent(this, "Center Project");
         Ext4ComboRefWD.getForLabel(this, "Center Project").setComboByDisplayValue(PROJECT_ID);
         _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
@@ -253,7 +251,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         log("Verify Protocol search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
-        waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
+        waitForElement(Ext4HelperWD.Locators.window("Search By Project/Protocol"));
         Ext4FieldRefWD.waitForComponent(this, "IACUC Protocol");
         Ext4ComboRefWD.getForLabel(this, "IACUC Protocol").setComboByDisplayValue(PROTOCOL_ID);
         waitAndClick(Locator.ext4Button("Submit"));
@@ -293,7 +291,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         waitAndClick(Locator.ext4Button("Clear"));
         refreshAnimalHistoryReport();
-        waitForElement(Ext4Helper.ext4Window("Error"));
+        waitForElement(Ext4HelperWD.Locators.window("Error"));
         assertElementNotPresent(Locator.ext4ButtonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");
         waitAndClick(Locator.ext4Button("OK"));
@@ -357,22 +355,22 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         setFilterAndWait(dataRegionName, "Id", "Does Not Equal", PROTOCOL_MEMBER_IDS[1], 0);
         waitForText("(Id <> " + PROTOCOL_MEMBER_IDS[1], WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
-        waitForElement(Ext4Helper.ext4Window("Return Distinct Values"));
+        waitForElement(Ext4HelperWD.Locators.window("Return Distinct Values"));
         waitForElement(Locator.ext4Button("Submit"));
         Ext4CmpRefWD btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
-        waitForElement(Ext4Helper.ext4Window("Distinct Values"));
+        waitForElement(Ext4HelperWD.Locators.window("Distinct Values"));
         assertEquals("Incorrect value returned", PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[2], _ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue());
         btn = _ext4Helper.queryOne("button[text='Close']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
 
         log("Return Distinct Values - show all");
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
-        waitForElement(Ext4Helper.ext4Window("Return Distinct Values"));
+        waitForElement(Ext4HelperWD.Locators.window("Return Distinct Values"));
         Ext4FieldRefWD.getForBoxLabel(this, "All Rows").setChecked(true);
         btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRefWD.class);
         waitAndClick(Locator.id(btn.getId()));
-        waitForElement(Ext4Helper.ext4Window("Distinct Values"));
+        waitForElement(Ext4HelperWD.Locators.window("Distinct Values"));
         String value = (String)_ext4Helper.queryOne("#distinctValues", Ext4FieldRefWD.class).getValue();
         assertEquals("Incorrect number of IDs returned", 2, value.split("\n").length);
         btn = _ext4Helper.queryOne("button[text='Close']", Ext4CmpRefWD.class);
