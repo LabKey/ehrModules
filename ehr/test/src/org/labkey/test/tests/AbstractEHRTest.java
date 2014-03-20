@@ -31,8 +31,8 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
-import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
-import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
+import org.labkey.test.util.ext4cmp.Ext4CmpRef;
+import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -526,9 +526,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         }
     }
 
-    protected Ext4FieldRefWD getAnimalHistorySubjField()
+    protected Ext4FieldRef getAnimalHistorySubjField()
     {
-        Ext4CmpRefWD.waitForComponent(this, "#subjArea");
-        return _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
+        Ext4CmpRef.waitForComponent(this, "#subjArea");
+        return _ext4Helper.queryOne("#subjArea", Ext4FieldRef.class);
     }
 }

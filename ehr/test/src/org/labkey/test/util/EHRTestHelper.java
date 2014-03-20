@@ -29,10 +29,10 @@ import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.tests.EHRReportingAndUITest;
-import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
-import org.labkey.test.util.ext4cmp.Ext4ComboRefWD;
-import org.labkey.test.util.ext4cmp.Ext4FieldRefWD;
-import org.labkey.test.util.ext4cmp.Ext4GridRefWD;
+import org.labkey.test.util.ext4cmp.Ext4CmpRef;
+import org.labkey.test.util.ext4cmp.Ext4ComboRef;
+import org.labkey.test.util.ext4cmp.Ext4FieldRef;
+import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -43,10 +43,8 @@ import org.testng.Assert;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_JAVASCRIPT;
-import static org.labkey.test.Locator.NOT_HIDDEN;
 
 /**
  * User: bbimber
@@ -164,7 +162,7 @@ public class EHRTestHelper
             @Override
             public boolean check()
             {
-                return null != _test._ext4Helper.queryOne(query, Ext4CmpRefWD.class);
+                return null != _test._ext4Helper.queryOne(query, Ext4CmpRef.class);
             }
         }, "Component did not appear for query: " + query, WAIT_FOR_JAVASCRIPT);
     }
@@ -201,20 +199,20 @@ public class EHRTestHelper
         _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name), _test.WAIT_FOR_PAGE);
 
         _test.waitForElement(Locator.ext4Button("Save Draft"));
-        Ext4CmpRefWD saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRefWD.class);
+        Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
         saveBtn.waitForEnabled();
     }
 
-    public Ext4FieldRefWD getExt4FieldForFormSection(String sectionTitle, String fieldLabel)
+    public Ext4FieldRef getExt4FieldForFormSection(String sectionTitle, String fieldLabel)
     {
-        return _test._ext4Helper.queryOne("panel[title='" + sectionTitle + "'] [fieldLabel='" + fieldLabel + "']", Ext4FieldRefWD.class);
+        return _test._ext4Helper.queryOne("panel[title='" + sectionTitle + "'] [fieldLabel='" + fieldLabel + "']", Ext4FieldRef.class);
     }
 
-    public Ext4GridRefWD getExt4GridForFormSection(String sectionTitle)
+    public Ext4GridRef getExt4GridForFormSection(String sectionTitle)
     {
         String query = "panel[title='" + sectionTitle + "']";
-        Ext4CmpRefWD.waitForComponent(_test, query);
-        Ext4GridRefWD grid = _test._ext4Helper.queryOne(query, Ext4GridRefWD.class);
+        Ext4CmpRef.waitForComponent(_test, query);
+        Ext4GridRef grid = _test._ext4Helper.queryOne(query, Ext4GridRef.class);
         if (grid != null)
             grid.setClicksToEdit(1);
 
@@ -226,7 +224,7 @@ public class EHRTestHelper
         return Locator.ext4Button(text).withClass("ehr-dataentrybtn");
     }
 
-    public void addRecordToGrid(Ext4GridRefWD grid)
+    public void addRecordToGrid(Ext4GridRef grid)
     {
         Integer count = grid.getRowCount();
         grid.clickTbarButton("Add");
@@ -237,19 +235,19 @@ public class EHRTestHelper
 
     public void clickExt4WindowBtn(String title, String label)
     {
-        _test.waitForElement(Ext4HelperWD.ext4Window(title));
+        _test.waitForElement(Ext4Helper.ext4Window(title));
         _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Locator.ext4Button(label)));
     }
 
-    public void applyTemplate(Ext4GridRefWD grid, String templateName, boolean bulkEdit, Date date)
+    public void applyTemplate(Ext4GridRef grid, String templateName, boolean bulkEdit, Date date)
     {
         grid.clickTbarButton("Templates");
 
-        _test.waitAndClick(Ext4HelperWD.ext4MenuItem("Templates").notHidden());
-        _test.waitAndClick(Ext4HelperWD.ext4MenuItem(templateName).notHidden());
+        _test.waitAndClick(Ext4Helper.ext4MenuItem("Templates").notHidden());
+        _test.waitAndClick(Ext4Helper.ext4MenuItem(templateName).notHidden());
 
-        _test.waitForElement(Ext4HelperWD.ext4Window("Apply Template"));
-        Ext4ComboRefWD combo = new Ext4ComboRefWD(Ext4ComboRefWD.getForLabel(_test, "Template Name").getId(), _test);
+        _test.waitForElement(Ext4Helper.ext4Window("Apply Template"));
+        Ext4ComboRef combo = new Ext4ComboRef(Ext4ComboRef.getForLabel(_test, "Template Name").getId(), _test);
         combo.waitForStoreLoad();
         Assert.assertEquals(combo.getDisplayValue(), templateName);
 
@@ -257,15 +255,15 @@ public class EHRTestHelper
         {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            _test._ext4Helper.queryOne("window datefield", Ext4FieldRefWD.class).setValue(dateFormat.format(date));
-            _test._ext4Helper.queryOne("window timefield", Ext4FieldRefWD.class).setValue(timeFormat.format(date));
+            _test._ext4Helper.queryOne("window datefield", Ext4FieldRef.class).setValue(dateFormat.format(date));
+            _test._ext4Helper.queryOne("window timefield", Ext4FieldRef.class).setValue(timeFormat.format(date));
         }
 
         if (bulkEdit)
         {
-            Ext4FieldRefWD.getForLabel(_test, "Bulk Edit Before Applying").setChecked(true);
+            Ext4FieldRef.getForLabel(_test, "Bulk Edit Before Applying").setChecked(true);
             _test.waitAndClick(Locator.ext4Button("Submit"));
-            _test.waitForElement(Ext4HelperWD.ext4Window("Bulk Edit"));
+            _test.waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
         }
         else
         {
@@ -275,7 +273,7 @@ public class EHRTestHelper
 
     public void toggleBulkEditField(String label)
     {
-        Locator l = Ext4HelperWD.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
+        Locator l = Ext4Helper.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
         Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
         _test.click(l);
     }
@@ -284,7 +282,7 @@ public class EHRTestHelper
     {
         _test.waitAndClick(getDataEntryButton("More Actions"));
         _test._ext4Helper.clickExt4MenuItem("Discard");
-        _test.waitForElement(Ext4HelperWD.ext4Window("Discard Form"));
+        _test.waitForElement(Ext4Helper.ext4Window("Discard Form"));
         _test.clickAndWait(Locator.ext4Button("Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
