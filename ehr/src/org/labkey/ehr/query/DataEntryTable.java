@@ -47,7 +47,7 @@ public class DataEntryTable<SchemaType extends UserSchema> extends SimpleUserSch
     }
 
     @Override
-    public boolean hasPermissionOverridable(UserPrincipal user, Class<? extends Permission> perm)
+    public boolean hasPermission(UserPrincipal user, Class<? extends Permission> perm)
     {
         if (InsertPermission.class.isAssignableFrom(perm) || UpdatePermission.class.isAssignableFrom(perm) || DeletePermission.class.isAssignableFrom(perm))
         {
@@ -62,6 +62,6 @@ public class DataEntryTable<SchemaType extends UserSchema> extends SimpleUserSch
             return getContainer().hasPermission(user, EHRDataEntryPermission.class);
         }
 
-        return super.hasPermissionOverridable(user, perm);
+        return super.hasPermission(user, perm);
     }
 }
