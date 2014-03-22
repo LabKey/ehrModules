@@ -193,8 +193,7 @@ public class EHRManager
         }
 
         Set<Study> ehrStudies = new HashSet<>();
-        Study[] studies = StudyService.get().getAllStudies(ContainerManager.getRoot(), u);
-        for (Study s : studies)
+        for (Study s : StudyService.get().getAllStudies(ContainerManager.getRoot(), u))
         {
             if (EHRStudyLabel.equals(s.getLabel()) && s.getContainer().getActiveModules().contains(ehrModule))
             {
@@ -411,7 +410,7 @@ public class EHRManager
             for (DataSet dataset : datasets)
             {
                 Domain domain = dataset.getDomain();
-                DomainProperty[] dprops = domain.getProperties();
+                List<? extends DomainProperty> dprops = domain.getProperties();
                 boolean changed = false;
                 List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
