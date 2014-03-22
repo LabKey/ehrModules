@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 LabKey Corporation
+ * Copyright (c) 2012-2014 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package org.labkey.ehr.pipeline;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
 import org.labkey.api.pipeline.PipelineJob;
@@ -41,7 +41,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -121,8 +120,8 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
             TableSelector ts = new TableSelector(pedTable, PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species"));
 
             File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
-            final CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER);
-            try
+
+            try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER))
             {
                 long count = ts.getRowCount();
                 if (count > 0)
@@ -152,11 +151,6 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
             catch (BadSqlGrammarException e)
             {
                 throw new PipelineJobException("Unable to query pedigree table", e);
-            }
-            finally
-            {
-                if (writer != null)
-                    writer.close();
             }
 
             action.addOutput(outputFile, "Pedigree TSV", false);

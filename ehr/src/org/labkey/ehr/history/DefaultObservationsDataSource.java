@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
@@ -25,7 +26,6 @@ import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.HistoryRowImpl;
-import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr.EHRManager;
