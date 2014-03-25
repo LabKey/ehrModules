@@ -246,12 +246,12 @@ public class TriggerScriptHelper
             return null;
     }
 
-    public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue) throws SQLException
+    public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue)
     {
         cascadeDelete(userId, containerId, schemaName, queryName, keyField, keyValue, null);
     }
 
-    public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue, String sql) throws SQLException
+    public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue, String sql)
     {
         User u = UserManager.getUser(userId);
         if (u == null)
