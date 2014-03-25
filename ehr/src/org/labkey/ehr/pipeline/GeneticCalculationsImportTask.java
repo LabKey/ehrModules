@@ -20,6 +20,7 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
+import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
@@ -44,7 +45,6 @@ import org.labkey.api.util.FileType;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -194,15 +194,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             job.getLogger().info("Inserted " + lineNum + " rows into ehr.kinship");
 
         }
-        catch (FileNotFoundException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (IOException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (SQLException e)
+        catch (RuntimeSQLException | IOException e)
         {
             throw new PipelineJobException(e);
         }
