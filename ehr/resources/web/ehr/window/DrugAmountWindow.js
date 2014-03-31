@@ -15,7 +15,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         LABKEY.ExtAdapter.apply(this, {
             modal: true,
             closeAction: 'destroy',
-            width: 1200,
+            width: 1240,
             title: 'Review Drug Amounts',
             defaults: {
                 border: false
@@ -33,6 +33,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                 xtype: 'tabpanel',
                 maxHeight: '80%',
                 bodyStyle: 'padding: 5px;',
+                //width: 1190,
                 defaults: {
                     border: false
                 },
@@ -44,21 +45,6 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                         xtype: 'form',
                         border: false,
                         items: this.getInitialItems()
-                    },{
-                        xtype: 'button',
-                        text: 'Recalculate All',
-                        border: true,
-                        itemId: 'recalculate',
-                        scope: this,
-                        handler: function(btn){
-                            var panel  = this.down('#drugTab');
-                            var cbs = panel.query('checkbox');
-                            for (var i=0;i<cbs.length;i++){
-                                if (cbs[i].getValue()){
-                                    this.recalculateRow(cbs[i].recordIdx, '*');
-                                }
-                            }
-                        }
                     }]
                 },{
                     title: 'Doses Used',
@@ -66,19 +52,8 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                     items: [{
                         itemId: 'drugDoseTab',
                         border: false,
+                        bodyStyle: 'padding: 5px;',
                         items: this.getInitialItems()
-                    },{
-                        xtype: 'button',
-                        text: 'Update All',
-                        border: true,
-                        scope: this,
-                        handler: function(btn){
-                            var panel  = this.down('#drugDoseTab');
-                            var cbs = panel.query('field[fieldName=code]');
-                            for (var i=0;i<cbs.length;i++){
-                                this.updateMedicationOfType(cbs[i].snomedCode);
-                            }
-                        }
                     }]
                 },{
                     title: 'Weights Used',
@@ -196,7 +171,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         var numCols = 3;
 
         return [{
-            html: 'This tabs shows one row for each animal in your selection.  You are able to choose the desired weight to use in calculations.  You can either use the latest recorded weight, preferentially use the weight entered in the weight section of this form (if applicable), or enter an estimated weight.',
+            html: 'This tab shows one row for each animal in your selection.  You are able to choose the desired weight to use in calculations.  You can either use the latest recorded weight, preferentially use the weight entered in the weight section of this form (if applicable), or enter an estimated weight.',
             border: false,
             style: 'padding-bottom: 10px;'
         },{
@@ -438,6 +413,8 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                 snomedCode: code.code,
                 recordIdx: recordIdx,
                 text: 'Update Records',
+                style: 'margin-left: 1px;',
+                width: 110,
                 scope: this,
                 handler: function(btn){
                     this.updateMedicationOfType(btn.snomedCode);
@@ -445,8 +422,29 @@ Ext4.define('EHR.window.DrugAmountWindow', {
             });
         }, this);
 
+        items.push({
+            border: false,
+            colspan: (numCols -1)
+        });
+
+        items.push({
+            xtype: 'button',
+            style: 'margin-left: 1px;margin-top: 4px;',
+            width: 110,
+            text: 'Update All',
+            border: true,
+            scope: this,
+            handler: function(btn){
+                var panel  = this.down('#drugDoseTab');
+                var cbs = panel.query('field[fieldName=code]');
+                for (var i=0;i<cbs.length;i++){
+                    this.updateMedicationOfType(cbs[i].snomedCode);
+                }
+            }
+        });
+
         return [{
-            html: 'This tabs shows one row for each medication in your selection.  You are able to set the desired dose/concentration and rounding factor here, once for each drug.  This may be easier than editing each animal individually.',
+            html: 'This tab shows one row for each medication in your selection.  You are able to set the desired dose/concentration and rounding factor here, once for each drug.  This may be easier than editing each animal individually.',
             border: false,
             style: 'padding-bottom: 10px;'
         },{
@@ -666,7 +664,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         }, this);
 
         return [{
-            html: 'This tabs shows one row per drug, allowing you to review and re-calculate amount/volume for weight-based drugs.  It will pre-populate doses based on the formulary.  Any drug using kg in the dosage will have the option to auto-calculate dose.  To exclude a given drug from auto-calculation, check the box to the right.',
+            html: 'This tab shows one row per drug, allowing you to review and re-calculate amount/volume for weight-based drugs.  It will pre-populate doses based on the formulary.  Any drug using kg in the dosage will have the option to auto-calculate dose.  To exclude a given drug from auto-calculation, check the box to the right.  Use the \'Recalculate\' button in the bottom-right to recalculate values.',
             border: false,
             style: 'padding-bottom: 10px;'
         },{
@@ -681,6 +679,56 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                 style: 'margin-left: 5px;margin-right: 5px;'
             },
             items: items
+        },{
+            layout: {
+                type: 'vbox',
+                align: 'right'
+            },
+            border: false,
+            style: 'margin-bottom: 5px;margin-top: 5px;margin-right: 110px;',
+            items: [{
+                xtype: 'button',
+                text: 'Recalculate All',
+                border: true,
+                itemId: 'recalculate',
+                menu: [{
+                    text: 'Recalculate Both Amount/Volume',
+                    scope: this,
+                    handler: function(btn){
+                        var panel  = this.down('#drugTab');
+                        var cbs = panel.query('checkbox');
+                        for (var i=0;i<cbs.length;i++){
+                            if (cbs[i].getValue()){
+                                this.recalculateRow(cbs[i].recordIdx, '*');
+                            }
+                        }
+                    }
+                },{
+                    text: 'Recalculate Amount Based On Volume',
+                    scope: this,
+                    handler: function(btn){
+                        var panel  = this.down('#drugTab');
+                        var cbs = panel.query('checkbox');
+                        for (var i=0;i<cbs.length;i++){
+                            if (cbs[i].getValue()){
+                                this.recalculateRow(cbs[i].recordIdx, 'volume');
+                            }
+                        }
+                    }
+                },{
+                    text: 'Recalculate Volume Based On Amount',
+                    scope: this,
+                    handler: function(btn){
+                        var panel  = this.down('#drugTab');
+                        var cbs = panel.query('checkbox');
+                        for (var i=0;i<cbs.length;i++){
+                            if (cbs[i].getValue()){
+                                this.recalculateRow(cbs[i].recordIdx, 'amount');
+                            }
+                        }
+                    }
+                }]
+            }]
         }];
     },
 

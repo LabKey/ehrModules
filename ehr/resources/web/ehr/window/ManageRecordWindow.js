@@ -182,7 +182,7 @@ Ext4.define('EHR.window.ManageRecordWindow', {
     onStoreCollectionCommitComplete: function(sc, extraContext){
         Ext4.Msg.hide();
         var win = this.up('window');
-        win.fireEvent('save', this);
+        win.fireEvent('save', this, sc);
         win.close();
     }
 });

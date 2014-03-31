@@ -12,9 +12,10 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
     alias: 'widget.ehr-clinicalmanagementpanel',
 
     statics: {
-        getActionMenu: function(animalId){
-            return {
+        getActionMenu: function(animalId, showReplace){
+            var ret = {
                 xtype: 'menu',
+                showSeparator: false,
                 plugins: [{
                     ptype: 'menuqtips'
                 }],
@@ -59,42 +60,19 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                             listeners: {
                                 scope: this,
                                 save: function(){
+                                    //NOTE: if we use this as a panel button, we want to refresh.  we can also show this from a dataregion, in which case we abort
                                     var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
-                                    var grid = panel.down('ehr-clinicalhistorypanel').doReload();
+                                    if (!panel){
+                                        return;
+                                    }
+
+                                    var grid = panel.down('ehr-clinicalhistorypanel');
+                                    if (grid){
+                                        grid.doReload();
+                                    }
                                 }
                             }
                         }).show();
-                    }
-                },{
-                    text: 'Replace/Amend Selected Remark',
-                    disabled: !EHR.Security.hasVetPermission(),
-                    scope: this,
-                    handler: function(btn){
-                        var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
-                        var grid = panel.down('ehr-clinicalhistorypanel').down('grid');
-                        var rows = grid.getSelectionModel().getSelection();
-                        if (!rows || !rows.length){
-                            Ext4.Msg.alert('Error', 'Must select a record');
-                            return;
-                        }
-                        else if (rows.length != 1){
-                            Ext4.Msg.alert('Error', 'Can only select 1 record');
-                            return;
-                        }
-
-                        if (!rows[0].get('objectId') || rows[0].get('source') != 'Clinical Remark'){
-                            Ext4.Msg.alert('Error', 'This can only be performed on SOAP notes');
-                            return;
-                        }
-
-                        EHR.panel.ClinicalManagementPanel.replaceSoap({
-                            objectid: rows[0].get('objectId'),
-                            scope: this,
-                            callback: function(){
-                                var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
-                                var grid = panel.down('ehr-clinicalhistorypanel').doReload();
-                            }
-                        });
                     }
                 },{
                     text: 'Open Exam Form',
@@ -131,7 +109,44 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                         }, this);
                     }
                 }]
+            };
+
+            if (showReplace){
+                ret.items.push({
+                    text: 'Replace/Amend Selected Remark',
+                    disabled: !EHR.Security.hasVetPermission(),
+                    scope: this,
+                    handler: function(btn){
+                        var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
+                        var grid = panel.down('ehr-clinicalhistorypanel').down('grid');
+                        var rows = grid.getSelectionModel().getSelection();
+                        if (!rows || !rows.length){
+                            Ext4.Msg.alert('Error', 'Must select a record');
+                            return;
+                        }
+                        else if (rows.length != 1){
+                            Ext4.Msg.alert('Error', 'Can only select 1 record');
+                            return;
+                        }
+
+                        if (!rows[0].get('objectId') || rows[0].get('source') != 'Clinical Remark'){
+                            Ext4.Msg.alert('Error', 'This can only be performed on SOAP notes');
+                            return;
+                        }
+
+                        EHR.panel.ClinicalManagementPanel.replaceSoap({
+                            objectid: rows[0].get('objectId'),
+                            scope: this,
+                            callback: function(){
+                                var panel = btn.up('ehr-clinicalmanagementpanel') || btn.up('window');
+                                var grid = panel.down('ehr-clinicalhistorypanel').doReload();
+                            }
+                        });
+                    }
+                })
             }
+
+            return ret;
         },
 
         replaceSoap: function(config){
@@ -145,7 +160,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
             LABKEY.Query.selectRows({
                 schemaName: 'study',
                 queryName: 'clinremarks',
-                columns: 'lsid,objectid,Id,date,project,s,o,a,p,p2,hx,remark,caseid',
+                columns: 'lsid,objectid,Id,date,project,category,s,o,a,p,p2,hx,remark,caseid',
                 filterArray: [LABKEY.Filter.create('objectid', config.objectid, LABKEY.Filter.Types.EQUAL)],
                 scope: this,
                 failure: LDK.Utils.getErrorCallback(),
@@ -159,12 +174,15 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                         return;
                     }
 
+                    //TODO: consider toggling edit/replace based on category
+                    var guid = LABKEY.Utils.generateUUID().toUpperCase();
+
                     Ext4.create('EHR.window.ManageRecordWindow', {
                         schemaName: 'study',
                         queryName: 'clinRemarks',
                         maxItemsPerCol: 11,
                         pkCol: 'objectid',
-                        pkValue: LABKEY.Utils.generateUUID().toUpperCase(),
+                        pkValue: guid,
                         extraMetaData: {
                             Id: {
                                 defaultValue: results.rows[0]['Id']
@@ -207,19 +225,56 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                             },
                             parentid: {
                                 defaultValue: config.objectid
+                            },
+                            objectid: {
+                                defaultValue: guid
                             }
                         },
                         listeners: {
                             scope: this,
-                            save: function(){
+                            save: function(win, sc){
                                 if (config.callback){
-                                    config.callback.call((config.scope || this));
+                                    config.callback.call((config.scope || this), sc, guid);
                                 }
                             }
                         }
                     }).show();
                 }
             });
+        },
+
+        updateVetColumn: function(el, storeCollection, objectId){
+            el.style.setProperty('text-decoration', 'line-through');
+            el.setAttribute( 'onclick', 'EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: \'' + objectId + '\', scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}})');
+        },
+
+        displayActionMenu: function(el, subjectId){
+            var menuCfg = EHR.panel.ClinicalManagementPanel.getActionMenu(subjectId);
+            menuCfg.items.unshift({
+                text: 'Show Recent SOAPs',
+                scope: this,
+                handler: function(){
+                    EHR.window.RecentRemarksWindow.showRecentRemarks(subjectId);
+                }
+            });
+
+            menuCfg.items.unshift({
+                text: 'Show History',
+                scope: this,
+                handler: function(){
+                    EHR.window.ClinicalHistoryWindow.showClinicalHistory(null, subjectId);
+                }
+            });
+
+            var menu = Ext4.widget(menuCfg);
+            menu.floating = true;
+
+            var owner = Ext4.create('Ext.panel.Panel', {
+                border: false
+            });
+            owner.render(el);
+            menu.setFloatParent(owner);
+            menu.show();
         }
     },
 
@@ -237,7 +292,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
                 }
             },{
                 text: 'Actions',
-                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
+                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId, true)
             }]
         });
 

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
@@ -37,6 +38,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableResultSet;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRQCState;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.security.EHRCompletedInsertPermission;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
@@ -50,9 +52,11 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.Queryable;
 import org.labkey.api.query.UserSchema;
@@ -64,6 +68,7 @@ import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -76,7 +81,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -454,6 +461,7 @@ public class EHRManager
                         {
                             DomainProperty d = domain.addProperty();
                             d.setPropertyURI(pd.getPropertyURI());
+                            d.setRangeURI(pd.getRangeURI());
                             d.setName(pd.getName());
                             changed = true;
                         }
@@ -514,7 +522,7 @@ public class EHRManager
 
             //add indexes
             String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"runId"}, {"requestid"}, {"participantid", "date"}};
-            String[][] toRemove = new String[][]{{"date"}, {"parentid"}};
+            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}};
 
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<>();
@@ -534,6 +542,12 @@ public class EHRManager
                     toAdd.add(cols);
                 }
 
+                List<String[]> toRemove = new ArrayList<>();
+                for (String[] cols : idxToRemove)
+                {
+                    toRemove.add(cols);
+                }
+
                 if (realTable.getColumn("vetreview") != null && !d.getName().equalsIgnoreCase("drug"))
                     toAdd.add(new String[]{"qcstate", "include:vetreview"});
 
@@ -548,6 +562,7 @@ public class EHRManager
                 else if (d.getLabel().equalsIgnoreCase("Assignment"))
                 {
                     toAdd.add(new String[]{"project", "participantid", "enddate"});
+                    toAdd.add(new String[]{"enddate", "project"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Clinpath Runs"))
                 {
@@ -560,16 +575,41 @@ public class EHRManager
                 else if (d.getLabel().equalsIgnoreCase("Demographics"))
                 {
                     toAdd.add(new String[]{"participantid", "calculated_status"});
+                    toAdd.add(new String[]{"participantid:ASC", "include:death"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Animal Record Flags"))
+                {
+                    toAdd.add(new String[]{"participantid:ASC", "include:category,value"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Clinical Remarks"))
                 {
                     toAdd.add(new String[]{"participantid", "lsid"});
-                    toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC"});
-                    toAdd.add(new String[]{"date", "include:hx,caseid"});
+                    toRemove.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC"});
+                    toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC", "include:hx,qcstate,datefinalized,category"});
+                    toRemove.add(new String[]{"date", "include:hx,caseid"});
+                    toAdd.add(new String[]{"date", "participantid", "lsid", "qcstate", "include:hx,caseid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Cases"))
                 {
                     toAdd.add(new String[]{"enddate", "qcstate", "lsid"});
+                    toAdd.add(new String[]{"participantid", "lsid", "assignedvet"});
+                }
+                else if (d.getName().equalsIgnoreCase("clinical_observations"))
+                {
+                    toAdd.add(new String[]{"participantid", "date", "include:taskid,lsid,category,observation,area,remark"});
+                    for (String[] i : toAdd)
+                    {
+                        if (i.length < 2)
+                            continue;
+
+                        if ("participantid".equals(i[0]) && "date".equals(i[1]))
+                        {
+                            toAdd.remove(i);
+                            break;
+                        }
+                    }
+
+                    toRemove.add(new String[]{"participantid", "date"});
                 }
                 else if (d.getName().equalsIgnoreCase("drug"))
                 {
@@ -583,11 +623,11 @@ public class EHRManager
                 //ensure indexes removed, unless explicitly requested by a table
                 for (String[] cols : toRemove)
                 {
-                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
+                    String indexName = getIndexName(tableName, cols);
                     boolean found = false;
                     for (String[] addedIndex : toAdd)
                     {
-                        String addedIndexName = tableName + "_" + StringUtils.join(addedIndex, "_");
+                        String addedIndexName = getIndexName(tableName, addedIndex);
                         if (addedIndexName.equalsIgnoreCase(indexName))
                         {
                             found = true;
@@ -657,11 +697,7 @@ public class EHRManager
                     if (missingCols)
                         continue;
 
-                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
-                    if (includedCols != null)
-                    {
-                        indexName += "_include_" + StringUtils.join(includedCols, "_");
-                    }
+                    String indexName = getIndexName(tableName, indexCols);
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -742,6 +778,39 @@ public class EHRManager
         }
 
         return messages;
+    }
+
+    private String getIndexName(String tableName, String[] indexCols)
+    {
+        List<String> cols = new ArrayList<>();
+        String[] includedCols = null;
+        Map<String, String> directionMap = new HashMap<>();
+
+        for (String name : indexCols)
+        {
+            String[] tokens = name.split(":");
+            if (tokens[0].equalsIgnoreCase("include"))
+            {
+                if (tokens.length > 1)
+                {
+                    includedCols = tokens[1].split(",");
+                }
+            }
+            else
+            {
+                cols.add(tokens[0]);
+                if (tokens.length > 1)
+                    directionMap.put(tokens[0], tokens[1]);
+            }
+        }
+
+        String indexName = tableName + "_" + StringUtils.join(cols, "_");
+        if (includedCols != null)
+        {
+            indexName += "_include_" + StringUtils.join(includedCols, "_");
+        }
+
+        return indexName;
     }
 
     private void createParticipantIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
@@ -1143,5 +1212,217 @@ public class EHRManager
         SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
+    }
+
+    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly)
+    {
+        final List<String> animalIds = new ArrayList<>(toTest);
+
+        TableInfo flagsTable = getEHRTable(c, u, "study", "flags");
+        if (flagsTable == null)
+        {
+            throw new IllegalArgumentException("Unable to find flags table in container: " + c.getPath());
+        }
+
+        TableInfo flagCategoriesTable = getEHRTable(c, u, "ehr_lookups", "flag_categories");
+        if (flagCategoriesTable == null)
+        {
+            throw new IllegalArgumentException("Unable to find flag_categories table in container: " + c.getPath());
+        }
+
+        TableSelector ts2 =  new TableSelector(flagCategoriesTable, Collections.singleton("enforceUnique"), new SimpleFilter(FieldKey.fromString("category"), category), null);
+        List<Boolean> ret = ts2.getArrayList(Boolean.class);
+        boolean enforceUnique = ret != null && ret.size() == 1 ? ret.get(0) : false;
+
+        //find animals already with this flag
+        TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
+        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        {
+            @Override
+            public void exec(ResultSet rs) throws SQLException
+            {
+                animalIds.remove(rs.getString("Id"));
+            }
+        });
+
+        TableInfo ti = getEHRTable(c, u, "study", "demographics");
+
+        //limit to IDs present at the center
+        if (livingAnimalsOnly)
+        {
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+            filter.addCondition(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL);
+            TableSelector demographics = new TableSelector(ti, PageFlowUtil.set("Id"), filter, null);
+
+            animalIds.retainAll(demographics.getCollection(String.class));
+        }
+
+        try
+        {
+            //if requires, close existing rows
+            if (enforceUnique)
+            {
+                SimpleFilter existingFlagsFilter = new SimpleFilter(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+                existingFlagsFilter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
+                existingFlagsFilter.addCondition(FieldKey.fromString("category"), category, CompareType.EQUAL);
+                TableSelector existingFlags = new TableSelector(flagsTable, PageFlowUtil.set("lsid"), existingFlagsFilter, null);
+                List<String> lsids = existingFlags.getArrayList(String.class);
+                if (lsids != null && !lsids.isEmpty())
+                {
+                    List<Map<String, Object>> toUpdate = new ArrayList<>();
+                    List<Map<String, Object>> oldKeys = new ArrayList<>();
+                    for (String lsid : lsids)
+                    {
+                        Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                        row.put("lsid", lsid);
+                        row.put("enddate", date);
+                        toUpdate.add(row);
+
+                        Map<String, Object> row2 = new CaseInsensitiveHashMap<>();
+                        row2.put("lsid", lsid);
+                        oldKeys.add(row2);
+                    }
+
+                    if (!toUpdate.isEmpty())
+                    {
+                        ti.getUpdateService().updateRows(u, c, toUpdate, oldKeys, getExtraContext());
+                    }
+                }
+            }
+
+            //then insert rows
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (String animal : animalIds)
+            {
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.put("Id", animal);
+                row.put("date", date);
+                row.put("remark", remark);
+                row.put("category", category);
+                row.put("value", flag);
+                row.put("performedby", u.getDisplayName(u));
+
+                rows.add(row);
+            }
+
+            BatchValidationException errors = new BatchValidationException();
+            if (rows.size() > 0)
+                flagsTable.getUpdateService().insertRows(u, flagsTable.getUserSchema().getContainer(), rows, errors, getExtraContext());
+
+            return animalIds;
+        }
+        catch (QueryUpdateServiceException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (BatchValidationException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (DuplicateKeyException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (InvalidKeyException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+    }
+
+    private TableInfo getEHRTable(Container c, User u, String schema, String query)
+    {
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(c);
+        if (ehrContainer != null)
+        {
+            UserSchema us = QueryService.get().getUserSchema(u, ehrContainer, schema);
+            if (us == null)
+            {
+                return null;
+            }
+
+            return us.getTable(query);
+        }
+
+        return null;
+    }
+
+    public Collection<String> terminateFlagsIfExists(User u, Container c, String category, String flag, final Date enddate, Collection<String> animalIds)
+    {
+        TableInfo flagsTable = getEHRTable(c, u, "study", "flags");
+        if (flagsTable == null)
+        {
+            throw new IllegalArgumentException("Unable to find flags table in container: " + c.getPath());
+        }
+
+        final List<Map<String, Object>> rows = new ArrayList<>();
+        final List<Map<String, Object>> oldKeys = new ArrayList<>();
+        final Set<String> distinctIds = new HashSet<>();
+        QueryUpdateService qus = flagsTable.getUpdateService();
+
+        TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
+
+        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        {
+            @Override
+            public void exec(ResultSet rs) throws SQLException
+            {
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.put("enddate", enddate);
+                rows.add(row);
+
+                Map<String, Object> keys = new CaseInsensitiveHashMap<>();
+                keys.put("lsid", rs.getString("lsid"));
+                oldKeys.add(keys);
+
+                distinctIds.add(rs.getString("Id"));
+            }
+        });
+
+        try
+        {
+            if (rows.size() > 0)
+                qus.updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, getExtraContext());
+
+            return distinctIds;
+        }
+        catch (InvalidKeyException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (BatchValidationException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (QueryUpdateServiceException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+    }
+
+    private TableSelector getFlagsTableSelector(TableInfo flagsTable, String category, String flag, Collection<String> animalIds)
+    {
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("category"), category);
+        filter.addCondition(FieldKey.fromString("value"), flag);
+        filter.addCondition(FieldKey.fromString("isActive"), true);
+        filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+
+        return new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
+    }
+
+    public Map<String, Object> getExtraContext()
+    {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("quickValidation", true);
+        map.put("generatedByServer", true);
+
+        return map;
     }
 }

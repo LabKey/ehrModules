@@ -58,22 +58,22 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
 
     getItems: function(){
         return [{
-            xtype: 'ldk-querypanel',
-            title: 'My Requests',
-            style: 'padding: 5px;',
-            queryConfig:  {
-                schemaName: 'ehr',
-                queryName: 'my_requests'
-            }
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'All Requests',
-            style: 'padding: 5px;',
-            queryConfig:  {
-                schemaName: 'ehr',
-                queryName: 'requests'
-            }
-        },{
+//            xtype: 'ldk-querypanel',
+//            title: 'My Requests',
+//            style: 'padding: 5px;',
+//            queryConfig:  {
+//                schemaName: 'ehr',
+//                queryName: 'my_requests'
+//            }
+//        },{
+//            xtype: 'ldk-querypanel',
+//            title: 'All Requests',
+//            style: 'padding: 5px;',
+//            queryConfig:  {
+//                schemaName: 'ehr',
+//                queryName: 'requests'
+//            }
+//        },{
             xtype: 'panel',
             style: 'padding: 5px;',
             title: 'New Request',
@@ -86,7 +86,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             }]
         },{
             xtype: 'ldk-querypanel',
-            title: 'Blood Draw Queue',
+            title: 'My Pending Blood Requests',
             style: 'padding: 5px;',
             queryConfig:  {
                 schemaName: 'study',
@@ -99,7 +99,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             }
         },{
             xtype: 'ldk-querypanel',
-            title: 'Labwork Queue',
+            title: 'My Pending Labwork Requests',
             queryConfig:  {
                 schemaName: 'study',
                 queryName: 'Clinpath Runs',
@@ -111,11 +111,23 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             }
         },{
             xtype: 'ldk-querypanel',
-            title: 'Procedure Queue',
+            title: 'My Pending Procedure Requests',
             queryConfig:  {
                 schemaName: 'study',
                 queryName: 'encounters',
                 viewName: 'Requests',
+                removeableFilters: [
+                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                ]
+            }
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'My Pending Transfer Requests',
+            queryConfig:  {
+                schemaName: 'onprc_ehr',
+                queryName: 'housing_transfer_requests',
+                //viewName: 'Requests',
                 removeableFilters: [
                     LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)

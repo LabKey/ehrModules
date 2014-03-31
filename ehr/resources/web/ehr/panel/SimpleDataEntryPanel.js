@@ -7,10 +7,17 @@ Ext4.define('EHR.panel.SimpleDataEntryPanel', {
     extend: 'EHR.panel.DataEntryPanel',
     alias: 'widget.ehr-simpledataentrypanel',
 
+    useSectionBorder: false,
+
     initComponent: function(){
         this.pkCols = this.formConfig.pkCols;
+        LDK.Assert.assertTrue('No PKs provided to SimpleDataEntryPanel', !Ext4.isEmpty(this.pkCols));
 
         this.callParent();
+    },
+
+    onBeforeWindowUnload: function(){
+        return true;  //always behave as though dirty
     },
 
     applyConfigToServerStore: function(cfg){

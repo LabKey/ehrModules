@@ -240,7 +240,6 @@ EHR.Server.Utils = new function(){
                         }
                         else {
                             console.log('No _recordId provided, cannot serialize skipped error');
-                            //console.log(row);
                         }
                         continue;
                     }
@@ -489,6 +488,10 @@ EHR.Server.Utils = new function(){
             else {
                 config.callback.apply(config.scope || this);
             }
+        },
+
+        isLiveBirth: function(birthCondition){
+            return (!birthCondition || ['Born Dead', 'Terminated At Birth'].indexOf(birthCondition) == -1);
         }
     }
 };

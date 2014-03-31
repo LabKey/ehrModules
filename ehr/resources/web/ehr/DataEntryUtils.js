@@ -6,7 +6,18 @@
 LABKEY.ExtAdapter.ns('EHR.DataEntryUtils');
 
 EHR.DataEntryUtils = new function(){
-    var dataEntryPanel = null;
+    var beforeUnloadListeners = {};
+    window.onbeforeunload = LABKEY.beforeunload(function (){
+        for (var key in beforeUnloadListeners){
+            var obj = beforeUnloadListeners[key];
+            LDK.Assert.assertTrue('Improper beforeunload listener: ' + key, (obj && !!obj.fn));
+            if (obj && obj.fn && obj.fn.call(obj.scope || this)){
+                return true;
+            }
+        }
+        return false;
+    }, this);
+
     var gridButtons = {
         ADDRECORD: function(config){
             return Ext4.Object.merge({
@@ -356,6 +367,57 @@ EHR.DataEntryUtils = new function(){
             }
         },
         /**
+         * Will submit/save the form and then return to the enterData page.  It does not alter the QCState of records.
+         */
+        OPENBEHAVIORCASE: {
+            text: 'Open/Manage Behavior Case',
+            name: 'openBehaviorCase',
+            //requiredQC: 'In Progress',
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            disabled: false,
+            itemId: 'openBehaviorCase',
+            handler: function(btn){
+                var panel = btn.up('ehr-dataentrypanel');
+                LDK.Assert.assertNotEmpty('Unable to find dataentrypanel from OPENBEHAVIORCASE button', panel);
+
+                //find id
+                var clientStore = panel.storeCollection.getClientStoreByName('Clinical Encounters') || panel.storeCollection.getClientStoreByName('Clinical Remarks');
+                LDK.Assert.assertNotEmpty('Unable to find clientStore from OPENBEHAVIORCASE button', clientStore);
+
+                var rec = clientStore.getAt(0);
+                if (!rec){
+                    Ext4.Msg.alert('Error', 'No Animal Entered');
+                    return;
+                }
+                LDK.Assert.assertEquality('Record count was not 1 in OPENBEHAVIORCASE button.', 1, clientStore.getCount());
+
+                var animalId = rec.get('Id');
+                if (!animalId){
+                    Ext4.Msg.alert('Error', 'No Animal Entered');
+                    return;
+                }
+
+                Ext4.Msg.wait('Loading...');
+                EHR.DemographicsCache.getDemographics(animalId, function(ids, idMap){
+                    Ext4.Msg.hide();
+
+                    var ar = idMap[animalId];
+                    if (!ar){
+                        Ext4.Msg.alert('Error', 'Unknown Id: ' + animalId);
+                        return;
+                    }
+
+                    var win = Ext4.create('EHR.window.ManageCasesWindow', {
+                        animalId: animalId
+                    });
+                    win.show();
+
+                    var panel = win.down('panel');
+                    panel.showCreateWindow('Behavior');
+                }, this);
+            }
+        },
+        /**
          * This button will attempt to convert the QCState of records to 'Request: Pending' and submit the form.  Default button for request pages.
          */
         REQUEST: {
@@ -395,8 +457,11 @@ EHR.DataEntryUtils = new function(){
 
     return {
         getFormEditorConfig: function(columnInfo){
-            var cfg = LABKEY.ext4.Util.getFormEditorConfig(columnInfo);
+            if (columnInfo.autoIncrement){
+                columnInfo.editable = false;
+            }
 
+            var cfg = LABKEY.ext4.Util.getFormEditorConfig(columnInfo);
             if (cfg.xtype == 'numberfield'){
                 cfg.xtype = 'ldk-numberfield';
             }
@@ -545,7 +610,7 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_combo_list',
-                columns: 'code,meaning,categories',
+                columns: 'code,meaning,codeAndMeaning,categories',
                 sort: 'meaning',
                 storeId: storeId,
                 autoLoad: true,
@@ -781,10 +846,6 @@ EHR.DataEntryUtils = new function(){
             return vol;
         },
 
-        setDataEntryPanel: function(panel){
-            dataEntryPanel = panel;
-        },
-
         //returns the most recent weight for the provided animals, preferentially taking weights from the local store
         getWeights: function(sc, ids, callback, scope, ignoreClientWeights){
             EHR.DemographicsCache.getDemographics(ids, function(animalIds, dataMap){
@@ -930,6 +991,17 @@ EHR.DataEntryUtils = new function(){
             }
 
             return date;
+        },
+
+        registerBeforeUnloadListener: function(id, fn, scope){
+            beforeUnloadListeners[id] = {
+                fn: fn,
+                scope: scope
+            }
+        },
+
+        unregisterBeforeUnloadListener: function(id){
+            delete beforeUnloadListeners[id];
         }
     }
 };

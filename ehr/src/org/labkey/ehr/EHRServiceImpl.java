@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -675,5 +676,21 @@ public class EHRServiceImpl extends EHRService
     public void registerSingleFormOverride(SingleQueryFormProvider p)
     {
         DataEntryManager.get().registerSingleFormOverride(p);
+    }
+
+    public void appendCalculatedIdCols(AbstractTableInfo ti, String dateFieldName)
+    {
+        DefaultEHRCustomizer t = new DefaultEHRCustomizer();
+        t.appendCalculatedCols(ti, dateFieldName);
+    }
+
+    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly)
+    {
+        return EHRManager.get().ensureFlagActive(u, c, category, flag, date, remark, animalIds, livingAnimalsOnly);
+    }
+
+    public Collection<String> terminateFlagsIfExists(User u, Container c, String category, String flag, Date enddate, Collection<String> animalIds)
+    {
+        return EHRManager.get().terminateFlagsIfExists(u, c, category, flag, enddate, animalIds);
     }
 }

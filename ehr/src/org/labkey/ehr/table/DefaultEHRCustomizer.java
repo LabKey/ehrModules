@@ -16,6 +16,7 @@
 package org.labkey.ehr.table;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.AbstractTableInfo;
@@ -24,6 +25,7 @@ import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DataColumn;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.ForeignKey;
@@ -48,7 +50,10 @@ import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.study.DataSet;
 import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.Study;
+import org.labkey.api.study.StudyService;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRSchema;
@@ -96,7 +101,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 for (ColumnInfo col : table.getColumns())
                 {
-                    if (col.getJavaClass().equals(Date.class) && col.getFormat() == null)
+                    if (col.getJdbcType().getJavaClass().equals(Date.class) && col.getFormat() == null)
                         col.setFormat(df);
                 }
             }
@@ -126,6 +131,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else if (matches(table, "ehr", "protocol"))
         {
             customizeProtocolTable((AbstractTableInfo) table);
+        }
+        else if (matches(table, "ehr_lookups", "procedures"))
+        {
+            customizeProcedures((AbstractTableInfo) table);
         }
         else if (matches(table, "study", "demographicsAge"))
         {
@@ -199,7 +208,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
         if (ti.getColumn("dateOnly") != null)
         {
-            appendCalculatedCols(ti, "dateOnly");
+            appendCalculatedCols(ti, "date");
         }
 
         ColumnInfo objectId = ti.getColumn("objectid");
@@ -225,6 +234,20 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             runId.setUserEditable(false);
         }
 
+        ColumnInfo qcstate = ti.getColumn("qcstate");
+        if (qcstate != null)
+        {
+            qcstate.setLabel("Status");
+            if (qcstate.getFk() == null)
+            {
+                UserSchema study = getEHRStudyUserSchema(ti);
+                if (study != null)
+                    qcstate.setFk(new QueryForeignKey(study, null, "QCState", "rowid", "Label"));
+            }
+
+            qcstate.setUserEditable(false);
+        }
+
         ColumnInfo parentId = ti.getColumn("parentId");
         if (parentId != null)
         {
@@ -236,6 +259,15 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     parentId.setFk(new QueryForeignKey(study, null, "Clinical Encounters", "objectid", ID_COL));
             }
             parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
+
+        ColumnInfo formSort = ti.getColumn("formSort");
+        if (formSort != null)
+        {
+            formSort.setHidden(true);
+            formSort.setShownInInsertView(false);
+            formSort.setShownInUpdateView(false);
+            formSort.setLabel("Form Sort Order");
         }
 
         ColumnInfo caseId = ti.getColumn("caseId");
@@ -294,7 +326,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ColumnInfo project = ti.getColumn("project");
         if (project != null && !ti.getName().equalsIgnoreCase("project"))
         {
-            project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            //this was disabled in order to restore better edit behavior (a combo)
+            //project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
             if (us != null)
                 project.setFk(new QueryForeignKey(us, ehrContainer, "project", "project", "project"));
@@ -341,7 +374,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         room.setFk(new QueryForeignKey(us, ehrContainer, "rooms", "room", "room"));
                     }
                 }
-                room.setLabel("Room");
+
+                if (room.getLabel().equals("room"))
+                    room.setLabel("Room");
 
                 //room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             }
@@ -432,6 +467,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             addIsActiveCol(ti);
         }
+        else if (matches(ti, "study", "demographics"))
+        {
+            customizeDemographics(ti);
+        }
 
         appendHistoryCol(ti);
     }
@@ -478,6 +517,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     //note: intended specially for treatment orders, but also used for housing.  note slightly unusual behavior around start date
     private void addIsActiveColWithTime(AbstractTableInfo ti)
     {
+        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
+        {
+            return;
+        }
+
         String name = "isActive";
         if (ti.getColumn(name) == null)
         {
@@ -512,7 +556,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void appendCalculatedCols(AbstractTableInfo ti, String dateFieldName)
+    public void appendCalculatedCols(AbstractTableInfo ti, String dateFieldName)
     {
         if (ti.getName().equalsIgnoreCase("demographics"))
             return;
@@ -524,10 +568,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (us != null){
 
             //needs date/time
-            appendHousingAtTimeCol(us, ti, "date");
+            appendHousingAtTimeCol(us, ti, dateFieldName);
 
             //date only
-            appendAgeAtTimeCol(us, ti, "date");
+            appendAgeAtTimeCol(us, ti, dateFieldName);
 
             appendSurvivorshipCol(us, ti);
             appendTimeSinceCol(us, ti);
@@ -562,6 +606,63 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void customizeDiagnoses(final AbstractTableInfo ti)
     {
         appendSNOMEDCol(ti);
+    }
+
+    private void customizeDemographics(AbstractTableInfo ti)
+    {
+        String lastDayAtCenter = "lastDayAtCenter";
+        if (ti.getColumn(lastDayAtCenter) == null)
+        {
+            if (ti.getColumn("death") == null || ti.getColumn("Id") == null)
+            {
+                _log.warn("Unable to find either Id or death columns on demographics table");
+            }
+            else
+            {
+                TableInfo departure = getRealTableForDataSet(ti, "Departure");
+                if (departure != null)
+                {
+                    SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".death, (SELECT max(d.date) as expr FROM studydataset." + departure.getName() + " d WHERE d.participantid = " + ExprColumn.STR_TABLE_ALIAS + ".participantid))");
+                    ExprColumn newCol = new ExprColumn(ti, lastDayAtCenter, sql, JdbcType.TIMESTAMP, ti.getColumn("death"), ti.getColumn("Id"));
+                    newCol.setLabel("Last Day At Center");
+                    newCol.setDescription("This column calculates the last know date this animal was present at the center.  It preferentially uses death, but will use the most recent departure date if death is not known.  It is used when calculating age.");
+                    ti.addColumn(newCol);
+                }
+            }
+        }
+    }
+
+    private TableInfo getRealTableForDataSet(AbstractTableInfo ti, String label)
+    {
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+        if (ehrContainer == null)
+            return null;
+
+        DataSet ds;
+        Study s = StudyService.get().getStudy(ehrContainer);
+        if (s == null)
+            return null;
+
+        ds = s.getDataSetByLabel(label);
+        if (ds == null)
+        {
+            // NOTE: this seems to happen during study import on TeamCity.  It does not seem to happen during normal operation
+            _log.info("A dataset was requested that does not exist: " + label + " in container: " + ehrContainer.getPath());
+            StringBuilder sb = new StringBuilder();
+            for (DataSet d : s.getDataSets())
+            {
+                sb.append(d.getName() + ", ");
+            }
+            _log.info("datasets present: " + sb.toString());
+
+            return null;
+        }
+        else
+        {
+            String tableName = ds.getDomain().getStorageTableName();
+            DbSchema dbSchema = DbSchema.get("studydataset");
+            return dbSchema.getTable(tableName);
+        }
     }
 
     private void appendSNOMEDCol(AbstractTableInfo ti)
@@ -1082,6 +1183,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         doSharedCustomization(ti);
         customizeButtonBar(ti);
+        ti.getColumn("rowid").setShownInInsertView(true);
+        ti.getColumn("rowid").setUserEditable(false);
     }
 
     private void customizeAnimalGroupMembers(AbstractTableInfo table)
@@ -1125,6 +1228,20 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
+    private void customizeProcedures(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+
+        String name = "shortName";
+        if (table.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".genericName, " + ExprColumn.STR_TABLE_ALIAS + ".name)");
+            ExprColumn displayCol = new ExprColumn(table, name, sql, JdbcType.VARCHAR, table.getColumn("genericName"), table.getColumn("name"));
+            displayCol.setLabel("Short Name");
+            table.addColumn(displayCol);
+        }
+    }
+
     private void customizeProtocolTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
@@ -1159,6 +1276,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeProtocolExemptions(AbstractTableInfo ti)
     {
+        doSharedCustomization(ti);
+
         String name = "coalescedProtocol";
         if (ti.getColumn(name) == null)
         {
@@ -1222,9 +1341,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private boolean hasTable(AbstractTableInfo ti, String schemaName, String queryName)
+    private boolean hasTable(AbstractTableInfo ti, @Nullable Container targetContainer, String schemaName, String queryName)
     {
-        UserSchema us = getUserSchema(ti, schemaName);
+        if (targetContainer == null)
+            targetContainer = ti.getUserSchema().getContainer();
+
+        UserSchema us = getUserSchema(ti, schemaName, targetContainer);
         if (us == null)
             return false;
 
@@ -1233,9 +1355,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     }
 
     //note: these columns should both be date/time
-    private void appendHousingAtTimeCol(UserSchema us, AbstractTableInfo ds, final String dateColName)
+    private void appendHousingAtTimeCol(UserSchema ehrSchema, AbstractTableInfo ds, final String dateColName)
     {
-        if (!hasTable(ds, "study", "housing"))
+        if (!hasTable(ds, ehrSchema.getContainer(), "study", "housing"))
             return;
 
         String name = "housingAtTime";
@@ -1256,22 +1378,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
 
-        final String tableName = ds.getName();
-        final boolean hasLookup = hasAnimalLookup(ds);
+        if (!hasAnimalLookup(ds))
+            return;
 
-        final UserSchema targetSchema;
-        if (hasLookup)
-        {
-            ForeignKey fk = ds.getColumn("Id").getFk();
-            targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
-        }
-        else
-        {
-            targetSchema = us;
-        }
-
+        final UserSchema targetSchema = ds.getUserSchema();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
+        final String ehrPath = ehrSchema.getContainer().getPath();
 
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
@@ -1281,24 +1394,24 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 qd.setSql("SELECT\n" +
                     "sd." + pkCol.getSelectName() + ",\n" +
                     "cast((\n" +
-                    "  SELECT group_concat(DISTINCT h.room, chr(10)) as room FROM study.Housing h\n" +
-                    "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + (hasLookup ? " OR d.death = h.enddateTimeCoalesced" : "") + ")\n" +
+                    "  SELECT group_concat(DISTINCT h.room, chr(10)) as room FROM \"" + ehrPath + "\".study.Housing h\n" +
+                    "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + " OR d.death = h.enddateTimeCoalesced" + ")\n" +
                     "  AND h.qcstate.publicdata = true\n" +
                     ") as varchar) as RoomAtTime,\n" +
                     "cast((\n" +
-                    "  SELECT group_concat(DISTINCT h.cage, chr(10)) as cage FROM study.Housing h\n" +
-                    "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + (hasLookup ? " OR d.death = h.enddateTimeCoalesced" : "") + ")\n" +
+                    "  SELECT group_concat(DISTINCT h.cage, chr(10)) as cage FROM \"" + ehrPath + "\".study.Housing h\n" +
+                    "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + " OR d.death = h.enddateTimeCoalesced" + ")\n" +
                     "  AND h.qcstate.publicdata = true\n" +
                     ") as varchar) as CageAtTime,\n" +
-                    "FROM \"" + schemaName + "\".\"" + queryName + "\" sd" +
-                    (hasLookup ? " LEFT JOIN study.demographics d ON (d.id = sd.id)\n" : ""));
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" sd " +
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.id = sd.id)\n");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
@@ -1323,6 +1436,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeRooms(AbstractTableInfo ti)
     {
+        doSharedCustomization(ti);
+
         UserSchema us = getUserSchema(ti, "ehr_lookups");
         ColumnInfo roomCol = ti.getColumn("room");
 
@@ -1347,14 +1462,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private boolean hasAnimalLookup(AbstractTableInfo ti)
     {
         ColumnInfo idCol = ti.getColumn("Id");
-        //TODO: !idCol.getFk().getLookupSchemaName().equalsIgnoreCase("study") ||
         if (idCol == null || idCol.getFk() == null || !idCol.getFk().getLookupTableName().equalsIgnoreCase("animal"))
             return false;
 
         return true;
     }
 
-    private void appendSurvivorshipCol(UserSchema us, AbstractTableInfo ds)
+    private void appendSurvivorshipCol(UserSchema ehrSchema, AbstractTableInfo ds)
     {
         String name = "survivorship";
         if (ds.getColumn(name) != null)
@@ -1371,11 +1485,15 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (dateCol == null)
             return;
 
+        final ColumnInfo idCol = ds.getColumn("Id");
+        if (idCol == null)
+            return;
+
         final String dateColName = dateCol.getSelectName();
-        ForeignKey fk = ds.getColumn("Id").getFk();
-        final UserSchema targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
+        final UserSchema targetSchema = ds.getUserSchema();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
+        final String ehrPath = ehrSchema.getContainer().getPath();
 
         //TODO: this is a temp fix to avoid an NPE.  this should be removed once issue 19884 is fixed
         if (ds.getName().startsWith("HousingOverlaps"))
@@ -1399,23 +1517,24 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  age(CAST(c.date as DATE), coalesce(c.Id.demographics.death, curdate()))\n" +
+                    "  age(CAST(c.date as DATE), coalesce(d.lastDayAtCenter, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  timestampdiff('SQL_TSI_DAY', CAST(c.date as DATE), coalesce(c.Id.demographics.death, curdate()))\n" +
+                    "  timestampdiff('SQL_TSI_DAY', CAST(c.date as DATE), coalesce(d.lastDayAtCenter, curdate()))\n" +
                     "END as survivorshipInDays,\n" +
                     "\n" +
-                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
@@ -1450,7 +1569,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void appendAgeAtTimeCol(UserSchema us, AbstractTableInfo ds, final String dateColName)
+    private void appendAgeAtTimeCol(UserSchema ehrSchema, AbstractTableInfo ds, final String dateColName)
     {
         String name = "ageAtTime";
         if (ds.getColumn(name) != null)
@@ -1460,16 +1579,23 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (pkCol == null)
             return;
 
+        final ColumnInfo idCol = ds.getColumn("Id");
+        if (idCol == null)
+            return;
+
         if (ds.getColumn(dateColName) == null)
+            return;
+
+        if (!hasTable(ds, ehrSchema.getContainer(), "study", "demographics"))
             return;
 
         if (!hasAnimalLookup(ds))
             return;
 
-        ForeignKey fk = ds.getColumn("Id").getFk();
-        final UserSchema targetSchema = fk.getLookupContainer() == null || us.getContainer().equals(fk.getLookupContainer()) ? us : fk.getLookupTableInfo().getUserSchema();
+        final UserSchema targetSchema = ds.getUserSchema();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
+        final String ehrPath = ehrSchema.getContainer().getPath();
 
         //TODO: this is a temp fix to avoid an NPE.  this should be removed once issue 19884 is fixed
         if (ds.getName().startsWith("HousingOverlaps"))
@@ -1493,36 +1619,37 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
+                    "  ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  floor(age(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " as DATE))))\n" +
+                    "  floor(age(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " as DATE))))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
-                    "WHEN c.Id.demographics.birth is null or c." + dateColName + " is null\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    "  CONVERT(age_in_months(c.Id.demographics.birth, COALESCE(c.Id.demographics.death, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
+                    "  CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
-                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getPath());
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);

@@ -308,8 +308,10 @@ EHR.Security = new function(){
         Permissions: {
             DATA_ENTRY: classPrefix + '.EHRDataEntryPermission',
             VET: classPrefix + '.EHRVeternarianPermission',
+            PROCEDURE_MANAGEMENT: classPrefix + '.EHRProcedureManagementPermission',
             SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
-            CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission'
+            CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission',
+            LOCATION_EDITOR: classPrefix + '.EHRLocationEditPermission'
         },
 
         hasVetPermission: function(){
@@ -318,6 +320,15 @@ EHR.Security = new function(){
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.VET) > -1;
+
+        },
+
+        hasProcedureManagementPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.PROCEDURE_MANAGEMENT) > -1;
 
         },
 
@@ -336,6 +347,15 @@ EHR.Security = new function(){
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.CLINICAL_ENTRY) > -1;
+
+        },
+
+        hasLocationEditorPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.LOCATION_EDITOR) > -1;
 
         }
     }

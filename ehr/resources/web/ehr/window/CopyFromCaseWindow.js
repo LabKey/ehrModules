@@ -58,35 +58,35 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
             targetStore: 'tissue_samples',
             schemaName: 'study',
             queryName: 'tissue_samples',
-            columns: ['tissue', 'preparation']
+            columns: ['tissue', 'preparation', 'formSort', 'noWeight']
         },
         tissueDistributions: {
             label: 'Tissue Distributions',
             targetStore: 'tissueDistributions',
             schemaName: 'study',
             queryName: 'tissueDistributions',
-            columns: ['tissue', 'sampletype', 'recipient', 'requestcategory']
+            columns: ['tissue', 'sampletype', 'recipient', 'requestcategory', 'formSort']
         },
         measurements: {
             label: 'Tissue Measurements',
             targetStore: 'measurements',
             schemaName: 'study',
             queryName: 'measurements',
-            columns: ['tissue', 'units']
+            columns: ['tissue', 'units', 'formSort']
         },
         histology: {
             label: 'Histologic Findings',
             targetStore: 'histology',
             schemaName: 'study',
             queryName: 'histology',
-            columns: ['tissue', 'remark', 'codes']
+            columns: ['tissue', 'remark', 'codes', 'formSort']
         },
         pathologyDiagnoses: {
             label: 'Diagnoses',
             targetStore: 'pathologyDiagnoses',
             schemaName: 'study',
             queryName: 'pathologyDiagnoses',
-            columns: ['sort_order', 'remark', 'codes']
+            columns: ['sort_order', 'remark', 'codes', 'formSort']
         },
         encounter_participants: {
             label: 'Staff',
@@ -139,6 +139,7 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
         var filterArray = [];
         if (animalId){
             filterArray.push(LABKEY.Filter.create('Id', animalId, LABKEY.Filter.Types.EQUAL));
+            filterArray.push(LABKEY.Filter.create('caseno', null, LABKEY.Filter.Types.NONBLANK));
         }
         else if (caseNo){
             filterArray.push(LABKEY.Filter.create('caseno', caseNo, LABKEY.Filter.Types.EQUAL));

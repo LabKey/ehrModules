@@ -28,7 +28,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 if (v)
                     return v;
 
-                v = new Date();
+                v = (new Date()).add(Date.DAY, 2);
                 v.setHours(8);
                 v.setMinutes(30);
                 if (v < (new Date()))
@@ -48,6 +48,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         },
         performedby: {
             hidden: true,
+            defaultValue: null,
             allowBlank: true
         },
         remark: {
@@ -74,8 +75,6 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         },
         'study.blood': {
             chargetype: {
-                header: 'Assigned To',
-                label: 'Assigned To',
                 hidden: false
             },
             reason: {
@@ -87,15 +86,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             daterequested: {
                 hidden: true
             },
-            assayCode: {
-                hidden: true
-            },
             performedby: {
                 allowBlank: true
             },
-//            quantity : {
-//                xtype: 'displayfield'
-//            },
             num_tubes: {
                 xtype: 'ehr-triggernumberfield',
                 editorConfig: {
@@ -121,15 +114,8 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             },
             date: {
                 nullable: false,
-//                editorConfig: {
-//                    timeConfig: {
-//                        minValue: '8:30',
-//                        maxValue: '9:30',
-//                        increment: 60
-//                    }
-//                },
                 getInitialValue: function(v){
-                    var date = new Date();
+                    var date = (new Date()).add(Date.DAY, 2);
                     date.setHours(9);
                     date.setMinutes(30);
                     if (v < (new Date()))
@@ -147,7 +133,10 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             instructions: {
                 hidden: false,
                 xtype: 'textarea',
-                formEditorConfig:{xtype: 'textarea', readOnly: false}
+                formEditorConfig:{
+                    xtype: 'textarea',
+                    readOnly: false
+                }
             }
         },
         'study.encounters': {
@@ -158,27 +147,8 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 hidden: false,
                 allowBlank: false
             },
-            performedby: {
-                allowBlank: true
-            },
             enddate: {
                 hidden: true
-            },
-            major: {
-                hidden: true
-            },
-            restraint: {
-                hidden: true
-            },
-            restraintDuration: {
-                hidden: true
-            },
-            serviceRequested: {
-                xtype: 'ehr-remark',
-                isAutoExpandColumn: true,
-                editorConfig: {
-                    resizeDirections: 's'
-                }
             }
         },
         'study.clinpathRuns': {
@@ -187,6 +157,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                     minValue: null
                 },
                 getInitialValue: function(v, rec){
+                    //allow same-day requests
                     return v || new Date();
                 }
             },
@@ -200,9 +171,18 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 hidden: false
             }
         },
-        'study.Drug Administration': {
+        'study.drug': {
             performedby: {
                 allowBlank: true
+            },
+            outcome: {
+                defaultValue: null,
+                hidden: true
+            }
+        },
+        'onprc_ehr.housing_transfer_requests': {
+            remark: {
+                hidden: false
             }
         }
     }

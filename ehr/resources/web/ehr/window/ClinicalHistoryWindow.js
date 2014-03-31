@@ -66,7 +66,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
         if (EHR.Security.hasLoaded()){
             ret.push({
                 text: 'Actions',
-                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId)
+                menu: EHR.panel.ClinicalManagementPanel.getActionMenu(this.subjectId, true)
             });
         }
 

@@ -43,6 +43,8 @@ Ext4.define('EHR.plugin.ClinicalRemarksRowEditor', {
         var ret = this.callParent(arguments);
 
         var formCfg = ret.items[0].items[1];
+        //NOTE: added to avoid splitting form into 2 columns
+        formCfg.maxItemsPerCol = 100;
         ret.items[0].items[1] = {
             xtype: 'panel',
             layout: 'column',

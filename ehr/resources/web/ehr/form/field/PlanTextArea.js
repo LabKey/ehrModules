@@ -7,10 +7,6 @@ Ext4.define('EHR.form.field.PlanTextArea', {
     extend: 'Ext.form.field.TextArea',
     alias: 'widget.ehr-plantextarea',
 
-    initComponent: function(){
-        this.callParent(arguments);
-    },
-
     onAnimalChange: function(){
         this.updateDisplayEl();
     },
@@ -103,12 +99,16 @@ Ext4.define('EHR.form.field.PlanTextArea', {
 
         var rec = EHR.DataEntryUtils.getBoundRecord(this);
         if (rec && rec.get('Id')){
-            this.getMostRecentP2(rec, function(ret){
-                if (ret && ret.mostRecentP2 && ret.isActive){
+            this.getMostRecentP2(rec, function(ret, Id){
+                if (!ret){
+                    return;
+                }
+
+                if (ret.mostRecentP2 && ret.isActive){
                     this.displayEl.update(ret.mostRecentP2);
                 }
                 else {
-                    this.displayEl.update('Either no active case or no P2 for ' + rec.get('Id'));
+                    this.displayEl.update('Either no active case or no P2 for ' + (Id || rec.get('Id')));
                 }
             });
         }
@@ -134,28 +134,30 @@ Ext4.define('EHR.form.field.PlanTextArea', {
                 this.setValue(ret.mostRecentP2);
                 this.linkEl.update('Refresh P2');
             }
-        });
+        }, true);
     },
 
-    getMostRecentP2: function(rec, cb){
+    getMostRecentP2: function(rec, cb, alwaysUseCallback){
         var date = rec.get('date') || new Date();
-        this.pendingIdRequest = rec.get('Id');
+        var id = rec.get('Id');
+        this.pendingIdRequest = id;
+
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid, c.caseid.category as caseCategory, c.caseid.isActive as isActive FROM study.clinRemarks c WHERE (c.category != \'Replaced SOAP\' OR c.category IS NULL) AND c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
             failure: LDK.Utils.getErrorCallback,
             scope: this,
             success: function(results){
-                if (results && results.rows && results.rows.length && results.rows[0].mostRecentP2){
-                    if (results.rows[0].Id != this.pendingIdRequest){
-                        console.log('more recent request');
-                        //TODO: should abort, but need to work out disabling mask
-                    }
+                if (!alwaysUseCallback && id != this.pendingIdRequest){
+                    console.log('more recent request, aborting');
+                    return;
+                }
 
-                    cb.call(this, results.rows[0]);
+                if (results && results.rows && results.rows.length && results.rows[0].mostRecentP2){
+                    cb.call(this, results.rows[0], results.rows[0].Id);
                 }
                 else {
-                    cb.call(this, null);
+                    cb.call(this, null, id);
                 }
             }
         });

@@ -88,12 +88,20 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                 return;
             }
 
+            var isEncounterChild = cs.model.prototype.sectionCfg.configSources && cs.model.prototype.sectionCfg.configSources.indexOf('EncounterChild') > -1;
             cs.each(function(rec){
                 var encountersRec = this.getEncountersRecord(rec.get('parentid'));
                 if (encountersRec != null){
                     var obj = {};
                     if (rec.get('Id') !== encountersRec.get('Id')){
-                        obj.Id = encountersRec.get('Id')
+                        //the goal of this is to allow specific sections to avoid inheriting the Id of the parent
+                        if (isEncounterChild || !encountersRec.get('Id'))
+                            obj.Id = encountersRec.get('Id');
+
+                        //if the ID doesnt match, clear parentid
+                        if (!isEncounterChild){
+                            obj.parentid = null;
+                        }
                     }
 
                     var pf = rec.fields.get('project');

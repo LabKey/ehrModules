@@ -71,6 +71,16 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
     }
 
     @Override
+    public Collection<FieldKey> getFieldKeysToTest()
+    {
+        //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
+        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
+        keys.remove(FieldKey.fromString(_propName));
+
+        return keys;
+    }
+
+    @Override
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);

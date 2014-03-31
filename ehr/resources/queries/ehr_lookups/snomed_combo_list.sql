@@ -6,7 +6,8 @@
 SELECT
 s.code,
 s.meaning,
-group_concat(ss.primaryCategory) as categories
+group_concat(ss.primaryCategory) as categories,
+(s.meaning || ' (' || s.code || ')') as codeAndMeaning
 
 FROM ehr_lookups.snomed s
 LEFT JOIN ehr_lookups.snomed_subset_codes ss ON (s.code = ss.code)

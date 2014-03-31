@@ -13,4 +13,4 @@ SELECT
 
 FROM ehr.formtemplates t
 
-WHERE ISMEMBEROF(t.userId) or t.userid is null
+WHERE (ISMEMBEROF(t.userId) or t.userid is null) AND (t.hidden IS NULL OR t.hidden != true)

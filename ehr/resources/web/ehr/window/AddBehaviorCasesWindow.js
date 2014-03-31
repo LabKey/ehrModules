@@ -9,11 +9,34 @@
 Ext4.define('EHR.window.AddBehaviorCasesWindow', {
     extend: 'EHR.window.AddSurgicalCasesWindow',
     caseCategory: 'Behavior',
-    templateName: 'BSU Rounds',
+    templateName: null,
 
     allowNoSelection: true,
     showAssignedVetCombo: false,
-    defaultRemark: null
+    defaultRemark: null,
+
+    //always add single blank obs record
+    applyObsTemplate: function(caseRecords){
+        var records = [];
+        var obsStore = this.targetStore.storeCollection.getClientStoreByName('Clinical Observations');
+        LDK.Assert.assertNotEmpty('Unable to find Clinical Observations store', obsStore);
+
+        Ext4.Array.forEach(caseRecords, function(rec){
+            records.push(obsStore.createModel({
+                Id: rec.get('Id'),
+                caseid: rec.get('caseid'),
+                date: this.recordData.date,
+                performedby: this.recordData.performedby
+            }));
+        }, this);
+
+        if (records.length){
+            obsStore.add(records);
+        }
+
+        Ext4.Msg.hide();
+        this.close();
+    }
 });
 
 EHR.DataEntryUtils.registerGridButton('ADDBEHAVIORCASES', function(config){

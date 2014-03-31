@@ -100,14 +100,17 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
     loadData: function(){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         var checkedRows = dataRegion.getChecked();
+        var selectorCols = !Ext4.isEmpty(dataRegion.selectorCols) ? dataRegion.selectorCols : dataRegion.pkCols;
+        LDK.Assert.assertNotEmpty('Unable to find selector columns for: ' + dataRegion.schemaName + '.' + dataRegion.queryName, selectorCols);
+        this.selectorCol = selectorCols[0];
 
         LABKEY.Query.selectRows({
             requiredVersion: 9.1,
             method: 'POST',
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
-            columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
-            filterArray: [LABKEY.Filter.create('lsid', checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            columns: this.selectorCol + ',Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
+            filterArray: [LABKEY.Filter.create(this.selectorCol, checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
             scope: this,
             success: this.onDataLoad,
             failure: LDK.Utils.getErrorCallback()
@@ -209,9 +212,9 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
                 }
             }
 
-            toSave.push(Ext4.apply({
-                lsid: r.getValue('lsid')
-            }, values));
+            var o = {};
+            o[this.selectorCol] = r.getValue(this.selectorCol);
+            toSave.push(Ext4.apply(o, values));
         }, this);
 
         if (!toSave.length){

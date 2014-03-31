@@ -30,6 +30,7 @@
 
         <script path="ehr/window/ChangeRequestStatusWindow.js"/>
         <script path="ehr/window/ClinicalHistoryWindow.js"/>
+        <script path="ehr/window/RecentRemarksWindow.js"/>
         <script path="ehr/window/CaseHistoryWindow.js"/>
         <script path="ehr/window/CompareWeightsWindow.js"/>
         <script path="ehr/window/ManageRecordWindow.js"/>

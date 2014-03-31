@@ -73,7 +73,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     };
 
     var cachedValues = {
-        births: {},
+        liveBirths: {},
         deaths: {},
         arrivals: {},
         departures: {},
@@ -441,7 +441,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
             var ids = this.getPublicParticipantsModified();
             if (ids && ids.length){
-                this.getJavaHelper().updateStatusField(ids, cachedValues['births'], cachedValues['arrivals'], cachedValues['deaths'], cachedValues['departures']);
+                this.getJavaHelper().updateStatusField(ids, cachedValues['liveBirths'], cachedValues['arrivals'], cachedValues['deaths'], cachedValues['departures']);
             }
         },
 
@@ -449,8 +449,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return this.getJavaHelper().isVet();
         },
 
-        registerBirth: function(id, date){
-            cacheValue(id, date, 'births');
+        registerLiveBirth: function(id, date){
+            cacheValue(id, date, 'liveBirths');
         },
 
         registerDeath: function(id, date){
@@ -471,6 +471,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getDeaths: function(){
             return cachedValues['deaths'];
+        },
+
+        getHousingChanges: function(){
+            return cachedValues['housing'];
         },
 
         /**

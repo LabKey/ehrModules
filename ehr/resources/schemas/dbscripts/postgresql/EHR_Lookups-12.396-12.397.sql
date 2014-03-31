@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.procedures add timeOfMeds varchar(200);

@@ -31,6 +31,15 @@
                         <formatString>yyyy-MM-dd H:mm</formatString>
                         <isHidden>false</isHidden>
                     </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>bloodChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
                     <column columnName="code">
                         <columnTitle>Code</columnTitle>
                         <fk>

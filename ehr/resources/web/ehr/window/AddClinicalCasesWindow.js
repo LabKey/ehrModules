@@ -88,22 +88,24 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
 
         this.callParent(arguments);
 
-        LABKEY.Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'formtemplates',
-            filterArray: [
-                LABKEY.Filter.create('title', this.templateName),
-                LABKEY.Filter.create('formtype', 'Clinical Observations'),
-                LABKEY.Filter.create('category', 'Section')
-            ],
-            scope: this,
-            success: function(results){
-                LDK.Assert.assertTrue('Unable to find template: ' + this.templateName, results.rows && results.rows.length == 1);
+        if (this.templateName){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'formtemplates',
+                filterArray: [
+                    LABKEY.Filter.create('title', this.templateName),
+                    LABKEY.Filter.create('formtype', 'Clinical Observations'),
+                    LABKEY.Filter.create('category', 'Section')
+                ],
+                scope: this,
+                success: function(results){
+                    LDK.Assert.assertTrue('Unable to find template: ' + this.templateName, results.rows && results.rows.length == 1);
 
-                this.obsTemplateId = results.rows[0].entityid;
-            },
-            failure: LDK.Utils.getErrorCallback()
-        });
+                    this.obsTemplateId = results.rows[0].entityid;
+                },
+                failure: LDK.Utils.getErrorCallback()
+            });
+        }
     },
 
     getCasesFilterArray: function(){

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2012-2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,9 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.FieldKey;
@@ -61,16 +62,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * User: bimber
  * Date: 9/17/12
  * Time: 8:35 PM
  */
-public class DemographicsService
+public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
-    private static final DemographicsService _instance = new DemographicsService();
-    private static final Logger _log = Logger.getLogger(DemographicsService.class);
+    private static final Logger _log = Logger.getLogger(EHRDemographicsServiceImpl.class);
     private static JobDetail _job = null;
 
     private StringKeyCache<AnimalRecord> _cache;
@@ -84,22 +85,22 @@ public class DemographicsService
 //            Pair<Container, String> pair = (Pair)argument;
 //
 //            _log.info("loading animal: " + pair.second);
-//            List<AnimalRecord> ret = DemographicsService.get().createRecords(pair.first, Collections.singleton(pair.second));
+//            List<AnimalRecord> ret = EHRDemographicsServiceImpl.get().createRecords(pair.first, Collections.singleton(pair.second));
 //
 //            return ret.isEmpty() ? null : ret.get(0);
 //        }
 //    }
 
-    private DemographicsService()
+    public EHRDemographicsServiceImpl()
     {
         // NOTE: we expect to recache all living animals each night.  the purpose of a 25HR window is to make sure the
         // existing record is present so we can validate.  any other incidental cached records would expire shortly after
-        _cache = CacheManager.getStringKeyCache(10000, (CacheManager.DAY + CacheManager.HOUR), "DemographicsService");
+        _cache = CacheManager.getStringKeyCache(10000, (CacheManager.DAY + CacheManager.HOUR), "EHRDemographicsServiceImpl");
     }
 
-    public static DemographicsService get()
+    public static EHRDemographicsServiceImpl get()
     {
-        return _instance;
+        return (EHRDemographicsServiceImpl)EHRDemographicsService.get();
     }
 
     private String getCacheKey(Container c, String id)
@@ -160,25 +161,41 @@ public class DemographicsService
             AnimalRecord existing = _cache.get(key);
             if (existing != null)
             {
-                if (existing.getPropsForValidation() == null && record.getPropsForValidation() != null)
+                if (existing.getProps().isEmpty() && !record.getProps().isEmpty())
                 {
                     _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has properties, but new record does not");
                 }
-                else if (existing.getPropsForValidation() != null && record.getPropsForValidation() == null)
+                else if (!existing.getProps().isEmpty() && record.getProps().isEmpty())
                 {
                     _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has no properties, but new record does");
                 }
-                else if (existing.getPropsForValidation() == null && record.getPropsForValidation() == null)
+                else if (existing.getProps().isEmpty() && record.getProps().isEmpty())
                 {
                     //ignore
                 }
                 else
                 {
-                    MapDifference diff = Maps.difference(existing.getPropsForValidation(), record.getPropsForValidation());
+                    Map<String, Object> props1 = new TreeMap<>();
+                    Map<String, Object> props2 = new TreeMap<>();
+                    for (DemographicsProvider p : EHRService.get().getDemographicsProviders(record.getContainer()))
+                    {
+                        for (FieldKey fk : p.getFieldKeysToTest())
+                        {
+                            props1.put(fk.toString(), existing.getProps().get(fk.toString()));
+                            props2.put(fk.toString(), record.getProps().get(fk.toString()));
+                        }
+                    }
+
+                    MapDifference diff = Maps.difference(props1, props2);
                     if (!diff.areEqual())
                     {
                         _log.error("mismatch for cached record for animal: " + record.getId());
                         Map<String, MapDifference.ValueDifference> diffEntries = diff.entriesDiffering();
+                        if (diffEntries.isEmpty())
+                        {
+                            _log.error("No differences found in the maps");
+                        }
+
                         for (String prop : diffEntries.keySet())
                         {
                             _log.error("property: " + prop);
@@ -217,6 +234,18 @@ public class DemographicsService
         doUpdateRecords(c, u, schema, query, ids);
     }
 
+    private void reportDataChangeForProvider(Container c, DemographicsProvider p, Collection<String> ids)
+    {
+        final User u = EHRService.get().getEHRUser(c);
+        if (u == null)
+        {
+            _log.error("EHRUser not configured, cannot run demographics service");
+            return;
+        }
+
+        updateForProvider(c, u, p, ids, false);
+    }
+
     private void doUpdateRecords(Container c, User u, String schema, String query, List<String> ids)
     {
         try
@@ -225,35 +254,7 @@ public class DemographicsService
             {
                 if (p.requiresRecalc(schema, query))
                 {
-                    int start = 0;
-                    int batchSize = 500;
-                    List<String> allIds = new ArrayList<>(ids);
-                    while (start < ids.size())
-                    {
-                        List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
-                        start = start + batchSize;
-
-                        Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
-                        for (String id : ids)
-                        {
-                            synchronized (this)
-                            {
-                                String key = getCacheKey(c, id);
-                                AnimalRecord ar = _cache.get(key);
-                                if (ar != null)
-                                {
-                                    //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
-                                    ar.update(p, props.get(id));
-                                }
-                                else
-                                {
-                                    ar = AnimalRecord.create(c, id, props.get(id));
-                                }
-
-                                cacheRecord(ar, false);
-                            }
-                        }
-                    }
+                    updateForProvider(c, u, p, ids, true);
                 }
             }
         }
@@ -261,6 +262,51 @@ public class DemographicsService
         {
             _log.error(e.getMessage(), e);
             recacheRecords(c, ids);
+        }
+    }
+
+    private void updateForProvider(Container c, User u, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
+    {
+        int start = 0;
+        int batchSize = 500;
+        List<String> allIds = new ArrayList<>(ids);
+        while (start < ids.size())
+        {
+            List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
+            start = start + batchSize;
+
+            Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+            Set<String> idsToUpdate = new HashSet<>();
+
+            for (String id : ids)
+            {
+                synchronized (this)
+                {
+                    String key = getCacheKey(c, id);
+                    AnimalRecord ar = _cache.get(key);
+                    if (ar != null)
+                    {
+                        //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
+                        ar.update(p, props.get(id));
+                        if (doAfterUpdate)
+                            idsToUpdate.addAll(p.getIdsToUpdate(c, id, ar.getProps(), props.get(id)));
+                    }
+                    else
+                    {
+                        ar = AnimalRecord.create(c, id, props.get(id));
+                        if (doAfterUpdate)
+                            idsToUpdate.addAll(p.getIdsToUpdate(c, id, null, props.get(id)));
+                    }
+
+                    cacheRecord(ar, false);
+                }
+            }
+
+            idsToUpdate.removeAll(ids);
+            if (!idsToUpdate.isEmpty())
+            {
+                reportDataChangeForProvider(c, p, idsToUpdate);
+            }
         }
     }
 
@@ -274,11 +320,11 @@ public class DemographicsService
             {
                 try
                 {
-                    DemographicsService.get().createRecords(c, ids, false);
+                    EHRDemographicsServiceImpl.get().createRecords(c, ids, false);
                 }
                 catch (DeadlockLoserDataAccessException e)
                 {
-                    _log.error("DemographicsService encountered a deadlock", e);
+                    _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
                 }
             }
         });
@@ -387,7 +433,7 @@ public class DemographicsService
 
     private int cacheLivingAnimalsForAllContainers(boolean validateOnCreate)
     {
-        _log.info("attempting to recache demographics for all living animals on all containers set to do so");
+        _log.info("attempting to reache demographics for all living animals on all containers set to do so");
 
         //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
@@ -411,7 +457,7 @@ public class DemographicsService
                         continue;
                     }
 
-                    DemographicsService.get().cacheLivingAnimals(s.getContainer(), u, validateOnCreate);
+                    EHRDemographicsServiceImpl.get().cacheLivingAnimals(s.getContainer(), u, validateOnCreate);
                     totalCached++;
                 }
             }
@@ -422,39 +468,34 @@ public class DemographicsService
 
     public void onStartup()
     {
-        JobRunner.getDefault().execute(new Runnable(){
-            public void run()
+        int totalCached = cacheLivingAnimalsForAllContainers(false);
+        if (totalCached > 0)
+        {
+            try
             {
-                int totalCached = cacheLivingAnimalsForAllContainers(false);
-                if (totalCached > 0)
+                if (_job == null)
                 {
-                    try
-                    {
-                        if (_job == null)
-                        {
-                            _job = JobBuilder.newJob(DemographicServiceRefreshRunner.class)
-                                    .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
-                                    .usingJobData("demographicsService", DemographicsService.class.getName())
-                                    .build();
-                        }
-
-                        Trigger trigger = TriggerBuilder.newTrigger()
-                                .withIdentity(DemographicsService.class.getCanonicalName(), DemographicsService.class.getCanonicalName())
-                                .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(1, 0))
-                                .forJob(_job)
-                                .build();
-
-                        StdSchedulerFactory.getDefaultScheduler().scheduleJob(_job, trigger);
-
-                        _log.info("DemographicsService scheduled a refresh daily at 1AM");
-                    }
-                    catch (SchedulerException e)
-                    {
-                        _log.error("Unable to schedule DemographicsService", e);
-                    }
+                    _job = JobBuilder.newJob(DemographicServiceRefreshRunner.class)
+                            .withIdentity(EHRDemographicsServiceImpl.class.getCanonicalName(), EHRDemographicsServiceImpl.class.getCanonicalName())
+                            .usingJobData("demographicsService", EHRDemographicsServiceImpl.class.getName())
+                            .build();
                 }
+
+                Trigger trigger = TriggerBuilder.newTrigger()
+                        .withIdentity(EHRDemographicsServiceImpl.class.getCanonicalName(), EHRDemographicsServiceImpl.class.getCanonicalName())
+                        .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(0, 15))
+                        .forJob(_job)
+                        .build();
+
+                StdSchedulerFactory.getDefaultScheduler().scheduleJob(_job, trigger);
+
+                _log.info("EHRDemographicsServiceImpl scheduled a refresh daily at 12:15");
             }
-        }, 30000); //30-sec delay, allowing all modules to start
+            catch (SchedulerException e)
+            {
+                _log.error("Unable to schedule EHRDemographicsServiceImpl", e);
+            }
+        }
     }
 
     public static class DemographicServiceRefreshRunner implements Job
@@ -466,7 +507,7 @@ public class DemographicsService
 
         public void execute(JobExecutionContext context) throws JobExecutionException
         {
-            DemographicsService.get().cacheLivingAnimalsForAllContainers(true);
+            EHRDemographicsServiceImpl.get().cacheLivingAnimalsForAllContainers(true);
         }
     }
 }

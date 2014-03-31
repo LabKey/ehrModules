@@ -1,0 +1,1 @@
+alter table ehr.kinship alter column coefficient double precision;

@@ -47,6 +47,9 @@ function beforeInsert(row, errors) {
 }
 
 function beforeUpdate(row, oldRow, errors) {
+    row.cage = row.cage || oldRow.cage;
+    row.room = row.room || oldRow.room;
+
     beforeBoth(row, errors);
 
 }

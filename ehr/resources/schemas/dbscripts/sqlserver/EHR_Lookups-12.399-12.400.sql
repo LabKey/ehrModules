@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.cage ADD status VARCHAR(200);

@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.buttons;
 
+import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
@@ -26,7 +27,7 @@ import java.util.Map;
 /**
 
  */
-public class ProjectEditButton extends ShowEditUIButton
+public class ProjectEditButton extends EHRShowEditUIButton
 {
     public ProjectEditButton(Module owner, String schemaName, String queryName)
     {

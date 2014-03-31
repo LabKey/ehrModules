@@ -8,7 +8,7 @@
   * This query is designed to find housing records that overlap.  In this query, the overlap to calculated based on date only
   * A record that ends at the same time that a second record begins is not considered an overlap.
   */
-PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP)
+PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Room CHAR DEFAULT NULL, Cage CHAR DEFAULT NULL)
 
 SELECT
 h.lsid,

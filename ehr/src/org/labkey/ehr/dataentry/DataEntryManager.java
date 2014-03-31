@@ -157,7 +157,7 @@ public class DataEntryManager
             {
                 fks.add(ci.getFieldKey());
             }
-            else if (ci.isKeyField() || ci.getName().equalsIgnoreCase("objectid") || ci.getName().equalsIgnoreCase("runid") || ci.getName().equalsIgnoreCase("parentid") || ci.getName().equalsIgnoreCase("taskid") || ci.getName().equalsIgnoreCase("requestid"))
+            else if (ci.isKeyField() || ci.getName().equalsIgnoreCase("formsort") || ci.getName().equalsIgnoreCase("objectid") || ci.getName().equalsIgnoreCase("runid") || ci.getName().equalsIgnoreCase("parentid") || ci.getName().equalsIgnoreCase("taskid") || ci.getName().equalsIgnoreCase("requestid"))
             {
                 fks.add(ci.getFieldKey());
             }
@@ -271,15 +271,17 @@ public class DataEntryManager
         {
             if (_dataSetMap == null)
             {
-                Study s = StudyService.get().getStudy(getContainer());
-                List<? extends DataSet> datasets = s.getDataSets();
                 Map<String, DataSet> dataSetMap = new HashMap<>();
-                for (DataSet d : datasets)
+                Study s = StudyService.get().getStudy(getContainer());
+                if (s != null)
                 {
-                    dataSetMap.put(d.getName(), d);
-                    dataSetMap.put(d.getLabel(), d);
+                    List<? extends DataSet> datasets = s.getDataSets();
+                    for (DataSet d : datasets)
+                    {
+                        dataSetMap.put(d.getName(), d);
+                        dataSetMap.put(d.getLabel(), d);
+                    }
                 }
-
                 _dataSetMap = dataSetMap;
             }
 

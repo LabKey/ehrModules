@@ -39,7 +39,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
 
         var me = this,
                 editors = me.editors,
-                editorId = column.getItemId(),
+                editorId = column.getItemId() + '||' + category,
                 editor = editors.getByKey(editorId),
                 editorOwner = me.grid.ownerLockable || me.grid;
 
@@ -55,6 +55,11 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
                 editorId: editorId,
                 field: config
             });
+
+            //NOTE: essential for keyboard navigation
+            if (editor && !editor.hasCellEditOverrides){
+                this.applyEditorOverrides(editor);
+            }
 
             editorOwner.add(editor);
             editor.on({

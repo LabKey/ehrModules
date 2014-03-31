@@ -20,7 +20,7 @@ Ext4.define('EHR.data.HousingClientStore', {
             var date = record.get('date');
             var id = record.get('Id');
             var room = record.get('room');
-            if (!id || !date || !room)
+            if (!id || !date)
                 continue;
 
             date = date.format('Y-m-d');
@@ -29,9 +29,10 @@ Ext4.define('EHR.data.HousingClientStore', {
                 map[id] = [];
 
             map[id].push({
+                Id: id,
                 objectid: record.get('objectid'),
                 date: date,
-                enddate: record.get('enddate'),
+                enddate: record.fields.get('enddate') ? record.get('enddate') : null,
                 qcstate: record.get('QCState'),
                 room: record.get('room'),
                 cage: record.get('cage')

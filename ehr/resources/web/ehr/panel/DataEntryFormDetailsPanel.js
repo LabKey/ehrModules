@@ -61,6 +61,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                     var key = query.schemaName + '.' + query.queryName;
                     if (!queryMap[key]){
                         query.label = section.label;
+                        query.serverStoreSort = section.serverStoreSort;
                         queries.push(query);
                         queryMap[key] = true;
                     }
@@ -94,6 +95,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                         schemaName: q.schemaName,
                         queryName: q.queryName,
                         filters: filterArray,
+                        sort: q.serverStoreSort,
                         scope: this,
                         success: this.onDataRegionLoad
                     }

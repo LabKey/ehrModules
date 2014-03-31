@@ -46,6 +46,7 @@ import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
@@ -63,7 +64,7 @@ import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.AnimalRecord;
-import org.labkey.ehr.demographics.DemographicsService;
+import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -84,7 +85,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class EHRController extends SpringActionController
 {
@@ -151,7 +151,7 @@ public class EHRController extends SpringActionController
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            DemographicsService.get().cacheLivingAnimals(getContainer(), getUser(), true);
+            EHRDemographicsServiceImpl.get().cacheLivingAnimals(getContainer(), getUser(), true);
             return true;
         }
     }
@@ -263,12 +263,12 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(EHRDataEntryPermission.class)
-    public class UpdateQueryAction extends SimpleViewAction<QueryForm>
+    @RequiresPermissionClass(UpdatePermission.class)
+    public class UpdateQueryAction extends SimpleViewAction<EHRQueryForm>
     {
-        private QueryForm _form;
+        private EHRQueryForm _form;
 
-        public ModelAndView getView(QueryForm form, BindException errors) throws Exception
+        public ModelAndView getView(EHRQueryForm form, BindException errors) throws Exception
         {
             ensureQueryExists(form);
 
@@ -289,12 +289,20 @@ public class EHRController extends SpringActionController
             if (keyField != null)
             {
                 String detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
+                String importStr = "";
                 for (String pkCol : ti.getPkColumnNames())
                 {
                     detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                    importStr += "&" + pkCol + "=";
                 }
 
-                //TODO: import URL??  parentage, etc.
+                if (form.isShowImport())
+                {
+                    DetailsURL importUrl = DetailsURL.fromString("/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                    importUrl.setContainerContext(getContainer());
+
+                    url.addParameter("importURL", importUrl.toString());
+                }
 
                 DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
                 updateUrl.setContainerContext(getContainer());
@@ -337,7 +345,7 @@ public class EHRController extends SpringActionController
             return root;
         }
 
-        protected void ensureQueryExists(QueryForm form)
+        protected void ensureQueryExists(EHRQueryForm form)
         {
             if (form.getSchema() == null)
             {
@@ -355,7 +363,7 @@ public class EHRController extends SpringActionController
             }
         }
 
-        protected boolean queryExists(QueryForm form)
+        protected boolean queryExists(EHRQueryForm form)
         {
             try
             {
@@ -371,6 +379,21 @@ public class EHRController extends SpringActionController
                 // exists with errors
                 return true;
             }
+        }
+    }
+
+    public static class EHRQueryForm extends  QueryForm
+    {
+        private boolean _showImport = false;
+
+        public boolean isShowImport()
+        {
+            return _showImport;
+        }
+
+        public void setShowImport(boolean showImport)
+        {
+            _showImport = showImport;
         }
     }
 
@@ -390,7 +413,7 @@ public class EHRController extends SpringActionController
             try
             {
                 JSONObject json = new JSONObject();
-                for (AnimalRecord r : DemographicsService.get().getAnimals(getContainer(), Arrays.asList(form.getIds())))
+                for (AnimalRecord r : EHRDemographicsServiceImpl.get().getAnimals(getContainer(), Arrays.asList(form.getIds())))
                 {
                     json.put(r.getId(), r.getProps());
                 }
@@ -1327,6 +1350,166 @@ public class EHRController extends SpringActionController
         public void setQueryName(String queryName)
         {
             _queryName = queryName;
+        }
+    }
+
+    @RequiresPermissionClass(UpdatePermission.class)
+    public class ManageFlagsAction extends ApiAction<ManageFlagsForm>
+    {
+        public ApiResponse execute(ManageFlagsForm form, BindException errors) throws Exception
+        {
+            Map<String, Object> resp = new HashMap<String, Object>();
+
+            if (form.getCategory() == null)
+            {
+                errors.reject(ERROR_MSG, "No category supplied");
+                return null;
+            }
+
+            if (form.getFlag() == null)
+            {
+                errors.reject(ERROR_MSG, "No flag supplied");
+                return null;
+            }
+
+            if (form.getAnimalIds() == null || form.getAnimalIds().length == 0)
+            {
+                errors.reject(ERROR_MSG, "No animal IDs supplied");
+                return null;
+            }
+
+            try
+            {
+                String mode = form.getMode();
+                if ("add".equalsIgnoreCase(mode))
+                {
+                    if (form.getDate() == null)
+                    {
+                        errors.reject(ERROR_MSG, "Must supply a date");
+                        return null;
+                    }
+
+                    Collection<String> added = EHRManager.get().ensureFlagActive(getUser(), getContainer(), form.getCategory(), form.getFlag(), form.getDate(), form.getRemark(), Arrays.asList(form.getAnimalIds()), form.getLivingAnimalsOnly());
+                    resp.put("added", added);
+                }
+                else if ("remove".equalsIgnoreCase(mode))
+                {
+                    if (form.getEnddate() == null)
+                    {
+                        errors.reject(ERROR_MSG, "Must supply an end date");
+                        return null;
+                    }
+
+                    Collection<String> removed = EHRManager.get().terminateFlagsIfExists(getUser(), getContainer(), form.getCategory(), form.getFlag(), form.getEnddate(), Arrays.asList(form.getAnimalIds()));
+                    resp.put("removed", removed);
+                }
+                else
+                {
+                    errors.reject(ERROR_MSG, "Unknown mode, must either be add or remove");
+                    return null;
+                }
+
+                resp.put("success", true);
+            }
+            catch (IllegalArgumentException e)
+            {
+                errors.reject(ERROR_MSG, e.getMessage());
+                return null;
+            }
+
+            return new ApiSimpleResponse(resp);
+        }
+    }
+
+    public static class ManageFlagsForm
+    {
+        private String _category;
+        private String _flag;
+        private Date _date;
+        private Date _enddate;
+        private String _remark;
+        private String[] _animalIds;
+        private String _mode;
+        private Boolean _livingAnimalsOnly = true;
+
+        public String getCategory()
+        {
+            return _category;
+        }
+
+        public void setCategory(String category)
+        {
+            _category = category;
+        }
+
+        public String getFlag()
+        {
+            return _flag;
+        }
+
+        public void setFlag(String flag)
+        {
+            _flag = flag;
+        }
+
+        public Date getDate()
+        {
+            return _date;
+        }
+
+        public void setDate(Date date)
+        {
+            _date = date;
+        }
+
+        public Date getEnddate()
+        {
+            return _enddate;
+        }
+
+        public void setEnddate(Date enddate)
+        {
+            _enddate = enddate;
+        }
+
+        public String getRemark()
+        {
+            return _remark;
+        }
+
+        public void setRemark(String remark)
+        {
+            _remark = remark;
+        }
+
+        public String[] getAnimalIds()
+        {
+            return _animalIds;
+        }
+
+        public void setAnimalIds(String[] animalIds)
+        {
+            _animalIds = animalIds;
+        }
+
+        public String getMode()
+        {
+            return _mode;
+        }
+
+        public void setMode(String mode)
+        {
+            _mode = mode;
+        }
+
+        public Boolean getLivingAnimalsOnly()
+        {
+            return _livingAnimalsOnly;
+        }
+
+        public void setLivingAnimalsOnly(Boolean livingAnimalsOnly)
+        {
+            _livingAnimalsOnly = livingAnimalsOnly;
         }
     }
 }

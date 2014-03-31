@@ -119,6 +119,7 @@
         <ns:columns>
             <ns:column columnName="location">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:shownInUpdateView>false</ns:shownInUpdateView>
                 <ns:shownInInsertView>false</ns:shownInInsertView>
             </ns:column>
@@ -160,6 +161,9 @@
             </ns:column>
             <ns:column columnName="joinToCage">
                 <ns:columnTitle>Can Join To This Cage</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="status">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="ts">
@@ -1381,11 +1385,16 @@
             <ns:column columnName="genericName">
                 <ns:columnTitle>Generic Name</ns:columnTitle>
             </ns:column>
-            <ns:column columnName="description"/>
+            <ns:column columnName="description">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="category"/>
-            <ns:column columnName="major"/>
-            <ns:column columnName="remark"/>
-            <ns:column columnName="active"/>
+            <ns:column columnName="major">
+                <ns:columnTitle>Is Major?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="active">
+                <ns:defaultValue>true</ns:defaultValue>
+            </ns:column>
             <ns:column columnName="incision">
                 <ns:columnTitle>Involves Incision?</ns:columnTitle>
             </ns:column>
@@ -1400,6 +1409,9 @@
             </ns:column>
             <ns:column columnName="antibioticRx">
                 <ns:columnTitle>Default Antibiotic Rx</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="remark">
+                <ns:columnTitle>Default Remark</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -1521,8 +1533,12 @@
     <ns:table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Geographic Origins</ns:tableTitle>
         <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="meaning"/>
+            <ns:column columnName="rowid">
+                <ns:isKeyField>false</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="meaning">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
             <ns:column columnName="description"/>
         </ns:columns>
     </ns:table>
@@ -1551,6 +1567,9 @@
             </ns:column>
             <ns:column columnName="title">
                 <ns:columnTitle>Title</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
             </ns:column>
             <ns:column columnName="description">
                 <ns:columnTitle>Description</ns:columnTitle>
@@ -1607,7 +1626,14 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="qualifier"/>
-            <ns:column columnName="route"/>
+            <ns:column columnName="route">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>routes</ns:fkTable>
+                    <ns:fkColumnName>route</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="frequency">
                 <ns:fk>
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
@@ -1618,18 +1644,42 @@
             <ns:column columnName="concentration"/>
             <ns:column columnName="conc_units">
                 <ns:columnTitle>Concentration Units</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>conc_units</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="dosage"/>
             <ns:column columnName="dosage_units">
                 <ns:columnTitle>Dosage Units</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>dosage_units</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="volume"/>
             <ns:column columnName="vol_units">
                 <ns:columnTitle>Volume Units</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>volume_units</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="amount"/>
             <ns:column columnName="amount_units">
                 <ns:columnTitle>Amount Units</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>amount_units</ns:fkTable>
+                    <ns:fkColumnName>unit</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -1684,7 +1734,9 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="procedureid"/>
-            <ns:column columnName="comment"/>
+            <ns:column columnName="comment">
+                <ns:columnTitle>Default Narrative</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="billingtypes" tableDbType="TABLE" useColumnOrder="true">
@@ -1752,6 +1804,8 @@
             <ns:column columnName="maxCages"/>
             <ns:column columnName="sort_order">
                 <ns:columnTitle>Sort Order</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
             </ns:column>
             <ns:column columnName="dateDisabled"/>
             <ns:column columnName="created"/>
@@ -1917,6 +1971,58 @@
             </ns:column>
             <ns:column columnName="testfieldname">
                 <ns:columnTitle>Test Field Name</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Flag Values</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="value">
+                <ns:columnTitle>Value</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="code">
+                <ns:columnTitle>Code</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="datedisabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
         </ns:columns>
     </ns:table>

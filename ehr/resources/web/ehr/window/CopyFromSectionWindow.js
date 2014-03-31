@@ -181,6 +181,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             items.push({
                 xtype: 'ehr-projectfield',
                 matchFieldWidth: false,
+                showInactive: true,
                 fieldLabel: null,
                 width: 100,
                 fieldName: 'project',

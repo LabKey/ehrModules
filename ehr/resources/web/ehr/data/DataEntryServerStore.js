@@ -20,6 +20,15 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         });
 
         this.callParent(arguments);
+
+        Ext4.override(this.proxy, {
+            getRowData : function(record) {
+                var ret = this.callOverridden(arguments);
+                ret._recordId = record.internalId;
+
+                return ret;
+            }
+        });
     },
 
     ensureServerErrors: function(record){
@@ -249,7 +258,6 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
         this.callParent(arguments);
     },
-
 
     handleServerErrors: function(errors, records, requestId){
         //clear all server errors
@@ -502,9 +510,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
     addServerModel: function(data){
+        data = data || {};
         if (EHR.debug)
             console.log('creating server model');
-        var model = this.createModel({});
+        var model = this.createModel(data);
         model.serverErrors = Ext4.create('EHR.data.Errors', {
             record: model
         });

@@ -45,7 +45,7 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
 
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("mostRecentWeightDate"));
@@ -56,10 +56,10 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
     }
 
     @Override
-    public Collection<FieldKey> getSkippedFieldKeys()
+    public Collection<FieldKey> getFieldKeysToTest()
     {
-        Set<FieldKey> keys = new HashSet<>();
-        keys.add(FieldKey.fromString("daysSinceWeight"));
+        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
+        keys.remove(FieldKey.fromString("daysSinceWeight"));
 
         return keys;
     }

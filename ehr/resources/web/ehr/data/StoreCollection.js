@@ -109,6 +109,20 @@ Ext4.define('EHR.data.StoreCollection', {
 
             if (!this.haveStoresLoaded){
                 this.haveStoresLoaded = true;
+                if (this.initialData){
+                    var data = Ext4.decode(this.initialData);
+                    if (data){
+                        for (var storeId in data){
+                            var store = this.getClientStoreByName(storeId);
+                            LDK.Assert.assertNotEmpty('Unable to find client store matching: ' + storeId, store);
+                            if (store){
+                                Ext4.Array.forEach(data[storeId], function(r){
+                                    store.addClientModel(r);
+                                }, this);
+                            }
+                        }
+                    }
+                }
                 this.fireEvent('initialload', this);
             }
         }
@@ -576,7 +590,11 @@ Ext4.define('EHR.data.StoreCollection', {
                     }, this);
                 }
                 else if (json.exception){
-                    //TODO
+                    LDK.Utils.logToServer({
+                        level: 'ERROR',
+                        message: 'StoreCollection exception: ' + json.exception
+                    });
+
                     console.error(json.exception);
                 }
             }
@@ -629,6 +647,11 @@ Ext4.define('EHR.data.StoreCollection', {
                 }, this);
 
                 msg.push('Total Rows: ' + totalRows + (totalRows ? ' (' + (duration / totalRows) + ' sec/row)' : null));
+
+                //tone down alerts.  if we have a large number of records, but an acceptable time/record then cancel the alert
+                if (duration < 30 && (duration / totalRows) < 0.1){
+                    return;
+                }
             }
         }
 

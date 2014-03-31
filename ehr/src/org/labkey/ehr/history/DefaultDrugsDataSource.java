@@ -83,7 +83,11 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             sb.append("\n");
         }
 
-        sb.append(safeAppend(rs, "Performed By", "performedby"));
+        if (!redacted)
+        {
+            sb.append(safeAppend(rs, "Performed By", "performedby"));
+        }
+
         sb.append(safeAppend(rs, "Reason", "reason"));
         sb.append(safeAppend(rs, "Outcome", "outcome"));
         sb.append(safeAppend(rs, "Remark", "remark"));

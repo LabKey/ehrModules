@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.demographics;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.EHRService;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * User: bimber
@@ -94,26 +96,10 @@ public class AnimalRecord
         return _created;
     }
 
+    @NotNull
     public Map<String, Object> getProps()
     {
         return Collections.unmodifiableMap(_props);
-    }
-
-    public Map<String, Object> getPropsForValidation()
-    {
-        Map<String, Object> ret = new HashMap<>(_props);
-        for (DemographicsProvider p : EHRService.get().getDemographicsProviders(getContainer()))
-        {
-            if (p.getSkippedFieldKeys() != null)
-            {
-                for (FieldKey key : p.getSkippedFieldKeys())
-                {
-                    ret.remove(key.toString());
-                }
-            }
-        }
-
-        return Collections.unmodifiableMap(ret);
     }
 
     public String getGender()

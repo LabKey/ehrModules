@@ -21,11 +21,9 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
+import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
-import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
-import org.labkey.api.ehr.security.EHRProjectEditPermission;
-import org.labkey.api.ehr.security.EHRProtocolEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
@@ -36,9 +34,13 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
+import org.labkey.api.util.ContextListener;
+import org.labkey.api.util.JobRunner;
+import org.labkey.api.util.StartupListener;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
+import org.labkey.ehr.buttons.LocationEditButton;
 import org.labkey.ehr.buttons.ProcedureEditButton;
 import org.labkey.ehr.buttons.ProjectEditButton;
 import org.labkey.ehr.buttons.ProtocolEditButton;
@@ -46,12 +48,12 @@ import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
-import org.labkey.ehr.demographics.ActiveProblemsProvider;
+import org.labkey.ehr.demographics.ActiveProblemsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
-import org.labkey.ehr.demographics.DemographicsService;
+import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
@@ -65,7 +67,6 @@ import org.labkey.ehr.query.buttons.ExcelImportButton;
 import org.labkey.ehr.query.buttons.JumpToHistoryButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
 import org.labkey.ehr.query.buttons.ShowAuditHistoryButton;
-import org.labkey.api.ldk.buttons.ShowEditUIButton;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
@@ -74,6 +75,7 @@ import org.labkey.ehr.security.EHRDataEntryRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRLabworkEntryRole;
+import org.labkey.ehr.security.EHRLocationManagementRole;
 import org.labkey.ehr.security.EHRPathologyEntryRole;
 import org.labkey.ehr.security.EHRProcedureManagementRole;
 import org.labkey.ehr.security.EHRProtocolManagementRole;
@@ -83,6 +85,7 @@ import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRVeternarianRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
+import javax.servlet.ServletContext;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,7 +107,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.396;
+        return 12.406;
     }
 
     public boolean hasScripts()
@@ -119,13 +122,14 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRServiceImpl impl = new EHRServiceImpl();
         EHRService.setInstance(impl);
+        EHRDemographicsService.setInstance(new EHRDemographicsServiceImpl());
 
         // NOTE: deliberately register these prior to doStartupAfterSpringConfig(), so other modules
         // can override them
         EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveProblemsProvider());
+        EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider());
@@ -155,6 +159,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRProtocolManagementRole());
         RoleManager.registerRole(new EHRBehaviorEntryRole());
         RoleManager.registerRole(new EHRProcedureManagementRole());
+        RoleManager.registerRole(new EHRLocationManagementRole());
 
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
@@ -164,7 +169,21 @@ public class EHRModule extends ExtendedSimpleModule
         GeneticCalculationsJob.schedule();
         RecordDeleteRunner.schedule();
 
-        DemographicsService.get().onStartup();
+        ContextListener.addStartupListener("EHRDemographicsService onStartup", new StartupListener()
+        {
+            @Override
+            public void moduleStartupComplete(ServletContext servletContext)
+            {
+                JobRunner.getDefault().execute(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        EHRDemographicsServiceImpl.get().onStartup();
+                    }
+                }, 10000);
+            }
+        });
 
         //buttons
         EHRService.get().registerMoreActionsButton(new JumpToHistoryButton(this), "study", LDKService.ALL_TABLES);
@@ -177,7 +196,6 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "tasks");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order", "Set End Date"), "study", "treatment_order");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem", "Set End Date"), "study", "problem");
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "assignment", "Set End Date"), "study", "assignment");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls"), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
@@ -186,6 +204,8 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol_counts"), "ehr", "protocol_counts");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolexemptions"), "ehr", "protocolexemptions");
         EHRService.get().registerMoreActionsButton(new ProjectEditButton(this, "ehr", "project"), "ehr", "project");
+        EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "rooms");
+        EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "cage"), "ehr_lookups", "cage");
 
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedures"), EHRSchema.EHR_LOOKUPS, "procedures");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_flags"), EHRSchema.EHR_LOOKUPS, "procedure_default_flags");
@@ -199,6 +219,8 @@ public class EHRModule extends ExtendedSimpleModule
 
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_SNOMED, "code");
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROJECT, "project");
+        //this is not a true PK, but we want to enforce uniqueness
+        LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROJECT, "name");
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROTOCOL, "protocol");
 
         DataEntryManager.get().primeAllCaches();

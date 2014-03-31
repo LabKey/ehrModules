@@ -109,6 +109,7 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
                     return;
                 }
 
+                var storeChanged = false;
                 cs.suspendEvents();
                 cs.each(function(rec){
                     var needsUpdate = false;
@@ -118,11 +119,15 @@ Ext4.define('EHR.data.ClinicalReportStoreCollection', {
                         }
                     }
 
-                    if (needsUpdate)
+                    if (needsUpdate){
+                        storeChanged = true;
                         rec.set(toSet);
+                    }
                 }, this);
                 cs.resumeEvents();
-                cs.fireEvent('datachanged', cs);
+
+                if (storeChanged)
+                    cs.fireEvent('datachanged', cs);
             }, this);
         }
 

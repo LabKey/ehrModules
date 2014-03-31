@@ -33,7 +33,7 @@ public class EHRProtocolManagementRole extends AbstractEHRRole
 {
     public EHRProtocolManagementRole()
     {
-        super("EHR Protocol Management", "This role is used to grants the ability to manage IACUC protocols and associated data.",
+        super("EHR Protocol Management", "This role is used to grant the ability to manage IACUC protocols and associated data.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,

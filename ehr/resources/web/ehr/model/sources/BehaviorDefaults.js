@@ -17,16 +17,16 @@ EHR.model.DataModelManager.registerMetadata('BehaviorDefaults', {
                 hidden: true
             },
             s: {
-                hidden: true
+                hidden: false
             },
             o: {
-                hidden: true
+                hidden: false
             },
             a: {
-                hidden: true
+                hidden: false
             },
             p: {
-                hidden: true
+                hidden: false
             },
             p2: {
                 hidden: true
@@ -34,6 +34,83 @@ EHR.model.DataModelManager.registerMetadata('BehaviorDefaults', {
             remark: {
                 columnConfg: {
                     width: 350
+                }
+            }
+        },
+        'study.drug': {
+            category: {
+                defaultValue: 'Behavior'
+            },
+            code: {
+                editorConfig: {
+                    defaultSubset: 'Behavior'
+                }
+            },
+            concentration: {
+                hidden: true
+            },
+            conc_units: {
+                hidden: true
+            },
+            dosage: {
+                hidden: true
+            },
+            dosage_units: {
+                hidden: true
+            },
+            volume: {
+                hidden: true
+            },
+            vol_units: {
+                hidden: true
+            },
+            amount: {
+                //hidden: true,
+                defaultValue: 1
+            },
+            amount_units: {
+                hidden: true
+            },
+            lot: {
+                hidden: true
+            },
+            outcome: {
+                hidden: true
+            },
+            route: {
+                hidden: true,
+                allowBlank: true
+            },
+            reason: {
+                hidden: true
+            },
+            qualifier: {
+                hidden: true
+            },
+            enddate: {
+                hidden: true
+            },
+            project: {
+                getInitialValue: function(v, rec){
+                    //return a default value only if this field is visible
+                    var shouldReturn = false;
+                    if (rec){
+                        var meta = rec.fields.get('project');
+                        if (meta){
+                            shouldReturn = meta.hidden == false
+                        }
+                    }
+                    return v ? v : shouldReturn ? EHR.DataEntryUtils.getDefaultClinicalProject() : null;
+                }
+            }
+        },
+        'study.clinical_observations': {
+            area: {
+                hidden: true
+            },
+            category: {
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('category', 'Behavior')]
                 }
             }
         }

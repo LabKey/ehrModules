@@ -528,7 +528,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
                     var now = Ext4.Date.clearTime(new Date());
 
-                    row.daysElapsed = Ext4.Date.getElapsed(date, now) / (1000 * 60 * 60 * 24);
+                    row.daysElapsed = Ext4.util.Format.round(Ext4.Date.getElapsed(date, now) / (1000 * 60 * 60 * 24), 0);
                 }
             }, this);
         }
@@ -577,9 +577,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
     appendCaseSummary: function(results){
         var el = this.down('#caseSummary');
-        if (!el || !results)
+        if (!el){
             return;
+        }
 
+        results = results || [];
         var filteredResults = [];
         Ext4.Array.forEach(results, function(row){
             var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate) : null;
@@ -748,7 +750,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
                 parentMap[text] = Ext4.unique(parentMap[text]);
                 var method = parentMap[text].join(', ');
-                values.push(text + (method ? ' (' + method + ')' : ''));
+                values.push('<a href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'parentage', 'query.Id~eq': this.subjectId}) + '" target="_blank">' + text + (method ? ' (' + method + ')' : '') + '</a>');
             }, this);
 
             if (values.length)

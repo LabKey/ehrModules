@@ -29,9 +29,9 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class ActiveProblemsProvider extends AbstractListDemographicsProvider
+public class ActiveProblemsDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public ActiveProblemsProvider()
+    public ActiveProblemsDemographicsProvider()
     {
         super("study", "Problem List", "activeProblems");
     }
@@ -57,5 +57,15 @@ public class ActiveProblemsProvider extends AbstractListDemographicsProvider
         filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
+    }
+
+    @Override
+    public Collection<FieldKey> getFieldKeysToTest()
+    {
+        //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
+        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
+        keys.remove(FieldKey.fromString(_propName));
+
+        return keys;
     }
 }

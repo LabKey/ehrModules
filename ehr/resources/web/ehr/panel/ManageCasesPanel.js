@@ -22,7 +22,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
             },
             Behavior: {
                 showAssignedVet: false,
-                requiredFields: ['remark', 'problem']
+                requiredFields: ['problem', 'subcategory']
             }            
         },
         
@@ -241,6 +241,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                             }
 
                                             rec.set('reviewdate', val);
+                                            rec.set('enddate', null);
                                             var store = rec.store;
                                             store.sync({
                                                 scope: this,
@@ -323,6 +324,12 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
             },{
                 header: 'Problem(s)',
                 dataIndex: 'problemCategories',
+                tdCls: 'ldk-wrap-text',
+                renderer: function(v){
+                    if (v){
+                        return v.replace(/\n/g, '<br>');
+                    }
+                },
                 width: 220
             }]
         }
@@ -332,9 +339,10 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
         if (Ext4.isArray(rec)){
             var data = [];
             Ext4.Array.forEach(rec, function(r){
-                console.log(r.data);
+                var title = r.get('problemCategories')  || r.get('remark');
                 data.push({
                     problems: r.get('problemCategories'),
+                    title: title,
                     objectid: r.get('objectid'),
                     record: r
                 });
@@ -349,7 +357,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 items: [{
                     xtype: 'combo',
                     fieldLabel: 'Choose Case',
-                    displayField: 'problems',
+                    displayField: 'title',
                     triggerAction: 'all',
                     queryMode: 'local',
                     width: 400,
@@ -357,7 +365,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                     store: {
                         type: 'store',
                         data: data,
-                        fields: ['problems', 'objectid', 'record']
+                        fields: ['problems', 'objectid', 'record', 'title']
                     },
                     forceSelection: true
                 }],
@@ -432,7 +440,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                         }).show();
                     }
                     else if (val == 'no'){
-                        this.showEditCaseWindow(existingRecs);
+                        this.showEditCaseWindow(existingRecs.length == 1 ? existingRecs[0] : existingRecs);
                     }
                 },
                 scope: this
@@ -442,7 +450,8 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
             Ext4.create('EHR.window.OpenCaseWindow', {
                 caseCategory: category,
                 ownerPanel: this,
-                animalId: this.animalId
+                animalId: this.animalId,
+                defaultRemark: defaultRemark
             }).show();
         }
     }
@@ -456,7 +465,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
             modal: true,
             closeAction: 'destroy',
             title: 'Edit Case',
-            width: 600,
+            width: 750,
             bodyStyle: 'padding: 5px;',
             items: [{
                 xtype: 'form',
@@ -488,7 +497,14 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     itemId: 'reviewdate',
                     allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.boundRecord.get('category')].requiredFields.indexOf('reviewdate') == -1,
                     width: 560,
-                    value: this.boundRecord.get('reviewdate')
+                    value: this.boundRecord.get('reviewdate'),
+                    listeners: {
+                        change: function(field, val, oldVal){
+                            if (val){
+                                field.up('panel').down('#enddate').setValue(null);
+                            }
+                        }
+                    }
                 },{
                     xtype: 'datefield',
                     fieldLabel: 'Date Closed',
@@ -517,7 +533,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     schemaName: 'study',
                     queryName: 'problem',
                     sort: 'date',
-                    columns: 'Id,date,lsid,objectid,category,enddate,caseid',
+                    columns: 'Id,date,lsid,objectid,category,subcategory,enddate,caseid',
                     filterArray: [LABKEY.Filter.create('caseid', this.boundRecord.get('objectid'), LABKEY.Filter.Types.EQUAL)],
                     autoLoad: true,
                     listeners: {
@@ -531,6 +547,10 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     dataIndex: 'category',
                     width: 180,
                     header: 'Problem'
+                },{
+                    dataIndex: 'subcategory',
+                    width: 180,
+                    header: 'Subcategory'
                 },{
                     dataIndex: 'date',
                     header: 'Date',
@@ -576,6 +596,35 @@ Ext4.define('EHR.window.EditCaseWindow', {
                                         schemaName: 'ehr_lookups',
                                         queryName: 'problem_list_category',
                                         autoLoad: true
+                                    },
+                                    listeners: {
+                                        change: function(field, val){
+                                            var sc = field.up('panel').down('#subcategory');
+                                            sc.store.filterArray = [LABKEY.Filter.create('category', val)]
+                                            sc.store.load();
+                                            sc.setDisabled(false);
+                                        },
+                                        render: function(field){
+                                            if (field.getValue()){
+                                                field.fireEvent('change', field, field.getValue());
+                                            }
+                                        }
+                                    }
+                                },{
+                                    xtype: 'labkey-combo',
+                                    fieldLabel: 'Subcategory',
+                                    valueField: 'value',
+                                    displayField: 'value',
+                                    itemId: 'subcategory',
+                                    disabled: true,
+                                    anyMatch: true,
+                                    queryMode: 'local',
+                                    forceSelection: true,
+                                    store: {
+                                        type: 'labkey-store',
+                                        schemaName: 'ehr_lookups',
+                                        queryName: 'problem_list_subcategory',
+                                        columns: 'value,category'
                                     }
                                 },{
                                     xtype: 'datefield',
@@ -600,6 +649,7 @@ Ext4.define('EHR.window.EditCaseWindow', {
                                             Id: win.boundRecord.get('Id'),
                                             caseid: win.boundRecord.get('objectid'),
                                             category: win.down('#category').getValue(),
+                                            subcategory: win.down('#subcategory').getValue(),
                                             date: win.down('#dateField').getValue()
                                         });
 
@@ -728,6 +778,38 @@ Ext4.define('EHR.window.OpenCaseWindow', {
                         schemaName: 'ehr_lookups',
                         queryName: 'problem_list_category',
                         autoLoad: true
+                    },
+                    value: this.caseCategory == 'Behavior' ? 'Behavioral' : null,
+                    listeners: {
+                        change: function(field, val){
+                            var sc = field.up('window').down('#subcategory');
+                            sc.store.filterArray = [LABKEY.Filter.create('category', val)];
+                            sc.store.load();
+                            sc.setDisabled(false);
+                        },
+                        render: function(field){
+                            if (field.getValue()){
+                                field.fireEvent('change', field, field.getValue());
+                            }
+                        }
+                    }
+                },{
+                    xtype: 'labkey-combo',
+                    fieldLabel: 'Subcategory',
+                    allowBlank: EHR.panel.ManageCasesPanel.CASE_CATEGORIES[this.caseCategory].requiredFields.indexOf('subcategory') == -1,
+                    valueField: 'value',
+                    displayField: 'value',
+                    itemId: 'subcategory',
+                    name: 'subcategory',
+                    disabled: true,
+                    anyMatch: true,
+                    queryMode: 'local',
+                    forceSelection: true,
+                    store: {
+                        type: 'labkey-store',
+                        schemaName: 'ehr_lookups',
+                        queryName: 'problem_list_subcategory',
+                        columns: 'value,category'
                     }
                 },{
                     xtype: 'textarea',
@@ -783,6 +865,7 @@ Ext4.define('EHR.window.OpenCaseWindow', {
             date: values.date,
             enddate: values.enddate,
             category: values.problem,
+            subcategory: values.subcategory,
             caseid: values.objectid
         };
 

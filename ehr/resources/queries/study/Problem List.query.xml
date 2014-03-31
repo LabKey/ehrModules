@@ -39,6 +39,14 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="subcategory">
+                        <columnTitle>Subcategory</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>problem_list_subcategory</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="enddate">
                         <columnTitle>Date Resolved</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>

@@ -27,7 +27,7 @@
                         </fk>
                     </column>
                     <column columnName="authorize">
-                        <columnTitle>Authorized By</columnTitle>
+                        <columnTitle>Vet Authorization</columnTitle>
                     </column>
                 </columns>
             </table>

@@ -196,19 +196,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             allowBlank: false,
             nullable: false,
             noSaveInTemplateByDefault: true,
-            extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
                 otherToNow: true,
                 timeFormat: 'H:i'
             },
-            xtype: 'xdatetime',
             columnConfig: {
                 fixed: true,
-                width: 180,
-                editor: {
-                    xtype: 'xdatetime'
-                }
+                width: 180
             },
             getInitialValue: function(v, rec){
                 return v ? v : new Date()
@@ -287,31 +282,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             xtype: 'xdatetime',
             hidden: true,
             noSaveInTemplateByDefault: true,
-            extFormat: 'Y-m-d H:i',
-            editorConfig: {
-                dateFormat: 'Y-m-d',
-                timeFormat: 'H:i'
-            },
             columnConfig: {
                 fixed: true,
                 width: 130
             }
         },
         enddate: {
-            xtype: 'xdatetime',
             noSaveInTemplateByDefault: true,
             shownInInsertView: true,
             columnConfig: {
                 fixed: true,
-                width: 180,
-                editor: {
-                    xtype: 'xdatetime'
-                }
-            },
-            extFormat: 'Y-m-d H:i',
-            editorConfig: {
-                dateFormat: 'Y-m-d',
-                timeFormat: 'H:i'
+                width: 180
             }
         },
         code: {
@@ -753,6 +734,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             recipient: {
                 columnConfig: {
                     width: 200
+                },
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('dateDisabled', null, LABKEY.Filter.Types.ISBLANK)]
                 }
             },
             requestcategory: {
@@ -763,12 +747,24 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.matings': {
             matingtype: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
             },
+            male: {
+                allowBlank: false
+            },
             performedby: {
                 defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            date: {
+                xtype: 'datefield',
+                extFormat: 'Y-m-d'
+            },
+            enddate: {
+                xtype: 'datefield',
+                extFormat: 'Y-m-d'
             }
         },
         'study.pregnancyConfirmation': {
@@ -872,47 +868,59 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
-        'study.Housing': {
+        'study.housing': {
             date: {
-                editorConfig: {
-                    allowNegative: false
-                }
+
             },
             enddate: {
-                xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
-                shownInGrid: false
-            },
-            remark: {
-                shownInGrid: false
+
             },
             performedby: {
-                shownInGrid: false
-            },
-            cage: {
-                allowBlank: false
-            },
-            cond: {
-                allowBlank: false,
-                shownInGrid: false
-            },
-            reason: {
-                shownInGrid: false
-            },
-            restraintType: {
-                shownInGrid: false
-            },
-            cagesJoined: {
-                shownInGrid: false
-            },
-            isTemp: {
-                shownInGrid: false
+                defaultValue: LABKEY.Security.currentUser.displayName
             },
             project: {
                 hidden: true
             },
+            reason: {
+                allowBlank: false,
+                columnConfig: {
+                    width: 180
+                }
+            },
             room: {
+                allowBlank: false,
+                columnConfig: {
+                    width: 150
+                }
+            }
+        },
+        'onprc_ehr.housing_transfer_requests': {
+            date: {
 
+            },
+            enddate: {
+
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            project: {
+                hidden: true
+            },
+            reason: {
+                columnConfig: {
+                    width: 180
+                }
+            },
+            room: {
+                columnConfig: {
+                    width: 160
+                }
+            },
+            cage: {
+                columnConfig: {
+                    width: 160
+                }
             }
         },
         'ehr.encounter_participants': {
@@ -1019,7 +1027,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             hx: {
-                xtype: 'ehr-hxtextarea',
+                formEditorConfig: {
+                    xtype: 'ehr-hxtextarea'
+                },
                 height: 100
             },
             s: {
@@ -1211,21 +1221,46 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: 'Clinical'
             }
         },
-        'ehr.Project': {
+        'ehr.project': {
             project: {
+                xtype: 'hidden',
+                hidden: true
+            },
+            name: {
+                allowBlank: false,
+                xtype: 'ehr-projectgeneratorfield'
+            }
+        },
+        'ehr.protocol': {
+            name: {
+                //TODO: custom xtype
+            },
+            title: {
                 xtype: 'textfield',
-                lookups: false
+                height: 80
+            }
+        },
+        'onprc_ehr.investigators': {
+            rowid: {
+                editable: false
+            },
+            employeeid: {
+                hidden: false
+            },
+            address: {
+                height: 100
+            }
+        },
+        'onprc_billing.chargeRateExemptions': {
+            project: {
+                xtype: 'ehr-projectfield'
             }
         },
         'study.Assignment': {
             project: {
                 shownInGrid: true,
                 allowBlank: false,
-                xtype: 'combo',
-                lookup: {
-                    filterArray: [LABKEY.Filter.create('protocol/protocol/isActive', true, LABKEY.Filter.Types.EQUAL)],
-                    columns: 'project,protocol,account'
-                }
+                xtype: 'ehr-projectfield'
             },
             date: {
                 xtype: 'datefield',
@@ -1236,23 +1271,64 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             },
             projectedRelease: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
             },
             assignCondition: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
+                },
+                lookup: {
+                    sort: 'code'
+                },
+                editorConfig: {
+                    listConfig: {
+                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
                 }
             },
             projectedReleaseCondition: {
+                allowBlank: false,
                 columnConfig: {
-                    width: 200
+                    width: 220
+                },
+                lookup: {
+                    sort: 'code'
+                },
+                editorConfig: {
+                    listConfig: {
+                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
                 }
             },
             releaseCondition: {
                 columnConfig: {
                     width: 200
+                },
+                lookup: {
+                    sort: 'code'
+                },
+                editorConfig: {
+                    listConfig: {
+                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
+                }
+            },
+            releaseType: {
+                columnConfig: {
+                    width: 150
                 }
             }
         },
@@ -1307,8 +1383,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: true
             },
             unitcost: {
-                //TODO: enable once ready
-                hidden: true,
+                hidden: false,
                 columnConfig: {
                     getEditor: function(rec){
                         if (rec.get('chargeId')){
@@ -1347,6 +1422,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             category: {
+                allowBlank: false,
                 lookup: {
                     columns: 'value,description'
                 },
@@ -1568,7 +1644,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.Arrival': {
             Id: {
+                xtype: 'ehr-animalgeneratorfield',
                 editorConfig: {allowAnyId: true}
+            },
+            date: {
+                extFormat: 'Y-m-d'
             },
             project: {hidden: true},
             account: {hidden: true},
@@ -1576,32 +1656,67 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 },
+                columnConfig: {
+                    width: 180
+                },
                 allowBlank: false
             },
-            performedby: {hidden: true},
-            remark: {shownInGrid: false},
-            dam: {shownInGrid: false},
-            sire: {shownInGrid: false},
+            birth: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+            performedby: {
+                hidden: true
+            },
+            remark: {
+                shownInGrid: true
+            },
             initialRoom: {
-                hidden: false,
-                allowBlank: false
+                hidden: false
             },
             initialCage: {
-                hidden: false,
-                allowBlank: false
+                hidden: false
             },
-            initialCond: {hidden: false}
+            geographic_origin: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            rearingType: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            acquisitionType: {
+                columnConfig: {
+                    width: 200
+                }
+            }
         },
         'study.Departure': {
-            performedby: {hidden: true},
-            project: {hidden: true},
-            account: {hidden: true},
-            authorized_by: {allowBlank: false},
+            performedby: {
+                hidden: true
+            },
+            project: {
+                hidden: true
+            },
+            account: {
+                hidden: true
+            },
             destination: {
                 editorConfig: {
                     plugins: ['ldk-usereditablecombo']
                 },
+                columnConfig: {
+                    width: 200
+                },
                 allowBlank: false
+            },
+            authorize: {
+                columnConfig: {
+                    width: 200
+                }
             }
         },
         'study.Deaths': {
@@ -1630,25 +1745,28 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             //manner: {allowBlank: false}
         },
         'study.Birth': {
+            Id: {
+                xtype: 'ehr-animalgeneratorfield'
+            },
             performedby: {hidden: true},
             project: {hidden: true},
-            account: {hidden: true},
-            dam: {shownInGrid: false, lookups: false},
-            sire: {shownInGrid: false, lookups: false},
-            gender: {includeNullRecord: false, allowBlank: false},
             weight: {
-                shownInGrid: false,
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
-            wdate: {shownInGrid: false},
-            room: {shownInGrid: false},
-            cage: {shownInGrid: false},
-            cond: {shownInGrid: false},
-            origin: {shownInGrid: false},
+            birthtype: {
+                columnConfig: {
+                    width: 200
+                }
+            },
+            origin: {
+                hidden: true
+            },
             estimated: {shownInGrid: false},
-            conception: {shownInGrid: false}
+            conception: {
+                hidden: true
+            }
         },
         'study.blood' : {
             billedby: {
@@ -1848,8 +1966,23 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             }
         },
-        'study.Notes': {
-
+        'study.notes': {
+            remark: {
+                hidden: true
+            },
+            category: {
+                columnConfig: {
+                    width: 180
+                }
+            },
+            value: {
+                columnConfig: {
+                    width: 300
+                }
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            }
         },
         'study.problem': {
             date: {
@@ -1949,6 +2082,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.pairings': {
+            date: {
+                getInitialValue: function(v){
+                    //NOTE: we do not want this to have a default date
+                    return v;
+                }
+            },
             pairid: {
                 hidden: true
             },

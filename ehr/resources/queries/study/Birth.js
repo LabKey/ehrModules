@@ -18,8 +18,20 @@ function onInit(event, helper){
     helper.decodeExtraContextProperty('birthsInTransaction');
 }
 
+function onUpsert(helper, scriptErrors, row, oldRow){
+    if (row.weight && !row.wdate){
+        EHR.Server.Utils.addError(scriptErrors, 'wdate', 'This field is required when supplying a weight', 'WARN');
+    }
+
+    if (!row.weight && row.wdate){
+        EHR.Server.Utils.addError(scriptErrors, 'weight', 'This field is required when supplying a weight date', 'WARN');
+    }
+}
+
 function onBecomePublic(scriptErrors, helper, row, oldRow){
-    helper.registerBirth(row.Id, row.date);
+    if (EHR.Server.Utils.isLiveBirth(row.cond)){
+        helper.registerLiveBirth(row.Id, row.date);
+    }
 
     if (!helper.isETL()){
         //if a weight is provided, we insert into the weight table:
@@ -28,7 +40,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
         }
 
         //if room provided, we insert into housing
-        if (row.room && row.cage){
+        if (row.room){
             helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.room, row.cage);
         }
 
@@ -42,8 +54,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
                 origin: row.origin,
                 birth: row.date,
                 date: row.date,
-                //TODO: conditionalize based on birth type
-                calculated_status: 'Alive'
+                calculated_status: EHR.Server.Utils.isLiveBirth(row.cond) ? 'Alive' : 'Dead'
             });
         }
     }

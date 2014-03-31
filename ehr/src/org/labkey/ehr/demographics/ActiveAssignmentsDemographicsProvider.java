@@ -21,6 +21,7 @@ import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.query.FieldKey;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,5 +75,15 @@ public class ActiveAssignmentsDemographicsProvider extends AbstractListDemograph
         return ("study".equalsIgnoreCase(schema) && "Assignment".equalsIgnoreCase(query)) ||
                ("study".equalsIgnoreCase(schema) && "Animal Record Flags".equalsIgnoreCase(query)) ||
                ("study".equalsIgnoreCase(schema) && "flags".equalsIgnoreCase(query));
+    }
+
+    @Override
+    public Collection<FieldKey> getFieldKeysToTest()
+    {
+        //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
+        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
+        keys.remove(FieldKey.fromString(_propName));
+
+        return keys;
     }
 }

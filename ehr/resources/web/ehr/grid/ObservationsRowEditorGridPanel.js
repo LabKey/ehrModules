@@ -6,6 +6,8 @@
 /**
  * This is used within the RowEditor in the clinical rounds form
  *
+ * @cfg observationFilterArray
+ *
  */
 Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
     extend: 'Ext.grid.Panel',
@@ -100,6 +102,7 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
                     queryName: 'observation_types',
+                    filterArray: this.observationFilterArray,
                     columns: 'value,description',
                     autoLoad: true
                 }

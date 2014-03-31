@@ -27,6 +27,7 @@ import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.ldk.table.CustomPermissionsTable;
@@ -45,8 +46,10 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.ehr.EHRSchema;
+import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.security.EHRVeternarianRole;
 
 import java.util.Collections;
@@ -98,7 +101,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private Map<String, Map<String, Object>> getPropertySetNames()
     {
-        Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) CacheManager.getSharedCache().get(LookupSetTable.CACHE_KEY);
+        Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) DataEntryManager.get().getCache().get(LookupSetTable.CACHE_KEY);
         if (nameMap != null)
             return nameMap;
 
@@ -118,14 +121,14 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
 
         nameMap = Collections.unmodifiableMap(nameMap);
-        CacheManager.getSharedCache().put(LookupSetTable.CACHE_KEY, nameMap);
+        DataEntryManager.get().getCache().put(LookupSetTable.CACHE_KEY, nameMap);
 
         return nameMap;
     }
 
     private Map<String, String> getLabworkTypeNames()
     {
-        Map<String, String> nameMap = (Map<String, String>) CacheManager.getSharedCache().get(LabworkTypeTable.CACHE_KEY);
+        Map<String, String> nameMap = (Map<String, String>) DataEntryManager.get().getCache().get(LabworkTypeTable.CACHE_KEY);
         if (nameMap != null)
             return nameMap;
 
@@ -146,7 +149,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
 
         nameMap = Collections.unmodifiableMap(nameMap);
-        CacheManager.getSharedCache().put(LabworkTypeTable.CACHE_KEY, nameMap);
+        DataEntryManager.get().getCache().put(LabworkTypeTable.CACHE_KEY, nameMap);
 
         return nameMap;
     }
@@ -168,7 +171,15 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             return createVeterinariansTable(name);
         }
-        
+        else if ("cage".equalsIgnoreCase(name))
+        {
+            return getCustomPermissionTable(createSourceTable(name), EHRLocationEditPermission.class);
+        }
+        else if ("rooms".equalsIgnoreCase(name))
+        {
+            return getCustomPermissionTable(createSourceTable(name), EHRLocationEditPermission.class);
+        }
+
         if (available.contains(name))
             return super.createTable(name);
 
@@ -251,6 +262,16 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         ti.setTitle("Veternarians");
 
         return ti;
+    }
+
+    private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
+    {
+        CustomPermissionsTable ret = new CustomPermissionsTable(this, schemaTable);
+        ret.addPermissionMapping(InsertPermission.class, perm);
+        ret.addPermissionMapping(UpdatePermission.class, perm);
+        ret.addPermissionMapping(DeletePermission.class, perm);
+
+        return ret.init();
     }
 
     private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)

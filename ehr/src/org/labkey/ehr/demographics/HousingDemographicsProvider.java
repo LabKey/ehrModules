@@ -37,7 +37,7 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
 
     protected Collection<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("area"));
         keys.add(FieldKey.fromString("room"));
         keys.add(FieldKey.fromString("room_sortValue"));

@@ -48,10 +48,13 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -97,6 +100,15 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         rHelper.ensureRConfig();
 
         currentTest = initTest;
+    }
+
+    @Override
+    @LogMethod
+    protected void initProject() throws Exception
+    {
+        super.initProject();
+
+        cacheIds(Arrays.asList(MORE_ANIMAL_IDS));
     }
 
     @Test @Ignore("Placeholder: No tests yet")
@@ -230,8 +242,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     @Test
     public void testPedigreeReport() throws Exception
     {
-        goToProjectHome();
         createBirthRecords();
+        goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "Animal History"));
         _helper.waitForCmp("textfield[itemId=subjArea]");
         String id = ID_PREFIX + 1;
@@ -276,7 +288,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         for (String[] arr : panels)
         {
             _helper.addRecordToGrid(panelGrid);
-            panelGrid.setGridCell(panelIdx, "Id", "Animal" + panelIdx);
+            panelGrid.setGridCell(panelIdx, "Id", MORE_ANIMAL_IDS[(panelIdx % MORE_ANIMAL_IDS.length)]);
             panelGrid.setGridCell(panelIdx, "servicerequested", arr[0]);
 
             if (arr[1] != null && arr.length == 4)
@@ -437,11 +449,13 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         String parentageQuery = "parentage";
 
         int i = 0;
+        Set<String> createdIds = new HashSet<>();
         while (i < 10)
         {
             i++;
             Map<String, Object> row = new HashMap();
             row.put("Id", ID_PREFIX + i);
+            createdIds.add(ID_PREFIX + i);
             row.put("date", new Date());
             row.put("gender", ((i % 2) == 0 ? "m" : "f"));
             row.put("dam", ID_PREFIX + (i + 100 + "f"));
@@ -460,7 +474,18 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             apiHelper.insertRow(schema, parentageQuery, parentageRow, false);
         }
 
+        //force caching of demographics on new IDs.
+        cacheIds(createdIds);
+
         _hasCreatedBirthRecords = true;
+    }
+
+    private void cacheIds(Collection<String> ids)
+    {
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/getDemographics.view?ids=" + StringUtils.join(ids, "&ids="));
+        waitForText("\"" + ids.iterator().next() + "\" : {");
+
+        goToProjectHome();
     }
 
     @Test
@@ -482,7 +507,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         _ext4Helper.selectComboBoxItem("Choose Template:", true, templateName2);
 
         //these should not be shown
-        Assert.assertFalse(Ext4FieldRef.isFieldPresent(this, "Task"));
+        Assert.assertFalse(Ext4FieldRef.isFieldPresent(this, "Task:"));
         Assert.assertFalse(Ext4FieldRef.isFieldPresent(this, "Animal Details"));
 
         Ext4ComboRef combo = Ext4ComboRef.getForLabel(this, "SOAP");
@@ -743,9 +768,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     @Test
     public void testGeneticsPipeline() throws Exception
     {
-        goToProjectHome();
-
         createBirthRecords();
+        goToProjectHome();
 
         //retain pipeline log for debugging
         publishArtifact(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH));
@@ -850,6 +874,12 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
         sleep(2000);
 
+        waitAndClickButton("Delete Data From Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        waitAndClickButton("Populate Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        sleep(2000);
+
         waitAndClickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         waitAndClickButton("Populate All", 0);
@@ -910,7 +940,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         _helper.addRecordToGrid(obsGrid);
 
         // depending on the value set for category, a different editor should appear in the observations field
-        obsGrid.setGridCell(1, "Id", "Animal1");
+        obsGrid.setGridCell(1, "Id", MORE_ANIMAL_IDS[0]);
         obsGrid.setGridCell(1, "category", "BCS");
 
         //first BCS
@@ -941,7 +971,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
         //add new row
         _helper.addRecordToGrid(obsGrid);
-        obsGrid.setGridCell(2, "Id", "Animal1");
+        obsGrid.setGridCell(2, "Id", MORE_ANIMAL_IDS[0]);
         obsGrid.setGridCell(2, "category", "BCS");
 
         //verify BCS working on new row
@@ -957,7 +987,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         Assert.assertEquals("ldk-numberfield", (String)editor.getFnEval("return this.xtype"));
         assertElementNotPresent(Locator.tagContainingText("li", "4.5").notHidden().withClass("x4-boundlist-item"));
         obsGrid.completeEdit();
-        Assert.assertEquals(10L, obsGrid.getFieldValue(1, "observation"));
+        Assert.assertEquals("10", obsGrid.getFieldValue(1, "observation"));
 
         _helper.discardForm();
     }

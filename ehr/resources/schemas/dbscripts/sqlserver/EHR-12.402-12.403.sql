@@ -1,0 +1,8 @@
+ALTER TABLE ehr.snomed_tags ADD formsort integer;
+ALTER TABLE ehr.snomed_tags ADD date timestamp;
+ALTER TABLE ehr.encounter_summaries ADD formsort integer;
+ALTER TABLE ehr.encounter_participants ADD formsort integer;
+
+ALTER TABLE ehr.formtemplates ADD hidden bit default 0;
+GO
+UPDATE ehr.formtemplates SET hidden = 0;

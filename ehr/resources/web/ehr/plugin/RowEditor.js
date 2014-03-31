@@ -188,7 +188,9 @@ Ext4.define('EHR.plugin.RowEditor', {
                 this.loadRecord(nextRec);
             }
             else {
-                Ext4.Msg.alert('', 'There are no more records');
+                //NOTE: behvior changed by request
+                //Ext4.Msg.alert('', 'There are no more records');
+                this.getEditorWindow().close();
             }
         }
     }

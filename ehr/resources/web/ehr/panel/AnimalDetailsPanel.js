@@ -135,6 +135,19 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                     xtype: 'ldk-linkbutton',
                     style: 'margin-top: 5px;',
                     scope: this,
+                    text: '[Show Recent SOAPs]',
+                    handler: function(){
+                        if (this.subjectId){
+                            EHR.window.RecentRemarksWindow.showRecentRemarks(this.subjectId);
+                        }
+                        else {
+                            console.log('no id');
+                        }
+                    }
+                },{
+                    xtype: 'ldk-linkbutton',
+                    style: 'margin-top: 5px;',
+                    scope: this,
                     text: '[Manage Treatments]',
                     hidden: EHR.Security.hasClinicalEntryPermission() && !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(){

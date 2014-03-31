@@ -14,6 +14,10 @@ EHR.model.DataModelManager.registerMetadata('ChargesAdvanced', {
                 editorConfig: {
                     decimalPrecision: 2
                 }
+            },
+            debitedaccount: {
+                hidden: false,
+                lookups: false
             }
         }
     }

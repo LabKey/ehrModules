@@ -543,7 +543,11 @@ EHR.Utils = new function(){
             var remainder = val % round;
             var remainderPct = remainder / round;
             var base = Math.floor(val / round);
-            if (remainderPct < 0.5){
+            if (remainder === 0){
+                return val;
+            }
+            //note: JS seems to handle division poorly in situations like 4 / 0.1
+            else if (remainderPct < 0.5 || remainderPct > 0.9999){
                 return (base * round);
             }
             else {
@@ -575,6 +579,24 @@ EHR.Utils = new function(){
 
             return subjectArray;
 
+        },
+
+        editUIButtonHandler: function(schemaName, queryName, paramMap){
+            var params = {
+                schemaName: schemaName,
+                'query.queryName': queryName,
+                showImport: true
+            };
+
+            if (paramMap != null){
+                for (var param in paramMap){
+                    if (LABKEY.ActionURL.getParameter(param)){
+                        params[paramMap[param]] = LABKEY.ActionURL.getParameter(param);
+                    }
+                }
+            }
+
+            window.location = LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, params);
         }
     }
 };

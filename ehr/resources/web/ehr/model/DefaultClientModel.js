@@ -45,6 +45,11 @@ Ext4.define('EHR.model.DefaultClientModel', {
                     EHR.DataEntryUtils.getLabworkServicesStore();
                 }
 
+                //added to support automatic type conversion
+                if (Ext4.data.Types[LABKEY.ext4.Util.EXT_TYPE_MAP[cfg.jsonType]]){
+                    cfg.type = Ext4.data.Types[LABKEY.ext4.Util.EXT_TYPE_MAP[cfg.jsonType]];
+                }
+
                 fields.push(cfg);
             }
 
@@ -73,6 +78,13 @@ Ext4.define('EHR.model.DefaultClientModel', {
 
             if (extraMetaData && extraMetaData[cfg.name]){
                 ret = LABKEY.Utils.merge(ret, extraMetaData[cfg.name]);
+            }
+
+            if (ret.jsonType && !Ext4.isEmpty(ret.defaultValue)){
+                var type = Ext4.data.Types[LABKEY.ext4.Util.EXT_TYPE_MAP[ret.jsonType]];
+                if (type){
+                    ret.defaultValue = type.convert(ret.defaultValue);
+                }
             }
 
             return ret;

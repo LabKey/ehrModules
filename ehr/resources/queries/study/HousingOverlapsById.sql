@@ -7,7 +7,7 @@
 PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Room CHAR DEFAULT NULL, Cage CHAR DEFAULT NULL)
 
 SELECT
-h.id,
+h.Id,
 cast(StartDate as timestamp) as date
 
 FROM study.housing h
@@ -28,4 +28,4 @@ and
 /* entered enddate must be greater than record's startdate */
 coalesce(ENDDATE, now()) >= coalesce(h.date, now())
 
-GROUP BY h.id
+GROUP BY h.Id

@@ -10,6 +10,20 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="releaseType">
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>animalGroupReleaseType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="qcstate">
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>qcstate</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

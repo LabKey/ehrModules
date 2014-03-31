@@ -11,12 +11,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     storeCollection: null,
     hideErrorPanel: false,
+    useSectionBorder: true,
 
     initComponent: function(){
         Ext4.QuickTips.init();
 
         this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {
-            extraMetaData: this.extraMetaData
+            extraMetaData: this.extraMetaData,
+            initialData: LABKEY.ActionURL.getParameter('initialData')
         });
         this.storeCollection.formConfig = this.formConfig;
 
@@ -45,14 +47,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         });
 
         this.callParent();
-        EHR.DataEntryUtils.setDataEntryPanel(this);
-
         this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged', 'animalchange');
 
         //monitor dirty state
-        window.onbeforeunload = LABKEY.beforeunload(function (){
-            return this.isDirty();
-        }, this);
+        EHR.DataEntryUtils.registerBeforeUnloadListener(this.id, this.onBeforeWindowUnload, this);
+    },
+
+    onBeforeWindowUnload: function(){
+        return this.isDirty();
     },
 
     isDirty: function(){
@@ -60,7 +62,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     destroy: function(){
-        window.onbeforeunload = null;
+        EHR.DataEntryUtils.unregisterBeforeUnloadListener(this.id);
 
         return this.callParent(arguments);
     },
@@ -72,8 +74,9 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             window.onbeforeunload = Ext4.emptyFn;
             window.location = extraContext.successURL;
         }
-
-        this.updateDirtyStateMessage();
+        else {
+            this.updateDirtyStateMessage();
+        }
     },
 
     onStoreCollectionValidation: function(sc){
@@ -168,6 +171,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         if (responseJson && responseJson.exception){
             serverMsg += '.  Exception: ' + responseJson.exception + '\n\n';
+
+            if (!errorMsgs.length){
+                errorMsgs.push(responseJson.exception);
+            }
         }
 
         if (response && response.exception){
@@ -256,6 +263,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         toAdd.push({
             xtype: 'panel',
             itemId: 'upperPanel',
+            border: false,
+            defaults: {
+                border: false
+            },
             items: this.getItemConfig(),
             buttonAlign: 'left',
             buttons: this.getButtons()
@@ -335,7 +346,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
             var sectionCfg = LABKEY.ExtAdapter.apply({
                 xtype: section.xtype,
-                border: true,
+                border: this.useSectionBorder,
                 style: 'margin-bottom: 10px;',
                 title: section.label,
                 formConfig: section,
@@ -564,7 +575,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return EHR.DataEntryUtils.hasPermission(qcStateLabel, permissionName, this.formConfig.permissions, null);
     },
 
-    onSubmit: function(btn){
+    onSubmit: function(btn, ignoreBeforeSubmit){
+        if (ignoreBeforeSubmit !== true){
+            if (this.onBeforeSubmit(btn) === false)
+                return;
+        }
+
         Ext4.Msg.wait("Saving Changes...");
         this.storeCollection.transformClientToServer();
 
@@ -578,6 +594,9 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         //we delay this event so that any modified fields can fire their blur events and/or commit changes
         this.storeCollection.commitChanges.defer(300, this.storeCollection, [true, extraContext]);
     },
+
+    //allows subclasses to provide custom warnings prior to saving
+    onBeforeSubmit: Ext4.emptyFn,
 
     discard: function(extraContext){
         Ext4.Msg.confirm('Discard Form', 'This will delete all records in this form.  Are you sure you want to do this?', function(val){

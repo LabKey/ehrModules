@@ -21,7 +21,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
         helper.getJavaHelper().onAnimalArrival(row.id, row);
 
         //if room provided, we insert into housing
-        if (row.initialRoom && row.initialCage){
+        if (row.initialRoom){
             helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.initialRoom, row.initialCage);
         }
     }

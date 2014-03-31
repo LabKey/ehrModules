@@ -59,6 +59,9 @@
                     <ns:fkColumnName>Id</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
+            <ns:column columnName="date">
+
+            </ns:column>
             <ns:column columnName="recordid">
                 <ns:columnTitle>Record Id</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -94,11 +97,20 @@
                     <ns:fkColumnName>taskid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
+            <!--<ns:column columnName="qcstate">-->
+                <!--<ns:nullable>true</ns:nullable>-->
+                <!--<ns:fk>-->
+                    <!--<ns:fkDbSchema>study</ns:fkDbSchema>-->
+                    <!--<ns:fkTable>QCState</ns:fkTable>-->
+                    <!--<ns:fkColumnName>rowid</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            <!--</ns:column>-->
             <ns:column columnName="parentid">
                 <ns:columnTitle>Parent Id</ns:columnTitle>
                 <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+            <ns:column columnName="formsort"/>
             <ns:column columnName="container">
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
@@ -629,6 +641,9 @@
             <ns:column columnName="description">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="hidden">
+                <ns:columnTitle>Hidden?</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:isHidden>true</ns:isHidden>
@@ -970,6 +985,8 @@
             <ns:column columnName="title">
                 <ns:nullable>true</ns:nullable>
                 <ns:columnTitle>Title</ns:columnTitle>
+                <ns:inputType>textfield</ns:inputType>
+                <ns:scale>100</ns:scale>
             </ns:column>
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
@@ -1616,6 +1633,7 @@
             <ns:column columnName="objectid">
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="formsort"/>
             <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>
@@ -1656,8 +1674,7 @@
         <ns:tableTitle>Animal Group Members</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="id"/>
+            <ns:column columnName="Id"/>
             <ns:column columnName="date">
                 <ns:columnTitle>Date Added</ns:columnTitle>
             </ns:column>
@@ -1665,13 +1682,19 @@
                 <ns:columnTitle>Date Removed</ns:columnTitle>
             </ns:column>
             <ns:column columnName="groupId">
+                <ns:columnTitle>Group</ns:columnTitle>
                 <ns:fk>
                     <ns:fkDbSchema>ehr</ns:fkDbSchema>
                     <ns:fkTable>animal_groups</ns:fkTable>
                     <ns:fkColumnName>rowid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
-            <ns:column columnName="comment"/>
+            <ns:column columnName="taskid"/>
+            <ns:column columnName="qcstate"/>
+            <ns:column columnName="releaseType">
+                <ns:columnTitle>Removal Type</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="remark"/>
             <ns:column columnName="objectid"/>
             <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
@@ -1741,6 +1764,7 @@
             </ns:column>
             <ns:column columnName="remark"/>
             <ns:column columnName="objectid"/>
+            <ns:column columnName="formsort"/>
             <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>

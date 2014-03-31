@@ -13,7 +13,9 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
         },
         codesRaw: {
             hidden: false,
+            shownInInsertView: true, //note: this is added in order to make it show in record duplicator window
             xtype: 'ehr-snomedcodeseditor',
+            allowDuplicateValue: true,
             columnConfig: {
                 xtype: 'ehr-snomedcolumn',
                 editable: true,

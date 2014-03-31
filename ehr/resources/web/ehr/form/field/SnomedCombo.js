@@ -30,7 +30,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             queryMode: 'local',
             name: this.name,
             snomedStore: this.snomedStore,
-            displayField: 'meaning',
+            displayField: 'codeAndMeaning',
             valueField: 'code',
             forceSelection: true,
             caseSensitive: false,
@@ -40,7 +40,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                 schemaName: 'ehr_lookups',
                 storeId: 'snomedStore_' + this.id,
                 queryName: 'snomed_combo_list',
-                columns: 'code,meaning,categories',
+                columns: 'code,meaning,codeAndMeaning,categories',
                 sort: 'meaning',
                 maxRows: 0,
                 autoLoad: true,
@@ -51,14 +51,6 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                             this.applyFilter(this.activeSubset);
                     }
                 }
-            },
-            listConfig: {
-                innerTpl: '{[ (values["meaning"] || values["code/meaning"]) ? (values["meaning"] || values["code/meaning"])+" ("+values["code"]+")" : ' +
-                        'values["code"]]}',
-                getInnerTpl: function(){
-                    return this.innerTpl;
-                },
-                style: 'border-top-width: 1px;' //this was added in order to restore the border above the boundList if it is wider than the field
             }
         });
 

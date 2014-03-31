@@ -54,6 +54,9 @@
                     <column columnName="performedby">
                         <columnTitle>Opened By</columnTitle>
                     </column>
+                    <column columnName="project">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>

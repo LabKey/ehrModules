@@ -21,7 +21,10 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.api.ExperimentService;
@@ -42,12 +45,14 @@ import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.util.FileType;
+import org.labkey.ehr.EHRSchema;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.sql.DataTruncation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,7 +135,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         if (!output.exists())
             throw new PipelineJobException("Unable to find file: " + output.getPath());
 
-        DbSchema ehrSchema = QueryService.get().getUserSchema(job.getUser(), job.getContainer(), "ehr").getDbSchema();
+        DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
         TableInfo kinshipTable = ehrSchema.getTable("kinship");
 
         LineNumberReader lnr = null;
@@ -153,7 +158,45 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             //delete all previous records
             getJob().getLogger().info("Deleting existing rows");
-            Table.delete(kinshipTable, new SimpleFilter(FieldKey.fromString("rowid"), 0, CompareType.GTE));
+            Table.delete(kinshipTable, new SimpleFilter(FieldKey.fromString("container"), getJob().getContainerId(), CompareType.EQUAL));
+
+            //NOTE: this process creates and deletes a ton of rows each day.  the rowId can balloon very quickly, so we reset it here
+            SqlSelector ss = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT max(rowid) as expt FROM " + kinshipTable.getSelectName()));
+            List<Long> ret = ss.getArrayList(Long.class);
+            Integer maxVal;
+            if (ret.isEmpty())
+            {
+                maxVal = 0;
+            }
+            else
+            {
+                maxVal = ret.get(0) == null ? 0 : ret.get(0).intValue();
+            }
+
+            SqlExecutor ex = new SqlExecutor(kinshipTable.getSchema());
+            if (kinshipTable.getSqlDialect().isSqlServer())
+            {
+                ex.execute(new SQLFragment("DBCC CHECKIDENT ('" + kinshipTable.getSelectName() + "', RESEED, " + maxVal + ")"));
+            }
+            else if (kinshipTable.getSqlDialect().isPostgreSQL())
+            {
+                //find sequence name.  this was autocreated by the serial
+                String seqName = "kinship_rowid_seq";
+                SqlSelector series = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT relname FROM pg_class WHERE relkind='S' AND relname = ?", seqName));
+                if (!series.exists())
+                {
+                    throw new PipelineJobException("Unable to find sequence with name: " + seqName);
+                }
+                else
+                {
+                    maxVal++;
+                    ex.execute(new SQLFragment("SELECT setval(?, ?)", "ehr." + seqName, maxVal));
+                }
+            }
+            else
+            {
+                throw new PipelineJobException("Unknown SQL Dialect: " + kinshipTable.getSqlDialect().getProductName());
+            }
 
             ExperimentService.get().commitTransaction();
             ExperimentService.get().ensureTransaction();
@@ -174,6 +217,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     continue; //dont import self-kinship
 
                 Map row = new HashMap<String, Object>();
+                assert fields[0].length() < 80 : "Field Id value too long: [" + fields[0] + ']';
+                assert fields[1].length() < 80 : "Field Id2 value too long: [" + fields[1] + "]";
+
                 row.put("Id", fields[0]);
                 row.put("Id2", fields[1]);
                 row.put("coefficient", Double.parseDouble(fields[2]));
@@ -196,6 +242,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         }
         catch (RuntimeSQLException | IOException e)
         {
+            if (e instanceof DataTruncation)
+            {
+                getJob().getLogger().warn("Data Truncation: " + ((DataTruncation) e).getIndex());
+            }
+
             throw new PipelineJobException(e);
         }
         finally

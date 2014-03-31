@@ -144,8 +144,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     },
 
     getInnerTpl: function(){
-        //(values["protocol"] ? values["protocol"] : "")
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : ""))]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : ""))]}&nbsp;</span>'];
     },
 
     trigger1Cls: 'x4-form-search-trigger',
@@ -181,15 +180,13 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, max(sort_order) as sort_order FROM (";
+        var sql = "SELECT DISTINCT t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, min(sort_order) as sort_order, max(isAssigned) as isAssigned FROM (";
 
         if (id){
-            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.account as account, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.shortname, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
-            "WHERE a.id='"+id+"' ";
-
-            if (this.getDisallowedProtocols()){
-                sql += " AND a.project.protocol NOT IN ('" + this.getDisallowedProtocols().join("', '") + "') ";
-            }
+            //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
+            sql += "SELECT p.project as project, p.displayName as displayName, p.account as account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, CASE WHEN (a.project = p.project AND p.use_category = 'Research') THEN 0 WHEN (a.project = p.project) THEN 1 ELSE 2 END as sort_order, CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
+            " FROM ehr.project p JOIN study.assignment a ON (a.project.protocol = p.protocol) " +
+            " WHERE a.id='"+id+"' AND (a.project = p.project OR p.enddate IS NULL OR p.enddate >= curdate()) ";
 
             //NOTE: if the date is in the future, we assume active projects
             if (date){
@@ -198,13 +195,17 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             else {
                 sql += "AND a.isActive = true ";
             }
+
+            if (this.getDisallowedProtocols()){
+                sql += " AND p.protocol NOT IN ('" + this.getDisallowedProtocols().join("', '") + "') ";
+            }
         }
 
         if (this.includeDefaultProjects){
             if (id)
                 sql += ' UNION ALL ';
 
-            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
+            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 3 as sort_order, 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
         }
 
         sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
@@ -290,6 +291,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                 protocol: rec.data.protocol,
                 title: rec.data.title,
                 investigator: rec.data['investigatorId/lastName'],
+                isAssigned: 0,
                 fromClient: true
             });
 
