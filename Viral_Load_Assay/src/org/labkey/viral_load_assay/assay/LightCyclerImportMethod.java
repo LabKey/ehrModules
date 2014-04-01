@@ -102,7 +102,7 @@ public class LightCyclerImportMethod extends LC480ImportMethod
         JSONObject meta = super.getMetadata(ctx, protocol);
 
         JSONObject runMeta = meta.getJSONObject("Run");
-        runMeta.put("instrument", new JSONObject().put("value", "Light Cycler"));
+        runMeta.put("instrument", new JSONObject().put("defaultValue", "Light Cycler"));
         meta.put("Run", runMeta);
 
         return meta;

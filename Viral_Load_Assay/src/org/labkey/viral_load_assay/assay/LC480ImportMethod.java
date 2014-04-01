@@ -98,12 +98,12 @@ public class LC480ImportMethod extends DefaultVLImportMethod
         JSONObject meta = super.getMetadata(ctx, protocol);
 
         JSONObject runMeta = meta.getJSONObject("Run");
-        runMeta.put("instrument", new JSONObject().put("value", "LC480"));
+        runMeta.put("instrument", new JSONObject().put("defaultValue", "LC480"));
         meta.put("Run", runMeta);
 
         JSONObject resultsMeta = meta.getJSONObject("Results");
         JSONObject eluateMap = getJsonObject(resultsMeta, "eluateVol");
-        eluateMap.put("value", 50);
+        eluateMap.put("defaultValue", 50);
         eluateMap.put("setGlobally", true);
         resultsMeta.put("eluateVol", eluateMap);
 

@@ -142,18 +142,18 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         runMeta.put("slope", new JSONObject().put("hidden", true));
         runMeta.put("intercept", new JSONObject().put("hidden", true));
         runMeta.put("rSquared", new JSONObject().put("hidden", true));
-        runMeta.put("instrument", new JSONObject().put("value", "ABI 7500"));
+        runMeta.put("instrument", new JSONObject().put("defaultValue", "ABI 7500"));
         meta.put("Run", runMeta);
 
         JSONObject resultsMeta = meta.getJSONObject("Results");
 
         JSONObject eluateMap = getJsonObject(resultsMeta, "eluateVol");
-        eluateMap.put("value", 60);
+        eluateMap.put("defaultValue", 60);
         eluateMap.put("setGlobally", true);
         resultsMeta.put("eluateVol", eluateMap);
 
         JSONObject volMap = getJsonObject(resultsMeta, "volPerRxn");
-        volMap.put("value", 20);
+        volMap.put("defaultValue", 20);
         volMap.put("setGlobally", true);
         resultsMeta.put("volPerRxn", volMap);
 

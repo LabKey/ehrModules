@@ -44,7 +44,7 @@ public class Viral_Load_Manager
     public JSONObject getDefaultAssayMetadata(JSONObject meta){
         JSONObject runMeta = getJsonObject(meta, "Run");
         JSONObject technique = getJsonObject(runMeta, "technique");
-        technique.put("value", "Lifson 1-Step VL");
+        technique.put("defaultValue", "Lifson 1-Step VL");
         runMeta.put("technique", technique);
         meta.put("Run", runMeta);
 
@@ -52,23 +52,23 @@ public class Viral_Load_Manager
         resultsMeta.put("eluateVol", new JSONObject().put("setGlobally", true));
 
         JSONObject volMap = getJsonObject(resultsMeta, "volPerRxn");
-        volMap.put("value", 5);
+        volMap.put("defaultValue", 5);
         volMap.put("setGlobally", true);
         resultsMeta.put("volPerRxn", volMap);
 
         JSONObject assayId = getJsonObject(resultsMeta, "assayId");
         assayId.put("setGlobally", true);
-        assayId.put("value", "SIVmac239-Gag");
+        assayId.put("defaultValue", "SIVmac239-Gag");
         resultsMeta.put("assayId", assayId);
 
         JSONObject sourceMaterial = getJsonObject(resultsMeta, "sourceMaterial");
         sourceMaterial.put("setGlobally", true);
-        sourceMaterial.put("value", "Plasma");
+        sourceMaterial.put("defaultValue", "Plasma");
         resultsMeta.put("sourceMaterial", sourceMaterial);
 
         JSONObject sampleType = getJsonObject(resultsMeta, "sampleType");
         sampleType.put("setGlobally", true);
-        sampleType.put("value", "vRNA");
+        sampleType.put("defaultValue", "vRNA");
         resultsMeta.put("sampleType", sampleType);
 
         JSONObject plate = getJsonObject(resultsMeta, "plate");
