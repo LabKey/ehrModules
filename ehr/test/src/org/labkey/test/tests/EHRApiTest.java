@@ -27,7 +27,6 @@ import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.util.EHRClientAPIHelper;
-import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -50,11 +49,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-/**
- * User: bbimber
- * Date: 8/6/12
- * Time: 6:05 PM
- */
 @Category({External.class, EHR.class, ONPRC.class})
 public class EHRApiTest extends AbstractEHRTest
 {

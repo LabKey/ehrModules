@@ -44,11 +44,6 @@ import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
-/**
- * User: bimber
- * Date: 11/27/12
- * Time: 2:22 PM
- */
 abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
 {
     protected String PROJECT_NAME = "EHR_TestProject";

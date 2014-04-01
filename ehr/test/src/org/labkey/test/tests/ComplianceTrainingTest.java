@@ -49,11 +49,6 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/**
- * User: bbimber
- * Date: 8/24/12
- * Time: 7:02 AM
- */
 @Category({External.class, EHR.class, ONPRC.class})
 public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
 {

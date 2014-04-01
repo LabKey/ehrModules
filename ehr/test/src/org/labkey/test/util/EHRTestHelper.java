@@ -46,11 +46,6 @@ import java.util.Date;
 
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_JAVASCRIPT;
 
-/**
- * User: bbimber
- * Date: 8/6/12
- * Time: 10:49 AM
- */
 public class EHRTestHelper
 {
     private BaseWebDriverTest _test;

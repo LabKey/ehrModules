@@ -56,12 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-/**
- * User: bimber
- * Date: 1/25/13
- * Time: 4:31 PM
- */
 @Category({External.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest extends AbstractEHRTest
 {

@@ -30,10 +30,6 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 /**
- * User: bimber
- * Date: 11/27/12
- * Time: 1:15 PM
- *
  * This should contain tests designed to validate EHR data entry or associated business logic.
  * NOTE: EHRApiTest may be a better location for tests designed to test server-side trigger scripts
  * or similar business logic.
