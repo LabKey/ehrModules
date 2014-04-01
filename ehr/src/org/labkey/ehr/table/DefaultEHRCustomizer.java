@@ -1495,12 +1495,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
 
-        //TODO: this is a temp fix to avoid an NPE.  this should be removed once issue 19884 is fixed
-        if (ds.getName().startsWith("HousingOverlaps"))
-        {
-            return;
-        }
-
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Survivorship");
         col.setReadOnly(true);
@@ -1596,12 +1590,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
-
-        //TODO: this is a temp fix to avoid an NPE.  this should be removed once issue 19884 is fixed
-        if (ds.getName().startsWith("HousingOverlaps"))
-        {
-            return;
-        }
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
