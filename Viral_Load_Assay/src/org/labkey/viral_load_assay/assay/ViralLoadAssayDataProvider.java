@@ -73,6 +73,7 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
         {
             JSONObject json = getJsonObject(resultMeta, field);
             json.put("hidden", true);
+            json.put("required", false);
             resultMeta.put(field, json);
         }
 
