@@ -287,6 +287,9 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         int panelIdx = 1;
         for (String[] arr : panels)
         {
+            Ext4GridRef panelGrid2 = _helper.getExt4GridForFormSection("Panels / Services");
+            assert panelGrid2.getId().equals(panelGrid.getId());
+
             _helper.addRecordToGrid(panelGrid);
             panelGrid.setGridCell(panelIdx, "Id", MORE_ANIMAL_IDS[(panelIdx % MORE_ANIMAL_IDS.length)]);
             panelGrid.setGridCell(panelIdx, "servicerequested", arr[0]);
@@ -802,12 +805,15 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         Locator manageLink = Locator.tagContainingText("a", "Manage Subscribed Users/Groups").index(1);
         waitAndClick(manageLink);
         waitForElement(Ext4Helper.ext4Window("Manage Subscribed Users"));
-        Ext4FieldRef combo = Ext4FieldRef.getForLabel(this, "Add User Or Group");
+        Ext4ComboRef.waitForComponent(this, "field[fieldLabel^='Add User Or Group']");
+        Ext4ComboRef combo = Ext4ComboRef.getForLabel(this, "Add User Or Group");
+        combo.waitForStoreLoad();
         _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, DATA_ADMIN.getEmail());
         waitForElement(Locator.ext4Button("Remove"));
 
-        combo = Ext4FieldRef.getForLabel(this, "Add User Or Group");
-
+        Ext4FieldRef.waitForComponent(this, "field[fieldLabel^='Add User Or Group']");
+        combo = Ext4ComboRef.getForLabel(this, "Add User Or Group");
+        combo.waitForStoreLoad();
         _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, BASIC_SUBMITTER.getEmail());
         waitForElement(Locator.ext4Button("Remove"), 2);
         waitAndClick(Locator.ext4Button("Close"));
