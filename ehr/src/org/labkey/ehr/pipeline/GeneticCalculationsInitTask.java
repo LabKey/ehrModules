@@ -70,7 +70,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
 
         public String getStatusName()
         {
-            return "RUNNING";
+            return PipelineJob.TaskStatus.running.toString();
         }
 
         public List<String> getProtocolActionNames()
