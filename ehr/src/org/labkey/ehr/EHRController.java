@@ -1126,7 +1126,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    @RequiresPermissionClass(ReadPermission.class)
     public class GetDataEntryFormDetailsAction extends ApiAction<EnterDataForm>
     {
         public ApiResponse execute(EnterDataForm form, BindException errors)

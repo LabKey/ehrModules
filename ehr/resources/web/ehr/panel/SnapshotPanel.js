@@ -19,6 +19,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     showActionsButton: true,
     defaultLabelWidth: 120,
     border: false,
+    doSuspendLayouts: true,  //note: this can make loading much quicker, but will cause problems when many snapshot panels load concurrently on the same page
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -227,7 +228,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             return;
         }
 
-        this.suspendLayouts();
+        if (this.doSuspendLayouts){
+            this.suspendLayouts();
+        }
 
         this.getForm().reset();
         var id = ids[0];
@@ -270,7 +273,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
         this.afterLoad();
 
-        this.resumeLayouts();
+        if (this.doSuspendLayouts){
+            this.resumeLayouts();
+        }
+
         this.doLayout();
     },
 

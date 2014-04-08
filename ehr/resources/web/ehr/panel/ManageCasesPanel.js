@@ -16,6 +16,10 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 showAssignedVet: true,
                 requiredFields: ['assignedvet', 'problem']
             },
+            Weight: {
+                showAssignedVet: true,
+                requiredFields: ['assignedvet', 'problem']
+            },
             Surgery: {
                 showAssignedVet: false,
                 requiredFields: ['remark']
@@ -828,10 +832,55 @@ Ext4.define('EHR.window.OpenCaseWindow', {
                 }
             },{
                 text: 'Open & Immediately Close',
-                handler: function(btn){
-                    var win = btn.up('window');
-                    win.doSave(new Date());
-                }
+                menu: [{
+                    text: 'Close Permanently',
+                    handler: function(btn){
+                        var win = btn.up('window');
+                        win.doSave(new Date());
+                    }
+                },{
+                    text: 'Close With Reopen Date',
+                    handler: function(btn){
+                        var ownerWindow = btn.up('window');
+                        if (!ownerWindow.down('form').getForm().isValid()){
+                            Ext4.Msg.alert('Error', 'Missing one or more required fields');
+                            return;
+                        }
+
+                        Ext4.create('Ext.window.Window', {
+                            modal: true,
+                            closeAction: 'destroy',
+                            bodyStyle: 'padding: 5px',
+                            width: 400,
+                            items: [{
+                                html: 'This will close this case until the date selected below.',
+                                border: false,
+                                style: 'padding-bottom: 10px;'
+                            },{
+                                xtype: 'datefield',
+                                itemId: 'dateField',
+                                fieldLabel: 'Reopen Date',
+                                minValue: new Date(),
+                                value: Ext4.Date.add(new Date(), Ext4.Date.DAY, 14)
+                            }],
+                            buttons: [{
+                                text: 'Submit',
+                                scope: this,
+                                handler: function(btn){
+                                    var win = btn.up('window');
+                                    var val = win.down('#dateField').getValue();
+                                    if (!val){
+                                        Ext4.Msg.alert('Error', 'Must choose a date');
+                                        return;
+                                    }
+
+                                    win.close();
+                                    ownerWindow.doSave(null, val);
+                                }
+                            }]
+                        }).show();
+                    }
+                }]
             },{
                 text: 'Cancel',
                 handler: function(btn){
@@ -843,7 +892,7 @@ Ext4.define('EHR.window.OpenCaseWindow', {
         this.callParent(arguments);
     },
 
-    doSave: function(enddate){
+    doSave: function(enddate, reviewdate){
         if (!this.down('form').getForm().isValid()){
             Ext4.Msg.alert('Error', 'Missing one or more required fields');
             return;
@@ -859,10 +908,14 @@ Ext4.define('EHR.window.OpenCaseWindow', {
         if (enddate){
             values.enddate = enddate;
         }
+        if (reviewdate){
+            values.reviewdate = reviewdate;
+        }
 
         var problemRow = {
             Id: values.Id,
             date: values.date,
+            reviewdate: values.reviewdate,
             enddate: values.enddate,
             category: values.problem,
             subcategory: values.subcategory,

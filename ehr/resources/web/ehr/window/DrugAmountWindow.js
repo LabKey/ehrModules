@@ -87,7 +87,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         this.callParent();
 
         this.on('beforeshow', function(window){
-            if (!this.targetStore.getCount()){
+            if (!this.getTargetRecords().length){
                 Ext4.Msg.alert('No Records', 'There are no records to in the grid, nothing to do.');
                 return false;
             }
@@ -96,9 +96,18 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         this.loadDemographics();
     },
 
+    getTargetRecords: function(){
+        if (this.boundRecord){
+            return [this.boundRecord];
+        }
+        else {
+            return this.targetStore.getRange();
+        }
+    },
+
     loadDemographics: function(){
         var ids = {};
-        this.targetStore.each(function(r){
+        Ext4.Array.forEach(this.getTargetRecords(), function(r){
             if (r.get('Id')){
                 ids[r.get('Id')] = true;
             }
@@ -465,7 +474,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
     getDistinctCodes: function(){
         var codes = [];
 
-        this.targetStore.each(function(record, recordIdx){
+        Ext4.Array.forEach(this.getTargetRecords(), function(record, recordIdx){
             if (!record.get('Id') || !record.get('code')){
                 return;
             }
@@ -566,7 +575,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         this.snomedStore = EHR.DataEntryUtils.getSnomedStore();
         LDK.Assert.assertTrue('SNOMED store is not done loading', !this.snomedStore.isLoading());
 
-        this.targetStore.each(function(record, recordIdx){
+        Ext4.Array.forEach(this.getTargetRecords(), function(record, recordIdx){
             if (!record.get('Id') || !record.get('code')){
                 return;
             }

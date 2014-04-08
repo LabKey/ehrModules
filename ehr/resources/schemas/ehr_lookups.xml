@@ -1411,7 +1411,7 @@
                 <ns:columnTitle>Default Antibiotic Rx</ns:columnTitle>
             </ns:column>
             <ns:column columnName="remark">
-                <ns:columnTitle>Default Remark</ns:columnTitle>
+                <ns:columnTitle>Default Remark (Non-Surgical Procedures Only)</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>

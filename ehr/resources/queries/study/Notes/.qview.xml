@@ -2,6 +2,7 @@
    <columns>
        <column name="Id" />
        <column name="date" />
+       <column name="actiondate" />
 	   <column name="enddate" />
        <column name="category" />
        <column name="value" />

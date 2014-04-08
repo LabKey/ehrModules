@@ -7,9 +7,6 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
     allQueries: {
         performedby: {
             allowBlank: true
-        },
-        chargetype: {
-            allowBlank: false
         }
     },
     byQuery: {
@@ -18,9 +15,8 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
                 hidden: true
             },
             chargetype: {
-                header: 'Charge Type',
-                label: 'Charge Type',
-                defaultValue: 'Research Staff'
+                defaultValue: 'Research Staff',
+                allowBlank: false
             },
             performedby: {
                 defaultValue: LABKEY.Security.currentUser.displayName
@@ -53,7 +49,8 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
             chargetype: {
                 header: 'Charge Type',
                 label: 'Charge Type',
-                defaultValue: 'Research Staff'
+                defaultValue: 'Research Staff',
+                allowBlank: false
             },
             instructions: {
                 hidden: true
@@ -70,6 +67,10 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
                 editorConfig: {
                     defaultSubset: 'Drugs and Procedures'
                 }
+            },
+            chargetype: {
+                defaultValue: 'Research Staff',
+                allowBlank: false
             }
         },
         'study.treatment_order': {

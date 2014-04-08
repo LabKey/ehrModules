@@ -26,8 +26,16 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
     cachedText: null,
 
     updateErrorMessages: function(){
-        if (this.dataEntryPanel.isEditing()){
-            this.updateErrorMessages.defer(2000, this);
+        if (this.dataEntryPanel.isEditing(this.updateErrorMessages, this)){
+            return;
+        }
+
+        if (!this.rendered){
+            LDK.Utils.logToServer({
+                level: 'ERROR',
+                message: 'DataEntryErrorPanel.updateErrorMessages() was called even though it is not rendered'
+            });
+
             return;
         }
 
@@ -52,6 +60,10 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
 
         texts = texts.join('<>');
         if (texts !== this.cachedText){
+            if (this.dataEntryPanel.isEditing(this.updateErrorMessages, this)){
+                console.log('is editing, aborting error message update');
+                return;
+            }
             this.removeAll();
             if (items.length){
                 items.unshift({

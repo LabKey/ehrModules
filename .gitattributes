@@ -597,6 +597,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.398-12.399.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.399-12.400.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.401-12.402.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.405-12.406.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.406-12.407.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -815,6 +816,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.398-12.399.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.399-12.400.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.401-12.402.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.405-12.406.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.406-12.407.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -1158,6 +1160,8 @@ ehr/resources/web/ehr/window/CopyBehaviorExamWindow.js -text
 ehr/resources/web/ehr/window/CopyFromCaseWindow.js -text
 ehr/resources/web/ehr/window/CopyFromRunsWindow.js -text
 ehr/resources/web/ehr/window/CopyFromSectionWindow.js -text
+ehr/resources/web/ehr/window/CopyRequestWindow.js -text
+ehr/resources/web/ehr/window/CopyTaskWindow.js -text
 ehr/resources/web/ehr/window/CreateTaskFromIdsWindow.js -text
 ehr/resources/web/ehr/window/CreateTaskFromRecordsWindow.js -text
 ehr/resources/web/ehr/window/DrugAmountWindow.js -text

@@ -7,9 +7,6 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
     allQueries: {
         performedby: {
             allowBlank: true
-        },
-        chargetype: {
-            allowBlank: false
         }
     },
     byQuery: {
@@ -37,6 +34,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
         'study.drug': {
             reason: {
                 defaultValue: 'Procedure'
+            },
+            chargetype: {
+                allowBlank: true
             }
         },
         'study.encounters': {
@@ -63,6 +63,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             },
             remark: {
                 hidden: true
+            },
+            chargetype: {
+                allowBlank: false
             }
         },
         'ehr.snomed_tags': {

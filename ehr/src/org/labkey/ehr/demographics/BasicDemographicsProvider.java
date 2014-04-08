@@ -71,12 +71,12 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
     }
 
     @Override
-    public Collection<FieldKey> getFieldKeysToTest()
+    public Collection<String> getKeysToTest()
     {
-        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
-        keys.remove(FieldKey.fromString("Id/age/yearAndDays"));
-        keys.remove(FieldKey.fromString("Id/age/ageInDays"));
-        keys.remove(FieldKey.fromString("Id/age/ageInYears"));
+        Set<String> keys = new HashSet<>(super.getKeysToTest());
+        keys.remove("Id/age/yearAndDays");
+        keys.remove("Id/age/ageInDays");
+        keys.remove("Id/age/ageInYears");
 
         return keys;
     }

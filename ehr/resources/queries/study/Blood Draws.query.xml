@@ -103,6 +103,15 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="sampletype">
+                        <columnTitle>Sample Type</columnTitle>
+                        <defaultValue>Whole Blood</defaultValue>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>blood_sample_type</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

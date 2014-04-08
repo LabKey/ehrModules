@@ -1274,14 +1274,16 @@ public class TriggerScriptHelper
                 continue;
             }
 
+            List<String> filterItems = Arrays.asList("Born Dead", "Terminated At Birth");
             String existingStatus = getDemographicRecord(id).getCalculatedStatus();
-            Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, "Arrival"), arrivals);
-            Date lastBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth"), births);
-            Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, "Deaths"), deaths);
-            Date lastDeparture = findMostRecentDate(id, getMostRecentDate(id, "Departure"), departures);
+            Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, "Arrival", null), arrivals);
+            Date lastDeadBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth", new SimpleFilter(FieldKey.fromString("cond"), filterItems, CompareType.IN)), births);
+            Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth", new SimpleFilter(FieldKey.fromString("cond"), filterItems, CompareType.NOT_IN)), births);
+            Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, "Deaths", null), deaths);
+            Date lastDeparture = findMostRecentDate(id, getMostRecentDate(id, "Departure", null), departures);
 
             String status = null;
-            if (lastDeath != null)
+            if (lastDeath != null || lastDeadBirth != null)
             {
                 status = "Dead";
             }
@@ -1296,7 +1298,7 @@ public class TriggerScriptHelper
                     status = "Shipped";
                 }
             }
-            else if (lastBirth != null || lastArrival != null)
+            else if (lastLiveBirth != null || lastArrival != null)
             {
                 status = "Alive";
             }
@@ -1328,11 +1330,15 @@ public class TriggerScriptHelper
     }
 
     //find most recent record date for the passed Id/table
-    private Date getMostRecentDate(String id, String queryName)
+    private Date getMostRecentDate(String id, String queryName, @Nullable SimpleFilter additionalFilter)
     {
         TableInfo ti = getTableInfo("study", queryName);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
         filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true);
+        if (additionalFilter != null)
+        {
+            filter.addAllClauses(additionalFilter);
+        }
 
         TableSelector ts = new TableSelector(ti, Collections.singleton("date"), filter, null);
         Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Collections.singletonList(new Aggregate(FieldKey.fromString("date"), Aggregate.Type.MAX)));

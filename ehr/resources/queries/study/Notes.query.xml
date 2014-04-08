@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="notes" tableDbType="TABLE">
+            <table tableName="notes" tableDbType="TABLE" useColumnOrder="true">
                 <tableTitle>DCM Notes</tableTitle>
                 <tableUrl />
                 <insertUrl />
@@ -9,6 +9,15 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="Id">
+
+                    </column>
+                    <column columnName="date">
+
+                    </column>
+                    <column columnName="actiondate">
+                        <columnTitle>Action Date</columnTitle>
+                    </column>
                     <column columnName="enddate">
                         <isHidden>false</isHidden>
                     </column>
@@ -23,6 +32,9 @@
                     </column>
                     <column columnName="value">
                         <columnTitle>Value</columnTitle>
+                    </column>
+                    <column columnName="performedby">
+                        <columnTitle>Entered By</columnTitle>
                     </column>
                     <column columnName="project">
                         <isHidden>true</isHidden>

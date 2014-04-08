@@ -11,13 +11,6 @@
                     <column columnName="Id">
 
                     </column>
-                    <column columnName="project">
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>project</fkTable>
-                            <fkColumnName>project</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="date">
                         <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -31,8 +24,16 @@
                         <formatString>yyyy-MM-dd H:mm</formatString>
                         <isHidden>false</isHidden>
                     </column>
+                    <column columnName="project">
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="chargetype">
                         <columnTitle>Charge Type</columnTitle>
+                        <isHidden>true</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>bloodChargeType</fkTable>

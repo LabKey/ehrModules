@@ -600,6 +600,10 @@ Ext4.define('EHR.data.StoreCollection', {
             }
 
             if ((options.jsonData && options.jsonData.validateOnly)){
+                if (json && !json.result && json.exception){
+                    return;
+                }
+
                 this.fireEvent('validation', this);
             }
             else {

@@ -190,6 +190,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             requiredVersion: 9.1,
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
+            sort: 'Id,date',
             columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
             filterArray: [LABKEY.Filter.create('lsid', checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
             scope: this,
@@ -261,9 +262,10 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         Ext4.Msg.wait('Saving...');
 
         var toSave = [];
-        Ext4.Array.forEach(records, function(r){
+        Ext4.Array.forEach(records, function(r, idx){
             toSave.push(Ext4.apply({
-                taskid: taskId
+                taskid: taskId,
+                formSort: idx
             }, r));
         }, this);
 

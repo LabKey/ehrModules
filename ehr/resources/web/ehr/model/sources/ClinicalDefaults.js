@@ -20,9 +20,6 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
                 }
                 return v ? v : shouldReturn ? EHR.DataEntryUtils.getDefaultClinicalProject() : null;
             }
-        },
-        chargetype: {
-            allowBlank: false
         }
     },
     byQuery: {
@@ -80,7 +77,8 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
                 }
             },
             chargetype: {
-                defaultValue: 'Clinic Staff'
+                defaultValue: 'Clinic Staff',
+                allowBlank: false
             },
             instructions: {
                 hidden: true

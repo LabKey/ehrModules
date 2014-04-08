@@ -143,33 +143,22 @@ Ext4.define('EHR.plugin.Databind', {
             // this is a problem for combos, since typeahead constantly sends updates to the record, and we dont want these getting pushed back to the field
             // this causes the user to lose their typeahead value (note, partial words would be invalid).
             // therefore if we triggered the update event, do a selective reload.
-            if (this.expectNextUpdateEvent){
-                this.expectNextUpdateEvent = null;
-
-                var field;
-                for (var fieldName in record.data){
-                    field = form.findField(fieldName);
-                    if (field && !field.isEqual(record.data[fieldName], field.getValue())){
-                        if (!field.hasFocus){
-                            this.setFormField(fieldName, record.data[fieldName]);
-                        }
+            var field;
+            for (var fieldName in record.data){
+                field = form.findField(fieldName);
+                if (field && !field.isEqual(record.data[fieldName], field.getValue())){
+                    if (!field.hasFocus){
+                        this.setFormField(fieldName, record.data[fieldName]);
                     }
                 }
-
-                return;
             }
 
-            form.suspendEvents();
-            this.setFormValuesFromRecord(record);
-            form.resumeEvents();
             form.isValid();
         }
     },
 
     bindRecord: function(record){
         var form = this.panel.getForm();
-        this.expectNextUpdateEvent = null;
-
         if (form.getRecord()){
             if (form.getRecord().id == record.id){
                 return; //no need to reload same record
@@ -188,8 +177,6 @@ Ext4.define('EHR.plugin.Databind', {
 
     unbindRecord: function(){
         var form = this.panel.getForm();
-        this.expectNextUpdateEvent = null;
-
         if (form.getRecord()){
             form.updateRecord(form.getRecord());
         }
@@ -320,7 +307,6 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         var record = form.getRecord();
         if (record){
-            this.expectNextUpdateEvent = true;
             form.updateRecord(record);
         }
     }

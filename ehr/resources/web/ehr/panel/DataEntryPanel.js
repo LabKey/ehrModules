@@ -181,7 +181,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             serverMsg += '.  Exception: ' + response.exception + '\n\n';
         }
 
-        if (responseJson && responseJson.stack && responseJson.stackTrace.length){
+        if (responseJson && responseJson.stackTrace && responseJson.stackTrace.length){
             serverMsg += '.  Stack: ' + responseJson.stackTrace.join('\n') + '\n\n';
         }
 
@@ -292,10 +292,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
     },
 
-    isEditing: function(){
+    isEditing: function(cb, scope){
         var sections = this.query('[isDataEntrySection]');
         for (var i=0;i<sections.length;i++){
             if (sections[i].editingPlugin && sections[i].editingPlugin.editing){
+                if (cb){
+                    sections[i].editingPlugin.on('edit', cb, (scope || this), {single: true, delay: 500});
+                }
+
                 return true;
             }
         }
@@ -389,6 +393,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
                         newTabs.push(i);
                     }
+                }
+            }, this);
+
+            Ext4.Array.forEach(newTabs, function(t){
+                if (t.items && t.items.length == 1){
+                    delete t.items[0].title;
                 }
             }, this);
 

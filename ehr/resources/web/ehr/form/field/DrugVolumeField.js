@@ -27,7 +27,8 @@ Ext4.define('EHR.form.field.DrugVolumeField', {
 
         Ext4.create('EHR.window.DrugAmountWindow', {
             targetStore: record.store,
-            formConfig: record.sectionCfg
+            formConfig: record.sectionCfg,
+            boundRecord: record
         }).show();
     }
 });

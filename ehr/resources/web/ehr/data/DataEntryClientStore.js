@@ -105,6 +105,20 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         this.clientToServerRecordMap = map;
     },
 
+    getServerStoreNames: function(){
+        var ret = [];
+        this.getFields().each(function(f){
+            if (!f.schemaName)
+                return;
+
+            ret.push(f.schemaName + '.' + f.queryName);
+
+        }, this);
+        ret = Ext4.unique(ret);
+
+        return ret;
+    },
+
     getClientToServerRecordMap: function(){
         if (this.clientToServerRecordMap)
             return this.clientToServerRecordMap;

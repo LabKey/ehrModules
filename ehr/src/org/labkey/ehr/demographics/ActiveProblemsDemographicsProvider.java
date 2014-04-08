@@ -60,11 +60,11 @@ public class ActiveProblemsDemographicsProvider extends AbstractListDemographics
     }
 
     @Override
-    public Collection<FieldKey> getFieldKeysToTest()
+    public Collection<String> getKeysToTest()
     {
         //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
-        Set<FieldKey> keys = new HashSet<>(getFieldKeys());
-        keys.remove(FieldKey.fromString(_propName));
+        Set<String> keys = new HashSet<>(super.getKeysToTest());
+        keys.remove(_propName);
 
         return keys;
     }

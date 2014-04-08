@@ -40,6 +40,10 @@ EHR.model.DataModelManager.registerMetadata('PregnancyConfirmation', {
 
                     return null;
                 }
+            },
+            chargetype: {
+                defaultValue: 'No Charge',
+                hidden: true
             }
         }
     }

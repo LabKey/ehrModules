@@ -8,9 +8,6 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
         performedby: {
             allowBlank: true
         },
-        chargetype: {
-            allowBlank: false
-        },
         codesRaw: {
             hidden: false,
             shownInInsertView: true, //note: this is added in order to make it show in record duplicator window
@@ -27,6 +24,9 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
         'study.encounters': {
             title: {
                 hidden: true
+            },
+            chargetype: {
+                allowBlank: false
             },
             procedureid: {
                 hidden: false,

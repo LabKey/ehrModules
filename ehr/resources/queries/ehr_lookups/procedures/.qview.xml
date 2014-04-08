@@ -9,6 +9,7 @@
         <column name="followupDays"/>
         <column name="analgesiaRx"/>
         <column name="antibioticRx"/>
+        <column name="remark"/>
         <column name="active"/>
     </columns>
     <sorts>

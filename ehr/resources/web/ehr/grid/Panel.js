@@ -43,11 +43,7 @@ Ext4.define('EHR.grid.Panel', {
             this.fireEvent('animalchange', id);
         }, this);
 
-        this.store.on('datachanged', function(){
-            this.pendingChanges = {};
-            this.getView().refresh();
-        }, this);
-
+        this.store.on('datachanged', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
         this.store.on('validation', this.onStoreValidation, this);
         this.store.on('validation', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
 
@@ -83,7 +79,7 @@ Ext4.define('EHR.grid.Panel', {
     onStoreValidationComplete: function(){
         if (this.editingPlugin.editing){
             //console.log('defer grid refresh: ' + this.store.storeId);
-            this.onStoreValidationComplete.defer(2000, this);
+            this.editingPlugin.on('edit', this.onStoreValidationComplete, this, {single: true, delay: 100});
             return;
         }
 

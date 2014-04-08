@@ -1060,8 +1060,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.clinpathRuns': {
             date: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d'
+
             },
             collectionMethod : {
                 columnConfig: {
@@ -1253,7 +1252,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'onprc_billing.chargeRateExemptions': {
             project: {
-                xtype: 'ehr-projectfield'
+                xtype: 'ehr-projectfield',
+                editorConfig: {
+                    showInactive: true
+                }
             }
         },
         'study.Assignment': {
@@ -1673,7 +1675,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: true
             },
             initialRoom: {
-                hidden: false
+                hidden: false,
+                xtype: 'ehr-roomentryfield',
+                editorConfig: {
+                    idFieldIndex: 'Id',
+                    cageFieldIndex: 'cage'
+                },
+                columnConfig: {
+                    width: 160,
+                    showLink: false
+                }
             },
             initialCage: {
                 hidden: false
@@ -1791,6 +1802,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             performedby: {
                 shownInGrid: true,
                 defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            sampletype: {
+                columnConfig: {
+                    width: 130
+                }
             },
             instructions: {
                 shownInGrid: true,

@@ -87,6 +87,7 @@ Ext4.define('EHR.window.RoomTransferWindow', {
                 LABKEY.Filter.create('room', source)
             ],
             columns: 'Id,room,cage',
+            sort: 'room,cage,Id',
             scope: this,
             failure: LDK.Utils.getErrorCallback(),
             success: this.onLoad

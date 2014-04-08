@@ -63,6 +63,10 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         }
     }
 
+    if (row.cage){
+        row.cage = row.cage.toUpperCase();
+    }
+
     //verify we dont have 2 opened records for the same ID
     if (!helper.isETL() && !row.enddate && row.Id){
         var map = helper.getProperty('housingInTransaction');

@@ -41,7 +41,8 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             hidden: true
         },
         chargetype: {
-            hidden: true
+            hidden: true,
+            allowBlank: true
         },
         caseno: {
             hidden: true
@@ -75,7 +76,11 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         },
         'study.blood': {
             chargetype: {
-                hidden: false
+                hidden: false,
+                allowBlank: false
+            },
+            sampletype: {
+                hidden: true
             },
             reason: {
                 defaultValue: 'Research'

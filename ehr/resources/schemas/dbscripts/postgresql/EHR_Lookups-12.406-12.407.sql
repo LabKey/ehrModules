@@ -1,0 +1,1 @@
+UPDATE ehr_lookups.lookup_sets SET keyField = 'value' WHERE setname = 'birth_condition';

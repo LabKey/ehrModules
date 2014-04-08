@@ -179,10 +179,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     Map<String, Object> props2 = new TreeMap<>();
                     for (DemographicsProvider p : EHRService.get().getDemographicsProviders(record.getContainer()))
                     {
-                        for (FieldKey fk : p.getFieldKeysToTest())
+                        for (String fk : p.getKeysToTest())
                         {
-                            props1.put(fk.toString(), existing.getProps().get(fk.toString()));
-                            props2.put(fk.toString(), record.getProps().get(fk.toString()));
+                            props1.put(fk, existing.getProps().get(fk));
+                            props2.put(fk, record.getProps().get(fk));
                         }
                     }
 

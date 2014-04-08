@@ -10,19 +10,19 @@ EHR.model.DataModelManager.registerMetadata('BehaviorRounds', {
     byQuery: {
         'study.clinremarks': {
             s: {
-                hidden: false,
+                hidden: true,
                 height: 60
             },
             o: {
-                hidden: false,
+                hidden: true,
                 height: 60
             },
             a: {
-                hidden: false,
+                hidden: true,
                 height: 60
             },
             p: {
-                hidden: false,
+                hidden: true,
                 height: 60
             },
             remark: {
