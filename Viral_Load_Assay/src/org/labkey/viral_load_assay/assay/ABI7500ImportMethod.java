@@ -55,6 +55,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -194,37 +195,33 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         {
             ParserErrors errors = context.getErrors();
 
-            Map<String, Object> runProperties = new HashMap<String, Object>();
-            _detectorMap = new HashMap<String, Map<String, Double>>();
+            Map<String, Object> runProperties = new HashMap<>();
+            _detectorMap = new HashMap<>();
 
             BufferedReader reader = null;
             boolean inResults = false;
             boolean inDetectors = false;
 
-            try
+            try (StringWriter sw = new StringWriter(); CSVWriter out = new CSVWriter(sw, '\t'))
             {
-                reader = new BufferedReader(new FileReader(context.getFile()));
-                StringBuilder sb = new StringBuilder();
-
-                String line;
-                while (null != (line = reader.readLine()))
+                for (List<String> row : getFileLines(context.getFile()))
                 {
+                    String line = StringUtils.trimToNull(StringUtils.join(row, "\n"));
                     if (StringUtils.isEmpty(line))
                     {
                         inDetectors = false;
                         continue;
                     }
 
-                    String[] row = line.split("\t");
-                    if (row.length == 9 && row[0].equals("Well"))
+                    if (row.size() == 9 && row.get(0).equals("Well"))
                         inResults = true;
 
                     if (!inResults)
                     {
-                        if (row.length == 0)
+                        if (row.size() == 0)
                             continue;
 
-                        if (row[0].equals("Detector Name"))
+                        if (row.get(0).equals("Detector Name"))
                         {
                             inDetectors = true;
                             continue;
@@ -232,47 +229,47 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
                         if (inDetectors)
                         {
-                            String detector = row[0];
+                            String detector = row.get(0);
                             Map<String, Double> map = new HashMap<String, Double>();
-                            map.put("slope", Double.parseDouble(row[1]));
-                            map.put("intercept", Double.parseDouble(row[2]));
-                            map.put("rSquared", Double.parseDouble(row[3]));
-                            map.put("standards", Double.parseDouble(row[4]));
-                            map.put("unknowns", Double.parseDouble(row[5]));
+                            map.put("slope", Double.parseDouble(row.get(1)));
+                            map.put("intercept", Double.parseDouble(row.get(2)));
+                            map.put("rSquared", Double.parseDouble(row.get(3)));
+                            map.put("standards", Double.parseDouble(row.get(4)));
+                            map.put("unknowns", Double.parseDouble(row.get(5)));
                             _detectorMap.put(detector, map);
                             continue;
                         }
 
-                        if (row[0].startsWith("Comments:"))
+                        if (row.get(0).startsWith("Comments:"))
                         {
                             runProperties.put("comments", line.replaceFirst("Comments:", ""));
                         }
-                        else if (row[0].startsWith("User:"))
+                        else if (row.get(0).startsWith("User:"))
                         {
                             runProperties.put("performedBy", line.replaceFirst("User: ", ""));
                         }
-                        else if (row[0].startsWith("Run Date:"))
+                        else if (row.get(0).startsWith("Run Date:"))
                         {
                             runProperties.put("runDate", line.replaceFirst("Run Date: ", "").replaceAll("\t", ""));
                         }
-                        else if (row[0].startsWith("PCR Volume:"))
+                        else if (row.get(0).startsWith("PCR Volume:"))
                         {
                             runProperties.put("rxnVolume", line.replaceFirst("PCR Volume: ", ""));
                         }
-                        else if (row[0].startsWith("Document Name:"))
+                        else if (row.get(0).startsWith("Document Name:"))
                         {
                             runProperties.put("name", line.replaceFirst("Document Name: ", ""));
                         }
                     }
                     else
                     {
-                        sb.append(StringUtils.join(row, "\t")).append(System.getProperty("line.separator"));
+                        out.writeNext(row.toArray(new String[row.size()]));
                     }
                 }
 
                 errors.confirmNoErrors();
 
-                return sb.toString();
+                return sw.toString();
             }
             catch (IOException e)
             {
