@@ -769,7 +769,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         goToProjectHome();
 
         //retain pipeline log for debugging
-        publishArtifact(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH));
+        getArtifactCollector().publishArtifact(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH));
 
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
         waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
