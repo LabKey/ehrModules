@@ -46,6 +46,7 @@ import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -541,7 +542,7 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         }
 
         int i = 1;
-        for (Map<String, Object> row :srr.getRows())
+        for (Map<String, Object> row : srr.getRows())
         {
             JSONObject json = new JSONObject((String)row.get("json"));
             Assert.assertEquals(json.getString("category"), observationsGrid.getFieldValue(i, "category"));
@@ -769,7 +770,14 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         goToProjectHome();
 
         //retain pipeline log for debugging
-        getArtifactCollector().publishArtifact(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH));
+        getArtifactCollector().addArtifactLocation(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH), new FileFilter()
+        {
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.getName().endsWith(".log");
+            }
+        });
 
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
         waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
@@ -868,35 +876,35 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     {
         beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateData.view");
 
-        waitAndClickButton("Delete Data From Lookup Sets", 0);
+        clickButton("Delete Data From Lookup Sets", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        waitAndClickButton("Populate Lookup Sets", 0);
+        clickButton("Populate Lookup Sets", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
         sleep(2000);
 
-        waitAndClickButton("Delete Data From Procedures", 0);
+        clickButton("Delete Data From Procedures", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        waitAndClickButton("Populate Procedures", 0);
+        clickButton("Populate Procedures", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
         sleep(2000);
 
-        waitAndClickButton("Delete All", 0);
+        clickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        waitAndClickButton("Populate All", 0);
+        clickButton("Populate All", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
 
         //NOTE: this is excluded from populate all since it changes rarely
-        waitAndClickButton("Delete Data From SNOMED Codes", 0);
+        clickButton("Delete Data From SNOMED Codes", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        waitAndClickButton("Populate SNOMED Codes", 0);
+        clickButton("Populate SNOMED Codes", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
 
         //also populate templates
         beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
 
-        waitAndClickButton("Delete All", 0);
+        clickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        waitAndClickButton("Populate All", 0);
+        clickButton("Populate All", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
 
         //Note: this is created because some of the billing code expects it.  ideally this is eventually split into a separate module + test
@@ -910,8 +918,16 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         File path = new File(getLabKeyRoot(), REFERENCE_STUDY_PATH);
         setPipelineRoot(path.getPath());
 
+        getArtifactCollector().addArtifactLocation(path, new FileFilter()
+        {
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.getName().endsWith(".log");
+            }
+        });
         goToModule("Pipeline");
-        waitAndClickButton("Process and Import Data");
+        clickButton("Process and Import Data");
 
         _fileBrowserHelper.expandFileBrowserRootNode();
         _fileBrowserHelper.clickFileBrowserFileCheckbox("study.xml");
