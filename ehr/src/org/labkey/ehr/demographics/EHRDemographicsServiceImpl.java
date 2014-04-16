@@ -27,6 +27,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRDemographicsService;
+import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.ModuleLoader;
@@ -63,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * User: bimber
@@ -74,7 +76,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     private static final Logger _log = Logger.getLogger(EHRDemographicsServiceImpl.class);
     private static JobDetail _job = null;
 
-    private StringKeyCache<AnimalRecord> _cache;
+    private StringKeyCache<AnimalRecordImpl> _cache;
 
 //    private static class DemographicsCacheLoader implements CacheLoader<String, AnimalRecord>
 //    {
@@ -152,7 +154,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         return records;
     }
 
-    private synchronized void cacheRecord(AnimalRecord record, boolean validateOnCreate)
+    private synchronized void cacheRecord(AnimalRecordImpl record, boolean validateOnCreate)
     {
         String key = getCacheKey(record.getContainer(), record.getId());
 
@@ -276,24 +278,25 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             start = start + batchSize;
 
             Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
-            Set<String> idsToUpdate = new HashSet<>();
+            Set<String> idsToUpdate = new TreeSet<>();
 
             for (String id : ids)
             {
                 synchronized (this)
                 {
                     String key = getCacheKey(c, id);
-                    AnimalRecord ar = _cache.get(key);
+                    AnimalRecordImpl ar = _cache.get(key);
                     if (ar != null)
                     {
                         //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
-                        ar.update(p, props.get(id));
                         if (doAfterUpdate)
                             idsToUpdate.addAll(p.getIdsToUpdate(c, id, ar.getProps(), props.get(id)));
+
+                        ar.update(p, props.get(id));   //perform update only after we determine which additional IDs should be recached
                     }
                     else
                     {
-                        ar = AnimalRecord.create(c, id, props.get(id));
+                        ar = AnimalRecordImpl.create(c, id, props.get(id));
                         if (doAfterUpdate)
                             idsToUpdate.addAll(p.getIdsToUpdate(c, id, null, props.get(id)));
                     }
@@ -305,6 +308,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             idsToUpdate.removeAll(ids);
             if (!idsToUpdate.isEmpty())
             {
+                _log.info("report data change for provider: " + p.getName() + ", " + idsToUpdate.size() + " total ids");
                 reportDataChangeForProvider(c, p, idsToUpdate);
             }
         }
@@ -382,7 +386,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         for (String id : ret.keySet())
         {
             Map<String, Object> props = ret.get(id);
-            AnimalRecord record = AnimalRecord.create(c, id, props);
+            AnimalRecordImpl record = AnimalRecordImpl.create(c, id, props);
             cacheRecord(record, validateOnCreate);
 
             records.add(record);
@@ -426,7 +430,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     /**
      * A helper to query the cache, which will create the record if not present
      */
-    private AnimalRecord getRecordFromCache(Container c, String animalId)
+    private AnimalRecordImpl getRecordFromCache(Container c, String animalId)
     {
         return _cache.get(getCacheKey(c, animalId));
     }

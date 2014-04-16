@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Aggregate;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -32,6 +33,7 @@ import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
+import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
@@ -42,12 +44,14 @@ import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.Resource;
@@ -70,7 +74,6 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
-import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.security.EHRSecurityManager;
@@ -558,6 +561,8 @@ public class TriggerScriptHelper
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
 
+        if (errors.hasErrors())
+            throw errors;
     }
 
     public void createHousingRecord(String id, Date date, @Nullable String enddate, String room, @Nullable String cage) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -582,6 +587,9 @@ public class TriggerScriptHelper
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+
+        if (errors.hasErrors())
+            throw errors;
     }
 
     public void createBirthRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -597,6 +605,9 @@ public class TriggerScriptHelper
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+
+        if (errors.hasErrors())
+            throw errors;
     }
 
     public void createDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -622,6 +633,9 @@ public class TriggerScriptHelper
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        if (errors.hasErrors())
+            throw errors;
+
         EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
     }
 
@@ -1632,51 +1646,91 @@ public class TriggerScriptHelper
         });
     }
 
-    //TODO
-    public void verifyAssignmentCounts(String id, Integer protocol)
+    public String verifyProtocolCounts(final String id, Integer project, final List<Map<String, Object>> recordsInTransaction)
     {
-//        LABKEY.Query.selectRows({
-//                schemaName: 'ehr',
-//            queryName: 'protocolTotalAnimalsBySpecies',
-//            viewName: 'With Animals',
-//            scope: this,
-//            filterArray: [
-//        LABKEY.Filter.create('species', species+';All Species', LABKEY.Filter.Types.EQUALS_ONE_OF),
-//                LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)
-//        ],
-//        success: function(data){
-//        if (data && data.rows && data.rows.length){
-//            for(var i=0;i<data.rows.length;i++){
-//                var remaining = data.rows[i].TotalRemaining;
-//                var species = data.rows[i].Species;
-//
-//                if (!context.extraContext.newIdsAdded[protocol][species])
-//                    context.extraContext.newIdsAdded[protocol][species] = [];
-//
-//                if (context.extraContext.newIdsAdded[protocol] && context.extraContext.newIdsAdded[protocol][species]){
-//                    remaining -= context.extraContext.newIdsAdded[protocol][species].length;
-//                }
-//
-//                var animals = data.rows[i].Animals;
-//                if (animals && animals.indexOf(row.Id)==-1){
-//                    if (remaining <= 1)
-//                        EHR.Server.Utils.addError(scriptErrors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
-//
-//                    if (context.extraContext.newIdsAdded[protocol][species] && context.extraContext.newIdsAdded[protocol][species].indexOf(row.Id)==-1)
-//                        context.extraContext.newIdsAdded[protocol][species].push(row.Id);
-//                }
-//            }
-//        }
-//        else {
-//            console.log('there was an error finding allowable animals per assignment')
-//        }
-//    },
-//        failure: EHR.Server.Utils.onFailure
-//        });
+        if (id == null)
+        {
+            return null;
+        }
 
+        AnimalRecord ar = EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
+        if (ar.getSpecies() == null)
+        {
+            return "Unknown species: " + id;
+        }
+
+        final String protocol = getProtocolForProject(project);
+        if (protocol == null)
+        {
+            return "Unable to find protocol associated with project: " + project;
+        }
+
+        //find the total animals previously used by this protocols/species
+        TableInfo ti = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr").getTable("protocolTotalAnimalsBySpecies");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), PageFlowUtil.set(ar.getSpecies(), "All Species"), CompareType.IN);
+        filter.addCondition(FieldKey.fromString("protocol"), protocol);
+        TableSelector ts = new TableSelector(ti, filter, null);
+        final List<String> errors = new ArrayList<>();
+        final String ALL_SPECIES = "All Species";
+        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        {
+            @Override
+            public void exec(ResultSet rs) throws SQLException
+            {
+                Integer totalAllowed = rs.getInt("TotalAnimals");
+                String species = rs.getString("Species");
+                Set<String> animals = new CaseInsensitiveHashSet();
+                String animalString = rs.getString("Animals");
+                if (animalString != null)
+                {
+                    animals.addAll(Arrays.asList(StringUtils.split(animalString, ",")));
+                }
+
+                animals.add(id);
+
+                if (recordsInTransaction != null && recordsInTransaction.size() > 0)
+                {
+                    for (Map<String, Object> r : recordsInTransaction)
+                    {
+                        String id = (String)r.get("Id");
+                        Number project = (Number)r.get("project");
+                        if (id == null || project == null)
+                        {
+                            continue;
+                        }
+
+                        String rowProtocol = getProtocolForProject(project.intValue());
+                        if (rowProtocol == null || !rowProtocol.equals(protocol))
+                        {
+                            continue;
+                        }
+
+                        if (!ALL_SPECIES.equals(species))
+                        {
+                            //find species
+                            AnimalRecord ar = getDemographicRecord(id);
+                            if (ar.getSpecies() == null || !species.equals(ar.getSpecies()))
+                            {
+                                continue;
+                            }
+                        }
+
+                        animals.add(id);
+                    }
+                }
+
+                Integer remaining = totalAllowed - animals.size();
+                if (remaining < 0)
+                {
+                    errors.add("There are not enough spaces on protocol: " + protocol + ". Allowed: " + totalAllowed + ", used: " + animals.size());
+                }
+            }
+        });
+
+        return StringUtils.join(errors, "<>");
     }
 
-    public void createRequestsForBloodAdditionalServices(String id, Integer project, String performedby, String services) throws Exception
+    public void createRequestsForBloodAdditionalServices(String id, Date date, Integer project, String performedby, String services) throws Exception
     {
         try
         {
@@ -1698,7 +1752,8 @@ public class TriggerScriptHelper
             {
                 rowMap = new CaseInsensitiveHashMap<>(rowMap);
                 GUID requestId = new GUID();
-                Date dateRequested = new Date();
+                //NOTE: we want the requested labwork to match the date of the blood draw
+                Date dateRequested = date;
                 Map<String, Object> row = new CaseInsensitiveHashMap<>();
                 row.put("daterequested", dateRequested);
                 row.put("requestid", requestId.toString());
@@ -1722,7 +1777,12 @@ public class TriggerScriptHelper
                 TableInfo requests = getTableInfo("ehr", "requests");
                 List<Map<String, Object>> rows = new ArrayList<>();
                 rows.add(row);
-                requests.getUpdateService().insertRows(getUser(), getContainer(), rows, new BatchValidationException(), getExtraContext());
+                Map<String, Object> extraContext = getExtraContext();
+                extraContext.put("skipRequestInPastCheck", true);
+                BatchValidationException errors = new BatchValidationException();
+                requests.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, extraContext);
+                if (errors.hasErrors())
+                    throw errors;
 
                 TableInfo clinpathRuns = getTableInfo("study", "Clinpath Runs");
                 List<Map<String, Object>> clinpathRows = new ArrayList<>();
@@ -1737,7 +1797,9 @@ public class TriggerScriptHelper
                 clinpathRow.put("QCStateLabel", "Request: Pending");
 
                 clinpathRows.add(clinpathRow);
-                clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, new BatchValidationException(), getExtraContext());
+                clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, errors, getExtraContext());
+                if (errors.hasErrors())
+                    throw errors;
             }
         }
         catch (Exception e)
@@ -1901,7 +1963,73 @@ public class TriggerScriptHelper
         if (!toUpdate.isEmpty())
         {
             _log.info("closing housing records: " + toUpdate.size());
-            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, getExtraContext());
+            Map<String, Object> context = getExtraContext();
+            context.put("skipAnnounceChangedParticipants", true);
+            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, context);
+        }
+    }
+
+    public void ensureSingleFlagCategoryActive(String id, String category, String objectId, final Date enddate)
+    {
+        TableInfo flagCategoriesTable = getTableInfo("ehr_lookups", "flag_categories");
+        TableSelector ts2 =  new TableSelector(flagCategoriesTable, Collections.singleton("enforceUnique"), new SimpleFilter(FieldKey.fromString("category"), category), null);
+        List<Boolean> ret = ts2.getArrayList(Boolean.class);
+        boolean enforceUnique = ret != null && ret.size() == 1 ? ret.get(0) : false;
+
+        if (enforceUnique)
+        {
+            //find existing active flags of the same category
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("category"), category);
+            filter.addCondition(FieldKey.fromString("isActive"), true);
+            filter.addCondition(FieldKey.fromString("Id"), id, CompareType.EQUAL);
+            filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ_OR_NULL);
+
+            TableInfo flagsTable = getTableInfo("study", "Animal Record Flags");
+            final List<Map<String, Object>> rows = new ArrayList<>();
+            final List<Map<String, Object>> oldKeys = new ArrayList<>();
+            QueryUpdateService qus = flagsTable.getUpdateService();
+
+            TableSelector ts = new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "enddate"), filter, null);
+            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            {
+                @Override
+                public void exec(ResultSet rs) throws SQLException
+                {
+                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                    row.put("enddate", enddate);
+                    rows.add(row);
+
+                    Map<String, Object> keys = new CaseInsensitiveHashMap<>();
+                    keys.put("lsid", rs.getString("lsid"));
+                    oldKeys.add(keys);
+                }
+            });
+
+            try
+            {
+                if (rows.size() > 0)
+                {
+                    Map<String, Object> extraContext = getExtraContext();
+                    extraContext.put("skipAnnounceChangedParticipants", true);
+                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, extraContext);
+                }
+            }
+            catch (InvalidKeyException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (BatchValidationException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (QueryUpdateServiceException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (SQLException e)
+            {
+                throw new RuntimeSQLException(e);
+            }
         }
     }
 }

@@ -50,6 +50,7 @@ import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.study.Study;
@@ -244,8 +245,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 if (study != null)
                     qcstate.setFk(new QueryForeignKey(study, null, "QCState", "rowid", "Label"));
             }
-
-            qcstate.setUserEditable(false);
+            //TODO: disabled due to issue with DataIterator
+            //qcstate.setUserEditable(false);
         }
 
         ColumnInfo parentId = ti.getColumn("parentId");
@@ -1381,7 +1382,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (!hasAnimalLookup(ds))
             return;
 
-        final UserSchema targetSchema = ds.getUserSchema();
+        final String targetSchemaName = ds.getUserSchema().getName();
+        final Container targetSchemaContainer = ds.getUserSchema().getContainer();
+        final User u = ds.getUserSchema().getUser();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
@@ -1390,7 +1393,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_housingAtTime";
-                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
+                UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
+                QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 qd.setSql("SELECT\n" +
                     "sd." + pkCol.getSelectName() + ",\n" +
                     "cast((\n" +
@@ -1490,7 +1494,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             return;
 
         final String dateColName = dateCol.getSelectName();
-        final UserSchema targetSchema = ds.getUserSchema();
+        final String targetSchemaName = ds.getUserSchema().getName();
+        final Container targetSchemaContainer = ds.getUserSchema().getContainer();
+        final User u = ds.getUserSchema().getUser();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
@@ -1504,7 +1510,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_survivorship";
-                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
+                UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
+                QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 qd.setSql("SELECT\n" +
                     "c." + pkCol.getSelectName() + ",\n" +
                     "CASE\n" +
@@ -1586,7 +1593,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (!hasAnimalLookup(ds))
             return;
 
-        final UserSchema targetSchema = ds.getUserSchema();
+        final String targetSchemaName = ds.getUserSchema().getName();
+        final Container targetSchemaContainer = ds.getUserSchema().getContainer();
+        final User u = ds.getUserSchema().getUser();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
@@ -1600,7 +1609,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_ageAtTime";
-                QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
+                UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
+                QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
                     "c." + pkCol.getSelectName() + ",\n" +

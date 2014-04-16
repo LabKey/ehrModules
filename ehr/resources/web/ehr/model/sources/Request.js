@@ -20,20 +20,14 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         date: {
             editorConfig: {
                 minValue: (new Date()),
+                defaultHour: 8,
+                defaultMinutes: 30,
                 dateConfig: {
                     minValue: (new Date())
                 }
             },
+            //@Override.  Force the user to choose a date without a default
             getInitialValue: function(v, rec){
-                if (v)
-                    return v;
-
-                v = (new Date()).add(Date.DAY, 2);
-                v.setHours(8);
-                v.setMinutes(30);
-                if (v < (new Date()))
-                    v = new Date();
-
                 return v;
             }
         },
@@ -115,18 +109,6 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                             EHR.DataEntryUtils.calculateQuantity(field, {tube_vol: val});
                         }
                     }
-                }
-            },
-            date: {
-                nullable: false,
-                getInitialValue: function(v){
-                    var date = (new Date()).add(Date.DAY, 2);
-                    date.setHours(9);
-                    date.setMinutes(30);
-                    if (v < (new Date()))
-                        v = new Date();
-
-                    return v || date;
                 }
             },
             tube_type: {

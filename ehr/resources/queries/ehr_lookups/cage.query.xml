@@ -21,6 +21,7 @@
                     </column>
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>
+                        <nullable>false</nullable>
                     </column>
                     <column columnName="status">
                         <fk>

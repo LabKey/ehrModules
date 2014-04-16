@@ -275,7 +275,8 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         if (!val)
             return;
 
-        var rec = this.store.findRecord('project', val);
+        LDK.Assert.assertNotEmpty('Unable to find store in ProjectEntryField', this.store);
+        var rec = this.store ? this.store.findRecord('project', val) : null;
         if (rec){
             return;
         }

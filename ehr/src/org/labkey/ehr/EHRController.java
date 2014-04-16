@@ -31,10 +31,12 @@ import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryException;
@@ -42,6 +44,8 @@ import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
+import org.labkey.api.query.ValidationError;
+import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -63,7 +67,6 @@ import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
-import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
@@ -1414,6 +1417,19 @@ public class EHRController extends SpringActionController
             catch (IllegalArgumentException e)
             {
                 errors.reject(ERROR_MSG, e.getMessage());
+                return null;
+            }
+            catch (BatchValidationException e)
+            {
+                List<String> errs = new ArrayList<>();
+                for (ValidationException ve : e.getRowErrors())
+                {
+                    for (ValidationError v : ve.getErrors())
+                    {
+                        errs.add(v.getMessage());
+                    }
+                }
+                errors.reject(ERROR_MSG, StringUtils.join(errs, ";\n"));
                 return null;
             }
 

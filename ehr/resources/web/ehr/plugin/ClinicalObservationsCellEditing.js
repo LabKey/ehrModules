@@ -31,11 +31,10 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
         }
 
         var store = this.observationTypesStore;
+
+        //note: we allow the process to proceed even if we cant find the category.  this is to support situations where we have saved records using a no-longer supported category
         var rec = store.findRecord('value', category);
         LDK.Assert.assertNotEmpty('Unable to find observation types record matching category: ' + category, rec);
-        if (!rec){
-            return false;
-        }
 
         var me = this,
                 editors = me.editors,
@@ -44,7 +43,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
                 editorOwner = me.grid.ownerLockable || me.grid;
 
         if (!editor || editor.obsCategory != category){
-            var config = rec.get('description') ? Ext4.decode(rec.get('description')) : null;
+            var config = rec && rec.get('description') ? Ext4.decode(rec.get('description')) : null;
             config = config || {
                 xtype: 'textfield'
             };

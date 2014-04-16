@@ -183,7 +183,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LDK.Assert.assertNotEmpty('Unknown dataregion: ' + this.dataRegionName, dataRegion);
 
-        var checkedRows = dataRegion.getChecked();
+        this.checkedRows = dataRegion.getChecked();
 
         LABKEY.Query.selectRows({
             method: 'POST',
@@ -192,7 +192,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             queryName: dataRegion.queryName,
             sort: 'Id,date',
             columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
-            filterArray: [LABKEY.Filter.create('lsid', checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            filterArray: [LABKEY.Filter.create('lsid', this.checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
             scope: this,
             success: this.onDataLoad,
             failure: LDK.Utils.getErrorCallback()
@@ -208,9 +208,25 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
         this.records = [];
         var errors = [];
-        Ext4.Array.forEach(data.rows, function(json){
-            var r = new LDK.SelectRowsRow(json);
 
+        //first order these rows based on the source dataregion
+        var sortedRows = data.rows;
+        var checked = this.checkedRows;
+        var pk = this.pkCol;
+        sortedRows = sortedRows.sort(function(a, b){
+            var rowA = new LDK.SelectRowsRow(a);
+            var rowB = new LDK.SelectRowsRow(b);
+
+            var idxA = checked.indexOf(rowA.getValue('lsid'));
+            var idxB = checked.indexOf(rowB.getValue('lsid'));
+            LDK.Assert.assertTrue('Unable to find row matching: ' + rowA.getValue('lsid'), idxA > -1);
+            LDK.Assert.assertTrue('Unable to find row matching: ' + rowB.getValue('lsid'), idxB > -1);
+
+            return idxA > idxB ? 1 : idxA < idxB ? -1 : 0;
+        });
+
+        Ext4.Array.forEach(sortedRows, function(json){
+            var r = new LDK.SelectRowsRow(json);
             if (r.getValue('taskid')){
                 errors.push('One or more records is already part of a task and will be skipped.');
             }
@@ -305,7 +321,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
         Ext4.Array.forEach(records, function(r){
             LDK.Assert.assertNotEmpty('Record does not have an LSID', r.lsid);
-            existingRecords[dataRegion.queryName].push(r.lsid);
+            existingRecords[dataRegion.queryName].push({lsid: r.lsid, formSort: r.formSort});
         }, this);
 
         EHR.Utils.createTask({
@@ -332,9 +348,10 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
     getRecords: function(){
         var toSave = [];
-        Ext4.each(this.records, function(r){
+        Ext4.each(this.records, function(r, idx){
             toSave.push({
-                lsid: r.getValue('lsid')
+                lsid: r.getValue('lsid'),
+                formSort: idx
             });
         }, this);
 

@@ -13,7 +13,7 @@ function onInit(event, helper){
         skipAssignmentCheck: true
     });
 
-    helper.decodeExtraContextProperty('assignmentsInTransaction');
+    helper.decodeExtraContextProperty('assignmentsInTransaction', []);
 
     helper.registerRowProcessor(function(helper, row){
         if (!row.row)
@@ -26,12 +26,11 @@ function onInit(event, helper){
         }
 
         var assignmentsInTransaction = helper.getProperty('assignmentsInTransaction');
-        assignmentsInTransaction = assignmentsInTransaction || {};
-        assignmentsInTransaction[row.Id] = assignmentsInTransaction[row.Id] || [];
+        assignmentsInTransaction = assignmentsInTransaction || [];
 
         var shouldAdd = true;
         if (row.objectid){
-            LABKEY.ExtAdapter.each(assignmentsInTransaction[row.Id], function(r){
+            LABKEY.ExtAdapter.each(assignmentsInTransaction, function(r){
                 if (r.objectid == row.objectid){
                     shouldAdd = false;
                     return false;
@@ -40,7 +39,8 @@ function onInit(event, helper){
         }
 
         if (shouldAdd){
-            assignmentsInTransaction[row.Id].push({
+            assignmentsInTransaction.push({
+                Id: row.Id,
                 objectid: row.objectid,
                 date: row.date,
                 enddate: row.enddate,
@@ -66,10 +66,20 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 
     //check number of allowed animals at assign/approve time
-    if (!helper.isETL() && !helper.isQuickValidation() &&
+    if (!helper.isETL() && !helper.isQuickValidation() && helper.doStandardProtocolCountValidation() &&
+        //this is designed to always perform the check on imports, but also updates where the Id was changed
         !(oldRow && oldRow.Id && oldRow.Id==row.Id) &&
         row.Id && row.project && row.date
     ){
-        helper.getJavaHelper().verifyAssignmentCounts(row.Id, row.project);
+        var assignmentsInTransaction = helper.getProperty('assignmentsInTransaction');
+        assignmentsInTransaction = assignmentsInTransaction || [];
+
+        var msgs = helper.getJavaHelper().verifyProtocolCounts(row.Id, row.project, assignmentsInTransaction);
+        if (msgs){
+            msgs = msgs.split("<>");
+            for (var i=0;i<msgs.length;i++){
+                EHR.Server.Utils.addError(scriptErrors, 'project', msgs[i], 'WARN');
+            }
+        }
     }
 }

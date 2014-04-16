@@ -51,6 +51,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         //monitor dirty state
         EHR.DataEntryUtils.registerBeforeUnloadListener(this.id, this.onBeforeWindowUnload, this);
+        EHR.DataEntryUtils.createBackspaceTrap();
     },
 
     onBeforeWindowUnload: function(){
@@ -63,6 +64,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     destroy: function(){
         EHR.DataEntryUtils.unregisterBeforeUnloadListener(this.id);
+        EHR.DataEntryUtils.removeBackspaceTrap();
 
         return this.callParent(arguments);
     },

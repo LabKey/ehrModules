@@ -105,7 +105,7 @@ EHR.Server.Validation = {
         if (!helper.isValidateOnly() && !helper.isAllowFutureDates()){
             var timeDiff = (rowTime.getTimeInMillis() - currentTime.getTimeInMillis()) / 1000;
             if (timeDiff > 3600 && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
-                console.log('Future date: ' + timeDiff + ' / ' + EHR.Server.Utils.datetimeToString(rowTime) + ' / ' + EHR.Server.Utils.datetimeToString(currentTime));
+                console.error('Future date: ' + timeDiff + ' / ' + EHR.Server.Utils.datetimeToString(rowTime) + ' / ' + EHR.Server.Utils.datetimeToString(currentTime));
                 EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
             }
         }

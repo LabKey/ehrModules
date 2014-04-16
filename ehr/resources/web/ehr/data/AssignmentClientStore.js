@@ -10,7 +10,7 @@ Ext4.define('EHR.data.AssignmentClientStore', {
     extend: 'EHR.data.DataEntryClientStore',
 
     getExtraContext: function(){
-        var map = {};
+        var rows = [];
         var allRecords = this.getRange();
         for (var idx = 0; idx < allRecords.length; ++idx){
             var record = allRecords[idx];
@@ -23,10 +23,8 @@ Ext4.define('EHR.data.AssignmentClientStore', {
 
             date = date.format('Y-m-d');
 
-            if (!map[id])
-                map[id] = [];
-
-            map[id].push({
+            rows.push({
+                Id: id,
                 objectid: record.get('objectid'),
                 date: date,
                 enddate: record.get('enddate'),
@@ -35,11 +33,11 @@ Ext4.define('EHR.data.AssignmentClientStore', {
             });
         }
 
-        if (!LABKEY.Utils.isEmptyObj(map)){
-            map = LABKEY.ExtAdapter.encode(map);
+        if (!Ext4.isEmpty(rows)){
+            rows = LABKEY.ExtAdapter.encode(rows);
 
             return {
-                assignmentsInTransaction: map
+                assignmentsInTransaction: rows
             }
         }
 

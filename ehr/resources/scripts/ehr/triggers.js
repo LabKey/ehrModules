@@ -142,7 +142,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
         var timeDiffMills = now - row.date.getTime();
 
         //allow a reasonable window to support inserts from other scripts
-        if (timeDiffMills > (1000 * 60 * 10)) //10 minutes
+        if (!helper.doSkipRequestInPastCheck() && timeDiffMills > (1000 * 60 * 10)) //10 minutes
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
 
         //TODO: conditionalize range?
@@ -468,7 +468,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
     if (helper.announceAllModifiedParticipants() && helper.getParticipantsModified().length){
         helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getParticipantsModified());
     }
-    else if (helper.getPublicParticipantsModified().length){
+    else if (helper.getPublicParticipantsModified().length && !helper.skipAnnounceChangedParticipants()){
         helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getPublicParticipantsModified());
     }
 

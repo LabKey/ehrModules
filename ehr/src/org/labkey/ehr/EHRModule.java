@@ -24,8 +24,11 @@ import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
+import org.labkey.api.ehr.security.EHRAnimalGroupEditPermission;
+import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.buttons.ShowEditUIButton;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
@@ -39,6 +42,7 @@ import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.StartupListener;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.ehr.buttons.CageBulkEditButton;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.LocationEditButton;
 import org.labkey.ehr.buttons.ProcedureEditButton;
@@ -67,6 +71,7 @@ import org.labkey.ehr.query.buttons.ExcelImportButton;
 import org.labkey.ehr.query.buttons.JumpToHistoryButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
 import org.labkey.ehr.query.buttons.ShowAuditHistoryButton;
+import org.labkey.ehr.security.EHRAnimalGroupManagementRole;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
@@ -107,7 +112,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.407;
+        return 12.410;
     }
 
     public boolean hasScripts()
@@ -137,11 +142,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider());
-    }
 
-    @Override
-    protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
-    {
         RoleManager.registerRole(new EHRDataAdminRole());
         RoleManager.registerRole(new EHRRequestorRole());
         RoleManager.registerRole(new EHRBasicSubmitterRole());
@@ -151,7 +152,6 @@ public class EHRModule extends ExtendedSimpleModule
 
         RoleManager.registerRole(new EHRVeternarianRole());
         RoleManager.registerRole(new EHRDataEntryRole());
-        RoleManager.registerRole(new EHRRequestorRole());
         RoleManager.registerRole(new EHRClinicalEntryRole());
         RoleManager.registerRole(new EHRSurgeryEntryRole());
         RoleManager.registerRole(new EHRLabworkEntryRole());
@@ -160,7 +160,12 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRBehaviorEntryRole());
         RoleManager.registerRole(new EHRProcedureManagementRole());
         RoleManager.registerRole(new EHRLocationManagementRole());
+        RoleManager.registerRole(new EHRAnimalGroupManagementRole());
+    }
 
+    @Override
+    protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
+    {
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=assignmentOverlapsById"), "Quick Links");
@@ -179,6 +184,9 @@ public class EHRModule extends ExtendedSimpleModule
                     @Override
                     public void run()
                     {
+                        //note: this was moved to run after startup to ensure all modules have registered
+                        DataEntryManager.get().primeAllCaches();
+
                         EHRDemographicsServiceImpl.get().onStartup();
                     }
                 }, 10000);
@@ -206,6 +214,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ProjectEditButton(this, "ehr", "project"), "ehr", "project");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "rooms");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "cage"), "ehr_lookups", "cage");
+        EHRService.get().registerMoreActionsButton(new CageBulkEditButton(this), "ehr_lookups", "cage");
 
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedures"), EHRSchema.EHR_LOOKUPS, "procedures");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_flags"), EHRSchema.EHR_LOOKUPS, "procedure_default_flags");
@@ -213,6 +222,10 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_charges"), EHRSchema.EHR_LOOKUPS, "procedure_default_charges");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_codes"), EHRSchema.EHR_LOOKUPS, "procedure_default_codes");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_comments"), EHRSchema.EHR_LOOKUPS, "procedure_default_comments");
+
+        //EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS, EHRAnimalGroupEditPermission.class), EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS);
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUPS, EHRAnimalGroupEditPermission.class), EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUPS);
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_FLAG_VALUES, EHRDataAdminPermission.class), EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_FLAG_VALUES);
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());
         NotificationService.get().registerNotification(new DeathNotification());
@@ -222,8 +235,6 @@ public class EHRModule extends ExtendedSimpleModule
         //this is not a true PK, but we want to enforce uniqueness
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROJECT, "name");
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROTOCOL, "protocol");
-
-        DataEntryManager.get().primeAllCaches();
     }
 
     @Override

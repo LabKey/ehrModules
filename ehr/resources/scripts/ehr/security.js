@@ -234,7 +234,8 @@ EHR.Server.Security = new function(){
 
             //next we determine whether to use row-level QC or the global target QCState
             //for now we always prefer the global QC
-            if (_helper.getTargetQCStateLabel()){
+            //NOTE: we dont want this check for deletes, as this could prevent an otherwise valid delete
+            if (_helper.getTargetQCStateLabel() && _helper.getEvent() != 'delete'){
                 row.QCStateLabel = _helper.getTargetQCStateLabel();
             }
 

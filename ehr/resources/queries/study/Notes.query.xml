@@ -31,7 +31,7 @@
                         </fk>
                     </column>
                     <column columnName="value">
-                        <columnTitle>Value</columnTitle>
+                        <columnTitle>Note</columnTitle>
                     </column>
                     <column columnName="performedby">
                         <columnTitle>Entered By</columnTitle>

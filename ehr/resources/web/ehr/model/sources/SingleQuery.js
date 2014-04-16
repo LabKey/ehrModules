@@ -24,6 +24,11 @@ EHR.model.DataModelManager.registerMetadata('SingleQuery', {
             category: {
                 defaultValue: 'Clinical'
             }
+        },
+        'study.drug': {
+            chargetype: {
+                hidden: false
+            }
         }
     }
 });

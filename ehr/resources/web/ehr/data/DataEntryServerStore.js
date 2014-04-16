@@ -339,15 +339,16 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
 
                 if (!record){
-                    LDK.Utils.logToServer({
-                        level: 'ERROR',
-                        message: 'Unable to find matching record after validation.  Row # was: ' + rowError.rowNumber + '.\n' +
-                                'storeId: ' + this.storeId + '\n' +
-                                'Total records in store: ' + this.getCount() + '\n' +
-                                'Total records received: ' + records.length + '\n' +
-                                'exception: ' + rowError.exception + '\n' +
-                                'Row Data: ' + Ext4.encode(rowError.row) + '\n'
-                    });
+                    //NOTE: disabled since I believe this is a legitmate condition.  if the record is deleted client-side prior to validation returning, this could occur.
+                    //LDK.Utils.logToServer({
+                    //    level: 'ERROR',
+                    //    message: 'Unable to find matching record after validation.  Row # was: ' + rowError.rowNumber + '.\n' +
+                    //            'storeId: ' + this.storeId + '\n' +
+                    //            'Total records in store: ' + this.getCount() + '\n' +
+                    //            'Total records received: ' + records.length + '\n' +
+                    //            'exception: ' + rowError.exception + '\n' +
+                    //            'Row Data: ' + Ext4.encode(rowError.row) + '\n'
+                    //});
 
                     return;
                 }

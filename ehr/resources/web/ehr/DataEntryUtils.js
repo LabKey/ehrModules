@@ -6,6 +6,7 @@
 LABKEY.ExtAdapter.ns('EHR.DataEntryUtils');
 
 EHR.DataEntryUtils = new function(){
+    var backspaceTrapRequests = 0;
     var beforeUnloadListeners = {};
     window.onbeforeunload = LABKEY.beforeunload(function (){
         for (var key in beforeUnloadListeners){
@@ -1002,6 +1003,25 @@ EHR.DataEntryUtils = new function(){
 
         unregisterBeforeUnloadListener: function(id){
             delete beforeUnloadListeners[id];
+        },
+
+        // NOTE: when typing in forms, users seem to be able to hit backspace and/or space in quick succession
+        // this can result in them navigating from the page, despite the beforeunload listener
+        createBackspaceTrap: function(){
+            backspaceTrapRequests++;
+            if (backspaceTrapRequests > 1){
+                return;
+            }
+
+            Ext4.EventManager.on((Ext4.isIE ? document : window), 'keydown', function(e, t) {
+                if (backspaceTrapRequests > 0 && e.getKey() == e.BACKSPACE && (!/^(input|textarea)$/i.test(t.tagName) || t.disabled || t.readOnly)) {
+                    e.stopEvent();
+                }
+            }, this);
+        },
+
+        removeBackspaceTrap: function(){
+            backspaceTrapRequests--;
         }
     }
 };

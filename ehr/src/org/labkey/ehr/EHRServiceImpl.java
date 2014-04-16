@@ -44,6 +44,7 @@ import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
@@ -684,7 +685,7 @@ public class EHRServiceImpl extends EHRService
         t.appendCalculatedCols(ti, dateFieldName);
     }
 
-    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly)
+    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
         return EHRManager.get().ensureFlagActive(u, c, category, flag, date, remark, animalIds, livingAnimalsOnly);
     }

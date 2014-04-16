@@ -34,7 +34,7 @@ EHR.DataEntryUtils.registerGridButton('ROOM_LAYOUT', function(config){
                 },{
                     xtype: 'ehr-roomfield',
                     itemId: 'roomField',
-                    multiSelect: false,
+                    multiSelect: true,
                     width: 400,
                     listeners: {
                         change: function(field, val){
@@ -49,8 +49,8 @@ EHR.DataEntryUtils.registerGridButton('ROOM_LAYOUT', function(config){
                     handler: function(btn){
                         var win = btn.up('window');
                         var area = win.down('#areaField').getValue();
-                        var room = win.down('#roomField').getValue();
-                        if (!area && !room){
+                        var rooms = win.down('#roomField').getValue() || [];
+                        if (!area && Ext4.isEmpty(rooms)){
                             Ext4.Msg.alert('Error', 'Must enter either a room or area');
                             return;
                         }
@@ -58,8 +58,8 @@ EHR.DataEntryUtils.registerGridButton('ROOM_LAYOUT', function(config){
                         if (area){
                             window.open(LABKEY.ActionURL.buildURL('onprc_ehr', 'areaDetails', null, {area: area}));
                         }
-                        else if (room){
-                            window.open(LABKEY.ActionURL.buildURL('ehr', 'cageDetails', null, {room: room}));
+                        else if (rooms.length){
+                            window.open(LABKEY.ActionURL.buildURL('onprc_ehr', 'printRoom', null, {rooms: rooms}));
                         }
 
                         win.close();

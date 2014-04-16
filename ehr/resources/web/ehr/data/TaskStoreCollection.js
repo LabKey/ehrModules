@@ -53,6 +53,10 @@ Ext4.define('EHR.data.TaskStoreCollection', {
             this.serverStores.each(function(cs){
                 if (cs.getFields().get('taskid') != null){
                     cs.each(function(r){
+                        if (r.isRemovedRequest){
+                            return;  //do not check these records.  they have deliberately been separated.
+                        }
+
                         var toTest = (r.get('taskid') ? r.get('taskid').toLowerCase() : r.get('taskid'));
                         LDK.Assert.assertEquality('Incorrect taskid for server store:' + cs.storeId, taskid, toTest);
                         if (taskid != r.get('taskid')){

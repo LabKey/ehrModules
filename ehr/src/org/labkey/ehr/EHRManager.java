@@ -1214,7 +1214,7 @@ public class EHRManager
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
 
-    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly)
+    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
     {
         final List<String> animalIds = new ArrayList<>(toTest);
 
@@ -1223,16 +1223,6 @@ public class EHRManager
         {
             throw new IllegalArgumentException("Unable to find flags table in container: " + c.getPath());
         }
-
-        TableInfo flagCategoriesTable = getEHRTable(c, u, "ehr_lookups", "flag_categories");
-        if (flagCategoriesTable == null)
-        {
-            throw new IllegalArgumentException("Unable to find flag_categories table in container: " + c.getPath());
-        }
-
-        TableSelector ts2 =  new TableSelector(flagCategoriesTable, Collections.singleton("enforceUnique"), new SimpleFilter(FieldKey.fromString("category"), category), null);
-        List<Boolean> ret = ts2.getArrayList(Boolean.class);
-        boolean enforceUnique = ret != null && ret.size() == 1 ? ret.get(0) : false;
 
         //find animals already with this flag
         TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
@@ -1259,37 +1249,6 @@ public class EHRManager
 
         try
         {
-            //if requires, close existing rows
-            if (enforceUnique)
-            {
-                SimpleFilter existingFlagsFilter = new SimpleFilter(FieldKey.fromString("Id"), animalIds, CompareType.IN);
-                existingFlagsFilter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
-                existingFlagsFilter.addCondition(FieldKey.fromString("category"), category, CompareType.EQUAL);
-                TableSelector existingFlags = new TableSelector(flagsTable, PageFlowUtil.set("lsid"), existingFlagsFilter, null);
-                List<String> lsids = existingFlags.getArrayList(String.class);
-                if (lsids != null && !lsids.isEmpty())
-                {
-                    List<Map<String, Object>> toUpdate = new ArrayList<>();
-                    List<Map<String, Object>> oldKeys = new ArrayList<>();
-                    for (String lsid : lsids)
-                    {
-                        Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                        row.put("lsid", lsid);
-                        row.put("enddate", date);
-                        toUpdate.add(row);
-
-                        Map<String, Object> row2 = new CaseInsensitiveHashMap<>();
-                        row2.put("lsid", lsid);
-                        oldKeys.add(row2);
-                    }
-
-                    if (!toUpdate.isEmpty())
-                    {
-                        ti.getUpdateService().updateRows(u, c, toUpdate, oldKeys, getExtraContext());
-                    }
-                }
-            }
-
             //then insert rows
             List<Map<String, Object>> rows = new ArrayList<>();
             for (String animal : animalIds)
@@ -1309,21 +1268,16 @@ public class EHRManager
             if (rows.size() > 0)
                 flagsTable.getUpdateService().insertRows(u, flagsTable.getUserSchema().getContainer(), rows, errors, getExtraContext());
 
+            if (errors.hasErrors())
+                throw errors;
+
             return animalIds;
         }
         catch (QueryUpdateServiceException e)
         {
             throw new RuntimeException(e);
         }
-        catch (BatchValidationException e)
-        {
-            throw new RuntimeException(e);
-        }
         catch (DuplicateKeyException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (InvalidKeyException e)
         {
             throw new RuntimeException(e);
         }
@@ -1361,7 +1315,6 @@ public class EHRManager
         final List<Map<String, Object>> rows = new ArrayList<>();
         final List<Map<String, Object>> oldKeys = new ArrayList<>();
         final Set<String> distinctIds = new HashSet<>();
-        QueryUpdateService qus = flagsTable.getUpdateService();
 
         TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
 
@@ -1385,7 +1338,7 @@ public class EHRManager
         try
         {
             if (rows.size() > 0)
-                qus.updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, getExtraContext());
+                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, getExtraContext());
 
             return distinctIds;
         }

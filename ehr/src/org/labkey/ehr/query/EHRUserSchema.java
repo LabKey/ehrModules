@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.security.EHRAnimalGroupEditPermission;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
@@ -66,10 +67,12 @@ public class EHRUserSchema extends SimpleUserSchema
             return getProtocolTable(schemaTable);
         else if (EHRSchema.TABLE_PROTOCOL_COUNTS.equalsIgnoreCase(name))
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
-        else if (EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS.equalsIgnoreCase(name))
-            return getCustomPermissionTable(schemaTable, EHRDataAdminPermission.class);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
             return getProjectTable(schemaTable);
+        else if (EHRSchema.TABLE_ANIMAL_GROUPS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRAnimalGroupEditPermission.class);
+        else if (EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRAnimalGroupEditPermission.class);
         else
             return super.createWrappedTable(name, schemaTable);
     }

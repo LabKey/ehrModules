@@ -11,16 +11,16 @@ console.log("** evaluating: " + this['javax.script.filename']);
 
 function beforeBoth(row, errors) {
     row.location = row.room;
-    if(row.cage)
+    if (row.cage)
         row.location += '-' + row.cage;
 
     //remove whitespace, normalize punctuation and pad digits
-    if(row.joinToCage){
+    if (row.joinToCage){
         row.joinToCage = row.joinToCage.replace(/\s/g, '');
         row.joinToCage = row.joinToCage.replace(/[;,]+/g, ',');
         row.joinToCage = row.joinToCage.split(',');
         var newArray = [];
-        for(var i=0;i<row.joinToCage.length;i++){
+        for (var i=0;i<row.joinToCage.length;i++){
             var item = row.joinToCage[i] ;
             if(item){
                 if(!isNaN(item))

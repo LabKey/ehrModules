@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,39 +18,37 @@ package org.labkey.ehr.demographics;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
-import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.query.FieldKey;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * User: bimber
  * Date: 7/14/13
  * Time: 11:46 AM
  */
-public class AnimalRecord
+public class AnimalRecordImpl implements AnimalRecord
 {
     private Map<String, Object> _props = new CaseInsensitiveHashMap<>();
     private Container _container;
     private String _id;
     private Date _created;
 
-    private AnimalRecord(Container c, String id)
+    private AnimalRecordImpl(Container c, String id)
     {
         _container = c;
         _id = id;
         _created = new Date();
     }
 
-    public static AnimalRecord create(Container c, String id, Map<String, Object> props)
+    public static AnimalRecordImpl create(Container c, String id, Map<String, Object> props)
     {
-        AnimalRecord rec = new AnimalRecord(c, id);
+        AnimalRecordImpl rec = new AnimalRecordImpl(c, id);
         rec.applyAll(props);
 
         return rec;
@@ -58,7 +56,7 @@ public class AnimalRecord
 
     public AnimalRecord createCopy()
     {
-        AnimalRecord ret = new AnimalRecord(getContainer(), getId());
+        AnimalRecordImpl ret = new AnimalRecordImpl(getContainer(), getId());
         ret.applyAll(_props);
 
         return ret;

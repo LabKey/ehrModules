@@ -1480,6 +1480,9 @@
             <ns:column columnName="supportsTunnel">
                 <ns:columnTitle>Supports Tunnel?</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="abbreviation">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
@@ -1503,6 +1506,9 @@
             <ns:column columnName="countAsPaired">
                 <ns:columnTitle>Animals Considered Paired When Separated By This Divider?</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="isMoveable">
+                <ns:columnTitle>Is Movable?</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="displaychar">
                 <ns:columnTitle>Display Character</ns:columnTitle>
             </ns:column>
@@ -1514,6 +1520,9 @@
             </ns:column>
             <ns:column columnName="border_style">
                 <ns:columnTitle>Border CSS Style</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="datedisabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>

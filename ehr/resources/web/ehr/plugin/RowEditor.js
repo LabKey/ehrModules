@@ -46,7 +46,8 @@ Ext4.define('EHR.plugin.RowEditor', {
     getDetailsPanelCfg: function(){
         return {
             xtype: 'ehr-animaldetailspanel',
-            itemId: 'detailsPanel'
+            itemId: 'detailsPanel',
+            showDisableButton: false
         }
     },
 

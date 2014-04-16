@@ -69,7 +69,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         allowDatesInDistantPast: false,
         lookupValidationFields: [],
         cacheAccount: true,
-        announceAllModifiedParticipants: false
+        announceAllModifiedParticipants: false,
+        doStandardProtocolCountValidation: true
     };
 
     var cachedValues = {
@@ -178,6 +179,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return props.extraContext.targetQC;
         },
 
+        doSkipRequestInPastCheck: function(){
+            return !!props.extraContext.skipRequestInPastCheck;
+        },
+
         isETL: function(){
             return props.extraContext.dataSource == 'etl';
         },
@@ -251,6 +256,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         isAllowAnyId: function(){
             return scriptOptions.allowAnyId
+        },
+
+        doStandardProtocolCountValidation: function(){
+            return scriptOptions.doStandardProtocolCountValidation;
         },
 
         isAllowDeadIds: function(){
@@ -385,6 +394,12 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.announceAllModifiedParticipants;
         },
 
+        // this was added to allow situations like programmatic update of housing records.  the initial update
+        // will cause DemographicCache to re-populate, and we dont want the cascade update to trigger this expensive process twice.
+        skipAnnounceChangedParticipants: function(){
+            return !!props.extraContext.skipAnnounceChangedParticipants;
+        },
+
         isSkipAssignmentCheck: function(){
             return scriptOptions.skipAssignmentCheck
         },
@@ -495,8 +510,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return props.event;
         },
 
-        decodeExtraContextProperty: function(name){
-            var prop = props.extraContext[name] || {};
+        decodeExtraContextProperty: function(name, defaultValue){
+            var prop = props.extraContext[name] || defaultValue || {};
             if (LABKEY.ExtAdapter.isString(prop)){
                 prop = LABKEY.ExtAdapter.decode(prop);
             }

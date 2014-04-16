@@ -83,7 +83,8 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
-        if (!redacted)
+        String categoryText = getCategoryText(rs);
+        if (!redacted && !"Necropsy".equalsIgnoreCase(categoryText))
             sb.append(safeAppend(rs, "Remarks", "remark"));
 
         if (!redacted)

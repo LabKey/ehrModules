@@ -185,12 +185,44 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     }]
                 },{
                     header: 'Lab Tests',
+                    renderer: function(item){
+                        return item;
+                    },
                     items: [{
-                        name: 'Clinpath Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath'})
+                        layout: 'hbox',
+                        bodyStyle: 'padding: 2px;background-color: transparent;',
+                        defaults: {
+                            border: false
+                        },
+                        items: [{
+                            html: 'Clinpath:',
+                            width: 200
+                        },{
+                            xtype: 'ldk-linkbutton',
+                            text: 'Requests With Manual Results',
+                            linkCls: 'labkey-text-link',
+                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': false})
+                        },{
+                            xtype: 'ldk-linkbutton',
+                            text: 'Requests With Automatic Results',
+                            linkCls: 'labkey-text-link',
+                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': true})
+                        }]
                     },{
-                        name: 'SPF Surveillance Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance Lab'})
+                        layout: 'hbox',
+                        bodyStyle: 'padding: 2px;background-color: transparent;',
+                        defaults: {
+                            border: false
+                        },
+                        items: [{
+                            html: 'SPF Surveillance:',
+                            width: 200
+                        },{
+                            xtype: 'ldk-linkbutton',
+                            text: 'All Requests',
+                            linkCls: 'labkey-text-link',
+                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance Lab'})
+                        }]
                     }]
 //                },{
 //                    header: 'Procedure Requests',

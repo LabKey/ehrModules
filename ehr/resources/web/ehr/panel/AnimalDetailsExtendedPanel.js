@@ -6,68 +6,8 @@
  * @param subjectId
  */
 Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
-    extend: 'EHR.panel.SnapshotPanel',
+    extend: 'EHR.panel.AnimalDetailsPanel',
     alias: 'widget.ehr-animaldetailsextendedpanel',
-
-    border: true,
-    showExtendedInformation: false,
-    showActionsButton: false,
-    doSuspendLayouts: false,
-
-    initComponent: function(){
-        Ext4.apply(this, {
-            border: true,
-            bodyStyle: 'padding: 5px;',
-            minHeight: 240,
-            defaults: {
-                border: false
-            }
-        });
-
-        this.callParent(arguments);
-
-        if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 500});
-        }
-
-        this.mon(EHR.DemographicsCache, 'cachechange', this.demographicsListener, this);
-    },
-
-    demographicsListener: function(animalId){
-        if (this.isDestroyed){
-            console.log('is destroyed');
-            return;
-        }
-
-        if (animalId == this.subjectId){
-            this.loadAnimal(animalId, true);
-        }
-    },
-
-    onAnimalChange: function(animalId){
-        this.loadAnimal(animalId);
-    },
-
-    loadAnimal: function(animalId, forceReload){
-        if (!forceReload && animalId == this.subjectId){
-            return;
-        }
-
-        this.subjectId = animalId;
-
-        if (animalId)
-            EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this, (forceReload ? 0 : null));
-        else
-            this.getForm().reset();
-    },
-
-    onLoad: function(ids, resultMap){
-        if (ids && ids.length && ids[0] != this.subjectId){
-            return;
-        }
-
-        this.callParent(arguments);
-    },
 
     getItems: function(){
         return [{
@@ -190,50 +130,5 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                 this.loadAnimal(this.subjectId, true);
             }
         }];
-    },
-
-    appendWeightResults: function(results){
-        if (results && results.length){
-            var row = results[0];
-            var date = LDK.ConvertUtils.parseDate(row.date);
-            var interval = '';
-            if (date){
-                //round to day for purpose of this comparison
-                var d1 = Ext4.Date.clearTime(new Date(), true);
-                var d2 = Ext4.Date.clearTime(date, true);
-                var interval = Ext4.Date.getElapsed(d1, d2);
-                interval = interval / (1000 * 60 * 60 * 24);
-                interval = Math.floor(interval);
-                interval = interval + ' days ago';
-            }
-
-            var text = row.weight + ' kg, ' + date.format('Y-m-d') + (Ext4.isDefined(interval) ? ' (' + interval + ')' : '');
-            this.safeAppend('#weights', text);
-        }
-    },
-
-    appendAssignmentsAndGroups: function(record){
-        if (this.redacted)
-            return;
-
-        var values = [];
-        if (record.getActiveAssignments() && record.getActiveAssignments().length){
-            Ext4.each(record.getActiveAssignments(), function(row){
-                var val = row['project/investigatorId/lastName'] || '';
-                val += ' [' + row['project/displayName'] + ']';
-
-                if (val)
-                    values.push(val);
-            }, this);
-        }
-
-        if (record.getActiveAnimalGroups() && record.getActiveAnimalGroups().length){
-            Ext4.each(record.getActiveAnimalGroups(), function(row){
-                values.push(row['groupId/name']);
-            }, this);
-        }
-
-        if (values.length)
-            this.safeAppend('#assignmentsAndGroups', values.join('<br>'));
     }
 });

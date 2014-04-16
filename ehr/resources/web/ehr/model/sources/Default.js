@@ -882,15 +882,30 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             reason: {
+                defaultValue: 'Husbandry',
                 allowBlank: false,
                 columnConfig: {
                     width: 180
+                },
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('date_disabled', null, LABKEY.Filter.Types.ISBLANK)]
                 }
             },
             room: {
                 allowBlank: false,
                 columnConfig: {
                     width: 150
+                }
+            },
+            divider: {
+                columnConfig: {
+                    width: 160
+                },
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK),
+                        LABKEY.Filter.create('divider', 'Cage End (Solid)', LABKEY.Filter.Types.NEQ_OR_NULL)
+                    ]
                 }
             }
         },
@@ -910,6 +925,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             reason: {
                 columnConfig: {
                     width: 180
+                },
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('date_disabled', null, LABKEY.Filter.Types.ISBLANK)]
                 }
             },
             room: {
@@ -920,6 +938,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             cage: {
                 columnConfig: {
                     width: 160
+                }
+            },
+            divider: {
+                columnConfig: {
+                    width: 160
+                },
+                lookup: {
+                    filterArray: [
+                        LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK),
+                        LABKEY.Filter.create('divider', 'Cage End (Solid)', LABKEY.Filter.Types.NEQ_OR_NULL)
+                    ]
                 }
             }
         },
@@ -962,6 +991,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             comment: {
                 hidden: true
+            }
+        },
+        'ehr.animal_group_members': {
+            groupId: {
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('enddatecoalesced', '+0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)]
+                }
+            },
+            releaseType: {
+                columnConfig: {
+                    width: 150
+                }
             }
         },
         'ehr.encounter_summaries': {
@@ -1425,6 +1466,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             category: {
                 allowBlank: false,
+                editorConfig: {
+                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                        allowChooseOther: false
+                    })]
+                },
                 lookup: {
                     columns: 'value,description'
                 },
@@ -1998,6 +2044,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             performedby: {
                 defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            actiondate: {
+                columnConfig: {
+                    width: 130
+                }
             }
         },
         'study.problem': {

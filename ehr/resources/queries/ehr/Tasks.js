@@ -6,6 +6,10 @@
 
 require("ehr/triggers").initScript(this);
 
+function onInsert(helper, scriptErrors, row){
+    row.duedate = row.duedate || new Date();
+}
+
 function onUpsert(helper, scriptErrors, row, oldRow){
     if(row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
         row.datecompleted = new Date();

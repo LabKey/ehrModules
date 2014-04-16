@@ -7,7 +7,7 @@
  * @cfg subjectId
  * @cfg hideHeader
  * @cfg showLocationDuration
- * @cgf showExtendedInformation
+ * @cfg showExtendedInformation
  * @cfg hrefTarget
  * @cfg redacted
  */
@@ -223,8 +223,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     onLoad: function(ids, resultMap){
+        if (this.disableAnimalLoad){
+            return;
+        }
+
         if (this.isDestroyed){
-            console.log('is destroyed');
             return;
         }
 

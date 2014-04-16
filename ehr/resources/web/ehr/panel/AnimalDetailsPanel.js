@@ -13,6 +13,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
     showExtendedInformation: false,
     showActionsButton: false,
     doSuspendLayouts: false,
+    showDisableButton: true,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -27,7 +28,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.callParent(arguments);
 
         if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 500});
+            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 750});
         }
 
         this.mon(EHR.DemographicsCache, 'cachechange', this.demographicsListener, this);
@@ -45,6 +46,11 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
     },
 
     onAnimalChange: function(animalId){
+        //the intent of this is to avoid querying partial strings as the user types
+        if (animalId && animalId.length < 4){
+            animalId = null;
+        }
+
         this.loadAnimal(animalId);
     },
 
@@ -56,7 +62,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.subjectId = animalId;
 
         if (animalId)
-            EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this);
+            EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this, (forceReload ? 0 : -1));
         else
             this.getForm().reset();
     },
@@ -71,6 +77,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
 
     getItems: function(){
         return [{
+            itemId: 'columnSection',
             layout: 'column',
             defaults: {
                 border: false,
@@ -175,6 +182,31 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                     }
                 }]
             }]
+        },{
+            layout: 'hbox',
+            style: 'padding-top: 10px;',
+            items: [{
+                xtype: 'button',
+                border: true,
+                text: 'Reload',
+                scope: this,
+                handler: function(btn){
+                    this.loadAnimal(this.subjectId, true);
+                }
+            },{
+                xtype: 'button',
+                hidden: !this.showDisableButton,
+                border: true,
+                text: 'Disable',
+                style: 'margin-left: 10px;',
+                scope: this,
+                handler: function(btn){
+                    this.disableAnimalLoad = btn.getText() == 'Disable';
+
+                    btn.setText(this.disableAnimalLoad ? 'Enable' : 'Disable');
+                    this.down('#columnSection').setDisabled(this.disableAnimalLoad);
+                }
+            }]
         }];
     },
 
@@ -187,13 +219,13 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 //round to day for purpose of this comparison
                 var d1 = Ext4.Date.clearTime(new Date(), true);
                 var d2 = Ext4.Date.clearTime(date, true);
-                var interval = Ext4.Date.getElapsed(d1, d2);
+                interval = Ext4.Date.getElapsed(d1, d2);
                 interval = interval / (1000 * 60 * 60 * 24);
                 interval = Math.floor(interval);
                 interval = interval + ' days ago';
             }
 
-            var text = row.weight + ' kg, ' + date.format('Y-m-d') + (Ext4.isDefined(interval) ? ' (' + interval + ')' : '');
+            var text = row.weight + ' kg, ' + date.format('Y-m-d') + (!Ext4.isEmpty(interval) ? ' (' + interval + ')' : '');
             this.safeAppend('#weights', text);
         }
     },

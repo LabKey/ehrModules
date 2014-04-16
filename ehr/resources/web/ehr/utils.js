@@ -310,7 +310,13 @@ EHR.Utils = new function(){
                     var rows = [];
                     var row;
                     Ext4.each(config.existingRecords[dataset], function(lsid){
-                        row = {taskId: config.taskId, lsid: lsid, QCStateLabel: config.initialQCState};
+                        var row = {};
+                        if (Ext4.isObject(lsid)){
+                            row = lsid;
+                            lsid = row.lsid;
+                        }
+
+                        row = Ext4.apply(row, {taskId: config.taskId, lsid: lsid, QCStateLabel: config.initialQCState});
                         rows.push({values: row, oldKeys: {lsid: lsid}});
                     }, this);
 

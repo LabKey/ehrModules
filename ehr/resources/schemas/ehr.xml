@@ -1172,7 +1172,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocol_counts" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Animals Allowed Per Protocol</ns:tableTitle>
+        <ns:tableTitle>NHPs Allowed Per Protocol</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
