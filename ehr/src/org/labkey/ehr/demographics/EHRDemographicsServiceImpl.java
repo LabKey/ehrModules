@@ -437,7 +437,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     private int cacheLivingAnimalsForAllContainers(boolean validateOnCreate)
     {
-        _log.info("attempting to reache demographics for all living animals on all containers set to do so");
+        _log.info("attempting to recache demographics for all living animals on all containers set to do so");
 
         //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
