@@ -63,7 +63,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
     doLoad: function(){
         Ext4.Msg.wait('Loading...');
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ehr', 'getGeneticCalculationTaskSettings'),
             method : 'POST',
             scope: this,
@@ -83,7 +83,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
 
     saveData: function(){
         Ext4.Msg.wait('Saving...');
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ehr', 'setGeneticCalculationTaskSettings'),
             params: {
                 containerPath: this.down('#containerPath').getValue(),

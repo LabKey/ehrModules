@@ -77,7 +77,7 @@ Ext4.define('EHR.window.ManageRecordWindow', {
         this.callParent();
         this.addEvents('save');
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryFormJsonForQuery', null),
             params: {
                 schemaName: this.schemaName,
