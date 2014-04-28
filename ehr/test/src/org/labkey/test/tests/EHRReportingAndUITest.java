@@ -218,7 +218,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
-        waitAndClick(Locator.ext4Radio("Entire Database"));
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Entire Database"));
         waitAndClick(Ext4Helper.ext4Tab("Demographics"));
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
@@ -227,7 +227,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
 
         log("Verify location based history");
-        waitAndClick(Locator.ext4Radio("Current Location"));
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Current Location"));
 
         _helper.waitForCmp("#areaField");
         _ext4Helper.queryOne("#areaField", Ext4FieldRef.class).setValue(AREA_ID);
@@ -238,25 +238,25 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("a", "9794992"), WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
 
         log("Verify Project search");
-        waitAndClick(Locator.ext4Radio("Multiple Animals"));
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
         Ext4FieldRef.waitForField(this, "Center Project");
         Ext4ComboRef.getForLabel(this, "Center Project").setComboByDisplayValue(PROJECT_ID);
         _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
 
-        waitForElement(Locator.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Ext4Helper.Locators.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         waitForElement(Locator.tagContainingText("span", "Demographics - " + PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT * 2);
 
         log("Verify Protocol search");
-        waitAndClick(Locator.ext4Radio("Multiple Animals"));
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
         waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
         Ext4FieldRef.waitForField(this, "IACUC Protocol");
         Ext4ComboRef.getForLabel(this, "IACUC Protocol").setComboByDisplayValue(PROTOCOL_ID);
-        waitAndClick(Locator.ext4Button("Submit"));
-        waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
 
         // Check protocol search results.
         refreshAnimalHistoryReport();
@@ -265,16 +265,16 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
-        waitAndClick(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
-        waitForElementToDisappear(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        waitAndClick(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
+        waitForElementToDisappear(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, getDataRegionRowCount(dataRegionName));
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
-        waitAndClick(Locator.ext4Button("Append -->"));
-        waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
+        waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         waitForText(PROTOCOL_MEMBER_IDS[0]);
@@ -282,7 +282,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
-        waitAndClick(Locator.ext4Button("Replace -->"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 5, getDataRegionRowCount(dataRegionName));
@@ -290,18 +290,18 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
 
-        waitAndClick(Locator.ext4Button("Clear"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Clear"));
         refreshAnimalHistoryReport();
         waitForElement(Ext4Helper.Locators.window("Error"));
-        assertElementNotPresent(Locator.ext4ButtonContainingText("(X)"));
+        assertElementNotPresent(Ext4Helper.Locators.ext4ButtonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");
-        waitAndClick(Locator.ext4Button("OK"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
 
         log("checking specific tabs");
 
         //snapshot
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
-        waitAndClick(Locator.ext4Button("Replace -->"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
         waitAndClick(Ext4Helper.ext4Tab("General"));
         waitAndClick(Ext4Helper.ext4Tab("Snapshot"));
@@ -337,13 +337,13 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
         waitForElement(Ext4Helper.ext4Window("Error"));
-        waitAndClick(Locator.ext4Button("OK"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
 
         log("Return Distinct Values");
         checkAllOnPage(dataRegionName);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4Helper.ext4Window("Return Distinct Values"));
-        waitForElement(Locator.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
+        waitForElement(Ext4Helper.Locators.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
         new Ext4ComboRef(Ext4ComboRef.getForLabel(this, "Select Field"), this).setComboByDisplayValue("Animal Id");
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
         waitForElement(Ext4Helper.ext4Window("Distinct Values"));
@@ -357,7 +357,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForText("(Id <> " + PROTOCOL_MEMBER_IDS[1], WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4Helper.Locators.window("Return Distinct Values"));
-        waitForElement(Locator.ext4Button("Submit"));
+        waitForElement(Ext4Helper.Locators.ext4Button("Submit"));
         Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRef.class);
         waitAndClick(Locator.id(btn.getId()));
         waitForElement(Ext4Helper.Locators.window("Distinct Values"));
@@ -415,10 +415,10 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         //page has loaded, so we re-query
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[2]);
-        waitAndClick(Locator.ext4Button("Append -->"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
         refreshAnimalHistoryReport();
         waitForElement(Ext4Helper.ext4Tab("Demographics"));
-        waitForElement(Locator.ext4Button(PROTOCOL_MEMBER_IDS[2] + " (X)"));
+        waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[2] + " (X)"));
         waitAndClick(Ext4Helper.ext4Tab("Demographics"));
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));
@@ -429,7 +429,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
     {
         waitForElement(Ext4Helper.ext4Tab("Demographics"));
         sleep(200);
-        waitAndClick(Locator.ext4Button("Refresh"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
     }
 
     @Test
@@ -445,7 +445,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
-        waitAndClickAndWait(Locator.ext4Button("Show Animal"));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
         assertTitleContains("Animal Details: "+MORE_ANIMAL_IDS[0]);
 
         log("Quick Search - Show Project");
@@ -453,7 +453,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#projectField", Ext4ComboRef.class).setComboByDisplayValue(PROJECT_ID);
-        waitAndClickAndWait(Locator.ext4Button("Show Project"));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Project"));
         waitForElement(Locator.linkWithText(DUMMY_PROTOCOL), WAIT_FOR_JAVASCRIPT);
 
         log("Quick Search - Show Protocol");
@@ -461,7 +461,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#protocolField", Ext4ComboRef.class).setComboByDisplayValue(PROTOCOL_ID);
-        waitAndClickAndWait(Locator.ext4Button("Show Protocol"));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Protocol"));
         waitForElement(Locator.linkWithText(PROTOCOL_ID), WAIT_FOR_JAVASCRIPT);
 
         log("Quick Search - Show Room");
@@ -469,7 +469,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         clickFolder(FOLDER_NAME);
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#roomField", Ext4FieldRef.class).setValue(ROOM_ID);
-        waitAndClickAndWait(Locator.ext4Button("Show Room"));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Room"));
         waitForElement(Locator.linkWithText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT);
     }
 

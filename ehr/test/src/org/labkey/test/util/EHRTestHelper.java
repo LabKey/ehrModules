@@ -193,7 +193,7 @@ public class EHRTestHelper
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
         _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name), _test.WAIT_FOR_PAGE);
 
-        _test.waitForElement(Locator.ext4Button("Save Draft"));
+        _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"));
         Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
         saveBtn.waitForEnabled();
     }
@@ -216,7 +216,7 @@ public class EHRTestHelper
 
     public Locator getDataEntryButton(String text)
     {
-        return Locator.ext4Button(text).withClass("ehr-dataentrybtn");
+        return Ext4Helper.Locators.ext4Button(text).withClass("ehr-dataentrybtn");
     }
 
     public void addRecordToGrid(Ext4GridRef grid)
@@ -231,7 +231,7 @@ public class EHRTestHelper
     public void clickExt4WindowBtn(String title, String label)
     {
         _test.waitForElement(Ext4Helper.ext4Window(title));
-        _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Locator.ext4Button(label)));
+        _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Ext4Helper.Locators.ext4Button(label)));
     }
 
     public void applyTemplate(Ext4GridRef grid, String templateName, boolean bulkEdit, Date date)
@@ -257,12 +257,12 @@ public class EHRTestHelper
         if (bulkEdit)
         {
             Ext4FieldRef.getForLabel(_test, "Bulk Edit Before Applying").setChecked(true);
-            _test.waitAndClick(Locator.ext4Button("Submit"));
+            _test.waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
             _test.waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
         }
         else
         {
-            _test.waitAndClick(Locator.ext4Button("Submit"));
+            _test.waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
         }
     }
 
@@ -278,7 +278,7 @@ public class EHRTestHelper
         _test.waitAndClick(getDataEntryButton("More Actions"));
         _test._ext4Helper.clickExt4MenuItem("Discard");
         _test.waitForElement(Ext4Helper.ext4Window("Discard Form"));
-        _test.clickAndWait(Locator.ext4Button("Yes"));
+        _test.clickAndWait(Ext4Helper.Locators.ext4Button("Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
     }
