@@ -1207,6 +1207,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.isActive~eq=true"));
             table.addColumn(totalCol);
         }
+
+        LDKService.get().applyNaturalSort(table, "name");
     }
 
     private void customizeDemographicsAgeTable(AbstractTableInfo table)
@@ -1246,7 +1248,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void customizeProtocolTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
-        table.setDetailsURL(DetailsURL.fromString("/ehr/protocolDetails.view?key=${protocol}"));
+        table.setDetailsURL(DetailsURL.fromString("/ehr/protocolDetails.view?protocol=${protocol}"));
 
         if (table.getColumn("activeAnimals") == null)
         {
@@ -1268,7 +1270,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".external_id, " + ExprColumn.STR_TABLE_ALIAS + ".protocol)");
             ExprColumn displayCol = new ExprColumn(table, name, sql, JdbcType.VARCHAR, table.getColumn("external_id"), table.getColumn("protocol"));
             displayCol.setLabel("Display Name");
-            displayCol.setURL(DetailsURL.fromString("/ehr/protocolDetails.view?key=${protocol}"));
+            displayCol.setURL(DetailsURL.fromString("/ehr/protocolDetails.view?protocol=${protocol}"));
             table.addColumn(displayCol);
 
             table.setTitleColumn(name);
@@ -1293,7 +1295,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void customizeProjectTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
-        table.setDetailsURL(DetailsURL.fromString("/ehr/projectDetails.view?key=${project}"));
+        table.setDetailsURL(DetailsURL.fromString("/ehr/projectDetails.view?project=${project}"));
         table.setTitleColumn("project");
 
         UserSchema us = getUserSchema(table, "ehr");

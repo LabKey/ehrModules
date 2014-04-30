@@ -16,7 +16,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="QCState">
@@ -45,7 +45,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>calculated_status_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <!--NOTE: being depreciated-->
@@ -55,7 +55,7 @@
                         <!--<fk>-->
                         <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                         <!--<fkTable>avail_codes</fkTable>-->
-                        <!--<fkColumnName>Code</fkColumnName>-->
+                        <!--<fkColumnName>code</fkColumnName>-->
                         <!--</fk>-->
                     </column>
                     <column columnName="hold">
@@ -63,7 +63,7 @@
                         <!--<fk>-->
                         <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                         <!--<fkTable>hold_codes</fkTable>-->
-                        <!--<fkColumnName>Code</fkColumnName>-->
+                        <!--<fkColumnName>code</fkColumnName>-->
                         <!--</fk>-->
                     </column>
                     <column columnName="species">
@@ -98,7 +98,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>source</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="birth">
@@ -227,6 +227,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>geographic_origins</fkTable>
                             <fkColumnName>meaning</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                 </columns>

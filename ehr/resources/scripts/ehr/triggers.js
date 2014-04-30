@@ -626,14 +626,6 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
-    //check required fields.
-    for (var fieldName in row){
-        var msg = helper.getValidationHelper().validateRequiredField(fieldName, LABKEY.ExtAdapter.isEmpty(row[fieldName]) ? null : row[fieldName]);
-        if (msg){
-            EHR.Server.Utils.addError(scriptErrors, fieldName, msg, helper.isEHRDataEntry() ? 'WARN' : 'ERROR');
-        }
-    }
-
     //dont allow future dates on completed records
     if (row.date && row.QCStateLabel == 'Completed' && !helper.isAllowFutureDates()){
         var now = new Date();
@@ -736,6 +728,15 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
     helper.logDebugMsg(row);
     helper.logDebugMsg('oldRow:');
     helper.logDebugMsg(oldRow);
+
+    //this check moved to rowEnd() from rowInit(), since custom handlers could set these properties
+    //check required fields.
+    for (var fieldName in row){
+        var msg = helper.getValidationHelper().validateRequiredField(fieldName, LABKEY.ExtAdapter.isEmpty(row[fieldName]) ? null : row[fieldName]);
+        if (msg){
+            EHR.Server.Utils.addError(scriptErrors, fieldName, msg, helper.isEHRDataEntry() ? 'WARN' : 'ERROR');
+        }
+    }
 
     //use this flag to filters errors below a given severity
     var errorThreshold = helper.getErrorThreshold() || 'WARN';

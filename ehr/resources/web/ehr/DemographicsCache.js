@@ -97,8 +97,9 @@ Ext4.define('EHR.DemographicsCache', {
             }
         }, this);
 
-        if (found == animalIds.length && callback){
-            callback.call(scope || this, animalIds, ret);
+        if (found == animalIds.length || !animalIds.length){
+            if (callback)
+                callback.call(scope || this, animalIds, ret);
         }
         else {
             this.loadDemographics(animalIds, callback, scope);

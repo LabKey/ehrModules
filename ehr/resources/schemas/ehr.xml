@@ -976,7 +976,7 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>protocol</ns:pkColumnName>
-        <ns:tableUrl>/ehr/protocolDetails.view?key=${protocol}</ns:tableUrl>
+        <ns:tableUrl>/ehr/protocolDetails.view?protocol=${protocol}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="protocol">
                 <ns:isKeyField>true</ns:isKeyField>
@@ -985,8 +985,6 @@
             <ns:column columnName="title">
                 <ns:nullable>true</ns:nullable>
                 <ns:columnTitle>Title</ns:columnTitle>
-                <ns:inputType>textfield</ns:inputType>
-                <ns:scale>100</ns:scale>
             </ns:column>
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
@@ -1076,7 +1074,7 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>project</ns:pkColumnName>
-        <ns:tableUrl>/ehr/projectDetails.view?key=${project}</ns:tableUrl>
+        <ns:tableUrl>/ehr/projectDetails.view?project=${project}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="project">
                 <ns:isKeyField>true</ns:isKeyField>
@@ -1734,6 +1732,7 @@
     <ns:table tableName="encounter_summaries" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Encounter Summaries</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="Id">
                 <ns:columnTitle>Id</ns:columnTitle>

@@ -1166,8 +1166,17 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            props.put("success", true);
-            props.put("form", def.toJSON());
+            if (!def.canRead())
+            {
+                props.put("success", false);
+                props.put("canRead", false);
+            }
+            else
+            {
+                props.put("success", true);
+                props.put("canRead", true);
+                props.put("form", def.toJSON());
+            }
 
             return new ApiSimpleResponse(props);
         }

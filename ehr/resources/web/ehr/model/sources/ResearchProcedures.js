@@ -65,6 +65,7 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
             },
             code: {
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Drugs and Procedures'
                 }
             },
@@ -80,6 +81,7 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
             },
             code: {
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Drugs and Procedures'
                 }
             }

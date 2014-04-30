@@ -33,6 +33,7 @@ public class DefaultHousingDataSource extends AbstractDataSource
     public DefaultHousingDataSource()
     {
         super("study", "Housing", "Housing Transfer", "Housing Transfers");
+        setShowTime(true);
     }
 
     @Override
@@ -55,15 +56,5 @@ public class DefaultHousingDataSource extends AbstractDataSource
         safeAppend(rs, "Remark", "remark");
 
         return sb.toString();
-    }
-
-    @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String categoryColor, String subjectId, Date date, String html, String taskId, Integer taskRowId, String formType, String objectId) throws SQLException
-    {
-        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, categoryColor, subjectId, date, html, taskId, taskRowId, formType, objectId);
-        if (row != null)
-            row.setShowTime(true);
-
-        return row;
     }
 }

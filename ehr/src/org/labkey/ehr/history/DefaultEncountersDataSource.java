@@ -55,6 +55,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     public DefaultEncountersDataSource()
     {
         super("study", "Clinical Encounters", "Encounter", "Clinical");
+        setShowTime(true);
     }
 
     @Override

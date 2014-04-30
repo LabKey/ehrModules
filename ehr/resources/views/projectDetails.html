@@ -1,12 +1,11 @@
 <script type="text/javascript">
 
 Ext4.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){
+    var project = LABKEY.ActionURL.getParameter('project') || LABKEY.ActionURL.getParameter('key');
+    if (!project){
         alert('Must Provide Project Number');
         return;
     }
-
-    var project = LABKEY.ActionURL.getParameter('key');
 
     var webpart = <%=webpartContext%>;
     var domSpec = [{

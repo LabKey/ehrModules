@@ -46,7 +46,8 @@ function onInit(event, helper){
                 enddate: row.enddate,
                 qcstate: row.QCState,
                 room: row.room,
-                cage: row.cage
+                cage: row.cage,
+                divider: row.divider
             });
         }
 

@@ -23,7 +23,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>source</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="authorize">

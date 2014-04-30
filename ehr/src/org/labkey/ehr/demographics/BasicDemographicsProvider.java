@@ -77,6 +77,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.remove("Id/age/yearAndDays");
         keys.remove("Id/age/ageInDays");
         keys.remove("Id/age/ageInYears");
+        keys.remove("objectid");
 
         return keys;
     }

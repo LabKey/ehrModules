@@ -73,6 +73,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
 
         sb.append(safeAppend(rs, "Method", "method"));
         sb.append(safeAppend(rs, "Collection Method", "collectionMethod"));
+        sb.append(safeAppend(rs, "Remark", "remark"));
 
         String runId = rs.getString("objectid");
         if (runId != null)
@@ -102,7 +103,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested");
+        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "remark");
     }
 
     @Override

@@ -41,6 +41,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     public DefaultTreatmentEndDataSource()
     {
         super("study", "Treatment Orders", "Medication Ending", "Clinical");
+        setShowTime(true);
     }
 
     @Override

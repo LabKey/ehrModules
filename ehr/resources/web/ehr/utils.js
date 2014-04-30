@@ -587,12 +587,22 @@ EHR.Utils = new function(){
 
         },
 
-        editUIButtonHandler: function(schemaName, queryName, paramMap){
+        editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap){
             var params = {
                 schemaName: schemaName,
                 'query.queryName': queryName,
                 showImport: true
             };
+
+            if (dataRegionName){
+                var array = LABKEY.DataRegions[dataRegionName].getUserFilterArray();
+                if (array && array.length){
+                    for (var i=0;i<array.length;i++){
+                        var filter = array[i];
+                        params[filter.getURLParameterName()] = filter.getURLParameterValue();
+                    }
+                }
+            }
 
             if (paramMap != null){
                 for (var param in paramMap){

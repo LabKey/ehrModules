@@ -51,6 +51,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
     public DefaultObservationsDataSource()
     {
         super("study", "clinical_observations", "Observations", "Clinical");
+        setShowTime(true);
     }
 
     @Override
@@ -146,7 +147,10 @@ public class DefaultObservationsDataSource extends AbstractDataSource
 
             HistoryRow row = new HistoryRowImpl(this, categoryText, categoryGroup, categoryColor, subjectId, date, html.toString(), qcStateLabel, publicData, taskId, taskRowId, formType, objectId);
             if (row != null)
+            {
+                row.setShowTime(true);
                 rows.add(row);
+            }
         }
 
         return rows;

@@ -209,6 +209,7 @@ ehr/resources/queries/ehr/projectTotalActivelyAssigned.query.xml -text
 ehr/resources/queries/ehr/projectTotalActivelyAssigned.sql -text
 ehr/resources/queries/ehr/projectTotalActivelyAssignedBySpecies.query.xml -text
 ehr/resources/queries/ehr/projectTotalActivelyAssignedBySpecies.sql -text
+ehr/resources/queries/ehr/protocol.js -text
 ehr/resources/queries/ehr/protocol/Active[!!-~]Protocols.qview.xml -text
 ehr/resources/queries/ehr/protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/ehr/protocolActiveAnimals.query.xml -text

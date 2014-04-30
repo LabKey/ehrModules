@@ -36,6 +36,7 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     public DefaultClinicalRemarksDataSource()
     {
         super("study", "Clinical Remarks", "Clinical Remark", "Clinical");
+        setShowTime(true);
     }
 
     @Override

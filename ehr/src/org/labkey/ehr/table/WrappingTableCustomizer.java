@@ -29,6 +29,9 @@ import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * User: bimber
  * Date: 4/22/13
@@ -60,6 +63,11 @@ public class WrappingTableCustomizer implements TableCustomizer
         ColumnInfo col = guessSubjectCol(ti);
         if (col != null)
         {
+            if (col.getConceptURI() == null)
+            {
+                col.setConceptURI(LaboratoryService.PARTICIPANT_CONCEPT_URI);
+            }
+
             String name = "EHR";
             if (ti.getColumn(name) == null)
             {
@@ -84,9 +92,20 @@ public class WrappingTableCustomizer implements TableCustomizer
 
     private ColumnInfo guessSubjectCol(TableInfo ti)
     {
+        //preferentially guess based on conceptURI
         for (ColumnInfo col : ti.getColumns())
         {
             if (LaboratoryService.PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
+            {
+                return col;
+            }
+        }
+
+        //then defer to name.  except case-sensitivity so "id" doesnt give a match
+        List<String> names = Arrays.asList("subjectId", "subjectid", "SubjectId", "Id");
+        for (ColumnInfo col : ti.getColumns())
+        {
+            if (col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null && names.contains(col.getName()))
             {
                 return col;
             }

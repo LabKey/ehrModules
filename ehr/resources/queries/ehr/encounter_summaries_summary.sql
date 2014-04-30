@@ -8,5 +8,5 @@ SELECT
   p.parentid,
   group_concat(p.remark, chr(10)) as summary
 FROM ehr.encounter_summaries p
-WHERE (p.category IS NULL OR p.category != 'Pathology Notes')
+WHERE (p.category IS NULL OR p.category = 'Narrative')
 GROUP BY p.id, p.parentid

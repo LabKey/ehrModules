@@ -148,7 +148,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
             filterArray: [
                 LABKEY.Filter.create('Id', rec.get('Id'), LABKEY.Filter.Types.EQUAL)
             ],
-            failure: LDK.Utils.getErrorCallback,
+            failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
                 if (!alwaysUseCallback && id != this.pendingIdRequest){

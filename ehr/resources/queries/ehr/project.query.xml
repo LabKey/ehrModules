@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="project" tableDbType="TABLE">
-                <tableUrl>/EHR/projectDetails.view?key=${project}</tableUrl>
+                <tableUrl>/EHR/projectDetails.view?project=${project}</tableUrl>
                 <insertUrl />
                 <importUrl />
                 <updateUrl />

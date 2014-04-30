@@ -31,6 +31,7 @@ public class DefaultWeightDataSource extends AbstractDataSource
     public DefaultWeightDataSource()
     {
         super("study", "Weight", "Weight", "Weights");
+        setShowTime(true);
     }
 
     @Override

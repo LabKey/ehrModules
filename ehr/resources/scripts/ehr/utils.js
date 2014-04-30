@@ -461,7 +461,7 @@ EHR.Server.Utils = new function(){
             var ar = helper.getJavaHelper().getDemographicRecord(config.participant);
             var load = (((new Date()) - start) / 1000);
             if (load > 2)
-                console.error('Find demographics java load time for ' + config.participant + ': ' + load);
+                console.log('Find demographics java load time for ' + config.participant + ': ' + load);
 
             if (ar){
                 var row = {

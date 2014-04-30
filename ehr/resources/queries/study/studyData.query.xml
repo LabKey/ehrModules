@@ -12,6 +12,7 @@
                     </column>
                     <column columnName="Id">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <conceptURI>http://cpas.labkey.com/Study#ParticipantId</conceptURI>
                         <url>/ehr/participantView.view?participantId=${id}</url>
                     </column>
                     <column columnName="remark">

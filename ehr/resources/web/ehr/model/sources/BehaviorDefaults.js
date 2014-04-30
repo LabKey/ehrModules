@@ -43,6 +43,7 @@ EHR.model.DataModelManager.registerMetadata('BehaviorDefaults', {
             },
             code: {
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Behavior'
                 }
             },

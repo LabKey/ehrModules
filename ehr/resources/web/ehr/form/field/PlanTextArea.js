@@ -145,7 +145,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: 'SELECT c.Id, c.p2 as mostRecentP2, c.caseid, c.caseid.category as caseCategory, c.caseid.isActive as isActive FROM study.clinRemarks c WHERE (c.category != \'Replaced SOAP\' OR c.category IS NULL) AND c.p2 IS NOT NULL AND c.Id = \'' + rec.get('Id') + '\' ORDER BY c.date DESC LIMIT 1',
-            failure: LDK.Utils.getErrorCallback,
+            failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
                 if (!alwaysUseCallback && id != this.pendingIdRequest){

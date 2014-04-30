@@ -44,7 +44,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="species">
@@ -68,7 +68,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="dam">

@@ -35,7 +35,8 @@ Ext4.define('EHR.data.HousingClientStore', {
                 enddate: record.fields.get('enddate') ? record.get('enddate') : null,
                 qcstate: record.get('QCState'),
                 room: record.get('room'),
-                cage: record.get('cage')
+                cage: record.get('cage'),
+                divider: record.fields.get('divider') ? record.get('divider') : null
             });
         }
 

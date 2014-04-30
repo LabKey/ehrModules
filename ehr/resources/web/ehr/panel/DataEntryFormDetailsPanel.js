@@ -53,6 +53,15 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     },
 
     onLoad: function(results){
+        if (results.canRead === false){
+            this.removeAll();
+            this.add({
+                html: 'You do not have permission to read this type of form.',
+                border: false
+            });
+            return;
+        }
+
         var queries = [];
         var queryMap = {};
         Ext4.Array.forEach(results.form.sections, function(section){

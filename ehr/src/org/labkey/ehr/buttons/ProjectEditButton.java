@@ -34,7 +34,9 @@ public class ProjectEditButton extends EHRShowEditUIButton
         super(owner, schemaName, queryName, EHRProjectEditPermission.class);
 
         Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("key", "query.project~eq");
+        urlParams.put("project", "query.project~eq");
+        urlParams.put("protocol", "query.protocol~eq");
+        urlParams.put("query.viewName", "query.viewName");
         setUrlParamMap(urlParams);
     }
 }

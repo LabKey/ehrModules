@@ -1995,9 +1995,15 @@
             </ns:column>
             <ns:column columnName="category">
                 <ns:columnTitle>Category</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>flag_categories</ns:fkTable>
+                    <ns:fkColumnName>category</ns:fkColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="value">
-                <ns:columnTitle>Value</ns:columnTitle>
+                <ns:columnTitle>Description</ns:columnTitle>
             </ns:column>
             <ns:column columnName="code">
                 <ns:columnTitle>Code</ns:columnTitle>

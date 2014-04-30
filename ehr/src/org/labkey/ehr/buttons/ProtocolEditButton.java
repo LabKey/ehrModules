@@ -33,7 +33,8 @@ public class ProtocolEditButton extends EHRShowEditUIButton
         super(owner, schemaName, queryName, EHRProtocolEditPermission.class);
 
         Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("key", "query.protocol~eq");
+        urlParams.put("protocol", "query.protocol~eq");
+        urlParams.put("query.viewName", "query.viewName");
         setUrlParamMap(urlParams);
     }
 }

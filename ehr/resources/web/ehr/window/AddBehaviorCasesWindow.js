@@ -13,7 +13,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
 
     allowNoSelection: true,
     showAssignedVetCombo: false,
-    defaultRemark: null,
+    defaultRemark: 'BSU Rounds Entered',
 
     //always add single blank obs record
     applyObsTemplate: function(caseRecords){

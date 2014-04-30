@@ -43,6 +43,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     public DefaultDrugsDataSource()
     {
         super("study", "Drug Administration", "Medication Given", "Clinical");
+        setShowTime(true);
     }
 
     @Override
@@ -106,16 +107,6 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     protected Set<String> getColumnNames()
     {
         return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "treatmentid", "outcome", "remark", "performedby", "reason");
-    }
-
-    @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String categoryColor, String subjectId, Date date, String html, String taskId, Integer taskRowId, String formType, String objectId) throws SQLException
-    {
-        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, categoryColor, subjectId, date, html, taskId, taskRowId, formType, objectId);
-        if (row != null)
-            row.setShowTime(true);
-
-        return row;
     }
 
     @Override

@@ -43,7 +43,10 @@ Ext4.define('EHR.grid.Panel', {
             this.fireEvent('animalchange', id);
         }, this);
 
-        this.store.on('datachanged', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
+        this.store.on('datachanged', function(s){
+                this.needsRefresh = true;
+            this.onStoreValidationComplete();
+        }, this, {buffer: 100, delay: 20});
         this.store.on('validation', this.onStoreValidation, this);
         this.store.on('validation', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
 
@@ -84,9 +87,12 @@ Ext4.define('EHR.grid.Panel', {
         }
 
         var keys = Ext4.Object.getKeys(this.pendingChanges);
-        if (keys.length > 5){
+        if (this.needsRefresh || keys.length > 5){
             //console.log('grid refresh: ' + this.store.storeId);
             this.getView().refresh();
+        }
+        else if (!keys.length){
+            console.log('no changes, skipping refresh');
         }
         else {
             Ext4.Array.forEach(keys, function(key){
@@ -97,6 +103,7 @@ Ext4.define('EHR.grid.Panel', {
             }, this);
         }
 
+        this.needsRefresh = false;
         this.pendingChanges = {};
     },
 

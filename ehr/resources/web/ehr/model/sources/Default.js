@@ -296,9 +296,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         code: {
-            editorConfig: {
-                xtype: 'ehr-snomedcombo'
-            },
             columnConfig: {
                 width: 250,
                 showLink: false
@@ -1246,6 +1243,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             code: {
                 //shownInGrid: false,
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Common Treatments'
                 }
             },
@@ -1264,6 +1262,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'ehr.project': {
             project: {
                 xtype: 'hidden',
+                userEditable: false,
                 hidden: true
             },
             name: {
@@ -1272,11 +1271,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'ehr.protocol': {
-            name: {
-                //TODO: custom xtype
+            protocol: {
+                xtype: 'hidden',
+                userEditable: false,
+                hidden: true
             },
             title: {
-                xtype: 'textfield',
                 height: 80
             }
         },
@@ -1508,6 +1508,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             code: {
                 hidden: true,
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organ/Tissue'
                 }
             },
@@ -1991,6 +1992,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             code: {
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Common Treatments'
                 }
             },
@@ -2217,6 +2219,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 160,
                     showLink: false
+                }
+            }
+        },
+        'ehr_lookups.procedure_default_treatments': {
+            code: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Common Treatments'
                 }
             }
         }

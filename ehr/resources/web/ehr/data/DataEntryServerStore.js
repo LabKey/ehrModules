@@ -253,7 +253,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 if (row.oldKeys){
                     record = this.getById(row.oldKeys[idProp]);
                     if (!record && row.oldKeys[idProp]){
-                        record = this.getById(row.oldKeys[idProp].toLowerCase());
+                        record = this.getById(new String(row.oldKeys[idProp]).toLowerCase());
                     }
 
                     if (!record && row.oldKeys.internalId){
@@ -312,7 +312,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                         // this is a hack to deal w/ SQLServer converting GUIDs into uppercase, even if generated initially as lowercase
                         // we should not be creating GUIDs in upper case, but retain this check as a fallback
                         if (!found){
-                            found = this.findRecord(this.model.prototype.idProperty, rowError.row[this.model.prototype.idProperty].toLowerCase());
+                            found = this.findRecord(this.model.prototype.idProperty, new String(rowError.row[this.model.prototype.idProperty]).toLowerCase());
                         }
                     }
                     else if (this.model.prototype.fields.get('objectid')){

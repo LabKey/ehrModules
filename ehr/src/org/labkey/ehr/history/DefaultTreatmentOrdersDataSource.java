@@ -35,6 +35,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     public DefaultTreatmentOrdersDataSource()
     {
         super("study", "Treatment Orders", "Medication Ordered", "Clinical");
+        setShowTime(true);
     }
 
     @Override
@@ -109,16 +110,6 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     {
         String category = rs.hasColumn(FieldKey.fromString("category")) ? rs.getString("category") : null;
         return category == null ?  "Medication Ordered" : category + " Medication Ordered";
-    }
-
-    @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String categoryColor, String subjectId, Date date, String html, String taskId, Integer taskRowId, String formType, String objectId) throws SQLException
-    {
-        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, categoryColor, subjectId, date, html, taskId, taskRowId, formType, objectId);
-        if (row != null)
-            row.setShowTime(true);
-
-        return row;
     }
 
     @Override

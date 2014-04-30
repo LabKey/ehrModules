@@ -170,7 +170,7 @@ function makePanel(){
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {key:value});
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {project:value});
                     }
                 },{
                     html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'project', 'query.viewName': 'Active Projects'})) + '">View All Projects</a>',
@@ -209,7 +209,7 @@ function makePanel(){
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'protocolDetails', ctx['EHRStudyContainer'], {key:value});
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'protocolDetails', ctx['EHRStudyContainer'], {protocol:value});
                     }
                 },{
                     html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'protocol', 'query.viewName': 'Active Protocols'})) + '">View All Protocols</a>',
