@@ -10,7 +10,7 @@
  * Each source is registered using EHR.model.DataModelManager.registerMetadata().  They can be requested using .getTableMetadata() and will be merged in order to form
  * the final config object.  The purpose of this system is to allow sharing/inheritance of complex configuration between many forms.
  */
-LABKEY.ExtAdapter.ns('EHR.model.DataModelManager');
+Ext4.ns('EHR.model.DataModelManager');
 
 EHR.model.DataModelManager = new function(){
     //private

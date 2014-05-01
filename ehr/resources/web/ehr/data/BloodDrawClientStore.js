@@ -47,7 +47,7 @@ Ext4.define('EHR.data.BloodDrawClientStore', {
         }
 
         if (!LABKEY.Utils.isEmptyObj(bloodDrawMap)){
-            bloodDrawMap = LABKEY.ExtAdapter.encode(bloodDrawMap);
+            bloodDrawMap = Ext4.encode(bloodDrawMap);
 
             return {
                 bloodInTransaction: bloodDrawMap

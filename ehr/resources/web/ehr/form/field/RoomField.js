@@ -11,7 +11,7 @@ Ext4.define('EHR.form.field.RoomField', {
     showOccupiedOnly: false,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             expandToFitContent: true,
             queryMode: 'local',
             anyMatch: true,

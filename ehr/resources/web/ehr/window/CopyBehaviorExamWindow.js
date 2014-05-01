@@ -7,7 +7,7 @@ Ext4.define('EHR.window.CopyBehaviorExamWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Copy Previous Exam',
             width: 450,
             bodyStyle: 'padding: 5px;',

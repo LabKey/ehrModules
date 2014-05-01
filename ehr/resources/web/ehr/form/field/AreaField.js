@@ -17,7 +17,7 @@ Ext4.define('EHR.form.field.AreaField', {
     typeAhead: true,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             displayField:'area',
             valueField: 'area',
             queryMode: 'local',

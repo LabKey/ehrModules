@@ -15,7 +15,7 @@ Ext4.define('EHR.window.BulkEditWindow', {
     width: 600,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             bodyStyle: 'padding: 5px;',

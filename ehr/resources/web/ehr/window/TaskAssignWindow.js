@@ -22,7 +22,7 @@ Ext4.define('EHR.window.TaskAssignWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Assign Tasks',
             modal: true,
             closeAction: 'destroy',

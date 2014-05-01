@@ -15,7 +15,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
     testFieldName: 'testid',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             width: 750,
             closeAction: 'destroy',

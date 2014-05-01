@@ -7,7 +7,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Order Post-Op Meds',
@@ -386,7 +386,7 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
                                 frequency: frequency
                             };
 
-                            LABKEY.ExtAdapter.apply(obj, json);
+                            Ext4.apply(obj, json);
 
                             //this isnt great, but hard code amount on hydro and buprenex for now
                             if (obj.code == 'E-77851' || obj.code == 'E-YY792'){

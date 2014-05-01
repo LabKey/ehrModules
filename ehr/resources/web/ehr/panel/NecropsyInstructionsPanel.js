@@ -21,7 +21,7 @@ Ext4.define('EHR.panel.NecropsyInstructionsPanel', {
             }
         }, this);
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             defaults: {
 
             },

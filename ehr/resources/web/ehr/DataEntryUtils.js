@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-LABKEY.ExtAdapter.ns('EHR.DataEntryUtils');
+Ext4.ns('EHR.DataEntryUtils');
 
 EHR.DataEntryUtils = new function(){
     var backspaceTrapRequests = 0;

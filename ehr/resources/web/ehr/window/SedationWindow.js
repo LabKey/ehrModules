@@ -17,7 +17,7 @@ Ext4.define('EHR.window.SedationWindow', {
     initComponent: function(){
         this.getParentRecords();
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             width: 860,
             title: 'Add Sedations',
             items: [{

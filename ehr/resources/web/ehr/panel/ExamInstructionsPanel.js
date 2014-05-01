@@ -25,7 +25,7 @@ Ext4.define('EHR.panel.ExamInstructionsPanel', {
             buttons.push(btnCfg2);
         }
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             defaults: {
 
             },

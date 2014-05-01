@@ -67,7 +67,7 @@ Ext4.define('EHR.data.StoreCollection', {
 
     addServerStoreFromConfig: function(config){
         var storeConfig = Ext4.apply({}, config);
-        LABKEY.ExtAdapter.apply(storeConfig, {
+        Ext4.apply(storeConfig, {
             type: 'ehr-dataentryserverstore',
             autoLoad: false,
             storeId: this.collectionId + '||' + LABKEY.ext4.Util.getLookupStoreId({lookup: config})
@@ -740,7 +740,7 @@ Ext4.define('EHR.data.StoreCollection', {
     getJson: function(response) {
         var ret = (response && undefined != response.getResponseHeader && undefined != response.getResponseHeader('Content-Type')
                 && response.getResponseHeader('Content-Type').indexOf('application/json') >= 0)
-                ? LABKEY.ExtAdapter.decode(response.responseText)
+                ? Ext4.decode(response.responseText)
                 : null;
 
         if (response && ret)

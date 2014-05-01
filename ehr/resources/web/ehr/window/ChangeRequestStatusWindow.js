@@ -34,7 +34,7 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             width: 400,

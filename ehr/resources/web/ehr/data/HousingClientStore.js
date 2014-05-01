@@ -41,7 +41,7 @@ Ext4.define('EHR.data.HousingClientStore', {
         }
 
         if (!LABKEY.Utils.isEmptyObj(map)){
-            map = LABKEY.ExtAdapter.encode(map);
+            map = Ext4.encode(map);
 
             return {
                 housingInTransaction: map

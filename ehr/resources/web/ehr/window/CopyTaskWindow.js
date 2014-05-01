@@ -6,7 +6,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
     queryName: 'tasks',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal:true,
             closeAction: 'destroy',
             bodyStyle: 'padding: 5px;',

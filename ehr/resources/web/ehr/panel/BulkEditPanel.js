@@ -29,7 +29,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     title: 'Bulk Edit',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             itemId: 'formPanel',
             border: false,
             maxFieldHeight: 100,
@@ -165,7 +165,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         }, this);
 
         if (toAdd.length){
-            if (!LABKEY.ExtAdapter.isEmpty(this.insertIndex)){
+            if (!Ext4.isEmpty(this.insertIndex)){
                 this.targetStore.insert(this.insertIndex, toAdd);
             }
             else {

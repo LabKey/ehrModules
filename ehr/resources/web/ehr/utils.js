@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-LABKEY.ExtAdapter.namespace('EHR.ext', 'EHR.Utils');
+Ext4.namespace('EHR.ext', 'EHR.Utils');
 
 /**
  * @namespace Utils static class to provide miscellaneous utility functions.

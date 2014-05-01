@@ -61,7 +61,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
     initComponent: function(){
         this.snomedStore = EHR.DataEntryUtils.getSnomedStore();
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             closeAction: 'destroy',
             width: 700,
             title: 'Manage SNOMED Codes',

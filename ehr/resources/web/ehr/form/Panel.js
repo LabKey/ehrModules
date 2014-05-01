@@ -18,7 +18,7 @@ Ext4.define('EHR.form.Panel', {
     initComponent: function(){
         Ext4.QuickTips.init();
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             items: this.items || this.getItemsConfig(),
             bodyStyle: 'padding: 5px;',
             //TODO: is this necessary??
@@ -58,7 +58,7 @@ Ext4.define('EHR.form.Panel', {
             }
 
             var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
-            LABKEY.ExtAdapter.apply(cfg, {
+            Ext4.apply(cfg, {
                 labelWidth: EHR.form.Panel.defaultLabelWidth,
                 width: cfg.width || ((cfg.xtype == 'textarea' || cfg.xtype == 'ehr-remarkfield') ? this.textareaFieldWidth : EHR.form.Panel.defaultFieldWidth)
             });

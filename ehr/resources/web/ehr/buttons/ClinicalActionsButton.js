@@ -8,7 +8,7 @@ Ext4.define('EHR.buttons.ClinicalActionsButton', {
     alias: 'widget.ehr-clinicalactionsbutton',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             text: 'Actions',
             menu: [{
                 xtype: 'menu',

@@ -34,7 +34,7 @@ Ext4.define('EHR.data.AssignmentClientStore', {
         }
 
         if (!Ext4.isEmpty(rows)){
-            rows = LABKEY.ExtAdapter.encode(rows);
+            rows = Ext4.encode(rows);
 
             return {
                 assignmentsInTransaction: rows

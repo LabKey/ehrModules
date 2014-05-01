@@ -7,7 +7,7 @@ Ext4.define('EHR.window.RoomTransferWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Transfer Entire Room',
             modal: true,
             bodyStyle: 'padding: 5px;',

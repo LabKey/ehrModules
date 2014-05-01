@@ -15,7 +15,7 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
     width: 500,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Duplicate Selected',
@@ -107,7 +107,7 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
         var selected = this.targetGrid.getSelectionModel().getSelection();
 
         for (var i=0;i<this.down('#newRecs').getValue();i++){
-            LABKEY.ExtAdapter.each(selected, function(rec){
+            Ext4.each(selected, function(rec){
                 var data = {};
                 this.down('form').getForm().getFields().each(function(f){
                     if(f.checked){

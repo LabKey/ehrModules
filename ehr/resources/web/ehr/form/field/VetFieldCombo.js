@@ -8,7 +8,7 @@ Ext4.define('EHR.form.field.VetFieldCombo', {
     alias: 'widget.ehr-vetfieldcombo',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             queryMode: 'local',
             matchFieldWidth: false,
             anyMatch: true,

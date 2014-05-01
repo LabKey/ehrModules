@@ -19,7 +19,7 @@ Ext4.define('EHR.panel.SurgeryInstructionsPanel', {
             }
         }
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             defaults: {
 
             },

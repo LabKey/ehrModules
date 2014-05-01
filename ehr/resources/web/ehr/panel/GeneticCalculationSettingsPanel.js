@@ -7,7 +7,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
     extend: 'Ext.panel.Panel',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             //width: 550,
             border: false,
             defaults: {

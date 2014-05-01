@@ -36,7 +36,7 @@ Ext4.define('EHR.window.ManageRecordWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             minWidth: 600,

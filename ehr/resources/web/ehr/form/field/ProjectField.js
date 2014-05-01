@@ -22,7 +22,7 @@ Ext4.define('EHR.form.field.ProjectField', {
     onlyIncludeProjectsWithAssignments: false,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             displayField: 'displayName',
             valueField: 'project',
             queryMode: 'local',

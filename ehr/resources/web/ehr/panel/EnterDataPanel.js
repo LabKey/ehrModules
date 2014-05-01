@@ -7,7 +7,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
     extend: 'LDK.panel.QueryTabPanel',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             items: this.getItems(),
             minHeight: 200
         });
@@ -246,17 +246,17 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                                 xtype: 'ldk-linkbutton',
                                 text: 'Unapproved Requests',
                                 linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, LABKEY.ExtAdapter.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Unapproved Requests'}, item.areaFilter))
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Unapproved Requests'}, item.areaFilter))
                             },{
                                 xtype: 'ldk-linkbutton',
                                 text: 'Approved Requests',
                                 linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, LABKEY.ExtAdapter.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests'}, item.areaFilter))
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests'}, item.areaFilter))
                             },{
                                 xtype: 'ldk-linkbutton',
                                 text: 'Transfers Today',
                                 linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, LABKEY.ExtAdapter.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': (new Date()).format('Y-m-d')}, item.areaFilter))
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': (new Date()).format('Y-m-d')}, item.areaFilter))
                             }]
                         }
                     },

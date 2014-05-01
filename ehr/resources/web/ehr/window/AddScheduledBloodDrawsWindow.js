@@ -13,7 +13,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
         this.bloodDrawStore = this.targetStore.storeCollection.getServerStoreForQuery('study', 'blood');
         this.tasksStore = this.targetStore.storeCollection.getServerStoreForQuery('ehr', 'tasks');
 
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             title: 'Import Scheduled Blood',
             border: true,

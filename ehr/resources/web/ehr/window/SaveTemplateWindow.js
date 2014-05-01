@@ -15,7 +15,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf (this, {
+        Ext4.applyIf (this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Save As Template',

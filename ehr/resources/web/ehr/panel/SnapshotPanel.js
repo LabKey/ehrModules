@@ -884,7 +884,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                             obj.maxWidth = colMap[name].maxWidth;
 
                         if (colMap[name].attrs){
-                            LABKEY.ExtAdapter.apply(obj, colMap[name].attrs);
+                            Ext4.apply(obj, colMap[name].attrs);
                         }
 
                         toAdd.items.push(obj);

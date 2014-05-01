@@ -12,7 +12,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
     alias: 'widget.ehr-drugamountwindow',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             width: 1240,
@@ -371,9 +371,9 @@ Ext4.define('EHR.window.DrugAmountWindow', {
             Ext4.Array.forEach(fields, function(fieldObj){
                 var fieldName = fieldObj.name;
                 var editor, found = false;
-                LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field, idx){
+                Ext4.each(this.formConfig.fieldConfigs, function(field, idx){
                     if (fieldName == field.name){
-                        var cfg = LABKEY.ExtAdapter.apply({}, field);
+                        var cfg = Ext4.apply({}, field);
                         cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.configSources);
 
                         editor = LABKEY.ext4.Util.getGridEditorConfig(cfg);
@@ -616,9 +616,9 @@ Ext4.define('EHR.window.DrugAmountWindow', {
             Ext4.Array.forEach(fields, function(fieldObj){
                 var fieldName = fieldObj.name;
                 var editor, found = false;
-                LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field, idx){
+                Ext4.each(this.formConfig.fieldConfigs, function(field, idx){
                     if (fieldName == field.name){
-                        var cfg = LABKEY.ExtAdapter.apply({}, field);
+                        var cfg = Ext4.apply({}, field);
                         cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.configSources);
 
                         editor = LABKEY.ext4.Util.getGridEditorConfig(cfg);

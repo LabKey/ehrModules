@@ -279,7 +279,7 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             bodyStyle: 'padding: 3px;',
             border: false,
             items: this.getItems(),

@@ -7,7 +7,7 @@ Ext4.define('EHR.window.TaskWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             items: this.getItems(),
             buttons: this.getButtons()

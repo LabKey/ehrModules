@@ -350,7 +350,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         for (var i=0; i<this.formConfig.sections.length; i++){
             var section = this.formConfig.sections[i];
 
-            var sectionCfg = LABKEY.ExtAdapter.apply({
+            var sectionCfg = Ext4.apply({
                 xtype: section.xtype,
                 border: this.useSectionBorder,
                 style: 'margin-bottom: 10px;',

@@ -14,7 +14,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
     initComponent: function(){
         this.getParentRecords();
 
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             width: 900,
             closeAction: 'destroy',

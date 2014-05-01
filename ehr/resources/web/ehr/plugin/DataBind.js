@@ -20,7 +20,7 @@ Ext4.define('EHR.plugin.Databind', {
         this.id = this.id || Ext4.id();
         this.panel = panel;
 
-        LABKEY.ExtAdapter.apply(panel, {
+        Ext4.apply(panel, {
             bindRecord: function(rec){
                 var plugin = this.getPlugin('ehr-databind');
                 plugin.bindRecord.call(plugin, rec);

@@ -11,7 +11,7 @@ Ext4.define('EHR.form.field.AnimalIdGeneratorField', {
     allowNegative : false,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply({
+        Ext4.apply({
             triggerToolTip: 'Click to populate with the next available Id'
         });
 

@@ -19,7 +19,7 @@ Ext4.define('EHR.window.BulkEditCageTypeWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             title: 'Bulk Edit Cages',
             bodyStyle: 'padding: 5px;',

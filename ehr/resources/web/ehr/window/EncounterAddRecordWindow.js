@@ -14,7 +14,7 @@ Ext4.define('EHR.window.EncounterAddRecordWindow', {
     initComponent: function(){
         var data = EHR.DataEntryUtils.getEncountersRecords(this.dataEntryPanel);
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Add Record',

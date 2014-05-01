@@ -58,8 +58,8 @@ Ext4.define('EHR.model.DefaultClientModel', {
 
         getFieldConfig: function(cfg, sources, extraMetaData){
             var tableConfig = EHR.model.DataModelManager.getTableMetadata(cfg.schemaName, cfg.queryName, sources);
-            var ret = LABKEY.ExtAdapter.apply({}, cfg);
-            LABKEY.ExtAdapter.apply(ret, {
+            var ret = Ext4.apply({}, cfg);
+            Ext4.apply(ret, {
                 useNull: true
             });
 

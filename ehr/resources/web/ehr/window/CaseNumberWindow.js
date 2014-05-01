@@ -12,7 +12,7 @@ Ext4.define('EHR.window.CaseNumberWindow', {
     casePrefix: 'a',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Create Case Number',

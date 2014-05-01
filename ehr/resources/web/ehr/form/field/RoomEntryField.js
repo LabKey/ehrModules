@@ -24,7 +24,7 @@ Ext4.define('EHR.form.field.RoomEntryField', {
         this.trigger2Cls = Ext4.form.field.ComboBox.prototype.triggerCls;
         this.onTrigger2Click = Ext4.form.field.ComboBox.prototype.onTriggerClick;
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             valueField: 'room',
             queryMode: 'local',
             store: {

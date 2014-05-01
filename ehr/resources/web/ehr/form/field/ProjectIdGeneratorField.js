@@ -10,7 +10,7 @@ Ext4.define('EHR.form.field.ProjectIdGeneratorField', {
     triggerCls: 'x4-form-search-trigger',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply({
+        Ext4.apply({
             triggerToolTip: 'Click to populate with the next available project'
         });
 

@@ -24,7 +24,7 @@ Ext4.define('EHR.window.VetReviewWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Mark Veternarian Review',
             modal: true,
             closeAction: 'destroy',
@@ -92,7 +92,7 @@ Ext4.define('EHR.window.VetReviewWindow', {
         if (rows.length){
             var date = new Date();
             Ext4.Array.forEach(rows, function(row){
-                LABKEY.ExtAdapter.apply(row, {
+                Ext4.apply(row, {
                     performedby: LABKEY.Security.currentUser.displayName,
                     category: EHR.window.VetReviewWindow.VET_REVIEW,
                     date: date

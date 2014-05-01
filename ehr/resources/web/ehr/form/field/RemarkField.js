@@ -22,7 +22,7 @@ Ext4.define('EHR.form.field.RemarkField', {
         this.plugins = this.plugins || [];
         this.plugins.push('ehr-resizabletextarea');
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             grow: true
         });
 

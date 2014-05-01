@@ -22,7 +22,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
         this.getSnomedStore();
         this.activeSubset = this.defaultSubset;
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             trigger2Cls: Ext4.form.field.ComboBox.prototype.triggerCls,
             onTrigger2Click: Ext4.form.field.ComboBox.prototype.onTriggerClick,
             trigger1Cls: 'x4-form-search-trigger',

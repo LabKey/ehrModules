@@ -19,7 +19,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     caseEmptyText: 'There are no problems associated with this case',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Add Open ' + this.caseCategory + ' Cases',

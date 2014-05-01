@@ -30,7 +30,7 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
     },
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Case History:'
         });
 

@@ -8,7 +8,7 @@ Ext4.define('EHR.form.field.UsersAndGroupsCombo', {
     alias: 'widget.ehr-usersandgroupscombo',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             displayField: 'DisplayName',
             valueField: 'UserId',
             queryMode: 'local',

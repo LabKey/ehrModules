@@ -16,7 +16,7 @@ Ext4.define('EHR.form.field.AnimalGroupField', {
     typeAhead: true,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             displayField: 'name',
             valueField: 'rowid',
             queryMode: 'local',

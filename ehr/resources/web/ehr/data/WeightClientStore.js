@@ -35,7 +35,7 @@ Ext4.define('EHR.data.WeightClientStore', {
         }
 
         if (!LABKEY.Utils.isEmptyObj(weightMap)){
-            weightMap = LABKEY.ExtAdapter.encode(weightMap);
+            weightMap = Ext4.encode(weightMap);
 
             return {
                 weightInTransaction: weightMap

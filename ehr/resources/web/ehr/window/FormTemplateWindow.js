@@ -12,7 +12,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
     initComponent: function(){
         this.idSelectionMode = this.idSelectionMode || 'multi';
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             width: 500,
@@ -322,10 +322,10 @@ EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE', {
     }
 });
 
-EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE_ENCOUNTER', LABKEY.ExtAdapter.apply({
+EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE_ENCOUNTER', Ext4.apply({
     idSelectionMode: 'encounter'
 }, EHR.DataEntryUtils.getDataEntryFormButton('APPLYFORMTEMPLATE')));
 
-EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE_NO_ID', LABKEY.ExtAdapter.apply({
+EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE_NO_ID', Ext4.apply({
     idSelectionMode: 'none'
 }, EHR.DataEntryUtils.getDataEntryFormButton('APPLYFORMTEMPLATE')));

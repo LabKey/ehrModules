@@ -5,7 +5,7 @@ Ext4.define('EHR.window.CopyRequestWindow', {
     queryName: 'requests',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
 
         });
 

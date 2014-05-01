@@ -9,7 +9,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
     minHeight: 300,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             items: this.getItems()
         });
 

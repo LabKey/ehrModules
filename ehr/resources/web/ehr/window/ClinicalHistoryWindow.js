@@ -35,7 +35,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             constrainPosition: true
         });
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Clinical History:',
             bodyStyle: 'padding: 3px;',
             width: 1260,

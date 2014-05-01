@@ -13,7 +13,7 @@ Ext4.define('EHR.window.ManageCasesWindow', {
     minHeight: 50,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             title: 'Manage Cases: ' + this.animalId,
             modal: true,
             closeAction: 'destroy',

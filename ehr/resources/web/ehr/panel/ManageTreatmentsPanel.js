@@ -76,7 +76,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
         },
 
         createTreatmentWindow: function(btn, config, animalId, category){
-            var cfg = LABKEY.ExtAdapter.apply({
+            var cfg = Ext4.apply({
                 schemaName: 'study',
                 queryName: 'treatment_order',
                 pkCol: 'objectid',

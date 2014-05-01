@@ -15,7 +15,7 @@ Ext4.define('EHR.form.field.RoomFieldSingle', {
     initComponent: function(){
         var ctx = EHR.Utils.getEHRContext();
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             valueField: 'room',
             queryMode: 'local',
             store: {

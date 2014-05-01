@@ -12,7 +12,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Import Scheduled Treatments',

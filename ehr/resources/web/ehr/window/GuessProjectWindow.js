@@ -11,7 +11,7 @@ Ext4.define('EHR.window.GuessProjectWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             width: 750,
             closeAction: 'destroy',

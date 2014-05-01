@@ -14,7 +14,7 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
     alias: 'widget.ehr-observationsroweditorgridpanel',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             columns: this.getColumns(),
             boundRecord: null,
             boundRecordId: null,
@@ -71,7 +71,7 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
             return;
         }
 
-        return this.store.createModel(LABKEY.ExtAdapter.apply({
+        return this.store.createModel(Ext4.apply({
             Id: br.get('Id'),
             date: new Date(),
             caseid: br.get('caseid')

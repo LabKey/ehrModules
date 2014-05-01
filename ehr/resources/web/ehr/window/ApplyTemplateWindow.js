@@ -22,7 +22,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     closeAction: 'destroy',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             border: true,
             bodyStyle: 'padding:5px',
@@ -212,8 +212,8 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                             if (!toAdd[store.storeId])
                                 toAdd[store.storeId] = [];
 
-                            var newData = LABKEY.ExtAdapter.apply({}, data);
-                            newData = LABKEY.ExtAdapter.apply(newData, obj);
+                            var newData = Ext4.apply({}, data);
+                            newData = Ext4.apply(newData, obj);
 
                             toAdd[store.storeId].push(newData);
                         }, this);
@@ -260,7 +260,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                 }
 
                 Ext4.Array.each(subjectArray, function(subj){
-                    ret.push(LABKEY.ExtAdapter.apply({
+                    ret.push(Ext4.apply({
                         Id: subj
                     }, obj));
                 }, this);
@@ -421,7 +421,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             var values = panel.getForm().getFieldValues(true);
             toAdd[panel.storeId] = panel.records;
             Ext4.Array.forEach(panel.records, function(r){
-                LABKEY.ExtAdapter.apply(r, values);
+                Ext4.apply(r, values);
             }, this);
         }, this);
 

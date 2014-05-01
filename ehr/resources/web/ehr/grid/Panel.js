@@ -15,7 +15,7 @@ Ext4.define('EHR.grid.Panel', {
 
         this.configureColumns();
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             cls: 'ldk-grid',
             clicksToEdit: 1,
             selModel: {
@@ -153,9 +153,9 @@ Ext4.define('EHR.grid.Panel', {
         }];
 
         var firstEditableColumn = -1;
-        LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field, idx){
+        Ext4.each(this.formConfig.fieldConfigs, function(field, idx){
             var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.configSources);
-            var cfg = LABKEY.ExtAdapter.apply({}, field);
+            var cfg = Ext4.apply({}, field);
             cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.configSources);
 
             if(cfg.shownInGrid === false){
@@ -204,8 +204,8 @@ Ext4.define('EHR.grid.Panel', {
         var buttons = [];
 
         if (this.formConfig.tbarButtons){
-            LABKEY.ExtAdapter.each(this.formConfig.tbarButtons, function(btn){
-                if (LABKEY.ExtAdapter.isString(btn)){
+            Ext4.each(this.formConfig.tbarButtons, function(btn){
+                if (Ext4.isString(btn)){
                     buttons.push(EHR.DataEntryUtils.getGridButton(btn));
                 }
                 else {
@@ -216,8 +216,8 @@ Ext4.define('EHR.grid.Panel', {
 
         if (this.formConfig.tbarMoreActionButtons){
             var moreActions = [];
-            LABKEY.ExtAdapter.each(this.formConfig.tbarMoreActionButtons, function(btn){
-                if (LABKEY.ExtAdapter.isString(btn)){
+            Ext4.each(this.formConfig.tbarMoreActionButtons, function(btn){
+                if (Ext4.isString(btn)){
                     moreActions.push(EHR.DataEntryUtils.getGridButton(btn));
                 }
                 else {

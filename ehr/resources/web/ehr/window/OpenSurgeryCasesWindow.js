@@ -12,7 +12,7 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
     minHeight: 200,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Open Cases',

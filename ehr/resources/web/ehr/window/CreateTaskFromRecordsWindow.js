@@ -38,7 +38,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
     initComponent: function(){
         LDK.Assert.assertNotEmpty('Missing formtype in CreateTaskFromRecordsWindow', this.formType);
 
-        LABKEY.ExtAdapter.apply(this, {
+        Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
             width: 400,
