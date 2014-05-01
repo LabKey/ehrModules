@@ -501,8 +501,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForElement(Ext4Helper.ext4Window("Apply Template To Form").append(Locator.tagContainingText("label", "Choose Template")));
         Ext4ComboRef templateCombo = Ext4ComboRef.getForLabel(this, "Choose Template");
         templateCombo.waitForStoreLoad();
-        _ext4Helper.selectComboBoxItem("Choose Template:", true, templateName1);
-        _ext4Helper.selectComboBoxItem("Choose Template:", true, templateName2);
+        _ext4Helper.selectComboBoxItem("Choose Template:", Ext4Helper.TextMatchTechnique.CONTAINS, templateName1);
+        _ext4Helper.selectComboBoxItem("Choose Template:", Ext4Helper.TextMatchTechnique.CONTAINS, templateName2);
 
         //these should not be shown
         Assert.assertFalse(Ext4FieldRef.isFieldPresent(this, "Task:"));
