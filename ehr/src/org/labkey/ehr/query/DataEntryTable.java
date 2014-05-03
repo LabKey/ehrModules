@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.query;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.security.AbstractEHRPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
@@ -25,9 +26,6 @@ import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.UpdatePermission;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class has been created primarily to allow alternate permission testing.
@@ -47,7 +45,7 @@ public class DataEntryTable<SchemaType extends UserSchema> extends SimpleUserSch
     }
 
     @Override
-    public boolean hasPermission(UserPrincipal user, Class<? extends Permission> perm)
+    public boolean hasPermission(@NotNull UserPrincipal user, @NotNull Class<? extends Permission> perm)
     {
         if (InsertPermission.class.isAssignableFrom(perm) || UpdatePermission.class.isAssignableFrom(perm) || DeletePermission.class.isAssignableFrom(perm))
         {
