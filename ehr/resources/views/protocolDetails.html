@@ -1,12 +1,12 @@
 <script type="text/javascript">
 
 Ext4.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){
+    var protocol = LABKEY.ActionURL.getParameter('protocol') || LABKEY.ActionURL.getParameter('key');
+    if (!protocol){
         alert('Must Provide Protocol Number');
-        return;
+        return false;
     }
-
-    var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();
+    protocol = protocol.toLowerCase();
 
     var webpart = <%=webpartContext%>;
     var domSpec = [{

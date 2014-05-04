@@ -77,6 +77,11 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="enddatefinalized">
+                        <columnTitle>Date Assignment End Entered</columnTitle>
+                        <description>This records the date the end of the assignment was actually entered, which may differ from the enddate itself</description>
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="CoAssignments" wrappedColumnName="lsid">
                         <columnTitle>CoAssignments</columnTitle>
                         <isHidden>false</isHidden>

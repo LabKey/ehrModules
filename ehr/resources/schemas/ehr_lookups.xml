@@ -1947,6 +1947,9 @@
             <ns:column columnName="outsidelab">
                 <ns:columnTitle>From Outside Lab?</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="datedisabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
@@ -1991,7 +1994,6 @@
                 <ns:isAutoInc>true</ns:isAutoInc>
                 <ns:shownInUpdateView>false</ns:shownInUpdateView>
                 <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="category">
                 <ns:columnTitle>Category</ns:columnTitle>
@@ -2003,13 +2005,17 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="value">
-                <ns:columnTitle>Description</ns:columnTitle>
+                <ns:columnTitle>Meaning</ns:columnTitle>
             </ns:column>
             <ns:column columnName="code">
                 <ns:columnTitle>Code</ns:columnTitle>
             </ns:column>
             <ns:column columnName="description">
                 <ns:columnTitle>Description</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Key</ns:columnTitle>
+                <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="datedisabled">
                 <ns:columnTitle>Date Disabled</ns:columnTitle>

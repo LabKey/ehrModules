@@ -79,6 +79,7 @@ import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
+import org.labkey.ehr.security.EHRHousingTransferRole;
 import org.labkey.ehr.security.EHRLabworkEntryRole;
 import org.labkey.ehr.security.EHRLocationManagementRole;
 import org.labkey.ehr.security.EHRPathologyEntryRole;
@@ -112,7 +113,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.410;
+        return 12.412;
     }
 
     public boolean hasScripts()
@@ -161,6 +162,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRProcedureManagementRole());
         RoleManager.registerRole(new EHRLocationManagementRole());
         RoleManager.registerRole(new EHRAnimalGroupManagementRole());
+        RoleManager.registerRole(new EHRHousingTransferRole());
     }
 
     @Override

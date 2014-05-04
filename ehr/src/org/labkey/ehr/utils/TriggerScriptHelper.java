@@ -31,6 +31,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -38,6 +39,7 @@ import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -1969,8 +1971,17 @@ public class TriggerScriptHelper
         }
     }
 
-    public void ensureSingleFlagCategoryActive(String id, String category, String objectId, final Date enddate)
+    public void ensureSingleFlagCategoryActive(String id, String flag, String objectId, final Date enddate)
     {
+        //first resolve flag
+        TableInfo flagValuesTable = getTableInfo("ehr_lookups", "flag_values");
+        TableSelector ts1 =  new TableSelector(flagValuesTable, Collections.singleton("category"), new SimpleFilter(FieldKey.fromString("objectid"), flag), null);
+        String category = ts1.getObject(String.class);
+        if (category == null)
+        {
+            return;
+        }
+
         TableInfo flagCategoriesTable = getTableInfo("ehr_lookups", "flag_categories");
         TableSelector ts2 =  new TableSelector(flagCategoriesTable, Collections.singleton("enforceUnique"), new SimpleFilter(FieldKey.fromString("category"), category), null);
         List<Boolean> ret = ts2.getArrayList(Boolean.class);
@@ -1979,7 +1990,7 @@ public class TriggerScriptHelper
         if (enforceUnique)
         {
             //find existing active flags of the same category
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("category"), category);
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag/category"), category);
             filter.addCondition(FieldKey.fromString("isActive"), true);
             filter.addCondition(FieldKey.fromString("Id"), id, CompareType.EQUAL);
             filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ_OR_NULL);
@@ -2032,4 +2043,20 @@ public class TriggerScriptHelper
             }
         }
     }
+
+    private Integer _nextFlagCode = null;
+
+    public Integer getNextFlagCode()
+    {
+        if (_nextFlagCode == null)
+        {
+            SqlSelector ss = new SqlSelector(DbSchema.get("ehr"), "SELECT COALESCE(max(code), 0) as expr FROM ehr_lookups.flag_values");
+            List<Integer> ret = ss.getArrayList(Integer.class);
+            _nextFlagCode = ret.isEmpty() ? 0 : ret.get(0);
+        }
+
+        _nextFlagCode++;
+
+        return _nextFlagCode;
+    }    
 }

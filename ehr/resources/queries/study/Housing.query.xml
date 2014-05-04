@@ -86,7 +86,17 @@
                             <fkColumnName>rowid</fkColumnName>
                             <fkDisplayColumnName>value</fkDisplayColumnName>
                         </fk>
-                    </column>                    
+                    </column>
+                    <column columnName="housingType">
+                        <columnTitle>Housing Type</columnTitle>
+                        <isHidden>true</isHidden>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>housingTypes</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                            <fkDisplayColumnName>value</fkDisplayColumnName>
+                        </fk>
+                    </column>
                     <column columnName="QCState">
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>

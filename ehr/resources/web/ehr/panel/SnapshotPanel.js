@@ -667,9 +667,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (results){
             var values = [];
             Ext4.each(results, function(row){
-                var category = row.category;
-                var highlight = row['category/doHighlight'];
-                var omit = row['category/omitFromOverview'];
+                var category = row['flag/category'];
+                var highlight = row['flag/category/doHighlight'];
+                var omit = row['flag/category/omitFromOverview'];
 
                 //skip
                 if (omit === true)
@@ -678,7 +678,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (category)
                     category = Ext4.String.trim(category);
 
-                var val = row.value;
+                var val = row['flag/value'];
                 var text = val;
                 if (category)
                     text = category + ': ' + val;

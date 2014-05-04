@@ -1214,7 +1214,7 @@ public class EHRManager
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
 
-    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
+    public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
     {
         final List<String> animalIds = new ArrayList<>(toTest);
 
@@ -1225,7 +1225,7 @@ public class EHRManager
         }
 
         //find animals already with this flag
-        TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
+        TableSelector ts =  getFlagsTableSelector(flagsTable, flag, animalIds);
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -1257,8 +1257,7 @@ public class EHRManager
                 row.put("Id", animal);
                 row.put("date", date);
                 row.put("remark", remark);
-                row.put("category", category);
-                row.put("value", flag);
+                row.put("flag", flag);
                 row.put("performedby", u.getDisplayName(u));
 
                 rows.add(row);
@@ -1304,7 +1303,7 @@ public class EHRManager
         return null;
     }
 
-    public Collection<String> terminateFlagsIfExists(User u, Container c, String category, String flag, final Date enddate, Collection<String> animalIds)
+    public Collection<String> terminateFlagsIfExists(User u, Container c, String flag, final Date enddate, Collection<String> animalIds)
     {
         TableInfo flagsTable = getEHRTable(c, u, "study", "flags");
         if (flagsTable == null)
@@ -1316,7 +1315,7 @@ public class EHRManager
         final List<Map<String, Object>> oldKeys = new ArrayList<>();
         final Set<String> distinctIds = new HashSet<>();
 
-        TableSelector ts =  getFlagsTableSelector(flagsTable, category, flag, animalIds);
+        TableSelector ts =  getFlagsTableSelector(flagsTable, flag, animalIds);
 
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -1360,10 +1359,9 @@ public class EHRManager
         }
     }
 
-    private TableSelector getFlagsTableSelector(TableInfo flagsTable, String category, String flag, Collection<String> animalIds)
+    private TableSelector getFlagsTableSelector(TableInfo flagsTable, String flag, Collection<String> animalIds)
     {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("category"), category);
-        filter.addCondition(FieldKey.fromString("value"), flag);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
         filter.addCondition(FieldKey.fromString("isActive"), true);
         filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
 

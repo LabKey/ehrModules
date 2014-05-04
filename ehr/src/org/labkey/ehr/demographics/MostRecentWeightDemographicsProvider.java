@@ -60,6 +60,7 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
     {
         Set<String> keys = new HashSet<>(super.getKeysToTest());
         keys.remove("daysSinceWeight");
+        keys.remove("objectid");
 
         return keys;
     }

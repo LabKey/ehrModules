@@ -311,7 +311,8 @@ EHR.Security = new function(){
             PROCEDURE_MANAGEMENT: classPrefix + '.EHRProcedureManagementPermission',
             SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
             CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission',
-            LOCATION_EDITOR: classPrefix + '.EHRLocationEditPermission'
+            LOCATION_EDITOR: classPrefix + '.EHRLocationEditPermission',
+            HOUSING_EDITOR: classPrefix + '.EHRHousingTransferPermission'
         },
 
         hasVetPermission: function(){
@@ -356,6 +357,15 @@ EHR.Security = new function(){
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.LOCATION_EDITOR) > -1;
+
+        },
+
+        hasHousingEditorPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.HOUSING_EDITOR) > -1;
 
         }
     }

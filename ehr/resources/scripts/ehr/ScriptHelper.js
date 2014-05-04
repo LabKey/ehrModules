@@ -499,6 +499,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
          */
         onDeathDeparture: function(id, date){
             //close housing, assignments, treatments
+            console.log('on death departure: ' + id);
             this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Animal Record Flags', 'Diet'], id, date);
         },
 

@@ -1370,13 +1370,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(ManageFlagsForm form, BindException errors) throws Exception
         {
-            Map<String, Object> resp = new HashMap<String, Object>();
-
-            if (form.getCategory() == null)
-            {
-                errors.reject(ERROR_MSG, "No category supplied");
-                return null;
-            }
+            Map<String, Object> resp = new HashMap<>();
 
             if (form.getFlag() == null)
             {
@@ -1401,7 +1395,7 @@ public class EHRController extends SpringActionController
                         return null;
                     }
 
-                    Collection<String> added = EHRManager.get().ensureFlagActive(getUser(), getContainer(), form.getCategory(), form.getFlag(), form.getDate(), form.getRemark(), Arrays.asList(form.getAnimalIds()), form.getLivingAnimalsOnly());
+                    Collection<String> added = EHRManager.get().ensureFlagActive(getUser(), getContainer(), form.getFlag(), form.getDate(), form.getRemark(), Arrays.asList(form.getAnimalIds()), form.getLivingAnimalsOnly());
                     resp.put("added", added);
                 }
                 else if ("remove".equalsIgnoreCase(mode))
@@ -1412,7 +1406,7 @@ public class EHRController extends SpringActionController
                         return null;
                     }
 
-                    Collection<String> removed = EHRManager.get().terminateFlagsIfExists(getUser(), getContainer(), form.getCategory(), form.getFlag(), form.getEnddate(), Arrays.asList(form.getAnimalIds()));
+                    Collection<String> removed = EHRManager.get().terminateFlagsIfExists(getUser(), getContainer(), form.getFlag(), form.getEnddate(), Arrays.asList(form.getAnimalIds()));
                     resp.put("removed", removed);
                 }
                 else
@@ -1448,7 +1442,6 @@ public class EHRController extends SpringActionController
 
     public static class ManageFlagsForm
     {
-        private String _category;
         private String _flag;
         private Date _date;
         private Date _enddate;
@@ -1456,16 +1449,6 @@ public class EHRController extends SpringActionController
         private String[] _animalIds;
         private String _mode;
         private Boolean _livingAnimalsOnly = true;
-
-        public String getCategory()
-        {
-            return _category;
-        }
-
-        public void setCategory(String category)
-        {
-            _category = category;
-        }
 
         public String getFlag()
         {

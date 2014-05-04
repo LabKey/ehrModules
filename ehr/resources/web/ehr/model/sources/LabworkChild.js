@@ -7,6 +7,14 @@ EHR.model.DataModelManager.registerMetadata('LabworkChild', {
     allQueries: {
         Id: {
             editable: false
+        },
+        testid: {
+            editorConfig: {
+                plugins: [{
+                    ptype: 'ldk-usereditablecombo',
+                    allowChooseOther: false
+                }]
+            }
         }
     }
 });

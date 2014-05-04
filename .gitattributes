@@ -258,6 +258,7 @@ ehr/resources/queries/ehr_lookups/cages.sql -text
 ehr/resources/queries/ehr_lookups/cages/Animals[!!-~]Housed.qview.xml -text
 ehr/resources/queries/ehr_lookups/cagesMissingColumn.sql -text
 ehr/resources/queries/ehr_lookups/dateRange.sql -text
+ehr/resources/queries/ehr_lookups/flag_values.js -text
 ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_test_units.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_test_units.sql -text
@@ -602,6 +603,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.406-12.407.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.407-12.408.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.408-12.409.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.409-12.410.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.410-12.411.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.411-12.412.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -825,6 +828,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.406-12.407.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.407-12.408.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.408-12.409.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.409-12.410.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.410-12.411.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.411-12.412.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -1302,6 +1307,7 @@ ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
+ehr/src/org/labkey/ehr/security/EHRHousingTransferRole.java -text
 ehr/src/org/labkey/ehr/security/EHRLabworkEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRLocationManagementRole.java -text
 ehr/src/org/labkey/ehr/security/EHRPathologyEntryRole.java -text

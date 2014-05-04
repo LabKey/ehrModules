@@ -171,8 +171,8 @@ Ext4.define('EHR.window.SedationWindow', {
             var msgs = [];
             if (flags){
                 Ext4.Array.forEach(flags, function(f){
-                    if ((f.category == 'Alert' || f.category == 'Flag') && f.value && (f.value.match(/Ketamine/i) || f.value.match(/Telazol/i))){
-                        msgs.push(f.value);
+                    if ((f['flag/category'] == 'Alert' || f['flag/category'] == 'Flag') && f['flag/value'] && (f['flag/value'].match(/Ketamine/i) || f['flag/value'].match(/Telazol/i))){
+                        msgs.push(f['flag/value']);
                     }
                 }, this);
             }

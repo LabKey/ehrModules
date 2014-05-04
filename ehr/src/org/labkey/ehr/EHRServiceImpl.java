@@ -685,13 +685,13 @@ public class EHRServiceImpl extends EHRService
         t.appendCalculatedCols(ti, dateFieldName);
     }
 
-    public Collection<String> ensureFlagActive(User u, Container c, String category, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
+    public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
-        return EHRManager.get().ensureFlagActive(u, c, category, flag, date, remark, animalIds, livingAnimalsOnly);
+        return EHRManager.get().ensureFlagActive(u, c, flag, date, remark, animalIds, livingAnimalsOnly);
     }
 
-    public Collection<String> terminateFlagsIfExists(User u, Container c, String category, String flag, Date enddate, Collection<String> animalIds)
+    public Collection<String> terminateFlagsIfExists(User u, Container c, String flag, Date enddate, Collection<String> animalIds)
     {
-        return EHRManager.get().terminateFlagsIfExists(u, c, category, flag, enddate, animalIds);
+        return EHRManager.get().terminateFlagsIfExists(u, c, flag, enddate, animalIds);
     }
 }

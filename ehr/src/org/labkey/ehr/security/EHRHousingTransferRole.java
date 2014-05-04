@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRHousingTransferPermission;
-import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -27,16 +26,15 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * Date: 1/17/13
  * Time: 7:42 PM
  */
-public class EHRLocationManagementRole extends AbstractEHRRole
+public class EHRHousingTransferRole extends AbstractEHRRole
 {
-    public EHRLocationManagementRole()
+    public EHRHousingTransferRole()
     {
-        super("EHR Location Management", "This role is used to grant the ability to manage room and cage configuration.",
+        super("EHR Housing Transfer Management", "This role is used to grant edit rights to ehr.cage and housing tranfers.  Note: the user will need table-level update permission on study.housing.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,
             DeletePermission.class,
-            EHRLocationEditPermission.class,
             EHRHousingTransferPermission.class
         );
     }

@@ -677,7 +677,6 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
-
     if (row.date){
         //flags dates more than 1 year in the future or 60 in the past
         EHR.Server.Validation.flagSuspiciousDate(row, scriptErrors, helper);

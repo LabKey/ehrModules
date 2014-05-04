@@ -49,6 +49,7 @@ public class DepartureDemographicsProvider extends AbstractDemographicsProvider
 
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("MostRecentDeparture"));
+        keys.remove("objectid");
 
         return keys;
     }

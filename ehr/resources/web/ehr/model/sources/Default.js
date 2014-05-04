@@ -873,7 +873,24 @@ EHR.model.DataModelManager.registerMetadata('Default', {
 
             },
             performedby: {
-                defaultValue: LABKEY.Security.currentUser.displayName
+                allowBlank: false,
+                lookup: {
+                    schemaName: 'core',
+                    queryName: 'users',
+                    keyColumn: 'DisplayName',
+                    displayColumn: 'DisplayName',
+                    columns: 'UserId,DisplayName,FirstName,LastName',
+                    sort: 'Type,DisplayName'
+                },
+                editorConfig: {
+                    anyMatch: true,
+                    listConfig: {
+                        innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
+                }
             },
             project: {
                 hidden: true
@@ -1376,7 +1393,33 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.flags': {
-
+            flag: {
+                allowBlank: false,
+                lookup: {
+                    columns: 'objectid,value,category,code',
+                    sort: 'category,code,value',
+                    filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)]
+                },
+                columnConfig: {
+                    width: 300
+                },
+                editorConfig: {
+                    caseSensitive: false,
+                    anyMatch: true,
+                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                        allowChooseOther: false
+                    })],
+                    listConfig: {
+                        innerTpl: '{[(values.category ? ("<b>" + values.category + ":</b> ") : "") + values.value + (values.code ? (" (" + values.code + ")") : "")]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
+                }
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
+            }
         },
         'study.measurements': {
             measurement1: {
