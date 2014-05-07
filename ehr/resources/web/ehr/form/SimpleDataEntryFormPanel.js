@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  *  This section is primarily used for single-query editing (like the [update] link).
  *  It will inherit EHR's metadata, and also apply the UserEditableCombo plugin to any combo field,

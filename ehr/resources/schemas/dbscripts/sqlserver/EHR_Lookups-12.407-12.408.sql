@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 delete from ehr_lookups.cage_positions where row = 'N';
 insert into ehr_lookups.cage_positions (cage, row, columnIdx, sort_order) values ('N1', 'N', 1, 137);
 insert into ehr_lookups.cage_positions (cage, row, columnIdx, sort_order) values ('N2', 'N', 2, 138);
