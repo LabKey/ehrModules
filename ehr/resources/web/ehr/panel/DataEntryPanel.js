@@ -70,7 +70,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onStoreCollectionCommitComplete: function(sc, extraContext){
-        Ext4.Msg.hide();
+        if (Ext4.Msg.isVisible())
+            Ext4.Msg.hide();
 
         if(extraContext && extraContext.successURL){
             window.onbeforeunload = Ext4.emptyFn;

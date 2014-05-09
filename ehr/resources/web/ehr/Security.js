@@ -307,6 +307,7 @@ EHR.Security = new function(){
 
         Permissions: {
             DATA_ENTRY: classPrefix + '.EHRDataEntryPermission',
+            DATA_ADMIN: classPrefix + '.EHRDataAdminPermission',
             VET: classPrefix + '.EHRVeternarianPermission',
             PROCEDURE_MANAGEMENT: classPrefix + '.EHRProcedureManagementPermission',
             SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
@@ -351,22 +352,34 @@ EHR.Security = new function(){
 
         },
 
+        /**
+         * Same permissions as housing editor, but can also edit cage type
+         */
         hasLocationEditorPermission: function(){
             var ctx = EHR.Utils.getEHRContext();
             if (!ctx || !ctx.EHRStudyContainerInfo)
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.LOCATION_EDITOR) > -1;
-
         },
 
+        /**
+         * Can perform transfers and edit dividers, but not cage type
+         */
         hasHousingEditorPermission: function(){
             var ctx = EHR.Utils.getEHRContext();
             if (!ctx || !ctx.EHRStudyContainerInfo)
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.HOUSING_EDITOR) > -1;
+        },
 
+        isDataAdmin: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.DATA_ADMIN) > -1;
         }
     }
 }

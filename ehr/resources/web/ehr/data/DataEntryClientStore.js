@@ -175,7 +175,22 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         return this.loaded;
     },
 
-    findRecord: function(fieldName, value){
+    findRecord: function(fieldName, value, clientModelInternalId){
+        if (Ext4.isEmpty(value) && clientModelInternalId){
+            var ret;
+            this.each(function(cr){
+                if (cr.internalId == clientModelInternalId){
+                    ret = cr;
+                    return false;
+                }
+            }, this);
+
+            if (ret){
+                console.log('found using internalId');
+                return ret;
+            }
+        }
+
         var idx = this.findExact(fieldName, value);
         if (idx != -1){
             return this.getAt(idx);
@@ -273,8 +288,8 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             Ext4.Array.forEach(this.getRange(), function(clientModel){
                 //find the corresponding server record
                 var key = clientModel.get(clientKeyField);
-                var serverModel = serverStore.findRecord(clientKeyField, key);
-
+                //LDK.Assert.assertNotEmpty('No key present for clientModel: ' + (clientModel.store ? clientModel.store.storeId : 'no store'), key)
+                var serverModel = serverStore.findRecord(clientKeyField, key, clientModel.internalId);
                 if (!serverModel){
                     //TODO: determine whether to auto-create the record
                     //ALSO: we have a problem if the PK of the table isnt
@@ -308,7 +323,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                 Ext4.Array.forEach(removed, function(clientModel){
                     //find the corresponding server record
                     var key = clientModel.get(clientKeyField);
-                    var serverModel = serverStore.findRecord(clientKeyField, key);
+                    var serverModel = serverStore.findRecord(clientKeyField, key, clientModel.internalId);
                     if (serverModel){
                         if (clientModel.isRemovedRequest){
                             this.prepareServerModelForDelete(serverModel);

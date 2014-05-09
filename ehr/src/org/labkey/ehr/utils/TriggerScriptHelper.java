@@ -819,6 +819,8 @@ public class TriggerScriptHelper
         Set<String> ignoredObjectIds = new HashSet<>();
         double quantityInTransaction = 0.0;
 
+        //NOTE: we expect this will not contain the current row, but check for it anyway
+        boolean foundRow = false;
         if (recordsInTransaction != null)
         {
             for (Map<String, Object> origMap : recordsInTransaction)
@@ -863,6 +865,11 @@ public class TriggerScriptHelper
                     if (objectId != null)
                     {
                         ignoredObjectIds.add(objectId);
+
+                        if (objectId.equalsIgnoreCase(rowObjectId))
+                        {
+                            foundRow = true;
+                        }
                     }
                 }
                 catch (ConversionException e)
@@ -872,9 +879,10 @@ public class TriggerScriptHelper
                 }
             }
         }
-        else
+
+        if (!foundRow)
         {
-            quantityInTransaction = rowQuantity;
+            quantityInTransaction += rowQuantity;
             ignoredObjectIds.add(rowObjectId);
         }
 
@@ -985,7 +993,7 @@ public class TriggerScriptHelper
 
         if (bloodPrevious > maxAllowable)
         {
-            return "Blood volume of " + quantity + " (" + bloodPrevious + " total) exceeds allowable volume of " + maxAllowable + "' mL over the previous " + interval + " days (" + weight + " kg)";
+            return "Blood volume of " + quantity + " (" + bloodPrevious + " total) exceeds allowable volume of " + maxAllowable + " mL over the previous " + interval + " days (" + weight + " kg)";
         }
 
         // if we didnt already have an error, check the future interval
@@ -2058,5 +2066,32 @@ public class TriggerScriptHelper
         _nextFlagCode++;
 
         return _nextFlagCode;
-    }    
+    }
+
+    public void reportCageChange(List<String> keys)
+    {
+        if (keys == null || keys.size() == 0)
+            return;
+
+        SimpleFilter.OrClause clause = new SimpleFilter.OrClause();
+        for (String key : keys)
+        {
+            String[] tokens = key.split("<>");
+            clause.addClause(new SimpleFilter.AndClause(new CompareType.EqualsCompareClause(FieldKey.fromString("room"), CompareType.EQUAL, tokens[0]), new CompareType.EqualsCompareClause(FieldKey.fromString("cage"), CompareType.EQUAL, tokens[1])));
+        }
+
+        TableInfo ti = getTableInfo("study", "housing");
+        if (ti != null)
+        {
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("isActive"), true);
+            filter.addClause(clause);
+
+            TableSelector ts = new TableSelector(ti, PageFlowUtil.set("Id"), filter, null);
+            List<String> ids = ts.getArrayList(String.class);
+            if (ids != null && !ids.isEmpty())
+            {
+                EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), "study", "housing", new ArrayList<>(new HashSet<>(ids)));
+            }
+        }
+    }
 }

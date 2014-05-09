@@ -54,7 +54,21 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         return baseParams;
     },
 
-    findRecord: function(fieldName, value){
+    findRecord: function(fieldName, value, clientModelInternalId){
+        if (Ext4.isEmpty(value) && clientModelInternalId){
+            var ret;
+            this.each(function(sr){
+                if (sr._clientModelId == clientModelInternalId){
+                    ret = sr;
+                    return false;
+                }
+            }, this);
+
+            if (ret){
+                return ret;
+            }
+        }
+
         var idx = this.findExact(fieldName, value);
         if (idx != -1){
             return this.getAt(idx);
@@ -452,7 +466,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 LDK.Assert.assertNotEmpty('Unable to find client store with Id: ' + clientStoreId, clientStore);
                 clientKeyField = clientStore.getKeyField();
 
-                var clientModel = clientStore.findRecord(clientKeyField, serverModel.get(clientKeyField));
+                var clientModel = clientStore.findRecord(clientKeyField, serverModel.get(clientKeyField), serverModel._clientModelId);
                 if (!clientModel && !syncErrorsOnly){
                     //first look for this model in deleted records
                     if (clientStore.getRemovedRecords().length){

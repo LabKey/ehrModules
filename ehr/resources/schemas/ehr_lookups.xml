@@ -1276,6 +1276,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Formulary</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1287,12 +1288,14 @@
             </ns:column>
             <ns:column columnName="category">
                 <ns:columnTitle>Category</ns:columnTitle>
+                <ns:defaultValue>Standard</ns:defaultValue>
             </ns:column>
             <ns:column columnName="code">
                 <ns:fk>
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
                     <ns:fkTable>snomed</ns:fkTable>
                     <ns:fkColumnName>code</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>meaning</ns:fkDisplayColumnName>
                 </ns:fk>
             </ns:column>
             <ns:column columnName="route">

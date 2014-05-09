@@ -111,6 +111,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     {
         //TODO: blood draw volumes
 
+        //Birth
+        //first create record for dam
         //TODO: all other custom trigger script code
     }
 
@@ -902,9 +904,14 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         //also populate templates
         beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
 
-        clickButton("Delete All", 0);
+        clickButton("Delete Data From Form Templates", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate All", 0);
+        clickButton("Populate Form Templates", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+
+        clickButton("Delete Data From Formulary", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Formulary", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
 
         //Note: this is created because some of the billing code expects it.  ideally this is eventually split into a separate module + test

@@ -266,10 +266,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
         rowMap = new HashMap<>();
         rowMap.put("room", ROOM_ID);
+        //these fields are required in ONPRC_EHR test.  these will not be valid lookups, but that's not important for the test
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
         insertCmd.addRow(rowMap);
+
         rowMap = new HashMap<>();
         rowMap.put("room", ROOM_ID2);
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
         insertCmd.addRow(rowMap);
+
         saveResp = insertCmd.execute(cn, getContainerPath());
     }
 

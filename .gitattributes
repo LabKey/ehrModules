@@ -259,6 +259,8 @@ ehr/resources/queries/ehr_lookups/cages/Animals[!!-~]Housed.qview.xml -text
 ehr/resources/queries/ehr_lookups/cagesMissingColumn.sql -text
 ehr/resources/queries/ehr_lookups/dateRange.sql -text
 ehr/resources/queries/ehr_lookups/flag_values.js -text
+ehr/resources/queries/ehr_lookups/flag_values/.qview.xml -text
+ehr/resources/queries/ehr_lookups/flag_values/Active[!!-~]Flags.qview.xml -text
 ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_test_units.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_test_units.sql -text
@@ -269,6 +271,7 @@ ehr/resources/queries/ehr_lookups/procedures.js -text
 ehr/resources/queries/ehr_lookups/procedures.query.xml -text
 ehr/resources/queries/ehr_lookups/procedures/.qview.xml -text
 ehr/resources/queries/ehr_lookups/procedures/Active[!!-~]Procedures.qview.xml -text
+ehr/resources/queries/ehr_lookups/rooms.js -text
 ehr/resources/queries/ehr_lookups/rooms.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_combo_list.sql -text
@@ -1075,7 +1078,6 @@ ehr/resources/web/ehr/model/sources/BehaviorRounds.js -text
 ehr/resources/web/ehr/model/sources/BillingByAccount.js -text
 ehr/resources/web/ehr/model/sources/Biopsy.js -text
 ehr/resources/web/ehr/model/sources/BloodDraw.js -text
-ehr/resources/web/ehr/model/sources/ChargesAdvanced.js -text
 ehr/resources/web/ehr/model/sources/ClinicalDefaults.js -text
 ehr/resources/web/ehr/model/sources/ClinicalReport.js -text
 ehr/resources/web/ehr/model/sources/ClinicalReportChild.js -text
@@ -1088,6 +1090,7 @@ ehr/resources/web/ehr/model/sources/Menses.js -text
 ehr/resources/web/ehr/model/sources/Necropsy.js -text
 ehr/resources/web/ehr/model/sources/Pathology.js -text
 ehr/resources/web/ehr/model/sources/PregnancyConfirmation.js -text
+ehr/resources/web/ehr/model/sources/RecordAmendment.js -text
 ehr/resources/web/ehr/model/sources/Request.js -text
 ehr/resources/web/ehr/model/sources/ResearchProcedures.js -text
 ehr/resources/web/ehr/model/sources/SingleQuery.js -text
@@ -1102,6 +1105,7 @@ ehr/resources/web/ehr/panel/AnimalDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/BasicAggregationPanel.js -text
+ehr/resources/web/ehr/panel/BulkEditDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditPanel.js -text
 ehr/resources/web/ehr/panel/CaseHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ClinicalHistoryPanel.js -text
@@ -1305,6 +1309,7 @@ ehr/src/org/labkey/ehr/security/EHRBehaviorEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRClinicalEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataEntryRole.java -text
+ehr/src/org/labkey/ehr/security/EHRFormularyEditorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRHousingTransferRole.java -text

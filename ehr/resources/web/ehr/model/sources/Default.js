@@ -592,6 +592,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.parentage': {
             parent: {
                 lookups: false
+            },
+            method: {
+                columnConfig: {
+                    width: 160
+                }
+            },
+            relationship: {
+                columnConfig: {
+                    width: 160
+                }
             }
         },
         'study.Demographics': {
@@ -1316,6 +1326,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'onprc_billing.projectAccountHistory': {
+            project: {
+                xtype: 'ehr-projectfield',
+                editorConfig: {
+                    showInactive: true
+                }
+            }
+        },
         'study.Assignment': {
             project: {
                 shownInGrid: true,
@@ -1651,6 +1669,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             remark: {
                 shownInGrid: true
+            }
+        },
+        'study.iStat': {
+            resultOORIndicator: {
+                hidden: true
+            },
+            result: {
+                allowBlank: false,
+                compositeField: 'Result'
+            },
+            units: {
+                compositeField: 'Result'
+            },
+            testid: {
+                lookup: {
+                    columns: '*'
+                }
+            },
+            qualresult: {
+                hidden: true
             }
         },
         'study.hematologyResults': {
@@ -2271,6 +2309,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Common Treatments'
                 }
+            }
+        },
+        'ehr_lookups.drug_defaults': {
+            editorConfig: {
+                xtype: 'ehr-snomedcombo',
+                defaultSubset: 'All'
+            },
+            category: {
+                defaultValue: 'Standard'
             }
         }
     }

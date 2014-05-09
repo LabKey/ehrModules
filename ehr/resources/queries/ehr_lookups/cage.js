@@ -6,6 +6,9 @@
 
 var console = require("console");
 var EHR = require("ehr/triggers").EHR;
+var LABKEY = require("labkey");
+
+var triggerHelper = org.labkey.ehr.utils.TriggerScriptHelper.create(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id);
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
@@ -52,4 +55,34 @@ function beforeUpdate(row, oldRow, errors) {
 
     beforeBoth(row, errors);
 
+}
+
+var pendingChanges = [];
+
+function afterInsert(row){
+    //trigger recache of housing data, since this could result in pairing differences
+    if (row.room && row.cage){
+        var key = row.room + '<>' + row.cage;
+        if (pendingChanges.indexOf(key) == -1){
+            pendingChanges.push(key);
+        }
+    }
+}
+
+function afterUpdate(row){
+    //trigger recache of housing data, since this could result in pairing differences
+    if (row.room && row.cage){
+        var key = row.room + '<>' + row.cage;
+        if (pendingChanges.indexOf(key) == -1){
+            pendingChanges.push(key);
+        }
+    }
+}
+
+function complete(){
+    if (pendingChanges.length){
+        console.log('reporting cage changes: ');
+        console.log(pendingChanges);
+        triggerHelper.reportCageChange(pendingChanges);
+    }
 }

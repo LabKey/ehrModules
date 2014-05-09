@@ -8,6 +8,7 @@
  * @cfg schemaName
  * @cfg queryName
  * @cfg fieldXtype
+ * @cfg skipNonNull
  */
 Ext4.define('EHR.window.MarkCompletedWindow', {
     extend: 'Ext.window.Window',
@@ -83,6 +84,7 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
         var checked = dataRegion.getChecked();
 
         LABKEY.Query.selectRows({
+            method: 'POST',
             schemaName: this.schemaName,
             queryName: this.queryName,
             columns: this.pkColName + ',' + this.targetField,
@@ -120,7 +122,22 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
             }
         }, this);
 
+        Ext4.Msg.hide();
+        if (skipped.length){
+            Ext4.Msg.alert('', 'One or more rows will be skipped because it already has an end date', function(){
+                this.doUpdate(toUpdate);
+            }, this);
+        }
+        else {
+            this.doUpdate(toUpdate);
+        }
+    },
+
+    doUpdate: function(toUpdate){
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+
         if (toUpdate.length){
+            Ext4.Msg.wait('Saving...');
             LABKEY.Query.updateRows({
                 method: 'POST',
                 schemaName: this.schemaName,
@@ -140,10 +157,6 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
             Ext4.Msg.hide();
             dataRegion.selectNone();
             dataRegion.refresh();
-        }
-
-        if (skipped.length){
-            Ext4.Msg.alert('', 'One or more rows was skipped because it already has an end date');
         }
     }
 });

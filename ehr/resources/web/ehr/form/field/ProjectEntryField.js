@@ -56,8 +56,13 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                 var win = btn.up('window');
                                 var field = win.down('#projectField');
                                 var project = field.getValue();
+                                if (!project){
+                                    Ext4.Msg.alert('Error', 'Must enter a project');
+                                    return;
+                                }
+
                                 var rec = field.findRecord('project', project);
-                                LDK.Assert.assertTrue('Record not found: ' + project, !!rec);
+                                LDK.Assert.assertTrue('Project record not found for id: ' + project, !!rec);
 
                                 if (rec){
                                     this.onWindowClose({
@@ -138,7 +143,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         this.on('render', function(){
             Ext4.QuickTips.register({
                 target: this.triggerEl.elements[0],
-                text: 'Click to lookup allowable projects'
+                text: 'Click to recalculate allowable projects'
             });
         }, this);
     },
@@ -186,7 +191,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
             sql += "SELECT p.project as project, p.displayName as displayName, p.account as account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, CASE WHEN (a.project = p.project AND p.use_category = 'Research') THEN 0 WHEN (a.project = p.project) THEN 1 ELSE 2 END as sort_order, CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
             " FROM ehr.project p JOIN study.assignment a ON (a.project.protocol = p.protocol) " +
-            " WHERE a.id='"+id+"' AND (a.project = p.project OR p.enddate IS NULL OR p.enddate >= curdate()) ";
+            " WHERE a.id='"+id+"' AND (a.project = p.project) "; //TODO: restore this OR p.enddate IS NULL OR p.enddate >= curdate()
 
             //NOTE: if the date is in the future, we assume active projects
             if (date){
@@ -205,7 +210,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             if (id)
                 sql += ' UNION ALL ';
 
-            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 3 as sort_order, 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
+            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 3 as sort_order, 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true"; //TODO: restore this: and p.enddateCoalesced >= curdate()
         }
 
         sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";

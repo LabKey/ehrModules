@@ -29,6 +29,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRAnimalGroupEditPermission;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.ehr.security.EHRFormularyEditPermission;
 import org.labkey.api.ehr.security.EHRHousingTransferPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
@@ -181,6 +182,10 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         else if ("rooms".equalsIgnoreCase(name))
         {
             return getCustomPermissionTable(createSourceTable(name), EHRLocationEditPermission.class);
+        }
+        else if ("drug_defaults".equalsIgnoreCase(name))
+        {
+            return getCustomPermissionTable(createSourceTable(name), EHRFormularyEditPermission.class);
         }
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
         {

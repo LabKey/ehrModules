@@ -25,6 +25,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>chemistry_tests</fkTable>
                             <fkColumnName>testid</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="resultOORIndicator">

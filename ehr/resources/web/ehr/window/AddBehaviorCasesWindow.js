@@ -17,12 +17,23 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
 
     //always add single blank obs record
     applyObsTemplate: function(caseRecords){
-        var records = [];
+        var obsRecords = [];
         var obsStore = this.targetStore.storeCollection.getClientStoreByName('Clinical Observations');
         LDK.Assert.assertNotEmpty('Unable to find Clinical Observations store', obsStore);
 
+        var treatmentRecords = []
+        var treatmentStore = this.targetStore.storeCollection.getClientStoreByName('Drug Administration');
+        LDK.Assert.assertNotEmpty('Unable to find Drug Administration store', treatmentStore);
+
         Ext4.Array.forEach(caseRecords, function(rec){
-            records.push(obsStore.createModel({
+            obsRecords.push(obsStore.createModel({
+                Id: rec.get('Id'),
+                caseid: rec.get('caseid'),
+                date: this.recordData.date,
+                performedby: this.recordData.performedby
+            }));
+
+            treatmentRecords.push(treatmentStore.createModel({
                 Id: rec.get('Id'),
                 caseid: rec.get('caseid'),
                 date: this.recordData.date,
@@ -30,8 +41,12 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
             }));
         }, this);
 
-        if (records.length){
-            obsStore.add(records);
+        if (obsRecords.length){
+            obsStore.add(obsRecords);
+        }
+
+        if (treatmentRecords.length){
+            treatmentStore.add(treatmentRecords);
         }
 
         Ext4.Msg.hide();

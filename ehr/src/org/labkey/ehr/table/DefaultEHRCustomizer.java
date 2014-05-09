@@ -401,6 +401,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
 
+        ti.getColumn("Id").setConceptURI(PARTICIPANT_CONCEPT_URI);
+
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
         ColumnInfo datasets = ti.getColumn(FieldKey.fromString("DataSets"));
         if (datasets != null)
@@ -1656,8 +1658,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     }
                 }
 
-                ti.getColumn(pkCol.getName()).setHidden(true);
-                ti.getColumn(pkCol.getName()).setKeyField(true);
+                if (ti != null)
+                {
+                    ti.getColumn(pkCol.getName()).setHidden(true);
+                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                }
+                else
+                {
+                    // This has been failing on TeamCity due to missing columns in study.demographics, so we recreate and log those columns here
+                    _log.error("Demographics table columns: ");
+                    _log.error(targetSchema.getTable("demographics").getColumnNameSet());
+                }
 
                 return ti;
             }

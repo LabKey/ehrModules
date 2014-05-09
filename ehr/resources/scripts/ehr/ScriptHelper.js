@@ -172,7 +172,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         //validateOnly is the old-style flag, and must be differentiated in some places
         isValidateOnly: function(){
-            return props.extraContext.isValidateOnly || props.extraContext.validateOnly;
+            return !!(props.extraContext.isValidateOnly || props.extraContext.validateOnly);
         },
 
         getTargetQCStateLabel: function(){

@@ -45,6 +45,9 @@ Ext4.define('EHR.data.PairingClientStore', {
             var pairid = r.get('pairid');
 
             if (lowest && pairid){
+                pairid = Ext4.String.trim(pairid.toLowerCase());
+                lowest = Ext4.String.trim(lowest.toLowerCase());
+
                 //find discrepancies in either pairIds or lowestCages
                 if (!map.lowest[lowest])
                     map.lowest[lowest] = pairid;
@@ -80,10 +83,15 @@ Ext4.define('EHR.data.PairingClientStore', {
             lowest = this.getPairIdString(record);
         }
 
+        var pairid = record.get('pairid');
+        if (pairid){
+            pairid = Ext4.String.trim(pairid.toLowerCase());
+        }
+
         var params = {};
         if (lowest){
+            lowest = Ext4.String.trim(lowest.toLowerCase());
             var map = this.getCageMap(record);
-            var pairid = record.get('pairid');
 
             if (!pairid){
                 if (map.lowest[lowest])

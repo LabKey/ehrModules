@@ -23,9 +23,11 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.security.EHRAnimalGroupEditPermission;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.ehr.security.EHRFormularyEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
@@ -77,6 +79,7 @@ import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
+import org.labkey.ehr.security.EHRFormularyEditorRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRHousingTransferRole;
@@ -163,6 +166,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRLocationManagementRole());
         RoleManager.registerRole(new EHRAnimalGroupManagementRole());
         RoleManager.registerRole(new EHRHousingTransferRole());
+        RoleManager.registerRole(new EHRFormularyEditorRole());
     }
 
     @Override
@@ -215,8 +219,10 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolexemptions"), "ehr", "protocolexemptions");
         EHRService.get().registerMoreActionsButton(new ProjectEditButton(this, "ehr", "project"), "ehr", "project");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "rooms");
+        EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "roomUtilization");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "cage"), "ehr_lookups", "cage");
         EHRService.get().registerMoreActionsButton(new CageBulkEditButton(this), "ehr_lookups", "cage");
+        EHRService.get().registerMoreActionsButton(new EHRShowEditUIButton(this, "ehr_lookups", "drug_defaults", EHRFormularyEditPermission.class), "ehr_lookups", "drug_defaults");
 
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedures"), EHRSchema.EHR_LOOKUPS, "procedures");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_flags"), EHRSchema.EHR_LOOKUPS, "procedure_default_flags");
@@ -227,6 +233,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         //EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS, EHRAnimalGroupEditPermission.class), EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS);
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUPS, EHRAnimalGroupEditPermission.class), EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUPS);
+        EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS, EHRAnimalGroupEditPermission.class), EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_ANIMAL_GROUP_MEMBERS);
         EHRService.get().registerMoreActionsButton(new ShowEditUIButton(this, EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_FLAG_VALUES, EHRDataAdminPermission.class), EHRSchema.EHR_LOOKUPS, EHRSchema.TABLE_FLAG_VALUES);
 
         LDKService.get().registerSiteSummaryNotification(new DataEntrySummary());

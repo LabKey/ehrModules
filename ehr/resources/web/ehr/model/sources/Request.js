@@ -165,6 +165,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             outcome: {
                 defaultValue: null,
                 hidden: true
+            },
+            remark: {
+                hidden: false
             }
         },
         'onprc_ehr.housing_transfer_requests': {
