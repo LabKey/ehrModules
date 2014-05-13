@@ -459,8 +459,8 @@ EHR.Server.Triggers.complete = function(event, errors) {
 
         var requestsCompleted = helper.getRequestCompletedArray();
         if (!LABKEY.ExtAdapter.isEmpty(requestsCompleted)){
-            console.log('The following requests were completed in this batch:');
-            console.log(requestsCompleted);
+            //console.log('The following requests were completed in this batch:');
+            //console.log(requestsCompleted);
             helper.getJavaHelper().processCompletedRequests(requestsCompleted);
         }
     }

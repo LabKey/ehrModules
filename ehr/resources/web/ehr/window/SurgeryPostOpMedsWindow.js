@@ -363,8 +363,22 @@ Ext4.define('EHR.window.SurgeryPostOpMedsWindow', {
 
                             var enddate = null;
                             if (json.duration){
-                                enddate = Ext4.Date.clone(date);
-                                enddate = Ext4.Date.add(enddate, Ext4.Date.DAY, json.duration);
+                                //this is specifically to handle hydro, when administered ~noon
+                                if (new String(json.duration).match(/H$/)){
+                                    var duration = new String(json.duration);
+                                    duration = duration.replace('H', '');
+                                    duration = Number(duration);
+                                    duration += encountersRec.get('date').getHours();
+                                    duration = Math.floor(duration / 24);
+
+                                    enddate = Ext4.Date.clone(encountersRec.get('date'));
+                                    endate = Ext4.Date.clearTime(enddate);
+                                    enddate = Ext4.Date.add(enddate, Ext4.Date.DAY, duration);
+                                }
+                                else {
+                                    enddate = Ext4.Date.clone(date);
+                                    enddate = Ext4.Date.add(enddate, Ext4.Date.DAY, json.duration);
+                                }
 
                                 //always assume a full day, so end at the last scheduled time
                                 var hour = 23;
