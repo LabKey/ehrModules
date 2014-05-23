@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * The purpose of this panel is to allow editing of arbitrary sets of records from a single store based on a list of PKs
  */
