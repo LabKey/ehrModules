@@ -371,9 +371,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
 
         goToEHRFolder();
 
-        enterPermissionsUI();
+        _permissionsHelper.enterPermissionsUI();
         if (!getContainerPath().equals(getProjectName()))
-            uncheckInheritedPermissions();
+            _permissionsHelper.uncheckInheritedPermissions();
 
         _securityHelper.setProjectPerm(DATA_ADMIN.getGroup(), "EHR Data Entry");
         _securityHelper.setProjectPerm(REQUESTER.getGroup(), "EHR Data Entry");
@@ -381,7 +381,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         _securityHelper.setProjectPerm(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
         _securityHelper.setProjectPerm(FULL_UPDATER.getGroup(), "EHR Data Entry");
         _securityHelper.setProjectPerm(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
-        savePermissions();
+        _permissionsHelper.savePermissions();
     }
 
     protected void goToEHRFolder()
@@ -393,7 +393,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     protected void setupStudyPermissions() throws Exception
     {
         goToEHRFolder();
-        enterPermissionsUI();
+        _permissionsHelper.enterPermissionsUI();
         _ext4Helper.clickTabContainingText("Study Security");
         waitAndClickButton("Study Security");
 
