@@ -20,10 +20,8 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
-import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
@@ -142,19 +140,7 @@ public class RecordDeleteRunner implements Job
                 }
             }
         }
-        catch (BatchValidationException e)
-        {
-            _log.error(e.getMessage(), e);
-        }
-        catch (InvalidKeyException e)
-        {
-            _log.error(e.getMessage(), e);
-        }
-        catch (QueryUpdateServiceException e)
-        {
-            _log.error(e.getMessage(), e);
-        }
-        catch (SQLException e)
+        catch (BatchValidationException | InvalidKeyException | QueryUpdateServiceException | SQLException e)
         {
             _log.error(e.getMessage(), e);
         }
