@@ -19,6 +19,10 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
         Ext4.each(results.rows, function(row){
             var rs = new LDK.SelectRowsRow(row);
             var val = rs.getDisplayValue(fieldName);
+            if (val === null){
+                val = '';
+            }
+
             if (!object.aggregated[val])
                 object.aggregated[val] = 0;
 
@@ -45,6 +49,10 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
             rowLabel = Ext4.isEmpty(rowLabel) ? 'None' : rowLabel;
             if (rowLabel)
                 rowLabel = rowLabel.replace(/\n/g, ' / ');
+
+            if (Ext4.isEmpty(key)){
+                operator = 'isblank';
+            }
 
             rows.push({
                 html: rowLabel,

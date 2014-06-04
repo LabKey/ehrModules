@@ -145,6 +145,12 @@ public class AnimalRecordImpl implements AnimalRecord
         return (String)_props.get("geographic_origin");
     }
 
+    //used to determine whether this row exists in the demographics table
+    public String getDemographicsObjectId()
+    {
+        return (String)_props.get("demographicsObjectId");
+    }
+
     public List<Map<String, Object>> getActiveAssignments()
     {
         return getListProperty("activeAssignments");

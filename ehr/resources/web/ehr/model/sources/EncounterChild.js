@@ -16,6 +16,9 @@ EHR.model.DataModelManager.registerMetadata('EncounterChild', {
         },
         project: {
             inheritFromParent: true
+        },
+        chargetype: {
+            inheritFromParent: true
         }
     },
     byQuery: {

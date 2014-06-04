@@ -103,6 +103,9 @@ EHR.model.DataModelManager.registerMetadata('BehaviorDefaults', {
                     }
                     return v ? v : shouldReturn ? EHR.DataEntryUtils.getDefaultClinicalProject() : null;
                 }
+            },
+            chargetype: {
+                defaultValue: 'No Charge'
             }
         },
         'study.clinical_observations': {

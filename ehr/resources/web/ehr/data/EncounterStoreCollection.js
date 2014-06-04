@@ -72,6 +72,10 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                     model.set('project', parentRec.get('project'));
                 }
 
+                if (model.fields.get('chargetype') && !model.get('chargetype') && parentRec.get('chargetype')){
+                    model.set('chargetype', parentRec.get('chargetype'));
+                }
+
                 model.endEdit(true);
             }
         }
@@ -111,6 +115,13 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                         }
                         else if (pf.inheritFromParent && encountersRec.get('project') !== rec.get('project')){
                             obj.project = encountersRec.get('project');
+                        }
+                    }
+
+                    var cf = rec.fields.get('chargetype');
+                    if (cf && encountersRec.get('chargetype')){
+                        if (!rec.get('chargetype') || cf.inheritDateFromParent){
+                            obj.chargetype = encountersRec.get('chargetype');
                         }
                     }
 

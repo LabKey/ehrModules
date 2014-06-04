@@ -41,6 +41,7 @@ public class DefaultBloodDrawDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "Charge Type", "billedby"));
         sb.append(safeAppend(rs, "Tube Type", "tube_type"));
         sb.append(safeAppend(rs, "# of Tubes", "num_tubes"));
+        sb.append(safeAppend(rs, "Sample Type", "sampletype"));
 
         //NOTE: not really sensitive, but also not necessary to publish
         if (!redacted)

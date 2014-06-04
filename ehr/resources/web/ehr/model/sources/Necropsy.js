@@ -12,6 +12,13 @@ EHR.model.DataModelManager.registerMetadata('Necropsy', {
                 defaultValue: 'Necropsy',
                 hidden: true
             },
+            chargetype: {
+                allowBlank: true
+            },
+            assistingstaff: {
+                allowBlank: true,
+                hidden: true
+            },
             caseno: {
                 xtype: 'ehr-pathologycasenofield',
                 hidden: false,
@@ -19,6 +26,9 @@ EHR.model.DataModelManager.registerMetadata('Necropsy', {
                     casePrefix: 'A',
                     encounterType: 'Necropsy'
                 }
+            },
+            remark: {
+                hidden: true
             }
         }
     }

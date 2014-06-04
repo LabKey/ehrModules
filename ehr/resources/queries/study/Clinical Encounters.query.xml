@@ -32,7 +32,16 @@
                         </fk>
                     </column>
                     <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
+                        <columnTitle>Charge Unit</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>procedureChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="assistingstaff">
+                        <columnTitle>Assisting Staff</columnTitle>
+                        <isHidden>false</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>procedureChargeType</fkTable>

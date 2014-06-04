@@ -92,8 +92,14 @@
                     <column columnName="birth">
                         <columnTitle>Birth</columnTitle>
                     </column>
+                    <column columnName="estimated">
+                        <columnTitle>Birth Is Estimated?</columnTitle>
+                    </column>
                     <column columnName="originalId">
                         <columnTitle>Original ID</columnTitle>
+                    </column>
+                    <column columnName="arrivalId">
+                        <columnTitle>Arrival ID</columnTitle>
                     </column>
                     <column columnName="cites">
                         <columnTitle>CITES Number</columnTitle>

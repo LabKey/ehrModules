@@ -88,7 +88,14 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
                 text: 'Submit',
                 handler: function(btn){
                     var win = btn.up('window');
-                    win.boundRec.set('codesRaw', win.codes ? win.codes.join(';') : null);
+                    var codes = [];
+                    if (win.codes){
+                        for (var i=0;i<win.codes.length;i++){
+                            codes.push((i + 1) + '<>' + win.codes[i]);
+                        }
+                    }
+
+                    win.boundRec.set('codesRaw', codes.length ? codes.join(';') : null);
                     win.close();
                 }
             },{
@@ -122,6 +129,16 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
         if (!Ext4.isArray(codes)){
             if (codes){
                 codes = codes.split(';');
+                var newCodes = [];
+                Ext4.Array.forEach(codes, function(c){
+                    c = c.split('<>');
+                    LDK.Assert.assertTrue('Improper SNOMED code: ' + c, c.length == 2);
+                    if (c.length == 2){
+                        newCodes.push(c[1]);
+                    }
+                }, this);
+
+                codes = newCodes;
             }
             else {
                 codes = [];

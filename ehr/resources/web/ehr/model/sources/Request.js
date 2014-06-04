@@ -168,6 +168,10 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             },
             remark: {
                 hidden: false
+            },
+            chargetype: {
+                hidden: false,
+                allowBlank: false
             }
         },
         'onprc_ehr.housing_transfer_requests': {

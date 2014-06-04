@@ -16,7 +16,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
 
         Ext4.applyIf(this, {
             modal: true,
-            width: 900,
+            width: 1000,
             closeAction: 'destroy',
             title: 'Copy From ' + this.sourceLabel,
             bodyStyle: 'padding: 5px;',
@@ -102,6 +102,8 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
         },{
             html: '<b>Project</b>'
         },{
+            html: '<b>Charge Unit</b>'
+        },{
             html: '<b>Performed By</b>'
         },{
             html: '<b>Skip?</b>'
@@ -130,6 +132,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
 //                runid: keyFields.indexOf('runid') > -1 ? record.get('runid') : null,
                 performedby: [],
                 projects: [],
+                chargeUnits: [],
                 dates: [],
                 total: 0
             };
@@ -139,6 +142,8 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 keys[key].performedby.push(record.get('performedby'));
             if (record.get('project'))
                 keys[key].projects.push(record.get('project'));
+            if (record.fields.get('chargetype') && record.get('chargetype'))
+                keys[key].chargeUnits.push(record.get('chargetype'));
             keys[key].dates.push(record.get('date'))
         }, this);
 
@@ -168,6 +173,9 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             o.projects = Ext4.unique(o.projects);
             var project = o.projects.length == 1 ? o.projects[0] : null;
 
+            o.chargeUnits = Ext4.unique(o.chargeUnits);
+            var chargeUnit = o.chargeUnits.length == 1 ? o.chargeUnits[0] : null;
+
             items.push({
                 xtype: 'xdatetime',
                 width: 300,
@@ -187,6 +195,25 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 fieldName: 'project',
                 key: key,
                 value: project
+            });
+
+            items.push({
+                xtype: 'labkey-combo',
+                store: {
+                    type: 'labkey-store',
+                    schemaName: 'onprc_billing_public',
+                    queryName: 'chargeUnits',
+                    autoLoad: true
+                },
+                valueField: 'chargetype',
+                displayField: 'chargetype',
+                matchFieldWidth: false,
+                showInactive: true,
+                fieldLabel: null,
+                width: 160,
+                fieldName: 'chargetype',
+                key: key,
+                value: chargeUnit
             });
 
             items.push({
@@ -210,7 +237,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             border: false,
             layout: {
                 type: 'table',
-                columns: 5
+                columns: 6
             },
             defaults: {
                 border: false,

@@ -14,7 +14,7 @@
 Ext4.define('EHR.window.AddAnimalsWindow', {
     extend: 'Ext.window.Window',
 
-    MAX_ANIMALS: 250,
+    MAX_ANIMALS: 350,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -268,7 +268,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             ];
 
             this.doQuery({
-                schemaName: 'ehr',
+                schemaName: 'study',
                 queryName: 'animal_group_members',
                 filterArray: filterArray
             });

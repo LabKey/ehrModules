@@ -42,6 +42,7 @@ Ext4.define('EHR.window.RoomTransferWindow', {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
                     queryName: 'housing_reason',
+                    filterArray: [LABKEY.Filter.create('date_disabled', null, LABKEY.Filter.Types.ISBLANK)],
                     autoLoad: true
                 }
             },{

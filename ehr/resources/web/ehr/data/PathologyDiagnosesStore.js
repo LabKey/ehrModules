@@ -68,7 +68,7 @@ Ext4.define('EHR.data.PathologyDiagnosesStore', {
     updateSortOrder: function(record){
         var params = {};
         var sort_order = record.get('sort_order');
-        if (!record.get('sort_order')){
+        if (Ext4.isEmpty(record.get('sort_order'))){
             params.sort_order = this.getNextSortOrder();
             sort_order = params.sort_order;
         }

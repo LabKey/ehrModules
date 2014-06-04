@@ -250,7 +250,8 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                                             store.sync({
                                                 scope: this,
                                                 success: function(){
-                                                    Ext4.Msg.hide();
+                                                    if (Ext4.Msg.isVisible())
+                                                        Ext4.Msg.hide();
                                                     store.load();
                                                 }
                                             });
@@ -548,6 +549,20 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     }
                 },
                 columns: [{
+                    xtype: 'actioncolumn',
+                    width: 40,
+                    icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
+                    tooltip: 'Edit',
+                    handler: function(view, rowIndex, colIndex, item, e, rec){
+                        Ext4.create('EHR.window.CreateProblemWindow', {
+                            title: 'Edit Problem',
+                            caseRecord: view.up('window').boundRecord,
+                            problemRecord: rec,
+                            mode: 'edit',
+                            problemStore: rec.store
+                        }).show();
+                    }
+                },{
                     dataIndex: 'category',
                     width: 180,
                     header: 'Problem'
@@ -578,95 +593,9 @@ Ext4.define('EHR.window.EditCaseWindow', {
                             var grid = button.up('grid');
                             LDK.Assert.assertNotEmpty('No bound record', this.boundRecord);
 
-                            Ext4.create('Ext.window.Window', {
-                                modal: true,
-                                boundRecord: this.boundRecord,
-                                title: 'Add Problem',
-                                bodyStyle: 'padding: 5px;',
-                                defaults: {
-                                    width: 350
-                                },
-                                items: [{
-                                    xtype: 'labkey-combo',
-                                    fieldLabel: 'Problem',
-                                    valueField: 'value',
-                                    displayField: 'value',
-                                    itemId: 'category',
-                                    anyMatch: true,
-                                    queryMode: 'local',
-                                    forceSelection: true,
-                                    store: {
-                                        type: 'labkey-store',
-                                        schemaName: 'ehr_lookups',
-                                        queryName: 'problem_list_category',
-                                        autoLoad: true
-                                    },
-                                    listeners: {
-                                        change: function(field, val){
-                                            var sc = field.up('panel').down('#subcategory');
-                                            sc.store.filterArray = [LABKEY.Filter.create('category', val)]
-                                            sc.store.load();
-                                            sc.setDisabled(false);
-                                        },
-                                        render: function(field){
-                                            if (field.getValue()){
-                                                field.fireEvent('change', field, field.getValue());
-                                            }
-                                        }
-                                    }
-                                },{
-                                    xtype: 'labkey-combo',
-                                    fieldLabel: 'Subcategory',
-                                    valueField: 'value',
-                                    displayField: 'value',
-                                    itemId: 'subcategory',
-                                    disabled: true,
-                                    anyMatch: true,
-                                    queryMode: 'local',
-                                    forceSelection: true,
-                                    store: {
-                                        type: 'labkey-store',
-                                        schemaName: 'ehr_lookups',
-                                        queryName: 'problem_list_subcategory',
-                                        columns: 'value,category'
-                                    }
-                                },{
-                                    xtype: 'datefield',
-                                    fieldLabel: 'Open Date',
-                                    itemId: 'dateField',
-                                    maxValue: new Date(),
-                                    //cant open prior to case open
-                                    minValue: this.boundRecord.get('date'),
-                                    value: new Date()
-                                }],
-                                buttons: [{
-                                    text: 'Submit',
-                                    handler: function(btn){
-                                        var win = btn.up('window');
-                                        if (!win.down('#category').getValue() || !win.down('#dateField').getValue()){
-                                            Ext4.Msg.alert('Error', 'Must enter the problem and date');
-                                            return;
-                                        }
-
-                                        var newModel = grid.store.createModel({});
-                                        newModel.set({
-                                            Id: win.boundRecord.get('Id'),
-                                            caseid: win.boundRecord.get('objectid'),
-                                            category: win.down('#category').getValue(),
-                                            subcategory: win.down('#subcategory').getValue(),
-                                            date: win.down('#dateField').getValue()
-                                        });
-
-                                        grid.store.add(newModel);
-                                        grid.store.sync();
-                                        win.close();
-                                    }
-                                },{
-                                    text: 'Cancel',
-                                    handler: function(btn){
-                                        btn.up('window').close();
-                                    }
-                                }]
+                            Ext4.create('EHR.window.CreateProblemWindow', {
+                                caseRecord: this.boundRecord,
+                                problemStore: grid.store
                             }).show();
                         }
                     },{
@@ -686,7 +615,14 @@ Ext4.define('EHR.window.EditCaseWindow', {
                                 }
                             }, this);
 
-                            grid.store.sync();
+                            Ext4.Msg.wait('Saving...');
+                            grid.store.sync({
+                                scope: this,
+                                success: function(){
+                                    Ext4.Msg.hide();
+                                },
+                                failure: LDK.Utils.getErrorCallback()
+                            });
                         }
                     }]
                 }]
@@ -963,3 +899,169 @@ Ext4.define('EHR.window.OpenCaseWindow', {
         });
     }
 });
+
+/**
+ * @cfg mode
+ * @cfg caseRecord
+ * @cfg problemRecord
+ */
+Ext4.define('EHR.window.CreateProblemWindow', {
+    extend: 'Ext.window.Window',
+    mode: 'insert',
+
+    initComponent: function(){
+        Ext4.apply(this, {
+            modal: true,
+            title: this.mode == 'edit' ? 'Edit Problem' : 'Add Problem',
+            bodyStyle: 'padding: 5px;',
+            defaults: {
+                width: 350
+            },
+            items: [{
+                xtype: 'labkey-combo',
+                fieldLabel: 'Problem',
+                valueField: 'value',
+                displayField: 'value',
+                itemId: 'category',
+                anyMatch: true,
+                queryMode: 'local',
+                forceSelection: true,
+                value: this.problemRecord ? this.problemRecord.get('category') : null,
+                store: {
+                    type: 'labkey-store',
+                    schemaName: 'ehr_lookups',
+                    queryName: 'problem_list_category',
+                    autoLoad: true
+                },
+                listeners: {
+                    change: function(field, val){
+                        var sc = field.up('panel').down('#subcategory');
+                        var initialValue = sc.getValue();
+                        sc.store.filterArray = [LABKEY.Filter.create('category', val)];
+                        sc.store.load({
+                            scope: this,
+                            callback: function(){
+                                if (initialValue){
+                                    sc.setValue(initialValue);
+                                }
+                            }
+                        });
+                        sc.setDisabled(false);
+                    },
+                    render: function(field){
+                        if (field.getValue()){
+                            field.fireEvent('change', field, field.getValue());
+                        }
+                    }
+                }
+            },{
+                xtype: 'labkey-combo',
+                fieldLabel: 'Subcategory',
+                valueField: 'value',
+                displayField: 'value',
+                itemId: 'subcategory',
+                value: this.problemRecord ? this.problemRecord.get('subcategory') : null,
+                disabled: (this.mode == 'insert') || !(this.problemRecord && this.problemRecord.get('category')),
+                anyMatch: true,
+                queryMode: 'local',
+                forceSelection: true,
+                store: {
+                    type: 'labkey-store',
+                    schemaName: 'ehr_lookups',
+                    queryName: 'problem_list_subcategory',
+                    columns: 'value,category',
+                    filterArray: (this.problemRecord && this.problemRecord.get('category')) ? [LABKEY.Filter.create('category', this.problemRecord.get('category'))] : null,
+                    autoLoad: (this.problemRecord && this.problemRecord.get('category'))
+                }
+            },{
+                xtype: 'datefield',
+                fieldLabel: 'Open Date',
+                itemId: 'dateField',
+                maxValue: new Date(),
+                //cant open prior to case open
+                minValue: this.caseRecord.get('date'),
+                value: this.problemRecord ? this.problemRecord.get('date') : new Date()
+            },{
+                xtype: 'datefield',
+                fieldLabel: 'End Date',
+                itemId: 'enddateField',
+                hidden: this.mode == 'insert',
+                //cant open prior to case open
+                minValue: this.caseRecord.get('date'),
+                value: this.problemRecord ? this.problemRecord.get('enddate') : null
+            }],
+            buttons: [{
+                text: 'Submit',
+                scope: this,
+                handler: function(btn){
+                    var win = btn.up('window');
+                    if (!win.down('#category').getValue() || !win.down('#dateField').getValue()){
+                        Ext4.Msg.alert('Error', 'Must enter the problem and date');
+                        return;
+                    }
+
+                    if (win.mode == 'insert'){
+                        var newModel = win.problemStore.createModel({});
+                        newModel.set({
+                            Id: win.caseRecord.get('Id'),
+                            caseid: win.caseRecord.get('objectid'),
+                            category: win.down('#category').getValue(),
+                            subcategory: win.down('#subcategory').getValue(),
+                            date: win.down('#dateField').getValue()
+                        });
+
+                        win.problemStore.add(newModel);
+                    }
+                    else {
+                        this.problemRecord.set({
+                            category: win.down('#category').getValue(),
+                            subcategory: win.down('#subcategory').getValue(),
+                            date: win.down('#dateField').getValue(),
+                            enddate: win.down('#enddateField').getValue()
+                        });
+                    }
+
+                    Ext4.Msg.wait('Saving...');
+                    win.problemStore.sync({
+                        scope: this,
+                        success: function(){
+                            Ext4.Msg.hide();
+                        },
+                        failure: LDK.Utils.getErrorCallback()
+                    });
+                    win.close();
+                }
+            },{
+                text: 'Delete',
+                hidden: !(this.mode == 'edit' && EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'delete', [{schemaName: 'study', queryName: 'Problem List'}])),
+                handler: function(btn){
+                    Ext4.Msg.confirm('Delete Problem', 'This will permanently delete this problem.  Are you sure you want to do this?', function(val){
+                        if (val == 'yes'){
+                            var win = btn.up('window');
+                            var store = win.problemRecord.store;
+                            store.remove(win.problemRecord);
+
+                            Ext4.Msg.wait('Saving...');
+                            store.sync({
+                                scope: this,
+                                success: function(){
+                                    Ext4.Msg.hide();
+                                },
+                                failure: LDK.Utils.getErrorCallback()
+                            });
+                            win.close();
+                        }
+                    }, this);
+                }
+            },{
+                text: 'Cancel',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
+        });
+
+        this.callParent(arguments);
+    }
+});
+

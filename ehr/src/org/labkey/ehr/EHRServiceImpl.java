@@ -519,6 +519,7 @@ public class EHRServiceImpl extends EHRService
         return getButtons(ti, _tbarButtons);
     }
 
+    @NotNull
     private List<ButtonConfigFactory> getButtons(TableInfo ti, Map<String, Map<String, List<ButtonConfigFactory>>> map)
     {
         List<ButtonConfigFactory> buttons = new ArrayList<>();

@@ -13,6 +13,10 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
             helper.getJavaHelper().closeActiveProblemsForCase(row.id, row.enddate, row.objectid);
         }
 
+        //cascade update linked problems if ID changes:
+        if (oldRow && oldRow.Id != row.Id && row.objectid){
+            helper.getJavaHelper().updateProblemsFromCase(row.Id, oldRow.Id, row.objectid);
+        }
     }
 });
 

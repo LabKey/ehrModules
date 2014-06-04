@@ -184,6 +184,51 @@ Ext4.define('EHR.panel.EnterDataPanel', {
 //                        chargeType: 'DCM: Surgery'
                     }]
                 },{
+                    header: 'Procedure Requests',
+                    renderer: function(item){
+                        return {
+                            layout: 'hbox',
+                            bodyStyle: 'padding: 2px;background-color: transparent;',
+                            defaults: {
+                                border: false
+                            },
+                            items: [{
+                                html: item.name + ':',
+                                width: 200
+                            },{
+                                xtype: 'ldk-linkbutton',
+                                text: 'Unapproved Requests',
+                                linkCls: 'labkey-text-link',
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
+                            },{
+                                xtype: 'ldk-linkbutton',
+                                text: 'Approved Requests',
+                                linkCls: 'labkey-text-link',
+                                style: 'padding-left: 5px;',
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
+                            },{
+                                xtype: 'ldk-linkbutton',
+                                text: 'Scheduled Today',
+                                linkCls: 'labkey-text-link',
+                                style: 'padding-left: 5px;',
+                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                            }]
+                        }
+                    },
+                    items: [{
+                        name: 'ASB Services',
+                        chargeType: 'DCM: ASB Services'
+//                    },{
+//                        name: 'Clinical Services',
+//                        chargeType: 'DCM: Clinical Services'
+                    },{
+                        name: 'Colony Services',
+                        chargeType: 'DCM: Colony Services'
+//                    },{
+//                        name: 'Surgery Services',
+//                        chargeType: 'DCM: Surgery'
+                    }]
+                },{
                     header: 'Lab Tests',
                     renderer: function(item){
                         return item;

@@ -103,7 +103,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     //we allow the client to pass limited options using extraContext
     //this function is where all processing of client JSON -> server options should reside
     function setScriptOptionsFromExtraContext(){
-        LABKEY.ExtAdapter.each(['skipIdFormatCheck', 'allowAnyId'], function(name){
+        LABKEY.ExtAdapter.each(['skipIdFormatCheck', 'allowAnyId', 'allowDatesInDistantPast'], function(name){
             if (extraContext[name])
                 scriptOptions[name] = extraContext[name];
         }, this);
@@ -500,7 +500,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         onDeathDeparture: function(id, date){
             //close housing, assignments, treatments
             console.log('on death departure: ' + id);
-            this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Animal Record Flags', 'Diet'], id, date);
+            this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Animal Record Flags', 'Diet', 'Animal Group Members'], id, date);
         },
 
         isRequiresStatusRecalc: function(){

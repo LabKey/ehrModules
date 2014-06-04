@@ -188,6 +188,10 @@ Ext4.define('EHR.plugin.Databind', {
     //this is called after the a field's change event is called
     //it should update the values in the record, cause an update event to fire on that record, but not re-trigger change events on the fields
     onFieldValueChange: function(){
+        if (!this.panel || this.panel.isDestroyed){
+            return;
+        }
+
         var form = this.panel.getForm();
         var record = form.getRecord();
         if (record){

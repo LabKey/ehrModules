@@ -1758,17 +1758,6 @@
             <ns:column columnName="name"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="animal_condition" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Animal Conditions</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="code"/>
-            <ns:column columnName="meaning"/>
-            <ns:column columnName="created"/>
-            <ns:column columnName="createdby"/>
-            <ns:column columnName="modified"/>
-            <ns:column columnName="modifiedby"/>
-        </ns:columns>
-    </ns:table>
     <ns:table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Rooms</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
@@ -1943,6 +1932,9 @@
                     <ns:fkTable>clinpath_collection_method</ns:fkTable>
                     <ns:fkColumnName>value</ns:fkColumnName>
                 </ns:fk>
+            </ns:column>
+            <ns:column columnName="method">
+                <ns:columnTitle>Method</ns:columnTitle>
             </ns:column>
             <ns:column columnName="alertOnComplete">
                 <ns:columnTitle>Alert On Complete?</ns:columnTitle>

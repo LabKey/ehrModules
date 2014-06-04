@@ -24,10 +24,11 @@ Ext4.define('EHR.form.field.RoomFieldSingle', {
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
                 columns: 'room,area',
-                sort: 'sort_order',
+                sort: 'room_sortValue',
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
-            }
+            },
+            plugins: ['ldk-usereditablecombo']
         });
 
         this.callParent(arguments);

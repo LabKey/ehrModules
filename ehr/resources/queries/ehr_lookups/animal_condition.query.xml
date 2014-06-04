@@ -1,10 +1,11 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="animal_group_housing" tableDbType="TABLE">
+            <table tableName="animal_condition" tableDbType="TABLE">
+                <tableTitle>Animal Condition Codes</tableTitle>
                 <columns>
-                    <column columnName="rooms">
-                        <displayWidth>300</displayWidth>
+                    <column columnName="code">
+                        <isKeyField>true</isKeyField>
                     </column>
                 </columns>
             </table>

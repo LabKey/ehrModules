@@ -55,7 +55,7 @@ Ext4.define('EHR.form.field.ProjectField', {
             schemaName: 'ehr',
             queryName: 'project',
             columns: 'project,protocol,protocol/displayName,displayName,account,investigatorId/lastName',
-            filterArray: this.showInactive ? null : [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+            filterArray: this.showInactive ? null : [LABKEY.Filter.create('enddateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)],
             sort: 'displayName',
             autoLoad: true
         };

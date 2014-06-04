@@ -184,6 +184,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             serverMsg += '.  Exception: ' + response.exception + '\n\n';
         }
 
+        if (response && response.timedout){
+            serverMsg += 'The request timed out.\n';
+        }
+
         if (responseJson && responseJson.stackTrace && responseJson.stackTrace.length){
             serverMsg += '.  Stack: ' + responseJson.stackTrace.join('\n') + '\n\n';
         }

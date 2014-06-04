@@ -78,6 +78,14 @@
                     <column columnName="notAtCenter">
                         <columnTitle>Death Was Not At Center</columnTitle>
                     </column>
+                    <column columnName="finalCondition">
+                        <columnTitle>Final Condition</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>animal_condition</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

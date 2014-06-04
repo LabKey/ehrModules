@@ -29,7 +29,6 @@ import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 import org.labkey.test.Locator;
-import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -58,12 +57,9 @@ import java.util.Map;
 import java.util.Set;
 
 @Category({External.class, EHR.class, ONPRC.class})
-public class ONPRC_EHRTest extends AbstractEHRTest
+public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
-    protected static final String REFERENCE_STUDY_PATH = "/server/customModules/onprc_ehr/resources/referenceStudy";
-    protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
-    protected static final String ID_PREFIX = "_testid";
 
     @Override
     protected String getProjectName()
@@ -75,12 +71,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     public String getContainerPath()
     {
         return PROJECT_NAME;
-    }
-
-    @Override
-    protected void goToEHRFolder()
-    {
-        goToProjectHome();
     }
 
     @BeforeClass
@@ -95,15 +85,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         rHelper.ensureRConfig();
 
         currentTest = initTest;
-    }
-
-    @Override
-    @LogMethod
-    protected void initProject() throws Exception
-    {
-        super.initProject();
-
-        cacheIds(Arrays.asList(MORE_ANIMAL_IDS));
     }
 
     @Test @Ignore("Placeholder: No tests yet")
@@ -251,14 +232,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
         Assert.assertTrue(isTextPresent("Console output"));
-    }
-
-    @Override
-    protected void setEHRModuleProperties()
-    {
-        super.setEHRModuleProperties();
-
-        setModuleProperties(Arrays.asList(new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath())));
     }
 
     @Test
@@ -439,8 +412,13 @@ public class ONPRC_EHRTest extends AbstractEHRTest
 
     protected void createBirthRecords() throws Exception
     {
+        log("creating birth records");
+
         if (_hasCreatedBirthRecords)
+        {
+            log("birth records already created, skipping");
             return;
+        }
 
         //note: these should cascade insert into demographics
         EHRClientAPIHelper apiHelper = new EHRClientAPIHelper(this, getProjectName());
@@ -478,14 +456,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         cacheIds(createdIds);
 
         _hasCreatedBirthRecords = true;
-    }
-
-    private void cacheIds(Collection<String> ids)
-    {
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/getDemographics.view?ids=" + StringUtils.join(ids, "&ids="));
-        waitForText("\"" + ids.iterator().next() + "\" : {");
-
-        goToProjectHome();
     }
 
     @Test
@@ -791,19 +761,12 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     @Test
     public void doNotificationTests()
     {
+        setupNotificationService();
+
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
         waitAndClickAndWait(Locator.tagContainingText("a", "Notification Admin"));
 
-        //set general settings
-        _helper.waitForCmp("field[fieldLabel='Notification User']");
-        Ext4FieldRef.getForLabel(this, "Notification User").setValue(PasswordUtil.getUsername());
-        Ext4FieldRef.getForLabel(this, "Reply Email").setValue("fakeEmail@fakeDomain.com");
-        Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Save']", Ext4CmpRef.class);
-        btn.waitForEnabled();
-        waitAndClick(Ext4Helper.Locators.ext4Button("Save"));
-        waitForElement(Ext4Helper.ext4Window("Success"));
-        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         _helper.waitForCmp("field[fieldLabel='Notification User']");
 
         Locator manageLink = Locator.tagContainingText("a", "Manage Subscribed Users/Groups").index(1);
@@ -868,9 +831,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
     protected void createProjectAndFolders()
     {
         _containerHelper.createProject(PROJECT_NAME, "ONPRC EHR");
-
-        //NOTE: it might be nice to split this into a separate test; however, there is a lot of shared setup
-        enableModule(PROJECT_NAME, "ONPRC_Billing");
     }
 
     @Override
@@ -913,44 +873,6 @@ public class ONPRC_EHRTest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         clickButton("Populate Formulary", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-
-        //Note: this is created because some of the billing code expects it.  ideally this is eventually split into a separate module + test
-        SchemaHelper schemaHelper = new SchemaHelper(this);
-        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
-    }
-
-    @Override
-    protected void doStudyImport()
-    {
-        File path = new File(getLabKeyRoot(), REFERENCE_STUDY_PATH);
-        setPipelineRoot(path.getPath());
-
-        getArtifactCollector().addArtifactLocation(path, new FileFilter()
-        {
-            @Override
-            public boolean accept(File pathname)
-            {
-                return pathname.getName().endsWith(".log");
-            }
-        });
-        goToModule("Pipeline");
-        clickButton("Process and Import Data");
-
-        _fileBrowserHelper.expandFileBrowserRootNode();
-        _fileBrowserHelper.clickFileBrowserFileCheckbox("study.xml");
-
-        if (isTextPresent("Reload Study"))
-            _fileBrowserHelper.selectImportDataAction("Reload Study");
-        else
-            _fileBrowserHelper.selectImportDataAction("Import Study");
-
-        waitForPipelineJobsToComplete(1, "Study import", false);
-    }
-
-    @Override
-    protected String getStudyPolicyXML()
-    {
-        return "/sampledata/study/onprcEHRStudyPolicy.xml";
     }
 
     @Test

@@ -39,11 +39,12 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
             }
         }
 
-        if (modifiedFieldNames && (modifiedFieldNames.indexOf('Id') > -1 || modifiedFieldNames.indexOf('project') > -1)){
+        if (modifiedFieldNames && (modifiedFieldNames.indexOf('Id') > -1 || modifiedFieldNames.indexOf('project') > -1 || modifiedFieldNames.indexOf('chargetype') > -1)){
             if (record.get('objectid')){
                 var toApply = {
                     Id: record.get('Id'),
-                    project: record.get('project')
+                    project: record.get('project'),
+                    chargetype: record.get('chargetype')
                 };
 
                 this.storeCollection.clientStores.each(function(cs){
@@ -51,7 +52,8 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
                         return;
                     }
 
-                    var hasProject = cs.getFields().get('project') != null;
+                    var projectField = cs.getFields().get('project');
+                    var chargeTypeField = cs.getFields().get('chargetype');
                     var hasChanges = false;
 
                     if (cs.getFields().get('parentid')){
@@ -59,8 +61,17 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
                             cs.each(function(r){
                                 if (r.get('parentid') === record.get('objectid')){
                                     var obj = {};
-                                    if (hasProject && r.get('project') !== record.get('project')){
-                                        obj.project = record.get('project');
+
+                                    if (projectField){
+                                        if (!r.get('project') || (projectField.inheritFromParent && r.get('project') !== record.get('project'))){
+                                            obj.project = record.get('project');
+                                        }
+                                    }
+
+                                    if (chargeTypeField){
+                                        if (!r.get('chargetype') || (chargeTypeField.inheritFromParent && r.get('chargetype') !== record.get('chargetype'))){
+                                            obj.chargetype = record.get('chargetype');
+                                        }
                                     }
 
                                     if (r.get('Id') !== record.get('Id')){

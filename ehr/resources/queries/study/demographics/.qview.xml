@@ -2,6 +2,7 @@
     <columns>
         <column name="Id"/>
         <column name="species"/>
+        <column name="geographic_origin"/>
         <column name="gender"/>
         <column name="calculated_status">
             <properties>

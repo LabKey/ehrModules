@@ -5,6 +5,7 @@
  */
 /**
  * @cfg dataRegionName
+ * @cfg queryName
  */
 Ext4.define('EHR.window.ReassignRequestWindow', {
     extend: 'Ext.window.Window',
@@ -14,7 +15,7 @@ Ext4.define('EHR.window.ReassignRequestWindow', {
     title: 'Reassign Requests',
 
     statics: {
-        buttonHandler: function(dataRegionName){
+        buttonHandler: function(dataRegionName, queryName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
             if (!checked || !checked.length){
@@ -23,7 +24,8 @@ Ext4.define('EHR.window.ReassignRequestWindow', {
             }
 
             Ext4.create('EHR.window.ReassignRequestWindow', {
-                dataRegionName: dataRegionName
+                dataRegionName: dataRegionName,
+                queryName: queryName
             }).show();
         }
     },
@@ -73,19 +75,19 @@ Ext4.define('EHR.window.ReassignRequestWindow', {
             xtype: 'combo',
             editable: false,
             forceSelection: true,
-            fieldLabel: 'Charge Type',
+            fieldLabel: 'Charge Unit',
             width: this.fieldWidth,
             queryMode: 'local',
             store: {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
-                queryName: 'bloodChargeType',
-                columns: 'value',
-                sort: 'value',
+                queryName: this.queryName,
+                columns: 'chargetype',
+                sort: 'chargetype',
                 autoLoad: true
             },
-            displayField: 'value',
-            valueField: 'value',
+            displayField: 'chargetype',
+            valueField: 'chargetype',
             itemId: 'chargeType',
             name: 'chargetype'
         }]

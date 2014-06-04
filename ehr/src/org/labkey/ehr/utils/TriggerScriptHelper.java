@@ -84,6 +84,7 @@ import javax.mail.Address;
 import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -106,6 +107,7 @@ public class TriggerScriptHelper
 {
     private Container _container = null;
     private User _user = null;
+    protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
     private Map<Integer, String> _cachedAccounts = new HashMap<>();
@@ -166,6 +168,35 @@ public class TriggerScriptHelper
             SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND (enddate IS NULL OR enddate > ?)", enddate, id, enddate);
             new SqlExecutor(ti.getSchema()).execute(sql);
         }
+    }
+
+    public void closeActiveRecords(String schemaName, String queryName, String id, Date enddate, String idFieldName, String endFieldName)
+    {
+        Container container = getContainer();
+        User user = getUser();
+
+        //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
+        SQLFragment sql = new SQLFragment("UPDATE " + schemaName + "." + queryName + " SET " + endFieldName + " = ? WHERE " + idFieldName + " = ? AND (" + endFieldName + " IS NULL OR " + endFieldName + " > ?)", enddate, id, enddate);
+        new SqlExecutor(DbScope.getLabkeyScope()).execute(sql);
+    }
+
+    public void updateProblemsFromCase(String newId, String oldId, String caseId)
+    {
+        Container container = getContainer();
+        User user = getUser();
+
+        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        DataSet dataset = StudyService.get().getDataSet(container, datasetId);
+        if (dataset == null){
+            _log.info("Unable to find problem list dataset");
+            return;
+        }
+
+        //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
+        TableInfo ti = dataset.getTableInfo(user);
+        SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET participantid = ? WHERE caseid = ? and participantid = ?", newId, caseId, oldId);
+        int modified = new SqlExecutor(ti.getSchema()).execute(sql);
+        _log.info("updated Id on " + modified + " problems due to Id change on case: " + caseId);
     }
 
     public void closeActiveProblemsForCase(String id, Date enddate, String caseId)
@@ -341,13 +372,28 @@ public class TriggerScriptHelper
 
     private TableInfo getTableInfo(String schema, String query)
     {
+        return getTableInfo(schema, query, false);
+    }
+
+    private TableInfo getTableInfo(String schema, String query, boolean suppressError)
+    {
         UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), schema);
         if (us == null)
-            throw new IllegalArgumentException("Unable to find schema: " + schema);
+        {
+            if (!suppressError)
+                throw new IllegalArgumentException("Unable to find schema: " + schema);
+
+            return null;
+        }
 
         TableInfo ti = us.getTable(query);
         if (ti == null)
-            throw new IllegalArgumentException("Unable to find table: " + schema + "." + query);
+        {
+            if (!suppressError)
+                throw new IllegalArgumentException("Unable to find table: " + schema + "." + query);
+
+            return null;
+        }
 
         return ti;
     }
@@ -543,7 +589,8 @@ public class TriggerScriptHelper
 
     public void announceIdsModified(String schema, String query, List<String> ids)
     {
-        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), schema, query, ids);
+        //TODO: consider making this run asynchronously in case a deadlock kills it.  this could cause the client request to fail, even when these records do exist
+        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), schema, query, ids, false);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -617,14 +664,15 @@ public class TriggerScriptHelper
         if (id == null)
             return;
 
-        AnimalRecord ar = EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
-        if (ar != null && ar.getCalculatedStatus() != null)
+        TableInfo ti = getTableInfo("study", "demographics");
+        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("Id"), id), null);
+        if (ts.exists())
         {
             _log.info("Id already exists, no need to create demographics record: " + id);
             return;
         }
 
-        TableInfo ti = getTableInfo("study", "demographics");
+
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
         EHRQCState qc = getQCStateForLabel("Completed");
@@ -1383,12 +1431,12 @@ public class TriggerScriptHelper
     //we want to catch situations where we insert an opened-ended housing record
     //when there is already another opened ended record with a later date.
     //if we inserted an open ended record and there is a pre-existing one with an earlier start date, this is ok since the latter will be closed out
-    private Integer getOpenEndedHousingOverlaps(String id, Date date, Date enddate, List<Map<String, Object>> recordsInTransaction, String rowObjectId, String targetQcLabel)
+    private Date getOpenEndedHousingOverlaps(String id, Date date, List<Map<String, Object>> recordsInTransaction, String rowObjectId)
     {
         //if provided, we inspect the other records in this transaction and add their values
         //first determine which other records from this transction should be considered
         Set<String> ignoredObjectIds = new HashSet<String>();
-        int otherOpenEndedRecords = 0;
+        Date highestOpenEnded = null;
 
         if (recordsInTransaction != null)
         {
@@ -1397,31 +1445,11 @@ public class TriggerScriptHelper
                 Map<String, Object> map = new CaseInsensitiveHashMap<>(origMap);
                 if (!map.containsKey("date"))
                 {
-                    _log.warn("TriggerScriptHelper.hasHousingOverlaps was passed a previous record lacking a date");
+                    _log.warn("TriggerScriptHelper.getOpenEndedHousingOverlaps was passed a previous record lacking a date");
                     continue;
                 }
 
-                EHRQCState qc = null;
-                if (targetQcLabel != null)
-                {
-                    qc = getQCStateForLabel(targetQcLabel);
-                }
-                else if (map.containsKey("QCState"))
-                {
-                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
-                    qc = getQCStateForRowId(i);
-                }
-                else if (map.containsKey("QCStateLabel"))
-                {
-                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
-                }
-
-                if (qc == null || (!qc.isPublicData()))
-                {
-                    _log.info("skipping housing row due to QCState");
-                    continue;
-                }
-
+                //NOTE: we now include all records from any QCState, since housing typically doesnt allow in progress records
                 try
                 {
                     Date now = new Date();
@@ -1441,12 +1469,13 @@ public class TriggerScriptHelper
 
                     if (start.getTime() >= date.getTime())
                     {
-                        otherOpenEndedRecords++;
+                        if (highestOpenEnded == null || date.getTime() > highestOpenEnded.getTime())
+                            highestOpenEnded = date;
                     }
                 }
                 catch (ConversionException e)
                 {
-                    _log.error("TriggerScriptHelper.verifyBloodVolume was unable to parse date", e);
+                    _log.error("TriggerScriptHelper.getOpenEndedHousingOverlaps was unable to parse date", e);
                     continue;
                 }
             }
@@ -1472,20 +1501,34 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("study", "Housing");
         TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
-        otherOpenEndedRecords += ts.getRowCount();
+        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Arrays.asList(new Aggregate(FieldKey.fromString("date"), Aggregate.Type.MAX)));
+        if (aggs.containsKey("date"))
+        {
+            for (Aggregate.Result r : aggs.get("date"))
+            {
+                Date d = (Date)r.getValue();
+                if (d != null)
+                {
+                    if (highestOpenEnded == null || d.getTime() > highestOpenEnded.getTime())
+                    {
+                        highestOpenEnded = d;
+                    }
+                }
+            }
+        }
 
-        return otherOpenEndedRecords;
+        return highestOpenEnded;
     }
 
-    public String onHousingBecomePublic(String id, Date date, Date enddate, String objectid, List<Map<String, Object>> recordsInTransaction, String targetQcLabel)
+    public String validateFutureOpenEndedHousing(String id, Date date, String objectid, List<Map<String, Object>> recordsInTransaction)
     {
-        if (id == null || date == null || enddate != null)
+        if (id == null || date == null)
             return null;
 
 
-        Integer overlapping = getOpenEndedHousingOverlaps(id, date, enddate, recordsInTransaction, objectid, targetQcLabel);
-        if (overlapping > 0)
-            return "You cannot enter an open ended housing while there is another active record starting after this record's start date";
+        Date highestOverlap = getOpenEndedHousingOverlaps(id, date, recordsInTransaction, objectid);
+        if (highestOverlap != null)
+            return "You cannot enter an open ended housing while there is another active record starting after this record's start date (" + _dateTimeFormat.format(highestOverlap) + ")";
 
         return null;
     }
@@ -1623,31 +1666,34 @@ public class TriggerScriptHelper
                     }
 
                     //find groups overlapping date of death
-                    TableInfo groups = getTableInfo("ehr", "animal_group_members");
-                    final Map<FieldKey, ColumnInfo> groupCols = QueryService.get().getColumns(groups, PageFlowUtil.set(FieldKey.fromString("groupId/name")));
-                    SimpleFilter groupFilter = new SimpleFilter(FieldKey.fromString("Id"), id);
-                    groupFilter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
-                    TableSelector groupTs = new TableSelector(groups, groupCols.values(), groupFilter, null);
-                    html.append("<br>Groups: ").append("<br>");
+                    TableInfo groups = getTableInfo("study", "animal_group_members", true);
+                    if (groups != null)
+                    {
+                        final Map<FieldKey, ColumnInfo> groupCols = QueryService.get().getColumns(groups, PageFlowUtil.set(FieldKey.fromString("groupId/name")));
+                        SimpleFilter groupFilter = new SimpleFilter(FieldKey.fromString("Id"), id);
+                        groupFilter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
+                        TableSelector groupTs = new TableSelector(groups, groupCols.values(), groupFilter, null);
+                        html.append("<br>Groups: ").append("<br>");
 
-                    if (groupTs.exists())
-                    {
-                        groupTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                        if (groupTs.exists())
                         {
-                            @Override
-                            public void exec(ResultSet object) throws SQLException
+                            groupTs.forEach(new Selector.ForEachBlock<ResultSet>()
                             {
-                                Results rs = new ResultsImpl(object, groupCols);
-                                if (rs.getString(FieldKey.fromString("groupId/name")) != null)
+                                @Override
+                                public void exec(ResultSet object) throws SQLException
                                 {
-                                    html.append(rs.getString(FieldKey.fromString("groupId/name"))).append("<br>");
+                                    Results rs = new ResultsImpl(object, groupCols);
+                                    if (rs.getString(FieldKey.fromString("groupId/name")) != null)
+                                    {
+                                        html.append(rs.getString(FieldKey.fromString("groupId/name"))).append("<br>");
+                                    }
                                 }
-                            }
-                        });
-                    }
-                    else
-                    {
-                        html.append("No groups").append("<br>");
+                            });
+                        }
+                        else
+                        {
+                            html.append("No groups").append("<br>");
+                        }
                     }
 
                     sendMessage(subject, html.toString(), recipients);
@@ -1863,6 +1909,19 @@ public class TriggerScriptHelper
         return toCreate;
     }
 
+    public void deleteSnomedTags(String objectid) throws Exception
+    {
+        objectid = StringUtils.trimToNull(objectid);
+        if (objectid == null)
+        {
+            return;
+        }
+
+        TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
+        int deleted = Table.delete(snomedTags, new SimpleFilter(FieldKey.fromString("recordid"), objectid, CompareType.EQUAL));
+        _log.info("deleted " + deleted + "snomed tags for record: " + objectid);
+    }
+
     public void updateSNOMEDTags(String id, String objectid, String codes) throws Exception
     {
         codes = StringUtils.trimToNull(codes);
@@ -1882,11 +1941,18 @@ public class TriggerScriptHelper
             for (String code : codeList)
             {
                 sort++;
+                String[] tokens = code.split("<>");
+                if (tokens.length != 2)
+                {
+                    _log.error("Improper SNOMED code string: " + codes);
+                    continue;
+                }
+
                 Map<String, Object> toInsert = new CaseInsensitiveHashMap<>();
                 toInsert.put("id", id);
                 toInsert.put("recordid", objectid);
                 toInsert.put("objectid", new GUID());
-                toInsert.put("code", code);
+                toInsert.put("code", tokens[1]);
                 toInsert.put("sort", sort);
 
                 toInsert.put("container", getContainer().getId());
@@ -2093,5 +2159,16 @@ public class TriggerScriptHelper
                 EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), "study", "housing", new ArrayList<>(new HashSet<>(ids)));
             }
         }
+    }
+
+    /**
+     * This is separate from DemographicsService for speed.  The current use is on birth insert, and sometimes the dam isnt cached.
+     */
+    public String getGeographicOrigin(String id)
+    {
+        TableInfo ti = getTableInfo("study", "demographics");
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("geographic_origin"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+
+        return ts.getObject(String.class);
     }
 }

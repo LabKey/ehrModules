@@ -24,9 +24,9 @@ Ext4.define('EHR.form.field.ProjectIdGeneratorField', {
             bodyStyle: 'padding: 5px;',
             modal: true,
             width: 350,
-            closeAction: 'hide',
+            closeAction: 'destroy',
             items: [{
-                html: 'This helper will identify the next available project ID.  If you enter a 4-digit prefix, it will find the number number in this series.  If you leave this blank, it will find the next highest project number.',
+                html: 'This helper will identify the next available project ID.  If you enter a 4-digit prefix, it will find the next number in this series.  If you leave this blank, it will find the next highest project number.',
                 style: 'padding-bottom: 10px;',
                 border: false
             },{

@@ -78,6 +78,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.remove("Id/age/ageInDays");
         keys.remove("Id/age/ageInYears");
         keys.remove("objectid");
+        keys.remove("demographicsObjectId");
 
         return keys;
     }
@@ -90,5 +91,6 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         // NOTE: this is a column with a java-generated display value.
         // it's a slight hack, but in order to keep consistency, we poke that calculated value in here
         map.put(FieldKey.fromString("Id/age/yearAndDays").toString(), AgeDisplayColumn.getFormattedAge((Date)map.get("birth"), (Date)map.get("death")));
+        map.put("demographicsObjectId", map.get("objectid"));
     }
 }

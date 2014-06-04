@@ -472,6 +472,7 @@ EHR.Server.Utils = new function(){
                     dam: null,
                     gender: ar.getGender(),
                     'gender/origGender': ar.getOrigGender(),
+                    geographic_origin: ar.getGeographicOrigin(),
                     calculated_status: ar.getCalculatedStatus(),
                     departure: ar.getMostRecentDeparture() ? new Date(ar.getMostRecentDeparture().getTime()) : null,
                     sire: null,

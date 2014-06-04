@@ -23,7 +23,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
                 }
             },
             chargetype: {
-                allowBlank: true
+                //NOTE: this will be inherited from the encounters record, so we dont want a default
+                //defaultValue: 'DCM: Surgery Services',
+                allowBlank: false
             }
         },
         'study.treatment_order': {
@@ -36,7 +38,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
                 defaultValue: 'Procedure'
             },
             chargetype: {
-                allowBlank: true
+                //NOTE: this will be inherited from the encounters record, so we dont want a default
+                //defaultValue: 'DCM: Surgery Services',
+                allowBlank: false
             }
         },
         'study.encounters': {
@@ -67,6 +71,11 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             chargetype: {
                 allowBlank: false
             }
+            //TODO: enable with charge changes
+//            assistingstaff: {
+//                hidden: false,
+//                allowBlank: true //will be handled in trigger script
+//            }
         },
         'ehr.snomed_tags': {
             code: {

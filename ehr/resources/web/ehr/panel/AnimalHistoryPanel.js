@@ -19,6 +19,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
     initComponent: function(){
         Ext4.apply(this, {
+            allowEditing: false,
             reportNamespace: EHR.reports
         });
 

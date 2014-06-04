@@ -111,46 +111,50 @@ Ext4.define('EHR.grid.Panel', {
         if (this.columns)
             return;
 
-        this.columns = [{
-            xtype: 'actioncolumn',
-            editable: false,
-            width: 40,
-            icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
-            tooltip: 'Edit',
-            renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
-                var errors = record.validate();
-                if (errors && !errors.isValid()){
-                    cellMetaData.tdCls = 'labkey-grid-cell-invalid';
+        this.columns = [];
 
-                    var messages = [];
-                    errors.each(function(m){
-                        var meta = store.getFields().get(m.field) || {};
-                        messages.push((meta.caption || m.field) + ': ' + m.message);
-                    }, this);
+        if (this.formConfig.allowRowEditing !== false){
+            this.columns.push({
+                xtype: 'actioncolumn',
+                editable: false,
+                width: 40,
+                icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
+                tooltip: 'Edit',
+                renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
+                    var errors = record.validate();
+                    if (errors && !errors.isValid()){
+                        cellMetaData.tdCls = 'labkey-grid-cell-invalid';
 
-                    messages = Ext4.Array.unique(messages);
-                    if (messages.length){
-                        messages.unshift('Errors:');
-                        cellMetaData.tdAttr = " data-qtip=\"" + Ext4.util.Format.htmlEncode(messages.join('<br>')) + "\"";
+                        var messages = [];
+                        errors.each(function(m){
+                            var meta = store.getFields().get(m.field) || {};
+                            messages.push((meta.caption || m.field) + ': ' + m.message);
+                        }, this);
+
+                        messages = Ext4.Array.unique(messages);
+                        if (messages.length){
+                            messages.unshift('Errors:');
+                            cellMetaData.tdAttr = " data-qtip=\"" + Ext4.util.Format.htmlEncode(messages.join('<br>')) + "\"";
+                        }
                     }
-                }
-                return value;
-            },
-            rowEditorPlugin: this.getRowEditorPlugin(),
-            handler: function(view, rowIndex, colIndex, item, e, rec) {
-                var sm = view.getSelectionModel();
+                    return value;
+                },
+                rowEditorPlugin: this.getRowEditorPlugin(),
+                handler: function(view, rowIndex, colIndex, item, e, rec) {
+                    var sm = view.getSelectionModel();
 
-                if (sm instanceof Ext4.selection.CellModel){
-                    sm.setCurrentPosition({
-                        view: view,
-                        row: rowIndex,
-                        column: colIndex
-                    });
-                }
+                    if (sm instanceof Ext4.selection.CellModel){
+                        sm.setCurrentPosition({
+                            view: view,
+                            row: rowIndex,
+                            column: colIndex
+                        });
+                    }
 
-                this.rowEditorPlugin.editRecord(rec);
-            }
-        }];
+                    this.rowEditorPlugin.editRecord(rec);
+                }
+            });
+        }
 
         var firstEditableColumn = -1;
         Ext4.each(this.formConfig.fieldConfigs, function(field, idx){

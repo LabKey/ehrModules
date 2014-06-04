@@ -27,7 +27,6 @@ import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.security.EHRAnimalGroupEditPermission;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRFormularyEditPermission;
 import org.labkey.api.ehr.security.EHRHousingTransferPermission;

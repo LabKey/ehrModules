@@ -12,6 +12,13 @@ EHR.model.DataModelManager.registerMetadata('Biopsy', {
             type: {
                 defaultValue: 'Biopsy'
             },
+            chargetype: {
+                allowBlank: true
+            },
+            assistingstaff: {
+                allowBlank: true,
+                hidden: true
+            },
             procedureid: {
                 getInitialValue: function(val, record){
                     if (val){

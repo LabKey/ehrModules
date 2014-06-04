@@ -521,8 +521,8 @@ public class EHRManager
             }
 
             //add indexes
-            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"runId"}, {"requestid"}, {"participantid", "date"}};
-            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}};
+            String[][] toIndex = new String[][]{{"taskid"}, {"requestid"}, {"participantid", "date"}};
+            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}};
 
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<>();
@@ -558,6 +558,7 @@ public class EHRManager
                     toAdd.add(new String[]{"lsid", "participantid"});
                     toAdd.add(new String[]{"date", "lsid", "participantid"});
                     toAdd.add(new String[]{"date", "include:lsid,participantid,cage,room"});
+                    toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Assignment"))
                 {
@@ -567,10 +568,12 @@ public class EHRManager
                 else if (d.getLabel().equalsIgnoreCase("Clinpath Runs"))
                 {
                     toAdd.add(new String[]{"parentid"});
+                    toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Clinical Encounters"))
                 {
                     toAdd.add(new String[]{"caseno"});
+                    toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Demographics"))
                 {
@@ -588,11 +591,17 @@ public class EHRManager
                     toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC", "include:hx,qcstate,datefinalized,category"});
                     toRemove.add(new String[]{"date", "include:hx,caseid"});
                     toAdd.add(new String[]{"date", "participantid", "lsid", "qcstate", "include:hx,caseid"});
+                    toAdd.add(new String[]{"objectid"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Treatment Orders"))
+                {
+                    toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Cases"))
                 {
                     toAdd.add(new String[]{"enddate", "qcstate", "lsid"});
                     toAdd.add(new String[]{"participantid", "lsid", "assignedvet"});
+                    toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getName().equalsIgnoreCase("clinical_observations"))
                 {

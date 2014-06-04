@@ -37,10 +37,14 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UserDefinedButtonConfig;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
+import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractTableCustomizer;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.AliasedColumn;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
@@ -57,6 +61,7 @@ import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.ehr.EHRModule;
 import org.labkey.ehr.EHRSchema;
 
 import java.io.IOException;
@@ -148,10 +153,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else if (matches(table, "ehr", "animal_groups"))
         {
             customizeAnimalGroups((AbstractTableInfo) table);
-        }
-        else if (matches(table, "ehr", "animal_group_members"))
-        {
-            customizeAnimalGroupMembers((AbstractTableInfo) table);
         }
         else if (matches(table, "ehr_lookups", "snomed"))
         {
@@ -396,12 +397,24 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
+    private void setConceptURI(ColumnInfo ci, String conceptURI)
+    {
+        ci.setConceptURI(conceptURI);
+        if (ci instanceof AliasedColumn)
+        {
+            if (((AliasedColumn)ci).getColumn() != null)
+            {
+                setConceptURI(((AliasedColumn)ci).getColumn(), conceptURI);
+            }
+        }
+    }
+
     private void customizeDataset(DataSetTable ds)
     {
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
 
-        ti.getColumn("Id").setConceptURI(PARTICIPANT_CONCEPT_URI);
+        setConceptURI(ti.getColumn("Id"), PARTICIPANT_CONCEPT_URI);
 
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
         ColumnInfo datasets = ti.getColumn(FieldKey.fromString("DataSets"));
@@ -439,6 +452,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else if (matches(ti, "study", "grossFindings") || matches(ti, "study", "Gross Findings"))
         {
             customizeGrossFindings(ti);
+        }
+        else if (matches(ti, "study", "animal_group_members"))
+        {
+            customizeAnimalGroupMembers((AbstractTableInfo) ti);
         }
         else if (matches(ti, "study", "pathologyDiagnoses") || matches(ti, "study", "Pathology Diagnoses"))
         {
@@ -690,7 +707,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             //programmatic version
             String name2 = "codesRaw";
-            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'") +
+            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'") +
                     "FROM ehr.snomed_tags t " +
                     " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
                     " GROUP BY t.recordid " +
@@ -920,7 +937,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void configureMoreActionsBtn(AbstractTableInfo ti, ButtonBarConfig cfg)
     {
-        List<ButtonConfigFactory> buttons = EHRService.get().getMoreActionsButtons(ti);
+        List<ButtonConfigFactory> buttons = new ArrayList<>(EHRService.get().getMoreActionsButtons(ti));
+        if (ti instanceof DataSetTable)
+        {
+            buttons.add(new EHRShowEditUIButton(ModuleLoader.getInstance().getModule(EHRModule.class), ti.getPublicSchemaName(), ti.getName(), EHRDataAdminPermission.class));
+        }
 
         List<ButtonConfig> existingBtns = cfg.getItems();
         UserDefinedButtonConfig moreActionsBtn = null;
@@ -1098,24 +1119,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
-        ColumnInfo col22 = getWrappedIdCol(us, ds, "historicAnimalGroups", "demographicsAnimalGroups");
-        col22.setLabel("Animal Groups - Historic");
-        col22.setDescription("Displays all animal groups to which this animal has ever belonged");
-        ds.addColumn(col22);
-
-        if (ds.getColumn("animalGroupsPivoted") == null)
-        {
-            UserSchema ehrSchema = getUserSchema(ds, EHRSchema.EHR_SCHEMANAME);
-            if (ehrSchema != null)
-            {
-                ColumnInfo agPivotCol = getWrappedIdCol(ehrSchema, ds, "animalGroupsPivoted", "animalGroupsPivoted");
-                agPivotCol.setLabel("Active Group Summary");
-                agPivotCol.setHidden(true);
-                agPivotCol.setDescription("Displays the active groups for each animal");
-                ds.addColumn(agPivotCol);
-            }
-        }
-
         ColumnInfo id = ds.getColumn(ID_COL);
         if (id != null)
         {
@@ -1192,7 +1195,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeAnimalGroupMembers(AbstractTableInfo table)
     {
-        doSharedCustomization(table);
         addIsActiveCol(table);
     }
 
@@ -1203,11 +1205,15 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "totalAnimals";
         if (table.getColumn(name) == null)
         {
-            SQLFragment sql = new SQLFragment("(select count(distinct g.id) as total from ehr.animal_group_members g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.date <= {fn now()} AND (g.enddate IS NULL or CAST(g.enddate as date) > {fn curdate()})))");
-            ExprColumn totalCol = new ExprColumn(table, name, sql, JdbcType.INTEGER, table.getColumn("rowid"));
-            totalCol.setLabel("Total Animals");
-            totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.isActive~eq=true"));
-            table.addColumn(totalCol);
+            TableInfo realTable = getRealTableForDataSet(table, "Animal Group Members");
+            if (realTable != null)
+            {
+                SQLFragment sql = new SQLFragment("(select count(distinct g.participantid) as total from studydataset." + realTable.getName() + " g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.date <= {fn now()} AND (g.enddate IS NULL or CAST(g.enddate as date) > {fn curdate()})))");
+                ExprColumn totalCol = new ExprColumn(table, name, sql, JdbcType.INTEGER, table.getColumn("rowid"));
+                totalCol.setLabel("Total Animals");
+                totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.isActive~eq=true"));
+                table.addColumn(totalCol);
+            }
         }
 
         LDKService.get().applyNaturalSort(table, "name");

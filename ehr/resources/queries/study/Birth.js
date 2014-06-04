@@ -41,12 +41,11 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
 
         //if room provided, we insert into housing
         if (row.room){
-            helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.room, row.cage);
+            helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.room, (row.cage || null));
         }
 
         if (!helper.isGeneratedByServer()){
-            //if not already present, we insert into demographics
-            helper.getJavaHelper().createDemographicsRecord(row.Id, {
+            var obj = {
                 Id: row.Id,
                 gender: row.gender,
                 dam: row.dam,
@@ -55,7 +54,15 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
                 birth: row.date,
                 date: row.date,
                 calculated_status: EHR.Server.Utils.isLiveBirth(row.cond) ? 'Alive' : 'Dead'
-            });
+            };
+
+            //find dam, if provided
+            if (row.dam){
+                obj.geographic_origin = helper.getJavaHelper().getGeographicOrigin(row.dam);
+            }
+
+            //if not already present, we insert into demographics
+            helper.getJavaHelper().createDemographicsRecord(row.Id, obj);
         }
     }
 }

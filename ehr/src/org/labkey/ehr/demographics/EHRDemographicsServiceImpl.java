@@ -224,7 +224,12 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         asyncCache(c, ids);
     }
 
-    public void reportDataChange(final Container c, final String schema, final String query, final List<String> ids)
+    public void reportDataChange(Container c, String schema, String query, List<String> ids)
+    {
+        reportDataChange(c, schema, query, ids, false);
+    }
+
+    public void reportDataChange(final Container c, final String schema, final String query, final List<String> ids, boolean async)
     {
         final User u = EHRService.get().getEHRUser(c);
         if (u == null)
@@ -233,7 +238,19 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             return;
         }
 
-        doUpdateRecords(c, u, schema, query, ids);
+        if (async)
+        {
+            JobRunner.getDefault().execute(new Runnable(){
+                public void run()
+                {
+                    doUpdateRecords(c, u, schema, query, ids);
+                }
+            });
+        }
+        else
+        {
+            doUpdateRecords(c, u, schema, query, ids);
+        }
     }
 
     private void reportDataChangeForProvider(Container c, DemographicsProvider p, Collection<String> ids)

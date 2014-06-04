@@ -48,7 +48,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     public double getVersion()
     {
-        return 12.35;
+        return 12.36;
     }
 
     @Override

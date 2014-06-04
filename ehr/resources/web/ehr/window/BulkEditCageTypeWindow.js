@@ -59,6 +59,7 @@ Ext4.define('EHR.window.BulkEditCageTypeWindow', {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
                     queryName: 'divider_types',
+                    filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                     autoLoad: true
                 }
             }],

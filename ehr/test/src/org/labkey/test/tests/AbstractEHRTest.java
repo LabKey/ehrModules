@@ -37,8 +37,10 @@ import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -218,16 +220,21 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     }
 
     @LogMethod
-    protected void setEHRModuleProperties()
+    protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
     {
         //set dummy values first, to test the admin UI
         ModulePropertyValue dummyValue = new ModulePropertyValue("EHR", "/" +  getProjectName(), "EHRStudyContainer", "/fakeContainer");
         setModuleProperties(Arrays.asList(dummyValue));
 
-        ModulePropertyValue prop = new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRStudyContainer", "/" + getContainerPath());
-        ModulePropertyValue prop2 = new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRAdminUser", DATA_ADMIN._email);
-        ModulePropertyValue prop3 = new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "snapshot");
-        setModuleProperties(Arrays.asList(prop, prop2, prop3));
+        List<ModulePropertyValue> props = new ArrayList<>();
+        props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRStudyContainer", "/" + getContainerPath()));
+        props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRAdminUser", DATA_ADMIN._email));
+        props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "snapshot"));
+
+        if (extraProps != null)
+            props.addAll(Arrays.asList(extraProps));
+
+        setModuleProperties(props);
     }
 
     @LogMethod

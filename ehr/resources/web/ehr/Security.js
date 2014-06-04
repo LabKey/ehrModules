@@ -15,7 +15,7 @@ EHR.Security = new function(){
     var classPrefix = 'org.labkey.api.ehr.security';
     var permissionMap;
     var hasLoaded = false;
-    var schemaMap;
+    var schemaMap = {};
     var qcMap;
 
     //A helper to return a map of QCStates and their properties.
@@ -121,7 +121,8 @@ EHR.Security = new function(){
                     };
                     qcRow.effectivePermissions = {};
 
-                    if (schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
+                    LDK.Assert.assertNotEmpty('schemaMap was empty in Security.js', schemaMap.schemas);
+                    if (schemaMap.schemas && schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
                         var queryCount = 0;
                         for (var queryName in schemaMap.schemas[schemaName].queries){
                             var query = schemaMap.schemas[schemaName].queries[queryName];

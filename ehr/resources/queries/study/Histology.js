@@ -11,6 +11,6 @@ function onInit(event, helper){
         allowAnyId: true,
         allowDeadIds: true,
         skipIdFormatCheck: true,
-        snomedCodeFieldName: 'codes'
+        snomedCodeFieldName: 'codesRaw'
     });
 }

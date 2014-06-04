@@ -23,7 +23,10 @@ Ext4.define('EHR.grid.column.SnomedColumn', {
             var display = [];
             value = value.split(';');
             var rec, recIdx;
-            Ext4.Array.forEach(value, function(code, idx){
+            Ext4.Array.forEach(value, function(codeVal, idx){
+                var code = codeVal.split('<>');
+                LDK.Assert.assertTrue('Improper SNOMED code: ' + code, code.length == 2);
+                code = code[1];
                 recIdx = this.snomedStore.findExact('code', code);
                 rec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
 

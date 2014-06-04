@@ -82,6 +82,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
 
         if (this.displayEl){
             this.displayEl.remove();
+            delete this.displayEl;
         }
 
         if (this.linkEl){
@@ -100,7 +101,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
         var rec = EHR.DataEntryUtils.getBoundRecord(this);
         if (rec && rec.get('Id')){
             this.queryValue(rec, function(ret, Id){
-                if (!ret){
+                if (!ret || !this.displayEl){
                     return;
                 }
 
@@ -178,7 +179,8 @@ Ext4.define('EHR.form.field.HxTextArea', {
         }
 
         if (this.displayEl){
-            this.displayEl.removeAllListeners();
+            //NOTE: no listeners added
+            //this.displayEl.removeAllListeners();
             this.displayEl.remove();
         }
 

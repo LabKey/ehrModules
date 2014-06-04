@@ -1,0 +1,1 @@
+DROP TABLE ehr_lookups.animal_condition;

@@ -126,7 +126,7 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
         toAdd.push({
             xtype: 'ldk-querypanel',
             queryConfig: {
-                schemaName: 'ehr',
+                schemaName: 'study',
                 queryName: 'animalGroupHousingSummary',
                 frame: 'portal',
                 title: 'Current Housing',
@@ -142,7 +142,7 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
         toAdd.push({
             xtype: 'ldk-querypanel',
             queryConfig: {
-                schemaName: 'ehr',
+                schemaName: 'study',
                 queryName: 'animal_group_members',
                 frame: 'portal',
                 title: 'Group Members',

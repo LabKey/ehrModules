@@ -24,7 +24,7 @@ Ext4.define('EHR.form.field.AnimalGroupField', {
                 schemaName: 'ehr',
                 queryName: 'animal_groups',
                 sort: 'name',
-                filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+                filterArray: [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)],
                 autoLoad: true
             })
         });

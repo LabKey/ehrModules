@@ -75,6 +75,9 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
             project: {
                 allowBlank: true,
                 hidden: true
+            },
+            chargetype: {
+                defaultValue: 'DCM: Pathology Services'
             }
         },
         'study.grossFindings': {
@@ -90,6 +93,11 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
             },
             date: {
                 hidden: true
+            }
+        },
+        'onprc_billing.miscCharges': {
+            chargetype: {
+                defaultValue: 'DCM: Pathology Services'
             }
         }
     }

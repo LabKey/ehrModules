@@ -5,7 +5,25 @@
 */
 EHR.model.DataModelManager.registerMetadata('BehaviorRounds', {
     allQueries: {
-
+        performedby: {
+            lookup: {
+                schemaName: 'core',
+                queryName: 'users',
+                keyColumn: 'DisplayName',
+                displayColumn: 'DisplayName',
+                columns: 'UserId,DisplayName,FirstName,LastName',
+                sort: 'Type,DisplayName'
+            },
+            editorConfig: {
+                anyMatch: true,
+                listConfig: {
+                    innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
+                    getInnerTpl: function(){
+                        return this.innerTpl;
+                    }
+                }
+            }
+        }
     },
     byQuery: {
         'study.clinremarks': {

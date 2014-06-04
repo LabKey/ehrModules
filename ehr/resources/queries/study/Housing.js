@@ -79,33 +79,30 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 }
 
                 if (!housingRecords[i].enddate){
-                    EHR.Server.Utils.addError(scriptErrors, 'enddate', 'Cannot enter multiple open-ended housing records for the same animal', 'INFO');
+                    EHR.Server.Utils.addError(scriptErrors, 'enddate', 'Cannot enter multiple open-ended housing records for the same animal', 'WARN');
                 }
             }
         }
     }
-}
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
-    helper.registerHousingChange(row.id, row);
-
-    //if this record is active and public, deactivate any old housing records
-    if (!helper.isETL()){
+    if (!helper.isETL() && row && row.Id && row.date && !row.enddate){
+        var objectid = row.objectid || null;
+        //if this record is active and public, deactivate any old housing records
         var map = helper.getProperty('housingInTransaction');
         var housingRecords = [];
         if (map && map[row.Id]){
             housingRecords = map[row.Id];
         }
 
-        if (row.Id && row.date && !row.enddate){
-            var enddate = row.enddate || null;
-            var objectid = row.objectid || null;
-            var msg = helper.getJavaHelper().onHousingBecomePublic(row.id, row.date, enddate, objectid, housingRecords, helper.getTargetQCStateLabel());
-            if (msg){
-                EHR.Server.Utils.addError(scriptErrors, 'Id', msg, 'ERROR');
-            }
+        var msg = helper.getJavaHelper().validateFutureOpenEndedHousing(row.Id, row.date, objectid, housingRecords);
+        if (msg){
+            EHR.Server.Utils.addError(scriptErrors, 'Id', msg, 'ERROR');
         }
     }
+}
+
+function onBecomePublic(scriptErrors, helper, row, oldRow){
+    helper.registerHousingChange(row.id, row);
 }
 
 function onComplete(event, errors, helper){

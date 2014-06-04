@@ -32,11 +32,10 @@
                         </fk>
                     </column>
                     <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
-                        <isHidden>true</isHidden>
+                        <columnTitle>Charge Unit</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>bloodChargeType</fkTable>
+                            <fkTable>medicationChargeType</fkTable>
                             <fkColumnName>value</fkColumnName>
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>

@@ -79,9 +79,6 @@ public class ClinicalHistoryManager
 
         registerDataSource(new DefaultTreatmentOrdersDataSource());
         registerDataSource(new DefaultTreatmentEndDataSource());
-
-        registerDataSource(new DefaultAnimalGroupsDataSource());
-        registerDataSource(new DefaultAnimalGroupsEndDataSource());
     }
 
     public static ClinicalHistoryManager get()

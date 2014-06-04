@@ -53,7 +53,7 @@ Ext4.define('EHR.form.field.ProtocolField', {
             queryName: 'protocol',
             columns: 'protocol,displayName,investigatorId/lastName',
             filterArray: [
-                LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)
+                LABKEY.Filter.create('enddateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
             ],
             sort: 'displayName',
             autoLoad: true

@@ -587,16 +587,25 @@ EHR.Utils = new function(){
 
         },
 
-        editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap){
+        editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap, copyFilters){
             var params = {
                 schemaName: schemaName,
                 'query.queryName': queryName,
                 showImport: true
             };
 
-            if (dataRegionName){
+            if (copyFilters !== false && dataRegionName){
                 var array = LABKEY.DataRegions[dataRegionName].getUserFilterArray();
                 if (array && array.length){
+                    for (var i=0;i<array.length;i++){
+                        var filter = array[i];
+                        params[filter.getURLParameterName()] = filter.getURLParameterValue();
+                    }
+                }
+
+                //append non-removeable filters
+                if (LABKEY.DataRegions[dataRegionName].qwp && LABKEY.DataRegions[dataRegionName].qwp.filters){
+                    var array = LABKEY.DataRegions[dataRegionName].qwp.filters;
                     for (var i=0;i<array.length;i++){
                         var filter = array[i];
                         params[filter.getURLParameterName()] = filter.getURLParameterValue();

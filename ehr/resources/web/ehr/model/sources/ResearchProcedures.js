@@ -47,8 +47,6 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
         },
         'study.blood': {
             chargetype: {
-                header: 'Charge Type',
-                label: 'Charge Type',
                 defaultValue: 'Research Staff',
                 allowBlank: false
             },

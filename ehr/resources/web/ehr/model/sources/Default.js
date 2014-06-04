@@ -916,6 +916,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             room: {
+                xtype: 'ehr-roomfieldsingle',
                 allowBlank: false,
                 columnConfig: {
                     width: 150
@@ -955,6 +956,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             room: {
+                xtype: 'ehr-roomfieldsingle',
                 columnConfig: {
                     width: 160
                 }
@@ -1017,8 +1019,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             }
         },
-        'ehr.animal_group_members': {
+        'study.animal_group_members': {
             groupId: {
+                columnConfig: {
+                    width: 150
+                },
                 lookup: {
                     filterArray: [LABKEY.Filter.create('enddatecoalesced', '+0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)]
                 }
@@ -1043,6 +1048,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.encounters': {
+            assistingstaff: {
+                hidden: true,
+                columnConfig: {
+                    width: 140
+                }
+            },
             instructions: {
                 height: 100,
                 columnConfig: {
@@ -1295,6 +1306,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             name: {
                 allowBlank: false,
                 xtype: 'ehr-projectgeneratorfield'
+            },
+            use_category: {
+                defaultValue: 'Research'
             }
         },
         'ehr.protocol': {
@@ -1323,6 +1337,19 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'ehr-projectfield',
                 editorConfig: {
                     showInactive: true
+                }
+            }
+        },
+        'onprc_billing.projectMultipliers': {
+            project: {
+                xtype: 'ehr-projectfield',
+                editorConfig: {
+                    showInactive: true
+                }
+            },
+            multiplier: {
+                editorConfig: {
+                    decimalPrecision: 4
                 }
             }
         },
@@ -1484,7 +1511,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             chargetype: {
-                allowBlank: true
+                allowBlank: false,
+                hidden: false
+            },
+            chargecategory: {
+                editorConfig: {
+                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                        allowChooseOther: false
+                    })]
+                },
+                columnConfig: {
+                    width: 150
+                }
             },
             unitcost: {
                 hidden: false,
@@ -1784,6 +1822,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {hidden: true},
             source: {
                 editorConfig: {
+                    caseSensitive: false,
+                    anyMatch: true,
                     plugins: ['ldk-usereditablecombo']
                 },
                 columnConfig: {
@@ -1792,8 +1832,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false
             },
             birth: {
+                allowBlank: false,
                 columnConfig: {
                     width: 120
+                }
+            },
+            estimated: {
+                hidden: false,
+                columnConfig: {
+                    width: 200
                 }
             },
             performedby: {
@@ -1803,6 +1850,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: true
             },
             initialRoom: {
+                allowBlank: false,
                 hidden: false,
                 xtype: 'ehr-roomentryfield',
                 editorConfig: {
@@ -1818,11 +1866,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: false
             },
             geographic_origin: {
-                columnConfig: {
-                    width: 200
-                }
-            },
-            rearingType: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
@@ -1830,6 +1874,51 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             acquisitionType: {
                 columnConfig: {
                     width: 200
+                }
+            },
+            gender: {
+                allowBlank: false
+            },
+            species: {
+                allowBlank: false
+            },
+            cites: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+            customsDate: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+            rearingType: {
+                columnConfig: {
+                    width: 200
+                },
+                getInitialValue: function(val, rec){
+                    if (val)
+                        return val;
+
+                    var storeId = LABKEY.ext4.Util.getLookupStoreId({
+                        lookup: {
+                            schemaName: 'ehr_lookups',
+                            queryName: 'RearingType',
+                            keyColumn: 'rowid',
+                            displayColumn: 'value'
+                        }
+                    });
+
+                    var store = Ext4.StoreMgr.get(storeId);
+                    if (store){
+                        var lookupRecIdx = store.find('value', 'Captive Reared');
+                        if (lookupRecIdx > -1){
+                            return store.getAt(lookupRecIdx).get('rowid');
+                        }
+                    }
+                    else {
+                        console.log('upable to find lookup store for rearing type');
+                    }
                 }
             }
         },
@@ -1868,8 +1957,39 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: true
             },
             account: {hidden: true},
-            necropsy: {lookups: false},
-            cause: {allowBlank: false},
+            finalCondition: {
+                //allowBlank: false,
+                columnConfig: {
+                    width: 200
+                }
+            },
+            necropsy: {
+                lookups: false,
+                columnConfig: {
+                    width: 150
+                }
+            },
+            cause: {
+                allowBlank: false,
+                columnConfig: {
+                    width: 120
+                }
+            },
+            dam: {
+                columnConfig: {
+                    width: 180
+                }
+            },
+            notatcenter: {
+                columnConfig: {
+                    width: 210
+                }
+            },
+            manner: {
+                columnConfig: {
+                    width: 140
+                }
+            },
             tattoo: {
                 editorConfig: {
                     helpPopup: 'Please enter the color and number of the tag and/or all visible tattoos'
@@ -1881,7 +2001,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             cageattime: {
                 hidden: true
             }
-            //manner: {allowBlank: false}
         },
         'study.Birth': {
             Id: {
@@ -1894,6 +2013,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     decimalPrecision: 3
                 }
             },
+            wdate: {
+                columnConfig: {
+                    fixed: true,
+                    width: 130
+                }
+            },
             birthtype: {
                 columnConfig: {
                     width: 200
@@ -1902,9 +2027,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             origin: {
                 hidden: true
             },
-            estimated: {shownInGrid: false},
+            estimated: {
+                hidden: false,
+                columnConfig: {
+                    width: 200
+                }
+                //shownInGrid: false
+            },
             conception: {
                 hidden: true
+            },
+            conceptualDay: {
+                columnConfig: {
+                    width: 180
+                }
             }
         },
         'study.blood' : {
@@ -2098,8 +2234,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             project: {
-                //TODO: revisit
-                allowBlank: true
+                allowBlank: false
+            },
+            chargetype: {
+                allowBlank: false
             },
             restraint: {
                 shownInGrid: false
@@ -2118,6 +2256,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             category: {
                 columnConfig: {
                     width: 180
+                },
+                editorConfig: {
+                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                        allowChooseOther: false
+                    })]
                 }
             },
             value: {
@@ -2304,6 +2447,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'ehr_lookups.procedure_default_treatments': {
+            code: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Common Treatments'
+                }
+            }
+        },
+        'ehr_lookups.procedure_default_codes': {
             code: {
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',

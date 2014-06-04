@@ -1320,7 +1320,7 @@
                 <ns:isUserEditable>true</ns:isUserEditable>
                 <ns:displayWidth>200</ns:displayWidth>
                 <ns:fk>
-                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
                     <ns:fkTable>animal_group_housing</ns:fkTable>
                     <ns:fkColumnName>groupId</ns:fkColumnName>
                 </ns:fk>
@@ -1815,7 +1815,7 @@
                 <ns:nullable>false</ns:nullable>
             </ns:column>
             <ns:column columnName="project">
-
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="exemption">
                 <ns:columnTitle>Exemption</ns:columnTitle>

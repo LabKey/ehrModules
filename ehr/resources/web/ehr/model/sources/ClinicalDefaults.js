@@ -45,6 +45,10 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
         'study.drug': {
             reason: {
                 defaultValue: 'N/A'
+            },
+            chargetype: {
+                allowBlank: false,
+                defaultValue: 'No Charge'
             }
         },
         'study.encounters': {
@@ -77,7 +81,7 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
                 }
             },
             chargetype: {
-                defaultValue: 'Clinic Staff',
+                defaultValue: 'No Charge',
                 allowBlank: false
             },
             instructions: {

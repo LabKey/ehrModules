@@ -92,6 +92,12 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         var items = this.callParent(arguments);
         Ext4.Array.forEach(items, function(item){
             item.cfg.allowBlank = true;
+
+            // NOTE: b/c the bulk edit panel is not a single ID, the regular project-entryfield will not work properly.
+            // therefore just allow all projects
+            if (item.cfg.xtype == 'ehr-projectentryfield'){
+                item.cfg.xtype = 'ehr-projectfield';
+            }
         }, this);
 
         return items;

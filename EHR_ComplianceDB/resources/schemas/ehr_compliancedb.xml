@@ -286,6 +286,7 @@
                 <ns:isAutoInc>true</ns:isAutoInc>
                 <ns:isKeyField>true</ns:isKeyField>
                 <ns:columnTitle>Key</ns:columnTitle>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
             </ns:column>
             <ns:column columnName="requirementname">
                 <ns:isKeyField>true</ns:isKeyField>
@@ -321,6 +322,9 @@
             <ns:column columnName="tissues">
                 <ns:nullable>true</ns:nullable>
                 <ns:columnTitle>Required If Handles Tissue?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="dateDisabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>

@@ -82,6 +82,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
 
         if (this.displayEl){
             this.displayEl.remove();
+            delete this.displayEl;
         }
 
         if (this.linkEl){
@@ -100,7 +101,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         var rec = EHR.DataEntryUtils.getBoundRecord(this);
         if (rec && rec.get('Id')){
             this.getMostRecentP2(rec, function(ret, Id){
-                if (!ret){
+                if (!ret || !this.displayEl){
                     return;
                 }
 
@@ -175,7 +176,8 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         }
 
         if (this.displayEl){
-            this.displayEl.removeAllListeners();
+            //NOTE: no listeners were added
+            //this.displayEl.removeAllListeners();
             this.displayEl.remove();
         }
 

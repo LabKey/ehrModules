@@ -283,7 +283,7 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
         }
     }
 
-    EHR.Server.Triggers.rowEnd(helper, errors, scriptErrors, row, oldRow);
+    EHR.Server.Triggers.rowEnd.call(this, helper, errors, scriptErrors, row, oldRow);
 };
 exports.beforeUpdate = EHR.Server.Triggers.beforeUpdate;
 
@@ -387,6 +387,16 @@ EHR.Server.Triggers.afterDelete = function(row, errors){
     
     EHR.Server.Triggers.afterEvent('delete', helper, errors, row, null);
 
+    if (!helper.isETL() && helper.getSNOMEDCodeFieldName()){
+        if (!row.objectid){
+            console.error('Record lacks objectid, cannot delete snomed tags');
+            console.log(row);
+        }
+        else {
+            helper.getJavaHelper().deleteSnomedTags(row.objectid);
+        }
+    }
+
     //table-specific handlers
     if (!helper.isETL()){
         var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_DELETE, helper.getSchemaName(), helper.getQueryName(), true) || [];
@@ -472,7 +482,9 @@ EHR.Server.Triggers.complete = function(event, errors) {
         helper.getJavaHelper().announceIdsModified(helper.getSchemaName(), helper.getQueryName(), helper.getPublicParticipantsModified());
     }
 
-    console.log('Trigger script time for ' + (helper.isValidateOnly() ? 'validation/' : '') + event + ' of ' + helper.getRows().length + ' rows into ' + helper.getQueryName() + ': ' + helper.getTimeElapsed());
+    if (helper.getRows().length){
+        console.log('Trigger script time for ' + (helper.isValidateOnly() ? 'validation/' : '') + event + ' of ' + helper.getRows().length + ' rows into ' + helper.getQueryName() + ': ' + helper.getTimeElapsed());
+    }
 };
 exports.complete = EHR.Server.Triggers.complete;
 
@@ -692,7 +704,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
             console.log('codes match: ' + oldRow.codesRaw);
         }
 
-        if (!helper.isValidateOnly()){
+        if (!helper.isValidateOnly() && row.objectid){
             console.log('updating snomed tags: ' + row.codesRaw);
             helper.getJavaHelper().updateSNOMEDTags(row.Id, row.objectid, (row.codesRaw ? row.codesRaw : null));
         }

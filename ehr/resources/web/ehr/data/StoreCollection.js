@@ -420,6 +420,10 @@ Ext4.define('EHR.data.StoreCollection', {
             }
         }, this);
 
+        if (this.formConfig && this.formConfig.extraContext){
+            ret = LABKEY.Utils.merge(ret, this.formConfig.extraContext);
+        }
+
         LABKEY.Utils.merge(ret, extraContext);
 
         return ret;
@@ -455,7 +459,7 @@ Ext4.define('EHR.data.StoreCollection', {
             success: this.getOnCommitSuccess(recordsArr, validateOnly),
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
-            timeout: 500000,  //a little extreme?
+            timeout: 5000000,  //a little extreme?
             transacted: true,
             //transacted: !validateOnly,  //not necessary for validation, and shouldnt lock up the DB
             startTime: new Date(),
