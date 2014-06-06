@@ -213,10 +213,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     protected void primeCaches()
     {
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/primeDataEntryCache.view");
-        waitAndClickAndWait(Locator.navButton("OK"));
+        waitAndClickAndWait(Locator.lkButton("OK"));
 
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/cacheLivingAnimals.view");
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.navButton("OK"), WAIT_FOR_PAGE * 2);
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 2);
     }
 
     @LogMethod

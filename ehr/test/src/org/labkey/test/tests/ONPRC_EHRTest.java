@@ -38,7 +38,6 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -48,7 +47,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -754,7 +752,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
         waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Run Now"));
-        waitAndClickAndWait(Locator.navButton("OK"));
+        waitAndClickAndWait(Locator.lkButton("OK"));
         waitForPipelineJobsToComplete(2, "genetics pipeline", false);
     }
 

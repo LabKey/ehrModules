@@ -334,14 +334,14 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         beginAt("/query/" + getContainerPath() + "/executeQuery.view?schemaName=study&query.queryName=weight&query.id~in=" + (PROTOCOL_MEMBER_IDS[0] + ";" + PROTOCOL_MEMBER_IDS[1] + ";" + PROTOCOL_MEMBER_IDS[2]));
         waitForElement(Locator.xpath("//span[contains(text(), 'Weight')]"));
         log("Return Distinct Values - no selections");
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
         waitForElement(Ext4Helper.ext4Window("Error"));
         waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
 
         log("Return Distinct Values");
         checkAllOnPage(dataRegionName);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Return Distinct Values");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4Helper.ext4Window("Return Distinct Values"));
         waitForElement(Ext4Helper.Locators.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
         new Ext4ComboRef(Ext4ComboRef.getForLabel(this, "Select Field"), this).setComboByDisplayValue("Animal Id");
@@ -355,7 +355,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         _extHelper.waitForLoadingMaskToDisappear(WAIT_FOR_JAVASCRIPT * 3);
         setFilterAndWait(dataRegionName, "Id", "Does Not Equal", PROTOCOL_MEMBER_IDS[1], 0);
         waitForText("(Id <> " + PROTOCOL_MEMBER_IDS[1], WAIT_FOR_JAVASCRIPT);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4Helper.Locators.window("Return Distinct Values"));
         waitForElement(Ext4Helper.Locators.ext4Button("Submit"));
         Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRef.class);
@@ -366,7 +366,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.id(btn.getId()));
 
         log("Return Distinct Values - show all");
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Return Distinct Values");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
         waitForElement(Ext4Helper.Locators.window("Return Distinct Values"));
         Ext4FieldRef.getForBoxLabel(this, "All Rows").setChecked(true);
         btn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRef.class);
@@ -379,26 +379,26 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         log("Compare Weights - no selection");
         uncheckAllOnPage(dataRegionName);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Compare Weights");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Compare Weights");
         assertAlert("No records selected");
 
         log("Compare Weights - one selection");
         checkDataRegionCheckbox(dataRegionName, 0);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Compare Weights");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Compare Weights");
         _extHelper.waitForExtDialog("Weights");
         _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
         log("Compare Weights - two selections");
         checkDataRegionCheckbox(dataRegionName, 1);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.navButton("More Actions").getPath()), "Compare Weights");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Compare Weights");
         _extHelper.waitForExtDialog("Weights");
         _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
         log("Compare Weights - three selections");
         checkDataRegionCheckbox(dataRegionName, 2);
-        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Compare Weights");
+        _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.lkButton("More Actions").getPath()), "Compare Weights");
         waitForElement(Ext4Helper.ext4Window("Error")); // After error dialog.
         _helper.clickExt4WindowBtn("Error", "OK");
 
