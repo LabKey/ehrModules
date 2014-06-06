@@ -1340,6 +1340,28 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
+        'onprc_billing.procedureFeeDefinition': {
+            procedureid: {
+                columnConfig: {
+                    width: 250
+                },
+                editorConfig: {
+                    caseSensitive: false,
+                    anyMatch: true,
+                    listConfig: {
+                        innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
+                },
+                lookup: {
+                    sort: 'category,name',
+                    filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
+                    columns: 'rowid,name,category,remark,active'
+                }
+            }
+        },
         'onprc_billing.projectMultipliers': {
             project: {
                 xtype: 'ehr-projectfield',
@@ -1528,16 +1550,23 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: false,
                 columnConfig: {
                     getEditor: function(rec){
+                        var fieldCfg = {
+                            xtype: 'ldk-numberfield',
+                            hideTrigger: true,
+                            decimalPrecision: 2
+                        };
+
+                        //added to support reversals
+                        if (this.enforceUnitCost === false){
+                            return fieldCfg;
+                        }
+
                         if (rec.get('chargeId')){
                             var refIdx = EHR.DataEntryUtils.getChareableItemsStore().findExact('rowid', rec.get('chargeId'));
                             if (refIdx != -1){
                                 var refRec = EHR.DataEntryUtils.getChareableItemsStore().getAt(refIdx);
                                 if (refRec.get('allowscustomunitcost')){
-                                    return {
-                                        xtype: 'ldk-numberfield',
-                                        hideTrigger: true,
-                                        decimalPrecision: 2
-                                    }
+                                    return fieldCfg
                                 }
                             }
                         }
@@ -1961,6 +1990,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 //allowBlank: false,
                 columnConfig: {
                     width: 200
+                },
+                lookup: {
+                    sort: 'code'
+                },
+                editorConfig: {
+                    listConfig: {
+                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
                 }
             },
             necropsy: {
@@ -2033,6 +2073,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 200
                 }
                 //shownInGrid: false
+            },
+            'Id/demographics/geographic_origin': {
+                columnConfig: {
+                    width: 200
+                }
             },
             conception: {
                 hidden: true

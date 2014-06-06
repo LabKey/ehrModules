@@ -768,6 +768,18 @@ public class EHRManager
             //add study.participant indexes
             createParticipantIndexes(messages, commitChanges, rebuildIndexes);
 
+            //increase length of encounters remark col
+            if (commitChanges && DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+            {
+                DataSet ds = study.getDataSetByLabel("Clinical Encounters");
+                if (ds != null)
+                {
+                    SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
+                    SqlExecutor se = new SqlExecutor(DbScope.getLabkeyScope());
+                    se.execute(sql);
+                }
+            }
+
             transaction.commit();
 
             if (shouldClearCaches)

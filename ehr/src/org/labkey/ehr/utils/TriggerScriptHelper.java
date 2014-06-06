@@ -165,19 +165,10 @@ public class TriggerScriptHelper
 
             //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
             TableInfo ti = dataset.getTableInfo(user);
+            //TODO: move to updateService
             SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND (enddate IS NULL OR enddate > ?)", enddate, id, enddate);
             new SqlExecutor(ti.getSchema()).execute(sql);
         }
-    }
-
-    public void closeActiveRecords(String schemaName, String queryName, String id, Date enddate, String idFieldName, String endFieldName)
-    {
-        Container container = getContainer();
-        User user = getUser();
-
-        //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
-        SQLFragment sql = new SQLFragment("UPDATE " + schemaName + "." + queryName + " SET " + endFieldName + " = ? WHERE " + idFieldName + " = ? AND (" + endFieldName + " IS NULL OR " + endFieldName + " > ?)", enddate, id, enddate);
-        new SqlExecutor(DbScope.getLabkeyScope()).execute(sql);
     }
 
     public void updateProblemsFromCase(String newId, String oldId, String caseId)
@@ -239,7 +230,8 @@ public class TriggerScriptHelper
     {
         try
         {
-            Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(getContainer());
+            Container targetContainer = EHRService.get().getEHRStudyContainer(getContainer());
+            Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(targetContainer);
 
             JSONArray json = new JSONArray();
             for (EHRQCState qc : qcStates.values())
@@ -1268,7 +1260,7 @@ public class TriggerScriptHelper
     public void onAnimalArrival(String id, Map<String, Object> row) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         Map<String, Object> demographicsProps = new HashMap<String, Object>();
-        for (String key : new String[]{"Id", "gender", "species", "dam", "sire", "origin", "source", "geographic_origin", "geographic_origin", "birth"})
+        for (String key : new String[]{"Id", "gender", "species", "dam", "sire", "origin", "source", "geographic_origin", "birth"})
         {
             if (row.containsKey(key))
             {
@@ -1281,7 +1273,7 @@ public class TriggerScriptHelper
 
         if (row.containsKey("birth"))
         {
-            Map<String, Object> birthProps = new HashMap<String, Object>();
+            Map<String, Object> birthProps = new HashMap<>();
             for (String key : new String[]{"Id", "dam", "sire"})
             {
                 if (row.containsKey(key))

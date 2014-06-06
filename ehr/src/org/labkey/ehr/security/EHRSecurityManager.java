@@ -20,6 +20,7 @@ import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
@@ -230,7 +231,11 @@ public class EHRSecurityManager
     @NotNull
     public Map<String, EHRQCState> getQCStateInfo(Container c)
     {
-        Study study = StudyService.get().getStudy(c);
+        Container targetContainer = EHRService.get().getEHRStudyContainer(c);
+        if (targetContainer == null)
+            return Collections.emptyMap();
+
+        Study study = StudyService.get().getStudy(targetContainer);
         if (study == null)
             return Collections.emptyMap();
 

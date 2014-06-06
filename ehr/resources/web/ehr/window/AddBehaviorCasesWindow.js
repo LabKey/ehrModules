@@ -84,11 +84,12 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
             Ext4.Array.forEach(this.obsResults.rows, function(sr){
                 var row = new LDK.SelectRowsRow(sr);
 
-                var id = row.getValue('Id');
-                if (!previousObsMap[id])
-                    previousObsMap[id] = [];
+                //note: this has been changed to ensure 1 row per case
+                var key = row.getValue('caseid');
+                if (!previousObsMap[key])
+                    previousObsMap[key] = [];
 
-                previousObsMap[id].push({
+                previousObsMap[key].push({
                     Id: row.getValue('Id'),
                     date: this.recordData.date,
                     performedby: this.recordData.performedby,
@@ -111,7 +112,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
         LDK.Assert.assertNotEmpty('Unable to find Drug Administration store', treatmentStore);
 
         Ext4.Array.forEach(caseRecords, function(cr){
-            if (previousObsMap[cr.get('Id')]){
+            if (previousObsMap[cr.get('caseid')]){
                 Ext4.Array.forEach(previousObsMap[cr.get('Id')], function(r){
                     r = Ext4.apply(r, {
                         'Id/curLocation/location': cr.get('Id/curLocation/location')

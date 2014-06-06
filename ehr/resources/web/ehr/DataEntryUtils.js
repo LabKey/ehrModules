@@ -649,11 +649,11 @@ EHR.DataEntryUtils = new function(){
             if (EHR._chargeableItemsStore)
                 return EHR._chargeableItemsStore;
 
-            var storeId = ['onprc_billing', 'chargeableItems', 'rowid', 'name', 'ref'].join('||');
+            var storeId = ['onprc_billing_public', 'chargeableItems', 'rowid', 'name', 'ref'].join('||');
 
             EHR._chargeableItemsStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
                 type: 'labkey-store',
-                schemaName: 'onprc_billing',
+                schemaName: 'onprc_billing_public',
                 queryName: 'chargeableItems',
                 columns: 'rowid,name,category,allowscustomunitcost',
                 sort: 'category,name',
@@ -1022,6 +1022,26 @@ EHR.DataEntryUtils = new function(){
 
         removeBackspaceTrap: function(){
             backspaceTrapRequests--;
+        },
+
+        resolveProjectByName: function(projectStore, projectName){
+            if (!projectName){
+                return null;
+            }
+
+            if (projectName.match('-')){
+                projectName = Ext4.String.leftPad(projectName, 7, '0');
+            }
+            else {
+                projectName = Ext4.String.leftPad(projectName, 4, '0');
+            }
+
+            var recIdx = projectStore.find('name', projectName);
+            if (recIdx == -1){
+                return null;
+            }
+
+            return projectStore.getAt(recIdx).get('project');
         }
     }
 };

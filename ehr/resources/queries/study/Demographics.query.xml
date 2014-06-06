@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Demographics" tableDbType="TABLE">
+            <table tableName="Demographics" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl />
                 <insertUrl />
                 <importUrl />
@@ -11,6 +11,12 @@
                     <column columnName="Id">
                         <!--<isKeyField>true</isKeyField>-->
                     </column>
+                    <column columnName="date">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="project">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="gender">
                         <columnTitle>Gender</columnTitle>
                         <fk>
@@ -19,15 +25,43 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="QCState">
-                        <columnTitle>Record Status</columnTitle>
-                        <isHidden>true</isHidden>
+                    <column columnName="species">
+                        <columnTitle>Species</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>species</fkTable>
+                            <fkColumnName>common</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
                     </column>
-                    <column columnName="date">
-                        <isHidden>true</isHidden>
+                    <column columnName="geographic_origin">
+                        <columnTitle>Geographic Origin</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>geographic_origins</fkTable>
+                            <fkColumnName>meaning</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
                     </column>
-                    <column columnName="project">
-                        <isHidden>true</isHidden>
+                    <column columnName="birth">
+                        <formatString>yyyy-MM-dd</formatString>
+                        <!--<shownInInsertView>false</shownInInsertView>-->
+                        <columnTitle>Birth</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=study&amp;
+                            query.queryName=Birth&amp;
+                            query.Id~eq=${Id}
+                        </url>
+                    </column>
+                    <column columnName="death">
+                        <formatString>yyyy-MM-dd</formatString>
+                        <!--<shownInInsertView>false</shownInInsertView>-->
+                        <columnTitle>Death</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=study&amp;
+                            query.queryName=Deaths&amp;
+                            query.Id~eq=${Id}
+                        </url>
                     </column>
                     <column columnName="status">
                         <shownInInsertView>false</shownInInsertView>
@@ -48,6 +82,14 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="remark">
+
+                    </column>
+                    <column columnName="QCState">
+                        <columnTitle>Record Status</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+
                     <!--NOTE: being depreciated-->
                     <column columnName="avail">
                         <isHidden>true</isHidden>
@@ -65,15 +107,6 @@
                         <!--<fkTable>hold_codes</fkTable>-->
                         <!--<fkColumnName>code</fkColumnName>-->
                         <!--</fk>-->
-                    </column>
-                    <column columnName="species">
-                        <columnTitle>Species</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>species</fkTable>
-                            <fkColumnName>common</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
                     </column>
                     <column columnName="dam">
                         <columnTitle>Dam</columnTitle>
@@ -101,26 +134,7 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="birth">
-                        <formatString>yyyy-MM-dd</formatString>
-                        <!--<shownInInsertView>false</shownInInsertView>-->
-                        <columnTitle>Birth</columnTitle>
-                         <url>/query/executeQuery.view?
-                            schemaName=study&amp;
-                            query.queryName=Birth&amp;
-                            query.Id~eq=${Id}
-                        </url>
-                    </column>
-                    <column columnName="death">
-                        <formatString>yyyy-MM-dd</formatString>
-                        <!--<shownInInsertView>false</shownInInsertView>-->
-                        <columnTitle>Death</columnTitle>
-                         <url>/query/executeQuery.view?
-                            schemaName=study&amp;
-                            query.queryName=Deaths&amp;
-                            query.Id~eq=${Id}
-                        </url>
-                    </column>
+
                     <!--NOTE: being deprecated-->
                     <column columnName="arrivedate">
                         <isHidden>true</isHidden>
@@ -220,15 +234,6 @@
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
-                    </column>
-                    <column columnName="geographic_origin">
-                        <columnTitle>Geographic Origin</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>geographic_origins</fkTable>
-                            <fkColumnName>meaning</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
                     </column>
                 </columns>
             </table>

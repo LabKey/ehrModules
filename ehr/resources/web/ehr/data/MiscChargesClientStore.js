@@ -31,6 +31,9 @@ Ext4.define('EHR.data.MiscChargesClientStore', {
             filterArray: [LABKEY.Filter.create('enddateCoalesced', '+0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)],
             autoLoad: true
         });
+
+        //force store to load
+        EHR.DataEntryUtils.getChareableItemsStore();
     },
 
     onAddRecord: function(store, records){

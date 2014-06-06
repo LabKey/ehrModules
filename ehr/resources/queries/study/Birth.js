@@ -56,8 +56,16 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
                 calculated_status: EHR.Server.Utils.isLiveBirth(row.cond) ? 'Alive' : 'Dead'
             };
 
+            if (row['Id/demographics/species']){
+                obj.species = row['Id/demographics/species'];
+            }
+
+            if (row['Id/demographics/geographic_origin']){
+                obj.geographic_origin = row['Id/demographics/geographic_origin'];
+            }
+
             //find dam, if provided
-            if (row.dam){
+            if (row.dam && !obj.geographic_origin){
                 obj.geographic_origin = helper.getJavaHelper().getGeographicOrigin(row.dam);
             }
 

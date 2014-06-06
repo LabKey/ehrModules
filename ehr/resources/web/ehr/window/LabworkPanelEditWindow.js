@@ -10,23 +10,106 @@
 Ext4.define('EHR.window.LabworkPanelEditWindow', {
     extend: 'Ext.window.Window',
 
+    fieldMap: {
+        Biochemistry: [{
+            xtype: 'displayfield',
+            dataIndex: 'testid'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'remark'
+        }],
+        Hematology: [{
+            xtype: 'displayfield',
+            dataIndex: 'testid'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'remark'
+        }],
+        Microbiology: [{
+            dataIndex: 'tissue'
+        },{
+            dataIndex: 'organism'
+        },{
+            dataIndex: 'quantity'
+        },{
+            dataIndex: 'remark'
+        }],
+        'Antibiotic Sensitivity': [{
+            dataIndex: 'tissue'
+        },{
+            dataIndex: 'microbe'
+        },{
+            dataIndex: 'antibiotic'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'remark'
+        }],
+        Parasitology: [{
+            dataIndex: 'sampletype'
+        },{
+            dataIndex: 'organism'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'units'
+        },{
+            dataIndex: 'quantity'
+        },{
+            dataIndex: 'remark'
+        }],
+        'Serology/Virology': [{
+            dataIndex: 'tissue'
+        },{
+            dataIndex: 'agent'
+        },{
+            dataIndex: 'method'
+        },{
+            dataIndex: 'qualresult'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'units'
+        }],
+        Urinalysis: [{
+            xtype: 'displayfield',
+            dataIndex: 'testid'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'remark'
+        }],
+        'Misc Tests': [{
+            xtype: 'displayfield',
+            dataIndex: 'testid'
+        },{
+            dataIndex: 'result'
+        },{
+            dataIndex: 'remark'
+        }]
+    },
+
     initComponent: function(){
         Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
-            width: 500,
+            //width: 500,
             defaults: {
                 border: false
             },
             bodyStyle: 'padding: 5px;',
             items: [{
                 html: 'This helper allows you to enter the results for one panel worth of data at a time.  It expects you to have already created the result rows, which is most easily done using the \'Copy From Above\' button.',
+                maxWidth: 600,
                 style: 'padding-bottom: 10px;'
             },{
                 itemId: 'runArea',
                 xtype: 'form',
                 items: [{
-                    html: 'Loading...'
+                    html: 'Loading...',
+                    border: false
                 }]
             }],
             buttons: [{
@@ -37,6 +120,10 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
                 text: 'Submit And Next',
                 scope: this,
                 handler: this.onSubmitAndNext
+            },{
+                text: 'Add Result',
+                scope: this,
+                handler: this.addResult
             },{
                 text: 'Cancel',
                 handler: function(btn){
@@ -56,6 +143,7 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
         });
 
         this.callParent(arguments);
+        this.snomedStore = EHR.DataEntryUtils.getSnomedStore();
 
         LDK.Assert.assertNotEmpty('resultRecord has no runid', this.resultRecord.get('runid'));
         this.bindRun(this.resultRecord);
@@ -165,6 +253,15 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
             }];
         }
 
+        var tissue = clinpathRunRec.get('tissue');
+        if (tissue){
+            var recIdx = this.snomedStore.findExact('code', tissue);
+            var snomedRec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
+            if (snomedRec  && snomedRec .get('meaning')){
+                tissue = snomedRec .get('meaning') + ' (' + tissue + ')';
+            }
+        }
+
         var items = [{
             xtype: 'container',
             defaults: {
@@ -184,21 +281,17 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
                 value: clinpathRunRec.get('servicerequested')
             },{
                 xtype: 'displayfield',
+                fieldLabel: 'Tissue',
+                value: tissue
+            },{
+                xtype: 'displayfield',
                 fieldLabel: 'Panel Remark',
                 value: clinpathRunRec.get('remark')
             }]
         }];
 
-        var tableItems = [{
-            xtype: 'displayfield',
-            value: 'Test Id'
-        },{
-            xtype: 'displayfield',
-            value: 'Result'
-        },{
-            xtype: 'displayfield',
-            value: 'Remark'
-        }];
+        var fieldConfigs = this.fieldMap[this.targetGrid.formConfig.label];
+        LDK.Assert.assertNotEmpty('Unknown table in LabworkPanelEditWindow.js: ' + this.targetGrid.formConfig.label, fieldConfigs);
 
         this.records = [];
         this.targetGrid.store.each(function(rec){
@@ -210,45 +303,39 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
         }, this);
 
         //sort records by panel sort
-        this.records = this.records.sort(function(a, b){
-            var a1 = panelMap[a.get('testid')] ? panelMap[a.get('testid')] : 999;
-            var b1 = panelMap[b.get('testid')] ? panelMap[b.get('testid')] : 999;
+        if (this.targetGrid.store.getFields().get('testid')){
+            var resultField = 'testid';
+            this.records = this.records.sort(function(a, b){
+                console.log(resultField);
+                var a1 = panelMap[a.get(resultField)] ? panelMap[a.get(resultField)] : 999;
+                var b1 = panelMap[b.get(resultField)] ? panelMap[b.get(resultField)] : 999;
 
-            return a1 > b1 ? 1 :
-                    a1 < b1 ? -1 : 0;
-        });
+                return a1 > b1 ? 1 :
+                        a1 < b1 ? -1 : 0;
+            });
+        }
 
+        var tableItems = [];
+        Ext4.Array.forEach(fieldConfigs, function(fieldObj){
+            var fieldName = fieldObj.dataIndex;
+            var meta = this.targetGrid.store.getFields().get(fieldName);
+
+            tableItems.push({
+                xtype: 'displayfield',
+                value: (meta.fieldLabel || meta.header || meta.label)
+            });
+        }, this);
 
         Ext4.Array.forEach(this.records, function(rec){
-            Ext4.Array.forEach(['testid', 'result', 'remark'], function(fieldName){
-                var meta = this.targetGrid.store.getFields().get(fieldName);
-                var fieldCfg = EHR.model.DefaultClientModel.getFieldConfig(meta, this.targetGrid.formConfig.configSources);
-                var editor = EHR.DataEntryUtils.getFormEditorConfig(fieldCfg);
-
-                editor.value = rec.get(fieldName);
-                editor.fieldName = fieldName;
-                delete editor.width;
-                delete editor.height;
-                delete editor.fieldLabel;
-                editor.width = 100;
-
-                if (fieldName == 'testid'){
-                    editor.xtype = 'displayfield'
-                }
-                else if (fieldName == 'remark'){
-                    editor.xtype = 'textfield';
-                    editor.width = 200;
-                }
-
-                tableItems.push(editor);
-            }, this);
+            tableItems = tableItems.concat(this.getRowForRecord(rec))
         }, this);
 
         items.push({
+            itemId: 'theTable',
             border: false,
             layout: {
                 type: 'table',
-                columns: 3
+                columns: fieldConfigs.length
             },
             defaults: {
                 border: false,
@@ -260,24 +347,88 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
         return items;
     },
 
+    getRowForRecord: function(rec){
+        var ret = [];
+        var fieldConfigs = this.fieldMap[this.targetGrid.formConfig.label];
+        Ext4.Array.forEach(fieldConfigs, function(fieldObj){
+            var fieldName = fieldObj.dataIndex;
+            var meta = this.targetGrid.store.getFields().get(fieldName);
+            var fieldCfg = EHR.model.DefaultClientModel.getFieldConfig(meta, this.targetGrid.formConfig.configSources);
+            var colCfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(meta, this.targetGrid);
+            var editor = EHR.DataEntryUtils.getFormEditorConfig(fieldCfg);
+
+            editor.value = rec.get(fieldName);
+            editor.fieldName = fieldName;
+            delete editor.width;
+            delete editor.height;
+            delete editor.fieldLabel;
+            editor.width = colCfg.width || 100;
+
+            if (fieldName == 'remark'){
+                editor.xtype = 'textfield';
+                editor.width = 200;
+            }
+
+            //allow setting any additional properties using fieldObj
+            editor = Ext4.apply(editor, fieldObj);
+
+            ret.push(editor);
+        }, this);
+
+        return ret;
+    },
+
+    addResult: function(){
+        var runId = this.resultRecord.get('runid');
+        var clinpathRunRec = this.getClinpathRunRec(runId);
+
+        var obj = {
+            Id: clinpathRunRec.get('Id'),
+            date: clinpathRunRec.get('date'),
+            runid: runId
+        };
+
+        if (this.resultRecord.fields.get('tissue')){
+            obj.tissue = clinpathRunRec.get('tissue');
+        }
+        var rec = this.resultRecord.store.createModel(obj);
+
+        var insertIdx = 0;
+        this.resultRecord.store.each(function(r, idx){
+            if (r.get('runid') == runId){
+                insertIdx = idx;
+            }
+        }, this);
+
+        this.resultRecord.store.insert(insertIdx + 1, rec);
+
+        var newItems = this.getRowForRecord(rec);
+        this.down('#theTable').add(newItems);
+    },
+
     onSubmit: function(){
         this.saveResults();
         this.close();
     },
 
     saveResults: function(){
-        var resultFields = this.query('field[fieldName=result]');
-        var remarkFields = this.query('field[fieldName=remark]');
+        var fieldConfigs = this.fieldMap[this.targetGrid.formConfig.label];
+        var fieldMap = {};
+        Ext4.Array.forEach(fieldConfigs, function(fieldObj){
+            if (fieldObj.xtype != 'displayfield')
+                fieldMap[fieldObj.dataIndex] = this.query('field[fieldName=' + fieldObj.dataIndex + ']');
+        }, this);
 
         Ext4.Array.forEach(this.records, function(r, recIdx){
-            var result = resultFields[recIdx].getValue();
-            var remark = remarkFields[recIdx].getValue();
-
+            var obj = {};
+            Ext4.Array.forEach(fieldConfigs, function(fieldObj){
+                if (fieldMap[fieldObj.dataIndex]){
+                    obj[fieldObj.dataIndex] = fieldMap[fieldObj.dataIndex][recIdx].getValue();
+                }
+            }, this);
+console.log(obj);
             r.beginEdit();
-            r.set({
-                result: result,
-                remark: remark
-            });
+            r.set(obj);
             r.endEdit(true);
         }, this);
 

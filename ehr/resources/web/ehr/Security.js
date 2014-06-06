@@ -121,7 +121,7 @@ EHR.Security = new function(){
                     };
                     qcRow.effectivePermissions = {};
 
-                    LDK.Assert.assertNotEmpty('schemaMap was empty in Security.js', schemaMap.schemas);
+                    //LDK.Assert.assertNotEmpty('schemaMap was empty in Security.js', schemaMap.schemas);
                     if (schemaMap.schemas && schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
                         var queryCount = 0;
                         for (var queryName in schemaMap.schemas[schemaName].queries){

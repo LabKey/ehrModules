@@ -53,6 +53,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     props.sessionGUID = extraContext.sessionGUID || LABKEY.Utils.generateUUID();
 
     var scriptOptions = {
+        datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List'],
         allowFutureDates: false,
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
@@ -500,7 +501,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         onDeathDeparture: function(id, date){
             //close housing, assignments, treatments
             console.log('on death departure: ' + id);
-            this.getJavaHelper().closeActiveDatasetRecords(['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Animal Record Flags', 'Diet', 'Animal Group Members'], id, date);
+            this.getJavaHelper().closeActiveDatasetRecords(scriptOptions.datasetsToClose, id, date);
         },
 
         isRequiresStatusRecalc: function(){
