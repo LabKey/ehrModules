@@ -1551,9 +1551,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         _log.error(e.getMessage(), e);
                     }
                 }
-
-                ti.getColumn(pkCol.getName()).setHidden(true);
-                ti.getColumn(pkCol.getName()).setKeyField(true);
+                if (ti != null)
+                {
+                    ti.getColumn(pkCol.getName()).setHidden(true);
+                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                }
 
                 return ti;
             }
