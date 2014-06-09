@@ -996,14 +996,22 @@
             </ns:column>
             <ns:column columnName="approve">
                 <ns:columnTitle>3-yr Approval Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="lastAnnualReview">
+                <ns:columnTitle>Date of Last Annual Update</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="enddate">
                 <ns:columnTitle>End Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="first_approval">
                 <ns:columnTitle>First Approval Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="project_type">
@@ -1126,9 +1134,11 @@
             </ns:column>
             <ns:column columnName="startdate">
                 <ns:columnTitle>Start Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
             </ns:column>
             <ns:column columnName="enddate">
                 <ns:columnTitle>End Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
             </ns:column>
             <ns:column columnName="alwaysavailable">
                 <ns:columnTitle>Is Always Available?</ns:columnTitle>

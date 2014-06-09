@@ -695,4 +695,10 @@ public class EHRServiceImpl extends EHRService
     {
         return EHRManager.get().terminateFlagsIfExists(u, c, flag, enddate, animalIds);
     }
+
+    public String getEHRDefaultClinicalProjectName(Container c)
+    {
+        return EHRManager.get().getEHRDefaultClinicalProjectName(c);
+    }
+
 }

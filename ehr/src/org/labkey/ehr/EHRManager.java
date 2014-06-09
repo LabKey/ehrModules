@@ -181,6 +181,14 @@ public class EHRManager
         return ContainerManager.getForPath(path);
     }
 
+    public String getEHRDefaultClinicalProjectName(Container c)
+    {
+        Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+        ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRDefaultClinicalProjectName);
+
+        return PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, c, mp.getCategory(), EHRManager.EHRDefaultClinicalProjectName);
+    }
+
     /**
      * This is a somewhat crude method to identify any containers with an EHR study.  A study is identified as an EHR study if the
      * label is "Primate Electronic Health Record" and the EHR module is turned on in that folder.  This was originally written for

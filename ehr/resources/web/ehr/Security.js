@@ -314,7 +314,9 @@ EHR.Security = new function(){
             SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
             CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission',
             LOCATION_EDITOR: classPrefix + '.EHRLocationEditPermission',
-            HOUSING_EDITOR: classPrefix + '.EHRHousingTransferPermission'
+            HOUSING_EDITOR: classPrefix + '.EHRHousingTransferPermission',
+            PROJECT_EDITOR: classPrefix + '.EHRProjectEditPermission',
+            PROTOCOL_EDITOR: classPrefix + '.EHRProtocolEditPermission'
         },
 
         hasVetPermission: function(){
@@ -362,6 +364,28 @@ EHR.Security = new function(){
                 return false;
 
             return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.LOCATION_EDITOR) > -1;
+        },
+
+        /**
+         * Can edit ehr.project table and associated records
+         */
+        hasProjectEditorPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.PROJECT_EDITOR) > -1;
+        },
+
+        /**
+         * Can edit ehr.protocol table and associated records
+         */
+        hasProtocolEditorPermission: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.PROTOCOL_EDITOR) > -1;
         },
 
         /**

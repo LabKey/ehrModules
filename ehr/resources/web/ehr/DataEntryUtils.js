@@ -175,7 +175,7 @@ EHR.DataEntryUtils = new function(){
         BASICSUBMIT: {
             text: 'Submit',
             name: 'submit',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('project', 'start'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('project', 'start'),
             disabled: false,
             itemId: 'submitBtn',
             handler: function(btn){
@@ -193,7 +193,7 @@ EHR.DataEntryUtils = new function(){
             requiredQC: 'Completed',
             targetQC: 'Completed',
             errorThreshold: 'INFO',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
             itemId: 'submitBtn',
             handler: function(btn){
@@ -233,7 +233,7 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Completed',
             requiredPermission: 'admin',
             errorThreshold: 'ERROR',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
             itemId: 'foreceSubmitBtn',
             handler: function(btn){
@@ -254,7 +254,7 @@ EHR.DataEntryUtils = new function(){
             requiredQC: 'Scheduled',
             targetQC: 'Scheduled',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
             itemId: 'scheduledBtn',
             disableOn: 'ERROR',
@@ -285,7 +285,7 @@ EHR.DataEntryUtils = new function(){
             itemId: 'discardBtn',
             targetQC: 'Delete Requested',
             requiredQC: 'Delete Requested',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
                 panel.discard({
@@ -301,7 +301,7 @@ EHR.DataEntryUtils = new function(){
             name: 'closeBtn',
             requiredQC: 'In Progress',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
             itemId: 'closeBtn',
             handler: function(btn){
@@ -310,14 +310,11 @@ EHR.DataEntryUtils = new function(){
             },
             disableOn: 'ERROR'
         },
-        /**
-         * Will submit/save the form and then return to the enterData page.  It does not alter the QCState of records.
-         */
+
         OPENCLINICALCASE: {
             text: 'Open/Manage Clinical Case',
             name: 'openClinicalCase',
             //requiredQC: 'In Progress',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: false,
             itemId: 'openClinicalCase',
             handler: function(btn){
@@ -367,14 +364,10 @@ EHR.DataEntryUtils = new function(){
                 }, this);
             }
         },
-        /**
-         * Will submit/save the form and then return to the enterData page.  It does not alter the QCState of records.
-         */
+
         OPENBEHAVIORCASE: {
             text: 'Open/Manage Behavior Case',
             name: 'openBehaviorCase',
-            //requiredQC: 'In Progress',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: false,
             itemId: 'openBehaviorCase',
             handler: function(btn){
@@ -427,7 +420,7 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Request: Pending',
             requiredQC: 'Request: Pending',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view'),
             disabled: true,
             itemId: 'requestBtn',
             handler: function(btn){
@@ -445,7 +438,7 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Request: Approved',
             requiredQC: 'Request: Approved',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
             itemId: 'approveBtn',
             handler: function(btn){

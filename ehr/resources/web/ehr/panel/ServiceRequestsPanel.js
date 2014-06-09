@@ -29,7 +29,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
     onLoad: function(results){
         var formMap = {};
         Ext4.each(results.forms, function(form){
-            if (form.isAvailable && form.category == 'Requests'){
+            if (form.canInsert && form.category == 'Requests'){
                 formMap[form.category] = formMap[form.category] || [];
                 formMap[form.category].push({
                     name: form.label,
@@ -42,18 +42,30 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
         for (var i in formMap){
             var items = formMap[i];
             items = LDK.Utils.sortByProperty(items, 'name', false);
-            sections.push({
-                header: i,
-                items: items
-            });
+
+            if (items.length){
+                sections.push({
+                    header: i,
+                    items: items
+                });
+            }
         }
 
         var tab = this.down('#enterNew');
         tab.removeAll();
-        tab.add({
-            xtype: 'ldk-navpanel',
-            sections: sections
-        });
+
+        if (sections.length){
+            tab.add({
+                xtype: 'ldk-navpanel',
+                sections: sections
+            });
+        }
+        else {
+            tab.add({
+                html: 'You do not have permission to submit any types of requests.  Please contact your administrator if you believe this is an error.',
+                border: false
+            });
+        }
     },
 
     getItems: function(){

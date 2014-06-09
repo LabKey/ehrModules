@@ -86,6 +86,27 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columns: 'rowid,name,category,remark,active'
             }
         },
+        protocol: {
+            editorConfig: {
+                caseSensitive: false,
+                anyMatch: true
+            }
+        },
+        investigatorid: {
+            editorConfig: {
+                anyMatch: true,
+                listConfig: {
+                    innerTpl: '{[values.lastname + (values.firstname ? ", " + values.firstname : "")]}',
+                    getInnerTpl: function(){
+                        return this.innerTpl;
+                    }
+                }
+            },
+            lookup: {
+                sort: 'lastname,firstname',
+                columns: 'rowid,lastname,firstname'
+            }
+        },
         //drug fields
         dosage: {
             xtype: 'ehr-drugdosefield',
@@ -1309,6 +1330,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             use_category: {
                 defaultValue: 'Research'
+            }
+        },
+        'ehr.protocol_counts': {
+            project: {
+                xtype: 'ehr-projectfield',
+                editorConfig: {
+                    showInactive: true
+                }
             }
         },
         'ehr.protocol': {

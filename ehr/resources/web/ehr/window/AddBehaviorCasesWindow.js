@@ -113,7 +113,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
 
         Ext4.Array.forEach(caseRecords, function(cr){
             if (previousObsMap[cr.get('caseid')]){
-                Ext4.Array.forEach(previousObsMap[cr.get('Id')], function(r){
+                Ext4.Array.forEach(previousObsMap[cr.get('caseid')], function(r){
                     r = Ext4.apply(r, {
                         'Id/curLocation/location': cr.get('Id/curLocation/location')
                     });

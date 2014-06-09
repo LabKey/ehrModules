@@ -224,7 +224,11 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             console.warn('no bound record found');
         }
 
-        if(!id && boundRecord)
+        if (boundRecord && boundRecord.store){
+            LDK.Assert.assertNotEmpty('ProjectEntryField is being used on a store that lacks an Id field: ' + boundRecord.store.storeId, boundRecord.fields.get('Id'));
+        }
+
+        if (!id && boundRecord)
             id = boundRecord.get('Id');
 
         var date;
