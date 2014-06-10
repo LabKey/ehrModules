@@ -28,7 +28,6 @@ import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
-import org.labkey.api.data.ForeignKey;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.data.SQLFragment;
@@ -1551,11 +1550,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         _log.error(e.getMessage(), e);
                     }
                 }
-                if (ti != null)
+                if (ti == null)
                 {
-                    ti.getColumn(pkCol.getName()).setHidden(true);
-                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                    throw new IllegalStateException("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ", see server log for more details");
                 }
+                ti.getColumn(pkCol.getName()).setHidden(true);
+                ti.getColumn(pkCol.getName()).setKeyField(true);
 
                 return ti;
             }
