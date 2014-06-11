@@ -402,7 +402,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         goToEHRFolder();
         _permissionsHelper.enterPermissionsUI();
         _ext4Helper.clickTabContainingText("Study Security");
-        waitAndClickButton("Study Security");
+        clickButton("Study Security", defaultWaitForPage);
 
         File studyXML = new File(getLabKeyRoot(), getStudyPolicyXML());
         setFormElement(Locator.name("fileUpload"), studyXML);

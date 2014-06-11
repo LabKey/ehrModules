@@ -16,7 +16,6 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
-import org.labkey.test.Locator;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
@@ -80,7 +79,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         setPipelineRoot(path.getPath());
 
         goToModule("Pipeline");
-        waitAndClickButton("Process and Import Data");
+        clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
         _fileBrowserHelper.clickFileBrowserFileCheckbox("study.xml");
