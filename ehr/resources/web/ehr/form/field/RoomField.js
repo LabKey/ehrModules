@@ -48,13 +48,16 @@ Ext4.define('EHR.form.field.RoomField', {
     },
 
     selectByAreas: function(areas){
-        this.store.clearFilter();
-        if (!this.rendered){
+        if (!this.rendered || !this.store){
             this.on('afterrender', function(field){
                 field.selectByAreas(areas);
             }, this, {single: true});
+
+            return;
         }
-        else if (!this.store.getCount()){
+
+        this.store.clearFilter();
+        if (!this.store.getCount()){
             this.store.on('load', function(store){
                 this.selectByAreas(areas);
             }, this, {single: true});

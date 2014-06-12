@@ -1427,10 +1427,10 @@ public class TriggerScriptHelper
     {
         //if provided, we inspect the other records in this transaction and add their values
         //first determine which other records from this transction should be considered
-        Set<String> ignoredObjectIds = new HashSet<String>();
+        Set<String> ignoredObjectIds = new HashSet<>();
         Date highestOpenEnded = null;
 
-        if (recordsInTransaction != null)
+        if (recordsInTransaction != null && recordsInTransaction.size() > 0)
         {
             for (Map<String, Object> origMap : recordsInTransaction)
             {
@@ -1472,21 +1472,17 @@ public class TriggerScriptHelper
                 }
             }
         }
-        else
-        {
-            ignoredObjectIds.add(rowObjectId);
-        }
 
         if (rowObjectId != null)
         {
-            assert ignoredObjectIds.contains(rowObjectId) : "The current row's objectId was not properly included.  This indicates a code problem.";
+            ignoredObjectIds.add(rowObjectId);
         }
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
         filter.addCondition(FieldKey.fromString("date"), date, CompareType.GTE);
         filter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
 
-        if (ignoredObjectIds != null && ignoredObjectIds.size() > 0)
+        if (!ignoredObjectIds.isEmpty())
             filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
 
         filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);

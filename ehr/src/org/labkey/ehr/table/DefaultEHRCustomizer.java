@@ -700,6 +700,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("objectid"));
             newCol.setLabel("SNOMED Codes");
+            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             newCol.setDisplayWidth("250");
             ti.addColumn(newCol);
 
@@ -715,6 +716,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             ExprColumn newCol2 = new ExprColumn(ti, name2, sql2, JdbcType.VARCHAR, ti.getColumn("objectid"));
             newCol2.setLabel("SNOMED Codes");
             newCol2.setHidden(true);
+            newCol2.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             newCol2.setDisplayWidth("250");
             ti.addColumn(newCol2);
         }

@@ -213,6 +213,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 160
             }
         },
+        species: {
+            editorConfig: {
+                caseSensitive: false,
+                anyMatch: true,
+                plugins: ['ldk-usereditablecombo']
+            },
+            lookup: {
+                filterArray: [LABKEY.Filter.create('dateDisabled', null, LABKEY.Filter.Types.ISBLANK)]
+            }
+        },
+        'Id/demographics/species': {
+            editorConfig: {
+                caseSensitive: false,
+                anyMatch: true,
+                plugins: ['ldk-usereditablecombo']
+            },
+            lookup: {
+                filterArray: [LABKEY.Filter.create('dateDisabled', null, LABKEY.Filter.Types.ISBLANK)]
+            }
+        },
         date: {
             allowBlank: false,
             nullable: false,
@@ -1554,6 +1574,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'onprc_billing.miscCharges': {
+            Id: {
+                allowBlank: true,
+                nullable: true
+            },
             chargeId: {
                 lookup: {
                     filterArray: [
@@ -2091,6 +2115,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             birthtype: {
                 columnConfig: {
                     width: 200
+                }
+            },
+            cond: {
+                columnConfig: {
+                    width: 150
                 }
             },
             origin: {

@@ -22,7 +22,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         this.callParent(arguments);
 
         Ext4.override(this.proxy, {
-            getRowData : function(record) {
+            getRowData: function (record){
                 var ret = this.callOverridden(arguments);
                 ret._recordId = record.internalId;
 
@@ -111,7 +111,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     recMap.create.push(r);
                 }
                 else if (forceUpdate || !LABKEY.Utils.isEmptyObj(r.modified)){
-                    var v = r.get(this.proxy.reader.idProperty);
+                    var v = r.get(this.proxy.reader.getIdProperty());
                     LDK.Assert.assertNotEmpty('Record passed as update which lacks keyfield for store: ' + this.storeId + '/' + this.proxy.reader.idProperty + '/' + Ext4.encode(r.modified), v);
                     if (v){
                         recMap.update.push(r);
@@ -139,7 +139,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
         //NOTE: this is debugging code designed to track down the 'row not found' error.  ultimately we should fix this underlying issue and remove this
         if (recMap.update.length){
-            var key = this.proxy.reader.idProperty;
+            var key = this.proxy.reader.getIdProperty();
             LDK.Assert.assertNotEmpty('Unable to find key field for: ' + this.storeId, key);
             var toRemove = [];
             Ext4.Array.forEach(recMap.update, function(r){
@@ -260,22 +260,42 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             record.serverErrors.clear();
         }, this);
 
+        // NOTE: allow this to run first, so the LabKey store will handle changing keys in the manner it expects
+        // The code below is being left in place for now, but may be unnecessary.  if there are no changes to apply, no edits should be made
+        this.callParent(arguments);
+
         if (command.command != 'delete'){
             var idProp = this.proxy.reader.getIdProperty();
             Ext4.Array.forEach(command.rows, function(row){
                 var record;
                 if (row.oldKeys){
-                    record = this.getById(row.oldKeys[idProp]);
-                    if (!record && row.oldKeys[idProp]){
-                        record = this.getById(new String(row.oldKeys[idProp]).toLowerCase());
+                    //NOTE: always test both upper and lower case.  somewhat ugly, but the DB can alter the case of GUIDs
+                    if (!Ext4.isEmpty(row.oldKeys[idProp])){
+                        var lc = new String(row.oldKeys[idProp]).toLowerCase();
+                        var recordIdx = this.findBy(function (record){
+                            return record.get(idProp) === (row.oldKeys[idProp]) || (!Ext4.isEmpty(record.get(idProp)) && new String(record.get(idProp)).toLowerCase() === lc);
+                        });
+                        if (recordIdx != -1){
+                            record = this.getAt(recordIdx);
+                        }
                     }
 
-                    if (!record && row.oldKeys.internalId){
-                        var clientModelIdx = this.findBy(function(record){
+                    if (!record && !Ext4.isEmpty(row.values[idProp])){
+                        var recordIdx = this.findBy(function(record){
+                            return record.get(idProp) === row.values[idProp];
+                        });
+                        if (recordIdx != -1){
+                            record = this.getAt(recordIdx);
+                            console.log('found by new value');
+                        }
+                    }
+
+                    if (!record && row.values.internalId){
+                        var recordIdx = this.findBy(function(record){
                             return record.internalId === row.oldKeys.internalId;
                         });
-                        if (clientModelIdx != -1){
-                            record = this.getAt(clientModelIdx);
+                        if (recordIdx != -1){
+                            record = this.getAt(recordIdx);
                             console.log('found by internal id');
                         }
                     }
@@ -305,8 +325,6 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
             }, this);
         }
-
-        this.callParent(arguments);
     },
 
     handleServerErrors: function(errors, records, requestId){
@@ -321,12 +339,13 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 var record = records[rowError.rowNumber];
                 if (rowError.row){
                     var found;
-                    if (this.model.prototype.idProperty && rowError.row[this.model.prototype.idProperty]){
-                        found = this.findRecord(this.model.prototype.idProperty, rowError.row[this.model.prototype.idProperty]);
+                    var idProp = this.proxy.reader.getIdProperty();
+                    if (idProp && rowError.row[idProp]){
+                        found = this.findRecord(idProp, rowError.row[idProp]);
                         // this is a hack to deal w/ SQLServer converting GUIDs into uppercase, even if generated initially as lowercase
                         // we should not be creating GUIDs in upper case, but retain this check as a fallback
                         if (!found){
-                            found = this.findRecord(this.model.prototype.idProperty, new String(rowError.row[this.model.prototype.idProperty]).toLowerCase());
+                            found = this.findRecord(idProp, new String(rowError.row[idProp]).toLowerCase());
                         }
                     }
                     else if (this.model.prototype.fields.get('objectid')){
@@ -554,6 +573,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
         if (toRemove.length){
             Ext4.Array.forEach(toRemove, function(r){
+                console.log('removing server record');
                 this.remove(r);
             }, this);
         }
