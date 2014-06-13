@@ -97,6 +97,7 @@ public class EHRTestHelper
 
     public int createUserAPI(String email, String containerPath) throws CommandException, IOException
     {
+        _test.log("creating user via API: " + email);
         Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
         CreateUserCommand uc = new CreateUserCommand(email);
         uc.setSendEmail(true);
