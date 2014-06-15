@@ -113,10 +113,7 @@ public class RecordDeleteRunner implements Job
         Study s = StudyService.get().getStudy(c);
 
         // Push a fake ViewContext onto the HttpView stack
-        int stackSize = HttpView.getStackSize();
-        ViewContext.getMockViewContext(u, c, new ActionURL("ehr", "fake.view", c), true);
-
-        try
+        try (ViewContext.StackResetter resetter = ViewContext.pushMockViewContext(u, c, new ActionURL("ehr", "fake.view", c)))
         {
            for (DataSet ds : s.getDataSets())
             {
@@ -143,11 +140,6 @@ public class RecordDeleteRunner implements Job
         catch (BatchValidationException | InvalidKeyException | QueryUpdateServiceException | SQLException e)
         {
             _log.error(e.getMessage(), e);
-        }
-        finally
-        {
-            if (stackSize > -1)
-                HttpView.resetStackSize(stackSize);
         }
     }
 
