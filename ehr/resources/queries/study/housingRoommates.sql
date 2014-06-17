@@ -15,6 +15,7 @@ t.cage,
 t.RoommateId,
 t.RoommateStart,
 t.RoommateEnd,
+t.reason,
 TIMESTAMPDIFF('SQL_TSI_DAY', t.RoommateStart, COALESCE(t.RoommateEnd, now())) as DaysCoHoused,
 t.duration,
 t.qcstate
@@ -39,6 +40,7 @@ CASE
   else h1.enddate
 END AS RoommateEnd,
 h1.duration,
+IFDEFINED(h1.reason) as reason,
 h1.qcstate
 FROM study.Housing h1
 

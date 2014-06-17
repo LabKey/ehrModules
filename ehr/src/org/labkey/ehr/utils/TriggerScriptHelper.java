@@ -613,10 +613,21 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("study", "housing");
 
+        //if this animal already has an active housing record, assume that is the current record and skip
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        filter.addCondition(FieldKey.fromString("isActive"), true);
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("lsid"), filter, null);
+        if (ts.exists())
+        {
+            _log.info("animal already has an active housing record, skipping");
+            return;
+        }
+
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.put("Id", id);
         row.put("date", date);
         row.put("room", room);
+        row.put("objectid", new GUID().toString());
 
         if (enddate != null)
             row.put("enddate", enddate);
@@ -624,7 +635,7 @@ public class TriggerScriptHelper
         if (cage != null)
             row.put("cage", cage);
 
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
         ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
@@ -641,6 +652,10 @@ public class TriggerScriptHelper
         TableInfo ti = getTableInfo("study", "birth");
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
+        if (!row.containsKey("objectid"))
+        {
+            row.put("objectid", new GUID().toString());
+        }
 
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
@@ -667,6 +682,11 @@ public class TriggerScriptHelper
 
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
+        if (!row.containsKey("objectid"))
+        {
+            row.put("objectid", new GUID().toString());
+        }
+
         EHRQCState qc = getQCStateForLabel("Completed");
         if (qc != null)
             row.put("qcstate", qc.getRowId());

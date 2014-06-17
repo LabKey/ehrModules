@@ -29,7 +29,8 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 }
 
 function onBecomePublic(scriptErrors, helper, row, oldRow){
-    if (EHR.Server.Utils.isLiveBirth(row.cond)){
+    var isLiving = EHR.Server.Utils.isLiveBirth(row.cond);
+    if (isLiving){
         helper.registerLiveBirth(row.Id, row.date);
     }
 
@@ -39,9 +40,9 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
             helper.getJavaHelper().insertWeight(row.Id, row.wdate, row.weight);
         }
 
-        //if room provided, we insert into housing
+        //if room provided, we insert into housing.  if this animal already has an active housing record, skip
         if (row.room){
-            helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.room, (row.cage || null));
+            helper.getJavaHelper().createHousingRecord(row.Id, row.date, (isLiving ? null : row.date), row.room, (row.cage || null));
         }
 
         if (!helper.isGeneratedByServer()){
@@ -53,7 +54,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
                 origin: row.origin,
                 birth: row.date,
                 date: row.date,
-                calculated_status: EHR.Server.Utils.isLiveBirth(row.cond) ? 'Alive' : 'Dead'
+                calculated_status: isLiving ? 'Alive' : 'Dead'
             };
 
             if (row['Id/demographics/species']){

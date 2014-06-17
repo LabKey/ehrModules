@@ -701,6 +701,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("objectid"));
             newCol.setLabel("SNOMED Codes");
             newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            newCol.setDisplayColumnFactory(new DisplayColumnFactory()
+            {
+                @Override
+                public DisplayColumn createRenderer(ColumnInfo colInfo)
+                {
+                    return new SNOMEDCodesDisplayColumn(colInfo);
+                }
+            });
             newCol.setDisplayWidth("250");
             ti.addColumn(newCol);
 

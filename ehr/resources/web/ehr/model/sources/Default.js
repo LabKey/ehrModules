@@ -217,7 +217,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             editorConfig: {
                 caseSensitive: false,
                 anyMatch: true,
-                plugins: ['ldk-usereditablecombo']
+                plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    allowChooseOther: false
+                })]
             },
             lookup: {
                 filterArray: [LABKEY.Filter.create('dateDisabled', null, LABKEY.Filter.Types.ISBLANK)]
@@ -227,7 +229,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             editorConfig: {
                 caseSensitive: false,
                 anyMatch: true,
-                plugins: ['ldk-usereditablecombo']
+                plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    allowChooseOther: false
+                })]
             },
             lookup: {
                 filterArray: [LABKEY.Filter.create('dateDisabled', null, LABKEY.Filter.Types.ISBLANK)]

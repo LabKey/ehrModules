@@ -22,7 +22,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
 
         //if room provided, we insert into housing
         if (row.initialRoom){
-            helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.initialRoom, row.initialCage);
+            helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.initialRoom, (row.initialCage || null));
         }
     }
 }

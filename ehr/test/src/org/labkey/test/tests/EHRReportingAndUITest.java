@@ -316,8 +316,13 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitForElement(Locator.tagWithText("div", "3.73 kg")); //first animal
         waitForElement(Locator.tagWithText("div", "3.56 kg")); //second animal
         waitForElements(Locator.css("svg tspan"), 30);  //kinda ugly proxy for graphs loading
+        //NOTE: since 14.1 this part of the test is failing very regularly.  It will begin to load the DataRegion, but it seems to stall at this stage.
+        //Maybe there's some sort of timing induced JS error on the page preventing the DR from rendering?
+        sleep(500);
         waitForElements(Ext4Helper.ext4Tab("Raw Data"), 2);
-        waitAndClick(Ext4Helper.ext4Tab("Raw Data"));
+        sleep(500);
+        waitAndClick(Ext4Helper.ext4Tab("Raw Data").index(1));
+        sleep(500);
         waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);
 
         //chronological history
