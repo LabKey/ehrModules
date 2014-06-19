@@ -26,11 +26,9 @@ import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -128,7 +126,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         _containerHelper.createProject(PROJECT_NAME, "EHR");
 
         clickProject(PROJECT_NAME);
-        enableModules(Arrays.asList("ONPRC_Billing", "ONPRC_BillingPublic", "SLA"), true);
+        _containerHelper.enableModules(Arrays.asList("ONPRC_Billing", "ONPRC_BillingPublic", "SLA"));
     }
 
     @Override
