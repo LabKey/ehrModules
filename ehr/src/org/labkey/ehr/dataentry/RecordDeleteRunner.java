@@ -37,7 +37,6 @@ import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
-import org.labkey.api.view.HttpView;
 import org.labkey.api.view.ViewContext;
 import org.labkey.ehr.EHRManager;
 import org.quartz.CronScheduleBuilder;
@@ -113,9 +112,9 @@ public class RecordDeleteRunner implements Job
         Study s = StudyService.get().getStudy(c);
 
         // Push a fake ViewContext onto the HttpView stack
-        try (ViewContext.StackResetter resetter = ViewContext.pushMockViewContext(u, c, new ActionURL("ehr", "fake.view", c)))
+        try (ViewContext.StackResetter ignored = ViewContext.pushMockViewContext(u, c, new ActionURL("ehr", "fake.view", c)))
         {
-           for (DataSet ds : s.getDataSets())
+            for (DataSet ds : s.getDataSets())
             {
                 TableInfo ti = schema.getTable(ds.getName());  //use UserSchema so we can delete using UpdateService
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.DeleteRequested.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel(), EHRService.QCSTATES.RequestDenied.getLabel()), CompareType.IN);
