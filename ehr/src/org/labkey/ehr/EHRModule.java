@@ -177,8 +177,14 @@ public class EHRModule extends ExtendedSimpleModule
         GeneticCalculationsJob.schedule();
         RecordDeleteRunner.schedule();
 
-        ContextListener.addStartupListener("EHRDemographicsService onStartup", new StartupListener()
+        ContextListener.addStartupListener(new StartupListener()
         {
+            @Override
+            public String getName()
+            {
+                return "EHRDemographicsService onStartup";
+            }
+
             @Override
             public void moduleStartupComplete(ServletContext servletContext)
             {
