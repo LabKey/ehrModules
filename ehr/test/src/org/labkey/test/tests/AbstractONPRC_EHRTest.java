@@ -89,6 +89,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         else
             _fileBrowserHelper.selectImportDataAction("Import Study");
 
+        clickButton("Start Import"); // Validate queries page
         waitForPipelineJobsToComplete(1, "Study import", false);
     }
 
