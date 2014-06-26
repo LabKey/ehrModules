@@ -16,10 +16,8 @@ function onInit(event, helper){
     helper.decodeExtraContextProperty('assignmentsInTransaction', []);
 
     helper.registerRowProcessor(function(helper, row){
-        if (!row.row)
+        if (!row)
             return;
-
-        row = row.row;
 
         if (!row.Id || !row.project){
             return;

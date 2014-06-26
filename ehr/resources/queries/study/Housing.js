@@ -14,10 +14,8 @@ function onInit(event, helper){
     helper.decodeExtraContextProperty('housingInTransaction');
 
     helper.registerRowProcessor(function(helper, row){
-        if (!row.row)
+        if (!row)
             return;
-
-        row = row.row;
 
         if (!row.Id || !row.room){
             return;
@@ -94,9 +92,10 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             housingRecords = map[row.Id];
         }
 
+        //NOTE: downstream java code should handle type conversion of housingInTransaction
         var msg = helper.getJavaHelper().validateFutureOpenEndedHousing(row.Id, row.date, objectid, housingRecords);
         if (msg){
-            EHR.Server.Utils.addError(scriptErrors, 'Id', msg, 'ERROR');
+            EHR.Server.Utils.addError(scriptErrors, 'Id', msg, 'WARN');
         }
     }
 }
@@ -107,19 +106,16 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
 
 function onComplete(event, errors, helper){
     if (!helper.isETL()){
-        var housingMap = helper.getProperty('housingInTransaction');
+        var housingRows = helper.getRows();
         var idsToClose = [];
-        if (housingMap){
-            for (var id in housingMap){
-                var housingRecords = housingMap[id];
-                for (var i=0;i<housingRecords.length;i++){
-                    if (!housingRecords[i].enddate){
-                        idsToClose.push({
-                            Id: id,
-                            date: housingRecords[i].date,
-                            objectid: housingRecords[i].objectid
-                        });
-                    }
+        if (housingRows){
+            for (var i=0;i<housingRows.length;i++){
+                if (!housingRows[i].row.enddate){
+                    idsToClose.push({
+                        Id: housingRows[i].row.Id,
+                        date: housingRows[i].row.date,
+                        objectid: housingRows[i].row.objectid
+                    });
                 }
             }
         }

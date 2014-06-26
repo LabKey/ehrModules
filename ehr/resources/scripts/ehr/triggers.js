@@ -553,6 +553,9 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     if (!helper.isETL() && row.enddate && helper.shouldRemoveTimeFromEndDate())
         EHR.Server.Utils.removeTimeFromDate(row, scriptErrors, 'enddate');
 
+    //allows scripts to register scripts to run against this row.  currently used primarily to track high level summaries
+    helper.runRowProcessors(row);
+
     if (row.Id && !helper.isQuickValidation() && !helper.isETL()){
         EHR.Server.Validation.validateAnimal(helper, scriptErrors, row, 'Id');
 

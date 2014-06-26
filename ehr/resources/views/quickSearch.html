@@ -145,6 +145,7 @@ function makePanel(){
                     itemId: 'projectField',
                     name: 'projectField',
                     xtype: 'ehr-projectfield',
+                    forceSelection: true,
                     fieldLabel: null,
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
@@ -152,6 +153,7 @@ function makePanel(){
                         scope: this,
                         specialkey: function(field, e){
                             if (!field.isExpanded && e.getKey() === e.ENTER){
+                                field.assertValue();
                                 var btn = field.up('panel').down('#projectBtn');
                                 btn.handler.call(btn.scope || btn, btn);
                             }
@@ -173,7 +175,7 @@ function makePanel(){
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {project:value});
                     }
                 },{
-                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'project', 'query.viewName': 'Active Projects'})) + '">View All Projects</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'project', 'query.viewName': 'Active Projects'})) + '">[View Active Projects]</a> <a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'project'})) + '">[View All Projects]</a>',
                     colspan: 2
                 },{
                     html: 'IACUC Protocol:',
@@ -183,6 +185,7 @@ function makePanel(){
                     itemId: 'protocolField',
                     fieldLabel: null,
                     xtype: 'ehr-protocolfield',
+                    forceSelection: true,
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
                     name: 'protocolField',
@@ -190,6 +193,7 @@ function makePanel(){
                         scope: this,
                         specialkey: function(field, e){
                             if (!field.isExpanded && e.getKey() === e.ENTER){
+                                field.assertValue();
                                 var btn = field.up('panel').down('#protocolBtn');
                                 btn.handler.call(btn.scope || btn, btn);
                             }
@@ -212,7 +216,7 @@ function makePanel(){
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'protocolDetails', ctx['EHRStudyContainer'], {protocol:value});
                     }
                 },{
-                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'protocol', 'query.viewName': 'Active Protocols'})) + '">View All Protocols</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'protocol', 'query.viewName': 'Active Protocols'})) + '">[View Active Protocols]</a> <a href="' + (LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {schemaName: 'ehr', 'query.queryName': 'protocol'})) + '">[View All Protocols]</a>',
                     colspan: 2
                 },{
                     html: 'Room:',

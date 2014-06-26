@@ -165,14 +165,14 @@ Ext4.define('EHR.form.field.PlanTextArea', {
     },
 
     onDestroy : function(){
-        if (this.linkDiv){
-            this.linkDiv.removeAllListeners();
-            this.linkDiv.remove();
-        }
-
         if (this.linkEl){
             this.linkEl.removeAllListeners();
             this.linkEl.remove();
+        }
+
+        if (this.linkDiv){
+            this.linkDiv.removeAllListeners();
+            this.linkDiv.remove();
         }
 
         if (this.displayEl){

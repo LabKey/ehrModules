@@ -1354,6 +1354,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             use_category: {
                 defaultValue: 'Research'
+            },
+            shortName: {
+                hidden: true
             }
         },
         'ehr.protocol_counts': {

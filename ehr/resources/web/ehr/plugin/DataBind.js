@@ -16,6 +16,13 @@ Ext4.define('EHR.plugin.Databind', {
     mixins: {
         observable: 'Ext.util.Observable'
     },
+
+    constructor: function(config){
+        this.mixins.observable.constructor.call(this, config);
+
+        this.callParent(arguments);
+    },
+
     init: function(panel){
         this.id = this.id || Ext4.id();
         this.panel = panel;
@@ -43,26 +50,15 @@ Ext4.define('EHR.plugin.Databind', {
             createRecordOnLoad: false
         }, panel.bindConfig);
 
-        panel.addEvents('bindrecord', 'fieldvaluechange');
+        panel.addEvents('bindrecord');
+        this.addEvents('fieldvaluechange');
 
         this.configureStore(panel.store);
         this.addFieldListeners();
 
         //we queue changes from all fields into a single event using buffer
         //this way batch updates of the form only trigger one record update/validation
-        this.mon(panel, 'fieldvaluechange', this.onFieldValueChange, this, {buffer: 50, delay: 10});
-        this.mon(panel, 'add', function(o, c, idx){
-            var findMatchingField = function(f) {
-                if (f.isFormField) {
-                    if (f.dataIndex) {
-                        this.addFieldListener(c);
-                    } else if (f.isComposite) {
-                        f.items.each(findMatchingField, this);
-                    }
-                }
-            };
-            findMatchingField.call(this, c);
-        }, this);
+        this.on('fieldvaluechange', this.onFieldValueChange, this, {buffer: 100, delay: 10});
 
         if (panel.boundRecord)
             panel.bindRecord(panel.boundRecord);
@@ -73,6 +69,8 @@ Ext4.define('EHR.plugin.Databind', {
     destroy: function(){
         this.clearListeners();
         delete this.panel;
+
+        this.callParent(arguments);
     },
 
     configureStore: function(store){
@@ -188,7 +186,7 @@ Ext4.define('EHR.plugin.Databind', {
     //this is called after the a field's change event is called
     //it should update the values in the record, cause an update event to fire on that record, but not re-trigger change events on the fields
     onFieldValueChange: function(){
-        if (!this.panel || this.panel.isDestroyed){
+        if (!this.panel || this.panel.isDestroyed || this.isDestroyed){
             return;
         }
 
@@ -260,7 +258,9 @@ Ext4.define('EHR.plugin.Databind', {
 
     //this is separated so that events from multiple fields in a single form are buffered into one event per panel
     onFieldChange: function(field){
-        this.panel.fireEvent('fieldvaluechange', field);
+        if (this.panel && !this.panel.isDestroyed) {
+            this.fireEvent('fieldvaluechange', field);
+        }
     },
 
     //this is used instead of BasicForm's setValues in order to minimize event firing.  updating a field during editing has the

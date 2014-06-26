@@ -210,14 +210,16 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         addRow: function(row){
             props.rows.push(row);
+        },
 
+        runRowProcessors: function(row){
             if (rowProcessors.length){
                 for (var i=0; i<rowProcessors.length; i++){
                     rowProcessors[i](this, row);
                 }
             }
         },
-        
+
         registerRowProcessor: function(fn){
             rowProcessors.push(fn);
         },

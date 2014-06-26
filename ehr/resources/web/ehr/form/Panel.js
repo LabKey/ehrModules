@@ -39,8 +39,6 @@ Ext4.define('EHR.form.Panel', {
         this.plugins.push(Ext4.create('EHR.plugin.Databind'));
 
         this.callParent();
-
-        this.addEvents('fieldvaluechange');
     },
 
     getRawFieldConfigs: function(){

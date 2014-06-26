@@ -657,8 +657,12 @@ Ext4.define('EHR.data.StoreCollection', {
                 msg.push('Total Rows: ' + totalRows + (totalRows ? ' (' + (duration / totalRows) + ' sec/row)' : null));
 
                 //tone down alerts.  if we have a large number of records, but an acceptable time/record then cancel the alert
-                if (duration < 30 && (duration / totalRows) < 0.1){
+                if (duration < 45 && (duration / totalRows) < 0.1){
                     return;
+                }
+                //also tone down validation warnings.  this could involve caching demographics, so be less strict
+                if (!!options.jsonData.validateOnly && duration < 20 && (duration / totalRows) < 5){
+
                 }
             }
         }

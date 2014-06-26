@@ -1472,12 +1472,20 @@ public class TriggerScriptHelper
                     if (objectId != null)
                     {
                         ignoredObjectIds.add(objectId);
+
+                        //dont let the current row block submission
+                        if (objectId.equals(rowObjectId))
+                        {
+                            continue;
+                        }
                     }
 
                     // if the record has ended in the past, we ignore it.
                     // we dont worry about catching overlapping records here, although perhaps we should
                     if (end != null && end.getTime() < now.getTime())
+                    {
                         continue;
+                    }
 
                     if (start.getTime() >= date.getTime())
                     {

@@ -23,8 +23,6 @@ Ext4.define('EHR.data.HousingClientStore', {
             if (!id || !date)
                 continue;
 
-            date = date.format('Y-m-d');
-
             if (!map[id])
                 map[id] = [];
 
