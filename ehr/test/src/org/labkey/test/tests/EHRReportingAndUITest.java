@@ -41,11 +41,9 @@ public class EHRReportingAndUITest extends AbstractEHRTest
     @LogMethod
     public static void doSetup() throws Exception
     {
-        EHRReportingAndUITest initTest = new EHRReportingAndUITest();
-        initTest.doCleanup(false);
+        EHRReportingAndUITest initTest = (EHRReportingAndUITest)getCurrentTest();
         initTest.enableExperimentalFeature("Client-side Exception Logging");
         initTest.initProject();
-        currentTest = initTest;
     }
 
     //TODO: also check that delete, import, etc do not appear unless explicitly enabled

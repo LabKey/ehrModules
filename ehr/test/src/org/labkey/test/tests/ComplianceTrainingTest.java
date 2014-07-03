@@ -64,13 +64,9 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
     @BeforeClass
     public static void doSetup() throws Exception
     {
-        ComplianceTrainingTest initTest = new ComplianceTrainingTest();
-        initTest.doCleanup(false);
-
+        ComplianceTrainingTest initTest = (ComplianceTrainingTest)getCurrentTest();
         initTest.setUpTest();
         initTest.cleanupRecords(false);
-
-        currentTest = initTest;
     }
 
     private final String prefix = "complianceTest_";

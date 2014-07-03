@@ -40,12 +40,9 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
     @BeforeClass @LogMethod
     public static void doSetup() throws Exception
     {
-        WNPRCEHRDataEntryTest initTest = new WNPRCEHRDataEntryTest();
-        initTest.doCleanup(false);
+        WNPRCEHRDataEntryTest initTest = (WNPRCEHRDataEntryTest)getCurrentTest();
 
         initTest.initProject();
-
-        currentTest = initTest;
     }
 
     @Test

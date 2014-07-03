@@ -57,11 +57,8 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     @LogMethod
     public static void doSetup() throws Exception
     {
-        ONPRC_BillingTest initTest = new ONPRC_BillingTest();
-        initTest.doCleanup(false);
+        ONPRC_BillingTest initTest = (ONPRC_BillingTest)getCurrentTest();
         initTest.initProject();
-
-        currentTest = initTest;
     }
 
     @Test

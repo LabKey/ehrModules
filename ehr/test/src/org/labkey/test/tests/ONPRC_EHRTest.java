@@ -75,14 +75,11 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @LogMethod
     public static void doSetup() throws Exception
     {
-        ONPRC_EHRTest initTest = new ONPRC_EHRTest();
-        initTest.doCleanup(false);
+        ONPRC_EHRTest initTest = (ONPRC_EHRTest)getCurrentTest();
 
         initTest.initProject();
         RReportHelper rHelper = new RReportHelper(initTest);
         rHelper.ensureRConfig();
-
-        currentTest = initTest;
     }
 
     @Test @Ignore("Placeholder: No tests yet")

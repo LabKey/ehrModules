@@ -78,15 +78,12 @@ public class EHRApiTest extends AbstractEHRTest
     @LogMethod
     public static void doSetup() throws Exception
     {
-        EHRApiTest initTest = new EHRApiTest();
-        initTest.doCleanup(false);
+        EHRApiTest initTest = (EHRApiTest)getCurrentTest();
         initTest.initProject();
 
         initTest.setEhrUserPasswords();
         initTest.goToProjectHome();
         initTest.createTestSubjects();
-
-        currentTest = initTest;
     }
 
     @Test
