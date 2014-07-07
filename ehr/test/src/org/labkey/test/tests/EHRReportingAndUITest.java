@@ -42,7 +42,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
     public static void doSetup() throws Exception
     {
         EHRReportingAndUITest initTest = (EHRReportingAndUITest)getCurrentTest();
-        initTest.enableExperimentalFeature("Client-side Exception Logging");
+        initTest.enableExperimentalFeature("Client-side Exception Logging To Server");
         initTest.initProject();
     }
 
