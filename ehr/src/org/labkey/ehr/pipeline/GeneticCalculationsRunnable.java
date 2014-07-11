@@ -101,15 +101,10 @@ public class GeneticCalculationsRunnable
             {
                 defaultXml.getParentFile().mkdirs();
                 defaultXml.createNewFile();
-                FileWriter w = null;
-                try
+
+                try (FileWriter w = new FileWriter(defaultXml))
                 {
-                    w = new FileWriter(defaultXml);
                     w.write(xml);
-                }
-                finally
-                {
-                    w.close();
                 }
             }
 
