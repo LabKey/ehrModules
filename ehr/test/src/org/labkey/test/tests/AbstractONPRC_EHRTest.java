@@ -16,6 +16,7 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
+import org.labkey.test.TestFileUtils;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
@@ -75,7 +76,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     @Override
     protected void doStudyImport()
     {
-        File path = new File(getLabKeyRoot(), REFERENCE_STUDY_PATH);
+        File path = new File(TestFileUtils.getLabKeyRoot(), REFERENCE_STUDY_PATH);
         setPipelineRoot(path.getPath());
 
         goToModule("Pipeline");

@@ -29,6 +29,7 @@ import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 import org.labkey.test.Locator;
+import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -737,7 +738,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         goToProjectHome();
 
         //retain pipeline log for debugging
-        getArtifactCollector().addArtifactLocation(new File(getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH), new FileFilter()
+        getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH), new FileFilter()
         {
             @Override
             public boolean accept(File pathname)

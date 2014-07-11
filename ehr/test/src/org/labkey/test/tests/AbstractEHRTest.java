@@ -25,6 +25,7 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverMultipleTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
+import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.util.AdvancedSqlTest;
@@ -173,7 +174,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     protected void doStudyImport()
     {
         goToModule("Study");
-        importStudyFromZip(new File(getLabKeyRoot(), STUDY_ZIP));
+        importStudyFromZip(new File(TestFileUtils.getLabKeyRoot(), STUDY_ZIP));
     }
 
     protected void createProjectAndFolders()
@@ -404,7 +405,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         _ext4Helper.clickTabContainingText("Study Security");
         clickButton("Study Security", defaultWaitForPage);
 
-        File studyXML = new File(getLabKeyRoot(), getStudyPolicyXML());
+        File studyXML = new File(TestFileUtils.getLabKeyRoot(), getStudyPolicyXML());
         setFormElement(Locator.name("fileUpload"), studyXML);
         clickButton("Import");
     }
