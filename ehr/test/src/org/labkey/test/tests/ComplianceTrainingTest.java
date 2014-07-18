@@ -490,7 +490,7 @@ public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements
     }
 
     @Override
-    public String getAssociatedModuleDirectory()
+    public java.util.List<String> getAssociatedModules()
     {
         return null;
     }

@@ -86,9 +86,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
     protected EHRTestHelper _helper = new EHRTestHelper(this);
 
     @Override
-    public String getAssociatedModuleDirectory()
+    public List<String> getAssociatedModules()
     {
-        return "server/customModules/ehr";
+        return Arrays.asList("ehr");
     }
 
     @Override
