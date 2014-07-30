@@ -17,6 +17,7 @@ package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
@@ -89,7 +90,7 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
     }
 
     @Override
-    public Set<ClientDependency> getClientDependencies()
+    public @NotNull Set<ClientDependency> getClientDependencies()
     {
         return Collections.singleton(ClientDependency.fromFilePath("ehr/ehr_api.lib.xml"));
     }

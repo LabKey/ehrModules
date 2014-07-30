@@ -15,10 +15,8 @@
  */
 package org.labkey.ehr.query;
 
-import org.jetbrains.annotations.NotNull;
-import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
-import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
@@ -77,7 +75,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public Set<String> getTableNames()
     {
-        Set<String> available = new CaseInsensitiveHashSet();
+        Set<String> available = new CaseInsensitiveTreeSet();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
@@ -92,7 +90,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public synchronized Set<String> getVisibleTableNames()
     {
-        Set<String> available = new CaseInsensitiveHashSet();
+        Set<String> available = new CaseInsensitiveTreeSet();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
