@@ -347,6 +347,20 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                         if (!found){
                             found = this.findRecord(idProp, new String(rowError.row[idProp]).toLowerCase());
                         }
+
+                        //NOTE: the value could be set on the server, so also try to find by internal ID
+                        if (!found && rowError.row._recordid){
+                            found = this.getById(rowError.row._recordid);
+                        }
+
+                        if (!found && rowError.row._recordid){
+                            this.each(function (cr) {
+                                if (cr.internalId == rowError.row._recordid) {
+                                    found = cr;
+                                    return false;
+                                }
+                            }, this);
+                        }
                     }
                     else if (this.model.prototype.fields.get('objectid')){
                         found = this.findRecord('objectid', rowError.row['objectid']);

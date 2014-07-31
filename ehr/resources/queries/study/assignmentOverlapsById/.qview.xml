@@ -38,6 +38,7 @@
         </column>
         <column name="earliestAssignment"/>
         <column name="ageOnEarliestAssignment"/>
+        <column name="releaseTypes"/>
     </columns>
     <sorts>
         <sort column="id" descending="false"/>

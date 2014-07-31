@@ -70,12 +70,11 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             },
             chargetype: {
                 allowBlank: false
+            },
+            assistingstaff: {
+                hidden: false,
+                allowBlank: true //will be handled in trigger script
             }
-            //TODO: enable with charge changes
-//            assistingstaff: {
-//                hidden: false,
-//                allowBlank: true //will be handled in trigger script
-//            }
         },
         'ehr.snomed_tags': {
             code: {

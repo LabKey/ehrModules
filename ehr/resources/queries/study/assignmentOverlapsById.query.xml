@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="assignmentOverlapsById" tableDbType="TABLE">
-                <tableTitle>Assignment Overlaps</tableTitle>
+                <tableTitle>Assignments Overlaping A Date Range</tableTitle>
                 <tableUrl />
                 <columns>
                     <column columnName="Id">

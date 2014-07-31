@@ -1365,6 +1365,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     showInactive: true
                 }
+            },
+            description: {
+                hidden: false
             }
         },
         'ehr.protocol': {
@@ -2142,6 +2145,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             'Id/demographics/geographic_origin': {
                 columnConfig: {
                     width: 200
+                },
+                editorConfig: {
+                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                        allowChooseOther: false
+                    })]
                 }
             },
             conception: {

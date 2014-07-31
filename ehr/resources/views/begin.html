@@ -1,11 +1,9 @@
 <script type="text/javascript">
 
-Ext.onReady(createNavMenu);
+Ext4.onReady(createNavMenu);
 
-function createNavMenu()
-{
-    if (!window.EHR || !window.EHR.ext || !window.EHR.ext.NavMenu)
-    {
+function createNavMenu(){
+    if (!window.EHR || !window.EHR.ext || !window.EHR.ext.NavMenu){
         createNavMenu.defer(10);
         return;
     }

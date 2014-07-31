@@ -72,7 +72,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
             },
             items: [{
                 xtype: 'ehr-snomedcombo',
-                defaultSubset: 'Pathology Codes',
+                defaultSubset: 'All',
                 width: 500,
                 fieldLabel: 'Add Code',
                 listeners: {

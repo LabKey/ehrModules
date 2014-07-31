@@ -28,7 +28,7 @@ Ext4.onReady(function(){
                 },{
                     xtype: 'textfield',
                     width: 450,
-                    fieldLabel: 'Group Name',
+                    fieldLabel: 'Group Name (blank for all)',
                     itemId: 'groupField',
                     value: LABKEY.ActionURL.getParameter('name')
                 },{
@@ -157,17 +157,13 @@ Ext4.onReady(function(){
                 title: 'Group Members'
             };
 
-            if (!groupName){
-                Ext4.Msg.alert('Error', 'Must provide a group name');
-                return;
-            }
-
             if (!start){
                 Ext4.Msg.alert('Error', 'Must provide a start date');
                 return;
             }
 
-            config.removeableFilters = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
+            if (groupName)
+                config.removeableFilters = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
 
             var params = {
                 StartDate: start,

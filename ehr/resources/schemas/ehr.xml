@@ -1229,6 +1229,10 @@
                 <ns:columnTitle>End Date</ns:columnTitle>
                 <ns:formatString>yyyy-MM-dd</ns:formatString>
             </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Additional Detail</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:isHidden>true</ns:isHidden>

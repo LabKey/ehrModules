@@ -7,7 +7,7 @@
         <column name="Id/demographics/gender" />
         <column name="MostRecentWeightDate" />
         <column name="MostRecentWeight" />
-        <column name="avgLast30" />
+        <column name="avgLast45" />
         <column name="avgLast90" />
         <column name="avgLast365" />
         <column name="Id/demographics/history" />

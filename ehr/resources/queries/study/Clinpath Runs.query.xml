@@ -28,7 +28,7 @@
                         </fk>
                     </column>
                     <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
+                        <columnTitle>Charge Unit</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>labworkChargeType</fkTable>

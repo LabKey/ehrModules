@@ -89,7 +89,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             sb.append(safeAppend(rs, "Remarks", "remark"));
 
         if (!redacted)
-            sb.append(safeAppend(rs, "Charge Type", "chargetype"));
+            sb.append(safeAppend(rs, "Charge Unit", "chargetype"));
 
         if (rs.hasColumn(FieldKey.fromString("major")) && rs.getObject("major") != null)
         {

@@ -32,7 +32,29 @@ SELECT
     WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
     else Round(((d.MostRecentWeight - w.MaxLast30) * 100 / w.MaxLast30), 1)
   END as MaxLoss30,
-  
+
+  --45 days
+  w.avgLast45,
+  w.minLast45,
+  w.maxLast45,
+  w.numLast45,
+  CASE
+    WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
+    WHEN (abs((d.MostRecentWeight - w.MinLast45) * 100 / w.MinLast45) > abs((d.MostRecentWeight - w.MaxLast45) * 100 / w.MaxLast45))
+    THEN Round(((d.MostRecentWeight-w.MinLast45) * 100 / w.MinLast45), 1)
+    ELSE Round(((d.MostRecentWeight - w.MaxLast45) * 100 / w.MaxLast45), 1)
+  END as MaxChange45,
+
+  CASE
+    WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
+    else Round(((d.MostRecentWeight-w.MinLast45) * 100 / w.MinLast45), 1)
+  END as MaxGain45,
+
+  CASE
+    WHEN (d.MostRecentWeight = 0 or d.MostRecentWeight is null) THEN null
+    else Round(((d.MostRecentWeight - w.MaxLast45) * 100 / w.MaxLast45), 1)
+  END as MaxLoss45,
+
   --90 days
   w.avgLast90,
   w.minLast90,
@@ -135,6 +157,24 @@ SELECT
     WHEN (TIMESTAMPDIFF('SQL_TSI_DAY', w.date, now()) <= 30) THEN 1
     ELSE NULL
   END) as numLast30,
+
+  --45 days
+  avg(CASE
+    WHEN (TIMESTAMPDIFF('SQL_TSI_DAY', w.date, now()) <= 45) THEN w.weight
+    ELSE NULL
+  END) as avgLast45,
+  max(CASE
+    WHEN (TIMESTAMPDIFF('SQL_TSI_DAY', w.date, now()) <= 45) THEN w.weight
+    ELSE NULL
+  END) as maxLast45,
+  min(CASE
+    WHEN (TIMESTAMPDIFF('SQL_TSI_DAY', w.date, now()) <= 45) THEN w.weight
+    ELSE null
+  END) as minLast45,
+  sum(CASE
+    WHEN (TIMESTAMPDIFF('SQL_TSI_DAY', w.date, now()) <= 45) THEN 1
+    ELSE NULL
+  END) as numLast45,
 
   --90 days
   avg(CASE

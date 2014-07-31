@@ -74,7 +74,8 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
 
             var pct;
             if (Ext4.isDefined(val)){
-                pct = val / this.demographicsData.rowCount;
+                //NOTE: this check was added to prevent JS errors.  I think this would only happen as an artifact of page loading, but am not 100% certain.  I was never able to repro it.
+                pct = this.demographicsData ? val / this.demographicsData.rowCount : 0;
                 pct = pct * 100;
                 pct = Ext4.util.Format.round(pct, 2);
                 pct = pct.toString();

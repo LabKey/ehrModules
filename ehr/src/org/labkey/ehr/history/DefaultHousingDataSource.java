@@ -52,8 +52,8 @@ public class DefaultHousingDataSource extends AbstractDataSource
 
         sb.append("Moved to: " + value).append("\n");
 
-        safeAppend(rs, "Reason", "reason");
-        safeAppend(rs, "Remark", "remark");
+        sb.append(safeAppend(rs, "Reason", "reason"));
+        sb.append(safeAppend(rs, "Remark", "remark"));
 
         return sb.toString();
     }

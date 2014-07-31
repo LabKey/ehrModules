@@ -43,6 +43,7 @@ import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -699,6 +700,32 @@ public class TriggerScriptHelper
             throw errors;
 
         EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
+    }
+
+    public void updateDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    {
+        if (id == null || props == null || props.isEmpty())
+            return;
+
+        TableInfo ti = getTableInfo("study", "demographics");
+        TableSelector ts = new TableSelector(ti, Collections.singleton("lsid"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+        String lsid = ts.getObject(String.class);
+        if (lsid != null)
+        {
+            Map<String, Object> row = new CaseInsensitiveHashMap<>();
+            Map<String, Object> keyRow = new CaseInsensitiveHashMap<>();
+            row.putAll(props);
+            row.put("lsid", lsid);
+            keyRow.put("lsid", lsid);
+
+            ti.getUpdateService().updateRows(getUser(), getContainer(), Arrays.asList(row), Arrays.asList(keyRow), getExtraContext());
+
+            EHRDemographicsService.get().getAnimal(getContainer(), id);
+        }
+        else
+        {
+            _log.error("Unable to find demographics record for id: " + id);
+        }
     }
 
     public Map<String, Object> getExtraContext()

@@ -529,6 +529,11 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
+    //trim spaces around Id
+    if (row.Id){
+        row.Id = EHR.Server.Utils.trim(row.Id);
+    }
+
     //normalize these values to JS date objects
     //NOTE: it is important to only assign a value to these if they started with a value
     if (row.date)
