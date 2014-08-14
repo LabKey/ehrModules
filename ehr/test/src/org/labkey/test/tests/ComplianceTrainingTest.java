@@ -25,7 +25,7 @@ import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.BaseWebDriverMultipleTest;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
@@ -51,7 +51,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 @Category({External.class, EHR.class, ONPRC.class})
-public class ComplianceTrainingTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
+public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
     private LabModuleHelper _helper = new LabModuleHelper(this);

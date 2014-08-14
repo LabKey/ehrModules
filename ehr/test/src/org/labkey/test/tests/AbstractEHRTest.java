@@ -22,7 +22,7 @@ import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.BaseWebDriverMultipleTest;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
-abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implements AdvancedSqlTest
+abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     protected String PROJECT_NAME = "EHR_TestProject";
     protected String FOLDER_NAME = "EHR";
@@ -117,7 +117,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverMultipleTest implemen
         log("Skipping query validation.");
     }
 
-    @Override
     protected Pattern[] getIgnoredElements()
     {
         return new Pattern[] {
