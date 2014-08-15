@@ -196,7 +196,7 @@ public class DataEntrySummary implements NotificationSection
         for (final Study s : studies)
         {
             List<DataSet> datasets = new ArrayList<>();
-            datasets.addAll(s.getDataSets());
+            datasets.addAll(s.getDatasets());
             Collections.sort(datasets, new Comparator<DataSet>()
             {
                 @Override

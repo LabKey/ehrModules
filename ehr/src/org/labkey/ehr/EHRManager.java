@@ -56,7 +56,6 @@ import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
-import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.Queryable;
 import org.labkey.api.query.UserSchema;
@@ -227,7 +226,7 @@ public class EHRManager
             return messages;
         }
 
-        for (DataSet ds : s.getDataSets())
+        for (DataSet ds : s.getDatasets())
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "study");
             TableInfo ti = us.getTable(ds.getName(), true);
@@ -419,7 +418,7 @@ public class EHRManager
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI(), c));
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI(), c));
 
-            List<? extends DataSet> datasets = study.getDataSets();
+            List<? extends DataSet> datasets = study.getDatasets();
             boolean shouldClearCaches = false;
 
             for (DataSet dataset : datasets)
@@ -534,7 +533,7 @@ public class EHRManager
 
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<>();
-            for (DataSet d : study.getDataSets())
+            for (DataSet d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = schema.getTable(tableName);
@@ -779,7 +778,7 @@ public class EHRManager
             //increase length of encounters remark col
             if (commitChanges && DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
             {
-                DataSet ds = study.getDataSetByLabel("Clinical Encounters");
+                DataSet ds = study.getDatasetByLabel("Clinical Encounters");
                 if (ds != null)
                 {
                     SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");

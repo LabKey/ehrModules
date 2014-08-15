@@ -16,7 +16,6 @@
 package org.labkey.ehr.dataentry;
 
 import org.apache.log4j.Logger;
-import org.labkey.api.cache.BlockingStringKeyCache;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.ColumnInfo;
@@ -26,7 +25,6 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
-import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
@@ -45,10 +43,8 @@ import org.labkey.ehr.utils.TriggerScriptHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * User: bimber
@@ -275,7 +271,7 @@ public class DataEntryManager
                 Study s = StudyService.get().getStudy(getContainer());
                 if (s != null)
                 {
-                    List<? extends DataSet> datasets = s.getDataSets();
+                    List<? extends DataSet> datasets = s.getDatasets();
                     for (DataSet d : datasets)
                     {
                         dataSetMap.put(d.getName(), d);

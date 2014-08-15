@@ -31,7 +31,6 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -158,7 +157,7 @@ public class TriggerScriptHelper
         for (String queryName : queryNames)
         {
             int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
-            DataSet dataset = StudyService.get().getDataSet(container, datasetId);
+            DataSet dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
                 _log.info("Non existent table: study." + queryName);
                 continue;
@@ -178,7 +177,7 @@ public class TriggerScriptHelper
         User user = getUser();
 
         int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
-        DataSet dataset = StudyService.get().getDataSet(container, datasetId);
+        DataSet dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
             return;
@@ -197,7 +196,7 @@ public class TriggerScriptHelper
         User user = getUser();
 
         int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
-        DataSet dataset = StudyService.get().getDataSet(container, datasetId);
+        DataSet dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
             return;

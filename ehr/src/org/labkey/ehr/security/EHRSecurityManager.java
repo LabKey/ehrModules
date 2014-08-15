@@ -16,7 +16,6 @@
 package org.labkey.ehr.security;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
@@ -77,7 +76,7 @@ public class EHRSecurityManager
     {
         if (ti instanceof DataSetTable)
         {
-            SecurableResource sr = ((DataSetTable)ti).getDataSet();
+            SecurableResource sr = ((DataSetTable)ti).getDataset();
             return testPermission(u, sr, perm, qcState);
         }
         else
@@ -204,7 +203,7 @@ public class EHRSecurityManager
             return datasets;
         }
 
-        datasets = s.getDataSets();
+        datasets = s.getDatasets();
         DataEntryManager.get().getCache().put(cacheKey, datasets);
         return datasets;
     }

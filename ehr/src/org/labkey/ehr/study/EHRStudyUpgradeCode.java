@@ -80,7 +80,7 @@ public class EHRStudyUpgradeCode implements UpgradeCode
                     boolean changed = false;
                     if (id > 0)
                     {
-                        DataSet d = s.getDataSet(id);
+                        DataSet d = s.getDataset(id);
                         if (d != null)
                         {
                             Domain domain = d.getDomain();

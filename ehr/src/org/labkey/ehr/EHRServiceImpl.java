@@ -15,7 +15,6 @@
  */
 package org.labkey.ehr;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,12 +31,10 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
-import org.labkey.api.ehr.dataentry.RequestForm;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryDataSource;
-import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
@@ -64,8 +61,6 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
-import org.labkey.ehr.dataentry.SimpleGridPanel;
-import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.ehr.security.EHRSecurityManager;
@@ -590,7 +585,7 @@ public class EHRServiceImpl extends EHRService
         SecurableResource sr;
         if (ti instanceof DataSetTable)
         {
-            sr =((DataSetTable) ti).getDataSet();
+            sr =((DataSetTable) ti).getDataset();
         }
         else
         {

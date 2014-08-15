@@ -114,7 +114,7 @@ public class RecordDeleteRunner implements Job
         // Push a fake ViewContext onto the HttpView stack
         try (ViewContext.StackResetter ignored = ViewContext.pushMockViewContext(u, c, new ActionURL("ehr", "fake.view", c)))
         {
-            for (DataSet ds : s.getDataSets())
+            for (DataSet ds : s.getDatasets())
             {
                 TableInfo ti = schema.getTable(ds.getName());  //use UserSchema so we can delete using UpdateService
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.DeleteRequested.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel(), EHRService.QCSTATES.RequestDenied.getLabel()), CompareType.IN);
