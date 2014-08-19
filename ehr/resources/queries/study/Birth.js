@@ -41,7 +41,7 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
         }
 
         //if room provided, we insert into housing.  if this animal already has an active housing record, skip
-        if (row.room){
+        if (row.room && row.Id && row.date){
             helper.getJavaHelper().createHousingRecord(row.Id, row.date, (isLiving ? null : row.date), row.room, (row.cage || null));
         }
 

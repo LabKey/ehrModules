@@ -527,6 +527,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.404-12.405.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.409-12.410.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.415-12.416.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.416-12.417.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -604,6 +605,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.411-12.412.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.412-12.413.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.413-12.414.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.414-12.415.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -758,6 +760,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.404-12.405.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.409-12.410.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.415-12.416.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.416-12.417.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -834,6 +837,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.411-12.412.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.412-12.413.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.413-12.414.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.414-12.415.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -1243,13 +1247,11 @@ ehr/src/org/labkey/ehr/demographics/WeightsDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/history/AntibioticSensitivityLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ChemistryLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ClinicalHistoryManager.java -text
-ehr/src/org/labkey/ehr/history/DefaultAlopeciaDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultArrivalDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultAssignmentDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultAssignmentEndDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBirthDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBloodDrawDataSource.java -text
-ehr/src/org/labkey/ehr/history/DefaultBodyConditionDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultCasesCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultCasesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultClinicalRemarksDataSource.java -text
@@ -1265,7 +1267,6 @@ ehr/src/org/labkey/ehr/history/DefaultObservationsDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultPregnanciesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListDataSource.java -text
-ehr/src/org/labkey/ehr/history/DefaultTBDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentEndDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text

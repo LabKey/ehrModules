@@ -57,7 +57,6 @@ public class ClinicalHistoryManager
         registerDataSource(new DefaultDrugsDataSource());
         registerDataSource(new DefaultObservationsDataSource());
         registerDataSource(new DefaultWeightDataSource());
-        registerDataSource(new DefaultAlopeciaDataSource());
         registerDataSource(new DefaultAssignmentDataSource());
         registerDataSource(new DefaultAssignmentEndDataSource());
 
@@ -66,7 +65,6 @@ public class ClinicalHistoryManager
         registerDataSource(new DefaultPregnanciesDataSource());
 
         registerDataSource(new DefaultBloodDrawDataSource());
-        registerDataSource(new DefaultBodyConditionDataSource());
 
         registerDataSource(new DefaultLabworkDataSource());
 
@@ -74,8 +72,6 @@ public class ClinicalHistoryManager
         registerDataSource(new DefaultArrivalDataSource());
         registerDataSource(new DefaultDepartureDataSource());
         registerDataSource(new DefaultHousingDataSource());
-
-        registerDataSource(new DefaultTBDataSource());
 
         registerDataSource(new DefaultTreatmentOrdersDataSource());
         registerDataSource(new DefaultTreatmentEndDataSource());

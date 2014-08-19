@@ -74,6 +74,19 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             assistingstaff: {
                 hidden: false,
                 allowBlank: true //will be handled in trigger script
+            },
+            enddate: {
+                editorConfig: {
+                    getDefaultDate: function(){
+                        var rec = EHR.DataEntryUtils.getBoundRecord(this);
+                        console.log(rec);
+                        if (rec){
+                            if (rec.get('date')){
+                                return rec.get('date');
+                            }
+                        }
+                    }
+                }
             }
         },
         'ehr.snomed_tags': {

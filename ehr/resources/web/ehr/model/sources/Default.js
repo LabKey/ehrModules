@@ -1045,6 +1045,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     sort: 'Type,DisplayName'
                 },
                 editorConfig: {
+                    plugins: ['ldk-usereditablecombo'],
                     anyMatch: true,
                     listConfig: {
                         innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
@@ -2049,23 +2050,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: true
             },
             account: {hidden: true},
-            finalCondition: {
-                //allowBlank: false,
-                columnConfig: {
-                    width: 200
-                },
-                lookup: {
-                    sort: 'code'
-                },
-                editorConfig: {
-                    listConfig: {
-                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
-                        getInnerTpl: function(){
-                            return this.innerTpl;
-                        }
-                    }
-                }
-            },
             necropsy: {
                 lookups: false,
                 columnConfig: {

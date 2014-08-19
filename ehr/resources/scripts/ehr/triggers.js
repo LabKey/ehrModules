@@ -709,7 +709,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     //update SNOMED tags if necessary.  note: this must occur prior to actual insert, since LK strips out properties that do not match actual fields
     if (!helper.isETL() && helper.getSNOMEDCodeFieldName()){
         if (row && oldRow && row.codesRaw === oldRow.codesRaw){
-            console.log('codes match: ' + oldRow.codesRaw);
+            console.log('codes match: ' + (oldRow.codesRaw || 'none'));
         }
 
         if (!helper.isValidateOnly() && row.objectid){

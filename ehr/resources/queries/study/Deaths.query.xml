@@ -80,6 +80,7 @@
                     </column>
                     <column columnName="finalCondition">
                         <columnTitle>Final Condition</columnTitle>
+                        <isHidden>true</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>animal_condition</fkTable>

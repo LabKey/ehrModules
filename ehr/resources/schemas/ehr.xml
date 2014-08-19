@@ -1219,7 +1219,7 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="allowed">
-                <ns:columnTitle># Allowed</ns:columnTitle>
+                <ns:columnTitle># Animals Allowed</ns:columnTitle>
             </ns:column>
             <ns:column columnName="start">
                 <ns:columnTitle>Start Date</ns:columnTitle>

@@ -8,6 +8,8 @@ PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Protocol CHAR, Project CHAR D
 
 SELECT
 a.Id,
+group_concat(distinct a.project.protocol.displayName) as protocols,
+group_concat(distinct a.project.displayName) as projects,
 min(a.date) as earliestAssignment,
 max(a.date) as latestAssignment,
 ROUND(CONVERT(age_in_months(max(a.Id.demographics.birth), min(a.date)), DOUBLE) / 12, 1) AS ageOnEarliestAssignment,

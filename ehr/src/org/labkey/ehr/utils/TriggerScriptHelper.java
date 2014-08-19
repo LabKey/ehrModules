@@ -1974,12 +1974,15 @@ public class TriggerScriptHelper
             return;
         }
 
+        _log.info("deleting SNOMED tags for: " + objectid);
         TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
         Table.delete(snomedTags, new SimpleFilter(FieldKey.fromString("recordid"), objectid, CompareType.EQUAL));
         if (codes != null)
         {
             String[] codeList = StringUtils.split(codes, ";");
             int sort = 0;
+
+            _log.info("adding " + codeList.length + " SNOMED tags for: " + objectid);
             for (String code : codeList)
             {
                 sort++;

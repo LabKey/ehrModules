@@ -949,7 +949,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         List<ButtonConfigFactory> buttons = new ArrayList<>(EHRService.get().getMoreActionsButtons(ti));
         if (ti instanceof DataSetTable)
         {
-            buttons.add(new EHRShowEditUIButton(ModuleLoader.getInstance().getModule(EHRModule.class), ti.getPublicSchemaName(), ti.getName(), EHRDataAdminPermission.class));
+            EHRShowEditUIButton btn = new EHRShowEditUIButton(ModuleLoader.getInstance().getModule(EHRModule.class), ti.getPublicSchemaName(), ti.getName(), EHRDataAdminPermission.class);
+            if (btn.isAvailable(ti))
+                buttons.add(btn);
         }
 
         List<ButtonConfig> existingBtns = cfg.getItems();
@@ -1434,10 +1436,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
-                        _log.error(e.getMessage(), e);
+                        _log.warn(e.getMessage(), e);
                     }
                 }
 
@@ -1454,7 +1456,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 }
                 else
                 {
-                    _log.error("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ". table was null");
+                    _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ". table was null");
                 }
 
                 return ti;
@@ -1561,16 +1563,16 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
-                        _log.error(e.getMessage(), e);
+                        _log.warn(e.getMessage(), e);
                     }
                 }
 
                 if (ti == null)
                 {
-                    _log.error("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ", see server log for more details.  Table was null");
+                    _log.warn("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ", see server log for more details.  Table was null");
                 }
                 else
                 {
@@ -1680,10 +1682,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating age at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating age at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
-                        _log.error(e.getMessage(), e);
+                        _log.warn(e.getMessage(), e);
                     }
                 }
 
@@ -1698,8 +1700,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     TableInfo demographics = targetSchema.getTable("demographics");
                     if (demographics != null)
                     {
-                        _log.error("Demographics table columns: ");
-                        _log.error(targetSchema.getTable("demographics").getColumnNameSet());
+                        _log.warn("Demographics table columns: ");
+                        _log.warn(targetSchema.getTable("demographics").getColumnNameSet());
                     }
                 }
 
