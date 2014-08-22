@@ -380,6 +380,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             this.fireEvent('validation', this, [r], config);
         }
 
+        //if(this.doServerValidation){
         if(operation=='edit' && this.doServerValidation){
             this.validateRecordOnServer.defer(500, this, [this, [r], config]);
         }
@@ -588,12 +589,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             queryName: this.queryName,
             command: "insertWithKeys",
             rows: [],
-            extraContext: {
-                storeId: this.storeId,
-                queryName: this.queryName,
-                schemaName: this.schemaName,
-                keyField: this.reader.meta.id
-            }
+            extraContext: this.getExtraContext(records)
         };
         var updateCommand =
         {
@@ -601,12 +597,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             queryName: this.queryName,
             command: "updateChangingKeys",
             rows: [],
-            extraContext: {
-                storeId: this.storeId,
-                queryName: this.queryName,
-                schemaName: this.schemaName,
-                keyField: this.reader.meta.id
-            }
+            extraContext: this.getExtraContext(records)
         };
         for(var idx = 0; idx < records.length; ++idx)
         {
@@ -661,6 +652,55 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 //        }
 
         return commands;
+    },
+
+    getExtraContext: function(records){
+        var ret = {
+            storeId: this.storeId,
+            queryName: this.queryName,
+            schemaName: this.schemaName,
+            keyField: this.reader.meta.id
+        };
+
+        // NOTE: this should really be left to subclasses of ehrStore to handle, rather
+        // then account for each query here.  we also might want extraContext attached to the
+        // top-level request, rather than only per-blood.  in this instance only Blood Draws.js
+        // is using the data, but weights are a good example of something that might be
+        // globally useful.
+        if (this.queryName == 'Blood Draws'){
+            var bloodDrawMap = {};
+            var allRecords = this.getAllRecords();
+            for (var idx = 0; idx < allRecords.length; ++idx){
+                var record = allRecords[idx];
+                if (record.get('quantity') > 0)
+                {
+                    var id = record.get('Id');
+                    var date = record.get('date');
+                    if (!id || !date)
+                        continue;
+
+                    date = date.format('Y-m-d');
+
+                    if (!bloodDrawMap[id])
+                        bloodDrawMap[id] = [];
+
+                    bloodDrawMap[id].push({
+                        objectid: record.get('objectid'),
+                        date: date,
+                        qcstate: record.get('QCState'),
+                        quantity: record.get('quantity')
+                    });
+                }
+            }
+
+            if (!LABKEY.Utils.isEmptyObj(bloodDrawMap)){
+                ret.bloodInTransaction = bloodDrawMap
+            }
+        }
+
+
+
+        return ret;
     },
 
     //private

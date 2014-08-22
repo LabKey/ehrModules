@@ -125,8 +125,8 @@ EHR.Metadata.registerMetadata('Request', {
                 editorConfig: {
                     timeConfig: {
                         minValue: '8:30',
-                        maxValue: '9:30',
-                        increment: 60
+                        maxValue: '12:00',
+                        increment: 30
                     }
                 },
                 setInitialValue: function(v){

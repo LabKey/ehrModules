@@ -80,6 +80,9 @@ EHR.Metadata.registerMetadata('Encounter', {
                 return v || date;
             }
         }
+        ,title:{
+            allowDuplicateValue: false
+        }
     },
     byQuery: {
         'Treatment Orders': {

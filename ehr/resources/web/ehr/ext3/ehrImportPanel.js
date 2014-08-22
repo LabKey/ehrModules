@@ -943,13 +943,15 @@ EHR.ext.ImportPanel.Buttons = {
 
                     var store = Ext.StoreMgr.get('study||Necropsies||||');
                     var record = store.getAt(0);
+                    var store2 = Ext.StoreMgr.get('study||Weight||||');
+                    var record2 = store2.getAt(0);
 
                     if(!record ||
-                        !record.get('Id') ||
-                        !record.get('causeofdeath') ||
-                        !record.get('timeofdeath') ||
-                        !record.get('project')
-                    ){
+                            !record.get('Id') ||
+                            !record.get('causeofdeath') ||
+                            !record.get('timeofdeath') ||
+                            !record.get('project')
+                            ){
                         alert('Must provide Id, project, type of death, and time of death');
                         return;
                     }
@@ -962,7 +964,9 @@ EHR.ext.ImportPanel.Buttons = {
                         cause: record.get('causeofdeath'),
                         manner: record.get('mannerofdeath'),
                         necropsy: record.get('caseno'),
-                        parentid: record.get('objectid')
+                        parentid: record.get('objectid'),
+                        weight: record2.get('weight'),
+                        necropsyDate: record.get('date')
                     };
 
                     var queryName;
@@ -996,6 +1000,24 @@ EHR.ext.ImportPanel.Buttons = {
                             }
                             //otherwise we create a new record
                             else {
+
+                                function doInsert(){
+                                    LABKEY.Query.insertRows({
+                                        schemaName: 'study',
+                                        queryName: queryName,
+                                        scope: this,
+                                        rows: [obj],
+                                        success: function(data){
+                                            Ext.Msg.hide();
+                                            alert('Success inserting into '+queryName+' from necropsy for '+Id)
+                                        },
+                                        failure: function(error){
+                                            alert('ERROR: ' + (error.msg || error.exception));
+                                            EHR.Utils.onError(error);
+                                        }
+                                    });
+                                }
+
                                 if(queryName=='Prenatal Deaths'){
                                     var selectorWin = new Ext.Window({
                                         closeAction:'hide',
@@ -1069,23 +1091,6 @@ EHR.ext.ImportPanel.Buttons = {
                                 else {
                                     doInsert();
                                 }
-
-                                function doInsert(){
-                                    LABKEY.Query.insertRows({
-                                        schemaName: 'study',
-                                        queryName: queryName,
-                                        scope: this,
-                                        rows: [obj],
-                                        success: function(data){
-                                            Ext.Msg.hide();
-                                            alert('Success inserting into '+queryName+' from necropsy for '+Id)
-                                        },
-                                        failure: function(error){
-                                            alert('ERROR: ' + (error.msg || error.exception));
-                                            EHR.Utils.onError(error);
-                                        }
-                                    });
-                                }
                             }
                         },
                         failure: function(error){
@@ -1098,7 +1103,7 @@ EHR.ext.ImportPanel.Buttons = {
         },
         disableOn: 'ERROR',
         scope: this
-        }
+    }
     },
     /**
      * Will attempt to convert the QCState of all records to 'Completed' and submit the form.  Similar to the other SUBMIT button; however, this button does not require a confirmation prior to submitting.

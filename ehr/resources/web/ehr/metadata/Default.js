@@ -2357,6 +2357,12 @@ EHR.Metadata.registerMetadata('Default', {
             ,requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}}
             ,performedby: {shownInGrid: false}
             ,instructions: {shownInGrid: false}
+            ,objectid: { setInitialValue: function (v, rec){
+                return v || LABKEY.Utils.generateUUID();
+                },
+                parentConfig:false,
+                hidden :true
+            }
             ,assayCode: {
                 xtype: 'trigger'
                 ,shownInGrid: false

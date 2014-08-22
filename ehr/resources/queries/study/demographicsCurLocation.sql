@@ -22,6 +22,10 @@ ifdefined(d2.cond) as cond,
 
 d2.date,
 
+d2.reason,
+
+d2.remark,
+
 coalesce(d2.room, '') as room_order,
 d2.room_sortValue @hidden,
 

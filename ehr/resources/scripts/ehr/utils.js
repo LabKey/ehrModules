@@ -288,12 +288,13 @@ EHR.Server.Utils = new function(){
             var date = row[fieldname];
 
             if (!date){
-                return;
+                return null;
             }
 
             //normalize to a javascript date object
             date = new Date(date.getTime());
             row[fieldname] = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            return row[fieldname];
         },
 
         /**
