@@ -252,7 +252,7 @@ public class EHRServiceImpl extends EHRService
         _clientDependencies.put(owner, list);
     }
 
-    public Set<ClientDependency> getRegisteredClientDependencies(Container c, User u)
+    public Set<ClientDependency> getRegisteredClientDependencies(Container c)
     {
         Set<ClientDependency> set = new HashSet<>();
         for (Module m : _clientDependencies.keySet())

@@ -339,12 +339,12 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    public @NotNull LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
+    public @NotNull LinkedHashSet<ClientDependency> getClientDependencies(Container c)
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
         LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
-        ret.addAll(super.getClientDependencies(c, u));
-        ret.addAll(EHRService.get().getRegisteredClientDependencies(c, u));
+        ret.addAll(super.getClientDependencies(c));
+        ret.addAll(EHRService.get().getRegisteredClientDependencies(c));
 
         return ret;
     }

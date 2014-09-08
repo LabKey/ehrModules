@@ -1294,8 +1294,8 @@ public class EHRController extends SpringActionController
             dependencies.addAll(def.getClientDependencies());
             for (ClientDependency cd : dependencies)
             {
-                jsDependencyPaths.addAll(cd.getJsPaths(getContainer(), getUser(), AppProps.getInstance().isDevMode()));
-                cssDependencyPaths.addAll(cd.getCssPaths(getContainer(), getUser(), AppProps.getInstance().isDevMode()));
+                jsDependencyPaths.addAll(cd.getJsPaths(getContainer(), AppProps.getInstance().isDevMode()));
+                cssDependencyPaths.addAll(cd.getCssPaths(getContainer()));
             }
             ret.put("jsDependencies", jsDependencyPaths);
             ret.put("cssDsDependencies", cssDependencyPaths);
