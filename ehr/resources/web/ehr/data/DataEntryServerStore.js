@@ -129,7 +129,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     recMap.destroy = removed.destroy;
                 if (removed.update.length){
                     for (var i=0;i<removed.update.length;i++){
-                        LDK.Assert.assertNotEmpty('Deleted record passed as update which lacks keyfield for store: ' + this.storeId + '/' + this.proxy.reader.idProperty, removed.update[i].get(this.proxy.reader.idProperty));
+                        LDK.Assert.assertNotEmpty('Deleted record passed as delete/update which lacks keyfield for store: ' + this.storeId + '/' + this.proxy.reader.idProperty, removed.update[i].get(this.proxy.reader.idProperty));
                     }
 
                     recMap.update = recMap.update.concat(removed.update);

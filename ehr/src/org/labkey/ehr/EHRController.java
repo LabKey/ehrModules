@@ -1395,7 +1395,7 @@ public class EHRController extends SpringActionController
                         return null;
                     }
 
-                    Collection<String> added = EHRManager.get().ensureFlagActive(getUser(), getContainer(), form.getFlag(), form.getDate(), form.getRemark(), Arrays.asList(form.getAnimalIds()), form.getLivingAnimalsOnly());
+                    Collection<String> added = EHRManager.get().ensureFlagActive(getUser(), getContainer(), form.getFlag(), form.getDate(), null, form.getRemark(), Arrays.asList(form.getAnimalIds()), form.getLivingAnimalsOnly());
                     resp.put("added", added);
                 }
                 else if ("remove".equalsIgnoreCase(mode))

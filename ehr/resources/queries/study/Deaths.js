@@ -25,6 +25,28 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             EHR.Server.Utils.addError(scriptErrors, 'tattoo', 'Id not found in the tattoo', 'INFO');
         }
     }
+
+    // update demographics death date if finalized and not changed from existing value
+    if (!helper.isValidateOnly() && row.Id && row.date && row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
+        EHR.Server.Utils.findDemographics({
+            participant: row.Id,
+            helper: helper,
+            scope: this,
+            callback: function (data) {
+                if (!data)
+                    return;
+
+                var death = EHR.Server.Utils.normalizeDate(row.death);
+                if (!death || death.getTime() != row.date.getTime()) {
+                    console.log('updating demographics death date');
+                    helper.getJavaHelper().updateDemographicsRecord(row.Id, {
+                        Id: row.Id,
+                        death: row.date
+                    });
+                }
+            }
+        });
+    }
 }
 
 function onBecomePublic(scriptErrors, helper, row, oldRow){

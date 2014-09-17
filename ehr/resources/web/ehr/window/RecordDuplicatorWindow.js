@@ -110,8 +110,8 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
             Ext4.each(selected, function(rec){
                 var data = {};
                 this.down('form').getForm().getFields().each(function(f){
-                    if(f.checked){
-                        data[f.dataIndex] = rec.get(f.dataIndex);
+                    if (f.checked){
+                        data[f.dataIndex] = Ext4.clone(rec.get(f.dataIndex));
                     }
                 }, this);
 

@@ -38,6 +38,7 @@ import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractTableCustomizer;
@@ -398,6 +399,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void setConceptURI(ColumnInfo ci, String conceptURI)
     {
+        if (ci.isLocked())
+        {
+            return;
+        }
+
         ci.setConceptURI(conceptURI);
         if (ci instanceof AliasedColumn)
         {
@@ -413,7 +419,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
 
-        setConceptURI(ti.getColumn("Id"), PARTICIPANT_CONCEPT_URI);
+        if (!ti.getColumn("Id").isLocked())
+        {
+            setConceptURI(ti.getColumn("Id"), PARTICIPANT_CONCEPT_URI);
+        }
 
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
         ColumnInfo datasets = ti.getColumn(FieldKey.fromString("DataSets"));
@@ -1194,6 +1203,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setLabel("Code(s)");
             table.addColumn(col);
         }
+
+        table.setAuditBehavior(AuditBehaviorType.NONE);
     }
 
     private void customizeTasks(AbstractTableInfo ti)
@@ -1654,24 +1665,30 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    " ROUND(CONVERT(age_in_months(d.birth, d.lastDayAtCenter), DOUBLE) / 12, 1)\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " as DATE))), DOUBLE) / 12, 1)\n" +
+                    "  ROUND(CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    " floor(age(d.birth, d.lastDayAtCenter))\n" +
                     "ELSE\n" +
-                    "  floor(age(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " as DATE))))\n" +
+                    "  floor(age(d.birth, CAST(c." + dateColName + " as DATE)))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    "  CONVERT(age_in_months(d.birth, d.lastDayAtCenter), INTEGER)\n" +
                     "ELSE\n" +
-                    "  CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, CAST(c." + dateColName + " AS DATE))), INTEGER)\n" +
+                    "  CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +

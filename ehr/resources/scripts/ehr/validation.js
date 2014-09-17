@@ -427,7 +427,7 @@ EHR.Server.Validation = {
                         if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
                             EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'ERROR');
                         else
-                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'INFO');
+                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'WARN');
                     }
                 }
             }

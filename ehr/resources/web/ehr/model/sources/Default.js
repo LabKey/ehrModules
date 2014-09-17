@@ -886,6 +886,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 400
                 }
+            },
+            sort_order: {
+                allowDuplicateValue: false
             }
         },
         'study.histology': {
@@ -906,6 +909,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             tissue: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'All'
+                },
                 allowBlank: false
             },
             qualifier: {

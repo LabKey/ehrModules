@@ -2071,7 +2071,13 @@ public class TriggerScriptHelper
                 {
                     Map<String, Object> r = new CaseInsensitiveHashMap<>();
                     r.put("lsid", lsid);
-                    r.put("enddate", row.get("date"));
+                    Date date = (Date)row.get("date");
+                    if (date.getHours() == 0 && date.getMinutes() == 0)
+                    {
+                        Exception e = new Exception();
+                        _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date", e);
+                    }
+                    r.put("enddate", date);
                     toUpdate.add(r);
 
                     Map<String, Object> keyMap = new CaseInsensitiveHashMap<>();

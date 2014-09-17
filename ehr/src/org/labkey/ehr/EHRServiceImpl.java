@@ -683,7 +683,12 @@ public class EHRServiceImpl extends EHRService
 
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
-        return EHRManager.get().ensureFlagActive(u, c, flag, date, remark, animalIds, livingAnimalsOnly);
+        return ensureFlagActive(u, c, flag, date, null, remark, animalIds, livingAnimalsOnly);
+    }
+
+    public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, Date enddate, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
+    {
+        return EHRManager.get().ensureFlagActive(u, c, flag, date, enddate, remark, animalIds, livingAnimalsOnly);
     }
 
     public Collection<String> terminateFlagsIfExists(User u, Container c, String flag, Date enddate, Collection<String> animalIds)

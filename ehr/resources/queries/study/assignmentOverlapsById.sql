@@ -13,7 +13,8 @@ group_concat(distinct a.project.displayName) as projects,
 min(a.date) as earliestAssignment,
 max(a.date) as latestAssignment,
 ROUND(CONVERT(age_in_months(max(a.Id.demographics.birth), min(a.date)), DOUBLE) / 12, 1) AS ageOnEarliestAssignment,
-group_concat(DISTINCT CAST(ifdefined(a.releaseType) as varchar(200))) as releaseTypes
+group_concat(DISTINCT CAST(ifdefined(a.releaseType) as varchar(200))) as releaseTypes,
+count(*) as totalAssignments
 
 FROM study.assignment a
 

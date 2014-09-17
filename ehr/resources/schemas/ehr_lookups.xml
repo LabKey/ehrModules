@@ -866,9 +866,10 @@
         <ns:columns>
             <ns:column columnName="rowid">
                 <ns:columnTitle>Row Id</ns:columnTitle>
+                <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="subset">
-                <ns:isKeyField>true</ns:isKeyField>
+
             </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>

@@ -41,6 +41,7 @@
         <column name="protocols"/>
         <column name="projects"/>
         <column name="releaseTypes"/>
+        <column name="totalAssignments"/>
     </columns>
     <sorts>
         <sort column="id" descending="false"/>

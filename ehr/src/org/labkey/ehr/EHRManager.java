@@ -17,6 +17,7 @@ package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
@@ -589,7 +590,7 @@ public class EHRManager
                 }
                 else if (d.getLabel().equalsIgnoreCase("Animal Record Flags"))
                 {
-                    toAdd.add(new String[]{"participantid:ASC", "include:category,value"});
+                    toRemove.add(new String[]{"participantid:ASC", "include:category,value"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Clinical Remarks"))
                 {
@@ -778,12 +779,16 @@ public class EHRManager
             //increase length of encounters remark col
             if (commitChanges && DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
             {
-                DataSet ds = study.getDatasetByLabel("Clinical Encounters");
-                if (ds != null)
+                for (String label : new String[]{"Clinical Encounters", "Gross Findings"})
                 {
-                    SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
-                    SqlExecutor se = new SqlExecutor(DbScope.getLabkeyScope());
-                    se.execute(sql);
+                    DataSet ds = study.getDatasetByLabel(label);
+                    if (ds != null)
+                    {
+                        _log.info("increasing size of remark column for dataset: " + label);
+                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
+                        SqlExecutor se = new SqlExecutor(DbScope.getLabkeyScope());
+                        se.execute(sql);
+                    }
                 }
             }
 
@@ -1242,7 +1247,7 @@ public class EHRManager
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
 
-    public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
+    public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, @Nullable Date enddate, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
     {
         final List<String> animalIds = new ArrayList<>(toTest);
 
@@ -1284,6 +1289,10 @@ public class EHRManager
                 Map<String, Object> row = new CaseInsensitiveHashMap<>();
                 row.put("Id", animal);
                 row.put("date", date);
+                if (enddate != null)
+                {
+                    row.put("enddate", enddate);
+                }
                 row.put("remark", remark);
                 row.put("flag", flag);
                 row.put("performedby", u.getDisplayName(u));

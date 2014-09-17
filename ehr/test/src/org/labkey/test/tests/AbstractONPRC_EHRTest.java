@@ -91,7 +91,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
             _fileBrowserHelper.selectImportDataAction("Import Study");
 
         clickButton("Start Import"); // Validate queries page
-        waitForPipelineJobsToComplete(1, "Study import", false);
+        waitForPipelineJobsToComplete(1, "Study import", false, MAX_WAIT_SECONDS * 2500); //onprc_billing test has a lot of queries
     }
 
     @Override

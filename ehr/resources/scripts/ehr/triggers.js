@@ -672,7 +672,16 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     if (row._becomingPublicData){
         //automatically track the date the record was finalized, which may be important for billing or general auditing
         //because the ETL can cause previously created records to be re-sent, we must assume the record's date is the finalized date for those
-        row.datefinalized = helper.isETL() ? row.date : new Date();
+        if (helper.isETL()){
+            row.datefinalized = row.date;
+        }
+        else {
+            //note: if date is in future, defer to the row date
+            row.datefinalized = new Date();
+            if (row.date && row.date.getTime() > row.datefinalized.getTime()){
+                row.datefinalized = row.date;
+            }
+        }
 
         //set account based on project.  do differently depending on insert/update.
         //we only do this one time when the row becomes public, b/c project/account relationships can change
