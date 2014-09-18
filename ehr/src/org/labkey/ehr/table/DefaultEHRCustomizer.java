@@ -1445,13 +1445,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
-                if (errors.size() > 0)
+                if (errors.size() > 0 || ti == null)
                 {
                     _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
-                        _log.warn(e.getMessage(), e);
+                        _log.error("Lookup table QueryException: " + e.getMessage(), e);
                     }
+                }
+                if (ti == null)
+                {
+                    return null;
                 }
 
                 if (ti != null)

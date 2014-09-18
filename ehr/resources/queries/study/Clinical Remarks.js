@@ -25,7 +25,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 
 }
 
-function setDescription(row, errors){
+function setDescription(row, helper){
     //we need to set description for every field
     var description = new Array();
 

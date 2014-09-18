@@ -426,6 +426,7 @@ exports.afterDelete = EHR.Server.Triggers.afterDelete;
  * @param {object} errors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.complete = function(event, errors) {
+    console.log(this);
     var helper = this.scriptHelper;
     
     helper.logDebugMsg('Event complete: '+event);
@@ -781,7 +782,7 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
     if (!totalErrors){
         row.description = row.description || null;
         if (this.setDescription){
-            row.description = this.setDescription(row).join(',\n');
+            row.description = this.setDescription(row, helper).join(',\n');
         }
         else {
             var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.DESCRIPTION, helper.getSchemaName(), helper.getQueryName(), true);
@@ -790,7 +791,7 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
                     console.error('More than 1 description handler has been registered for the table: ' + helper.getSchemaName() + '.' + helper.getQueryName());
                 }
 
-                handlers[0].call(this, row)
+                handlers[0].call(this, row, helper)
             }
         }
 

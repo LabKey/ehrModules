@@ -719,9 +719,19 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             result.animalId = row1.substr(27,6);
             result.animalId = result.animalId.toLowerCase();
 
+            var requestNumber = runsStore.find('Id',result.animalId)
+            var record = runsStore.getAt(requestNumber);
+
+            //Getting the collection time from the request itself, if it matches animalId
+            if(requestNumber!= -1 && result.animalId == record.get('Id')){
+
+                var collectionDate = record.get('date');
+            }
+
             //result.sequenceNo = row1[1].substr(20,4);
             //result.date = new Date(row1[2].substr(6,4), row1[2].substr(10,2)-1, row1[2].substr(12,2));
-            result.date = new Date(row1.substr(33,4), row1.substr(37,2)-1, row1.substr(39,2));
+            //result.date = new Date(row1.substr(33,4), row1.substr(37,2)-1, row1.substr(39,2));
+            result.date= new Date(collectionDate);
 
             if(!result.animalId || runsStore.find('Id', result.animalId)==-1){
                 //alert('ID: '+result.animalId+' not found in Clinpath Runs section. Records will not be added');

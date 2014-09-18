@@ -30,11 +30,13 @@ import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
+import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryDataSource;
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
@@ -59,10 +61,8 @@ import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
-import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 
@@ -93,6 +93,7 @@ public class EHRServiceImpl extends EHRService
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
+    private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
 
     private Map<String, String> _dateFormats = new HashMap<>();
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
@@ -102,6 +103,11 @@ public class EHRServiceImpl extends EHRService
     public EHRServiceImpl()
     {
 
+    }
+
+    public static EHRServiceImpl get()
+    {
+        return (EHRServiceImpl)EHRService.get();
     }
 
     public void registerModule(Module module)
@@ -701,4 +707,23 @@ public class EHRServiceImpl extends EHRService
         return EHRManager.get().getEHRDefaultClinicalProjectName(c);
     }
 
+    @Override
+    public void addModuleRequiringLegagyExt3EditUI(Module m)
+    {
+        _modulesRequiringLegacyExt3UI.add(m);
+    }
+
+    public boolean isUseLegagyExt3EditUI(Container c)
+    {
+        Set<Module> am = c.getActiveModules();
+        for (Module m : _modulesRequiringLegacyExt3UI)
+        {
+            if (am.contains(m))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

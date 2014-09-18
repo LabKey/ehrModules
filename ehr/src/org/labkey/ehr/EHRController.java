@@ -291,20 +291,43 @@ public class EHRController extends SpringActionController
 
             if (keyField != null)
             {
-                String detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
-                String importStr = "";
-                for (String pkCol : ti.getPkColumnNames())
+                String detailsStr;
+                String importStr;
+                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()))
                 {
-                    detailsStr += "&" + pkCol + "=${" + pkCol + "}";
-                    importStr += "&" + pkCol + "=";
+                    detailsStr = "/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + queryName;
+                    importStr = "";
+                    for (String pkCol : ti.getPkColumnNames())
+                    {
+                        detailsStr += "&keyField=" + pkCol + "&key=${" + pkCol + "}";
+                        importStr += "&key=" + pkCol;
+                    }
+
+                    if (form.isShowImport())
+                    {
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        importUrl.setContainerContext(getContainer());
+
+                        url.addParameter("importURL", importUrl.toString());
+                    }
                 }
-
-                if (form.isShowImport())
+                else
                 {
-                    DetailsURL importUrl = DetailsURL.fromString("/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
-                    importUrl.setContainerContext(getContainer());
+                    detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
+                    importStr = "";
+                    for (String pkCol : ti.getPkColumnNames())
+                    {
+                        detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                        importStr += "&" + pkCol + "=";
+                    }
 
-                    url.addParameter("importURL", importUrl.toString());
+                    if (form.isShowImport())
+                    {
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        importUrl.setContainerContext(getContainer());
+
+                        url.addParameter("importURL", importUrl.toString());
+                    }
                 }
 
                 DetailsURL updateUrl = DetailsURL.fromString(detailsStr);

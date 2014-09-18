@@ -390,7 +390,6 @@ ehr/resources/queries/study/colonyPopulationSummary.query.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.sql -text
 ehr/resources/queries/study/colonyPopulationSummary/.qview.xml -text
 ehr/resources/queries/study/demographics/.qview.xml -text
-ehr/resources/queries/study/demographics/Abstract.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]Center.qview.xml -text
 ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
 ehr/resources/queries/study/demographics/Search[!!-~]Panel.qview.xml -text

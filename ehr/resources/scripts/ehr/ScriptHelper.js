@@ -138,6 +138,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.removeTimeFromEndDate;
         },
 
+        isSkipIdFormatCheck: function(){
+            return scriptOptions.skipIdFormatCheck;
+        },
+
         getExtraContext: function(){
             return props.extraContext;
         },
