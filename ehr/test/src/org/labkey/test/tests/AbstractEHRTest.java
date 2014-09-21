@@ -173,8 +173,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void doStudyImport()
     {
         goToModule("Study");
-        startImportStudyFromZip(new File(TestFileUtils.getLabKeyRoot(), STUDY_ZIP));
+        startImportStudyFromZip(new File(TestFileUtils.getLabKeyRoot(), STUDY_ZIP), skipStudyImportQueryValidation());
         waitForPipelineJobsToComplete(1, "Study import", false);
+    }
+
+    protected boolean skipStudyImportQueryValidation()
+    {
+        return false;
     }
 
     protected void createProjectAndFolders()

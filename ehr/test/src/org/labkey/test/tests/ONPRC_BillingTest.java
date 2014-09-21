@@ -109,6 +109,21 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Override
+    public void validateQueries(boolean validateSubfolders)
+    {
+        //NOTE: unlike other EHR tests, we skip query validation during study import and perform at the end
+        //On team city we kept hitting some sort of timing issue, potentially related to the timing/caching of dataset
+        //columns, which resulted in certain calculated columns not being present and queries failing during study import only
+        super.validateQueries(validateSubfolders);
+    }
+
+    @Override
+    protected boolean skipStudyImportQueryValidation()
+    {
+        return true;
+    }
+
+    @Override
     protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
     {
         super.setEHRModuleProperties(
