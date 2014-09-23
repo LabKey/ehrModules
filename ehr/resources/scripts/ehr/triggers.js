@@ -260,6 +260,11 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
 
     EHR.Server.Triggers.rowInit(helper, scriptErrors, row, oldRow);
 
+    //NOTE: if this record is a cancelled request, do not allow it to be part of a task
+    if (row.QCStateLabel == 'Request: Cancelled' || row.QCStateLabel == 'Request: Denied'){
+        row.taskId = null;
+    }
+
     //dataset-specific beforeUpdate
     var handlers = [];
     if (this.onUpsert){
