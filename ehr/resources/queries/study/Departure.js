@@ -15,9 +15,9 @@ function onInit(event, helper){
 
 }
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Departure', function(scriptErrors, helper, row, oldRow) {
     helper.registerDeparture(row.Id, row.date);
 
     //this will close any existing assignments, housing and treatment records
     helper.onDeathDeparture(row.Id, row.date);
-}
+});

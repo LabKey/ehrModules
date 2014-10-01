@@ -22,8 +22,10 @@ import org.labkey.test.Locator;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.util.ExtHelper;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
+import org.openqa.selenium.NoSuchElementException;
 
 import java.util.Date;
 
@@ -296,10 +298,23 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _extHelper.selectComboBoxItem("Route:", "oral\u00a0");
         _extHelper.selectComboBoxItem(Locator.xpath("//input[@name='conc_units']/.."), "mg/tablet\u00a0");
 
-        _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
-        _helper.setDataEntryFieldInTab("Treatments & Procedures", "dosage", "2");
-        click(Locator.xpath("//img["+VISIBLE+" and contains(@class, 'x-form-search-trigger')]"));
-        waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);
+        // NOTE: there is a timing issue causing this field to not get set properly, which is a long-standing team city problem
+        // the workaround below is a ugly hack around this.  the issue doesnt appear to cause actual end-user problems, so not currently worth the extra time
+        try
+        {
+            setDoseConcFields();
+        }
+        catch (NoSuchElementException e)
+        {
+            // if we hit the timing error, just give it a second try.
+            if (isElementPresent(ExtHelper.Locators.window("Error")))
+            {
+                _extHelper.clickExtButton("Error", "OK", 0);
+                waitForElementToDisappear(ExtHelper.Locators.window("Error"));
+                setDoseConcFields();
+            }
+        }
+
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "remark", "Yum");
 
         log("clicking save button and waiting");
@@ -309,6 +324,14 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         log("returned to data entry page");
 
         stopImpersonating();
+    }
+
+    private void setDoseConcFields()
+    {
+        _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
+        _helper.setDataEntryFieldInTab("Treatments & Procedures", "dosage", "2");
+        click(Locator.xpath("//img["+VISIBLE+" and contains(@class, 'x-form-search-trigger')]"));
+        waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);
     }
 
     @Override

@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_JAVASCRIPT;
+import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_PAGE;
 
 public class EHRTestHelper
 {
@@ -194,7 +195,7 @@ public class EHRTestHelper
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
         _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name), _test.WAIT_FOR_PAGE);
 
-        _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"));
+        _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"), WAIT_FOR_PAGE * 2);
         Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
         saveBtn.waitForEnabled();
     }

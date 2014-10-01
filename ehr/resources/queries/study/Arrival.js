@@ -13,7 +13,7 @@ function onInit(event, helper){
     });
 }
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Arrival', function(scriptErrors, helper, row, oldRow) {
     helper.registerArrival(row.Id, row.date);
 
     //if not already present, we insert into demographics
@@ -25,4 +25,4 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
             helper.getJavaHelper().createHousingRecord(row.Id, row.date, null, row.initialRoom, (row.initialCage || null));
         }
     }
-}
+});

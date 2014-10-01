@@ -25,6 +25,7 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.Results;
@@ -532,7 +533,7 @@ public class EHRManager
             String[][] toIndex = new String[][]{{"taskid"}, {"requestid"}, {"participantid", "date"}};
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}};
 
-            DbSchema schema = DbSchema.get("studydataset");
+            DbSchema schema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
             Set<String> distinctIndexes = new HashSet<>();
             for (DataSet d : study.getDatasets())
             {
@@ -1257,8 +1258,13 @@ public class EHRManager
             throw new IllegalArgumentException("Unable to find flags table in container: " + c.getPath());
         }
 
-        //find animals already with this flag
-        TableSelector ts =  getFlagsTableSelector(flagsTable, flag, animalIds);
+        //find animals already with this flag on this date
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
+        filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+        filter.addCondition(FieldKey.fromString("enddateCoalesced"), date, CompareType.DATE_GTE);
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
+
+        TableSelector ts =  new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -1273,9 +1279,9 @@ public class EHRManager
         //limit to IDs present at the center
         if (livingAnimalsOnly)
         {
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), animalIds, CompareType.IN);
-            filter.addCondition(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL);
-            TableSelector demographics = new TableSelector(ti, PageFlowUtil.set("Id"), filter, null);
+            SimpleFilter filter2 = new SimpleFilter(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+            filter2.addCondition(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL);
+            TableSelector demographics = new TableSelector(ti, PageFlowUtil.set("Id"), filter2, null);
 
             animalIds.retainAll(demographics.getCollection(String.class));
         }
@@ -1352,8 +1358,10 @@ public class EHRManager
         final List<Map<String, Object>> oldKeys = new ArrayList<>();
         final Set<String> distinctIds = new HashSet<>();
 
-        TableSelector ts =  getFlagsTableSelector(flagsTable, flag, animalIds);
-
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
+        filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
+        filter.addCondition(FieldKey.fromString("isActive"), true);
+        TableSelector ts = new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -1394,15 +1402,6 @@ public class EHRManager
         {
             throw new RuntimeSQLException(e);
         }
-    }
-
-    private TableSelector getFlagsTableSelector(TableInfo flagsTable, String flag, Collection<String> animalIds)
-    {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
-        filter.addCondition(FieldKey.fromString("isActive"), true);
-        filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
-
-        return new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
     }
 
     public Map<String, Object> getExtraContext()

@@ -1371,7 +1371,7 @@ public class TriggerScriptHelper
         return ret;
     }
 
-    public void updateStatusField(List<String> ids, Map<String, List<Date>> births, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    public void updateStatusField(List<String> ids, Map<String, List<Date>> liveBirths, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
     {
         List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
@@ -1384,13 +1384,17 @@ public class TriggerScriptHelper
                 continue;
             }
 
-            List<String> filterItems = Arrays.asList("Born Dead", "Terminated At Birth");
             String existingStatus = getDemographicRecord(id).getCalculatedStatus();
-            Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, "Arrival", null), arrivals);
-            Date lastDeadBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth", new SimpleFilter(FieldKey.fromString("cond"), filterItems, CompareType.IN)), births);
-            Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth", new SimpleFilter(FieldKey.fromString("cond"), filterItems, CompareType.NOT_IN)), births);
-            Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, "Deaths", null), deaths);
-            Date lastDeparture = findMostRecentDate(id, getMostRecentDate(id, "Departure", null), departures);
+
+            Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, getTableInfo("study", "Arrival"), null), arrivals);
+            Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, getTableInfo("study", "Deaths"), null), deaths);
+            Date lastDeparture = findMostRecentDate(id, getMostRecentDate(id, getTableInfo("study", "Departure"), null), departures);
+
+            // NOTE: this behavior around live births is an imperfect way to mesh WNPRC/ONPRC rules.  ONPRC records records in the birth table,
+            // including dead infants.  all records in the WNPRC table are of live births.  checking for the column 'birth_condition' column is a crude proxy for this
+            TableInfo birthTable = getTableInfo("study", "birth");
+            Date lastDeadBirth = birthTable.getColumnNameSet().contains("birth_condition") ? findMostRecentDate(id, getMostRecentDate(id, birthTable, new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false)), null) : null;
+            Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, birthTable, (birthTable.getColumnNameSet().contains("birth_condition") ? new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false, CompareType.NEQ_OR_NULL) : null)), liveBirths);
 
             String status = null;
             if (lastDeath != null || lastDeadBirth != null)
@@ -1440,9 +1444,8 @@ public class TriggerScriptHelper
     }
 
     //find most recent record date for the passed Id/table
-    private Date getMostRecentDate(String id, String queryName, @Nullable SimpleFilter additionalFilter)
+    private Date getMostRecentDate(String id, TableInfo ti, @Nullable SimpleFilter additionalFilter)
     {
-        TableInfo ti = getTableInfo("study", queryName);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
         filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true);
         if (additionalFilter != null)
@@ -2219,6 +2222,17 @@ public class TriggerScriptHelper
     {
         TableInfo ti = getTableInfo("study", "demographics");
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("geographic_origin"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+
+        return ts.getObject(String.class);
+    }
+
+    /**
+     * This is separate from DemographicsService for speed.  The current use is on birth insert, and sometimes the dam isnt cached.
+     */
+    public String getSpecies(String id)
+    {
+        TableInfo ti = getTableInfo("study", "demographics");
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("species"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
 
         return ts.getObject(String.class);
     }

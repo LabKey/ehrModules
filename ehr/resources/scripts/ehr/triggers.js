@@ -88,7 +88,7 @@ EHR.Server.Triggers.init = function(event, errors){
 
     if (handlers.length){
         for (var i=0;i<handlers.length;i++){
-            handlers[i].call(this, event, helper);
+            handlers[i].call(this, event, helper, EHR);
         }
     }
 };

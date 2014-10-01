@@ -505,7 +505,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate) : null;
                     if (date && (!enddate || enddate.getTime() > (new Date()).getTime())){
                         var reviewdate = row.reviewdate ? LDK.ConvertUtils.parseDate(row.reviewdate) : null;
-                        if (!reviewdate || reviewdate.getTime() < Ext4.Date.clearTime(new Date())){
+                        if (!reviewdate || Ext4.Date.clearTime(reviewdate).getTime() <= Ext4.Date.clearTime(new Date()).getTime()){
                             text = text + ' (' + date.format('Y-m-d') + ')';
 
                             values.push(text);

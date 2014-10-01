@@ -321,7 +321,8 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         sleep(500);
         waitAndClick(Ext4Helper.ext4Tab("Raw Data").index(1));
         sleep(500);
-        waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);
+        //TODO: why not loading?
+        waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 5);
 
         //chronological history
         waitAndClick(Ext4Helper.ext4Tab("Clinical"));

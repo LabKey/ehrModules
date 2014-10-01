@@ -26,10 +26,10 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
@@ -47,7 +47,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category({External.class, EHR.class, ONPRC.class})
 public class EHRApiTest extends AbstractEHRTest
@@ -289,7 +290,7 @@ public class EHRApiTest extends AbstractEHRTest
         }
     }
 
-    private JSONObject getExtraContext()
+    public static JSONObject getExtraContext()
     {
         try
         {

@@ -20,11 +20,12 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
+import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
@@ -46,8 +47,10 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,6 +62,11 @@ import java.util.Set;
 public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
+    private EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getContainerPath());
+    private SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+
+    private final String RHESUS = "RHESUS MACAQUE";
+    private final String INDIAN = "Indian";
 
     @Override
     protected String getProjectName()
@@ -79,19 +87,394 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         ONPRC_EHRTest initTest = (ONPRC_EHRTest)getCurrentTest();
 
         initTest.initProject();
+        initTest.setEhrUserPasswords();
         RReportHelper rHelper = new RReportHelper(initTest);
         rHelper.ensureRConfig();
     }
 
-    @Test @Ignore("Placeholder: No tests yet")
-    public void doApiTests()
+    @Test
+    public void birthStatusApiTest() throws Exception
     {
-        //TODO: blood draw volumes
+        //first create record for dam, along w/ animal group and SPF status.  we expect this to automatically create a demographics record w/ the right status
+        JSONObject extraContext = EHRApiTest.getExtraContext();
+        extraContext.remove("targetQC");
+        extraContext.remove("isLegacyFormat");
 
-        //Birth
-        //first create record for dam
-        //TODO: all other custom trigger script code
+        final String damId1 = "Dam1";
+        final String offspringId1 = "Offspring1";
+        final String offspringId2 = "Offspring2";
+        final String offspringId3 = "Offspring3";
+        final String offspringId4 = "Offspring4";
+        final String offspringId5 = "Offspring5";
+        final String offspringId6 = "Offspring6";
+        final String offspringId7 = "Offspring7";
+        final String offspringId8 = "Offspring8";
+
+        log("deleting existing records");
+        cleanRecords(damId1, offspringId1, offspringId2, offspringId3, offspringId4, offspringId5, offspringId6, offspringId7, offspringId8);
+        ensureNonrestrictedFlagExists();
+
+        final Date dam1Birth = new Date();
+
+        //insert into birth
+        log("Creating Dam");
+        _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "birth", "lsid",
+                new String[]{"Id", "Date", "gender", "QCStateLabel"},
+                new Object[][]{
+                        {damId1, _tf.format(dam1Birth), "f", "In Progress"},
+                }
+        )), extraContext, true);
+
+        //record is draft, so we shouldnt have a demographics record
+        Assert.assertFalse("demographics row was created for dam1", _apiHelper.doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
+
+        //update to completed, expect to find demographics record.
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
+        select1.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
+        final String damLsid = (String)select1.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("lsid");
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {{
+            put("lsid", damLsid);
+            put("QCStateLabel", "Completed");
+        }}, false);
+        Assert.assertTrue("demographics row was not created for dam1", _apiHelper.doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
+
+        //update record to get a geographic_origin, which we expect to get entered into demographics
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>(){
+            {
+                put("lsid", damLsid);
+                put("Id/demographics/geographic_origin", INDIAN);
+                put("Id/demographics/species", RHESUS);
+            }
+        }, false);
+
+        SelectRowsCommand select2 = new SelectRowsCommand("study", "demographics");
+        select2.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
+        Assert.assertEquals("geographic_origin was not updated", INDIAN, select2.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("geographic_origin"));
+        Assert.assertEquals("species was not updated", RHESUS, select2.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("species"));
+        Assert.assertEquals("gender was not updated", "f", select2.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("gender"));
+        Assert.assertEquals("calculated_status was not set properly", "Alive", select2.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("calculated_status"));
+
+        //now add SPF status + group for dam.
+        String spfStatus = "SPF 9";
+        final String spfFlag = getOrCreateSpfFlag(spfStatus);
+        InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "flags");
+        insertRowsCommand.addRow(new HashMap<String, Object>(){
+            {
+                put("Id", damId1);
+                put("date", dam1Birth);
+                put("flag", spfFlag);
+            }
+        });
+        insertRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
+
+        String groupName = "TestGroup1";
+        final Integer groupId = getOrCreateGroup(groupName);
+        InsertRowsCommand insertRowsCommand2 = new InsertRowsCommand("study", "animal_group_members");
+        insertRowsCommand2.addRow(new HashMap<String, Object>(){
+            {
+                put("Id", damId1);
+                put("date", dam1Birth);
+                put("groupId", groupId);
+            }
+        });
+        insertRowsCommand2.execute(_apiHelper.getConnection(), getContainerPath());
+
+        //now enter children, testing different modes.
+        // offspring 1 is not public, so we dont expect a demographics record.  will update to completed
+        // offspring 2 is public, so expect a demographics record, and SPF/groups to be copied
+        // offspring 3 is born dead, non-final.  will update to completed
+        // offspring 4 is born dead, finalized
+        // offspring 5 is entered w/o the dam initially, as non-final.  will update to completed and enter dam at same time
+        // offspring 6 is is entered w/o the dam initially, finalized.  will update with dam
+        // offspring 7, same as 1, except we leave species/geographic origin blank and expect dam's demographics to be copied to child
+        // offspring 8, same as 1, except we leave species/geographic origin blank and and expect dam's demographics to be copied to child
+        Date birthDate = new Date();
+        Double weight = 2.3;
+        String room1 = "Room1";
+        String cage1 = "A1";
+        String bornDead = "Born Dead/Not Born";
+        InsertRowsCommand insertRowsCommand1 = new InsertRowsCommand("study", "birth");
+        List<String> birthFields = Arrays.asList("Id", "Date", "birth_condition", "Id/demographics/species", "Id/demographics/geographic_origin", "gender", "room", "cage", "dam", "sire", "weight", "wdate", "QCStateLabel");
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId1, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId2, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId3, _tf.format(birthDate), bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId4, _tf.format(birthDate), bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId5, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId6, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId7, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId8, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        SaveRowsResponse insertRowsResp = insertRowsCommand1.execute(_apiHelper.getConnection(), getContainerPath());
+
+        final Map<String, String> lsidMap = new HashMap<>();
+        for (Map<String, Object> row : insertRowsResp.getRows())
+        {
+            lsidMap.put((String)row.get("Id"), (String)row.get("lsid"));
+        }
+
+        testBirthRecordStatus(offspringId1);
+        testBirthRecordStatus(offspringId2);
+        testBirthRecordStatus(offspringId3);
+        testBirthRecordStatus(offspringId4);
+        testBirthRecordStatus(offspringId5);
+        testBirthRecordStatus(offspringId6);
+        testBirthRecordStatus(offspringId7);
+        testBirthRecordStatus(offspringId8);
+
+        //do updates:
+        log("updating records");
+
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId1));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId1);
+
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId3));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId3);
+
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId5));
+                put("QCStateLabel", "Completed");
+                put("dam", damId1);
+            }
+        }, false);
+        testBirthRecordStatus(offspringId5);
+
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId6));
+                put("QCStateLabel", "Completed");
+                put("dam", damId1);
+            }
+        }, false);
+        testBirthRecordStatus(offspringId6);
+
+        _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId7));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId7);
+
     }
+
+    private void cleanRecords(String... ids) throws Exception
+    {
+        _apiHelper.deleteAllRecords("study", "birth", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "housing", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "flags", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "assignment", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "weight", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+        _apiHelper.deleteAllRecords("study", "animal_group_members", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
+    }
+
+    private void testBirthRecordStatus(String offspringId) throws Exception
+    {
+        log("inspecting id: " + offspringId);
+
+        //first query birth record
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
+        select1.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        select1.setColumns(Arrays.asList("Id", "date", "QCState/PublicData", "birth_condition/alive", "dam", "room", "cage", "weight", "wdate"));
+        SelectRowsResponse resp = select1.execute(_apiHelper.getConnection(), getContainerPath());
+
+        Assert.assertEquals("Birth record not created: " + offspringId, 1, resp.getRowCount().intValue());
+
+        boolean isPublic = (Boolean)resp.getRows().get(0).get("QCState/PublicData");
+        String damId = (String)resp.getRows().get(0).get("dam");
+        boolean isAlive = resp.getRows().get(0).get("birth_condition/alive") == null ? true : (Boolean)resp.getRows().get(0).get("birth_condition/alive");
+        String room = (String)resp.getRows().get(0).get("room");
+        String cage = (String)resp.getRows().get(0).get("cage");
+        Double weight = (Double)resp.getRows().get(0).get("weight");
+        Date weightDate = (Date)resp.getRows().get(0).get("wdate");
+        Date birthDate = (Date)resp.getRows().get(0).get("date");
+
+        SelectRowsCommand select2 = new SelectRowsCommand("study", "demographics");
+        select2.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        select2.setColumns(Arrays.asList("Id", "date", "species", "geographic_origin", "gender", "death"));
+        SelectRowsResponse demographicsResp = select2.execute(_apiHelper.getConnection(), getContainerPath());
+
+        SelectRowsCommand conditionSelect = new SelectRowsCommand("study", "flags");
+        conditionSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        conditionSelect.addFilter(new Filter("flag/category", "Condition", Filter.Operator.EQUAL));
+        conditionSelect.addFilter(new Filter("flag/value", "Nonrestricted", Filter.Operator.EQUAL));
+
+        SelectRowsCommand groupSelect = new SelectRowsCommand("study", "animal_group_members");
+        groupSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        SelectRowsCommand spfFlagSelect = new SelectRowsCommand("study", "flags");
+        spfFlagSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        spfFlagSelect.addFilter(new Filter("flag/category", "SPF", Filter.Operator.EQUAL));
+
+        SelectRowsCommand housingSelect = new SelectRowsCommand("study", "housing");
+        housingSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        SelectRowsCommand weightSelect = new SelectRowsCommand("study", "weight");
+        weightSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        if (!isAlive)
+        {
+            //if the animal was born dead, we expect these flags to be endded automatically
+            groupSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            spfFlagSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            conditionSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            housingSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+        }
+
+        if (isPublic)
+        {
+            //we expect demographics record to be present
+            Assert.assertEquals(1, demographicsResp.getRowCount().intValue());
+            Map<String, Object> demographicsRow = demographicsResp.getRows().get(0);
+
+            // we expect species/gender to have been copied through once record is public, except for the case of dam being NULL
+            if (damId != null)
+            {
+                Assert.assertEquals(RHESUS, demographicsRow.get("species"));
+                Assert.assertEquals(INDIAN, demographicsRow.get("geographic_origin"));
+            }
+
+            //expect death date
+            if (!isAlive)
+            {
+                Assert.assertTrue(demographicsRow.get("death") != null);
+            }
+
+            //always expect condition = Nonrestricted
+            Assert.assertEquals(1, conditionSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+
+            //test copy of SPF/groups
+            if (damId != null)
+            {
+                //we expect infant's SPF + groups to match dam.  NOTE: filters added above for enddate, based on whether alive or not
+                Assert.assertEquals(1, groupSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+                Assert.assertEquals(1, spfFlagSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+            }
+            else
+            {
+                //we do not expect flags or groups
+                Assert.assertEquals(0, groupSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+                Assert.assertEquals(0, spfFlagSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+            }
+
+            //housing creation
+            if (room != null)
+            {
+                Assert.assertEquals(1, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+                Assert.assertEquals(room, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("room"));
+                Assert.assertEquals(cage, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("cage"));
+                Assert.assertEquals(birthDate, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("date"));
+            }
+
+            if (weight != null)
+            {
+                Assert.assertEquals(1, weightSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+                Assert.assertEquals(weight, weightSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("weight"));
+                Assert.assertEquals(weightDate, weightSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("date"));
+            }
+        }
+        else
+        {
+            //we do not expect demographic record to exist
+            Assert.assertEquals(0, demographicsResp.getRowCount().intValue());
+
+            //we do not expect flags or groups
+            Assert.assertEquals(0, groupSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+            Assert.assertEquals(0, spfFlagSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRowCount().intValue());
+        }
+    }
+
+    private Integer getOrCreateGroup(final String name) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr", "animal_groups");
+        select1.addFilter(new Filter("name", name, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(_apiHelper.getConnection(), getContainerPath());
+        Integer groupId = resp.getRowCount().intValue() == 0 ? null : (Integer)resp.getRows().get(0).get("rowid");
+        if (groupId == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr", "animal_groups");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("name", name);
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
+            groupId = ((Long)saveRowsResponse.getRows().get(0).get("rowid")).intValue();
+        }
+
+        return groupId;
+    }
+
+    private String getOrCreateSpfFlag(final String name) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "flag_values");
+        select1.addFilter(new Filter("category", "SPF", Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("value", name, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(_apiHelper.getConnection(), getContainerPath());
+
+        String objectid = resp.getRowCount().intValue() == 0 ? null : (String)resp.getRows().get(0).get("objectid");
+        if (objectid == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr_lookups", "flag_values");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("category", "SPF");
+                    put("value", name);
+                    put("objectid", null);  //will get set on server
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
+            objectid = (String)saveRowsResponse.getRows().get(0).get("objectid");
+        }
+
+        return objectid;
+    }
+
+    private String ensureNonrestrictedFlagExists() throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "flag_values");
+        select1.addFilter(new Filter("category", "Condition", Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("value", "Nonrestricted", Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(_apiHelper.getConnection(), getContainerPath());
+
+        String objectid = resp.getRowCount().intValue() == 0 ? null : (String)resp.getRows().get(0).get("objectid");
+        if (objectid == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr_lookups", "flag_values");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("category", "Condition");
+                    put("value", "Nonrestricted");
+                    put("objectid", null);  //will get set on server
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
+            objectid = (String)saveRowsResponse.getRows().get(0).get("objectid");
+        }
+
+        return objectid;
+    }
+
+    //TODO: test other custom trigger script code
 
     @Test
     public void doCustomActionsTests() throws Exception
@@ -144,18 +527,6 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         assertElementPresent(Locator.tagContainingText("b", "ABCDE"));
         assertElementNotPresent(Locator.tagContainingText("b", "Chronological History").notHidden()); //check hide history
         assertElementNotPresent(Locator.tagContainingText("label", "Projects").notHidden()); //check redaction
-
-        //NOTE: this has been switched to use SSRS, which will not be setup on team city
-//        goToProjectHome();
-//        waitAndClickAndWait(Locator.tagContainingText("a", "Bulk History Export"));
-//        waitForElement(Locator.tagContainingText("label", "Enter Animal Id(s)"));
-//        Ext4FieldRef.getForLabel(this, "Enter Animal Id(s)").setValue("12345;23432\nABCDE");
-//        clickAndWait(Locator.ext4Button("Submit"));
-//        assertElementPresent(Locator.tagContainingText("b", "12345"));
-//        assertElementPresent(Locator.tagContainingText("b", "23432"));
-//        assertElementPresent(Locator.tagContainingText("b", "ABCDE"));
-//        assertElementPresent(Locator.tagContainingText("b", "Chronological History").notHidden()); //check hide history
-//        assertElementPresent(Locator.tagContainingText("label", "Projects").notHidden()); //check redaction
 
         //exposure report
         log("testing exposure export");
@@ -821,54 +1192,6 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
             waitForText("The notification email was last sent on:");
             assertTextNotPresent("not configured");
         }
-    }
-
-    @Override
-    protected void createProjectAndFolders()
-    {
-        _containerHelper.createProject(PROJECT_NAME, "ONPRC EHR");
-    }
-
-    @Override
-    protected void populateInitialData()
-    {
-        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateData.view");
-
-        clickButton("Delete Data From Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-        sleep(2000);
-
-        clickButton("Delete Data From Procedures", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate Procedures", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-        sleep(2000);
-
-        clickButton("Delete All", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate All", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-
-        //NOTE: this is excluded from populate all since it changes rarely
-        clickButton("Delete Data From SNOMED Codes", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate SNOMED Codes", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-
-        //also populate templates
-        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
-
-        clickButton("Delete Data From Form Templates", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate Form Templates", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-
-        clickButton("Delete Data From Formulary", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate Formulary", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
     }
 
     @Test

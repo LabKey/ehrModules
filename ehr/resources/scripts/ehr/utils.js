@@ -492,8 +492,9 @@ EHR.Server.Utils = new function(){
             }
         },
 
+        //note: can be overriden by modules
         isLiveBirth: function(birthCondition){
-            return (!birthCondition || ['Born Dead', 'Terminated At Birth'].indexOf(birthCondition) == -1);
+            return true;
         }
     }
 };

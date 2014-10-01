@@ -100,9 +100,9 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 }
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Housing', function(scriptErrors, helper, row, oldRow) {
     helper.registerHousingChange(row.id, row);
-}
+});
 
 function onComplete(event, errors, helper){
     if (!helper.isETL()){

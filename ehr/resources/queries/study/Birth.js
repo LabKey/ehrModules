@@ -28,8 +28,8 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 }
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
-    var isLiving = EHR.Server.Utils.isLiveBirth(row.cond);
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Birth', function(scriptErrors, helper, row, oldRow) {
+    var isLiving = EHR.Server.Utils.isLiveBirth(row.birth_condition);
     if (isLiving){
         helper.registerLiveBirth(row.Id, row.date);
     }
@@ -70,8 +70,16 @@ function onBecomePublic(scriptErrors, helper, row, oldRow){
                 obj.geographic_origin = helper.getJavaHelper().getGeographicOrigin(row.dam);
             }
 
+            if (row.dam && !obj.species){
+                obj.species = helper.getJavaHelper().getSpecies(row.dam);
+            }
+
+            if (!isLiving){
+                obj.death = row.date;
+            }
+
             //if not already present, we insert into demographics
             helper.getJavaHelper().createDemographicsRecord(row.Id, obj);
         }
     }
-}
+});

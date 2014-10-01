@@ -11,7 +11,7 @@ Ext4.define('EHR.window.RepeatSelectedWindow', {
     width: 500,
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        Ext4.applyIf(this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Repeat Selected',
@@ -94,7 +94,7 @@ Ext4.define('EHR.window.RepeatSelectedWindow', {
         });
 
         for (var i=1;i<=duration;i++){
-            LABKEY.ExtAdapter.each(selected, function(rec){
+            Ext4.each(selected, function(rec){
                 var data = {};
                 rec.fields.each(function(f){
                     if (['lsid', 'objectid'].indexOf(f.name)){
@@ -106,7 +106,7 @@ Ext4.define('EHR.window.RepeatSelectedWindow', {
                 if (data.date){
                     data.date = Ext4.Date.add(data.date, Ext4.Date.DAY, (i * increment));
                 }
-console.log(data.Id);
+
                 toAdd.push(this.targetGrid.store.createModel(data));
             }, this);
         }

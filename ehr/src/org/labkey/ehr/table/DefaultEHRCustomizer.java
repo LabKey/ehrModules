@@ -26,6 +26,7 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
@@ -688,7 +689,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else
         {
             String tableName = ds.getDomain().getStorageTableName();
-            DbSchema dbSchema = DbSchema.get("studydataset");
+            DbSchema dbSchema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
             return dbSchema.getTable(tableName);
         }
     }

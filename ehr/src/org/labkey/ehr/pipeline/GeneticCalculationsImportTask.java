@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
@@ -267,7 +268,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         if (domain != null)
         {
             String tableName = domain.getStorageTableName();
-            DbSchema dbSchema = DbSchema.get("studydataset");
+            DbSchema dbSchema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
             return dbSchema.getTable(tableName);
         }
 

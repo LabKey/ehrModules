@@ -144,7 +144,8 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     @Override
     protected void populateInitialData()
     {
-        //Note: the standard default data is not required, so we skip it.
+        super.populateInitialData();
+
         //the linked schema is created at this point since this method runs after other setup is complete
         SchemaHelper schemaHelper = new SchemaHelper(this);
         schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);

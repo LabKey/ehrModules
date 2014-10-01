@@ -49,12 +49,12 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 }
 
-function onBecomePublic(scriptErrors, helper, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Deaths', function(scriptErrors, helper, row, oldRow) {
     helper.registerDeath(row.Id, row.date);
 
     //this will close any existing assignments, housing and treatment records
     helper.onDeathDeparture(row.Id, row.date);
-}
+});
 
 function onComplete(event, errors, helper){
     var deaths = helper.getDeaths();

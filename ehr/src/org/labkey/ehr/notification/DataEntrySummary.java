@@ -18,6 +18,7 @@ package org.labkey.ehr.notification;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -63,7 +64,7 @@ public class DataEntrySummary implements NotificationSection
         final StringBuilder msg = new StringBuilder();
 
         Set<Study> studies = EHRManager.get().getEhrStudies(u);
-        if (studies == null || studies.size() == 0)
+        if (studies == null || studies.isEmpty())
             return null;
 
         msg.append("<b>EHR Data Entry Summary:</b><p>");
@@ -191,7 +192,7 @@ public class DataEntrySummary implements NotificationSection
         StringBuilder results = new StringBuilder();
         boolean hasResults = false;
         results.append("Records created yesterday:<br>");
-        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows Not Created By Admin</td><td>Rows Created By Admin</td><td>Public Records Modified</td></tr>");
+        results.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Folder</td><td>Dataset Name</td><td>Rows Not Created By Admin</td><td>Public Records Modified</td></tr>");
 
         for (final Study s : studies)
         {
@@ -206,36 +207,17 @@ public class DataEntrySummary implements NotificationSection
                 }
             });
 
-            User ehrUser = EHRService.get().getEHRUser(c);
-            if (ehrUser == null)
-            {
-                msg.append("EHRUser not defined in this container, aborting");
-                return;
-            }
-
-            DbSchema schema = DbSchema.get("studydataset");
+            DbSchema schema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
             for (DataSet ds : datasets)
             {
                 TableInfo ti = schema.getTable(ds.getDomain().getStorageTableName());
 
-                long withTask = 0;
-                SimpleFilter filter1 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
+                long rowCount = 0;
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
                 if (ti.getColumn("createdby") != null)
                 {
-                    filter1.addCondition(FieldKey.fromString("createdby"), ehrUser.getUserId(), CompareType.NEQ_OR_NULL);
-
-                    TableSelector ts1 = new TableSelector(ti, Collections.singleton("lsid"), filter1, null);
-                    withTask = ts1.getRowCount();
-                }
-
-                long withoutTask = 0;
-                SimpleFilter filter2 = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);
-                if (ti.getColumn("createdby") != null)
-                {
-                    filter2.addCondition(FieldKey.fromString("createdby"), ehrUser.getUserId(), CompareType.EQUAL);
-
-                    TableSelector ts2 = new TableSelector(ti, Collections.singleton("lsid"), filter2, null);
-                    withoutTask = ts2.getRowCount();
+                    TableSelector ts2 = new TableSelector(ti, Collections.singleton("lsid"), filter, null);
+                    rowCount = ts2.getRowCount();
                 }
 
                 //public records, modified yesterday, but not created yesterday
@@ -245,9 +227,9 @@ public class DataEntrySummary implements NotificationSection
                 TableSelector ts3 = new TableSelector(ds.getTableInfo(u), Collections.singleton("lsid"), filter3, null);
                 long publicModified = ts3.getRowCount();
 
-                if (withTask > 0 || withoutTask > 0 || publicModified > 0)
+                if (rowCount > 0 || publicModified > 0)
                 {
-                    results.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + ds.getLabel() + "</td><td><a href='" + generateUrl(c, ds, filter1) + "'>" + withTask + "</a></td><td><a href='" + generateUrl(c, ds, filter2) + "'>" + withoutTask + "</a></td><td><a href='" + generateUrl(c, ds, filter3) + "'>" + publicModified + "</a></td></tr>");
+                    results.append("<tr><td>" + s.getContainer().getPath() + "</td><td>" + ds.getLabel() + "</td><td><a href='" + generateUrl(ds, filter) + "'>" + rowCount + "</a></td><td><a href='" + generateUrl(ds, filter3) + "'>" + publicModified + "</a></td></tr>");
                     hasResults = true;
                 }
             }
@@ -267,7 +249,7 @@ public class DataEntrySummary implements NotificationSection
         msg.append("<hr>");
     }
 
-    private String generateUrl(Container c, DataSet ds, SimpleFilter filter)
+    private String generateUrl(DataSet ds, SimpleFilter filter)
     {
         DetailsURL url = DetailsURL.fromString("/query/executeQuery.view", ds.getContainer());
         String ret = AppProps.getInstance().getBaseServerUrl() + url.getActionURL().toString();

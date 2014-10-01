@@ -16,6 +16,7 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
+import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -35,6 +36,12 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     protected static final String REFERENCE_STUDY_PATH = "/server/customModules/onprc_ehr/resources/referenceStudy";
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
     protected static final String ID_PREFIX = "_testid";
+
+    @Override
+    protected void createProjectAndFolders()
+    {
+        _containerHelper.createProject(getProjectName(), "ONPRC EHR");
+    }
 
     @Override
     protected void goToEHRFolder()
@@ -74,6 +81,48 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     }
 
     @Override
+    protected void populateInitialData()
+    {
+        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateData.view");
+
+        clickButton("Delete Data From Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        sleep(2000);
+
+        clickButton("Delete Data From Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        sleep(2000);
+
+        clickButton("Delete All", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate All", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+
+        //NOTE: this is excluded from populate all since it changes rarely
+        clickButton("Delete Data From SNOMED Codes", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate SNOMED Codes", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+
+        //also populate templates
+        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
+
+        clickButton("Delete Data From Form Templates", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Form Templates", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+
+        clickButton("Delete Data From Formulary", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Formulary", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+    }
+
+    @Override
     protected void doStudyImport()
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), REFERENCE_STUDY_PATH);
@@ -89,6 +138,13 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
             _fileBrowserHelper.selectImportDataAction("Reload Study");
         else
             _fileBrowserHelper.selectImportDataAction("Import Study");
+
+        if (skipStudyImportQueryValidation())
+        {
+            Locator cb = Locator.checkboxByName("validateQueries");
+            waitForElement(cb);
+            uncheckCheckbox(cb);
+        }
 
         clickButton("Start Import"); // Validate queries page
         waitForPipelineJobsToComplete(1, "Study import", false, MAX_WAIT_SECONDS * 2500); //onprc_billing test has a lot of queries

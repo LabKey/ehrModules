@@ -2113,12 +2113,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 130
                 }
             },
-            birthtype: {
+            type: {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 }
             },
-            cond: {
+            birthtype: {
+                allowBlank: false,
+                columnConfig: {
+                    width: 200
+                }
+            },
+            birth_condition: {
+                allowBlank: false,
                 columnConfig: {
                     width: 150
                 }
@@ -2131,9 +2139,15 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 200
                 }
-                //shownInGrid: false
+            },
+            gender: {
+                allowBlank: false
+            },
+            'Id/demographics/species': {
+                allowBlank: false
             },
             'Id/demographics/geographic_origin': {
+                allowBlank: false,
                 columnConfig: {
                     width: 200
                 },

@@ -14,6 +14,14 @@
                     <column columnName="date">
                         <columnTitle>Birth Date</columnTitle>
                     </column>
+                    <column columnName="date_type">
+                        <columnTitle>Date Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>birth_date_type</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="gender">
                         <columnTitle>Gender</columnTitle>
                         <fk>
@@ -68,8 +76,12 @@
                             cage=${cage}
                         </url>
                     </column>
+                    <!--NOTE: this column not used by onprc-->
                     <column columnName="cond">
                         <columnTitle>Condition</columnTitle>
+                    </column>
+                    <column columnName="birth_condition">
+                        <columnTitle>Birth Condition</columnTitle>
                     </column>
                     <column columnName="origin">
                         <columnTitle>Origin</columnTitle>
@@ -103,6 +115,9 @@
                     </column>
                     <column columnName="wdate">
                         <columnTitle>Weight Date</columnTitle>
+                    </column>
+                    <column columnName="teeth">
+                        <columnTitle># Upper Teeth</columnTitle>
                     </column>
                     <column columnName="conception">
                         <columnTitle>Conception</columnTitle>
