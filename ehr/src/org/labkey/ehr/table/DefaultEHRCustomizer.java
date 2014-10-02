@@ -365,7 +365,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ColumnInfo room = ti.getColumn(name);
         if (room != null)
         {
-            LDKService.get().applyNaturalSort(ti, "room");
+            ensureSortColumn(ti, name, room);
 
             if (!ti.getName().equalsIgnoreCase("rooms"))
             {
@@ -386,12 +386,25 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
+    /** Add a dummy column so that we always have it present. Other TableCustomizers might swap it out later for a fancier version */
+    private void ensureSortColumn(AbstractTableInfo ti, String name, ColumnInfo baseColumn)
+    {
+        String sortName = name + "_sortValue";
+        if (ti.getColumn(sortName) == null)
+        {
+            AliasedColumn sortCol = new AliasedColumn(ti, sortName, baseColumn);
+            sortCol.setHidden(true);
+            sortCol.setLabel(baseColumn.getLabel() + " - Sort Field");
+            ti.addColumn(sortCol);
+        }
+    }
+
     private void customizeCageCol(AbstractTableInfo ti, String name)
     {
         ColumnInfo cage = ti.getColumn(name);
         if (cage != null)
         {
-            LDKService.get().applyNaturalSort(ti, "cage");
+            ensureSortColumn(ti, name, cage);
 
             cage.setDisplayWidth("40");
             cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
@@ -654,7 +667,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".death, (SELECT max(d.date) as expr FROM studydataset." + departure.getName() + " d WHERE d.participantid = " + ExprColumn.STR_TABLE_ALIAS + ".participantid))");
                     ExprColumn newCol = new ExprColumn(ti, lastDayAtCenter, sql, JdbcType.TIMESTAMP, ti.getColumn("death"), ti.getColumn("Id"));
                     newCol.setLabel("Last Day At Center");
-                    newCol.setDescription("This column calculates the last know date this animal was present at the center.  It preferentially uses death, but will use the most recent departure date if death is not known.  It is used when calculating age.");
+                    newCol.setDescription("This column calculates the last known date this animal was present at the center.  It preferentially uses death, but will use the most recent departure date if death is not known.  It is used when calculating age.");
                     ti.addColumn(newCol);
                 }
             }

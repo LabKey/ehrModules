@@ -302,7 +302,6 @@ ehr/resources/queries/study/Clinical[!!-~]Observations/.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations/PE[!!-~]Observations.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.js -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.query.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Remarks/.qview.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs.js -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs.query.xml -text
 ehr/resources/queries/study/Datasets.query.xml -text
