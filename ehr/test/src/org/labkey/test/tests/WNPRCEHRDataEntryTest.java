@@ -69,7 +69,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         log("Add blank weight entries");
-        click(Locator.extButton("Add Record"));
+        waitAndClick(Locator.extButtonEnabled("Add Record"));
         waitForElement(Locator.tag("td").withClass("x-grid3-cell-invalid"));
         waitForElement(Locator.xpath("//input[@name='Id' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
         // Form input doesn't seem to be enabled yet, so wait
@@ -152,7 +152,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         _helper.selectDataEntryRecord("weight", MORE_ANIMAL_IDS[4], false);
         _extHelper.setExtFormElementByLabel("Weight (kg):", "5.555");
 
-        click(Locator.extButton("Submit for Review"));
+        waitAndClick(Locator.extButtonEnabled("Submit for Review"));
         _extHelper.waitForExtDialog("Submit For Review");
         _extHelper.selectComboBoxItem("Assign To:", DATA_ADMIN.getGroup());
         _extHelper.clickExtButton("Submit For Review", "Submit");
@@ -174,7 +174,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         String href2 = getAttribute(Locator.linkWithText(TASK_TITLE), "href");
         beginAt(href2); // Clicking opens in a new window.
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-weight-records-grid')]"), WAIT_FOR_JAVASCRIPT);
-        click(Locator.extButton("Validate"));
+        waitAndClick(Locator.extButtonEnabled("Validate"));
         waitForElement(Locator.xpath("//button[text() = 'Submit Final' and "+Locator.ENABLED+"]"), WAIT_FOR_JAVASCRIPT);
         click(Locator.extButton("Submit Final"));
         _extHelper.waitForExtDialog("Finalize Form");
@@ -257,6 +257,12 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
                 return PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator.toBy()).getAttribute("value"));
             }
         }, "Id field did not populate", WAIT_FOR_PAGE);
+
+        // NOTE: we have had intermittent failures where the project field does not contain the appropriate project ID.
+        // once the form loads, the ID field should populate (which is what we test above).  after it populates, the field will fire the participantchange event.
+        // this bubbles to the form, and projectfield listens for this.  next, the project field queries the server to request a new list of project IDs for the ID.
+        // i suspect we need a short delay to allow this to happen.  alternately, we could use JS to test the record count of that field's store.
+        sleep(200);
 
         _extHelper.selectComboBoxItem("Project:", PROJECT_ID + " (" + DUMMY_PROTOCOL + ")\u00A0");
         _extHelper.selectComboBoxItem("Type:", "Physical Exam\u00A0");

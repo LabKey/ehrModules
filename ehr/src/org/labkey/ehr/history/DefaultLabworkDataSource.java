@@ -114,7 +114,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
         _results = LabworkManager.get().getResults(c, u, subjectId, minDate, maxDate, redacted);
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
-        if (duration > 4)
+        if (duration > 6)
             _log.error("Loaded lab results for: " + subjectId + " in " + duration + " seconds");
 
         start = new Date();
