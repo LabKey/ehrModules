@@ -130,23 +130,26 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         try
         {
-            _helper.deleteUserAPI(DATA_ADMIN.getEmail(), getProjectName(), false);
-            _helper.deleteUserAPI(REQUESTER.getEmail(), getProjectName(), false);
-            _helper.deleteUserAPI(BASIC_SUBMITTER.getEmail(), getProjectName(), false);
-            _helper.deleteUserAPI(REQUEST_ADMIN.getEmail(), getProjectName(), false);
-            _helper.deleteUserAPI(FULL_UPDATER.getEmail(), getProjectName(), false);
-            _helper.deleteUserAPI(FULL_SUBMITTER.getEmail(), getProjectName(), false);
-        }
-        catch(Throwable ignored)
-        {
+            //note: always delete users from root, which will always exist, even when the test project doesnt
+            log("Deleting EHR users, if they exist");
 
+            log(DATA_ADMIN.getEmail() + ": " + _helper.deleteUserAPI(DATA_ADMIN.getEmail()));
+            log(REQUESTER.getEmail() + ": " + _helper.deleteUserAPI(REQUESTER.getEmail()));
+            log(BASIC_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(BASIC_SUBMITTER.getEmail()));
+            log(REQUEST_ADMIN.getEmail() + ": " + _helper.deleteUserAPI(REQUEST_ADMIN.getEmail()));
+            log(FULL_UPDATER.getEmail() + ": " + _helper.deleteUserAPI(FULL_UPDATER.getEmail()));
+            log(FULL_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(FULL_SUBMITTER.getEmail()));
+        }
+        catch (Throwable ignored)
+        {
+            log("unable to delete users: " + ignored.getMessage());
         }
 
         try
         {
             deleteHardTableRecords();
         }
-        catch(Throwable ignored)
+        catch (Throwable ignored)
         {
             log("there was an error deleting records from EHR hard tables");
             log(ignored.getMessage());

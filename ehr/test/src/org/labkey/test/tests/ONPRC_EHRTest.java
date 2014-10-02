@@ -30,6 +30,7 @@ import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 import org.labkey.test.Locator;
+import org.labkey.test.TestTimeoutException;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
@@ -44,10 +45,14 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -474,7 +479,77 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         return objectid;
     }
 
-    //TODO: test other custom trigger script code
+    ///@Test
+    public void assignmentApiTest()
+    {
+        //TODO: add assignmentsInTransaction, protocol counts
+
+        //release condition
+
+        //updateAnimalCondition
+
+        //setting of enddatefinalized, datefinalized
+
+    }
+
+    ///@Test
+    public void animalGroupsApiTest()
+    {
+        //TODO: getOverlappingGroupAssignments
+
+    }
+
+    ///@Test
+    public void projectProtocolApiTest()
+    {
+        //TODO: auto-assignment of IDs
+
+
+
+    }
+
+
+    ///@Test
+    public void flagsApiTest()
+    {
+        //TODO: housing condition
+
+        //auto-closing of active flags
+
+
+    }
+
+    ///@Test
+    public void drugApiTest()
+    {
+        //TODO: custom errors
+    }
+
+    ///@Test
+    public void arrivalApiTest()
+    {
+        //TODO: validation on housing
+
+        // auto-add quarantine flag
+
+        //creation of housing, demographics status
+    }
+
+    ///@Test
+    public void housingApiTest()
+    {
+        //TODO: size validation
+
+        //auto-update of dividers
+
+        //open-ended, dead ID
+
+        //dead Id, non-open ended
+
+        //mark requested completed
+
+        //auto-set housingCondition, housingType on row
+    }
 
     @Test
     public void doCustomActionsTests() throws Exception
@@ -1266,35 +1341,121 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     //TODO: @Test
     public void surgicalRoundsTest()
     {
-        _helper.goToTaskForm("Surgical Rounds");
+        //_helper.goToTaskForm("Surgical Rounds");
 
-        Ext4GridRef obsGrid = _helper.getExt4GridForFormSection("Observations");
-        _helper.addRecordToGrid(obsGrid);
+        //Ext4GridRef obsGrid = _helper.getExt4GridForFormSection("Observations");
+        //_helper.addRecordToGrid(obsGrid);
 
         //TODO: test cascade update + delete
 
-        _helper.discardForm();
+        //_helper.discardForm();
     }
 
-    // TODO @Test
+    @Test
     public void pathologyTest()
     {
-        _helper.goToTaskForm("Necropsy");
+        _helper.goToTaskForm("Necropsy", false);
 
         _helper.getExt4FieldForFormSection("Necropsy", "Id").setValue(MORE_ANIMAL_IDS[1]);
+        Ext4ComboRef procedureField = new Ext4ComboRef(_helper.getExt4FieldForFormSection("Necropsy", "Procedure").getId(), this);
+        procedureField.setComboByDisplayValue("Necropsy & Histopathology Grade 2: Standard");
 
-//        Ext4GridRef procedureGrid = _helper.getExt4GridForFormSection("Necropsy");
-//        _helper.addRecordToGrid(procedureGrid);
+        // apply form template
+        waitAndClick(Ext4Helper.Locators.ext4Button("Apply Form Template"));
+        waitForElement(Ext4Helper.ext4Window("Apply Template To Form"));
+        Ext4FieldRef.waitForField(this, "Diagnoses");
+        Ext4ComboRef.getForLabel(this, "Choose Template").setComboByDisplayValue("Necropsy");
+        sleep(100);
+        Assert.assertEquals("Gross Findings", Ext4ComboRef.getForLabel(this, "Gross Findings").getDisplayValue());
+        Assert.assertEquals("Necropsy", Ext4ComboRef.getForLabel(this, "Staff").getDisplayValue());
+        waitAndClick(Ext4Helper.ext4Window("Apply Template To Form").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElementToDisappear(Ext4Helper.ext4Window("Apply Template To Form"));
 
-        // TODO: apply template, enter death, save
+        //staff sections
+        _ext4Helper.clickExt4Tab("Staff");
+        Ext4GridRef staffGrid = _helper.getExt4GridForFormSection("Staff");
+        staffGrid.waitForRowCount(3);
 
-        // make new necropsy, copy from previous, also see tissue helper
+        //check gross findings second, because the above is a more reliable wait
+        Assert.assertNotNull(StringUtils.trimToNull((String) _helper.getExt4FieldForFormSection("Gross Findings", "Notes").getValue()));
 
-        _helper.discardForm();
+        //test SNOMED codes
+        _ext4Helper.clickExt4Tab("Histologic Findings");
+        Ext4GridRef histologyGrid = _helper.getExt4GridForFormSection("Histologic Findings");
+        _helper.addRecordToGrid(histologyGrid, "Add Record");
+        waitAndClick(histologyGrid.getCell(1, "codesRaw"));
+        waitForElement(Ext4Helper.ext4Window("Manage SNOMED Codes"));
+        Ext4FieldRef field = Ext4FieldRef.getForLabel(this, "Add Code");
+        field.waitForEnabled();
+        List<WebElement> visible = new ArrayList<>();
+        for (WebElement element : getDriver().findElements(By.id(field.getId() + "-inputEl")))
+        {
+            if (element.isDisplayed())
+            {
+                visible.add(element);
+            }
+        }
+        Assert.assertEquals(1, visible.size());
 
+        visible.get(0).sendKeys("ketamine");
+        visible.get(0).sendKeys(Keys.ENTER);
+        String code1 = "Ketamine injectable (100mg/ml) (E-70590)";
+        waitForElement(Locator.tagContainingText("div", code1));
+
+        visible.get(0).sendKeys("heart");
+        visible.get(0).sendKeys(Keys.ENTER);
+        String code2 = "APEX OF HEART (T-32040)";
+        waitForElement(Locator.tagContainingText("div", code2));
+        Assert.assertTrue(isTextBefore(code1, code2));
+
+        visible.get(0).sendKeys("disease");
+        visible.get(0).sendKeys(Keys.ENTER);
+        String code3 = "ALEUTIAN DISEASE (D-03550)";
+        waitForElement(Locator.tagContainingText("div", code3));
+        Assert.assertTrue(isTextBefore(code2, code3));
+
+        //move first code down
+        click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedDownArrow]", Ext4CmpRef.class).get(0).getId()));
+        waitForElement(Locator.tagContainingText("div", "1: " + code2));
+        assertElementPresent(Locator.tagContainingText("div", "2: " + code1));
+        assertElementPresent(Locator.tagContainingText("div", "3: " + code3));
+
+        //once more
+        click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedUpArrow]", Ext4CmpRef.class).get(2).getId()));
+        waitForElement(Locator.tagContainingText("div", "3: " + code1));
+        assertElementPresent(Locator.tagContainingText("div", "1: " + code2));
+        assertElementPresent(Locator.tagContainingText("div", "2: " + code3));
+
+        //this should do nothing
+        click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedUpArrow]", Ext4CmpRef.class).get(0).getId()));
+        waitForElement(Locator.tagContainingText("div", "1: " + code2));
+        assertElementPresent(Locator.tagContainingText("div", "2: " + code3));
+        assertElementPresent(Locator.tagContainingText("div", "3: " + code1));
+
+        click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedDelete]", Ext4CmpRef.class).get(0).getId()));
+        assertElementNotPresent(Locator.tagContainingText("div", code2));
+
+        waitAndClick(Ext4Helper.ext4Window("Manage SNOMED Codes").append(Ext4Helper.Locators.ext4Button("Submit")));
+        Assert.assertEquals("1<>D-03550;2<>E-70590", histologyGrid.getFieldValue(1, "codesRaw").toString());
+        Assert.assertTrue(isTextBefore("1: " + code3, "2: " + code1));
+
+        // TODO: enter death
+
+
+        waitAndClickAndWait(_helper.getDataEntryButton("Save & Close"));
+
+        // TODO make new necropsy, copy from previous
+
+        //_helper.discardForm();
     }
 
-    //TODO: @Test
+    ///@Test
+    public void pathTissuesTest()
+    {
+        //TODO: tissue helper, also copy from previous
+    }
+
+    @Test
     public void surgeryFormTest()
     {
         _helper.goToTaskForm("Surgeries");
@@ -1302,35 +1463,73 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4GridRef proceduresGrid = _helper.getExt4GridForFormSection("Procedures");
         _helper.addRecordToGrid(proceduresGrid);
         proceduresGrid.setGridCell(1, "Id", MORE_ANIMAL_IDS[1]);
-        proceduresGrid.setGridCell(1, "chargetype", "Center Staff");
+
         Ext4ComboRef procedureCombo = new Ext4ComboRef(proceduresGrid.getActiveEditor(1, "procedureid"), this);
         procedureCombo.setComboByDisplayValue("Lymph Node and Skin Biopsy - FITC");
+        proceduresGrid.setGridCell(1, "chargetype", "Center Staff");
+        proceduresGrid.setGridCellJS(1, "instructions", "These are my instructions");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Add Procedure Defaults"));
         waitForElement(Ext4Helper.ext4Window("Add Procedure Defaults"));
         waitForElement(Ext4Helper.ext4Window("Add Procedure Defaults").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
         waitAndClick(Ext4Helper.ext4Window("Add Procedure Defaults").append(Ext4Helper.Locators.ext4Button("Submit")));
 
-        //TODO: post-op meds
+        _ext4Helper.clickExt4Tab("Staff");
+        Ext4GridRef staffGrid = _helper.getExt4GridForFormSection("Staff");
+        staffGrid.waitForRowCount(1);
+        Assert.assertEquals("Surgeon", staffGrid.getFieldValue(1, "role"));
 
+        _ext4Helper.clickExt4Tab("Weight");
+        Ext4GridRef weightGrid = _helper.getExt4GridForFormSection("Weight");
+        weightGrid.waitForRowCount(1);
+        weightGrid.setGridCell(1, "weight", "5");
+
+        _ext4Helper.clickExt4Tab("Medication/Treatment Orders");
+        Ext4GridRef treatmentGrid = _helper.getExt4GridForFormSection("Medication/Treatment Orders");
+        treatmentGrid.clickTbarButton("Order Post-Op Meds");
+        waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds"));
+        waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
+        waitAndClick(Ext4Helper.ext4Window("Order Post-Op Meds").append(Ext4Helper.Locators.ext4Button("Submit")));
+        treatmentGrid.waitForRowCount(2);
+        Assert.assertEquals(0.30, treatmentGrid.getFieldValue(1, "amount"));
+        Assert.assertEquals("mg", treatmentGrid.getFieldValue(1, "amount_units"));
+        Assert.assertEquals("E-YY792", treatmentGrid.getFieldValue(1, "code"));
+
+        //review amounts window
+        treatmentGrid.clickTbarButton("Review Amount(s)");
+        waitForElement(Ext4Helper.ext4Window("Review Drug Amounts"));
+        waitForElement(Ext4Helper.ext4Window("Review Drug Amounts").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])), 2);
+        //TODO: change values
+
+        waitAndClick(Ext4Helper.ext4Window("Review Drug Amounts").append(Ext4Helper.Locators.ext4Button("Submit")));
 
         //TODO: open cases btn
 
 
-
         _helper.discardForm();
-
     }
 
-    //TODO: @Test
+    //@Test
     public void gridErrorsTest()
     {
-        //make sure fields turn red as expected
+        //TODO: make sure fields turn red as expected
     }
 
-    //TODO: @Test
-    public void animalDetailsPanelTest()
+    //@Test
+    public void behaviorRoundsTest()
     {
-        //test manage cases, treatments, etc.
+        //TODO: test close cases
+    }
+
+    //@Test
+    public void clinicalManagementUITest()
+    {
+        // manage cases
+
+        // manage treatments
+
+        // mark vet review
+
+        // add/replace SOAP
     }
 }

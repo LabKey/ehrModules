@@ -527,6 +527,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.409-12.410.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.415-12.416.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.416-12.417.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.417-12.418.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.418-12.419.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -760,6 +761,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.409-12.410.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.415-12.416.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.416-12.417.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.417-12.418.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.418-12.419.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text

@@ -107,30 +107,22 @@ public class EHRTestHelper
     }
 
 
-    public boolean deleteUserAPI(String email, String containerPath, boolean throwOnException)
+    public boolean deleteUserAPI(String email) throws Exception
     {
-        try
+        //note: always execute against root, so we are sure the user exists
+        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+        GetUsersCommand getUsers = new GetUsersCommand();
+        getUsers.setName(email);
+        GetUsersResponse userResp = getUsers.execute(cn, "/");
+        if (userResp.getUsersInfo().size() > 0)
         {
-            Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-            GetUsersCommand getUsers = new GetUsersCommand();
-            getUsers.setName(email);
-            GetUsersResponse userResp = getUsers.execute(cn, containerPath);
-            if (userResp.getUsersInfo().size() > 0)
-            {
-                DeleteUserCommand uc = new DeleteUserCommand(userResp.getUsersInfo().get(0).getUserId());
-                CommandResponse resp = uc.execute(cn, containerPath);
-                return true;
-            }
+            DeleteUserCommand uc = new DeleteUserCommand(userResp.getUsersInfo().get(0).getUserId());
+            CommandResponse resp = uc.execute(cn, "/");
+            return true;
         }
-        catch (CommandException e)
+        else
         {
-            if (throwOnException)
-                throw new RuntimeException(e);
-        }
-        catch (IOException e)
-        {
-            if (throwOnException)
-                throw new RuntimeException(e);
+            _test.log("user not found: " + email);
         }
 
         return false;
@@ -190,6 +182,11 @@ public class EHRTestHelper
     //helpers for Ext4 data entry
     public void goToTaskForm(String name)
     {
+        goToTaskForm(name, true);
+    }
+
+    public void goToTaskForm(String name, boolean waitForSaveBtnEnabled)
+    {
         _test.goToProjectHome();
         _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
@@ -197,7 +194,9 @@ public class EHRTestHelper
 
         _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"), WAIT_FOR_PAGE * 2);
         Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
-        saveBtn.waitForEnabled();
+
+        if (waitForSaveBtnEnabled)
+            saveBtn.waitForEnabled();
     }
 
     public Ext4FieldRef getExt4FieldForFormSection(String sectionTitle, String fieldLabel)
@@ -223,8 +222,13 @@ public class EHRTestHelper
 
     public void addRecordToGrid(Ext4GridRef grid)
     {
+        addRecordToGrid(grid, "Add");
+    }
+
+    public void addRecordToGrid(Ext4GridRef grid, String btnLabel)
+    {
         Integer count = grid.getRowCount();
-        grid.clickTbarButton("Add");
+        grid.clickTbarButton(btnLabel);
         grid.waitForRowCount(count + 1);
         grid.cancelEdit();
         _test.sleep(50);
