@@ -911,7 +911,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             tissue: {
                 editorConfig: {
                     xtype: 'ehr-snomedcombo',
-                    defaultSubset: 'All'
+                    defaultSubset: 'Organ/Tissue'
                 },
                 allowBlank: false
             },

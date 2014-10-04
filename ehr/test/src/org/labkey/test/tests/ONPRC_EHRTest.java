@@ -573,7 +573,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitForElement(Locator.tagContainingText("b", "SPF 9 (ESPF)"), WAIT_FOR_JAVASCRIPT * 2);
 
         waitAndClick(Locator.tagContainingText("span", "Housing Summary"));
-        waitForElement(Locator.tagContainingText("div", "No records were found"), WAIT_FOR_JAVASCRIPT * 2);
+        //NOTE: depending on test order, there may or may not be housing records created
+        waitForElement(Locator.tagContainingText("div", "No buildings were found"), WAIT_FOR_JAVASCRIPT * 2);
 
         waitAndClick(Locator.tagContainingText("span", "Utilization Summary"));
         if (apiHelper.getRowCount("study", "demographics") > 0)
@@ -1049,19 +1050,19 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         weightGrid.clickTbarButton("Add Batch");
         waitForElement(Ext4Helper.ext4Window("Choose Animals"));
         Ext4FieldRef.getForLabel(this, "Id(s)").setValue(StringUtils.join(MORE_ANIMAL_IDS, ";"));
-        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals(weightGrid.getRowCount(), MORE_ANIMAL_IDS.length);
 
         weightGrid.clickTbarButton("Add Batch");
         waitForElement(Ext4Helper.ext4Window("Choose Animals"));
         Ext4FieldRef.getForLabel(this, "Id(s)").setValue(StringUtils.join(MORE_ANIMAL_IDS, ";"));
         Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
         waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
         _helper.toggleBulkEditField("Weight (kg)");
         double weight = 4.0;
         Ext4FieldRef.getForLabel(this, "Weight (kg)").setValue(weight);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals(weightGrid.getRowCount(), MORE_ANIMAL_IDS.length * 2);
 
         //verify IDs added in correct order

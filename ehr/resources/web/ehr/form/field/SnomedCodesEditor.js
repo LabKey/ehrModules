@@ -55,6 +55,9 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
     }
 });
 
+/**
+ * @cfg defaultSubset
+ */
 Ext4.define('EHR.window.SnomedCodeWindow', {
     extend: 'Ext.window.Window',
 
@@ -72,7 +75,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
             },
             items: [{
                 xtype: 'ehr-snomedcombo',
-                defaultSubset: 'All',
+                defaultSubset: this.defaultSubset || 'All',
                 width: 500,
                 fieldLabel: 'Add Code',
                 listeners: {

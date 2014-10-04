@@ -98,7 +98,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     appendUtilizationSection: function(results){
         if (!results || !results.rows || !results.rows.length){
             return {
-                html: 'No building were found',
+                html: 'No buildings were found',
                 style: 'padding-bottom: 10px;'
             }
         }

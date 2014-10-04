@@ -95,6 +95,14 @@ EHR.model.DataModelManager.registerMetadata('Pathology', {
                 hidden: true
             }
         },
+        //NOTE: this would toggle the behavior of the SNOMED code popup window
+//        'study.histology': {
+//            codesRaw: {
+//                columnConfig: {
+//                    defaultSubset: 'Organ/Tissue'
+//                }
+//            }
+//        },
         'onprc_billing.miscCharges': {
             chargetype: {
                 defaultValue: 'DCM: Pathology Services'

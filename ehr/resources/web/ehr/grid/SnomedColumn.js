@@ -3,6 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * @cfg defaultSubset
+ */
 Ext4.define('EHR.grid.column.SnomedColumn', {
     extend: 'Ext.grid.column.Column',
     alias: 'widget.ehr-snomedcolumn',
@@ -67,6 +71,7 @@ Ext4.define('EHR.grid.column.SnomedColumn', {
 
     handler: function(view, rowIndex, colIndex, item, e, rec) {
         Ext4.create('EHR.window.SnomedCodeWindow', {
+            defaultSubset: this.defaultSubset,
             boundRec: rec
         }).show();
     }
