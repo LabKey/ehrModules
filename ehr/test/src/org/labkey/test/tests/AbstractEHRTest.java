@@ -398,6 +398,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _securityHelper.setProjectPerm(FULL_UPDATER.getGroup(), "EHR Data Entry");
         _securityHelper.setProjectPerm(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
         _permissionsHelper.savePermissions();
+
+        //this is slow, so dont set passwords unless subclasses need it
+        if (doSetUserPasswords())
+        {
+            setEhrUserPasswords();
+        }
+    }
+
+    protected boolean doSetUserPasswords()
+    {
+        return false;
     }
 
     protected void goToEHRFolder()
@@ -424,7 +435,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    public void setEhrUserPasswords()
+    private void setEhrUserPasswords()
     {
         setInitialPassword(DATA_ADMIN.getEmail(), PasswordUtil.getPassword());
         setInitialPassword(REQUESTER.getEmail(), PasswordUtil.getPassword());

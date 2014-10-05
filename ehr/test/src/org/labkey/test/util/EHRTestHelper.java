@@ -190,7 +190,8 @@ public class EHRTestHelper
         _test.goToProjectHome();
         _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
-        _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name), _test.WAIT_FOR_PAGE);
+        _test.waitForElement(Locator.tagContainingText("span", "Colony Management:"));  //proxy for list loading
+        _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name).withClass("labkey-text-link"), _test.WAIT_FOR_PAGE);
 
         _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"), WAIT_FOR_PAGE * 2);
         Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
@@ -231,7 +232,7 @@ public class EHRTestHelper
         grid.clickTbarButton(btnLabel);
         grid.waitForRowCount(count + 1);
         grid.cancelEdit();
-        _test.sleep(50);
+        _test.sleep(100);
     }
 
     public void clickExt4WindowBtn(String title, String label)

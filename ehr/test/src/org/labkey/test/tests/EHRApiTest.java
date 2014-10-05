@@ -82,9 +82,14 @@ public class EHRApiTest extends AbstractEHRTest
         EHRApiTest initTest = (EHRApiTest)getCurrentTest();
         initTest.initProject();
 
-        initTest.setEhrUserPasswords();
         initTest.goToProjectHome();
         initTest.createTestSubjects();
+    }
+
+    @Override
+    protected boolean doSetUserPasswords()
+    {
+        return true;
     }
 
     @Test
@@ -124,7 +129,6 @@ public class EHRApiTest extends AbstractEHRTest
         pregnanciesTest();
         prenatalDeathsTest();
         problemListTest();
-        surgeryTest();
         tbTestsTest();
         treatmentOrdersTest();
         cageObservationsTest();
@@ -412,11 +416,6 @@ public class EHRApiTest extends AbstractEHRTest
     {
         //verify problem # incremented
         //verify remote date from time / enddate
-    }
-
-    private void surgeryTest()
-    {
-        //set age
     }
 
     private void tbTestsTest()

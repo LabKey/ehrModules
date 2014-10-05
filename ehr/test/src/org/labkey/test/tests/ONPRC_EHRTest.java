@@ -51,6 +51,7 @@ import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,9 +93,29 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         ONPRC_EHRTest initTest = (ONPRC_EHRTest)getCurrentTest();
 
         initTest.initProject();
-        initTest.setEhrUserPasswords();
+        //initTest.createTestSubjects();
         RReportHelper rHelper = new RReportHelper(initTest);
         rHelper.ensureRConfig();
+    }
+
+//    @Override
+//    public void doCleanup(boolean afterTest) throws TestTimeoutException
+//    {
+//
+//    }
+
+    @Override
+    protected boolean doSetUserPasswords()
+    {
+        return true;
+    }
+
+    //@Test
+    public void bloodVolumeApiTest()
+    {
+        //TODO: blood draw volumes
+
+
     }
 
     @Test
@@ -209,6 +230,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId6, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId7, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId8, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.setTimeout(120);
         SaveRowsResponse insertRowsResp = insertRowsCommand1.execute(_apiHelper.getConnection(), getContainerPath());
 
         final Map<String, String> lsidMap = new HashMap<>();
@@ -427,6 +449,28 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         return groupId;
     }
 
+    private void ensureGroupMember(final int groupId, final String animalId) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "animal_group_members");
+        select1.addFilter(new Filter("groupId", groupId, Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("Id", animalId, Filter.Operator.EQUAL));
+
+        SelectRowsResponse resp = select1.execute(_apiHelper.getConnection(), getContainerPath());
+        if (resp.getRowCount().intValue() == 0)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "animal_group_members");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("Id", animalId);
+                    put("date", new Date());
+                    put("groupId", groupId);
+                }
+            });
+
+            insertRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
+        }
+    }
+
     private String getOrCreateSpfFlag(final String name) throws Exception
     {
         SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "flag_values");
@@ -640,19 +684,23 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Assert.assertEquals("Incorrect text", "23\n48", getDriver().findElement(Locator.id("subtractTarget2").toBy()).getAttribute("value"));
 
         //animal groups
+        String groupName = "A TestGroup";
+        int groupId = getOrCreateGroup(groupName);
+        ensureGroupMember(groupId, MORE_ANIMAL_IDS[0]);
+        ensureGroupMember(groupId, MORE_ANIMAL_IDS[1]);
+
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "Animal Groups"));
         waitForElement(Locator.tagContainingText("span", "Active Groups"));
         DataRegionTable dr = new DataRegionTable("query", this);
-        //TODO: create dummy groups
-
+        dr.clickLink(0, dr.getColumn("Name"));
+        DataRegionTable membersTable = new DataRegionTable(_helper.getAnimalHistoryDataRegionName("Group Members"), this);
+        Assert.assertEquals(2, membersTable.getDataRowCount());
 
         //more reports
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "More Reports"));
         waitForElement(Locator.tagContainingText("a", "View Summary of Clinical Tasks"));
-        //TODO: consider walking links?
-
 
         //printable reports
         goToProjectHome();
@@ -705,7 +753,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
             _helper.addRecordToGrid(panelGrid);
             panelGrid.setGridCell(panelIdx, "Id", MORE_ANIMAL_IDS[(panelIdx % MORE_ANIMAL_IDS.length)]);
-            panelGrid.setGridCell(panelIdx, "servicerequested", arr[0]);
+            panelGrid.setGridCellJS(panelIdx, "servicerequested", arr[0]);
 
             if (arr[1] != null && arr.length == 4)
             {
@@ -722,19 +770,17 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
             Assert.assertEquals("Category not set properly", arr[2], panelGrid.getFieldValue(panelIdx, "type"));
 
-            validatePanelEntry(arr[0], arr[1], arr[2], arr[3]);
+            validatePanelEntry(arr[0], arr[1], arr[2], arr[3], panelIdx == panels.length, panelIdx);
 
             panelIdx++;
         }
 
-        //TODO: test cascade update + delete
 
-        //TODO: save first, then dircard
         _helper.discardForm();
     }
 
     @LogMethod
-    public void validatePanelEntry(String panelName, String tissue, String title, String lookupTable) throws Exception
+    public void validatePanelEntry(String panelName, String tissue, String title, String lookupTable, boolean doDeletePanel, int panelRowIdx) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("ehr_lookups", "labwork_panels");
         cmd.addFilter(new Filter("servicename", panelName));
@@ -816,12 +862,31 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                     Assert.assertEquals("Test Id value did not match after key navigation", origVal, newVal);
                 }
 
-                //NOTE: the test can get bogged down w/ many rows, so we delete as it goes along
-                grid.clickTbarButton("Select All");
-                grid.waitForSelected(grid.getRowCount());
-                grid.clickTbarButton("Delete Selected");
-                waitForElement(Ext4Helper.ext4Window("Confirm"));
-                waitAndClick(Ext4Helper.Locators.ext4Button("Yes"));
+                //test cascade update + delete
+                Ext4GridRef panelGrid = _helper.getExt4GridForFormSection("Panels / Services");
+                panelGrid.setGridCell(panelRowIdx, "Id", MORE_ANIMAL_IDS[0]);
+                for (int j = 1; j <= rowCount; j++)
+                {
+                    Assert.assertEquals(MORE_ANIMAL_IDS[0], grid.getFieldValue(j, "Id"));
+                }
+
+                if (doDeletePanel)
+                {
+                    waitAndClick(panelGrid.getRow(panelRowIdx));
+                    panelGrid.clickTbarButton("Delete Selected");
+                    waitForElement(Ext4Helper.ext4Window("Confirm"));
+                    assertTextPresent("along with the " + rowCount + " results associated with them");
+                    waitAndClick(Ext4Helper.ext4Window("Confirm").append(Ext4Helper.Locators.ext4Button("Yes")));
+                }
+                else
+                {
+                    grid.clickTbarButton("Select All");
+                    grid.waitForSelected(grid.getRowCount());
+                    grid.clickTbarButton("Delete Selected");
+                    waitForElement(Ext4Helper.ext4Window("Confirm"));
+                    waitAndClick(Ext4Helper.Locators.ext4Button("Yes"));
+                }
+
                 grid.waitForRowCount(0);
                 sleep(200);
             }
@@ -1004,7 +1069,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Assert.assertEquals(3L, ordersGrid.getFieldValue(3, "dosage"));
         Assert.assertEquals("mg/kg", ordersGrid.getFieldValue(3, "dosage_units"));
 
-        //TODO: test amount calculation
+        //note: amount calculation testing handled in surgery test
 
         //blood draws
         waitAndClick(Ext4Helper.ext4Tab("Blood Draws"));
@@ -1062,7 +1127,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _helper.toggleBulkEditField("Weight (kg)");
         double weight = 4.0;
         Ext4FieldRef.getForLabel(this, "Weight (kg)").setValue(weight);
-        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitAndClick(Ext4Helper.ext4Window("Bulk Edit").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals(weightGrid.getRowCount(), MORE_ANIMAL_IDS.length * 2);
 
         //verify IDs added in correct order
@@ -1361,6 +1426,15 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4ComboRef procedureField = new Ext4ComboRef(_helper.getExt4FieldForFormSection("Necropsy", "Procedure").getId(), this);
         procedureField.setComboByDisplayValue("Necropsy & Histopathology Grade 2: Standard");
 
+        Ext4FieldRef.getForLabel(this, "Case Number").clickTrigger();
+        waitForElement(Ext4Helper.ext4Window("Create Case Number"));
+        Ext4FieldRef.waitForField(this, "Prefix");
+        Ext4FieldRef.getForLabel(this, "Year").setValue(2013);
+        waitAndClick(Ext4Helper.ext4Window("Create Case Number").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        String caseNo = "2013A00";
+        Assert.assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNo));
+        caseNo = Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString();
+
         // apply form template
         waitAndClick(Ext4Helper.Locators.ext4Button("Apply Form Template"));
         waitForElement(Ext4Helper.ext4Window("Apply Template To Form"));
@@ -1440,17 +1514,45 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Assert.assertEquals("1<>D-03550;2<>E-70590", histologyGrid.getFieldValue(1, "codesRaw").toString());
         Assert.assertTrue(isTextBefore("1: " + code3, "2: " + code1));
 
-        // TODO: enter death
-
+        //enter death
+        waitAndClick(Ext4Helper.Locators.ext4Button("Enter/Manage Death"));
+        Locator.XPathLocator deathWindow = Ext4Helper.ext4Window("Deaths");
+        waitForElement(deathWindow);
+        Ext4FieldRef.waitForField(this, "Necropsy Case No");
+        _ext4Helper.queryOne("window field[name=cause]", Ext4FieldRef.class).setValue("Experimental");
+        waitAndClick(deathWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitForElementToDisappear(deathWindow);
+        waitForElementToDisappear(Locator.tagContainingText("div", "Saving Changes...").notHidden());
 
         waitAndClickAndWait(_helper.getDataEntryButton("Save & Close"));
 
-        // TODO make new necropsy, copy from previous
+        //make new necropsy, copy from previous
+        _helper.goToTaskForm("Necropsy", false);
+        _helper.getExt4FieldForFormSection("Necropsy", "Id").setValue(MORE_ANIMAL_IDS[1]);
+        procedureField = new Ext4ComboRef(_helper.getExt4FieldForFormSection("Necropsy", "Procedure").getId(), this);
+        procedureField.setComboByDisplayValue("Necropsy & Histopathology Grade 2: Standard");
 
-        //_helper.discardForm();
+        waitAndClick(Ext4Helper.Locators.ext4Button("Copy Previous Case"));
+        Locator.XPathLocator caseWindow = Ext4Helper.ext4Window("Copy From Previous Case");
+        waitForElement(caseWindow);
+        Ext4FieldRef.waitForField(this, "Animal Id");
+        _ext4Helper.queryOne("window field[fieldLabel=Case No]", Ext4FieldRef.class).setValue(caseNo);
+        Ext4FieldRef.getForBoxLabel(this, "Histologic Findings").setChecked(true);
+        Ext4FieldRef.getForBoxLabel(this, "Diagnoses").setChecked(true);
+        Ext4FieldRef.getForBoxLabel(this, "Staff").setChecked(true);
+        waitAndClick(caseWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+
+        //verify records
+        _helper.getExt4GridForFormSection("Staff").waitForRowCount(3);
+        _ext4Helper.clickExt4Tab("Histologic Findings");
+        Assert.assertEquals(1, _helper.getExt4GridForFormSection("Histologic Findings").getRowCount());
+        _ext4Helper.clickExt4Tab("Diagnoses");
+        Assert.assertEquals(0, _helper.getExt4GridForFormSection("Diagnoses").getRowCount());
+
+        _helper.discardForm();
     }
 
-    ///@Test
+    //TODO: @Test
     public void pathTissuesTest()
     {
         //TODO: tissue helper, also copy from previous
@@ -1490,6 +1592,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         treatmentGrid.clickTbarButton("Order Post-Op Meds");
         waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds"));
         waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
+        _ext4Helper.queryOne("field[fieldName=analgesiaRx]", Ext4ComboRef.class).waitForStoreLoad();
+        _ext4Helper.queryOne("field[fieldName=antibioticRx]", Ext4ComboRef.class).waitForStoreLoad();
         waitAndClick(Ext4Helper.ext4Window("Order Post-Op Meds").append(Ext4Helper.Locators.ext4Button("Submit")));
         treatmentGrid.waitForRowCount(2);
         Assert.assertEquals(0.30, treatmentGrid.getFieldValue(1, "amount"));
@@ -1500,14 +1604,115 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         treatmentGrid.clickTbarButton("Review Amount(s)");
         waitForElement(Ext4Helper.ext4Window("Review Drug Amounts"));
         waitForElement(Ext4Helper.ext4Window("Review Drug Amounts").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])), 2);
-        //TODO: change values
+
+        Map<String, Object> expectedVals1 = new HashMap<>();
+        expectedVals1.put("weight", 5L);
+        expectedVals1.put("concentration", 0.3);
+        expectedVals1.put("conc_units", "mg/ml");
+        expectedVals1.put("dosage", 0.01);
+        expectedVals1.put("dosage_units", "mg/kg");
+        expectedVals1.put("volume", 1L);
+        expectedVals1.put("vol_units", "mL");
+        expectedVals1.put("amount", 0.3);
+        expectedVals1.put("amount_units", "mg");
+        expectedVals1.put("include", true);
+
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("weight", 0, 6L, expectedVals1);
+        expectedVals1.put("volume", 0.2);
+        expectedVals1.put("amount", 0.06);
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("conc_units", 0, "mg/tablet", expectedVals1);
+        expectedVals1.put("vol_units", "tablet(s)");
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("dosage_units", 0, "ounces/kg", expectedVals1);
+        expectedVals1.put("amount_units", "ounces");
+        expectedVals1.put("conc_units", null);
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("dosage", 0, 0.02, expectedVals1);
+        expectedVals1.put("volume", 0.4);
+        expectedVals1.put("amount", 0.12);
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("include", 0, false, expectedVals1);
+        setDrugAmountField("dosage", 0, 0.01, expectedVals1);
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        setDrugAmountField("include", 0, true, expectedVals1);
+
+        //now doses tab
+        _ext4Helper.clickExt4Tab("Doses Used");
+        waitForElement(Locator.tagContainingText("b", "Standard Conc"));
+        _ext4Helper.queryOne("field[fieldName=concentration][recordIdx=0][snomedCode]", Ext4FieldRef.class).setValue(0.5);
+        _ext4Helper.queryOne("field[fieldName=dosage][recordIdx=0][snomedCode]", Ext4FieldRef.class).setValue(2);
+        _ext4Helper.queryOne("field[fieldName=volume_rounding][recordIdx=0][snomedCode]", Ext4FieldRef.class).setValue(0.8);
+        click(Locator.id(_ext4Helper.queryOne("button[recordIdx=0][snomedCode]", Ext4FieldRef.class).getId()));
+        _ext4Helper.clickExt4Tab("All Rows");
+        waitForElement(Locator.tagContainingText("div", "This tab shows one row per drug"));
+        expectedVals1.put("concentration", 0.5);
+        expectedVals1.put("conc_units", "mg/ml");
+        expectedVals1.put("dosage", 2L);
+        expectedVals1.put("dosage_units", "mg/kg");
+        expectedVals1.put("volume", null);
+        expectedVals1.put("vol_units", "mL");
+        expectedVals1.put("amount", null);
+        expectedVals1.put("amount_units", "mg");
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        click(Ext4Helper.Locators.ext4Button("Recalculate All"));
+        _ext4Helper.clickExt4MenuItem("Recalculate Both Amount/Volume");
+        expectedVals1.put("volume", 24L);
+        expectedVals1.put("amount", 12L);
+        inspectDrugAmountFields(expectedVals1, 0);
+
+        //weight tab
+        _ext4Helper.clickExt4Tab("Weights Used");
+        waitForElement(Locator.tagContainingText("div", "From Form"));
+        _ext4Helper.queryOne("field[fieldName=globalWeight][recordIdx=0]", Ext4FieldRef.class).setValue(3);
+        waitForElement(Locator.tagContainingText("div", "Custom"));
+
+        _ext4Helper.clickExt4Tab("All Rows");
+        waitForElement(Locator.tagContainingText("div", "This tab shows one row per drug"));
+        expectedVals1.put("weight", 3L);
+        expectedVals1.put("volume", 12L);
+        expectedVals1.put("amount", 6L);
+        inspectDrugAmountFields(expectedVals1, 0);
 
         waitAndClick(Ext4Helper.ext4Window("Review Drug Amounts").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElementToDisappear(Ext4Helper.ext4Window("Review Drug Amounts"));
 
-        //TODO: open cases btn
+        Assert.assertEquals(12L, treatmentGrid.getFieldValue(1, "volume"));
+        Assert.assertEquals(6L, treatmentGrid.getFieldValue(1, "amount"));
 
+        //open cases btn
+        //TODO: create IDs, open real cases
+        waitAndClick(Ext4Helper.Locators.ext4Button("Open Cases"));
+        Locator.XPathLocator caseWindow = Ext4Helper.ext4Window("Open Cases");
+        waitForElement(caseWindow);
+        waitForElement(Locator.tagContainingText("div", "Unknown or non-living animal Id, cannot open case"));
+        click(caseWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Close")));
+        waitForElementToDisappear(caseWindow);
 
         _helper.discardForm();
+    }
+
+    private void inspectDrugAmountFields(Map<String, Object> expectedVals, int rowIdx)
+    {
+        for (String fieldName : expectedVals.keySet())
+        {
+            Ext4FieldRef field = _ext4Helper.queryOne("field[fieldName=" +fieldName + "][recordIdx=" + rowIdx + "]", Ext4FieldRef.class);
+            Assert.assertEquals("incorrect field value: " + fieldName, expectedVals.get(fieldName), field.getValue());
+        }
+    }
+
+    private void setDrugAmountField(String fieldName, int rowIdx, Object value, Map<String, Object> expectedVals)
+    {
+        _ext4Helper.queryOne("field[fieldName=" +fieldName + "][recordIdx=" + rowIdx + "]", Ext4FieldRef.class).setValue(value);
+        expectedVals.put(fieldName, value);
     }
 
     //@Test
@@ -1532,5 +1737,87 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         // mark vet review
 
         // add/replace SOAP
+    }
+
+    private static String[] SUBJECTS = {"12345", "23456", "34567", "45678"};
+    private static String[] ROOMS = {"Room1", "Room2", "Room3"};
+    private static String[] CAGES = {"A1", "B2", "A3"};
+    private static Integer[] PROJECTS = {12345, 123456, 1234567};
+
+    @LogMethod
+    private void createTestSubjects()
+    {
+        try
+        {
+            JSONObject extraContext = EHRApiTest.getExtraContext();
+
+            String[] fields;
+            Object[][] data;
+            JSONObject insertCommand;
+
+            //insert into demographics
+            log("Creating test subjects");
+            fields = new String[]{"Id", "Species", "Birth", "Gender", "date"};
+            data = new Object[][]{
+                    {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date()},
+                    {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date()},
+                    {SUBJECTS[2], "Rhesus", (new Date()).toString(), "f", new Date()}
+            };
+            insertCommand = _apiHelper.prepareInsertCommand("study", "demographics", "lsid", fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
+
+            //used as initial dates
+            Date pastDate1 = _tf.parse("2012-01-03 09:30");
+            Date pastDate2 = _tf.parse("2012-05-03 19:20");
+
+            //set housing
+            log("Creating initial housing records");
+            fields = new String[]{"Id", "date", "enddate", "room", "cage"};
+            data = new Object[][]{
+                    {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                    {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                    {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
+            };
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Housing", "lsid", fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
+
+            //set a base weight
+            log("Setting initial weights");
+            fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
+            data = new Object[][]{
+                    {SUBJECTS[0], pastDate2, 10.5, EHRQCState.COMPLETED.label},
+                    {SUBJECTS[0], new Date(), 12, EHRQCState.COMPLETED.label}
+            };
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Weight", "lsid", fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
+
+            //set assignment
+            log("Setting initial assignments");
+            fields = new String[]{"Id", "date", "enddate", "project"};
+            data = new Object[][]{
+                    {SUBJECTS[0], pastDate1, pastDate2, PROJECTS[0]},
+                    {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
+                    {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
+            };
+            insertCommand = _apiHelper.prepareInsertCommand("study", "Assignment", "lsid", fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
+
+            //set cases
+            log("Setting cases");
+            fields = new String[]{"Id", "date", "category"};
+            data = new Object[][]{
+                    {SUBJECTS[0], pastDate1, "Clinical"},
+                    {SUBJECTS[0], pastDate1, "Surgery"},
+                    {SUBJECTS[0], pastDate1, "Behavior"},
+                    {SUBJECTS[1], pastDate1, "Clinical"},
+                    {SUBJECTS[1], pastDate1, "Surgery"}
+            };
+            insertCommand = _apiHelper.prepareInsertCommand("study", "cases", "lsid", fields, data);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, true);
+        }
+        catch (ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

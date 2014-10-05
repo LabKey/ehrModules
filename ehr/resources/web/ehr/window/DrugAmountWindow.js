@@ -423,7 +423,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                 recordIdx: recordIdx,
                 text: 'Update Records',
                 style: 'margin-left: 1px;',
-                width: 110,
+                width: 125,
                 scope: this,
                 handler: function(btn){
                     this.updateMedicationOfType(btn.snomedCode);
@@ -439,7 +439,7 @@ Ext4.define('EHR.window.DrugAmountWindow', {
         items.push({
             xtype: 'button',
             style: 'margin-left: 1px;margin-top: 4px;',
-            width: 110,
+            width: 125,
             text: 'Update All',
             border: true,
             scope: this,
