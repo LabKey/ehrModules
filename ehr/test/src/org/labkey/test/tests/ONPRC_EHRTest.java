@@ -230,7 +230,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId6, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId7, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
         insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId8, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
-        insertRowsCommand1.setTimeout(120);
+        insertRowsCommand1.setTimeout(0);
         SaveRowsResponse insertRowsResp = insertRowsCommand1.execute(_apiHelper.getConnection(), getContainerPath());
 
         final Map<String, String> lsidMap = new HashMap<>();
@@ -1431,9 +1431,17 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4FieldRef.waitForField(this, "Prefix");
         Ext4FieldRef.getForLabel(this, "Year").setValue(2013);
         waitAndClick(Ext4Helper.ext4Window("Create Case Number").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        String caseNo = "2013A00";
-        Assert.assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNo));
-        caseNo = Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString();
+        final String caseNoBase = "2013A00";
+        waitFor(new Checker()
+        {
+            @Override
+            public boolean check()
+            {
+                return Ext4FieldRef.getForLabel(ONPRC_EHRTest.this, "Case Number").getValue().toString().startsWith(caseNoBase);
+            }
+        }, "Case Number field was not set", WAIT_FOR_JAVASCRIPT);
+        Assert.assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNoBase));
+        String caseNo = Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString();
 
         // apply form template
         waitAndClick(Ext4Helper.Locators.ext4Button("Apply Form Template"));
@@ -1460,8 +1468,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _helper.addRecordToGrid(histologyGrid, "Add Record");
         waitAndClick(histologyGrid.getCell(1, "codesRaw"));
         waitForElement(Ext4Helper.ext4Window("Manage SNOMED Codes"));
-        Ext4FieldRef field = Ext4FieldRef.getForLabel(this, "Add Code");
+        Ext4ComboRef field = Ext4ComboRef.getForLabel(this, "Add Code");
         field.waitForEnabled();
+        field.waitForStoreLoad();
+
         List<WebElement> visible = new ArrayList<>();
         for (WebElement element : getDriver().findElements(By.id(field.getId() + "-inputEl")))
         {
@@ -1519,7 +1529,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Locator.XPathLocator deathWindow = Ext4Helper.ext4Window("Deaths");
         waitForElement(deathWindow);
         Ext4FieldRef.waitForField(this, "Necropsy Case No");
-        _ext4Helper.queryOne("window field[name=cause]", Ext4FieldRef.class).setValue("Experimental");
+        waitForElement(deathWindow.append(Locator.tagContainingText("div", MORE_ANIMAL_IDS[1])));  //proxy for record loading
+        Ext4ComboRef causeField = _ext4Helper.queryOne("window field[name=cause]", Ext4ComboRef.class);
+        causeField.waitForStoreLoad();
+        causeField.setValue("Experimental");
         waitAndClick(deathWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(deathWindow);
         waitForElementToDisappear(Locator.tagContainingText("div", "Saving Changes...").notHidden());

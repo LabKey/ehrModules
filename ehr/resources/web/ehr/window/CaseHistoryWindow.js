@@ -53,6 +53,7 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
             subjectId: this.subjectId,
             caseId: this.caseId
         });
+        items[1].activeTab = 1;
 
         return items;
     }

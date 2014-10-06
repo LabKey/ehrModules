@@ -48,7 +48,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             this.checkedItems = config.checkedItems;
         }
 
-        Ext4.Ajax.request({
+        LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', this.actionName, this.containerPath),
             method: 'POST',
             params: {

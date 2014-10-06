@@ -23,7 +23,7 @@ Ext4.define('EHR.DemographicsCache', {
             return;
         }
 
-        return Ext4.Ajax.request({
+        return LABKEY.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ehr', 'getDemographics', ctx['EHRStudyContainer']),
             method : 'POST',
             params: {

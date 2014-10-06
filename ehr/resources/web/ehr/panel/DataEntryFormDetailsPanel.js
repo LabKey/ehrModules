@@ -40,7 +40,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     },
 
     loadData: function(){
-        Ext4.Ajax.request({
+        LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'getDataEntryFormDetails', null, {
                 taskId: this.taskId,
                 requestId: this.requestId,

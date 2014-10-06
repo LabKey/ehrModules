@@ -2128,14 +2128,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             birth_condition: {
                 allowBlank: false,
                 columnConfig: {
-                    width: 150
+                    width: 200
                 }
+            },
+            date_type: {
+                allowBlank: false
             },
             origin: {
                 hidden: true
             },
             estimated: {
-                hidden: false,
+                hidden: true,
                 columnConfig: {
                     width: 200
                 }
@@ -2164,6 +2167,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 180
                 }
+            },
+            room: {
+                allowBlank: false
             }
         },
         'study.blood' : {

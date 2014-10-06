@@ -330,7 +330,7 @@ EHR.Utils = new function(){
             }
 
             if (commands.length){
-                Ext4.Ajax.request({
+                LABKEY.Ajax.request({
                     url : LABKEY.ActionURL.buildURL('query', 'saveRows', config.containerPath),
                     method : 'POST',
                     success: function(response, options){
@@ -444,7 +444,7 @@ EHR.Utils = new function(){
                 return;
             }
 
-            return Ext4.Ajax.request({
+            return LABKEY.Ajax.request({
                 url : LABKEY.ActionURL.buildURL('ehr', 'getReportLinks', config.containerPath, {linkTypes: config.linkTypes}),
                 method : 'POST',
                 success: LABKEY.Utils.getCallbackWrapper(function(response){
@@ -526,7 +526,7 @@ EHR.Utils = new function(){
         getDataEntryItems: function(config){
             config = config || {};
 
-            return Ext4.Ajax.request({
+            LABKEY.Ajax.request({
                 url : LABKEY.ActionURL.buildURL('ehr', 'getDataEntryItems', config.containerPath),
                 method : 'POST',
                 scope: config.scope,

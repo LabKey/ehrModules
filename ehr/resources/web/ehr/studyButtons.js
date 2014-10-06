@@ -211,7 +211,7 @@ EHR.DatasetButtons = new function(){
             Ext4.Msg.confirm('Discard Tasks', 'You are about to permanently delete the selected tasks.  Do you want to do this?', function(val){
                 if (val == 'yes'){
                     Ext4.Msg.wait('Deleting...');
-                    Ext4.Ajax.request({
+                    LABKEY.Ajax.request({
                         url: LABKEY.ActionURL.buildURL('ehr', 'discardForm', null, {taskIds: checked}),
                         success: function(response, options){
                             Ext4.Msg.hide();

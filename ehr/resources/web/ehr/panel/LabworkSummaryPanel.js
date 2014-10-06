@@ -56,7 +56,7 @@ Ext4.define('EHR.panel.LabworkSummaryPanel', {
     loadData: function(){
         var ctx = EHR.Utils.getEHRContext();
 
-        Ext4.Ajax.request({
+        LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'getLabResultSummary', (ctx ? ctx['EHRStudyContainer'] : null)),
             params: {
                 runId: this.runId

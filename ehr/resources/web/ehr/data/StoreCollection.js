@@ -481,7 +481,7 @@ Ext4.define('EHR.data.StoreCollection', {
             cfg.jsonData.extraContext.isValidateOnly = true;
         }
 
-        var request = Ext4.Ajax.request(cfg);
+        var request = LABKEY.Ajax.request(cfg);
 
         Ext4.Array.forEach(recordsArr, function(command){
             Ext4.Array.forEach(command, function(rec){
@@ -661,7 +661,7 @@ Ext4.define('EHR.data.StoreCollection', {
                     return;
                 }
                 //also tone down validation warnings.  this could involve caching demographics, so be less strict
-                if (!!options.jsonData.validateOnly && duration < 20 && (duration / totalRows) < 5){
+                if (!!options.jsonData.validateOnly && duration < 25 && (duration / totalRows) < 5){
                     return;
                 }
             }
