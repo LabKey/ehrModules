@@ -298,6 +298,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         }, false);
         testBirthRecordStatus(offspringId7);
 
+        //TODO: edit birth date, make sure reflected in demographics
+
     }
 
     private void cleanRecords(String... ids) throws Exception
@@ -1224,7 +1226,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _ext4Helper.queryOne("field[fieldName='exclude']", Ext4FieldRef.class).setChecked(false);
 
         Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitAndClick(Ext4Helper.ext4Window("Copy From Medications/Treatments Given").append(Ext4Helper.Locators.ext4Button("Submit")));
         waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
         _helper.toggleBulkEditField("Performed By");
         Ext4FieldRef.getForLabel(this, "Performed By").setValue("me");

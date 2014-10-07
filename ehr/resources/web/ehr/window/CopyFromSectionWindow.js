@@ -101,13 +101,20 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             html: '<b>Date</b>'
         },{
             html: '<b>Project</b>'
-        },{
-            html: '<b>Charge Unit</b>'
-        },{
+        }]
+
+        if (this.targetGrid.store.getFields().get('chargetype'))
+        {
+            items.push({
+                html: '<b>Charge Unit</b>'
+            });
+        }
+
+        items = items.concat([{
             html: '<b>Performed By</b>'
         },{
             html: '<b>Skip?</b>'
-        }];
+        }]);
 
         var keys = {}, key;
         var keyFields = ['Id'];
@@ -197,24 +204,19 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 value: project
             });
 
-            items.push({
-                xtype: 'labkey-combo',
-                store: {
-                    type: 'labkey-store',
-                    schemaName: 'onprc_billing_public',
-                    queryName: 'chargeUnits',
-                    autoLoad: true
-                },
-                valueField: 'chargetype',
-                displayField: 'chargetype',
-                matchFieldWidth: false,
-                showInactive: true,
-                fieldLabel: null,
-                width: 160,
-                fieldName: 'chargetype',
-                key: key,
-                value: chargeUnit
-            });
+            if (this.targetGrid.store.getFields().get('chargetype')){
+                var cfg = LABKEY.ext4.Util.getDefaultEditorConfig(this.targetGrid.store.getFields().get('chargetype'));
+
+                items.push(Ext4.apply(cfg, {
+                    matchFieldWidth: false,
+                    showInactive: true,
+                    fieldLabel: null,
+                    width: 160,
+                    fieldName: 'chargetype',
+                    key: key,
+                    value: chargeUnit
+                }));
+            }
 
             items.push({
                 xtype: 'textfield',
@@ -237,7 +239,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             border: false,
             layout: {
                 type: 'table',
-                columns: 6
+                columns: this.targetGrid.store.getFields().get('chargetype') ? 6 : 5
             },
             defaults: {
                 border: false,

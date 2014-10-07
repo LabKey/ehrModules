@@ -431,7 +431,6 @@ exports.afterDelete = EHR.Server.Triggers.afterDelete;
  * @param {object} errors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.complete = function(event, errors) {
-    console.log(this);
     var helper = this.scriptHelper;
     
     helper.logDebugMsg('Event complete: '+event);
