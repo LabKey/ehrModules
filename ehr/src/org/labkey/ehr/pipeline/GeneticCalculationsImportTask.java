@@ -45,6 +45,7 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
+import org.labkey.api.study.StudyService;
 import org.labkey.api.util.FileType;
 import org.labkey.ehr.EHRSchema;
 
@@ -268,7 +269,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         if (domain != null)
         {
             String tableName = domain.getStorageTableName();
-            DbSchema dbSchema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
+            DbSchema dbSchema = StudyService.get().getDatasetSchema();
             return dbSchema.getTable(tableName);
         }
 

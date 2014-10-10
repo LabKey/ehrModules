@@ -35,6 +35,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
+import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
 
 import java.sql.ResultSet;
@@ -207,7 +208,7 @@ public class DataEntrySummary implements NotificationSection
                 }
             });
 
-            DbSchema schema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
+            DbSchema schema = StudyService.get().getDatasetSchema();
             for (DataSet ds : datasets)
             {
                 TableInfo ti = schema.getTable(ds.getDomain().getStorageTableName());

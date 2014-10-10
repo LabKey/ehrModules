@@ -710,7 +710,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else
         {
             String tableName = ds.getDomain().getStorageTableName();
-            DbSchema dbSchema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
+            DbSchema dbSchema = StudyService.get().getDatasetSchema();
             return dbSchema.getTable(tableName);
         }
     }

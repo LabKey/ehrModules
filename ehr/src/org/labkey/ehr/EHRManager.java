@@ -533,7 +533,7 @@ public class EHRManager
             String[][] toIndex = new String[][]{{"taskid"}, {"requestid"}, {"participantid", "date"}};
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}};
 
-            DbSchema schema = DbSchema.get("studydataset", DbSchemaType.Provisioned);
+            DbSchema schema = StudyService.get().getDatasetSchema();
             Set<String> distinctIndexes = new HashSet<>();
             for (DataSet d : study.getDatasets())
             {
