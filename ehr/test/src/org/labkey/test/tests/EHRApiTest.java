@@ -142,7 +142,7 @@ public class EHRApiTest extends AbstractEHRTest
     {
         try
         {
-            JSONObject extraContext = getExtraContext();
+            JSONObject extraContext = _apiHelper.getExtraContext();
 
             String[] fields;
             Object[][] data;
@@ -210,7 +210,7 @@ public class EHRApiTest extends AbstractEHRTest
         };
         Map<String, List<String>> expected = new HashMap<>();
         expected.put("weight", Arrays.asList("Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
-        testValidationMessage("study", "weight", weightFields, data, expected);
+        _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for +10% diff
         data = new Object[][]{
@@ -218,7 +218,7 @@ public class EHRApiTest extends AbstractEHRTest
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("Weight gain of >10%. Last weight 12 kg"));
-        testValidationMessage("study", "weight", weightFields, data, expected);
+        _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for -10% diff
         data = new Object[][]{
@@ -226,7 +226,7 @@ public class EHRApiTest extends AbstractEHRTest
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("Weight drop of >10%. Last weight 12 kg"));
-        testValidationMessage("study", "weight", weightFields, data, expected);
+        _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //TODO: test error threshold
     }
@@ -247,7 +247,7 @@ public class EHRApiTest extends AbstractEHRTest
                     {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID",
                             EHRClientAPIHelper.DATE_SUBSTITUTION, ROOMS[0], CAGES[0], "dam", "sire", "m", "Rhesus"}
             };
-            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "arrival", FIELD_LSID, arrivalFields, data)), getExtraContext(), true);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "arrival", FIELD_LSID, arrivalFields, data)), _apiHelper.getExtraContext(), true);
 
             //verify demographics record created with correct field values
             SelectRowsCommand cmd = new SelectRowsCommand("study", "demographics");
@@ -274,7 +274,7 @@ public class EHRApiTest extends AbstractEHRTest
             data = new Object[][]{
                     {subject, new Date(), EHRQCState.COMPLETED.label, null, null, "recordID", "destination"}
             };
-            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "departure", FIELD_LSID, departureFields, data)), getExtraContext(), true);
+            _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "departure", FIELD_LSID, departureFields, data)), _apiHelper.getExtraContext(), true);
 
             //verify demographics record created with correct field values
             cmd = new SelectRowsCommand("study", "demographics");
@@ -289,24 +289,6 @@ public class EHRApiTest extends AbstractEHRTest
             throw new RuntimeException(e);
         }
         catch (CommandException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static JSONObject getExtraContext()
-    {
-        try
-        {
-            JSONObject extraContext = new JSONObject();
-            extraContext.put("errorThreshold", "ERROR");
-            extraContext.put("skipIdFormatCheck", true);
-            extraContext.put("allowAnyId", true);
-            extraContext.put("targetQC", "Completed");
-            extraContext.put("isLegacyFormat", true);
-            return extraContext;
-        }
-        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -438,47 +420,6 @@ public class EHRApiTest extends AbstractEHRTest
     private void cageTest()
     {
         //verify padding of digits
-    }
-
-    private void testValidationMessage(String schemaName, String queryName, String[] fields, Object[][] data, Map<String, List<String>> expectedErrors)
-    {
-        expectedErrors.put("_validateOnly", Collections.singletonList("ERROR: Ignore this error"));
-        try
-        {
-            log("Testing validation for table: " + schemaName + "." + queryName);
-
-            JSONObject extraContext = getExtraContext();
-            extraContext.put("errorThreshold", "INFO");
-            extraContext.put("validateOnly", true); //a flag to force failure
-            extraContext.put("targetQC", EHRQCState.IN_PROGRESS.label);
-
-            JSONObject insertCommand = _apiHelper.prepareInsertCommand(schemaName, queryName, FIELD_LSID, fields, data);
-            String response = _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), extraContext, false);
-            Map<String, List<String>> errors = _apiHelper.processResponse(response);
-
-            //JSONHelper.compareMap()
-            assertEquals("Incorrect number of fields have errors", expectedErrors.keySet().size(), errors.keySet().size());
-            for (String field : expectedErrors.keySet())
-            {
-                assertEquals("No errors found for field: " + field, true, errors.containsKey(field));
-                List<String> expectedErrs = expectedErrors.get(field);
-                List<String> errs = errors.get(field);
-
-                log("Expected " + expectedErrs.size() + " errors for field " + field);
-                assertEquals("Wrong number of errors found for field: " + field + "; " + StringUtils.join(errs, "; "), expectedErrs.size(), errs.size());
-                for (String e : expectedErrs)
-                {
-                    boolean success = errs.remove(e);
-                    assertTrue("Error not found for field: " + field + ".  Missing error is: " + e, success);
-                }
-                assertEquals("Unexpected error found for field: " + field + ".  They are: " + StringUtils.join(errs, "; "), 0, errs.size());
-            }
-
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     @LogMethod

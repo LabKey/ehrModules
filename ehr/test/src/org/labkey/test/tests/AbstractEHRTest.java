@@ -535,7 +535,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         REQUEST_CANCELLED("Request: Cancelled", "Request has been cancelled", true, false, true),
         REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false, false, true),
         REQUEST_SAMPLE_DELIVERED("Request: Sample Delivered", "Request where the sample is delivered", false, false, true),
-        REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false, false, false),
+        REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false, true, false),
         SCHEDULED("Scheduled", "Record is scheduled, but not performed", true, true, false);
 
         public final String label;

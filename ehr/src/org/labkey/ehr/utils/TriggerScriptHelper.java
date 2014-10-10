@@ -190,6 +190,25 @@ public class TriggerScriptHelper
         _log.info("updated Id on " + modified + " problems due to Id change on case: " + caseId);
     }
 
+    public void deleteProblemsFromCase(String caseId)
+    {
+        Container container = getContainer();
+        User user = getUser();
+
+        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        DataSet dataset = StudyService.get().getDataset(container, datasetId);
+        if (dataset == null){
+            _log.info("Unable to find problem list dataset");
+            return;
+        }
+
+        //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
+        TableInfo ti = dataset.getTableInfo(user);
+        SQLFragment sql = new SQLFragment("DELETE FROM studydataset." + dataset.getDomain().getStorageTableName() + " WHERE caseid = ?", caseId);
+        int modified = new SqlExecutor(ti.getSchema()).execute(sql);
+        _log.info("deleted " + modified + " master problems due to case deletion: " + caseId);
+    }
+
     public void closeActiveProblemsForCase(String id, Date enddate, String caseId)
     {
         Container container = getContainer();

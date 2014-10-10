@@ -221,7 +221,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 cage = cages.join(';');
             }
 
-            var filterArray = [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)];
+            var filterArray = this.getBaseFilterArray().concat([LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)]);
 
             if (!Ext4.isEmpty(room))
                 filterArray.push(LABKEY.Filter.create('room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
@@ -243,6 +243,13 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         }
     },
 
+    /**
+     * Can be overridden by subclasses, for example to return only females
+     */
+    getBaseFilterArray: function(){
+        return [];
+    },
+
     animalGroupHandler: function(){
         var form = this.down('#theForm');
         form.removeAll();
@@ -262,10 +269,10 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 return;
             }
 
-            var filterArray = [
+            var filterArray = this.getBaseFilterArray().concat([
                 LABKEY.Filter.create('groupId', group, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ];
+            ]);
 
             this.doQuery({
                 schemaName: 'study',
@@ -310,7 +317,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 return;
             }
 
-            var filterArray = [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)];
+            var filterArray = this.getBaseFilterArray().concat([LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)]);
 
             if (projectId)
                 filterArray.push(LABKEY.Filter.create('project', projectId, LABKEY.Filter.Types.EQUAL));

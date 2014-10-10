@@ -63,14 +63,6 @@
                             <fkColumnName>meaning</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="gender">
-                        <columnTitle>Gender</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>gender_codes</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="dam">
                         <columnTitle>Dam</columnTitle>
                         <!--<fk>-->

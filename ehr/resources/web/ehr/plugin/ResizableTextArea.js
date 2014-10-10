@@ -16,14 +16,13 @@ Ext4.define('EHR.plugin.ResizableTextArea', {
     alias: 'plugin.ehr-resizabletextarea',
 
     init: function(textArea){
-//        textArea.resizeDirections = textArea.resizeDirections || 's,se,e';
-//        textArea.on('afterrender', function(f){
-//            console.log(f);
-//            f.resizer = Ext4.create('Ext.resizer.Resizer', {
-//                el: f.getEl(),
-//                handles: this.resizeDirections,
-//                wrap:true
-//            });
-//        }, textArea);
+        textArea.resizeDirections = textArea.resizeDirections || 's se e';
+        textArea.on('afterrender', function(f){
+            f.resizer = Ext4.create('Ext.resizer.Resizer', {
+                target: f,
+                handles: this.resizeDirections,
+                dynamic: true
+            });
+        }, textArea);
     }
 });

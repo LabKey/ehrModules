@@ -26,3 +26,9 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
         row.reviewdate = null;
     }
 });
+
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.AFTER_DELETE, 'study', 'Cases', function(helper, errors, row, oldRow){
+    if (!helper.isValidateOnly() && !helper.isETL() && row.objectid){
+        helper.getJavaHelper().deleteProblemsFromCase(row.objectid);
+    }
+});

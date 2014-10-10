@@ -632,6 +632,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.grossFindings': {
             sort_order: {
                 hidden: true
+            },
+            remark: {
+                editorConfig: {
+                    resizeDirections: 's se e'
+                }
             }
         },
         'study.parentage': {
@@ -1092,6 +1097,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 columnConfig: {
                     width: 700
+                },
+                editorConfig: {
+                    resizeDirections: 's se e'
                 }
             },
             category: {
@@ -2132,7 +2140,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             date_type: {
-                allowBlank: false
+                allowBlank: false,
+                defaultValue: 'Actual'
             },
             origin: {
                 hidden: true

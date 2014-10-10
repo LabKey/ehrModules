@@ -19,7 +19,7 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
                 border: false
             },
             items: [{
-                html: 'This helper will copy records from a previous case and pre-populate this form.  It will append any new records to each section, keeping any records you may have already added to this form.  You can choose which sections to copy using the checkboxes below.',
+                html: 'This helper will copy records from a previous case and pre-populate this form.  Please note, for the single-textbox fields (Gross Findings and Notes), this will delete any pre-existing text you have in the current form.  Otherwise it will append any new records to the section, keeping any records you may have already added to this form.  You can choose which sections to copy using the checkboxes below.',
                 style: 'padding-bottom: 20px;'
             },{
                 html: 'You can search using either Case No or Animal Id:',
@@ -79,14 +79,30 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
             targetStore: 'histology',
             schemaName: 'study',
             queryName: 'histology',
-            columns: ['tissue', 'remark', 'codes', 'formSort']
+            columns: ['tissue', 'remark', 'codesRaw', 'formSort']
         },
         pathologyDiagnoses: {
             label: 'Diagnoses',
             targetStore: 'pathologyDiagnoses',
             schemaName: 'study',
             queryName: 'pathologyDiagnoses',
-            columns: ['sort_order', 'remark', 'codes', 'formSort']
+            columns: ['sort_order', 'remark', 'codesRaw', 'formSort']
+        },
+        encounter_summaries: {
+            label: 'Notes',
+            targetStore: 'encounter_summaries',
+            schemaName: 'ehr',
+            queryName: 'encounter_summaries',
+            shouldClearStore: true,
+            columns: ['remark']
+        },
+        grossFindings: {
+            label: 'Gross Findings',
+            targetStore: 'grossFindings',
+            schemaName: 'study',
+            queryName: 'grossFindings',
+            shouldClearStore: true,
+            columns: ['remark', 'formSort']
         },
         encounter_participants: {
             label: 'Staff',
@@ -100,7 +116,9 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
     getSections: function(){
         var toAdd = [];
 
-        for (var sectionName in this.SECTIONS){
+        var keys = Ext4.Object.getKeys(this.SECTIONS).sort();
+        for (var i=0;i<keys.length;i++){
+            var sectionName = keys[i];
             var targetStore = this.dataEntryPanel.storeCollection.getClientStoreByName(sectionName);
             if (targetStore){
                 var cfg = Ext4.apply({}, this.SECTIONS[sectionName]);
@@ -198,6 +216,7 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
                     if (results && results.rows && results.rows.length){
                         var item = {
                             targetStore: section.targetStore,
+                            shouldClearStore: section.shouldClearStore,
                             records: []
                         };
 
@@ -224,7 +243,15 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
 
     onLoaded: function(){
         Ext4.Array.forEach(this.recordsToAdd, function(item){
-            item.targetStore.add(item.records);
+            if (item.records && item.records.length) {
+
+                if (item.shouldClearStore) {
+                    item.targetStore.removeAll();
+                    LDK.Assert.assertEquality('Records not removed from target store in CopyFromCaseWindow', 0, item.targetStore.getCount());
+                }
+
+                item.targetStore.add(item.records);
+            }
         }, this);
 
         Ext4.Msg.hide();

@@ -91,7 +91,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
                     rowMap.put("objectId", results.getString(FieldKey.fromString("objectId")));
                     rowMap.put("html", html);
 
-                    Date roundedDate = DateUtils.round((Date)rowMap.get("date"), Calendar.DATE);
+                    Date roundedDate = DateUtils.truncate((Date)rowMap.get("date"), Calendar.DATE);
                     String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate.toString();
                     List<Map<String, Object>> obsRows = idMap.get(key);
                     if (obsRows == null)
