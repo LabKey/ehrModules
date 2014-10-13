@@ -130,6 +130,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         updateRowsCommand.addRow(Maps.<String, Object>of("common", "Marmoset", "blood_draw_interval", 21));
         updateRowsCommand.execute(_apiHelper.getConnection(), getContainerPath());
 
+        //refresh caches to match new blood volumes.  this really should be automatic on the server
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/primeDataEntryCache.view");
+        waitAndClickAndWait(Locator.lkButton("OK"));
+
         testBloodDrawForAnimal(SUBJECTS[0]);
         testBloodDrawForAnimal(SUBJECTS[1]);
         testBloodDrawForAnimal(SUBJECTS[2]);
