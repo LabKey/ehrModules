@@ -34,7 +34,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
 
         //note: we allow the process to proceed even if we cant find the category.  this is to support situations where we have saved records using a no-longer supported category
         var rec = store.findRecord('value', category);
-        LDK.Assert.assertNotEmpty('Unable to find observation types record matching category: [' + category + ']', rec);
+        LDK.Assert.assertNotEmpty('Unable to find observation types record matching category: [' + category + '].  store count: ' + store.getCount() + ', loading: ' + store.isLoading(), rec);
 
         var me = this,
                 editors = me.editors,

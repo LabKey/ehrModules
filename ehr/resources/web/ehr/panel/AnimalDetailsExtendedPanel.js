@@ -17,6 +17,7 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                 bodyStyle: 'padding-right: 20px;'
             },
             items: [{
+                xtype: 'container',
                 width: 380,
                 defaults: {
                     xtype: 'displayfield',
@@ -24,37 +25,38 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                 },
                 items: [{
                     fieldLabel: 'Id',
-                    itemId: 'animalId'
+                    name: 'animalId'
                 },{
                     fieldLabel: 'Location',
-                    itemId: 'location'
+                    name: 'location'
                 },{
                     fieldLabel: 'Gender',
-                    itemId: 'gender'
+                    name: 'gender'
                 },{
                     fieldLabel: 'Species',
-                    itemId: 'species'
+                    name: 'species'
                 },{
                     fieldLabel: 'Age',
-                    itemId: 'age'
+                    name: 'age'
                 },{
                     fieldLabel: 'Projects / Groups',
-                    itemId: 'assignmentsAndGroups'
+                    name: 'assignmentsAndGroups'
                 }]
             },{
+                xtype: 'container',
                 width: 350,
                 defaults: {
                     xtype: 'displayfield'
                 },
                 items: [{
                     fieldLabel: 'Status',
-                    itemId: 'calculated_status'
+                    name: 'calculated_status'
                 },{
                     fieldLabel: 'Flags',
-                    itemId: 'flags'
+                    name: 'flags'
                 },{
                     fieldLabel: 'Weight',
-                    itemId: 'weights'
+                    name: 'weights'
                 },{
                     xtype: 'ldk-linkbutton',
                     style: 'margin-top: 10px;',
@@ -112,12 +114,12 @@ Ext4.define('EHR.panel.AnimalDetailsExtendedPanel', {
                 }]
             }]
         },{
-            itemId: 'treatments',
+            name: 'treatments',
             xtype: 'ehr-snapshotchildpanel',
             headerLabel: 'Current Medications / Prescribed Diets',
             emptyText: 'There are no active medications'
         },{
-            itemId: 'caseSummary',
+            name: 'caseSummary',
             xtype: 'ehr-snapshotchildpanel',
             headerLabel: 'Case Summary',
             emptyText: 'There are no active cases'

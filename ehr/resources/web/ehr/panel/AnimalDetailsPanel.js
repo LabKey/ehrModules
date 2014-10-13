@@ -28,7 +28,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.callParent(arguments);
 
         if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 750});
+            this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 500});
         }
 
         this.mon(EHR.DemographicsCache, 'cachechange', this.demographicsListener, this);
@@ -84,6 +84,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 bodyStyle: 'padding-right: 20px;'
             },
             items: [{
+                xtype: 'container',
                 width: 380,
                 defaults: {
                     xtype: 'displayfield',
@@ -91,41 +92,42 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 },
                 items: [{
                     fieldLabel: 'Id',
-                    itemId: 'animalId'
+                    name: 'animalId'
                 },{
                     fieldLabel: 'Location',
-                    itemId: 'location'
+                    name: 'location'
                 },{
                     fieldLabel: 'Gender',
-                    itemId: 'gender'
+                    name: 'gender'
                 },{
                     fieldLabel: 'Species',
-                    itemId: 'species'
+                    name: 'species'
                 },{
                     fieldLabel: 'Age',
-                    itemId: 'age'
+                    name: 'age'
                 },{
                     xtype: 'displayfield',
                     fieldLabel: 'Source',
-                    itemId: 'source'
+                    name: 'source'
                 },{
                     fieldLabel: 'Projects / Groups',
-                    itemId: 'assignmentsAndGroups'
+                    name: 'assignmentsAndGroups'
                 }]
             },{
+                xtype: 'container',
                 width: 350,
                 defaults: {
                     xtype: 'displayfield'
                 },
                 items: [{
                     fieldLabel: 'Status',
-                    itemId: 'calculated_status'
+                    name: 'calculated_status'
                 },{
                     fieldLabel: 'Flags',
-                    itemId: 'flags'
+                    name: 'flags'
                 },{
                     fieldLabel: 'Weight',
-                    itemId: 'weights'
+                    name: 'weights'
                 },{
                     xtype: 'ldk-linkbutton',
                     style: 'margin-top: 10px;',
@@ -210,7 +212,8 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         }];
     },
 
-    appendWeightResults: function(results){
+    appendWeightResults: function(toSet, results){
+        var text;
         if (results && results.length){
             var row = results[0];
             var date = LDK.ConvertUtils.parseDate(row.date);
@@ -225,12 +228,15 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 interval = interval + ' days ago';
             }
 
-            var text = row.weight + ' kg, ' + date.format('Y-m-d') + (!Ext4.isEmpty(interval) ? ' (' + interval + ')' : '');
-            this.safeAppend('#weights', text);
+            text = row.weight + ' kg, ' + date.format('Y-m-d') + (!Ext4.isEmpty(interval) ? ' (' + interval + ')' : '');
         }
+
+        toSet['weights'] = text;
     },
 
-    appendAssignmentsAndGroups: function(record){
+    appendAssignmentsAndGroups: function(toSet, record){
+        toSet['assignmentsAndGroups'] = null;
+
         if (this.redacted)
             return;
 
@@ -251,7 +257,6 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
             }, this);
         }
 
-        if (values.length)
-            this.safeAppend('#assignmentsAndGroups', values.join('<br>'));
+        toSet['assignmentsAndGroups'] = values.length ? values.join('<br>') :  null;
     }
 });

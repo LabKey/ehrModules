@@ -40,11 +40,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
     getBaseItems: function(){
         return [{
+            xtype: 'container',
             border: false,
             defaults: {
                 border: false
             },
             items: [{
+                xtype: 'container',
                 html: '<b>Summary:</b><hr>'
             },{
                 bodyStyle: 'padding: 5px;',
@@ -53,6 +55,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     border: false
                 },
                 items: [{
+                    xtype: 'container',
                     columnWidth: 0.25,
                     defaults: {
                         labelWidth: this.defaultLabelWidth,
@@ -62,27 +65,28 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         xtype: 'displayfield',
                         fieldLabel: 'Location',
                         //width: 420,
-                        itemId: 'location'
+                        name: 'location'
                     },{
                         xtype: 'displayfield',
                         hidden: this.redacted,
-                        itemId: 'assignments',
+                        name: 'assignments',
                         fieldLabel: 'Projects'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Groups',
                         hidden: this.redacted,
-                        itemId: 'groups'
+                        name: 'groups'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Open Problems',
-                        itemId: 'openProblems'
+                        name: 'openProblems'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Active Cases',
-                        itemId: 'activeCases'
+                        name: 'activeCases'
                     }]
                 },{
+                    xtype: 'container',
                     columnWidth: 0.25,
                     defaults: {
                         labelWidth: this.defaultLabelWidth,
@@ -91,25 +95,26 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Status',
-                        itemId: 'calculated_status'
+                        name: 'calculated_status'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Gender',
-                        itemId: 'gender'
+                        name: 'gender'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Species',
-                        itemId: 'species'
+                        name: 'species'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Age',
-                        itemId: 'age'
+                        name: 'age'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Source',
-                        itemId: 'source'
+                        name: 'source'
                     }]
                 },{
+                    xtype: 'container',
                     columnWidth: 0.35,
                     defaults: {
                         labelWidth: this.defaultLabelWidth,
@@ -118,15 +123,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Flags',
-                        itemId: 'flags'
+                        name: 'flags'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Last TB Date',
-                        itemId: 'lastTB'
+                        name: 'lastTB'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Weights',
-                        itemId: 'weights'
+                        name: 'weights'
                     }]
                 }]
             }]
@@ -135,13 +140,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
     getExtendedItems: function(){
         return [{
-            itemId: 'additionalInformation',
+            xtype: 'container',
+            name: 'additionalInformation',
             style: 'padding-bottom: 10px;',
             border: false,
             defaults: {
                 border: false
             },
             items: [{
+                xtype: 'container',
                 html: '<b>Additional Information</b><hr>'
             },{
                 layout: 'column',
@@ -149,6 +156,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     labelWidth: this.defaultLabelWidth
                 },
                 items: [{
+                    xtype: 'container',
                     columnWidth: 0.5,
                     border: false,
                     defaults: {
@@ -160,15 +168,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         xtype: 'displayfield',
                         width: 350,
                         fieldLabel: 'Geographic Origin',
-                        itemId: 'geographic_origin'
+                        name: 'geographic_origin'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Birth',
-                        itemId: 'birth'
+                        name: 'birth'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Death',
-                        itemId: 'death'
+                        name: 'death'
                     }]
                 },{
                     xtype: 'container',
@@ -179,15 +187,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Parent Information',
-                        itemId: 'parents'
+                        name: 'parents'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Pairing Type',
-                        itemId: 'pairingType'
+                        name: 'pairingType'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Cagemates',
-                        itemId: 'cagemates'
+                        name: 'cagemates'
                     }]
                 }]
             }]
@@ -202,7 +210,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         items[0].items = items[0].items.concat([{
-            itemId: 'treatments',
+            name: 'treatments',
             xtype: 'ehr-snapshotchildpanel',
             headerLabel: 'Current Medications / Prescribed Diets',
             emptyText: 'There are no active medications'
@@ -231,84 +239,79 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             return;
         }
 
-        if (this.doSuspendLayouts){
-            this.suspendLayouts();
-        }
+        var toSet = {};
 
-        this.getForm().reset();
         var id = ids[0];
         var results = resultMap[id];
         if (!results){
             if (id){
-                this.safeAppend('#animalId', id);
-                this.safeAppend('#calculated_status', '<span style="background-color:yellow">Unknown</span>');
+                toSet['animalId'] = id;
+                toSet['calculated_status'] = '<span style="background-color:yellow">Unknown</span>';
             }
 
             return;
         }
 
-        this.appendDemographicsResults(results, id);
-        this.appendWeightResults(results.getRecentWeights());
+        this.appendDemographicsResults(toSet, results, id);
+        this.appendWeightResults(toSet, results.getRecentWeights());
 
-        if (results.getCagemates())
-            this.appendRoommateResults(results.getCagemates(), id);
+        this.appendRoommateResults(toSet, results.getCagemates(), id);
 
-        this.appendProblemList(results.getActiveProblems());
-        this.appendAssignments(results.getActiveAssignments());
+        this.appendProblemList(toSet, results.getActiveProblems());
+        this.appendAssignments(toSet, results.getActiveAssignments());
 
         if (!this.redacted){
-            this.appendAssignmentsAndGroups(results);
-            this.appendGroups(results.getActiveAnimalGroups());
+            this.appendAssignmentsAndGroups(toSet, results);
+            this.appendGroups(toSet, results.getActiveAnimalGroups());
         }
 
-        this.appendSourceResults(results.getSourceRecord());
-        this.appendTreatmentRecords(results.getActiveTreatments());
-        this.appendCases(results.getActiveCases());
-        this.appendCaseSummary(results.getActiveCases());
+        this.appendSourceResults(toSet, results.getSourceRecord());
+        this.appendTreatmentRecords(toSet, results.getActiveTreatments());
+        this.appendCases(toSet, results.getActiveCases());
+        this.appendCaseSummary(toSet, results.getActiveCases());
 
-        this.appendFlags(results.getActiveFlags());
-        this.appendTBResults(results.getTBRecord());
+        this.appendFlags(toSet, results.getActiveFlags());
+        this.appendTBResults(toSet, results.getTBRecord());
 
         if (this.showExtendedInformation){
-            this.appendBirthResults(results.getBirthInfo(), results.getBirth());
-            this.appendDeathResults(results.getDeathInfo());
-            this.appendParentageResults(results.getParents());
+            this.appendBirthResults(toSet, results.getBirthInfo(), results.getBirth());
+            this.appendDeathResults(toSet, results.getDeathInfo());
+            this.appendParentageResults(toSet, results.getParents());
         }
+
+        this.getForm().setValues(toSet);
         this.afterLoad();
-
-        if (this.doSuspendLayouts){
-            this.resumeLayouts();
-        }
-
-        this.doLayout();
     },
 
-    appendTBResults: function(results){
+    appendTBResults: function(toSet, results){
+        var value;
         if (results && results.length){
             var row = results[0];
 
             if (!Ext4.isEmpty(row.MostRecentTBDate)){
-                var value = LDK.ConvertUtils.parseDate(row.MostRecentTBDate).format('Y-m-d');
+                value = LDK.ConvertUtils.parseDate(row.MostRecentTBDate).format('Y-m-d');
                 var months = row.MonthsSinceLastTB;
                 if (months)
                     value += ' (' + months + ' month' + (months == 1 ? '' : 's') + ' ago)';
-
-                this.safeAppend('#lastTB', value);
             }
             else {
-                this.safeAppend('#lastTB', 'Never');
+                value = 'Never';
             }
         }
+
+        toSet['lastTB'] = value
     },
 
-    appendSourceResults: function(results){
+    appendSourceResults: function(toSet, results){
         if (results && results.length){
-            var text = results[0].type;
-            this.safeAppend('#source', text);
+            toSet['source'] = results[0].type;
+        }
+        else {
+            toSet['source'] = null;
         }
     },
 
-    appendDemographicsResults: function(row, id){
+    appendDemographicsResults: function(toSet, row, id){
         if (!row){
             console.log('Id not found');
             return;
@@ -316,31 +319,21 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
         var animalId = row.getId() || id;
         if (!Ext4.isEmpty(animalId)){
-            this.safeAppend('#animalId', animalId);
+            toSet['animalId'] = id;
         }
 
         var status = row.getCalculatedStatus() || 'Unknown';
-        this.safeAppend('#calculated_status', '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + status + '</span>');
+        toSet['calculated_status'] = '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + status + '</span>';
 
-        if (!Ext4.isEmpty(row.getSpecies())){
-            this.safeAppend('#species', row.getSpecies());
-        }
+        toSet['species'] = row.getSpecies();
+        toSet['geographic_origin'] = row.getGeographicOrigin();
+        toSet['gender'] = row.getGender();
+        toSet['age'] = row.getAgeInYearsAndDays();
 
-        if (!Ext4.isEmpty(row.getGeographicOrigin())){
-            this.safeAppend('#geographic_origin', row.getGeographicOrigin());
-        }
-
-        if (!Ext4.isEmpty(row.getGender())){
-            this.safeAppend('#gender', row.getGender());
-        }
-
-        if (!Ext4.isEmpty(row.getAgeInYearsAndDays())){
-            this.safeAppend('#age', row.getAgeInYearsAndDays());
-        }
-
+        var location;
         if (row.getActiveHousing() && row.getActiveHousing().length){
             var housingRow = row.getActiveHousing();
-            var location = '';
+            location = '';
             if (!Ext4.isEmpty(row.getCurrentRoom()))
                 location = row.getCurrentRoom();
             if (!Ext4.isEmpty(row.getCurrentCage()))
@@ -352,27 +345,19 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     if (date)
                         location += ' (' + date.format('Y-m-d') + ')';
                 }
-
-                this.safeAppend('#location', location);
             }
-            else
-                this.safeAppend('#location', 'No active housing');
         }
-    },
 
-    safeAppend: function(query, val){
-        var el = this.down(query);
-        if (el)
-            el.setValue(val);
+        toSet['location'] = location || 'No active housing';
     },
 
     getTargetString: function(){
         return this.hrefTarget ? ' target="' + this.hrefTarget + '"' : '';
     },
 
-    appendProblemList: function(results){
+    appendProblemList: function(toSet, results){
+        var values = [];
         if (results){
-            var values = [];
             Ext4.each(results, function(row){
                 var text = row.category;
                 if (text){
@@ -383,16 +368,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     values.push(text);
                 }
             }, this);
+        }
 
-            if (values.length)
-                this.safeAppend('#openProblems', values.join(', '));
-        }
-        else {
-            this.safeAppend('#openProblems', 'None');
-        }
+        toSet['openProblems'] = values.length ? values.join(', ') : 'None';
     },
 
-    appendWeightResults: function(results){
+    appendWeightResults: function(toSet, results){
+        var text = [];
         if (results){
             var rows = [];
             var prevRow;
@@ -417,67 +399,68 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 prevRow = newRow;
             }, this);
 
-            var text = [];
             Ext4.each(rows, function(r){
                 text.push('<tr><td nowrap>' + r.weight + ' kg' + '</td><td style="padding-left: 5px;" nowrap>' + r.date.format('Y-m-d') + '</td><td style="padding-left: 5px;" nowrap>' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
-
-            this.safeAppend('#weights', '<table>' + text.join('') + '</table>');
         }
+
+        toSet['weights'] = text.length ? text.join('') : null;
     },
 
-    appendRoommateResults: function(results, id){
+    appendRoommateResults: function(toSet, results, id){
+        var cagemates = 0;
+        var animals = [];
+        var pairingType;
         if (results && results.length){
             var row = results[0];
-            this.safeAppend('#pairingType', row.category);
-
             if (row.animals){
                 var animals = row.animals.split(',');
                 animals = animals.remove(id);
-
-                if (animals.length > 3){
-                    this.safeAppend('#cagemates', animals.length - 1 + ' animals');
-                }
-                else if (animals.length == 0){
-                    this.safeAppend('#cagemates', 'None');
-                }
-                else {
-                    this.safeAppend('#cagemates', animals.join(', '));
-                }
             }
         }
+
+        toSet['cagemates'] = cagemates;
+        toSet['pairingType'] = pairingType;
+
+        if (animals.length > 3){
+            toSet['cagemates'] = animals.length - 1 + ' animals';
+        }
+        else if (animals.length == 0){
+            toSet['cagemates'] = 'None';
+        }
         else {
-            this.safeAppend('#cagemates', 0);
+            toSet['cagemates'] = animals.join(', ');
         }
     },
 
     //note: this should not get called if redacted
-    appendGroups: function(results){
+    appendGroups: function(toSet, results){
+        toSet['groups'] = null;
+
         if (this.redacted)
             return;
 
+        var values = [];
         if (results){
-            var values = [];
             Ext4.each(results, function(row){
                 values.push(row['groupId/name']);
             }, this);
+        }
 
-            if (values.length)
-                this.safeAppend('#groups', values.join('<br>'));
-        }
-        else {
-            this.safeAppend('#groups', 'None');
-        }
+        toSet['groups'] = values.length ? values.join('<br>') : 'None';
     },
 
     appendAssignmentsAndGroups: Ext4.emptyFn,
 
-    appendAssignments: function(results){
-        if (this.redacted)
-            return;
+    appendAssignments: function(toSet, results){
+        toSet['assignments'] = null;
 
+        if (this.redacted) {
+            return;
+        }
+
+        var values = [];
         if (results){
-            var values = [];
             Ext4.each(results, function(row){
                 var val = row['project/investigatorId/lastName'] || '';
                 val += ' [' + row['project/displayName'] + ']';
@@ -485,18 +468,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (val)
                     values.push(val);
             }, this);
+        }
 
-            if (values.length)
-                this.safeAppend('#assignments', values.join('<br>'));
-        }
-        else {
-            this.safeAppend('#assignments', 'None');
-        }
+        toSet['assignments'] = values.length ? values.join('<br>') : 'None';
     },
 
-    appendCases: function(results){
+    appendCases: function(toSet, results){
+        var values = [];
         if (results){
-            var values = [];
             Ext4.each(results, function(row){
                 var text = row.category;
                 if (text){
@@ -513,19 +492,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     }
                 }
             }, this);
+        }
 
-            if (values.length)
-                this.safeAppend('#activeCases', values.join(', '));
-            else
-                this.safeAppend('#activeCases', 'None');
-        }
-        else {
-            this.safeAppend('#activeCases', 'None');
-        }
+        toSet['activeCases'] = values.length ? values.join(', ') : 'None';
     },
 
-    appendTreatmentRecords: function(rows){
-        var el = this.down('#treatments');
+    appendTreatmentRecords: function(toSet, rows){
+        var el = this.down('panel[name=treatments]');
         if (!el)
             return;
 
@@ -584,8 +557,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }];
     },
 
-    appendCaseSummary: function(results){
-        var el = this.down('#caseSummary');
+    appendCaseSummary: function(toSet, results){
+        var el = this.down('panel[name=caseSummary]');
         if (!el){
             return;
         }
@@ -663,9 +636,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }]);
     },
 
-    appendFlags: function(results){
+    appendFlags: function(toSet, results){
+        var values = [];
         if (results){
-            var values = [];
             Ext4.each(results, function(row){
                 var category = row['flag/category'];
                 var highlight = row['flag/category/doHighlight'];
@@ -690,14 +663,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     values.push(text);
             }, this);
 
-            if (values.length){
+            if (values.length) {
                 values = Ext4.unique(values);
-                this.safeAppend('#flags', values.join('<br>'));
             }
         }
+
+        toSet['flags'] = values.length ? values.join('<br>') : null;
     },
 
-    appendBirthResults: function(results, birth){
+    appendBirthResults: function(toSet, results, birth){
         if (results && results.length){
             var row = results[0];
             var date = LDK.ConvertUtils.parseDate(row.date || birth);
@@ -708,18 +682,21 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     text = text + ' (' + type + ')';
 
                 if (text)
-                    this.safeAppend('#birth', text);
+                    toSet['birth'] = text;
             }
         }
         else if (birth){
             var date = LDK.ConvertUtils.parseDate(birth);
             if (date){
-                this.safeAppend('#birth', date.format('Y-m-d'));
+                toSet['birth'] = date.format('Y-m-d');
             }
+        }
+        else {
+            toSet['birth'] = null;
         }
     },
 
-    appendDeathResults: function(results){
+    appendDeathResults: function(toSet, results){
         if (results && results.length){
             var row = results[0];
             var date = LDK.ConvertUtils.parseDate(row.date);
@@ -729,13 +706,17 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (type)
                     text = text + ' (' + type + ')';
 
-                if (text)
-                    this.safeAppend('#death', text);
+                if (text){
+                    toSet['death'] = text;
+                }
             }
+        }
+        else {
+            toSet['death'] = null;
         }
     },
 
-    appendParentageResults: function(results){
+    appendParentageResults: function(toSet, results){
         if (results){
             var parentMap = {};
             Ext4.each(results, function(row){
@@ -763,10 +744,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.safeAppend('#parents', values.join('<br>'));
+                toSet['parents'] = values.join('<br>');
         }
         else {
-            this.safeAppend('#parents', 'No data');
+            toSet['parents'] = 'No data';
         }
     },
 
@@ -794,6 +775,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 border: false
             },
             items: [{
+                xtype: 'container',
                 html: '<b>' + this.headerLabel + ':</b>',
                 itemId: 'headerItem',
                 overCls: 'ldk-clickable',
@@ -805,6 +787,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 }
             },{
                 border: false,
+                xtype: 'container',
                 itemId: 'childPanel',
                 style: 'padding-bottom: 10px;',
                 hidden: this.renderCollapsed,

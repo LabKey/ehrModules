@@ -212,7 +212,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "my_tasks");
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "tasks");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order", "Set End Date"), "study", "treatment_order");
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem", "Set End Date", true), "study", "problem");
+        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem", "End Problem(s)", true), "study", "problem");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls", true), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");

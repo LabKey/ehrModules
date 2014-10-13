@@ -122,6 +122,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void bloodVolumeApiTest() throws Exception
     {
+        goToProjectHome();
+
         UpdateRowsCommand updateRowsCommand = new UpdateRowsCommand("ehr_lookups", "species");
         updateRowsCommand.addRow(Maps.<String, Object>of("common", "Rhesus", "blood_draw_interval", 21));
         updateRowsCommand.addRow(Maps.<String, Object>of("common", "Cynomolgus", "blood_draw_interval", 21));
@@ -276,18 +278,14 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         SelectRowsResponse resp3 = select3.execute(_apiHelper.getConnection(), getContainerPath());
         for (Map<String, Object> row : resp3.getRows())
         {
-            if (!(row.get("date") instanceof  Date))
-            {
-                log("bloodDrawsByDay date: " + row.get("date"));
-                log(row.get("date").getClass().getName());
-            }
-
-            Date rowDate = (Date) row.get("date");
+            //note: some servers seem to return this as a string?
+            Date rowDate = (row.get("date") instanceof  Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
+            Date rowDropDate = (row.get("dropdate") instanceof  Date) ? (Date) row.get("dropdate") : _df.parse(row.get("dropdate").toString());
 
             Calendar dropDate = new GregorianCalendar();
             dropDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             dropDate.add(Calendar.DATE, bloodDrawInterval);
-            Assert.assertEquals(dropDate.getTime(), row.get("dropdate"));
+            Assert.assertEquals(dropDate.getTime(), rowDropDate);
             Assert.assertEquals(bloodByDay.get(rowDate), row.get("quantity"));
             Assert.assertEquals(bloodDrawInterval.doubleValue(), row.get("blood_draw_interval"));
         }
@@ -302,13 +300,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         for (Map<String, Object> row : resp4.getRows())
         {
-            if (!(row.get("date") instanceof  Date))
-            {
-                log("currentBloodDraws date: " + row.get("date"));
-                log(row.get("date").getClass().getName());
-            }
-
-            Date rowDate = (Date) row.get("date");
+            //note: some servers seem to return this as a string?
+            Date rowDate = (row.get("date") instanceof  Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
 
             Double lastWeight = null;
             Date lastWeightDate = null;
@@ -501,6 +494,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void birthStatusApiTest() throws Exception
     {
+        goToProjectHome();
+
         //first create record for dam, along w/ animal group and SPF status.  we expect this to automatically create a demographics record w/ the right status
         final String damId1 = "Dam1";
         final String offspringId1 = "Offspring1";
@@ -936,6 +931,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void assignmentApiTest() throws Exception
     {
+        goToProjectHome();
+
         String[][] CONDITION_FLAGS = new String[][]{
                 {"Nonrestricted", "201"},
                 {"Protocol Nonrestricted", "202"},
@@ -1085,6 +1082,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void animalGroupsApiTest() throws Exception
     {
+        goToProjectHome();
+
         int group1 = getOrCreateGroup("Group1");
         int group2 = getOrCreateGroup("Group2");
 
@@ -1102,6 +1101,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void projectProtocolApiTest() throws Exception
     {
+        goToProjectHome();
+
         //auto-assignment of IDs
         String protocolTitle = generateGUID();
         InsertRowsCommand protocolCommand = new InsertRowsCommand("ehr", "protocol");
@@ -1146,6 +1147,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void drugApiTest()
     {
+        goToProjectHome();
+
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "drug", new String[]{"Id", "date", "code", "outcome", "remark", "amount", "volume", "QCStateLabel", "objectid", "_recordId"}, new Object[][]{
                 {MORE_ANIMAL_IDS[0], new Date(), "code", "Abnormal", null, 1.0, 2.0, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
@@ -1203,6 +1206,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void arrivalApiTest() throws Exception
     {
+        goToProjectHome();
+
         final String arrivalId1 = "Arrival1";
         final String arrivalId2 = "Arrival2";
         final String arrivalId3 = "Arrival3";
@@ -2485,7 +2490,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     public void clinicalRoundsTest()
     {
 
-        //TODO: test cascade update + delete.  open row editor
+        //TODO: test cascade update + delete.
+
+        // test row editor
     }
 
     //TODO: @Test
