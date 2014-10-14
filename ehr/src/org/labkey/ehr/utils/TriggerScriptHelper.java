@@ -920,7 +920,7 @@ public class TriggerScriptHelper
         intervalStop = DateUtils.truncate(intervalStop, Calendar.DATE);
 
         //if provided, we inspect the other records in this transaction and add their values
-        //first determine which other records from this transction should be considered
+        //first determine which other records from this transaction should be considered
         Set<String> ignoredObjectIds = new HashSet<>();
         double quantityInTransaction = 0.0;
 
@@ -1494,7 +1494,7 @@ public class TriggerScriptHelper
     private Date getOpenEndedHousingOverlaps(String id, Date date, List<Map<String, Object>> recordsInTransaction, String rowObjectId)
     {
         //if provided, we inspect the other records in this transaction and add their values
-        //first determine which other records from this transction should be considered
+        //first determine which other records from this transaction should be considered
         Set<String> ignoredObjectIds = new HashSet<>();
         Date highestOpenEnded = null;
 
