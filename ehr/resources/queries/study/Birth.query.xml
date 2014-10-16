@@ -30,6 +30,24 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="species">
+                        <columnTitle>Species</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>species</fkTable>
+                            <fkColumnName>common</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="geographic_origin">
+                        <columnTitle>Geographic Origin</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>geographic_origins</fkTable>
+                            <fkColumnName>meaning</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
                     <column columnName="dam">
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Dam</columnTitle>

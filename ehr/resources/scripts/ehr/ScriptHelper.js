@@ -30,6 +30,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         extraContext: extraContext || {},
         queryName: extraContext.queryName,
         schemaName: extraContext.schemaName,
+        tablesModified: [extraContext.schemaName + ';' + extraContext.queryName],
         notificationRecipients : [],
         participantsModified: [],
         publicParticipantsModified: [],
@@ -262,7 +263,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         },
 
         isAllowAnyId: function(){
-            return scriptOptions.allowAnyId
+            return scriptOptions.allowAnyId;
         },
 
         doStandardProtocolCountValidation: function(){
@@ -397,6 +398,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.skipHousingCheck
         },
 
+        getTablesModified: function(){
+            return props.tablesModified;
+        },
+
         announceAllModifiedParticipants: function(){
             return scriptOptions.announceAllModifiedParticipants;
         },
@@ -507,7 +512,17 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         onDeathDeparture: function(id, date){
             //close housing, assignments, treatments
             console.log('on death departure: ' + id);
-            this.getJavaHelper().closeActiveDatasetRecords(scriptOptions.datasetsToClose, id, date);
+            var changedTables = this.getJavaHelper().closeActiveDatasetRecords(scriptOptions.datasetsToClose, id, date);
+            if (changedTables){
+                changedTables = changedTables.split(';');
+                for (var i=0;i<changedTables.length;i++){
+                    this.addTableModified('study', changedTables[i]);
+                }
+            }
+        },
+
+        addTableModified: function(schemaName, queryName){
+            props.tablesModified.push(schemaName + ';' + queryName);
         },
 
         isRequiresStatusRecalc: function(){

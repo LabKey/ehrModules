@@ -2155,10 +2155,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             gender: {
                 allowBlank: false
             },
-            'Id/demographics/species': {
+            species: {
                 allowBlank: false
             },
-            'Id/demographics/geographic_origin': {
+            geographic_origin: {
                 allowBlank: false,
                 columnConfig: {
                     width: 200

@@ -68,4 +68,12 @@ public class ActiveProblemsDemographicsProvider extends AbstractListDemographics
 
         return keys;
     }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "Cases".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Problem List".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "problems".equalsIgnoreCase(query));
+    }
 }

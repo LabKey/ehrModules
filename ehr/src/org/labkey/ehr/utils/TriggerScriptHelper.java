@@ -73,6 +73,7 @@ import org.labkey.api.util.GUID;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.Pair;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -149,11 +150,12 @@ public class TriggerScriptHelper
         return helper;
     }
 
-    public void closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
+    public String closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
     {
         Container container = getContainer();
         User user = getUser();
 
+        List<String> changedTables = new ArrayList<>();
         for (String queryName : queryNames)
         {
             int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
@@ -165,10 +167,15 @@ public class TriggerScriptHelper
 
             //NOTE: this is done direct to the DB for speed.  however we lose auditing, etc.  might want to reconsider
             TableInfo ti = dataset.getTableInfo(user);
-            //TODO: move to updateService
             SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND (enddate IS NULL OR enddate > ?)", enddate, id, enddate);
-            new SqlExecutor(ti.getSchema()).execute(sql);
+            int changed = new SqlExecutor(ti.getSchema()).execute(sql);
+            if (changed > 0)
+            {
+                changedTables.add(queryName);
+            }
         }
+
+        return StringUtils.join(changedTables, ";");
     }
 
     public void updateProblemsFromCase(String newId, String oldId, String caseId)
@@ -598,10 +605,16 @@ public class TriggerScriptHelper
         return null;
     }
 
-    public void announceIdsModified(String schema, String query, List<String> ids)
+    public void announceIdsModified(List<String> tablesModified, List<String> ids)
     {
-        //TODO: consider making this run asynchronously in case a deadlock kills it.  this could cause the client request to fail, even when these records do exist
-        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), schema, query, ids, false);
+        List<Pair<String, String>> modified = new ArrayList<>();
+        for (String table : tablesModified)
+        {
+            String[] tokens = table.split(";");
+            modified.add(Pair.of(tokens[0], tokens[1]));
+        }
+
+        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), modified, ids, false);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
@@ -937,24 +950,6 @@ public class TriggerScriptHelper
                     continue;
                 }
 
-                //NOTE: it would be useful to consider QCState, but we need to include pending requests in the current transaction, which this would exclude
-//                EHRQCState qc = null;
-//                if (map.containsKey("QCState"))
-//                {
-//                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
-//                    qc = getQCStateForRowId(i);
-//                }
-//                else if (map.containsKey("QCStateLabel"))
-//                {
-//                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
-//                }
-//
-//                if (qc != null && (!qc.isPublicData() && !qc.isDraftData()))
-//                {
-//                    _log.info("skipping blood row due to QCState");
-//                    continue;
-//                }
-
                 try
                 {
                     Date d = ConvertHelper.convert(map.get("date"), Date.class);
@@ -995,11 +990,10 @@ public class TriggerScriptHelper
         filter.addCondition(FieldKey.fromString("date"), intervalStart, CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("date"), intervalStop, CompareType.DATE_LTE);
         filter.addCondition(FieldKey.fromString("quantity"), null, CompareType.NONBLANK);
+        filter.addCondition(FieldKey.fromString("countsAgainstVolume"), true);
 
         if (ignoredObjectIds != null && ignoredObjectIds.size() > 0)
             filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
-
-        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("qcstate/metadata/DraftData"), CompareType.EQUAL, true), new CompareType.EqualsCompareClause(FieldKey.fromString("qcstate/publicdata"), CompareType.EQUAL, true)));
 
         TableInfo ti = getTableInfo("study", "Blood Draws");
         TableSelector ts = new TableSelector(ti, Collections.singleton("quantity"), filter, null);
@@ -1012,7 +1006,7 @@ public class TriggerScriptHelper
         return quantityInTransaction;
     }
 
-    private Double extractWeightForId(String id, List<Map<String, Object>> weightsInTransaction)
+    private Double extractWeightForId(List<Map<String, Object>> weightsInTransaction)
     {
         if (weightsInTransaction == null)
             return null;
@@ -1022,7 +1016,7 @@ public class TriggerScriptHelper
 
         for (Map<String, Object> origMap : weightsInTransaction)
         {
-            Map<String, Object> map = new CaseInsensitiveHashMap<Object>(origMap);
+            Map<String, Object> map = new CaseInsensitiveHashMap<>(origMap);
             if (!map.containsKey("date"))
             {
                 _log.warn("TriggerScriptHelper.extractWeightForId was passed a previous record lacking a date");
@@ -1068,7 +1062,7 @@ public class TriggerScriptHelper
         if (species == null)
             return "Unknown species, unable to calculate allowable blood volume";
 
-        Double weight = extractWeightForId(id, weightsInTransaction);
+        Double weight = extractWeightForId(weightsInTransaction);
         if (weight == null)
             weight = ar.getMostRecentWeight();
 

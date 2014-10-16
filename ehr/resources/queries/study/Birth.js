@@ -12,7 +12,8 @@ function onInit(event, helper){
         requiresStatusRecalc: true,
         allowDeadIds: true,
         skipIdFormatCheck: true,
-        skipHousingCheck: true
+        skipHousingCheck: true,
+        announceAllModifiedParticipants: true
     });
 
     helper.decodeExtraContextProperty('birthsInTransaction');
@@ -57,12 +58,13 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
                 calculated_status: isLiving ? 'Alive' : 'Dead'
             };
 
-            if (row['Id/demographics/species']){
-                obj.species = row['Id/demographics/species'];
+            //NOTE: the follow is designed to allow the table to either have physical columns for species/origin, or do display the demographics values.  in the latter case, editing the form field will act to update the demographics record
+            if (row.species || row['Id/demographics/species']){
+                obj.species = row.species || row['Id/demographics/species'];
             }
 
-            if (row['Id/demographics/geographic_origin']){
-                obj.geographic_origin = row['Id/demographics/geographic_origin'];
+            if (row.geographic_origin || row['Id/demographics/geographic_origin']){
+                obj.geographic_origin = row.geographic_origin || row['Id/demographics/geographic_origin'];
             }
 
             //find dam, if provided

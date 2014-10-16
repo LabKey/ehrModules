@@ -209,7 +209,7 @@ public class EHRApiTest extends AbstractEHRTest
                 {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         Map<String, List<String>> expected = new HashMap<>();
-        expected.put("weight", Arrays.asList("Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
+        expected.put("weight", Arrays.asList("WARN: Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for +10% diff
@@ -217,7 +217,7 @@ public class EHRApiTest extends AbstractEHRTest
                 {SUBJECTS[0], new Date(), null, null, 20, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
-        expected.put("weight", Collections.singletonList("Weight gain of >10%. Last weight 12 kg"));
+        expected.put("weight", Collections.singletonList("INFO: Weight gain of >10%. Last weight 12 kg"));
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for -10% diff
@@ -225,7 +225,7 @@ public class EHRApiTest extends AbstractEHRTest
                 {SUBJECTS[0], new Date(), null, null, 5, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
-        expected.put("weight", Collections.singletonList("Weight drop of >10%. Last weight 12 kg"));
+        expected.put("weight", Collections.singletonList("INFO: Weight drop of >10%. Last weight 12 kg"));
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //TODO: test error threshold

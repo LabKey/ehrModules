@@ -120,6 +120,12 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             if (recIdx != -1){
                 this.store.add(this.snomedStore.getAt(recIdx));
             }
+            else if (this.snomedStore.isLoading()){
+                var me = this;
+                me.snomedStore.on('load', function(){
+                    me.ensureRecord(val);
+                }, me, {single: true});
+            }
         }
     },
 

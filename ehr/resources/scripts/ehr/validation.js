@@ -194,12 +194,19 @@ EHR.Server.Validation = {
                             if (!helper.isAllowShippedIds())
                                 EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + data.calculated_status, 'INFO');
                         }
-                        else if (data.calculated_status == null){
+                        else if (data.calculated_status == 'Unknown' || data.calculated_status == null){
                             if (!helper.isAllowAnyId()){
-                                if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
+                                if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest) {
                                     EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'ERROR');
-                                else
+                                }
+                                // the intent is to allow entry of records to proceed if we have a saved draft birth record.  this allows the ID to get reserved
+                                // without creating the full demographics record yet.  it should be allowable to enter data against the ID.
+                                else if (data.hasBirthRecord) {
                                     EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'INFO');
+                                }
+                                else {
+                                    EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'WARN');
+                                }
                             }
                         }
                         else {

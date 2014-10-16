@@ -169,7 +169,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (table instanceof AbstractTableInfo)
         {
-            doSharedCustomization((AbstractTableInfo)table);
+            doSharedCustomization((AbstractTableInfo) table);
         }
 
         //this should execute after any default EHR code
@@ -496,6 +496,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             customizeHousing(ti);
 
             addIsActiveColWithTime(ti);
+        }
+        else if (matches(ti, "study", "blood") || matches(ti, "study", "Blood Draws"))
+        {
+            customizeBloodTable(ti);
         }
         else if (matches(ti, "study", "assignment"))
         {
@@ -1178,6 +1182,23 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setFk(new QueryForeignKey(us, null, queryName, ID_COL, ID_COL));
 
         return col;
+    }
+
+    private void customizeBloodTable(AbstractTableInfo ti)
+    {
+        String countsAgainstVolume = "countsAgainstVolume";
+        if (ti.getColumn(countsAgainstVolume) == null)
+        {
+            SQLFragment sql = new SQLFragment("CASE " +
+                " WHEN EXISTS (SELECT md.draftdata FROM study.qcstate q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                " END", ti.getUserSchema().getContainer().getId());
+            ExprColumn col = new ExprColumn(ti, countsAgainstVolume, sql, JdbcType.BOOLEAN, ti.getColumn("qcstate"));
+            col.setLabel("Counts Against Volume?");
+            col.setDescription("This column shows whether the draw is being counted against the available blood volume.  Future request that have not yet been approved will not count against the allowable volume.");
+            col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            ti.addColumn(col);
+        }
     }
 
     private void customizeHousing(AbstractTableInfo ti)

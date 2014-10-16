@@ -135,6 +135,11 @@ public class AnimalRecordImpl implements AnimalRecord
         return (Date)_props.get("birth");
     }
 
+    public boolean hasBirthRecord()
+    {
+        return _props.containsKey("birthInfo") && !getListProperty("birthInfo").isEmpty();
+    }
+
     public Date getDeath()
     {
         return (Date)_props.get("death");

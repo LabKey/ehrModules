@@ -106,6 +106,26 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitAndClickAndWait(Locator.linkWithText("All"));
         waitForPipelineJobsToComplete(2, "Billing Run", false);
+
+        //TODO: test results
+    }
+
+    //TODO: @Test
+    public void reverseChargesWindowTest()
+    {
+
+    }
+
+    //TODO: @Test
+    public void encountersTest()
+    {
+        //TODO: check whether assistingstaff required
+    }
+
+    //TODO: @Test
+    public void miscChargesFormTest()
+    {
+
     }
 
     @Override
@@ -149,5 +169,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         //the linked schema is created at this point since this method runs after other setup is complete
         SchemaHelper schemaHelper = new SchemaHelper(this);
         schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
+
+        //TODO: import other reference tables
     }
 }

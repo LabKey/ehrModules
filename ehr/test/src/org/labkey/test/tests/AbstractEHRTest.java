@@ -525,33 +525,28 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     public static enum EHRQCState
     {
-        ABNORMAL("Abnormal", "Value is abnormal", true, false, false),
-        COMPLETED("Completed", "Data has been approved for public release", true, false, false),
-        DELETE_REQUESTED("Delete Requested", "Records are requested to be deleted", true, true, false),
-        IN_PROGRESS("In Progress", "Draft Record, not public", false, true, false),
-        REQUEST_APPROVED("Request: Approved", "Request has been approved", true, true, true),
-        //REQUEST_COMPLETE("Request: Complete", "Request has been completed", true, false, true),
-        REQUEST_DENIED("Request: Denied", "Request has been denied", true, false, true),
-        REQUEST_CANCELLED("Request: Cancelled", "Request has been cancelled", true, false, true),
-        REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false, false, true),
-        REQUEST_SAMPLE_DELIVERED("Request: Sample Delivered", "Request where the sample is delivered", false, false, true),
-        REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false, true, false),
-        SCHEDULED("Scheduled", "Record is scheduled, but not performed", true, true, false);
+        ABNORMAL("Abnormal", "Value is abnormal", true),
+        COMPLETED("Completed", "Data has been approved for public release", true),
+        DELETE_REQUESTED("Delete Requested", "Records are requested to be deleted", true),
+        IN_PROGRESS("In Progress", "Draft Record, not public", false),
+        REQUEST_APPROVED("Request: Approved", "Request has been approved", true),
+        //REQUEST_COMPLETE("Request: Complete", "Request has been completed", true),
+        REQUEST_DENIED("Request: Denied", "Request has been denied", true),
+        REQUEST_CANCELLED("Request: Cancelled", "Request has been cancelled", true),
+        REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false),
+        REQUEST_SAMPLE_DELIVERED("Request: Sample Delivered", "Request where the sample is delivered", false),
+        REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false),
+        SCHEDULED("Scheduled", "Record is scheduled, but not performed", true);
 
         public final String label;
         public final String description;
         public final boolean publicData;
 
-        public final boolean draftData;
-        public final boolean isRequest;
-
-        EHRQCState(String label, String description, boolean publicData, boolean draftData, boolean isRequest)
+        EHRQCState(String label, String description, boolean publicData)
         {
             this.label = label;
             this.description = description;
             this.publicData = publicData;
-            this.draftData = draftData;
-            this.isRequest = isRequest;
         }
     }
 

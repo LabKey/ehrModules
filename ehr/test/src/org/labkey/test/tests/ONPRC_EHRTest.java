@@ -219,15 +219,14 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
             Date d = DateUtils.truncate(row[1], Calendar.DATE);
             String qcLabel = (String) row[3];
             Double vol = bloodByDay.containsKey(d) ? bloodByDay.get(d) : 0.0;
-            if (!qcLabel.equals(EHRQCState.REQUEST_PENDING.label))
-            {
-                vol += (Double) row[2];
-            }
+
+            //NOTE: we are including all QCStates
+            vol += (Double) row[2];
 
             bloodByDay.put(d, vol);
         }
 
-        SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "blood");
         select1.setColumns(Arrays.asList("Id", "date", "quantity", "BloodRemaining/lastWeight", "BloodRemaining/allowableBlood", "BloodRemaining/previousBlood", "BloodRemaining/availableBlood", "BloodRemaining/minDate"));
         Sort sort = new Sort("date");
         sort.setDirection(Sort.Direction.DESCENDING);
@@ -407,19 +406,19 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 1), 73, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
         }, Maps.of(
-                "quantity", Arrays.asList("Blood volume of 73.0 (91.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"),
-                "num_tubes", Arrays.asList("Blood volume of 73.0 (91.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)")
-        ));
+                "quantity", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"),
+                "num_tubes", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)")
+        ), Maps.of("targetQC", null));
 
         //2 requests that will exceed the volume together
         Double amount = 40.0;
-        Double warn1 = 18.5 + amount;
-        Double warn2 = 18.5 + amount + amount;
+        Double warn1 = 20.0 + amount;
+        Double warn2 = 20.0 + amount + amount;
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Blood volume of 40.0 (" + warn2 +" total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
+        expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn2 +" total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
         if (warn1 > allowableBlood)
         {
-            expectedErrors.add("Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
+            expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
         }
 
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
@@ -428,7 +427,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         }, Maps.of(
                 "quantity", expectedErrors,
                 "num_tubes", expectedErrors
-        ));
+        ), Maps.of("targetQC", null));
 
         //use different date, which triggers different weight
         Map<String, Object> additionalExtraContext = new HashMap<>();
@@ -437,12 +436,13 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Double newAllowableBlood = newWeight * bloodPerKg * maxDrawPct;
         weightInTransaction.put(animalId, Arrays.asList(Maps.<String, Object>of("objectid", generateGUID(), "date", prepareDate(startCal.getTime(), bloodDrawInterval, 2), "weight", newWeight)));
         additionalExtraContext.put("weightInTransaction", weightInTransaction.toString());
+        additionalExtraContext.put("targetQC", null);
 
         List<String> expectedErrors2 = new ArrayList<>();
-        expectedErrors2.add("Blood volume of 40.0 (" + warn2 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
+        expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn2 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
         if (warn1 > newAllowableBlood)
         {
-            expectedErrors2.add("Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
+            expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
         }
 
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
@@ -455,19 +455,20 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         // try request right on date borders
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), 70.5, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), 70.5, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
                 "quantity", Arrays.asList(
-                        "Blood volume of 70.5 (72.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
+                        "INFO: Blood volume of 70.5 (74.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
                 ),
                 "num_tubes", Arrays.asList(
-                        "Blood volume of 70.5 (72.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
-                )
-        ));
+                        "INFO: Blood volume of 70.5 (74.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
+                ),
+                "date", Arrays.asList("INFO: Date is in the future")
+        ), Maps.of("targetQC", null));
 
         // this should succeed.  2ml is the total taken on this date
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), (allowableBlood - 2), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), (allowableBlood - 4), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
         }, Collections.<String, List<String>>emptyMap());
     }
 
@@ -522,7 +523,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _apiHelper.doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(_apiHelper.prepareInsertCommand("study", "birth", "lsid",
                 new String[]{"Id", "Date", "gender", "QCStateLabel"},
                 new Object[][]{
-                        {damId1, _tf.format(dam1Birth), "f", "In Progress"},
+                        {damId1, dam1Birth, "f", "In Progress"},
                 }
         )), getExtraContext(), true);
 
@@ -544,8 +545,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _apiHelper.updateRow("study", "birth", new HashMap<String, Object>(){
             {
                 put("lsid", damLsid);
-                put("Id/demographics/geographic_origin", INDIAN);
-                put("Id/demographics/species", RHESUS);
+                put("geographic_origin", INDIAN);
+                put("species", RHESUS);
             }
         }, false);
 
@@ -581,6 +582,17 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         });
         insertRowsCommand2.execute(_apiHelper.getConnection(), getContainerPath());
 
+        //test opening case.  expect WARN message b/c we have no demographics and no draft birth
+        Map<String, Object> additionalContext = new HashMap<>();
+        additionalContext.put("allowAnyId", false);
+        _apiHelper.testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Maps.of(
+                "Id", Arrays.asList(
+                        "WARN: Id not found in demographics table: " + offspringId5
+                )
+        ), additionalContext);
+
         //now enter children, testing different modes.
         // offspring 1 is not public, so we dont expect a demographics record.  will update to completed
         // offspring 2 is public, so expect a demographics record, and SPF/groups to be copied
@@ -596,15 +608,15 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         String cage1 = "A1";
         String bornDead = "Born Dead/Not Born";
         InsertRowsCommand insertRowsCommand1 = new InsertRowsCommand("study", "birth");
-        List<String> birthFields = Arrays.asList("Id", "Date", "birth_condition", "Id/demographics/species", "Id/demographics/geographic_origin", "gender", "room", "cage", "dam", "sire", "weight", "wdate", "QCStateLabel");
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId1, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId2, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId3, _tf.format(birthDate), bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId4, _tf.format(birthDate), bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId5, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "In Progress"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId6, _tf.format(birthDate), "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId7, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
-        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId8, _tf.format(birthDate), "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        List<String> birthFields = Arrays.asList("Id", "Date", "birth_condition", "species", "geographic_origin", "gender", "room", "cage", "dam", "sire", "weight", "wdate", "QCStateLabel");
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId1, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId2, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId3, birthDate, bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId4, birthDate, bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId5, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId6, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId7, birthDate, "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(_apiHelper.createHashMap(birthFields, new Object[]{offspringId8, birthDate, "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
         insertRowsCommand1.setTimeout(0);
         SaveRowsResponse insertRowsResp = insertRowsCommand1.execute(_apiHelper.getConnection(), getContainerPath());
 
@@ -623,9 +635,17 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         testBirthRecordStatus(offspringId7);
         testBirthRecordStatus(offspringId8);
 
+        //test opening case.  expect INFO message b/c birth is saved as draft
+        _apiHelper.testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Maps.of(
+                "Id", Arrays.asList(
+                        "INFO: Id not found in demographics table: " + offspringId5
+                )
+        ), additionalContext);
+
         //do updates:
         log("updating records");
-
         _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
         {
             {
@@ -653,6 +673,11 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
             }
         }, false);
         testBirthRecordStatus(offspringId5);
+
+        //test opening case.  expect no warning b/c birth is now final
+        _apiHelper.testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Collections.<String, List<String>>emptyMap(), additionalContext);
 
         _apiHelper.updateRow("study", "birth", new HashMap<String, Object>()
         {
@@ -939,8 +964,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         String[][] CONDITION_FLAGS = new String[][]{
                 {"Nonrestricted", "201"},
-                {"Protocol Nonrestricted", "202"},
-                {"Surgically Nonrestricted", "203"}
+                {"Protocol Restricted", "202"},
+                {"Surgically Restricted", "203"}
         };
 
         final Map<String, String> flagMap = new HashMap<>();
@@ -948,6 +973,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         {
             flagMap.put(row[0], ensureFlagExists("Condition", row[0], row[1]));
         }
+
+        //pre-clean
+        _apiHelper.deleteAllRecords("study", "flags", new Filter("Id", SUBJECTS[1], Filter.Operator.EQUAL));
 
         //create project
         String protocolTitle = generateGUID();
@@ -1010,7 +1038,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         conditionSelect1.addFilter(new Filter("isActive", true));
         SelectRowsResponse conditionResponse1 = conditionSelect1.execute(_apiHelper.getConnection(), getContainerPath());
         Assert.assertEquals(1, conditionResponse1.getRowCount().intValue());
-        Assert.assertEquals(flagMap.get("Protocol Restricted"), conditionResponse1.getRows().get(0).get("flag"));
+        Assert.assertEquals("Protocol Restricted", conditionResponse1.getRows().get(0).get("flag/value"));
 
         //terminate, expect animal condition to change based on release condition
         UpdateRowsCommand assignmentUpdateCommand = new UpdateRowsCommand("study", "assignment");
@@ -1028,12 +1056,12 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         conditionSelect2.addFilter(new Filter("isActive", true));
         SelectRowsResponse conditionResponse2 = conditionSelect2.execute(_apiHelper.getConnection(), getContainerPath());
         Assert.assertEquals(1, conditionResponse2.getRowCount().intValue());
-        Assert.assertEquals(flagMap.get("Surgically Restricted"), conditionResponse2.getRows().get(0).get("flag"));
+        Assert.assertEquals("Surgically Restricted", conditionResponse2.getRows().get(0).get("flag/value"));
 
         //make sure other flag terminated on correct date
         SelectRowsCommand conditionSelect3 = new SelectRowsCommand("study", "flags");
         conditionSelect3.addFilter(new Filter("Id", SUBJECTS[1]));
-        conditionSelect3.addFilter(new Filter("flag", flagMap.get("Protocol Nonrestricted")));
+        conditionSelect3.addFilter(new Filter("flag", flagMap.get("Protocol Restricted")));
         conditionSelect3.addFilter(new Filter("enddate", prepareDate(new Date(), -5, 0), Filter.Operator.DATE_EQUAL));
         SelectRowsResponse conditionResponse3 = conditionSelect3.execute(_apiHelper.getConnection(), getContainerPath());
         Assert.assertEquals(1, conditionResponse3.getRowCount().intValue());
@@ -1058,7 +1086,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {SUBJECTS[4], prepareDate(new Date(), 10, 0), null, projectId, "recordID"}
         }, Maps.of(
                 "project", Arrays.asList(
-                        "There are not enough spaces on protocol: " + protocolId + ". Allowed: 2, used: 3"
+                        "INFO: There are not enough spaces on protocol: " + protocolId + ". Allowed: 2, used: 3"
                 )
         ));
 
@@ -1078,7 +1106,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {SUBJECTS[3], prepareDate(new Date(), 10, 0), null, projectId, "recordID"}
         }, Maps.of(
                 "project", Arrays.asList(
-                        "There are not enough spaces on protocol: " + protocolId + ". Allowed: 2, used: 3"
+                        "INFO: There are not enough spaces on protocol: " + protocolId + ". Allowed: 2, used: 3"
                 )
         ), additionalExtraContext);
     }
@@ -1097,7 +1125,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {MORE_ANIMAL_IDS[2], new Date(), group2, "recordID"}
         }, Maps.of(
                 "groupId", Arrays.asList(
-                        "Actively assigned to other groups: Group1"
+                        "INFO: Actively assigned to other groups: Group1"
                 )
         ));
     }
@@ -1157,7 +1185,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {MORE_ANIMAL_IDS[0], new Date(), "code", "Abnormal", null, 1.0, 2.0, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
                 "remark", Arrays.asList(
-                    "A remark is required if a non-normal outcome is reported"
+                    "WARN: A remark is required if a non-normal outcome is reported"
                 )
         ));
 
@@ -1171,7 +1199,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {MORE_ANIMAL_IDS[0], new Date(), null, "Normal", null, 1.0, 2.0, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
                 "code", Arrays.asList(
-                        "Must enter a treatment"
+                        "WARN: Must enter a treatment"
                 )
         ));
 
@@ -1179,10 +1207,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {MORE_ANIMAL_IDS[0], new Date(), "code", "Normal", null, null, null, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
                 "amount", Arrays.asList(
-                        "Must enter an amount or volume"
+                        "WARN: Must enter an amount or volume"
                 ),
                 "volume", Arrays.asList(
-                        "Must enter an amount or volume"
+                        "WARN: Must enter an amount or volume"
                 )
         ));
 
@@ -1193,7 +1221,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                     {MORE_ANIMAL_IDS[0], new Date(), code, "Normal", null, 1.0, 2.0, "mL", EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
             }, Maps.of(
                     "amount_units", Arrays.asList(
-                            "When entering ketamine or telazol, amount must be in mg"
+                            "WARN: When entering ketamine or telazol, amount must be in mg"
                     )
             ));
 
@@ -1201,7 +1229,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                     {MORE_ANIMAL_IDS[0], new Date(), code, "Normal", null, null, 2.0, "mg", EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
             }, Maps.of(
                     "amount_units", Arrays.asList(
-                            "When entering ketamine or telazol, amount must be in mg"
+                            "WARN: When entering ketamine or telazol, amount must be in mg"
                     )
             ));
         }
@@ -2509,13 +2537,35 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         //TODO: test cascade update + delete
 
+        //TODO: test 'bulk close cases' button
+
         //_helper.discardForm();
+    }
+
+    //TODO: @Test
+    public void arrivalFormTest()
+    {
+        //TODO: Id creation using single field
+
+        // Id creation using bulk add
     }
 
     //TODO: @Test
     public void pathTissuesTest()
     {
         //TODO: tissue helper, also copy from previous
+    }
+
+    //TODO: @Test
+    public void bulkUploadsTest()
+    {
+        //TODO: batch clinical entry form, bulk upload
+
+        //TODO: aux procedure form, bulk upload
+
+        //TODO: blood request form, excel upload
+
+        //TODO: weight form, bulk upload
     }
 
     //TODO: @Test

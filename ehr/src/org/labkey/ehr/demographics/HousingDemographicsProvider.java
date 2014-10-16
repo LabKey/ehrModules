@@ -52,6 +52,8 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
     public boolean requiresRecalc(String schema, String query)
     {
         return ("study".equalsIgnoreCase(schema) && "Housing".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Death".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Departure".equalsIgnoreCase(query)) ||
                 ("ehr_lookups".equalsIgnoreCase(schema) && "cage".equalsIgnoreCase(query));
     }
 }

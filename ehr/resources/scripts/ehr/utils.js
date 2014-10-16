@@ -468,6 +468,7 @@ EHR.Server.Utils = new function(){
                 var row = {
                     Id: ar.getId(),
                     birth: ar.getBirth() ? new Date(ar.getBirth().getTime()) : null,
+                    hasBirthRecord: ar.hasBirthRecord(),
                     death: ar.getDeath() ? new Date(ar.getDeath().getTime()) : null,
                     species: ar.getSpecies(),
                     dam: null,

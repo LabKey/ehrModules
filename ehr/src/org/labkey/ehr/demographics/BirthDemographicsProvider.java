@@ -34,6 +34,7 @@ public class BirthDemographicsProvider extends AbstractListDemographicsProvider
     public BirthDemographicsProvider()
     {
         super("study", "Birth", "birthInfo");
+        _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()
@@ -53,7 +54,8 @@ public class BirthDemographicsProvider extends AbstractListDemographicsProvider
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);
-        filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
+        //NOTE: deliberately include draft data
+        //filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
     }

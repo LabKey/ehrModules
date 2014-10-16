@@ -40,6 +40,7 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.study.Study;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
+import org.labkey.api.util.Pair;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 import org.quartz.CronScheduleBuilder;
@@ -55,6 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.dao.DeadlockLoserDataAccessException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -226,10 +228,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     public void reportDataChange(Container c, String schema, String query, List<String> ids)
     {
-        reportDataChange(c, schema, query, ids, false);
+        reportDataChange(c, Arrays.asList(Pair.of(schema, query)), ids, false);
     }
 
-    public void reportDataChange(final Container c, final String schema, final String query, final List<String> ids, boolean async)
+    public void reportDataChange(final Container c, final List<Pair<String, String>> changed, final List<String> ids, boolean async)
     {
         final User u = EHRService.get().getEHRUser(c);
         if (u == null)
@@ -243,13 +245,13 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             JobRunner.getDefault().execute(new Runnable(){
                 public void run()
                 {
-                    doUpdateRecords(c, u, schema, query, ids);
+                    doUpdateRecords(c, u, changed, ids);
                 }
             });
         }
         else
         {
-            doUpdateRecords(c, u, schema, query, ids);
+            doUpdateRecords(c, u, changed, ids);
         }
     }
 
@@ -265,16 +267,25 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         updateForProvider(c, u, p, ids, false);
     }
 
-    private void doUpdateRecords(Container c, User u, String schema, String query, List<String> ids)
+    private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids)
     {
         try
         {
+            Set<DemographicsProvider> needsUpdate = new HashSet<>();
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {
-                if (p.requiresRecalc(schema, query))
+                for (Pair<String, String> pair : changed)
                 {
-                    updateForProvider(c, u, p, ids, true);
+                    if (p.requiresRecalc(pair.first, pair.second))
+                    {
+                        needsUpdate.add(p);
+                    }
                 }
+            }
+
+            for (DemographicsProvider p : needsUpdate)
+            {
+                updateForProvider(c, u, p, ids, true);
             }
         }
         catch (Exception e)

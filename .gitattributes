@@ -284,7 +284,6 @@ ehr/resources/queries/study/AssignmentOverlaps.query.xml -text
 ehr/resources/queries/study/AssignmentOverlaps.sql -text
 ehr/resources/queries/study/Birth.js -text
 ehr/resources/queries/study/Birth.query.xml -text
-ehr/resources/queries/study/Birth/.qview.xml -text
 ehr/resources/queries/study/Birth/Births[!!-~]In[!!-~]Last[!!-~]Month.qview.xml -text
 ehr/resources/queries/study/Blood[!!-~]Draws.js -text
 ehr/resources/queries/study/Blood[!!-~]Draws.query.xml -text
