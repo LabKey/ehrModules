@@ -2504,12 +2504,14 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitForElement(closeCaseWindow.append(Locator.tagWithText("div", SUBJECTS[0])));
 
         Ext4FieldRef caseField1 = _ext4Helper.queryOne("window field[fieldName=date]", Ext4FieldRef.class);
-        Ext4FieldRef changeField = Ext4FieldRef.getForLabel(this, "Change All");
+        Ext4FieldRef changeField = _ext4Helper.queryOne("#changeAll", Ext4FieldRef.class);
+        Ext4CmpRef changeBtn = _ext4Helper.queryOne("button[text=Change All]", Ext4CmpRef.class);
         Date twoWeeks = prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 14, 0);
         Date fourWeeks = prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 28, 0);
         Assert.assertEquals(twoWeeks, caseField1.getDateValue());
         Assert.assertEquals(null, changeField.getValue());
         changeField.setValue(_df.format(fourWeeks));
+        click(Locator.id(changeBtn.getId()));
         Assert.assertEquals(fourWeeks, caseField1.getDateValue());
 
         waitAndClick(closeCaseWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
