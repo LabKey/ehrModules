@@ -209,7 +209,10 @@ public class EHRApiTest extends AbstractEHRTest
                 {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         Map<String, List<String>> expected = new HashMap<>();
-        expected.put("weight", Arrays.asList("WARN: Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
+        expected.put("weight", Arrays.asList(
+                "WARN: Weight above the allowable value of 35.0 kg for Rhesus",
+                "INFO: Weight gain of >10%. Last weight 12 kg")
+        );
         _apiHelper.testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for +10% diff

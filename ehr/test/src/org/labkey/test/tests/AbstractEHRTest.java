@@ -204,6 +204,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setupStudyPermissions();
         defineQCStates();
 
+        //this applies the standard property descriptors, creates indexes, etc.
+        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/ensureDatasetProperties.view");
+        waitAndClickAndWait(Locator.lkButton("OK"));
+
         populateHardTableRecords();
         primeCaches();
     }

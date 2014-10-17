@@ -243,7 +243,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
             minDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             minDate.add(Calendar.DATE, (-1 * bloodDrawInterval) + 1);
 
-            Assert.assertEquals(minDate.getTime(), row.get("BloodRemaining/minDate"));
+            Date rowMinDate = row.get("BloodRemaining/minDate") instanceof Date ? (Date)row.get("BloodRemaining/minDate") : _df.parse(row.get("BloodRemaining/minDate").toString());
+            Assert.assertEquals(minDate.getTime(), rowMinDate);
 
             Double lastWeight = null;
             for (Date weightDate : weightByDay.keySet())
@@ -1307,6 +1308,26 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     @Test
     public void doCustomActionsTests() throws Exception
     {
+        // make sure we have age class records for these species
+        // NOTE: consider populating species table in populateData.html, and switching this test to use ONPRC-style names (ie. RHESUS MACAQUE vs. Rhesus).
+        // if doing this, we'd also want to make populateInitialData.html (the core version) populate the wnprc-style names.
+        for (String species : new String[]{"Rhesus", "Cynomolgus", "Marmoset"})
+        {
+            SelectRowsCommand sr1 = new SelectRowsCommand("ehr_lookups", "ageclass");
+            sr1.addFilter(new Filter("species", species));
+            sr1.addFilter(new Filter("gender", null, Filter.Operator.ISBLANK));
+            sr1.addFilter(new Filter("min", 0));
+
+            SelectRowsResponse srr1 = sr1.execute(_apiHelper.getConnection(), getContainerPath());
+            if (srr1.getRowCount().intValue() == 0)
+            {
+                log("creating ehr.ageclass record for: " + species);
+                InsertRowsCommand ir1 = new InsertRowsCommand("ehr_lookups", "ageclass");
+                ir1.addRow(Maps.<String, Object>of("species", species, "min", 0, "max", 1, "label", "Infant"));
+                ir1.execute(_apiHelper.getConnection(), getContainerPath());
+            }
+        }
+
         //colony overview
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "Colony Overview"));

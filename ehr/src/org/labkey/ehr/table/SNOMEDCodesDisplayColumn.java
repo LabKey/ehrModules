@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
-import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.io.IOException;
@@ -62,7 +62,8 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
                     Integer sort = Integer.parseInt(tokens[0]);
                     if (ret.containsKey(sort))
                     {
-                        _log.error("Duplicate sort for snomed: " + sort);
+                        Object objectid = ctx.get(FieldKey.fromString("objectid"));
+                        _log.error("Duplicate sort for snomed: " + sort + (objectid == null ? "" : ".  objectid: " + objectid));
                         ret.put(sort, ret.get(sort) + "<br>" + part);
                     }
                     else

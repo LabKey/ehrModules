@@ -276,6 +276,7 @@ public class EHRTestHelper
     public void toggleBulkEditField(String label)
     {
         Locator l = Ext4Helper.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
+        _test.assertElementPresent(l);
         Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
         _test.click(l);
     }
