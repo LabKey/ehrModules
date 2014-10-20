@@ -39,6 +39,7 @@ import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableResultSet;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -400,25 +401,26 @@ public class EHRManager
             }
 
             List<PropertyDescriptor> properties = new ArrayList<>();
+            Container sharedContainer = ContainerManager.getSharedContainer();
 
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), c));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI(), c));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
 
             List<PropertyDescriptor> optionalProperties = new ArrayList<>();
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI(), c));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI(), sharedContainer));
 
             List<? extends DataSet> datasets = study.getDatasets();
             boolean shouldClearCaches = false;
@@ -427,21 +429,41 @@ public class EHRManager
             {
                 Domain domain = dataset.getDomain();
                 List<? extends DomainProperty> dprops = domain.getProperties();
+                if (dprops == null)
+                {
+                    _log.error("domain.getProperties() was null for: " + domain.getName());
+                    continue;
+                }
+
                 boolean changed = false;
                 List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
-                Set<PropertyDescriptor> props = new HashSet<>();
+                List<PropertyDescriptor> props = new ArrayList<>();
                 props.addAll(properties);
                 if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
-                    props.add(OntologyManager.getPropertyDescriptor(EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI(), c));
+                    props.add(OntologyManager.getPropertyDescriptor(EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
                 }
 
+                int idx = 0;
                 for (PropertyDescriptor pd : props)
                 {
+                    idx++;
+                    if (pd == null)
+                    {
+                        _log.error("PropertyDescriptor at index " + idx + " is null for container: " + c.getPath());
+                        continue;
+                    }
+
                     boolean found = false;
                     for (DomainProperty dp : dprops)
                     {
+                        if (dp == null)
+                        {
+                            _log.error("domain has a null domain property: " + domain.getName());
+                            continue;
+                        }
+
                         //if the expected property is present, verify datatype and propertyURI
                         if (dp.getName().equalsIgnoreCase(pd.getName()))
                         {
@@ -455,6 +477,11 @@ public class EHRManager
                                     toUpdate.add(pd);
                                 }
                             }
+
+//                            if (!pd.getContainer().equals(dp.getContainer()) && !pd.getProject().equals(ContainerManager.getSharedContainer()))
+//                            {
+//                                messages.add("Containers do not match for: " + dp.getName() + ".  Expected: " + dp.getContainer().getPath() + ", but was: " + pd.getContainer().getPath() + ".");
+//                            }
 
                             if (!dp.getName().equals(pd.getName()))
                             {
@@ -558,7 +585,7 @@ public class EHRManager
                 }
 
                 if (realTable.getColumn("vetreview") != null && !d.getName().equalsIgnoreCase("drug"))
-                    toAdd.add(new String[]{"qcstate", "include:vetreview"});
+                    toRemove.add(new String[]{"qcstate", "include:vetreview"});
 
                 if (d.getLabel().equalsIgnoreCase("Housing"))
                 {
@@ -632,20 +659,19 @@ public class EHRManager
                 else if (d.getName().equalsIgnoreCase("drug"))
                 {
                     toAdd.add(new String[]{"treatmentid"});
-                    if (realTable.getColumn("vetreview") == null)
-                        toAdd.add(new String[]{"qcstate", "include:treatmentid"});
-                    else
-                        toAdd.add(new String[]{"qcstate", "include:treatmentid,vetreview"});
+                    toAdd.add(new String[]{"qcstate", "include:treatmentid"});
+
+                    toRemove.add(new String[]{"qcstate", "include:treatmentid,vetreview"});
                 }
 
                 //ensure indexes removed, unless explicitly requested by a table
                 for (String[] cols : toRemove)
                 {
-                    String indexName = getIndexName(tableName, cols);
+                    String indexName = getIndexName(schema.getSqlDialect(), tableName, cols);
                     boolean found = false;
                     for (String[] addedIndex : toAdd)
                     {
-                        String addedIndexName = getIndexName(tableName, addedIndex);
+                        String addedIndexName = getIndexName(schema.getSqlDialect(), tableName, addedIndex);
                         if (addedIndexName.equalsIgnoreCase(indexName))
                         {
                             found = true;
@@ -664,7 +690,16 @@ public class EHRManager
                         if (commitChanges)
                         {
                             messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+                            String sqlString;
+                            if (schema.getSqlDialect().isSqlServer())
+                            {
+                                sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+                            }
+                            else
+                            {
+                                sqlString = "DROP INDEX " + realTable.getSchema().getName() + "." + indexName;
+                            }
+
                             SQLFragment sql = new SQLFragment(sqlString);
                             SqlExecutor se = new SqlExecutor(schema);
                             se.execute(sql);
@@ -715,7 +750,7 @@ public class EHRManager
                     if (missingCols)
                         continue;
 
-                    String indexName = getIndexName(tableName, indexCols);
+                    String indexName = getIndexName(schema.getSqlDialect(), tableName, indexCols);
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -814,7 +849,15 @@ public class EHRManager
         return messages;
     }
 
-    private String getIndexName(String tableName, String[] indexCols)
+    //only sqlserver enterprise edition supports index compression.  team city is not enterprise
+    private boolean isEnterpriseEdition(DbSchema schema)
+    {
+        SqlSelector ss = new SqlSelector(schema, new SQLFragment("select serverproperty('Edition')"));
+
+        return ss.getObject(String.class).contains("Enterprise");
+    }
+
+    private String getIndexName(SqlDialect dialect, String tableName, String[] indexCols)
     {
         List<String> cols = new ArrayList<>();
         String[] includedCols = null;
@@ -839,7 +882,7 @@ public class EHRManager
         }
 
         String indexName = tableName + "_" + StringUtils.join(cols, "_");
-        if (includedCols != null)
+        if (includedCols != null && dialect.isSqlServer())
         {
             indexName += "_include_" + StringUtils.join(includedCols, "_");
         }
@@ -877,7 +920,7 @@ public class EHRManager
     {
         messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for table: " + tableName);
         String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
-        if (schema.getSqlDialect().isSqlServer())
+        if (schema.getSqlDialect().isSqlServer() && isEnterpriseEdition(schema))
         {
             if (includedCols != null)
                 sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
@@ -923,7 +966,7 @@ public class EHRManager
     //so this code will let admins compress them after the fact
     public void compressEHRSchemaIndexes()
     {
-        if (!DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        if (!DbScope.getLabkeyScope().getSqlDialect().isSqlServer() && isEnterpriseEdition(EHRSchema.getInstance().getSchema()))
         {
             _log.error("Index compression on EHR can only be performed on SQL server currently.");
             return;

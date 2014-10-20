@@ -45,6 +45,12 @@ public class BirthDemographicsProvider extends AbstractListDemographicsProvider
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("enddate"));
         keys.add(FieldKey.fromString("type"));
+
+        //onprc column names
+        keys.add(FieldKey.fromString("birth_condition"));
+        keys.add(FieldKey.fromString("date_type"));
+
+        //wnprc
         keys.add(FieldKey.fromString("cond"));
 
         return keys;

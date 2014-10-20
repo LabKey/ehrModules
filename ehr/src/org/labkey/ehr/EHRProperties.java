@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr;
 
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.PropertyType;
 import org.labkey.api.exp.property.SystemProperty;
@@ -51,6 +52,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("parentid");
             pd.setLabel("Parent Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -67,6 +69,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("taskid");
             pd.setLabel("Task Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -83,6 +86,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("caseid");
             pd.setLabel("Case Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -99,6 +103,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("problemid");
             pd.setLabel("Problem Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -115,6 +120,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("runid");
             pd.setLabel("Run Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -130,6 +136,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("formSort");
             pd.setLabel("Form Sort Order");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -146,6 +153,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("requestid");
             pd.setLabel("Request Id");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -161,6 +169,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setName("userid");
 //            pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -178,6 +187,7 @@ public class EHRProperties
             pd.setLabel("Description");
             pd.setInputType("textarea");
             pd.setName("description");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -189,6 +199,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("account");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -201,6 +212,7 @@ public class EHRProperties
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("project");
             pd.setFormat("00000000");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -217,6 +229,7 @@ public class EHRProperties
             //pd.setShownInInsertView(false);
             pd.setShownInDetailsView(false);
             pd.setShownInUpdateView(false);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -229,6 +242,7 @@ public class EHRProperties
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("performedby");
             pd.setLabel("Performed By");
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -245,6 +259,7 @@ public class EHRProperties
             pd.setShownInUpdateView(true);
             pd.setShownInDetailsView(true);
             pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -261,6 +276,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -277,6 +293,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -293,6 +310,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };
@@ -309,6 +327,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
     };

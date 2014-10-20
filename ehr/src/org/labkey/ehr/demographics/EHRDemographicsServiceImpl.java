@@ -17,6 +17,7 @@ package org.labkey.ehr.demographics;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.cache.StringKeyCache;
@@ -27,9 +28,9 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRDemographicsService;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.FieldKey;
@@ -272,6 +273,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         try
         {
             Set<DemographicsProvider> needsUpdate = new HashSet<>();
+            Set<String> providerNames = new HashSet<>();
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {
                 for (Pair<String, String> pair : changed)
@@ -279,8 +281,14 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     if (p.requiresRecalc(pair.first, pair.second))
                     {
                         needsUpdate.add(p);
+                        providerNames.add(p.getName());
                     }
                 }
+            }
+
+            if (!needsUpdate.isEmpty())
+            {
+                _log.info("updating demographics providers: [" + StringUtils.join(providerNames, ";") + "] for " + ids.size() + " ids.  " + (ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]"));
             }
 
             for (DemographicsProvider p : needsUpdate)
@@ -336,7 +344,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             idsToUpdate.removeAll(ids);
             if (!idsToUpdate.isEmpty())
             {
-                _log.info("report data change for provider: " + p.getName() + ", " + idsToUpdate.size() + " total ids");
+                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (ids.size() < 10 ? ".  " + StringUtils.join(ids, ";") : ""));
                 reportDataChangeForProvider(c, p, idsToUpdate);
             }
         }

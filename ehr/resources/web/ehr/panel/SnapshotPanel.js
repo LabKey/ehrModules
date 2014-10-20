@@ -370,7 +370,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
         }
 
-        toSet['openProblems'] = values.length ? values.join(', ') : 'None';
+        toSet['openProblems'] = values.length ? values.join(',<br>') : 'None';
     },
 
     appendWeightResults: function(toSet, results){
@@ -404,7 +404,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
         }
 
-        toSet['weights'] = text.length ? text.join('') : null;
+        toSet['weights'] = text.length ? '<table>' + text.join('') + '</table>' : null;
     },
 
     appendRoommateResults: function(toSet, results, id){
@@ -494,7 +494,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
         }
 
-        toSet['activeCases'] = values.length ? values.join(', ') : 'None';
+        toSet['activeCases'] = values.length ? values.join(',<br>') : 'None';
     },
 
     appendTreatmentRecords: function(toSet, rows){

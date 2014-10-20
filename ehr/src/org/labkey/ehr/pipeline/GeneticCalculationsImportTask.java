@@ -58,6 +58,7 @@ import java.sql.DataTruncation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,11 +120,18 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
     public RecordedActionSet run() throws PipelineJobException
     {
-        PipelineJob job = getJob();
         List<RecordedAction> actions = new ArrayList<>();
 
-        processInbreeding();
-        processKinship();
+        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hourOfDay >= 7 && hourOfDay <= 19)
+        {
+            throw new PipelineJobException("The genetics import task should only run outside of business hours.  Either way for the next schedule job or retry this task before 7AM or after 6PM");
+        }
+        else
+        {
+            processInbreeding();
+            processKinship();
+        }
 
         return new RecordedActionSet(actions);
     }

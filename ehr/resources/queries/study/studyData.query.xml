@@ -19,15 +19,18 @@
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                     </column>
                     <column columnName="description">
                         <isHidden>false</isHidden>
                         <displayWidth>300</displayWidth>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <propertyURI>urn:ehr.labkey.org/#Descrption</propertyURI>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>End Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <propertyURI>urn:ehr.labkey.org/#EndDate</propertyURI>
                     </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -40,22 +43,30 @@
                             <!--<fkDisplayColumnName>name</fkDisplayColumnName>-->
                         </fk>
                         <!--<formatString>00000000</formatString>-->
+                        <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
                     </column>
                     <column columnName="caseno">
                         <columnTitle>Case Number</columnTitle>
                     </column>
+                    <column columnName="caseid">
+                        <propertyURI>urn:ehr.labkey.org/#CaseId</propertyURI>
+                    </column>
                     <column columnName="parentid">
                         <isHidden>true</isHidden>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                     </column>
                     <column columnName="account">
                         <displayWidth>60</displayWidth>
+                        <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
                     </column>
                     <column columnName="userid">
                         <displayWidth>100</displayWidth>
+                        <propertyURI>urn:ehr.labkey.org/#UserId</propertyURI>
                     </column>
                     <column columnName="taskid">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
                         <isHidden>false</isHidden>
                         <columnTitle>Task Id</columnTitle>
                         <fk>
@@ -67,6 +78,7 @@
                     </column>
                     <column columnName="requestid">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <propertyURI>urn:ehr.labkey.org/#RequestId</propertyURI>
                         <isHidden>false</isHidden>
                         <columnTitle>Request Id</columnTitle>
                         <fk>
@@ -75,6 +87,24 @@
                             <fkColumnName>requestid</fkColumnName>
                         </fk>
                         <url>/ehr/requestDetails.view?formtype=${requestid/formtype}&amp;requestid=${requestid}</url>
+                    </column>
+                    <column columnName="runid">
+                        <propertyURI>urn:ehr.labkey.org/#RunId</propertyURI>
+                    </column>
+                    <column columnName="formsort">
+                        <propertyURI>urn:ehr.labkey.org/#FormSort</propertyURI>
+                    </column>
+                    <column columnName="objectid">
+                        <propertyURI>urn:ehr.labkey.org/#ObjectId</propertyURI>
+                    </column>
+                    <column columnName="performedby">
+                        <propertyURI>urn:ehr.labkey.org/#PerformedBy</propertyURI>
+                    </column>
+                    <column columnName="datefinalized">
+                        <propertyURI>urn:ehr.labkey.org/#DateFinalized</propertyURI>
+                    </column>
+                    <column columnName="daterequested">
+                        <propertyURI>urn:ehr.labkey.org/#DateRequested</propertyURI>
                     </column>
                     <column columnName="problemid">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
