@@ -9,6 +9,17 @@ EHR.DataEntryUtils.registerGridButton('ROOM_LAYOUT', function(config){
         text: 'View Room Layout',
         tooltip: 'Click to delete selected rows',
         handler: function(btn){
+            var store = btn.up('grid').store;
+            LDK.Assert.assertNotEmpty('unable to find store in ROOM_LAYOUT button', store);
+
+            var rooms = [];
+            store.each(function(rec){
+                if (rec.get('room')){
+                    rooms.push(rec.get('room'));
+                }
+            }, this);
+            rooms = Ext4.Array.unique(rooms);
+
             Ext4.create('Ext.window.Window', {
                 title: 'View Room Layout',
                 modal: true,
@@ -36,6 +47,7 @@ EHR.DataEntryUtils.registerGridButton('ROOM_LAYOUT', function(config){
                     itemId: 'roomField',
                     multiSelect: true,
                     width: 400,
+                    value: rooms,
                     listeners: {
                         change: function(field, val){
                             if (val){

@@ -46,6 +46,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                 autoLoad: true,
                 listeners: {
                     scope: this,
+                    delay: 100,
                     load: function(s){
                         if (this.activeSubset)
                             this.applyFilter(this.activeSubset);
@@ -192,6 +193,11 @@ Ext4.define('EHR.form.field.SnomedCombo', {
         this.activeSubset = subset;
 
         if (this.snomedStore.loading){
+            return;
+        }
+
+        LDK.Assert.assertNotEmpty('SnomedCombo.applyFilter() called w/ a null store', this.store);
+        if (!this.store){
             return;
         }
 

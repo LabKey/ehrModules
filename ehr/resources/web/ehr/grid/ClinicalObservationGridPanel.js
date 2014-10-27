@@ -13,9 +13,9 @@ Ext4.define('EHR.grid.ClinicalObservationGridPanel', {
     initComponent: function(){
         this.observationTypesStore = Ext4.create('LABKEY.ext4.Store', {
             type: 'labkey-store',
-            schemaName: 'ehr_lookups',
+            schemaName: 'onprc_ehr',
             queryName: 'observation_types',
-            columns: 'value,description',
+            columns: 'value,editorconfig',
             autoLoad: true
         });
 

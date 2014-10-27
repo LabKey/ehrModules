@@ -122,8 +122,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
     {
         List<RecordedAction> actions = new ArrayList<>();
 
+        String paramVal = getJob().getParameters().get("allowRunningDuringDay");
         int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hourOfDay >= 7 && hourOfDay <= 19)
+        if (!"true".equals(paramVal) && hourOfDay >= 7 && hourOfDay <= 19)
         {
             throw new PipelineJobException("The genetics import task should only run outside of business hours.  Either way for the next schedule job or retry this task before 7AM or after 6PM");
         }

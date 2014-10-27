@@ -985,7 +985,7 @@ public class EHRController extends SpringActionController
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            return new GeneticCalculationsRunnable().run(getContainer());
+            return new GeneticCalculationsRunnable().run(getContainer(), true);
         }
     }
 

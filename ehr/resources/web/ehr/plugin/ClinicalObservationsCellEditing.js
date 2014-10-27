@@ -10,9 +10,9 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
     constructor: function(config){
         this.observationTypesStore = this.observationTypesStore || Ext4.create('LABKEY.ext4.Store', {
             type: 'labkey-store',
-            schemaName: 'ehr_lookups',
+            schemaName: 'onprc_ehr',
             queryName: 'observation_types',
-            columns: 'value,description',
+            columns: 'value,editorconfig',
             autoLoad: true
         });
 
@@ -43,7 +43,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
                 editorOwner = me.grid.ownerLockable || me.grid;
 
         if (!editor || editor.obsCategory != category){
-            var config = rec && rec.get('description') ? Ext4.decode(rec.get('description')) : null;
+            var config = rec && rec.get('editorconfig') ? Ext4.decode(rec.get('editorconfig')) : null;
             config = config || {
                 xtype: 'textfield'
             };

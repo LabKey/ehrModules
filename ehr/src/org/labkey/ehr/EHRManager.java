@@ -400,27 +400,81 @@ public class EHRManager
                 return messages;
             }
 
+            List<String> propertyURIs = new ArrayList<>();
+            propertyURIs.add(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI());
+            propertyURIs.add(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI());
+
+
             List<PropertyDescriptor> properties = new ArrayList<>();
             Container sharedContainer = ContainerManager.getSharedContainer();
+            for (String propertyURI : propertyURIs)
+            {
+                PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
+                if (pd == null)
+                {
+                    _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
+                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
+                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                    if (pdArray.length > 0)
+                    {
+                        for (PropertyDescriptor p : pdArray)
+                        {
+                            _log.info("found match in container: " + p.getContainer().getPath());
+                        }
+                    }
+                    else
+                    {
+                        _log.info("no matching property descriptors found in database");
+                    }
+                }
+                else
+                {
+                    properties.add(pd);
+                }
+            }
 
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            List<String> optionalPropertyURIs = new ArrayList<>();
+            optionalPropertyURIs.add(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI());
+            optionalPropertyURIs.add(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI());
 
             List<PropertyDescriptor> optionalProperties = new ArrayList<>();
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI(), sharedContainer));
+            for (String propertyURI : optionalPropertyURIs)
+            {
+                PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
+                if (pd == null)
+                {
+                    _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
+                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
+                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                    if (pdArray.length > 0)
+                    {
+                        for (PropertyDescriptor p : pdArray)
+                        {
+                            _log.info("found match in container: " + p.getContainer().getPath());
+                        }
+                    }
+                    else
+                    {
+                        _log.info("no matching property descriptors found in database");
+                    }
+                }
+                else
+                {
+                    optionalProperties.add(pd);
+                }
+            }
 
             List<? extends DataSet> datasets = study.getDatasets();
             boolean shouldClearCaches = false;
@@ -442,19 +496,33 @@ public class EHRManager
                 props.addAll(properties);
                 if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
-                    props.add(OntologyManager.getPropertyDescriptor(EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI(), sharedContainer));
-                }
-
-                int idx = 0;
-                for (PropertyDescriptor pd : props)
-                {
-                    idx++;
+                    String propertyURI = EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI();
+                    PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
                     if (pd == null)
                     {
-                        _log.error("PropertyDescriptor at index " + idx + " is null for container: " + c.getPath());
-                        continue;
+                        _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
+                        String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
+                        PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                        if (pdArray.length > 0)
+                        {
+                            for (PropertyDescriptor p : pdArray)
+                            {
+                                _log.info("found match in container: " + p.getContainer().getPath());
+                            }
+                        }
+                        else
+                        {
+                            _log.info("no matching property descriptors found in database");
+                        }
                     }
+                    else
+                    {
+                        props.add(pd);
+                    }
+                }
 
+                for (PropertyDescriptor pd : props)
+                {
                     boolean found = false;
                     for (DomainProperty dp : dprops)
                     {
@@ -514,7 +582,6 @@ public class EHRManager
                             if (!dp.getPropertyURI().equals(pd.getPropertyURI()))
                             {
                                 messages.add("Incorrect propertyURI on optional property \"" + pd.getName() + "\" for dataset: " + dataset.getName() +".  Needs to be updated.");
-
                                 if (commitChanges)
                                 {
                                     toUpdate.add(pd);

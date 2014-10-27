@@ -31,6 +31,11 @@ EHR.model.DataModelManager.registerMetadata('EncounterChild', {
             project: {
                 inheritFromParent: false
             }
+        },
+        'onprc_billing.miscCharges': {
+            project: {
+                inheritFromParent: false
+            }
         }
     }
 });

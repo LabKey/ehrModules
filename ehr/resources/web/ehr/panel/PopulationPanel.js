@@ -192,6 +192,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         var rowNames = this.valueMap[this.rowField];
         rowNames.sort();
         Ext4.each(rowNames, function(rowName){
+            rowName = Ext4.isEmpty(rowName) ? 'Blank' : rowName;
             rows.push({
                 html: rowName + ':',
                 style: 'padding-left: 10px;padding-bottom:3px;padding-right: 5px;'
@@ -211,11 +212,12 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 html: '<a href="' + url + '">' + (this.aggregateData.rowMap[rowName] ? this.aggregateData.rowMap[rowName].total : 0) + '</a>'
             });
 
-            var parentData = this.aggregateData.rowMap[rowName];
+            var parentData = this.aggregateData.rowMap[rowName] || {};
             Ext4.each(colKeys, function(key){
                 var value = 0;
-                if (parentData.colKeys && parentData.colKeys[key])
+                if (parentData && parentData.colKeys && parentData.colKeys[key]) {
                     value = parentData.colKeys[key];
+                }
 
                 var params = {
                     schemaName: 'study',

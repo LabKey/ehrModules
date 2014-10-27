@@ -1757,6 +1757,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         sleep(100);
 
+        //this is a proxy the 1st record validation happening
+        waitForElement(Locator.tagWithText("div", "The form has the following errors and warnings:"));
+
         final Ext4FieldRef idField = _helper.getExt4FieldForFormSection("SOAP", "Id");
         idField.waitForEnabled();
         idField.setValue(MORE_ANIMAL_IDS[0]);
@@ -1783,6 +1786,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         for (int i=0;i<expectedObsRows;i++)
         {
             Assert.assertEquals("Id not copied properly", MORE_ANIMAL_IDS[0], observationsGrid.getFieldValue(1 + i, "Id"));
+
+            Assert.assertEquals("formSort not set properly on row: " + i, new Long(i + 1), observationsGrid.getFnEval("return this.store.getAt(arguments[0]).get('formSort');", i));
         }
 
         int i = 1;
@@ -2165,6 +2170,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     public void pathologyTest()
     {
         _helper.goToTaskForm("Necropsy", false);
+
+        //this is a proxy for the page loading and 1st record validation happening
+        waitForElement(Locator.tagWithText("div", "The form has the following errors and warnings:"));
 
         _helper.getExt4FieldForFormSection("Necropsy", "Id").setValue(MORE_ANIMAL_IDS[1]);
         Ext4ComboRef procedureField = new Ext4ComboRef(_helper.getExt4FieldForFormSection("Necropsy", "Procedure").getId(), this);

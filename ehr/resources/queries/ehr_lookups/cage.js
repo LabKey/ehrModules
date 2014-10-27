@@ -59,6 +59,11 @@ function beforeUpdate(row, oldRow, errors) {
 
 var pendingChanges = [];
 
+//reset the array with each batch
+function init(){
+    pendingChanges = [];
+}
+
 function afterInsert(row){
     //trigger recache of housing data, since this could result in pairing differences
     if (row.room && row.cage){
@@ -69,12 +74,28 @@ function afterInsert(row){
     }
 }
 
-function afterUpdate(row){
+function afterUpdate(row, oldRow){
     //trigger recache of housing data, since this could result in pairing differences
     if (row.room && row.cage){
         var key = row.room + '<>' + row.cage;
         if (pendingChanges.indexOf(key) == -1){
             pendingChanges.push(key);
+        }
+
+        //if the divider changed, also report potential change for cage higher as this change might impact pairing
+        if (oldRow && oldRow.divider != row.divider){
+            var cageRow = row.cage.substring(0,1);
+            var cageCol = row.cage.substring(1);
+            if (!isNaN(cageCol)){
+                cageCol = Number(cageCol) + 1;
+                if (cageCol > 0) {
+                    var key2 = row.room + '<>' + cageRow + cageCol;
+                    if (pendingChanges.indexOf(key2) == -1) {
+                        console.log('also reporting change for potentially altered cage: ' + key2);
+                        pendingChanges.push(key2);
+                    }
+                }
+            }
         }
     }
 }

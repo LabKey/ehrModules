@@ -50,7 +50,7 @@ public class GeneticCalculationsRunnable
     private final String KINSHIP_PIPELINE_NAME = "kinshipPipeline";
     private final Logger _log = Logger.getLogger(GeneticCalculationsRunnable.class);
 
-    public boolean run(Container c) throws PipelineJobException
+    public boolean run(Container c, boolean allowRunningDuringDay) throws PipelineJobException
     {
         User u = EHRManager.get().getEHRUser(c);
         if (u == null)
@@ -59,11 +59,11 @@ public class GeneticCalculationsRunnable
             return false;
         }
 
-        startCalculation(u, c);
+        startCalculation(u, c, allowRunningDuringDay);
         return true;
     }
 
-    private void startCalculation(User u, Container c) throws PipelineJobException
+    private void startCalculation(User u, Container c, boolean allowRunningDuringDay) throws PipelineJobException
     {
         try
         {
@@ -80,6 +80,7 @@ public class GeneticCalculationsRunnable
             String protocolName = "EHR Kinship Calculation";
             String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<bioml>\n" +
+                    (allowRunningDuringDay ? "\t<note label=\"allowRunningDuringDay\" type=\"input\">true</note>" : "") +
                 "</bioml>";
 
             AbstractFileAnalysisProtocol protocol = factory.createProtocolInstance(protocolName, "", xml);
@@ -97,24 +98,23 @@ public class GeneticCalculationsRunnable
             protocol.saveInstance(fileParameters, c);
 
             File defaultXml = new File(root.getRootPath(), ".labkey/protocols/kinship/default.xml");
-            if (!defaultXml.exists())
+            if (defaultXml.exists())
             {
-                defaultXml.getParentFile().mkdirs();
-                defaultXml.createNewFile();
+                defaultXml.delete();
+            }
 
-                try (FileWriter w = new FileWriter(defaultXml))
-                {
-                    w.write(xml);
-                }
+            defaultXml.getParentFile().mkdirs();
+            defaultXml.createNewFile();
+            try (FileWriter w = new FileWriter(defaultXml))
+            {
+                w.write(xml);
             }
 
             File inputFile = new File(root.getRootPath(), "kinship.txt");
             if (!inputFile.exists())
                 inputFile.createNewFile();
 
-            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters);
-            PipelineService.get().queueJob(job);
-
+            PipelineService.get().queueJob(protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters));
         }
         catch (ClassNotFoundException e)
         {

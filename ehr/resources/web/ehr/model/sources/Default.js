@@ -2108,6 +2108,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             Id: {
                 xtype: 'ehr-animalgeneratorfield'
             },
+            date: {
+                defaultValue: null,
+                getInitialValue: function(v, rec){
+                    return v;
+                }
+            },
             performedby: {hidden: true},
             project: {hidden: true},
             weight: {
@@ -2141,7 +2147,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date_type: {
                 allowBlank: false,
-                defaultValue: 'Actual'
+                defaultValue: 'Estimated'
             },
             origin: {
                 hidden: true
@@ -2175,6 +2181,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             conceptualDay: {
                 columnConfig: {
                     width: 180
+                }
+            },
+            teeth: {
+                columnConfig: {
+                    width: 140
                 }
             },
             room: {

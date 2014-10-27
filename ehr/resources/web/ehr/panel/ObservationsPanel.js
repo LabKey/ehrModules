@@ -54,9 +54,9 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                     forceSelection: true,
                     store: {
                         type: 'labkey-store',
-                        schemaName: 'ehr_lookups',
+                        schemaName: 'onprc_ehr',
                         queryName: 'observation_types',
-                        columns: 'value,description',
+                        columns: 'value,editorconfig',
                         autoLoad: true
                     }
                 }
@@ -110,7 +110,7 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                     var rec = store.findRecord('value', type);
                     LDK.Assert.assertNotEmpty('Unable to find record matching type: ' + type, rec);
 
-                    var config = rec.get('description') ? Ext4.decode(rec.get('description')) : null;
+                    var config = rec.get('editorconfig') ? Ext4.decode(rec.get('editorconfig')) : null;
                     return config || {
                         xtype: 'textfield'
                     }

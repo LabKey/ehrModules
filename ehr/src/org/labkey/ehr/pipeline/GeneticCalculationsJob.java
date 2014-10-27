@@ -175,7 +175,7 @@ public class GeneticCalculationsJob implements Job
         try
         {
             _log.info("Running Scheduled Genetic Calculations Job");
-            new GeneticCalculationsRunnable().run(c);
+            new GeneticCalculationsRunnable().run(c, false);
         }
         catch (PipelineJobException e)
         {

@@ -13,12 +13,6 @@
                     </column>
                     <column columnName="category">
                         <columnTitle>Category</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>observation_types</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true"/>
-                        </fk>
                     </column>
                     <column columnName="area">
                         <columnTitle>Area</columnTitle>

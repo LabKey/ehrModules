@@ -100,10 +100,10 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
                 anyMaych: true,
                 store: {
                     type: 'labkey-store',
-                    schemaName: 'ehr_lookups',
+                    schemaName: 'onprc_ehr',
                     queryName: 'observation_types',
                     filterArray: this.observationFilterArray,
-                    columns: 'value,description',
+                    columns: 'value,editorconfig',
                     autoLoad: true
                 }
             }
