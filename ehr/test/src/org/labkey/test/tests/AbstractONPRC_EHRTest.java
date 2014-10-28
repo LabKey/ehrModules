@@ -139,7 +139,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
-        _fileBrowserHelper.clickFileBrowserFileCheckbox("study.xml");
+        _fileBrowserHelper.checkFileBrowserFileCheckbox("study.xml");
 
         if (isTextPresent("Reload Study"))
             _fileBrowserHelper.selectImportDataAction("Reload Study");
