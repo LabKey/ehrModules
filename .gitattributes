@@ -1329,6 +1329,7 @@ ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text
+ehr/test/src/org/labkey/test/categories/EHR.java -text
 ehr/test/src/org/labkey/test/tests/AbstractEHRTest.java -text
 ehr/test/src/org/labkey/test/tests/AbstractONPRC_EHRTest.java -text
 ehr/test/src/org/labkey/test/tests/ComplianceTrainingTest.java -text
@@ -1337,6 +1338,7 @@ ehr/test/src/org/labkey/test/tests/EHRReportingAndUITest.java -text
 ehr/test/src/org/labkey/test/tests/ONPRC_BillingTest.java -text
 ehr/test/src/org/labkey/test/tests/ONPRC_EHRTest.java -text
 ehr/test/src/org/labkey/test/tests/WNPRCEHRDataEntryTest.java -text
+ehr/test/src/org/labkey/test/util/EHRClientAPIHelper.java -text
 ehr/test/src/org/labkey/test/util/EHRTestHelper.java -text
 ehr/test/test_ehr.iml -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text
