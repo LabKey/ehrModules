@@ -878,6 +878,7 @@ public class EHRManager
 
             //add study.participant indexes
             createParticipantIndexes(messages, commitChanges, rebuildIndexes);
+            createEHRLookupIndexes(messages, commitChanges, rebuildIndexes);
 
             //increase length of encounters remark col
             if (commitChanges && DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
@@ -980,6 +981,31 @@ public class EHRManager
                 messages.add("Will drop index on column(s): container, participantid" + " for table: study.participant");
 
             messages.add("Will create index on column(s): container, participantid" + " for table: study.participant");
+        }
+    }
+
+    private void createEHRLookupIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
+    {
+        DbSchema schema = DbSchema.get("ehr_lookups");
+        TableInfo realTable = schema.getTable("flag_values");
+        String indexName = "flag_values_container_category_objectid";
+        List<String> cols = Arrays.asList("container", "category", "objectid");
+
+        boolean exists = doesIndexExist(schema, "flag_values", indexName);
+
+        if (commitChanges && (!exists || rebuildIndexes))
+        {
+            if (exists)
+                dropIndex(schema, realTable, indexName, cols, indexName, messages);
+
+            createIndex(schema, realTable, indexName, indexName, cols, new String[]{"value"}, messages);
+        }
+        else if ((!exists || rebuildIndexes))
+        {
+            if (exists)
+                messages.add("Will drop index on column(s): container, category, objectid" + " for table: ehr_lookups.flag_values");
+
+            messages.add("Will create index on column(s): container, category, objectid" + " for table: ehr_lookups.flag_values");
         }
     }
 
