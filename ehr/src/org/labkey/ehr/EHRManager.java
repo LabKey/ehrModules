@@ -420,18 +420,18 @@ public class EHRManager
                 if (pd == null)
                 {
                     _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
-                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
+                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
                     if (pdArray.length > 0)
                     {
                         for (PropertyDescriptor p : pdArray)
                         {
-                            _log.info("found match in container: " + p.getContainer().getPath());
+                            _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
                         }
                     }
                     else
                     {
-                        _log.info("no matching property descriptors found in database");
+                        _log.error("no matching property descriptors found in database");
                     }
                 }
                 else
@@ -456,18 +456,18 @@ public class EHRManager
                 if (pd == null)
                 {
                     _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
-                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
+                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
                     if (pdArray.length > 0)
                     {
                         for (PropertyDescriptor p : pdArray)
                         {
-                            _log.info("found match in container: " + p.getContainer().getPath());
+                            _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
                         }
                     }
                     else
                     {
-                        _log.info("no matching property descriptors found in database");
+                        _log.error("no matching property descriptors found in database");
                     }
                 }
                 else
@@ -501,18 +501,18 @@ public class EHRManager
                     if (pd == null)
                     {
                         _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                        String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI = ?";
-                        PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql, propertyURI).getArray(PropertyDescriptor.class);
+                        String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
+                        PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
                         if (pdArray.length > 0)
                         {
                             for (PropertyDescriptor p : pdArray)
                             {
-                                _log.info("found match in container: " + p.getContainer().getPath());
+                                _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
                             }
                         }
                         else
                         {
-                            _log.info("no matching property descriptors found in database");
+                            _log.error("no matching property descriptors found in database");
                         }
                     }
                     else

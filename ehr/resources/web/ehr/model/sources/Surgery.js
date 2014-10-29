@@ -34,6 +34,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
             }
         },
         'study.drug': {
+            enddate: {
+                hidden: false
+            },
             reason: {
                 defaultValue: 'Procedure'
             },

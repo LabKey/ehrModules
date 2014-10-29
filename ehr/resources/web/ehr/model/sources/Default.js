@@ -897,11 +897,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.histology': {
-            slideNum: {
-                hidden: true,
-                columnConfig: {
-                    width: 130
-                }
+            sort_order: {
+                allowDuplicateValue: false
             },
             performedby: {
                 hidden: true
@@ -2349,7 +2346,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             enddate: {
                 shownInGrid: false,
-                hidden: false,
+                hidden: true,
                 shownInInsertView: true,
                 label: 'End Time'
             },

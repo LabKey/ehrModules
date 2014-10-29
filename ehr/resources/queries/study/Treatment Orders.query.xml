@@ -40,6 +40,9 @@
                     <column columnName="reason">
                         <columnTitle>Reason</columnTitle>
                     </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Unit</columnTitle>
+                    </column>
                     <column columnName="meaning">
                         <columnTitle>Short Name</columnTitle>
                     </column>

@@ -66,6 +66,15 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         row.cage = row.cage.toUpperCase();
     }
 
+    //the editors dont let us record this precision anyway, and it just throws off date overlaps
+    if (row.date){
+        row.date.setSeconds(0);
+    }
+
+    if (row.enddate){
+        row.enddate.setSeconds(0);
+    }
+
     //verify we dont have 2 opened records for the same ID
     if (!helper.isETL() && !row.enddate && row.Id){
         var map = helper.getProperty('housingInTransaction');

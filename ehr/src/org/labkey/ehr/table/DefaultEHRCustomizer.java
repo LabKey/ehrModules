@@ -167,6 +167,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeTasks((AbstractTableInfo) table);
         }
+        else if (matches(table, "study", "drugsUnified"))
+        {
+            customizeDrugsUnified((AbstractTableInfo) table);
+        }
         else if (table instanceof AbstractTableInfo)
         {
             doSharedCustomization((AbstractTableInfo) table);
@@ -872,10 +876,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         ColumnInfo col = ds.getColumn(colName);
         ColumnInfo unitCol = ds.getColumn(unitColName);
+        String name = col.getName() + "WithUnits";
 
-        if (col != null && unitCol != null)
+        if (col != null && unitCol != null && ds.getColumn(name) == null)
         {
-            String name = col.getName() + "WithUnits";
+
             SQLFragment sql = new SQLFragment("CASE " +
                 " WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName() + " IS NULL THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)" +
                 " ELSE " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName()) +
@@ -895,10 +900,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ColumnInfo amountUnitCol = ds.getColumn("amount_units");
         ColumnInfo volumeCol = ds.getColumn("volume");
         ColumnInfo volumeUnitCol = ds.getColumn("vol_units");
+        String name = "amountAndVolume";
 
-        if (amountCol != null && amountUnitCol != null && volumeCol != null && volumeUnitCol != null)
+        if (amountCol != null && amountUnitCol != null && volumeCol != null && volumeUnitCol != null && ds.getColumn(name) == null)
         {
-            String name = "amountAndVolume";
             SQLFragment sql = new SQLFragment("CASE " +
                     //when both are null, return null
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL) THEN NULL" +
@@ -1248,6 +1253,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         table.setAuditBehavior(AuditBehaviorType.NONE);
+    }
+
+    private void customizeDrugsUnified(AbstractTableInfo ti)
+    {
+        doSharedCustomization(ti);
+        addUnitColumns(ti);
+        addIsActiveColWithTime(ti);
     }
 
     private void customizeTasks(AbstractTableInfo ti)

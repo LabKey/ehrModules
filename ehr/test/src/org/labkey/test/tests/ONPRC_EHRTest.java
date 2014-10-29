@@ -834,7 +834,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 Assert.assertEquals(cage, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("cage"));
                 if (!birthWasChanged)
                 {
-                    Assert.assertEquals(birthDate, housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("date"));
+                    //NOTE: housing is rounded to the nearest minute
+                    Assert.assertEquals(DateUtils.truncate(birthDate, Calendar.MINUTE), housingSelect.execute(_apiHelper.getConnection(), getContainerPath()).getRows().get(0).get("date"));
                 }
             }
 

@@ -3,6 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * @cfg allowDragDropReorder
+ */
 Ext4.define('EHR.grid.Panel', {
     extend: 'LDK.grid.Panel',
     alias: 'widget.ehr-gridpanel',
@@ -30,6 +34,15 @@ Ext4.define('EHR.grid.Panel', {
                 items: this.getTbarButtons()
             }]
         });
+
+        if (this.allowDragDropReorder) {
+            this.viewConfig = this.viewConfig || {};
+            this.viewConfig.plugins = this.viewConfig.plugins || [];
+            this.viewConfig.plugins.push({
+                ptype: 'gridviewdragdrop',
+                pluginId: 'gridViewDragDrop'
+            });
+        }
 
         this.callParent();
         this.addEvents('animalchange');
