@@ -32,6 +32,7 @@
                 <property name="columnTitle" value="New Values"/>
             </properties>
         </column>
+        <column name="DataChanges"/>
     </columns>
    <sorts>
        <sort column="Date" descending="true"/>

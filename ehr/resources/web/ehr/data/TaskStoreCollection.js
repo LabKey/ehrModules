@@ -34,14 +34,11 @@ Ext4.define('EHR.data.TaskStoreCollection', {
         // ensure all records are using this taskId and alert if not
         var taskid = this.getTaskId();
         if (taskid){
-            taskid = taskid.toLowerCase();
             this.clientStores.each(function(cs){
                 if (cs.getFields().get('taskid') != null){
                     cs.each(function(r){
-                        var toTest = (r.get('taskid') ? r.get('taskid').toLowerCase() : r.get('taskid'));
-                        LDK.Assert.assertEquality('Incorrect taskid for client store:' + cs.storeId, taskid, toTest);
-                        if (taskid != toTest){
-                            console.log('had to set taskid: ' + r.get('taskid'));
+                        if (taskid != r.get('taskid')){
+                            LDK.Assert.assertEquality('Incorrect taskid for client store:' + cs.storeId, taskid, r.get('taskid'));
                             r.beginEdit();
                             r.set('taskid', this.getTaskId());
                             r.endEdit(true);
@@ -57,9 +54,8 @@ Ext4.define('EHR.data.TaskStoreCollection', {
                             return;  //do not check these records.  they have deliberately been separated.
                         }
 
-                        var toTest = (r.get('taskid') ? r.get('taskid').toLowerCase() : r.get('taskid'));
-                        LDK.Assert.assertEquality('Incorrect taskid for server store:' + cs.storeId, taskid, toTest);
                         if (taskid != r.get('taskid')){
+                            LDK.Assert.assertEquality('Incorrect taskid for server store:' + cs.storeId, taskid, r.get('taskid'));
                             r.beginEdit();
                             r.set('taskid', this.getTaskId());
                             r.endEdit(true);

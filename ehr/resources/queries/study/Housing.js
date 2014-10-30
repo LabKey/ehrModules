@@ -119,10 +119,10 @@ function onComplete(event, errors, helper){
         var idsToClose = [];
         if (housingRows){
             for (var i=0;i<housingRows.length;i++){
-                if (!housingRows[i].row.enddate){
+                if (housingRows[i].row.date && !housingRows[i].row.enddate){
                     idsToClose.push({
                         Id: housingRows[i].row.Id,
-                        date: housingRows[i].row.date,
+                        date: EHR.Server.Utils.datetimeToString(housingRows[i].row.date),  //stringify to serialize properly
                         objectid: housingRows[i].row.objectid
                     });
                 }

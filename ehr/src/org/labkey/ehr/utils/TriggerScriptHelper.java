@@ -2087,11 +2087,11 @@ public class TriggerScriptHelper
                 {
                     Map<String, Object> r = new CaseInsensitiveHashMap<>();
                     r.put("lsid", lsid);
-                    Date date = (Date)row.get("date");
+                    Date date = _dateTimeFormat.parse(row.get("date").toString());
                     if (date.getHours() == 0 && date.getMinutes() == 0)
                     {
                         Exception e = new Exception();
-                        _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date", e);
+                        _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
                     }
                     r.put("enddate", date);
                     toUpdate.add(r);
@@ -2210,6 +2210,8 @@ public class TriggerScriptHelper
         for (String key : keys)
         {
             String[] tokens = key.split("<>");
+
+            //TODO: consider translating into effective cage and added these?
             clause.addClause(new SimpleFilter.AndClause(new CompareType.EqualsCompareClause(FieldKey.fromString("room"), CompareType.EQUAL, tokens[0]), new CompareType.EqualsCompareClause(FieldKey.fromString("cage"), CompareType.EQUAL, tokens[1])));
         }
 

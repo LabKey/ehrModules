@@ -224,11 +224,14 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                 success: function(results){
                     if (results && results.rows && results.rows.length){
                         this.toAddMap[serverStore.storeId] = [];
+                        var taskId = serverStore.storeCollection.getTaskId();
+                        LDK.Assert.assertNotEmpty('taskId is null in CopyTaskWindow', taskId);
                         Ext4.Array.forEach(results.rows, function(r){
                             var row = new LDK.SelectRowsRow(r);
                             var obj = {};
                             obj.date = this.down('#dateField').getValue();
                             obj.objectid = LABKEY.Utils.generateUUID();
+                            obj.taskid = taskId;
                             serverStore.getFields().each(function(field){
                                 if (blacklist.indexOf(field.name.toLowerCase()) > -1){
                                     return;

@@ -119,13 +119,31 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             recIdx = this.snomedStore.findExact('code', val);
 
             if (recIdx != -1){
-                this.store.add(this.snomedStore.getAt(recIdx));
+                if (this.store.isLoading()){
+                    var me = this;
+                    this.store.on('load', function(){
+                        me.ensureRecord(val);
+                    }, me, {single: true});
+                }
+                else {
+                    this.store.add(this.snomedStore.getAt(recIdx));
+                }
             }
             else if (this.snomedStore.isLoading()){
                 var me = this;
                 me.snomedStore.on('load', function(){
                     me.ensureRecord(val);
+                    //NOTE: if the value becomes NULL, it is likely because a user clicked on the combo prior to SNOMED store loading.
+                    if (!me.getValue()) {
+                        me.setValue(val);
+                    }
                 }, me, {single: true});
+            }
+            else {
+                if (val) {
+                    //log to server
+                    LDK.Assert.assertTrue('Unable to find code in SnomedCombo for: ' + val, recIdx != -1);
+                }
             }
         }
     },
@@ -150,8 +168,12 @@ Ext4.define('EHR.form.field.SnomedCombo', {
     },
 
     setValue: function(val){
-        if (Ext4.isString(val))
+        if (Ext4.isString(val)) {
             this.ensureRecord(val);
+        }
+        else if (Ext4.isObject(val) && val.code){
+            this.ensureRecord(val.code);
+        }
 
         this.callOverridden(arguments);
     },
