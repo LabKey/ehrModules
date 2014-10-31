@@ -1451,16 +1451,14 @@ public class EHRManager
 
             return animalIds;
         }
-        catch (QueryUpdateServiceException e)
+        catch (QueryUpdateServiceException | DuplicateKeyException e)
         {
-            throw new RuntimeException(e);
-        }
-        catch (DuplicateKeyException e)
-        {
+            _log.error("problem adding flags", e);
             throw new RuntimeException(e);
         }
         catch (SQLException e)
         {
+            _log.error("problem adding flags", e);
             throw new RuntimeSQLException(e);
         }
     }

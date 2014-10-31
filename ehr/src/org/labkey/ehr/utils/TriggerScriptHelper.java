@@ -711,12 +711,20 @@ public class TriggerScriptHelper
             return;
         }
 
-
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
         if (!row.containsKey("objectid"))
         {
             row.put("objectid", new GUID().toString());
+        }
+
+        //death table always overrides death date
+        TableInfo deathTable = getTableInfo("study", "deaths");
+        TableSelector deathTs = new TableSelector(deathTable, PageFlowUtil.set("date"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+        Date deathDate = deathTs.getObject(Date.class);
+        if (deathDate != null)
+        {
+            row.put("death", deathDate);
         }
 
         EHRQCState qc = getQCStateForLabel("Completed");

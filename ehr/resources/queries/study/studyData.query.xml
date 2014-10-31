@@ -98,6 +98,7 @@
                         <propertyURI>urn:ehr.labkey.org/#ObjectId</propertyURI>
                     </column>
                     <column columnName="performedby">
+                        <columnTitle>Performed By</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#PerformedBy</propertyURI>
                     </column>
                     <column columnName="datefinalized">

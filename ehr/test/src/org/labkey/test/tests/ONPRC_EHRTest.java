@@ -2334,7 +2334,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         Ext4ComboRef procedureCombo = new Ext4ComboRef(proceduresGrid.getActiveEditor(1, "procedureid"), this);
         procedureCombo.setComboByDisplayValue("Lymph Node and Skin Biopsy - FITC");
+        sleep(100);
         proceduresGrid.setGridCell(1, "chargetype", "Center Staff");
+        sleep(100);
         proceduresGrid.setGridCellJS(1, "instructions", "These are my instructions");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Add Procedure Defaults"));

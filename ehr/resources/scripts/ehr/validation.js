@@ -106,7 +106,7 @@ EHR.Server.Validation = {
             var timeDiff = (rowTime.getTimeInMillis() - currentTime.getTimeInMillis()) / 1000;
             if (timeDiff > 3600 && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
                 console.error('Future date: ' + timeDiff + ' / ' + EHR.Server.Utils.datetimeToString(rowTime) + ' / ' + EHR.Server.Utils.datetimeToString(currentTime));
-                EHR.Server.Utils.addError(errors, 'date', 'Date is in future', 'ERROR');
+                EHR.Server.Utils.addError(errors, 'date', 'Cannot enter a date in the future', 'ERROR');
             }
         }
 
