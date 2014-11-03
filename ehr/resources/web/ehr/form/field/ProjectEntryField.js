@@ -37,6 +37,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                         modal: true,
                         closeAction: 'destroy',
                         bodyStyle: 'padding: 5px',
+                        title: 'Choose Project',
                         items: [{
                             xtype: 'ehr-projectfield',
                             width: 400,

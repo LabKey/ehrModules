@@ -106,7 +106,7 @@ Ext4.define('EHR.data.PairingClientStore', {
                 //verify we dont have a duplicate objectid
                 else if (map.pairids[pairid] && map.pairids[pairid] != pairid) {
                     //if the cage changed, assume we need to update the pairid
-                    if (modifiedFieldNames.indexOf('lowestcage') > -1){
+                    if (modifiedFieldNames.indexOf('lowestcage') > -1 || modifiedFieldNames.indexOf('room') > -1){
                         params.pairid = LABKEY.Utils.generateUUID();
                     }
                 }

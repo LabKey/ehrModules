@@ -1397,7 +1397,11 @@ public class EHRManager
         //find animals already with this flag on this date
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
         filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
-        filter.addCondition(FieldKey.fromString("enddateCoalesced"), date, CompareType.DATE_GTE);
+        //note: this is done to accomodate future dates, since enddateCoalesced would convert open-ended records to today
+        filter.addClause(new SimpleFilter.OrClause(
+            new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.DATE_GTE, date),
+            new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)
+        ));
         filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
 
         TableSelector ts =  new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);

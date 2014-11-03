@@ -2120,6 +2120,24 @@ public class TriggerScriptHelper
         }
     }
 
+    public int getOverlappingFlags(String id, String flag, String objectId, final Date date)
+    {
+        TableInfo flagTable = getTableInfo("study", "flags");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
+        filter.addCondition(FieldKey.fromString("Id"), id, CompareType.EQUAL);
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
+        filter.addCondition(FieldKey.fromString("enddateCoalesced"), date, CompareType.DATE_GTE);
+        if (objectId != null)
+        {
+            filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ);
+        }
+
+        TableSelector ts = new TableSelector(flagTable, Collections.singleton("category"), filter, null);
+        Long count = ts.getRowCount();
+
+        return count.intValue();
+    }
+
     public void ensureSingleFlagCategoryActive(String id, String flag, String objectId, final Date enddate)
     {
         //first resolve flag

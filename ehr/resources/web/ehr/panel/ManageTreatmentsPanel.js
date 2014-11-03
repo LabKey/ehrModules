@@ -102,6 +102,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                     disabled: !EHR.Security.hasPermission(EHR.QCStates.COMPLETED, 'update', [{schemaName: 'study', queryName: 'Treatment Orders'}]),
                     handler: function(btn){
                         Ext4.create('Ext.window.Window', {
+                            title: 'Change End Date',
                             modal: true,
                             closeAction: 'destroy',
                             bodyStyle: 'padding: 5px',

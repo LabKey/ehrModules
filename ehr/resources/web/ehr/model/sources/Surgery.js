@@ -82,7 +82,6 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
                 editorConfig: {
                     getDefaultDate: function(){
                         var rec = EHR.DataEntryUtils.getBoundRecord(this);
-                        console.log(rec);
                         if (rec){
                             if (rec.get('date')){
                                 return rec.get('date');

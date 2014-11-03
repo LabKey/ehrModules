@@ -1339,6 +1339,7 @@ ehr/test/src/org/labkey/test/tests/EHRApiTest.java -text
 ehr/test/src/org/labkey/test/tests/EHRReportingAndUITest.java -text
 ehr/test/src/org/labkey/test/tests/ONPRC_BillingTest.java -text
 ehr/test/src/org/labkey/test/tests/ONPRC_EHRTest.java -text
+ehr/test/src/org/labkey/test/tests/ONPRC_EHRTest2.java -text
 ehr/test/src/org/labkey/test/tests/WNPRCEHRDataEntryTest.java -text
 ehr/test/src/org/labkey/test/util/EHRClientAPIHelper.java -text
 ehr/test/src/org/labkey/test/util/EHRTestHelper.java -text

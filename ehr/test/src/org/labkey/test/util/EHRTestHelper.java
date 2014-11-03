@@ -187,14 +187,19 @@ public class EHRTestHelper
 
     public void goToTaskForm(String name, boolean waitForSaveBtnEnabled)
     {
+        goToTaskForm(name, "Save Draft", waitForSaveBtnEnabled);
+    }
+
+    public void goToTaskForm(String name, String waitButtonName, boolean waitForSaveBtnEnabled)
+    {
         _test.goToProjectHome();
         _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
         _test.waitForElement(Locator.tagContainingText("span", "Colony Management:"));  //proxy for list loading
         _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name).withClass("labkey-text-link"), _test.WAIT_FOR_PAGE);
 
-        _test.waitForElement(Ext4Helper.Locators.ext4Button("Save Draft"), WAIT_FOR_PAGE * 2);
-        Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='Save Draft']", Ext4CmpRef.class);
+        _test.waitForElement(Ext4Helper.Locators.ext4Button(waitButtonName), WAIT_FOR_PAGE * 2);
+        Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='" + waitButtonName + "']", Ext4CmpRef.class);
 
         if (waitForSaveBtnEnabled)
             saveBtn.waitForEnabled();

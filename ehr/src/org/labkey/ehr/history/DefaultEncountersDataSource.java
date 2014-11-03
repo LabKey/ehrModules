@@ -104,7 +104,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         String category = rs.getString("type");
         String objectid = rs.getString(FieldKey.fromString("objectid"));
-        if (_snomedResults != null && _snomedResults.containsKey(objectid))
+        if (_snomedResults != null && _snomedResults.get(objectid) != null)
         {
             sb.append("SNOMED Codes:\n\n");
 

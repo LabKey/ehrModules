@@ -30,10 +30,9 @@ h.enddate,
 case
   when (h.enddate is null) then null
   when (h3.date is not null) then h3.date
-  when (h4.latest_housing_end = h.enddate) then h4.latest_housing_end
+  when (h4.latest_housing_end = h.enddateTimeCoalesced) then h4.latest_housing_end
   else null
 end as next,
-h.reason,
 h.remark,
 h.qcstate,
 (select min(i.date) FROM study.housing i WHERE i.Id = h.Id and i.date > h.date) as nextHousingRecord,
@@ -47,9 +46,9 @@ on (h.id = h2.id AND h.date = h2.enddate AND h2.enddate >= cast(MINDATE as date)
 
 --find the next record
 left join housing h3
-on (h.id = h3.id AND h.enddate = h3.date AND h3.date >= cast(MINDATE as date))
+on (h.id = h3.id AND h.enddateTimeCoalesced = h3.date AND h3.date >= cast(MINDATE as date))
 
-left join (select id, count(*) as totalRecords, min(h.date) as earliest_housing, max(h.enddate) as latest_housing_end from study.housing h where enddate is not null group by id) h4
+left join (select id, count(*) as totalRecords, min(h.date) as earliest_housing, max(h.enddateTimeCoalesced) as latest_housing_end from study.housing h group by id) h4
 on (h.id = h4.id)
 
 -- left join (select id, cast(case when min(h.date) is null then null else max(h.date) end as timestamp) as latest_housing from study.housing h where enddate is not null group by id) h5
@@ -57,13 +56,11 @@ on (h.id = h4.id)
 
 
 WHERE
-h.enddate is not null
-AND h.id.dataset.demographics.calculated_status = 'Alive'
+--h.enddate is not null
+h.id.dataset.demographics.calculated_status = 'Alive'
 AND (
   (h2.id is null and h.date != h4.earliest_housing)
   or
-  (h3.id is null and h.enddate is not null and h.enddate != h4.latest_housing_end)
+  (h3.id is null and h.enddateTimeCoalesced != h4.latest_housing_end)
   )
 and h.date >= cast(MINDATE as date)
-
-

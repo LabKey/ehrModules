@@ -338,6 +338,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             columnConfig: {
                 fixed: true,
                 width: 180
+            },
+            //this will be ignored unless we use a datetime editor
+            editorConfig: {
+                dateFormat: 'Y-m-d',
+                timeFormat: 'H:i'
             }
         },
         code: {

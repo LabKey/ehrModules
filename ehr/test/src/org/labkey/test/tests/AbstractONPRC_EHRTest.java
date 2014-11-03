@@ -16,8 +16,15 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.labkey.remoteapi.query.Filter;
+import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.SelectRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
@@ -25,8 +32,14 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 /**
 
@@ -35,8 +48,35 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
 {
     protected static final String REFERENCE_STUDY_PATH = "/server/customModules/onprc_ehr/resources/referenceStudy";
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
-    protected static final String ID_PREFIX = "_testid";
+    protected static final String ID_PREFIX = "9999";
 
+    protected static final SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+    protected static final SimpleDateFormat _df = new SimpleDateFormat("yyyy-MM-dd");
+
+    protected final String RHESUS = "RHESUS MACAQUE";
+    protected final String INDIAN = "INDIA";
+
+    protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
+    protected static String[] ROOMS = {"Room1", "Room2", "Room3"};
+    protected static String[] CAGES = {"A1", "B2", "A3"};
+    protected static Integer[] PROJECTS = {12345, 123456, 1234567};
+
+    public AbstractONPRC_EHRTest()
+    {
+
+    }
+
+    @Override
+    public String getContainerPath()
+    {
+        return getProjectName();
+    }
+
+    protected EHRClientAPIHelper getApiHelper()
+    {
+        return new EHRClientAPIHelper(this, getContainerPath());
+    }
+    
     @Override
     protected void createProjectAndFolders()
     {
@@ -161,5 +201,221 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     protected String getStudyPolicyXML()
     {
         return "/sampledata/study/onprcEHRStudyPolicy.xml";
+    }
+
+    @LogMethod
+    protected void createTestSubjects() throws Exception
+    {
+        String[] fields;
+        Object[][] data;
+        JSONObject insertCommand;
+
+        //insert into demographics
+        log("Creating test subjects");
+        fields = new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"};
+        data = new Object[][]{
+                {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
+                {SUBJECTS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //for simplicity, also create the animals from MORE_ANIMAL_IDS right now
+        data = new Object[][]{
+                {MORE_ANIMAL_IDS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(MORE_ANIMAL_IDS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //used as initial dates
+        Date pastDate1 = _tf.parse("2012-01-03 09:30");
+        Date pastDate2 = _tf.parse("2012-05-03 19:20");
+
+        //set housing
+        log("Creating initial housing records");
+        fields = new String[]{"Id", "date", "enddate", "room", "cage"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                {SUBJECTS[0], pastDate2, null, ROOMS[0], CAGES[0]},
+                {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Housing", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Housing", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //set a base weight
+        log("Setting initial weights");
+        fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate2, 10.5, EHRQCState.COMPLETED.label},
+                {SUBJECTS[0], new Date(), 12, EHRQCState.COMPLETED.label},
+                {SUBJECTS[1], new Date(), 12, EHRQCState.COMPLETED.label},
+                {SUBJECTS[2], new Date(), 12, EHRQCState.COMPLETED.label}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Weight", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //set assignment
+        log("Setting initial assignments");
+        fields = new String[]{"Id", "date", "enddate", "project"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate1, pastDate2, PROJECTS[0]},
+                {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
+                {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Assignment", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Assignment", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //create cases
+        log("creating cases");
+        fields = new String[]{"Id", "date", "category"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate1, "Clinical"},
+                {SUBJECTS[0], pastDate1, "Surgery"},
+                {SUBJECTS[0], pastDate1, "Behavior"},
+                {SUBJECTS[1], pastDate1, "Clinical"},
+                {SUBJECTS[1], pastDate1, "Surgery"}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "cases", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "cases", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+    }
+
+    protected String generateGUID()
+    {
+        return (String)executeScript("return LABKEY.Utils.generateUUID()");
+    }
+
+    protected Date prepareDate(Date date, int daysOffset, int hoursOffset)
+    {
+        Calendar beforeInterval = new GregorianCalendar();
+        beforeInterval.setTime(date);
+        beforeInterval.add(Calendar.DATE, daysOffset);
+        beforeInterval.add(Calendar.HOUR, hoursOffset);
+
+        return beforeInterval.getTime();
+    }
+
+    protected JSONObject getExtraContext()
+    {
+        JSONObject extraContext = getApiHelper().getExtraContext();
+        extraContext.remove("targetQC");
+        extraContext.remove("isLegacyFormat");
+
+        return extraContext;
+    }
+
+    protected String ensureFlagExists(final String category, final String name, final String code) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "flag_values");
+        select1.addFilter(new Filter("category", category, Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("value", name, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+
+        String objectid = resp.getRowCount().intValue() == 0 ? null : (String)resp.getRows().get(0).get("objectid");
+        if (objectid == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr_lookups", "flag_values");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("category", category);
+                    put("value", name);
+                    put("code", code);
+                    put("objectid", null);  //will get set on server
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+            objectid = (String)saveRowsResponse.getRows().get(0).get("objectid");
+        }
+
+        return objectid;
+    }
+
+    protected Integer getOrCreateGroup(final String name) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr", "animal_groups");
+        select1.addFilter(new Filter("name", name, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+        Integer groupId = resp.getRowCount().intValue() == 0 ? null : (Integer)resp.getRows().get(0).get("rowid");
+        if (groupId == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr", "animal_groups");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("name", name);
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+            groupId = ((Long)saveRowsResponse.getRows().get(0).get("rowid")).intValue();
+        }
+
+        return groupId;
+    }
+
+    protected void ensureGroupMember(final int groupId, final String animalId) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "animal_group_members");
+        select1.addFilter(new Filter("groupId", groupId, Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("Id", animalId, Filter.Operator.EQUAL));
+
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+        if (resp.getRowCount().intValue() == 0)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "animal_group_members");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("Id", animalId);
+                    put("date", new Date());
+                    put("groupId", groupId);
+                }
+            });
+
+            insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+        }
+    }
+
+    protected String getOrCreateSpfFlag(final String name) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "flag_values");
+        select1.addFilter(new Filter("category", "SPF", Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("value", name, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+
+        String objectid = resp.getRowCount().intValue() == 0 ? null : (String)resp.getRows().get(0).get("objectid");
+        if (objectid == null)
+        {
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr_lookups", "flag_values");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("category", "SPF");
+                    put("value", name);
+                    put("objectid", null);  //will get set on server
+                }
+            });
+
+            SaveRowsResponse saveRowsResponse = insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+            objectid = (String)saveRowsResponse.getRows().get(0).get("objectid");
+        }
+
+        return objectid;
+    }
+
+    protected <T extends Ext4CmpRef> T getFieldInWindow(String label, Class<T> clazz)
+    {
+        return _ext4Helper.queryOne("window field[fieldLabel='" + label + "']", clazz);
     }
 }

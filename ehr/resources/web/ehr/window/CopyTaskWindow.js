@@ -206,6 +206,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
         var multi = new LABKEY.MultiRequest();
         this.toAddMap = {};
         Ext4.Array.forEach(queries, function(key){
+            var storeCollection = this.dataEntryPanel.storeCollection;
             var serverStore = this.dataEntryPanel.storeCollection.getServerStoreByName(key);
             LDK.Assert.assertNotEmpty('Unable to find serverStore for: ' + key, serverStore);
 
@@ -224,14 +225,31 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                 success: function(results){
                     if (results && results.rows && results.rows.length){
                         this.toAddMap[serverStore.storeId] = [];
-                        var taskId = serverStore.storeCollection.getTaskId();
-                        LDK.Assert.assertNotEmpty('taskId is null in CopyTaskWindow', taskId);
+
+                        var taskId = null;
+                        if (storeCollection.getTaskId) {
+                            taskId = storeCollection.getTaskId();
+                            LDK.Assert.assertNotEmpty('taskId is null in CopyTaskWindow', taskId);
+                        }
+
+                        var requestId = null;
+                        if (storeCollection.getRequestId) {
+                            requestId = storeCollection.getRequestId();
+                            LDK.Assert.assertNotEmpty('requestId is null in CopyTaskWindow', requestId);
+                        }
+
                         Ext4.Array.forEach(results.rows, function(r){
                             var row = new LDK.SelectRowsRow(r);
                             var obj = {};
                             obj.date = this.down('#dateField').getValue();
                             obj.objectid = LABKEY.Utils.generateUUID();
-                            obj.taskid = taskId;
+                            if (taskId) {
+                                obj.taskid = taskId;
+                            }
+                            if (requestId) {
+                                obj.requestid = requestId;
+                            }
+
                             serverStore.getFields().each(function(field){
                                 if (blacklist.indexOf(field.name.toLowerCase()) > -1){
                                     return;

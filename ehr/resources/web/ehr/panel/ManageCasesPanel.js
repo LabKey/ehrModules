@@ -218,6 +218,7 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                             scope: this,
                             handler: function(btn){
                                 Ext4.create('Ext.window.Window', {
+                                    title: 'Close With Reopen Date',
                                     modal: true,
                                     closeAction: 'destroy',
                                     bodyStyle: 'padding: 5px',

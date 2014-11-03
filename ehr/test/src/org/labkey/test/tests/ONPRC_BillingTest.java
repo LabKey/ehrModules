@@ -47,12 +47,6 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         return PROJECT_NAME;
     }
 
-    @Override
-    public String getContainerPath()
-    {
-        return PROJECT_NAME;
-    }
-
     @BeforeClass
     @LogMethod
     public static void doSetup() throws Exception
