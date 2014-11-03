@@ -74,7 +74,7 @@ EHR.Server.Validation = {
 
         LABKEY.Query.selectRows({
             schemaName: helper.getSchemaName(),
-            queryName: help.getQueryName(),
+            queryName: helper.getQueryName(),
             filterArray: filterArray,
             scope: this,
             success: function(data){

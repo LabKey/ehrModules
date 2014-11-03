@@ -16,6 +16,7 @@ EHR.Security = new function(){
     var permissionMap;
     var hasLoaded = false;
     var schemaMap = {};
+    var datasetInfo = {};
     var qcMap;
 
     //A helper to return a map of QCStates and their properties.
@@ -110,7 +111,29 @@ EHR.Security = new function(){
                 failure: LDK.Utils.getErrorCallback()
             });
 
+            // Load up names and labels as aliases for the permission map
+            multi.add(LABKEY.Query.selectRows, {
+                schemaName: 'study',
+                queryName: 'datasets',
+                columns: ['Name', 'Label'],
+                success: function(data) {
+                    datasetInfo = data;
+                },
+                failure: LDK.Utils.getErrorCallback()
+            });
+
             function onSuccess(){
+                // Copy the permission information from the label (which is how LABKEY.Security.getSchemaPermissions
+                // assembles them) to the name so we can look it up with either value
+                Ext4.each(datasetInfo.rows, function(row)
+                {
+                    var queryInfo = schemaMap.schemas['study'].queries[row.Label];
+                    if (queryInfo)
+                    {
+                        schemaMap.schemas['study'].queries[row.Name] = schemaMap.schemas['study'].queries[row.Label];
+                    }
+                });
+
                 for (var qcState in qcMap.label){
                     var qcRow = qcMap.label[qcState];
                     qcRow.permissionsByQuery = {
