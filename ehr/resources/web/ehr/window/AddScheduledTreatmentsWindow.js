@@ -139,7 +139,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 StartDate: date.format('Y-m-d')
             },
             sort: 'date,Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'primaryKey,lsid,treatmentid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category',
+            columns: 'primaryKey,lsid,treatmentid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category,chargetype',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -194,7 +194,8 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 timeordered: row.getValue('date'),
                 performedby: performedby,
                 remark: row.getValue('remark'),
-                category: row.getValue('category')
+                category: row.getValue('category'),
+                chargetype: row.getValue('chargetype')
             }));
         }, this);
 

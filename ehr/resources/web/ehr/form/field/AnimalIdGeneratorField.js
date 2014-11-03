@@ -23,7 +23,7 @@ Ext4.define('EHR.form.field.AnimalIdGeneratorField', {
 
         LABKEY.Query.executeSql({
             schemaName: 'study',
-            sql: 'SELECT max(CAST(Id as integer)) as expr FROM (SELECT Id FROM study.demographics UNION ALL SELECT Id FROM study.birth) t',
+            sql: 'SELECT max(CAST(Id as integer)) as expr FROM (SELECT Id FROM study.demographics WHERE isNumericId = true UNION ALL SELECT Id FROM study.birth WHERE isNumericId = true) t',
             maxRows: 1,
             scope: this,
             error: LDK.Utils.getErrorCallback(),

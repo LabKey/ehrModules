@@ -94,6 +94,17 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             items: [{
                 xtype: 'ldk-navpanel',
                 sections: [{
+                    header: 'Reports',
+                    renderer: function (item) {
+                        return item;
+                    },
+                    items: [{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Service Request Summary',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('ldk', 'runNotification', null, {key: 'org.labkey.onprc_ehr.notification.RequestAdminNotification'})
+                    }]
+                },{
                     header: 'Blood Draw Requests',
                     renderer: function(item){
                         return {

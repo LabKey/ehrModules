@@ -131,19 +131,22 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
         var now = new Date();
         // NOTE: the removeTimeFromDate flag indicates that that tables only considers date (not datetime).  therefore we need to
         // use a different value when considering past dates
-        if (helper.shouldRemoveTimeFromDate())
+        if (helper.shouldRemoveTimeFromDate()) {
             now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
 
         //if the row's date appears to be date-only, we adjust now accordingly
-        if (row.date.getHours()==0 && row.date.getMinutes()==0)
+        if (row.date.getHours()==0 && row.date.getMinutes()==0) {
             now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
 
         now = now.getTime();
         var timeDiffMills = now - row.date.getTime();
 
         //allow a reasonable window to support inserts from other scripts
-        if (!helper.doSkipRequestInPastCheck() && timeDiffMills > (1000 * 60 * 10)) //10 minutes
+        if (!helper.doSkipRequestInPastCheck() && timeDiffMills > (1000 * 60 * 10)) { //10 minutes
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
+        }
 
         //TODO: conditionalize range?
         if ((-1 * timeDiffMills) > (1000 * 60 * 60 * 24 * 30)) //30 days

@@ -111,6 +111,18 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             }
         },{
             xtype: 'ldk-querypanel',
+            title: 'My Pending Treatment Requests',
+            queryConfig:  {
+                schemaName: 'study',
+                queryName: 'drug',
+                viewName: 'Requests',
+                removeableFilters: [
+                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                ]
+            }
+        },{
+            xtype: 'ldk-querypanel',
             title: 'My Pending Labwork Requests',
             queryConfig:  {
                 schemaName: 'study',

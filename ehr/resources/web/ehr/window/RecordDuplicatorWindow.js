@@ -30,7 +30,8 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
                 //maxWidth: 400,
                 style: 'margin-bottom: 20px;'
             },{
-                xtype: 'numberfield',
+                xtype: 'ldk-numberfield',
+                minValue: 0,
                 labelWidth: 150,
                 fieldLabel: 'Number of Copies',
                 helpPopup: 'This determines how many copies will be made of each record',

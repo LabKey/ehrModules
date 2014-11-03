@@ -214,7 +214,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
         var code = this.getValue();
         this.activeSubset = subset;
 
-        if (this.snomedStore.loading){
+        if (this.snomedStore.loading || this.isDestroyed){
             return;
         }
 

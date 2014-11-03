@@ -529,6 +529,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeDemographics(ti);
         }
+        else if (matches(ti, "study", "birth"))
+        {
+            addIsNumericId(ti);
+        }
 
         appendHistoryCol(ti);
     }
@@ -686,6 +690,37 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     newCol.setDescription("This column calculates the last known date this animal was present at the center.  It preferentially uses death, but will use the most recent departure date if death is not known.  It is used when calculating age.");
                     ti.addColumn(newCol);
                 }
+            }
+        }
+
+        addIsNumericId(ti);
+    }
+
+    private void addIsNumericId(AbstractTableInfo ti)
+    {
+        String name = "isNumericId";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = null;
+
+            if (ti.getSqlDialect().isSqlServer())
+            {
+                sql = new SQLFragment("CASE WHEN (IsNumeric(" + ExprColumn.STR_TABLE_ALIAS + ".participantid)) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
+            }
+            else if (ti.getSqlDialect().isPostgreSQL())
+            {
+                sql = new SQLFragment("CASE WHEN ( " + ExprColumn.STR_TABLE_ALIAS + ".participantid ~ '^([0-9]+)$' ) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
+            }
+            else
+            {
+                _log.error("Only postgres and sqlserver are supported");
+            }
+
+            if (sql != null)
+            {
+                ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("Id"));
+                newCol.setLabel("Is Numeric Id?");
+                ti.addColumn(newCol);
             }
         }
     }

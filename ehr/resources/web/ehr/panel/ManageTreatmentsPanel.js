@@ -110,6 +110,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                             items: [{
                                 xtype: 'xdatetime',
                                 itemId: 'dateField',
+                                timeFormat: 'H:i',
                                 width: 400,
                                 fieldLabel: 'End Date',
                                 minValue: new Date(),

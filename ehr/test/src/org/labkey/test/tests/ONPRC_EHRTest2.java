@@ -207,7 +207,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         waitForElement(Locator.tagWithText("span", "Enter Data"));
 
-        _helper.goToTaskForm("Arrival");
+        _helper.goToTaskForm("Arrival", "Submit Final", false);
+
+        waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
+        _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
 
         grid = _helper.getExt4GridForFormSection("Arrivals");
         grid.clickTbarButton("Add");
@@ -302,9 +305,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(Ext4Helper.ext4Window("Treatment Orders"));
         waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
         sleep(200);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        _ext4Helper.queryOne("window fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).setValue(format.format(prepareDate(new Date(), 1, 11)));
+
+        Ext4FieldRef enddateField = _ext4Helper.queryOne("window fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class);
+        enddateField.waitForEnabled();
         sleep(100);
+        enddateField.setValue(_tf.format(prepareDate(new Date(), 1, 11)));
         Assert.assertNotNull(_ext4Helper.queryOne("window fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
         getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
@@ -349,7 +354,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(Ext4Helper.ext4Window("Change End Date"));
         waitForElement(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         Date enddate = prepareDate(new Date(), 40, 15);
-        _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class).setValue(format.format(enddate));
+        _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class).setValue(_tf.format(enddate));
 
         waitAndClick(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(Ext4Helper.ext4Window("Change End Date"));

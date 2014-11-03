@@ -167,7 +167,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             shownInGrid: true,
             compositeField: 'Volume',
             xtype: 'ehr-drugvolumefield',
-            noDuplicateByDefault: true,
             noSaveInTemplateByDefault: true,
             editorConfig: {
                 decimalPrecision: 3
@@ -190,7 +189,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         amount: {
             compositeField: 'Amount',
-            noDuplicateByDefault: true,
             noSaveInTemplateByDefault: true,
             columnConfig: {
                 width: 120
