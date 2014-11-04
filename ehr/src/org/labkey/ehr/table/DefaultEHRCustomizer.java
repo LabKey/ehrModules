@@ -705,7 +705,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             if (ti.getSqlDialect().isSqlServer())
             {
-                sql = new SQLFragment("CASE WHEN (IsNumeric(" + ExprColumn.STR_TABLE_ALIAS + ".participantid)) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
+                sql = new SQLFragment("CASE WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".participantid NOT LIKE '%[^0-9]%') THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
             }
             else if (ti.getSqlDialect().isPostgreSQL())
             {

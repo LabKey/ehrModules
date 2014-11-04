@@ -16,12 +16,14 @@
 package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
@@ -42,9 +44,13 @@ import org.testng.Assert;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Category({External.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
@@ -83,6 +89,355 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     protected boolean doSetUserPasswords()
     {
         return true;
+    }
+
+    @Test
+    public void birthStatusApiTest() throws Exception
+    {
+        goToProjectHome();
+
+        //first create record for dam, along w/ animal group and SPF status.  we expect this to automatically create a demographics record w/ the right status
+        final String damId1 = "Dam1";
+        final String offspringId1 = "Offspring1";
+        final String offspringId2 = "Offspring2";
+        final String offspringId3 = "Offspring3";
+        final String offspringId4 = "Offspring4";
+        final String offspringId5 = "Offspring5";
+        final String offspringId6 = "Offspring6";
+        final String offspringId7 = "Offspring7";
+        final String offspringId8 = "Offspring8";
+
+        log("deleting existing records");
+        cleanRecords(damId1, offspringId1, offspringId2, offspringId3, offspringId4, offspringId5, offspringId6, offspringId7, offspringId8);
+        ensureFlagExists("Condition", "Nonrestricted", "201");
+
+        final Date dam1Birth = new Date();
+
+        //insert into birth
+        log("Creating Dam");
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "birth", "lsid",
+                new String[]{"Id", "Date", "gender", "QCStateLabel"},
+                new Object[][]{
+                        {damId1, dam1Birth, "f", "In Progress"},
+                }
+        )), getExtraContext(), true);
+
+        //record is draft, so we shouldnt have a demographics record
+        org.junit.Assert.assertFalse("demographics row was created for dam1", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
+
+        //update to completed, expect to find demographics record.
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
+        select1.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
+        final String damLsid = (String)select1.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("lsid");
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {{
+                put("lsid", damLsid);
+                put("QCStateLabel", "Completed");
+            }}, false);
+        org.junit.Assert.assertTrue("demographics row was not created for dam1", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
+
+        //update record to get a geographic_origin, which we expect to get entered into demographics
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>(){
+            {
+                put("lsid", damLsid);
+                put("geographic_origin", INDIAN);
+                put("species", RHESUS);
+            }
+        }, false);
+
+        SelectRowsCommand select2 = new SelectRowsCommand("study", "demographics");
+        select2.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
+        org.junit.Assert.assertEquals("geographic_origin was not updated", INDIAN, select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("geographic_origin"));
+        org.junit.Assert.assertEquals("species was not updated", RHESUS, select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("species"));
+        org.junit.Assert.assertEquals("gender was not updated", "f", select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("gender"));
+        org.junit.Assert.assertEquals("calculated_status was not set properly", "Alive", select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("calculated_status"));
+
+        //now add SPF status + group for dam.
+        String spfStatus = "SPF 9";
+        final String spfFlag = getOrCreateSpfFlag(spfStatus);
+        InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "flags");
+        insertRowsCommand.addRow(new HashMap<String, Object>(){
+            {
+                put("Id", damId1);
+                put("date", dam1Birth);
+                put("flag", spfFlag);
+            }
+        });
+        insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+
+        String groupName = "TestGroup1";
+        final Integer groupId = getOrCreateGroup(groupName);
+        InsertRowsCommand insertRowsCommand2 = new InsertRowsCommand("study", "animal_group_members");
+        insertRowsCommand2.addRow(new HashMap<String, Object>(){
+            {
+                put("Id", damId1);
+                put("date", dam1Birth);
+                put("groupId", groupId);
+            }
+        });
+        insertRowsCommand2.execute(getApiHelper().getConnection(), getContainerPath());
+
+        //test opening case.  expect WARN message b/c we have no demographics and no draft birth
+        Map<String, Object> additionalContext = new HashMap<>();
+        additionalContext.put("allowAnyId", false);
+        getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Maps.of(
+                "Id", Arrays.asList(
+                        "WARN: Id not found in demographics table: " + offspringId5
+                )
+        ), additionalContext);
+
+        //now enter children, testing different modes.
+        // offspring 1 is not public, so we dont expect a demographics record.  will update to completed
+        // offspring 2 is public, so expect a demographics record, and SPF/groups to be copied
+        // offspring 3 is born dead, non-final.  will update to completed
+        // offspring 4 is born dead, finalized
+        // offspring 5 is entered w/o the dam initially, as non-final.  will update to completed and enter dam at same time
+        // offspring 6 is is entered w/o the dam initially, finalized.  will update with dam
+        // offspring 7, same as 1, except we leave species/geographic origin blank and expect dam's demographics to be copied to child
+        // offspring 8, same as 1, except we leave species/geographic origin blank and and expect dam's demographics to be copied to child
+        Date birthDate = new Date();
+        Double weight = 2.3;
+        String room1 = "Room1";
+        String cage1 = "A1";
+        String bornDead = "Born Dead/Not Born";
+        InsertRowsCommand insertRowsCommand1 = new InsertRowsCommand("study", "birth");
+        List<String> birthFields = Arrays.asList("Id", "Date", "birth_condition", "species", "geographic_origin", "gender", "room", "cage", "dam", "sire", "weight", "wdate", "QCStateLabel");
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId1, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId2, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId3, birthDate, bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId4, birthDate, bornDead, RHESUS, INDIAN, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId5, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId6, birthDate, "Live Birth", RHESUS, INDIAN, "f", room1, cage1, null, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId7, birthDate, "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "In Progress"}));
+        insertRowsCommand1.addRow(getApiHelper().createHashMap(birthFields, new Object[]{offspringId8, birthDate, "Live Birth", null, null, "f", room1, cage1, damId1, null, weight, birthDate, "Completed"}));
+        insertRowsCommand1.setTimeout(0);
+        SaveRowsResponse insertRowsResp = insertRowsCommand1.execute(getApiHelper().getConnection(), getContainerPath());
+
+        final Map<String, String> lsidMap = new HashMap<>();
+        for (Map<String, Object> row : insertRowsResp.getRows())
+        {
+            lsidMap.put((String)row.get("Id"), (String)row.get("lsid"));
+        }
+
+        testBirthRecordStatus(offspringId1);
+        testBirthRecordStatus(offspringId2);
+        testBirthRecordStatus(offspringId3);
+        testBirthRecordStatus(offspringId4);
+        testBirthRecordStatus(offspringId5);
+        testBirthRecordStatus(offspringId6);
+        testBirthRecordStatus(offspringId7);
+        testBirthRecordStatus(offspringId8);
+
+        //test opening case.  expect INFO message b/c birth is saved as draft
+        getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Maps.of(
+                "Id", Arrays.asList(
+                        "INFO: Id not found in demographics table: " + offspringId5
+                )
+        ), additionalContext);
+
+        //do updates:
+        log("updating records");
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId1));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId1);
+
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId3));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId3);
+
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId5));
+                put("QCStateLabel", "Completed");
+                put("dam", damId1);
+            }
+        }, false);
+        testBirthRecordStatus(offspringId5);
+
+        //test opening case.  expect no warning b/c birth is now final
+        getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
+                {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
+        }, Collections.<String, List<String>>emptyMap(), additionalContext);
+
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId6));
+                put("QCStateLabel", "Completed");
+                put("dam", damId1);
+            }
+        }, false);
+        testBirthRecordStatus(offspringId6);
+
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId7));
+                put("QCStateLabel", "Completed");
+            }
+        }, false);
+        testBirthRecordStatus(offspringId7);
+
+        //edit birth date, make sure reflected in demographics
+        final Calendar newBirth = new GregorianCalendar();
+        newBirth.setTime(birthDate);
+        newBirth.add(Calendar.DATE, -4);
+        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        {
+            {
+                put("lsid", lsidMap.get(offspringId7));
+                put("date", newBirth.getTime());
+            }
+        }, false);
+        testBirthRecordStatus(offspringId7, true);
+    }
+
+    private void testBirthRecordStatus(String offspringId) throws Exception
+    {
+        testBirthRecordStatus(offspringId, false);
+    }
+
+    private void testBirthRecordStatus(String offspringId, boolean birthWasChanged) throws Exception
+    {
+        log("inspecting id: " + offspringId);
+
+        //first query birth record
+        SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
+        select1.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        select1.setColumns(Arrays.asList("Id", "date", "QCState/PublicData", "birth_condition/alive", "dam", "room", "cage", "weight", "wdate"));
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+
+        org.junit.Assert.assertEquals("Birth record not created: " + offspringId, 1, resp.getRowCount().intValue());
+
+        boolean isPublic = (Boolean)resp.getRows().get(0).get("QCState/PublicData");
+        String damId = (String)resp.getRows().get(0).get("dam");
+        boolean isAlive = resp.getRows().get(0).get("birth_condition/alive") == null ? true : (Boolean)resp.getRows().get(0).get("birth_condition/alive");
+        String room = (String)resp.getRows().get(0).get("room");
+        String cage = (String)resp.getRows().get(0).get("cage");
+        Double weight = (Double)resp.getRows().get(0).get("weight");
+        Date weightDate = (Date)resp.getRows().get(0).get("wdate");
+        Date birthDate = (Date)resp.getRows().get(0).get("date");
+
+        SelectRowsCommand select2 = new SelectRowsCommand("study", "demographics");
+        select2.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        select2.setColumns(Arrays.asList("Id", "date", "species", "geographic_origin", "gender", "death", "birth", "calculated_status"));
+        SelectRowsResponse demographicsResp = select2.execute(getApiHelper().getConnection(), getContainerPath());
+
+        SelectRowsCommand conditionSelect = new SelectRowsCommand("study", "flags");
+        conditionSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        conditionSelect.addFilter(new Filter("flag/category", "Condition", Filter.Operator.EQUAL));
+        conditionSelect.addFilter(new Filter("flag/value", "Nonrestricted", Filter.Operator.EQUAL));
+
+        SelectRowsCommand groupSelect = new SelectRowsCommand("study", "animal_group_members");
+        groupSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        SelectRowsCommand spfFlagSelect = new SelectRowsCommand("study", "flags");
+        spfFlagSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+        spfFlagSelect.addFilter(new Filter("flag/category", "SPF", Filter.Operator.EQUAL));
+
+        SelectRowsCommand housingSelect = new SelectRowsCommand("study", "housing");
+        housingSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        SelectRowsCommand weightSelect = new SelectRowsCommand("study", "weight");
+        weightSelect.addFilter(new Filter("Id", offspringId, Filter.Operator.EQUAL));
+
+        if (!isAlive)
+        {
+            //if the animal was born dead, we expect these flags to be endded automatically
+            groupSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            spfFlagSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            conditionSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            housingSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+        }
+
+        if (isPublic)
+        {
+            //we expect demographics record to be present
+            org.junit.Assert.assertEquals(1, demographicsResp.getRowCount().intValue());
+            Map<String, Object> demographicsRow = demographicsResp.getRows().get(0);
+
+            // we expect species/gender to have been copied through once record is public, except for the case of dam being NULL
+            if (damId != null)
+            {
+                org.junit.Assert.assertEquals(RHESUS, demographicsRow.get("species"));
+                org.junit.Assert.assertEquals(INDIAN, demographicsRow.get("geographic_origin"));
+            }
+
+            //expect death date
+            if (!isAlive)
+            {
+                //in our test scenario, death date always matches birth
+                org.junit.Assert.assertEquals("demographics death date should match birth", birthDate, demographicsRow.get("death"));
+            }
+            else
+            {
+                //in our test scenario, death date always matches birth
+                org.junit.Assert.assertEquals("demographics death date should be null", null, demographicsRow.get("death"));
+            }
+
+            org.junit.Assert.assertEquals("demographics birth date not set properly", birthDate, demographicsRow.get("birth"));
+
+            //always expect condition = Nonrestricted
+            org.junit.Assert.assertEquals(1, conditionSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+
+            //test copy of SPF/groups
+            if (damId != null)
+            {
+                //we expect infant's SPF + groups to match dam.  NOTE: filters added above for enddate, based on whether alive or not
+                org.junit.Assert.assertEquals(1, groupSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+                org.junit.Assert.assertEquals(1, spfFlagSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+            }
+            else
+            {
+                //we do not expect flags or groups
+                org.junit.Assert.assertEquals(0, groupSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+                org.junit.Assert.assertEquals(0, spfFlagSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+            }
+
+            //housing creation
+            if (room != null)
+            {
+                org.junit.Assert.assertEquals(1, housingSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+                org.junit.Assert.assertEquals(room, housingSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("room"));
+                org.junit.Assert.assertEquals(cage, housingSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("cage"));
+                if (!birthWasChanged)
+                {
+                    //NOTE: housing is rounded to the nearest minute
+                    org.junit.Assert.assertEquals(DateUtils.truncate(birthDate, Calendar.MINUTE), housingSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("date"));
+                }
+            }
+
+            if (weight != null)
+            {
+                org.junit.Assert.assertEquals(1, weightSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+                org.junit.Assert.assertEquals(weight, weightSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("weight"));
+                org.junit.Assert.assertEquals(weightDate, weightSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("date"));
+            }
+        }
+        else
+        {
+            //we do not expect demographic record to exist
+            org.junit.Assert.assertEquals(0, demographicsResp.getRowCount().intValue());
+
+            //we do not expect flags or groups
+            org.junit.Assert.assertEquals(0, groupSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+            org.junit.Assert.assertEquals(0, spfFlagSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+        }
     }
 
     @Test
