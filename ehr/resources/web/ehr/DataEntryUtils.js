@@ -180,9 +180,17 @@ EHR.DataEntryUtils = new function(){
             itemId: 'submitBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                panel.onSubmit(btn);
+                var maxSeverity = panel.storeCollection.getMaxErrorSeverity();
+                if (maxSeverity && EHR.Utils.errorSeverity['WARN'] >= EHR.Utils.errorSeverity[maxSeverity]) {
+                    Ext4.Msg.confirm('Ignore Warnings?', 'This form has one or more warnings.  Do you want to ignore them and submit anyway?', function (v) {
+                        if (v == 'yes')
+                            this.onSubmit(btn);
+                    }, this);
+                }
+                else {
+                    this.onSubmit(btn);
+                }
             }
-            //disableOn: 'WARN'
         },
         /**
          * The standard 'Submit Final' button.  Will change the QCState of all records to 'Completed' and submit the form

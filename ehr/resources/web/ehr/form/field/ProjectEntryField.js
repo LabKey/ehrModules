@@ -282,7 +282,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     resolveProjectFromStore: function(){
         var val = this.getValue();
-        if (!val)
+        if (!val || this.isDestroyed)
             return;
 
         LDK.Assert.assertNotEmpty('Unable to find store in ProjectEntryField', this.store);

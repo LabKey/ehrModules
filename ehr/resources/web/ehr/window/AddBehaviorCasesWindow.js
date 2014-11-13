@@ -13,6 +13,7 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
 
     allowNoSelection: true,
     showAssignedVetCombo: false,
+    showAllowOpen: true,
     defaultRemark: 'BSU Rounds Entered',
 
     getCases: function(button){
@@ -22,7 +23,13 @@ Ext4.define('EHR.window.AddBehaviorCasesWindow', {
         var casesFilterArray = this.getCasesFilterArray();
         var obsFilterArray = this.getBaseFilterArray();
         obsFilterArray.push(LABKEY.Filter.create('caseCategory', this.caseCategory, LABKEY.Filter.Types.EQUAL));
-        obsFilterArray.push(LABKEY.Filter.create('caseIsActive', true, LABKEY.Filter.Types.EQUAL));
+        var includeOpen = this.down('#includeOpen') ? this.down('#includeOpen').getValue() : false;
+        if (includeOpen){
+            obsFilterArray.push(LABKEY.Filter.create('caseIsOpen', true, LABKEY.Filter.Types.EQUAL));
+        }
+        else {
+            obsFilterArray.push(LABKEY.Filter.create('caseIsActive', true, LABKEY.Filter.Types.EQUAL));
+        }
 
         //find distinct animals matching criteria
         var multi = new LABKEY.MultiRequest();

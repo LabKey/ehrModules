@@ -114,6 +114,14 @@ Ext4.define('EHR.form.field.SnomedCombo', {
     },
 
     ensureRecord: function(val){
+        if (this.isDestroyed){
+            return;
+        }
+
+        if (!this.store){
+            LDK.Assert.assertNotEmpty('this.store is null in SnomedCombo.ensureRecord()', this.store);
+        }
+
         var recIdx = this.store.findExact('code', val);
         if (recIdx == -1){
             recIdx = this.snomedStore.findExact('code', val);

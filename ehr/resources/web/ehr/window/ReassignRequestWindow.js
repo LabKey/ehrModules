@@ -82,12 +82,12 @@ Ext4.define('EHR.window.ReassignRequestWindow', {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: this.queryName,
-                columns: 'chargetype',
-                sort: 'chargetype',
+                columns: 'value',
+                sort: 'value',
                 autoLoad: true
             },
-            displayField: 'chargetype',
-            valueField: 'chargetype',
+            displayField: 'value',
+            valueField: 'value',
             itemId: 'chargeType',
             name: 'chargetype'
         }]

@@ -117,7 +117,7 @@ EHR.DatasetButtons = new function(){
             LABKEY.Query.selectRows({
                 schemaName: dataRegion.schemaName,
                 queryName: dataRegion.queryName,
-                columns: 'lsid,objectid',
+                columns: 'lsid,objectid,Id,Dataset/DemographicData,Dataset/DataSetId',
                 filterArray: [
                     LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
                 ],
@@ -134,12 +134,22 @@ EHR.DatasetButtons = new function(){
 
                         var url;
                         Ext4.Array.forEach(data.rows, function(row, idx){
-                            url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {
+                            var params = {
                                 schemaName: 'auditLog',
                                 'query.queryName': 'DatasetAuditEvent',
                                 'query.viewName': 'Detailed',
-                                'query.key1~contains': row.objectid
-                            });
+                                'query.intkey1~eq': row['Dataset/DataSetId']
+                            };
+
+                            //NOTE: for demographics data, the objectId is not part of the LSID.  therefore the best we can do is filter on Id, even though this might have changed over the life of the record.
+                            if (row['Dataset/DemographicData']){
+                                params['query.lsid~contains'] = row.Id;
+                            }
+                            else {
+                                params['query.lsid~contains'] = row.objectid;
+                            }
+
+                            url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
 
                             items.push({
                                 html: '<a target="_blank" href="'+url+'">' + 'Record '+(idx+1) + '</a>',

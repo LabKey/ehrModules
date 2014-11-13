@@ -46,6 +46,9 @@ EHR.model.DataModelManager.registerMetadata('ClinicalDefaults', {
             reason: {
                 defaultValue: 'N/A'
             },
+            category: {
+                defaultValue: 'Clinical'
+            },
             chargetype: {
                 allowBlank: false,
                 defaultValue: 'No Charge'

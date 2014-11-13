@@ -90,6 +90,11 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
         //also cascade update children if Id/date changes
         if (modifiedFieldNames && (modifiedFieldNames.indexOf('Id') > -1 || modifiedFieldNames.indexOf('project') > -1)){
             if (record.get('objectid')){
+                if (!this.storeCollection){
+                    LDK.Utils.logError('this.storeCollection is null in ClinpathRunsClientStore');
+                    return;
+                }
+
                 this.storeCollection.clientStores.each(function(cs){
                     if (cs.storeId == this.storeId){
                         return;

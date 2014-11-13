@@ -1349,6 +1349,9 @@ public class TriggerScriptHelper
                 }
             }
             birthProps.put("date", row.get("birth"));
+            birthProps.put("gender", row.get("gender"));
+            birthProps.put("species", row.get("species"));
+            birthProps.put("geographic_origin", row.get("geographic_origin"));
 
             createBirthRecord(id, birthProps);
         }
@@ -2132,7 +2135,7 @@ public class TriggerScriptHelper
             filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ);
         }
 
-        TableSelector ts = new TableSelector(flagTable, Collections.singleton("category"), filter, null);
+        TableSelector ts = new TableSelector(flagTable, Collections.singleton("lsid"), filter, null);
         Long count = ts.getRowCount();
 
         return count.intValue();

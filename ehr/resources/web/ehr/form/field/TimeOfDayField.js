@@ -26,11 +26,11 @@ Ext4.define('EHR.field.TimeOfDayField', {
                     oldVal = (!oldVal || Ext4.isArray(oldVal)) ? oldVal : [oldVal];
 
                     //if the previous selection was just 'both', and the user picks something else, we need to de-select 'both'
-                    if (oldVal.indexOf('both') != -1 && oldVal.length == 1 && val.indexOf('both') != -1 && val.length > 1){
+                    if (oldVal && oldVal.indexOf('both') != -1 && oldVal.length == 1 && val.indexOf('both') != -1 && val.length > 1){
                         val = val.remove('both');
                         this.setValue(val);
                     }
-                    else if (val.indexOf('both') != -1 && val.length > 1 && oldVal.indexOf('both') == -1){
+                    else if (val && val.indexOf('both') != -1 && val.length > 1 && oldVal.indexOf('both') == -1){
                         this.setValue('both');
                     }
 //                            else if (val.indexOf('AM') > -1 && val.indexOf('PM') > -1){

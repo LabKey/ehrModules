@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
@@ -573,7 +574,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         waitAndClick(_helper.getDataEntryButton("Submit Final"));
         waitForElement(Ext4Helper.ext4Window("Finalize Form"));
-        waitAndClickAndWait(Ext4Helper.ext4Window("Finalize Form").append(Ext4Helper.Locators.ext4Button("Yes")));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.ext4Window("Finalize Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
 
         waitForElement(Locator.tagWithText("span", "Enter Data"));
 
@@ -581,6 +582,12 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
+
+        ExecuteSqlCommand sc = new ExecuteSqlCommand("study");
+        sc.setSql("SELECT max(CAST(Id as integer)) as expr FROM (SELECT Id FROM study.demographics WHERE isNumericId = true UNION ALL SELECT Id FROM study.birth WHERE isNumericId = true) t");
+        SelectRowsResponse resp = sc.execute(getApiHelper().getConnection(), getContainerPath());
+        Assert.assertEquals(1, resp.getRowCount().intValue());
+        final Integer lastId = Integer.parseInt(resp.getRows().get(0).get("expr").toString()) + 1;
 
         grid = _helper.getExt4GridForFormSection("Arrivals");
         grid.clickTbarButton("Add");
@@ -592,7 +599,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
             @Override
             public boolean check()
             {
-                return field.getValue() != null && field.getValue().toString().equals("2003");
+                return field.getValue() != null && field.getValue().toString().equals(lastId.toString());
             }
         }, "Expected ID not set", WAIT_FOR_JAVASCRIPT);
         grid.completeEdit();
@@ -601,9 +608,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void pairingObservationsTest()
+    public void pairingObservationsTest() throws Exception
     {
         _helper.goToTaskForm("Pairing Observations");
+        ensureRoomExists(ROOMS[0]);
+        ensureRoomExists(ROOMS[2]);
 
         //test whether pairid properly assigned, including when room/cage changed
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Pairing Observations");
@@ -623,8 +632,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //should update pairId
         grid.setGridCell(2, "room", ROOMS[2]);
-        sleep(100);
-        Assert.assertNotEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(2, "pairid"));
+        sleep(200);
+        Assert.assertNotEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(2, "pairid"), "Pair ID doesnt match, 1: " + grid.getFieldValue(1, "pairid") + ", 2: " + grid.getFieldValue(2, "pairid"));
 
         _helper.addRecordToGrid(grid);
         grid.setGridCell(3, "Id", SUBJECTS[2]);
@@ -642,7 +651,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void managementTreatmentsTest() throws Exception
+    public void manageTreatmentsTest() throws Exception
     {
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", SUBJECTS[0]));
         getApiHelper().deleteAllRecords("study", "treatment_order", new Filter("Id", SUBJECTS[0]));
@@ -663,9 +672,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         subjField.setValue(SUBJECTS[0]);
         waitAndClick(Ext4Helper.ext4Tab("Clinical"));
         waitAndClick(Ext4Helper.ext4Tab("Clinical Snapshot"));
+        waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
+        waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
         // manage treatments
-        click(Ext4Helper.Locators.ext4Button("Actions"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Actions"));
         waitAndClick(Ext4Helper.ext4MenuItem("Manage Treatments"));
 
         waitForElement(Ext4Helper.ext4Window("Manage Treatments: " + SUBJECTS[0]));
@@ -674,13 +685,14 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         waitForElement(Ext4Helper.ext4Window("Treatment Orders"));
         waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
-        sleep(200);
-
-        Ext4FieldRef enddateField = _ext4Helper.queryOne("window fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class);
+        Ext4FieldRef enddateField = _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class);
         enddateField.waitForEnabled();
         sleep(100);
-        enddateField.setValue(_tf.format(prepareDate(new Date(), 1, 11)));
-        Assert.assertNotNull(_ext4Helper.queryOne("window fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
+        String dateVal = _tf.format(prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 1, 20));
+        log("setting end date field: " + dateVal);
+        enddateField.setValue(dateVal);
+        sleep(100);
+        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
         getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
         waitForElement(Ext4Helper.ext4Window("Choose Project"));
@@ -714,8 +726,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(Locator.tagContainingText("div", "2.5 mL / 80 mg"));  //proxy for record in grid
         waitAndClick(Locator.tag("img").withClass("x4-action-col-icon"));
         waitAndClick(Ext4Helper.ext4MenuItem("Edit Treatment").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders"));
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
+        waitForElement(Ext4Helper.ext4Window("Treatment Orders").notHidden());
+        waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])).notHidden());
         waitAndClick(Ext4Helper.ext4Window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Cancel")));
         waitForElementToDisappear(Ext4Helper.ext4Window("Treatment Orders"));
 
@@ -723,8 +735,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitAndClick(Ext4Helper.ext4MenuItem("Change End Date").notHidden());
         waitForElement(Ext4Helper.ext4Window("Change End Date"));
         waitForElement(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        Date enddate = prepareDate(new Date(), 40, 15);
-        _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class).setValue(_tf.format(enddate));
+        Date enddate = prepareDate(new Date(), 10, 0);
+        Ext4FieldRef enddateField2 = _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class);
+        enddateField2.setValue(_tf.format(enddate));
+        sleep(100);
+        Assert.assertNotNull(enddateField2.getValue());
 
         waitAndClick(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(Ext4Helper.ext4Window("Change End Date"));
@@ -736,7 +751,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void managementCasesTest() throws Exception
+    public void manageCasesTest() throws Exception
     {
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", SUBJECTS[0]));
         getApiHelper().deleteAllRecords("study", "cases", new Filter("Id", SUBJECTS[0]));
@@ -762,9 +777,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         subjField.setValue(SUBJECTS[0]);
         waitAndClick(Ext4Helper.ext4Tab("Clinical"));
         waitAndClick(Ext4Helper.ext4Tab("Clinical Snapshot"));
+        waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
+        waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
         // manage cases
-        click(Ext4Helper.Locators.ext4Button("Actions"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Actions"));
         waitAndClick(Ext4Helper.ext4MenuItem("Manage Cases"));
 
         waitForElement(Ext4Helper.ext4Window("Manage Cases: " + SUBJECTS[0]));
@@ -799,6 +816,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         vetField.setComboByDisplayValue("admin");
 
         waitAndClick(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
+        sleep(100);
         waitAndClick(Ext4Helper.ext4MenuItem("Close With Reopen Date").notHidden());
         waitForElement(Ext4Helper.ext4Window("Error"));
         waitAndClick(Ext4Helper.ext4Window("Error").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
@@ -906,6 +924,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         // save.  make sure deleted record back in queue
 
         // use copy previous request
+
+        // test repeat selected helper, including save
     }
 
     //TODO: @Test

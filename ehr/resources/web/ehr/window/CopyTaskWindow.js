@@ -242,7 +242,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                             var row = new LDK.SelectRowsRow(r);
                             var obj = {};
                             obj.date = this.down('#dateField').getValue();
-                            obj.objectid = LABKEY.Utils.generateUUID();
+                            obj.objectid = LABKEY.Utils.generateUUID().toUpperCase();
                             if (taskId) {
                                 obj.taskid = taskId;
                             }

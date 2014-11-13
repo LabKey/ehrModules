@@ -17,6 +17,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
     showAssignedVetCombo: true,
     caseDisplayField: 'problemCategories',
     caseEmptyText: 'There are no problems associated with this case',
+    showAllowOpen: false,
 
     initComponent: function(){
         Ext4.applyIf(this, {
@@ -68,6 +69,12 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
                 checked: true
             },{
                 xtype: 'checkbox',
+                fieldLabel: 'Include Cases Closed For Review',
+                hidden: !this.showAllowOpen,
+                itemId: 'includeOpen',
+                checked: false
+            },{
+                xtype: 'checkbox',
                 hidden: !this.allowReviewAnimals,
                 fieldLabel: 'Review Animals First',
                 itemId: 'reviewAnimals'
@@ -113,7 +120,13 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         if (!filterArray)
             return;
 
-        filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
+        var includeOpen = this.down('#includeOpen') ? this.down('#includeOpen').getValue() : false;
+        if (includeOpen){
+            filterArray.push(LABKEY.Filter.create('isOpen', true, LABKEY.Filter.Types.EQUAL));
+        }
+        else {
+            filterArray.push(LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL));
+        }
         filterArray.push(LABKEY.Filter.create('category', this.caseCategory, LABKEY.Filter.Types.EQUAL));
 
         if (this.down('#excludeToday').getValue()){

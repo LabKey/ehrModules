@@ -295,7 +295,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
 
     protected String generateGUID()
     {
-        return (String)executeScript("return LABKEY.Utils.generateUUID()");
+        return (String)executeScript("return LABKEY.Utils.generateUUID().toUpperCase()");
     }
 
     protected Date prepareDate(Date date, int daysOffset, int hoursOffset)
@@ -342,6 +342,32 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         }
 
         return objectid;
+    }
+
+    protected void ensureRoomExists(final String room) throws Exception
+    {
+        SelectRowsCommand select1 = new SelectRowsCommand("ehr_lookups", "rooms");
+        select1.addFilter(new Filter("room", room, Filter.Operator.EQUAL));
+        SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
+
+        if (resp.getRowCount().intValue() == 0)
+        {
+            log("creating room: " + room);
+            InsertRowsCommand insertRowsCommand = new InsertRowsCommand("ehr_lookups", "rooms");
+            insertRowsCommand.addRow(new HashMap<String, Object>(){
+                {
+                    put("room", room);
+                    put("housingType", 1);
+                    put("housingCondition", 1);
+                }
+            });
+
+            insertRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+        }
+        else
+        {
+            log("room already exists: " + room);
+        }
     }
 
     protected Integer getOrCreateGroup(final String name) throws Exception

@@ -97,7 +97,7 @@ Ext4.define('EHR.window.RepeatSelectedWindow', {
             Ext4.each(selected, function(rec){
                 var data = {};
                 rec.fields.each(function(f){
-                    if (['lsid', 'objectid'].indexOf(f.name)){
+                    if (['lsid', 'objectid'].indexOf(f.name) == -1){
                         data[f.name] = rec.get(f.name);
                     }
                 }, this);

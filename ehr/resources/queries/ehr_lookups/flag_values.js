@@ -12,5 +12,5 @@ console.log("** evaluating: " + this['javax.script.filename']);
 
 function beforeInsert(row, errors) {
     row.code = row.code || helper.getNextFlagCode();
-    row.objectid = row.objectid || LABKEY.Utils.generateUUID();
+    row.objectid = row.objectid || LABKEY.Utils.generateUUID().toUpperCase();
 }
