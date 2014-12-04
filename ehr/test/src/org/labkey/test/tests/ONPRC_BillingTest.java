@@ -96,7 +96,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         Ext4FieldRef.getForLabel(this, "Start Date").setValue("1/1/10");
         Ext4FieldRef.getForLabel(this, "End Date").setValue("1/31/10");
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
-        waitForElement(Ext4Helper.ext4Window("Success"));
+        waitForElement(Ext4Helper.Locators.window("Success"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitAndClickAndWait(Locator.linkWithText("All"));
         waitForPipelineJobsToComplete(2, "Billing Run", false);

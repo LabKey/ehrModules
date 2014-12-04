@@ -26,13 +26,11 @@ import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.Locator;
-import org.labkey.test.TestTimeoutException;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
@@ -54,7 +52,6 @@ import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -935,8 +932,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _helper.waitForCmp("textfield[itemId=subjArea]");
         String id = ID_PREFIX + 1;
         getAnimalHistorySubjField().setValue(id);
-        waitAndClick(Ext4Helper.ext4Tab("Genetics"));
-        waitAndClick(Ext4Helper.ext4Tab("Pedigree Plot"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Genetics"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Pedigree Plot"));
 
         waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
@@ -1006,12 +1003,12 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         SelectRowsResponse srr = cmd.execute(new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
         List<Map<String, Object>> expectedRows = srr.getRows();
 
-        waitAndClick(Ext4Helper.ext4Tab(title));
+        waitAndClick(Ext4Helper.Locators.ext4Tab(title));
         Ext4GridRef grid = _helper.getExt4GridForFormSection(title);
         waitForElement(Locator.id(grid.getId()).notHidden());
 
         grid.clickTbarButton("Copy From Above");
-        waitForElement(Ext4Helper.ext4Window("Copy From Above"));
+        waitForElement(Ext4Helper.Locators.window("Copy From Above"));
         Ext4CmpRef submitBtn = _ext4Helper.queryOne("button[text='Submit']", Ext4CmpRef.class);
         submitBtn.waitForEnabled();
         click(Ext4Helper.Locators.ext4Button("Submit"));
@@ -1090,16 +1087,16 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {
                     waitAndClick(panelGrid.getRow(panelRowIdx));
                     panelGrid.clickTbarButton("Delete Selected");
-                    waitForElement(Ext4Helper.ext4Window("Confirm"));
+                    waitForElement(Ext4Helper.Locators.window("Confirm"));
                     assertTextPresent("along with the " + rowCount + " results associated with them");
-                    waitAndClick(Ext4Helper.ext4Window("Confirm").append(Ext4Helper.Locators.ext4Button("Yes")));
+                    waitAndClick(Ext4Helper.Locators.window("Confirm").append(Ext4Helper.Locators.ext4Button("Yes")));
                 }
                 else
                 {
                     grid.clickTbarButton("Select All");
                     grid.waitForSelected(grid.getRowCount());
                     grid.clickTbarButton("Delete Selected");
-                    waitForElement(Ext4Helper.ext4Window("Confirm"));
+                    waitForElement(Ext4Helper.Locators.window("Confirm"));
                     waitAndClick(Ext4Helper.Locators.ext4Button("Yes"));
                 }
 
@@ -1187,12 +1184,12 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Exam 1");
 
         waitAndClick(_helper.getDataEntryButton("More Actions"));
-        _ext4Helper.clickExt4MenuItem("Apply Form Template");
-        waitForElement(Ext4Helper.ext4Window("Apply Template To Form"));
+        click(Ext4Helper.Locators.menuItem("Apply Form Template"));
+        waitForElement(Ext4Helper.Locators.window("Apply Template To Form"));
         waitForTextToDisappear("Loading...");
         String templateName1 = "Bone Marrow Biopsy";
         String templateName2 = "Achilles Tendon Repair";
-        waitForElement(Ext4Helper.ext4Window("Apply Template To Form").append(Locator.tagContainingText("label", "Choose Template")));
+        waitForElement(Ext4Helper.Locators.window("Apply Template To Form").append(Locator.tagContainingText("label", "Choose Template")));
         Ext4ComboRef templateCombo = Ext4ComboRef.getForLabel(this, "Choose Template");
         templateCombo.waitForStoreLoad();
         _ext4Helper.selectComboBoxItem("Choose Template:", Ext4Helper.TextMatchTechnique.CONTAINS, templateName1);
@@ -1215,7 +1212,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         String obsTemplate = (String) Ext4ComboRef.getForLabel(this, "Observations").getValue();
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Apply Template To Form"));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Apply Template To Form"));
         waitFor(new Checker()
         {
             @Override
@@ -1243,7 +1240,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         }
 
         //observations section
-        waitAndClick(Ext4Helper.ext4Tab("Observations"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Observations"));
         Ext4GridRef observationsGrid = _helper.getExt4GridForFormSection("Observations");
         SelectRowsCommand cmd = new SelectRowsCommand("ehr", "formtemplaterecords");
         cmd.addFilter(new Filter("templateid", obsTemplate));
@@ -1269,7 +1266,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         }
 
         //weight section
-        waitAndClick(Ext4Helper.ext4Tab("Weights"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
         Ext4GridRef weightGrid = _helper.getExt4GridForFormSection("Weights");
         Assert.assertEquals("Incorrect row count", 0, weightGrid.getRowCount());
         _helper.addRecordToGrid(weightGrid);
@@ -1278,14 +1275,14 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         weightGrid.setGridCell(1, "weight", weight.toString());
 
         //procedures section
-        waitAndClick(Ext4Helper.ext4Tab("Procedures"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Procedures"));
         Ext4GridRef proceduresGrid = _helper.getExt4GridForFormSection("Procedures");
         Assert.assertEquals("Incorrect row count", 0, proceduresGrid.getRowCount());
         _helper.addRecordToGrid(proceduresGrid);
         Assert.assertEquals("Id not copied property", MORE_ANIMAL_IDS[0], proceduresGrid.getFieldValue(1, "Id"));
 
         //medications section
-        waitAndClick(Ext4Helper.ext4Tab("Medications"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Medications"));
         Ext4GridRef drugGrid = _helper.getExt4GridForFormSection("Medications/Treatments Given");
         Assert.assertEquals("Incorrect row count", 7, drugGrid.getRowCount());
 
@@ -1311,11 +1308,11 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         //note: amount calculation testing handled in surgery test
 
         //blood draws
-        waitAndClick(Ext4Helper.ext4Tab("Blood Draws"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Blood Draws"));
         Ext4GridRef bloodGrid = _helper.getExt4GridForFormSection("Blood Draws");
         Assert.assertEquals("Incorrect row count", 0, bloodGrid.getRowCount());
         bloodGrid.clickTbarButton("Templates");
-        waitAndClick(Ext4Helper.ext4MenuItem("Apply Template").notHidden());
+        waitAndClick(Ext4Helper.Locators.menuItem("Apply Template").notHidden());
         waitForElement(Ext4Helper.Locators.window("Apply Template"));
         waitAndClick(Ext4Helper.Locators.ext4Button("Close"));
 
@@ -1352,21 +1349,21 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         Ext4GridRef weightGrid = _helper.getExt4GridForFormSection("Weights");
         weightGrid.clickTbarButton("Add Batch");
-        waitForElement(Ext4Helper.ext4Window("Choose Animals"));
+        waitForElement(Ext4Helper.Locators.window("Choose Animals"));
         Ext4FieldRef.getForLabel(this, "Id(s)").setValue(StringUtils.join(MORE_ANIMAL_IDS, ";"));
-        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals(weightGrid.getRowCount(), MORE_ANIMAL_IDS.length);
 
         weightGrid.clickTbarButton("Add Batch");
-        waitForElement(Ext4Helper.ext4Window("Choose Animals"));
+        waitForElement(Ext4Helper.Locators.window("Choose Animals"));
         Ext4FieldRef.getForLabel(this, "Id(s)").setValue(StringUtils.join(MORE_ANIMAL_IDS, ";"));
         Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
-        waitAndClick(Ext4Helper.ext4Window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
-        waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
+        waitAndClick(Ext4Helper.Locators.window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
         _helper.toggleBulkEditField("Weight (kg)");
         double weight = 4.0;
         Ext4FieldRef.getForLabel(this, "Weight (kg)").setValue(weight);
-        waitAndClick(Ext4Helper.ext4Window("Bulk Edit").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Bulk Edit").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals(weightGrid.getRowCount(), MORE_ANIMAL_IDS.length * 2);
 
         //verify IDs added in correct order
@@ -1381,19 +1378,19 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         //TB section
         Ext4GridRef tbGrid = _helper.getExt4GridForFormSection("TB Tests");
         tbGrid.clickTbarButton("Copy From Section");
-        waitAndClick(Ext4Helper.ext4MenuItem("Weights"));
-        waitForElement(Ext4Helper.ext4Window("Copy From Weights"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Weights"));
+        waitForElement(Ext4Helper.Locators.window("Copy From Weights"));
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
         Assert.assertEquals(tbGrid.getRowCount(), MORE_ANIMAL_IDS.length);
 
         //sedations
         Ext4GridRef drugGrid = _helper.getExt4GridForFormSection("Medications/Treatments Given");
         drugGrid.clickTbarButton("Add Sedation(s)");
-        waitAndClick(Ext4Helper.ext4MenuItem("Copy Ids From: Weights"));
-        waitForElement(Ext4Helper.ext4Window("Add Sedations"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Copy Ids From: Weights"));
+        waitForElement(Ext4Helper.Locators.window("Add Sedations"));
         Ext4FieldRef.getForLabel(this, "Lot # (optional)").setValue("Lot");
         Ext4CmpRef.waitForComponent(this, "field[fieldName='weight']");
-        waitForElement(Ext4Helper.ext4Window("Add Sedations").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[4])));
+        waitForElement(Ext4Helper.Locators.window("Add Sedations").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[4])));
 
         //set weights
         for (Ext4FieldRef field : _ext4Helper.componentQuery("field[fieldName='weight']", Ext4FieldRef.class))
@@ -1452,8 +1449,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         //TB section
         tbGrid.clickTbarButton("Copy From Section");
-        waitAndClick(Ext4Helper.ext4MenuItem("Medications/Treatments Given"));
-        waitForElement(Ext4Helper.ext4Window("Copy From Medications/Treatments Given"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Medications/Treatments Given"));
+        waitForElement(Ext4Helper.Locators.window("Copy From Medications/Treatments Given"));
         for (Ext4FieldRef field : _ext4Helper.componentQuery("field[fieldName='exclude']", Ext4FieldRef.class))
         {
             Assert.assertEquals(field.getValue(), true);
@@ -1463,12 +1460,12 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _ext4Helper.queryOne("field[fieldName='exclude']", Ext4FieldRef.class).setChecked(false);
 
         Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
-        waitAndClick(Ext4Helper.ext4Window("Copy From Medications/Treatments Given").append(Ext4Helper.Locators.ext4Button("Submit")));
-        waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
+        waitAndClick(Ext4Helper.Locators.window("Copy From Medications/Treatments Given").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
         _helper.toggleBulkEditField("Performed By");
         Ext4FieldRef.getForLabel(this, "Performed By").setValue("me");
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Bulk Edit"));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Bulk Edit"));
 
         for (int i=1;i<=5;i++)
         {
@@ -1518,7 +1515,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         Locator manageLink = Locator.tagContainingText("a", "Manage Subscribed Users/Groups").index(1);
         waitAndClick(manageLink);
-        waitForElement(Ext4Helper.ext4Window("Manage Subscribed Users"));
+        waitForElement(Ext4Helper.Locators.window("Manage Subscribed Users"));
         Ext4ComboRef.waitForComponent(this, "field[fieldLabel^='Add User Or Group']");
         Ext4ComboRef combo = Ext4ComboRef.getForLabel(this, "Add User Or Group");
         combo.waitForStoreLoad();
@@ -1533,7 +1530,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Close"));
 
         waitAndClick(manageLink);
-        waitForElement(Ext4Helper.ext4Window("Manage Subscribed Users"));
+        waitForElement(Ext4Helper.Locators.window("Manage Subscribed Users"));
         waitForElement(Locator.tagContainingText("div", DATA_ADMIN.getEmail()));
         waitForElement(Locator.tagContainingText("div", BASIC_SUBMITTER.getEmail()));
         waitForElement(Ext4Helper.Locators.ext4Button("Remove"));
@@ -1542,7 +1539,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Close"));
 
         waitAndClick(manageLink);
-        waitForElement(Ext4Helper.ext4Window("Manage Subscribed Users"));
+        waitForElement(Ext4Helper.Locators.window("Manage Subscribed Users"));
         waitForElement(Locator.tagContainingText("div", BASIC_SUBMITTER.getEmail()));
         waitForElement(Ext4Helper.Locators.ext4Button("Remove"));
         assertElementPresent(Ext4Helper.Locators.ext4Button("Remove"), 1);
@@ -1649,10 +1646,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         procedureField.setComboByDisplayValue("Necropsy & Histopathology Grade 2: Standard");
 
         Ext4FieldRef.getForLabel(this, "Case Number").clickTrigger();
-        waitForElement(Ext4Helper.ext4Window("Create Case Number"));
+        waitForElement(Ext4Helper.Locators.window("Create Case Number"));
         Ext4FieldRef.waitForField(this, "Prefix");
         Ext4FieldRef.getForLabel(this, "Year").setValue(2013);
-        waitAndClick(Ext4Helper.ext4Window("Create Case Number").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Create Case Number").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         final String caseNoBase = "2013A00";
         waitFor(new Checker()
         {
@@ -1667,14 +1664,14 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         // apply form template
         waitAndClick(Ext4Helper.Locators.ext4Button("Apply Form Template"));
-        waitForElement(Ext4Helper.ext4Window("Apply Template To Form"));
+        waitForElement(Ext4Helper.Locators.window("Apply Template To Form"));
         Ext4FieldRef.waitForField(this, "Diagnoses");
         Ext4ComboRef.getForLabel(this, "Choose Template").setComboByDisplayValue("Necropsy");
         sleep(100);
         Assert.assertEquals("Gross Findings", Ext4ComboRef.getForLabel(this, "Gross Findings").getDisplayValue());
         Assert.assertEquals("Necropsy", Ext4ComboRef.getForLabel(this, "Staff").getDisplayValue());
-        waitAndClick(Ext4Helper.ext4Window("Apply Template To Form").append(Ext4Helper.Locators.ext4Button("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Apply Template To Form"));
+        waitAndClick(Ext4Helper.Locators.window("Apply Template To Form").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Apply Template To Form"));
 
         //staff sections
         _ext4Helper.clickExt4Tab("Staff");
@@ -1689,7 +1686,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4GridRef histologyGrid = _helper.getExt4GridForFormSection("Histologic Findings");
         _helper.addRecordToGrid(histologyGrid, "Add Record");
         waitAndClick(histologyGrid.getCell(1, "codesRaw"));
-        waitForElement(Ext4Helper.ext4Window("Manage SNOMED Codes"));
+        waitForElement(Ext4Helper.Locators.window("Manage SNOMED Codes"));
         Ext4ComboRef field = Ext4ComboRef.getForLabel(this, "Add Code");
         field.waitForEnabled();
         field.waitForStoreLoad();
@@ -1742,13 +1739,13 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedDelete]", Ext4CmpRef.class).get(0).getId()));
         assertElementNotPresent(Locator.tagContainingText("div", code2));
 
-        waitAndClick(Ext4Helper.ext4Window("Manage SNOMED Codes").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Manage SNOMED Codes").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals("1<>D-03550;2<>E-70590", histologyGrid.getFieldValue(1, "codesRaw").toString());
         Assert.assertTrue(isTextBefore("1: " + code3, "2: " + code1));
 
         //enter death
         waitAndClick(Ext4Helper.Locators.ext4ButtonEnabled("Enter/Manage Death"));
-        Locator.XPathLocator deathWindow = Ext4Helper.ext4Window("Deaths");
+        Locator.XPathLocator deathWindow = Ext4Helper.Locators.window("Deaths");
         waitForElement(deathWindow);
         Ext4FieldRef.waitForField(this, "Necropsy Case No");
         waitForElement(deathWindow.append(Locator.tagContainingText("div", MORE_ANIMAL_IDS[1])));  //proxy for record loading
@@ -1770,7 +1767,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         procedureField.setComboByDisplayValue("Necropsy & Histopathology Grade 2: Standard");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Copy Previous Case"));
-        Locator.XPathLocator caseWindow = Ext4Helper.ext4Window("Copy From Previous Case");
+        Locator.XPathLocator caseWindow = Ext4Helper.Locators.window("Copy From Previous Case");
         waitForElement(caseWindow);
         Ext4FieldRef.waitForField(this, "Animal Id");
         _ext4Helper.queryOne("window field[fieldLabel=Case No]", Ext4FieldRef.class).setValue(caseNo);
@@ -1809,9 +1806,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         proceduresGrid.setGridCellJS(1, "instructions", "These are my instructions");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Add Procedure Defaults"));
-        waitForElement(Ext4Helper.ext4Window("Add Procedure Defaults"));
-        waitForElement(Ext4Helper.ext4Window("Add Procedure Defaults").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
-        waitAndClick(Ext4Helper.ext4Window("Add Procedure Defaults").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElement(Ext4Helper.Locators.window("Add Procedure Defaults"));
+        waitForElement(Ext4Helper.Locators.window("Add Procedure Defaults").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
+        waitAndClick(Ext4Helper.Locators.window("Add Procedure Defaults").append(Ext4Helper.Locators.ext4Button("Submit")));
 
         _ext4Helper.clickExt4Tab("Staff");
         Ext4GridRef staffGrid = _helper.getExt4GridForFormSection("Staff");
@@ -1826,11 +1823,11 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _ext4Helper.clickExt4Tab("Medication/Treatment Orders");
         Ext4GridRef treatmentGrid = _helper.getExt4GridForFormSection("Medication/Treatment Orders");
         treatmentGrid.clickTbarButton("Order Post-Op Meds");
-        waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds"));
-        waitForElement(Ext4Helper.ext4Window("Order Post-Op Meds").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
+        waitForElement(Ext4Helper.Locators.window("Order Post-Op Meds"));
+        waitForElement(Ext4Helper.Locators.window("Order Post-Op Meds").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])));
         _ext4Helper.queryOne("field[fieldName=analgesiaRx]", Ext4ComboRef.class).waitForStoreLoad();
         _ext4Helper.queryOne("field[fieldName=antibioticRx]", Ext4ComboRef.class).waitForStoreLoad();
-        waitAndClick(Ext4Helper.ext4Window("Order Post-Op Meds").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Order Post-Op Meds").append(Ext4Helper.Locators.ext4Button("Submit")));
         treatmentGrid.waitForRowCount(2);
         Assert.assertEquals(0.30, treatmentGrid.getFieldValue(1, "amount"));
         Assert.assertEquals("mg", treatmentGrid.getFieldValue(1, "amount_units"));
@@ -1838,8 +1835,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         //review amounts window
         treatmentGrid.clickTbarButton("Review Amount(s)");
-        waitForElement(Ext4Helper.ext4Window("Review Drug Amounts"));
-        waitForElement(Ext4Helper.ext4Window("Review Drug Amounts").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])), 2);
+        waitForElement(Ext4Helper.Locators.window("Review Drug Amounts"));
+        waitForElement(Ext4Helper.Locators.window("Review Drug Amounts").append(Locator.tagWithText("div", MORE_ANIMAL_IDS[1])), 2);
 
         Map<String, Object> expectedVals1 = new HashMap<>();
         expectedVals1.put("weight", 5L);
@@ -1900,7 +1897,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         inspectDrugAmountFields(expectedVals1, 0);
 
         click(Ext4Helper.Locators.ext4Button("Recalculate All"));
-        _ext4Helper.clickExt4MenuItem("Recalculate Both Amount/Volume");
+        click(Ext4Helper.Locators.menuItem("Recalculate Both Amount/Volume"));
         expectedVals1.put("volume", 24L);
         expectedVals1.put("amount", 12L);
         inspectDrugAmountFields(expectedVals1, 0);
@@ -1918,21 +1915,21 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         expectedVals1.put("amount", 6L);
         inspectDrugAmountFields(expectedVals1, 0);
 
-        waitAndClick(Ext4Helper.ext4Window("Review Drug Amounts").append(Ext4Helper.Locators.ext4Button("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Review Drug Amounts"));
+        waitAndClick(Ext4Helper.Locators.window("Review Drug Amounts").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Review Drug Amounts"));
 
         Assert.assertEquals(12L, treatmentGrid.getFieldValue(1, "volume"));
         Assert.assertEquals(6L, treatmentGrid.getFieldValue(1, "amount"));
 
         //open cases btn
         waitAndClick(Ext4Helper.Locators.ext4Button("Open Cases"));
-        Locator.XPathLocator caseWindow = Ext4Helper.ext4Window("Open Cases");
+        Locator.XPathLocator caseWindow = Ext4Helper.Locators.window("Open Cases");
         waitForElement(caseWindow);
         waitForElement(caseWindow.append(Locator.tagWithText("div", "7"))); //followup days
         waitAndClick(caseWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Open Selected Cases")));
         waitForElementToDisappear(caseWindow);
-        waitForElement(Ext4Helper.ext4Window("Success").append(Locator.tagWithText("div", "Surgical cases opened")));
-        waitAndClick(Ext4Helper.ext4Window("Success").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
+        waitForElement(Ext4Helper.Locators.window("Success").append(Locator.tagWithText("div", "Surgical cases opened")));
+        waitAndClick(Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
 
         _helper.discardForm();
     }
@@ -1981,11 +1978,11 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4GridRef obsGrid = _helper.getExt4GridForFormSection("Observations");
         obsGrid.clickTbarButton("Add Open Cases");
 
-        Locator.XPathLocator caseWindow = Ext4Helper.ext4Window("Add Open Behavior Cases");
+        Locator.XPathLocator caseWindow = Ext4Helper.Locators.window("Add Open Behavior Cases");
         waitForElement(caseWindow);
 
         //just load all behavior cases
-        waitAndClick(Ext4Helper.ext4WindowButton("Add Open Behavior Cases", "Submit"));
+        waitAndClick(Ext4Helper.Locators.windowButton("Add Open Behavior Cases", "Submit"));
         waitForElementToDisappear(caseWindow);
         obsGrid.waitForRowCount(1);
         Assert.assertEquals("Alopecia Score", obsGrid.getFieldValue(1, "category"));
@@ -2000,7 +1997,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Assert.assertEquals("No Charge", treatmentsGrid.getFieldValue(1, "chargetype"));
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Close/Review Cases"));
-        Locator.XPathLocator closeCaseWindow = Ext4Helper.ext4Window("Manage Cases");
+        Locator.XPathLocator closeCaseWindow = Ext4Helper.Locators.window("Manage Cases");
         waitForElement(closeCaseWindow);
         waitForElement(closeCaseWindow.append(Locator.tagWithText("div", SUBJECTS[0])));
 

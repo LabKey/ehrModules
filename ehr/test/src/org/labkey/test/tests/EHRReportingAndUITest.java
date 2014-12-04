@@ -217,7 +217,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
         waitAndClick(Ext4Helper.Locators.ext4Radio("Entire Database"));
-        waitAndClick(Ext4Helper.ext4Tab("Demographics"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
         sleep(2000); //allow page to resize
@@ -301,15 +301,15 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
-        waitAndClick(Ext4Helper.ext4Tab("General"));
-        waitAndClick(Ext4Helper.ext4Tab("Snapshot"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("General"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Snapshot"));
         waitForElement(Locator.tagContainingText("span", "Dead"), WAIT_FOR_JAVASCRIPT * 2);
         waitForElement(Locator.tagContainingText("div", "1 year, 308 days"));
         waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
 
         //weight
-        waitAndClick(Ext4Helper.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.ext4Tab("Weights"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
         waitForElement(Locator.tagWithText("div", "3.73 kg")); //first animal
         waitForElement(Locator.tagWithText("div", "3.56 kg")); //second animal
@@ -317,16 +317,16 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         //NOTE: since 14.1 this part of the test is failing very regularly.  It will begin to load the DataRegion, but it seems to stall at this stage.
         //Maybe there's some sort of timing induced JS error on the page preventing the DR from rendering?
         sleep(500);
-        waitForElements(Ext4Helper.ext4Tab("Raw Data"), 2);
+        waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data"), 2);
         sleep(500);
-        waitAndClick(Ext4Helper.ext4Tab("Raw Data").index(1));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").index(1));
         sleep(500);
         //TODO: why not loading?
         waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 5);
 
         //chronological history
-        waitAndClick(Ext4Helper.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.ext4Tab("Clinical History"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical History"));
         waitForElement(Locator.tagContainingText("div", "No records found since:"));
     }
 
@@ -340,17 +340,17 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         log("Return Distinct Values - no selections");
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
-        waitForElement(Ext4Helper.ext4Window("Error"));
+        waitForElement(Ext4Helper.Locators.window("Error"));
         waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
 
         log("Return Distinct Values");
         checkAllOnPage(dataRegionName);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.lkButton("More Actions").getPath()), "Return Distinct Values");
-        waitForElement(Ext4Helper.ext4Window("Return Distinct Values"));
+        waitForElement(Ext4Helper.Locators.window("Return Distinct Values"));
         waitForElement(Ext4Helper.Locators.ext4Button("Submit"), WAIT_FOR_JAVASCRIPT * 3);
         new Ext4ComboRef(Ext4ComboRef.getForLabel(this, "Select Field"), this).setComboByDisplayValue("Animal Id");
         _helper.clickExt4WindowBtn("Return Distinct Values", "Submit");
-        waitForElement(Ext4Helper.ext4Window("Distinct Values"));
+        waitForElement(Ext4Helper.Locators.window("Distinct Values"));
         String expected = PROTOCOL_MEMBER_IDS[0]+"\n"+PROTOCOL_MEMBER_IDS[1]+"\n"+PROTOCOL_MEMBER_IDS[2];
         assertEquals("Incorrect value returned", expected, _ext4Helper.queryOne("#distinctValues", Ext4FieldRef.class).getValue());
         _helper.clickExt4WindowBtn("Distinct Values", "Close");
@@ -403,11 +403,11 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         log("Compare Weights - three selections");
         checkDataRegionCheckbox(dataRegionName, 2);
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.lkButton("More Actions").getPath()), "Compare Weights");
-        waitForElement(Ext4Helper.ext4Window("Error")); // After error dialog.
+        waitForElement(Ext4Helper.Locators.window("Error")); // After error dialog.
         _helper.clickExt4WindowBtn("Error", "OK");
 
         //wait for load
-        waitForElement(Ext4Helper.ext4Window("Weights"));
+        waitForElement(Ext4Helper.Locators.window("Weights"));
         _helper.clickExt4WindowBtn("Weights", "OK");
         assertTextNotPresent("Weight 1");
 
@@ -421,9 +421,9 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[2]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
         refreshAnimalHistoryReport();
-        waitForElement(Ext4Helper.ext4Tab("Demographics"));
+        waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
         waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[2] + " (X)"));
-        waitAndClick(Ext4Helper.ext4Tab("Demographics"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         assertEquals("Did not find the expected number of Animals", 2, getDataRegionRowCount(dataRegionName));
         assertTextPresent(PROTOCOL_MEMBER_IDS[0], PROTOCOL_MEMBER_IDS[2]);
@@ -431,7 +431,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
     private void refreshAnimalHistoryReport()
     {
-        waitForElement(Ext4Helper.ext4Tab("Demographics"));
+        waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
         sleep(200);
         waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
     }

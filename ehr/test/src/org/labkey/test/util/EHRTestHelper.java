@@ -242,7 +242,7 @@ public class EHRTestHelper
 
     public void clickExt4WindowBtn(String title, String label)
     {
-        _test.waitForElement(Ext4Helper.ext4Window(title));
+        _test.waitForElement(Ext4Helper.Locators.window(title));
         _test.waitAndClick(Locator.tag("div").withClass("x4-window").notHidden().append(Ext4Helper.Locators.ext4Button(label)));
     }
 
@@ -250,10 +250,10 @@ public class EHRTestHelper
     {
         grid.clickTbarButton("Templates");
 
-        _test.waitAndClick(Ext4Helper.ext4MenuItem("Templates").notHidden());
-        _test.waitAndClick(Ext4Helper.ext4MenuItem(templateName).notHidden());
+        _test.waitAndClick(Ext4Helper.Locators.menuItem("Templates").notHidden());
+        _test.waitAndClick(Ext4Helper.Locators.menuItem(templateName).notHidden());
 
-        _test.waitForElement(Ext4Helper.ext4Window("Apply Template"));
+        _test.waitForElement(Ext4Helper.Locators.window("Apply Template"));
         Ext4ComboRef combo = new Ext4ComboRef(Ext4ComboRef.getForLabel(_test, "Template Name").getId(), _test);
         combo.waitForStoreLoad();
         Assert.assertEquals(combo.getDisplayValue(), templateName);
@@ -270,7 +270,7 @@ public class EHRTestHelper
         {
             Ext4FieldRef.getForLabel(_test, "Bulk Edit Before Applying").setChecked(true);
             _test.waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
-            _test.waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
+            _test.waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
         }
         else
         {
@@ -280,7 +280,7 @@ public class EHRTestHelper
 
     public void toggleBulkEditField(String label)
     {
-        Locator l = Ext4Helper.ext4Window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
+        Locator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
         _test.assertElementPresent(l);
         Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
         _test.click(l);
@@ -289,8 +289,8 @@ public class EHRTestHelper
     public void discardForm()
     {
         _test.waitAndClick(getDataEntryButton("More Actions"));
-        _test._ext4Helper.clickExt4MenuItem("Discard");
-        _test.waitForElement(Ext4Helper.ext4Window("Discard Form"));
+        _test.click(Ext4Helper.Locators.menuItem("Discard"));
+        _test.waitForElement(Ext4Helper.Locators.window("Discard Form"));
         _test.clickAndWait(Ext4Helper.Locators.ext4Button("Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));

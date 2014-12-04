@@ -123,7 +123,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Save']", Ext4CmpRef.class);
         btn.waitForEnabled();
         waitAndClick(Ext4Helper.Locators.ext4Button("Save"));
-        waitForElement(Ext4Helper.ext4Window("Success"));
+        waitForElement(Ext4Helper.Locators.window("Success"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
     }
 

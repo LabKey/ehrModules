@@ -15,7 +15,6 @@
  */
 package org.labkey.test.tests;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -28,7 +27,6 @@ import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
-import org.labkey.test.TestTimeoutException;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -36,14 +34,12 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
-import org.labkey.test.util.RReportHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import org.testng.Assert;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -517,10 +513,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         log("testing add series window");
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Arrivals");
         grid.clickTbarButton("Add Series of IDs");
-        waitForElement(Ext4Helper.ext4Window("Enter Series of IDs"));
+        waitForElement(Ext4Helper.Locators.window("Enter Series of IDs"));
         Ext4FieldRef.getForLabel(this, "Starting Number").setValue("2000");
         Ext4FieldRef.getForLabel(this, "Total IDs").setValue("3");
-        waitAndClick(Ext4Helper.ext4WindowButton("Enter Series of IDs", "Submit"));
+        waitAndClick(Ext4Helper.Locators.windowButton("Enter Series of IDs", "Submit"));
         grid.waitForRowCount(3);
         Assert.assertEquals("2000", grid.getFieldValue(1, "Id"));
         Assert.assertEquals("2001", grid.getFieldValue(2, "Id"));
@@ -529,8 +525,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.waitForSelected(3);
 
         grid.clickTbarButton("More Actions");
-        _ext4Helper.clickExt4MenuItem("Bulk Edit");
-        waitForElement(Ext4Helper.ext4Window("Bulk Edit"));
+        click(Ext4Helper.Locators.menuItem("Bulk Edit"));
+        waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
 
         String source = "Boston";
         _helper.toggleBulkEditField("Source");
@@ -556,10 +552,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _helper.toggleBulkEditField("Room");
         _ext4Helper.queryOne("window field[fieldLabel=Room]", Ext4ComboRef.class).setValue(ROOMS[0]);
 
-        waitAndClick(Ext4Helper.ext4Window("Bulk Edit").append(Ext4Helper.Locators.ext4Button("Submit")));
-        waitForElement(Ext4Helper.ext4Window("Set Values"));
-        waitAndClick(Ext4Helper.ext4Window("Set Values").append(Ext4Helper.Locators.ext4Button("Yes")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Bulk Edit"));
+        waitAndClick(Ext4Helper.Locators.window("Bulk Edit").append(Ext4Helper.Locators.ext4Button("Submit")));
+        waitForElement(Ext4Helper.Locators.window("Set Values"));
+        waitAndClick(Ext4Helper.Locators.window("Set Values").append(Ext4Helper.Locators.ext4Button("Yes")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Bulk Edit"));
 
         for (int i = 1;i<=3;i++)
         {
@@ -573,8 +569,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
 
         waitAndClick(_helper.getDataEntryButton("Submit Final"));
-        waitForElement(Ext4Helper.ext4Window("Finalize Form"));
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.ext4Window("Finalize Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
+        waitForElement(Ext4Helper.Locators.window("Finalize Form"));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.Locators.window("Finalize Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
 
         waitForElement(Locator.tagWithText("span", "Enter Data"));
 
@@ -670,21 +666,21 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _helper.waitForCmp(query);
         Ext4FieldRef subjField = getAnimalHistorySubjField();
         subjField.setValue(SUBJECTS[0]);
-        waitAndClick(Ext4Helper.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.ext4Tab("Clinical Snapshot"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical Snapshot"));
         waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
         waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
         // manage treatments
         waitAndClick(Ext4Helper.Locators.ext4Button("Actions"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Manage Treatments"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Manage Treatments"));
 
-        waitForElement(Ext4Helper.ext4Window("Manage Treatments: " + SUBJECTS[0]));
+        waitForElement(Ext4Helper.Locators.window("Manage Treatments: " + SUBJECTS[0]));
         waitAndClick(Ext4Helper.Locators.ext4Button("Order Treatment"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Clinical Treatment"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Clinical Treatment"));
 
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders"));
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
+        waitForElement(Ext4Helper.Locators.window("Treatment Orders"));
+        waitForElement(Ext4Helper.Locators.window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
         Ext4FieldRef enddateField = _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class);
         enddateField.waitForEnabled();
         sleep(100);
@@ -695,9 +691,9 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
         getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
-        waitForElement(Ext4Helper.ext4Window("Choose Project"));
+        waitForElement(Ext4Helper.Locators.window("Choose Project"));
         _ext4Helper.queryOne("window[title=Choose Project] [fieldLabel='Project']", Ext4ComboRef.class).setComboByDisplayValue(PROJECT_ID);
-        waitAndClick(Ext4Helper.ext4Window("Choose Project").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitAndClick(Ext4Helper.Locators.window("Choose Project").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
 
         Ext4FieldRef treatmentField = getFieldInWindow("Treatment", Ext4FieldRef.class);
         treatmentField.getEval("expand()");
@@ -714,39 +710,39 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Assert.assertEquals("mL", _ext4Helper.queryOne("window[title=Treatment Orders] [name='vol_units']", Ext4FieldRef.class).getValue());
 
         _ext4Helper.queryOne("window[title=Treatment Orders] [name='volume']", Ext4FieldRef.class).clickTrigger();
-        waitForElement(Ext4Helper.ext4Window("Review Drug Amounts"));
+        waitForElement(Ext4Helper.Locators.window("Review Drug Amounts"));
         _ext4Helper.queryOne("field[fieldName=weight][recordIdx=0]", Ext4FieldRef.class).setValue(10);
-        waitAndClick(Ext4Helper.ext4Window("Review Drug Amounts").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Review Drug Amounts"));
+        waitAndClick(Ext4Helper.Locators.window("Review Drug Amounts").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Review Drug Amounts"));
 
         Assert.assertEquals(80L, _ext4Helper.queryOne("window[title=Treatment Orders] [name='amount']", Ext4FieldRef.class).getValue());
 
-        waitAndClick(Ext4Helper.ext4Window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Treatment Orders"));
+        waitAndClick(Ext4Helper.Locators.window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Treatment Orders"));
         waitForElement(Locator.tagContainingText("div", "2.5 mL / 80 mg"));  //proxy for record in grid
         waitAndClick(Locator.tag("img").withClass("x4-action-col-icon"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Edit Treatment").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])).notHidden());
-        waitAndClick(Ext4Helper.ext4Window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Cancel")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Treatment Orders"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Edit Treatment").notHidden());
+        waitForElement(Ext4Helper.Locators.window("Treatment Orders").notHidden());
+        waitForElement(Ext4Helper.Locators.window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])).notHidden());
+        waitAndClick(Ext4Helper.Locators.window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Cancel")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Treatment Orders"));
 
         waitAndClick(Locator.tag("img").withClass("x4-action-col-icon"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Change End Date").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Change End Date"));
-        waitForElement(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitAndClick(Ext4Helper.Locators.menuItem("Change End Date").notHidden());
+        waitForElement(Ext4Helper.Locators.window("Change End Date"));
+        waitForElement(Ext4Helper.Locators.window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         Date enddate = prepareDate(new Date(), 10, 0);
         Ext4FieldRef enddateField2 = _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class);
         enddateField2.setValue(_tf.format(enddate));
         sleep(100);
         Assert.assertNotNull(enddateField2.getValue());
 
-        waitAndClick(Ext4Helper.ext4Window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Change End Date"));
+        waitAndClick(Ext4Helper.Locators.window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Change End Date"));
         waitForElement(Locator.tagContainingText("div", _tf.format(enddate)));  //proxy for record in grid
 
-        waitAndClick(Ext4Helper.ext4Window("Manage Treatments: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Close")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Manage Treatments: " + SUBJECTS[0]));
+        waitAndClick(Ext4Helper.Locators.window("Manage Treatments: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Close")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Manage Treatments: " + SUBJECTS[0]));
 
     }
 
@@ -775,52 +771,52 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _helper.waitForCmp(query);
         Ext4FieldRef subjField = getAnimalHistorySubjField();
         subjField.setValue(SUBJECTS[0]);
-        waitAndClick(Ext4Helper.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.ext4Tab("Clinical Snapshot"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical Snapshot"));
         waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
         waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
         // manage cases
         waitAndClick(Ext4Helper.Locators.ext4Button("Actions"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Manage Cases"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Manage Cases"));
 
-        waitForElement(Ext4Helper.ext4Window("Manage Cases: " + SUBJECTS[0]));
+        waitForElement(Ext4Helper.Locators.window("Manage Cases: " + SUBJECTS[0]));
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Open Case"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Open Surgery Case"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Open Surgery Case"));
 
-        waitForElement(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]));
-        waitForElement(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Locator.tagWithText("div", "Surgery")));
+        waitForElement(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]));
+        waitForElement(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Locator.tagWithText("div", "Surgery")));
         String description = "This is a surgery case";
         Ext4FieldRef.getForLabel(this, "Description/Notes").setValue(description);
 
-        waitAndClick(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open Case")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]));
+        waitAndClick(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open Case")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]));
         waitForElement(Locator.tagWithText("div", description));
 
         waitAndClick(Locator.tag("img").withClass("x4-action-col-icon"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Close With Reopen Date").notHidden());
+        waitAndClick(Ext4Helper.Locators.menuItem("Close With Reopen Date").notHidden());
         Ext4CmpRef.waitForComponent(this, "field[fieldLabel=Reopen Date]");
         Ext4FieldRef.getForLabel(this, "Reopen Date").setValue(_df.format(prepareDate(new Date(), 28, 0)));
-        waitAndClick(Ext4Helper.ext4Window("Close With Reopen Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Close With Reopen Date"));
+        waitAndClick(Ext4Helper.Locators.window("Close With Reopen Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Close With Reopen Date"));
         waitForElement(Locator.tagWithText("div", _df.format(prepareDate(new Date(), 28, 0))));
 
         //now clinical case
         waitAndClick(Ext4Helper.Locators.ext4Button("Open Case"));
-        waitAndClick(Ext4Helper.ext4MenuItem("Open Clinical Case"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Open Clinical Case"));
 
-        waitForElement(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]));
-        waitForElement(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Locator.tagWithText("div", "Clinical")));
+        waitForElement(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]));
+        waitForElement(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Locator.tagWithText("div", "Clinical")));
         Ext4ComboRef vetField = Ext4ComboRef.getForLabel(this, "Assigned Vet");
         vetField.setComboByDisplayValue("admin");
 
-        waitAndClick(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
+        waitAndClick(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
         sleep(100);
-        waitAndClick(Ext4Helper.ext4MenuItem("Close With Reopen Date").notHidden());
-        waitForElement(Ext4Helper.ext4Window("Error"));
-        waitAndClick(Ext4Helper.ext4Window("Error").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Error"));
+        waitAndClick(Ext4Helper.Locators.menuItem("Close With Reopen Date").notHidden());
+        waitForElement(Ext4Helper.Locators.window("Error"));
+        waitAndClick(Ext4Helper.Locators.window("Error").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Error"));
 
         Ext4FieldRef problemField = Ext4FieldRef.getForLabel(this, "Problem");
         Ext4FieldRef subProblemField = Ext4FieldRef.getForLabel(this, "Subcategory");
@@ -830,16 +826,16 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Assert.assertFalse(subProblemField.isDisabled());
         subProblemField.setValue("Alopecia");
 
-        waitAndClick(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
-        waitAndClick(Ext4Helper.ext4MenuItem("Close With Reopen Date").notHidden());
+        waitAndClick(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
+        waitAndClick(Ext4Helper.Locators.menuItem("Close With Reopen Date").notHidden());
         Ext4FieldRef.waitForField(this, "Reopen Date");
         waitAndClick(Ext4Helper.Locators.ext4ButtonEnabled("Submit"));
 
-        waitForElementToDisappear(Ext4Helper.ext4Window("Open Case: " + SUBJECTS[0]));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]));
         waitForElement(Locator.tagWithText("div", "Behavioral: Alopecia"));
 
         waitAndClick(Ext4Helper.Locators.ext4ButtonEnabled("Close"));
-        waitForElementToDisappear(Ext4Helper.ext4Window("Manage Cases: " + SUBJECTS[0]));
+        waitForElementToDisappear(Ext4Helper.Locators.window("Manage Cases: " + SUBJECTS[0]));
     }
 
     //TODO: @Test
