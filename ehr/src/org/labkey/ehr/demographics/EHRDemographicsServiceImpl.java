@@ -307,7 +307,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         int start = 0;
         int batchSize = 500;
-        List<String> allIds = new ArrayList<>(ids);
+        // Use a set to be sure there are no duplicates
+        List<String> allIds = new ArrayList<>(new HashSet<>(ids));
         while (start < ids.size())
         {
             List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
@@ -386,7 +387,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         //NOTE: SQLServer can complain if requesting more than 2000 at a time, so break into smaller sets
         int start = 0;
         int batchSize = 500;
-        List<String> allIds = new ArrayList<>(ids);
+        // Use a set to remove duplicates
+        List<String> allIds = new ArrayList<>(new HashSet<>(ids));
         while (start < ids.size())
         {
             List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));

@@ -106,8 +106,11 @@ import java.util.Set;
  */
 public class TriggerScriptHelper
 {
-    private Container _container = null;
-    private User _user = null;
+    @NotNull
+    private final Container _container;
+
+    @NotNull
+    private final User _user;
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
@@ -117,20 +120,24 @@ public class TriggerScriptHelper
 
     private TriggerScriptHelper(int userId, String containerId)
     {
-        _user = UserManager.getUser(userId);
-        if (_user == null)
+        User user = UserManager.getUser(userId);
+        if (user == null)
             throw new RuntimeException("User does not exist: " + userId);
+        _user = user;
 
-        _container = ContainerManager.getForId(containerId);
-        if (_container == null)
+        Container container = ContainerManager.getForId(containerId);
+        if (container == null)
             throw new RuntimeException("Container does not exist: " + containerId);
+        _container = container;
     }
 
+    @NotNull
     private User getUser()
     {
         return _user;
     }
 
+    @NotNull
     private Container getContainer()
     {
         return _container;
