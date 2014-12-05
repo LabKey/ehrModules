@@ -437,8 +437,19 @@ EHR.Server.Triggers.complete = function(event, errors) {
     var helper = this.scriptHelper;
     
     helper.logDebugMsg('Event complete: '+event);
-    helper.logDebugMsg('Participants modified: ' + helper.getParticipantsModified());
-    helper.logDebugMsg('PKs modified: ' + helper.getPKsModified());
+    if (helper.getParticipantsModified().length > 100) {
+        helper.logDebugMsg(helper.getParticipantsModified().length + ' participants modified.');
+    }
+    else {
+        helper.logDebugMsg('Participants modified: ' + helper.getParticipantsModified());
+    }
+
+    if (helper.getPKsModified().length > 100) {
+        helper.logDebugMsg(helper.getPKsModified().length + ' PKs modified.');
+    }
+    else {
+        helper.logDebugMsg('PKs modified: ' + helper.getPKsModified());
+    }
 
     if (helper.isValidateOnly()){
         helper.logDebugMsg('Validating, so skipping onComplete');
