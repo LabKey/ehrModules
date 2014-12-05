@@ -345,7 +345,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             idsToUpdate.removeAll(ids);
             if (!idsToUpdate.isEmpty())
             {
-                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (ids.size() < 10 ? ".  " + StringUtils.join(ids, ";") : ""));
+                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 10 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
                 reportDataChangeForProvider(c, p, idsToUpdate);
             }
         }

@@ -1424,7 +1424,10 @@ public class TriggerScriptHelper
             // NOTE: this behavior around live births is an imperfect way to mesh WNPRC/ONPRC rules.  ONPRC records records in the birth table,
             // including dead infants.  all records in the WNPRC table are of live births.  checking for the column 'birth_condition' column is a crude proxy for this
             TableInfo birthTable = getTableInfo("study", "birth");
-            Date lastDeadBirth = birthTable.getColumnNameSet().contains("birth_condition") ? findMostRecentDate(id, getMostRecentDate(id, birthTable, new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false)), null) : null;
+            //note: allow draft records to count
+            SimpleFilter deadBirthFilter = new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false);
+            deadBirthFilter.addCondition(FieldKey.fromString("birth_condition"), null, CompareType.NONBLANK);
+            Date lastDeadBirth = birthTable.getColumnNameSet().contains("birth_condition") ? findMostRecentDate(id, getMostRecentDate(id, birthTable, deadBirthFilter), null) : null;
             Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, birthTable, (birthTable.getColumnNameSet().contains("birth_condition") ? new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false, CompareType.NEQ_OR_NULL) : null)), liveBirths);
 
             String status = null;

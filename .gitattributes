@@ -322,6 +322,7 @@ ehr/resources/queries/study/Housing.js -text
 ehr/resources/queries/study/Housing.query.xml -text
 ehr/resources/queries/study/HousingCheck.query.xml -text
 ehr/resources/queries/study/HousingCheck.sql -text
+ehr/resources/queries/study/HousingCheck/.qview.xml -text
 ehr/resources/queries/study/HousingOverlaps.query.xml -text
 ehr/resources/queries/study/HousingOverlaps.sql -text
 ehr/resources/queries/study/HousingOverlaps/.qview.xml -text

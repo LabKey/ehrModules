@@ -111,6 +111,10 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
     },
 
     onLoad: function(results){
+        if (this.isDestroyed){
+            return;
+        }
+
         this.panelMap = {};
         if (results && results.rows && results.rows.length){
             Ext4.Array.forEach(results.rows, function(r){

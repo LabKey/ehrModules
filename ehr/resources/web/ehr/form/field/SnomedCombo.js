@@ -150,7 +150,7 @@ Ext4.define('EHR.form.field.SnomedCombo', {
             else {
                 if (val && val.length && val.length > 6) {
                     //log to server
-                    LDK.Assert.assertTrue('Unable to find code in SnomedCombo for: ' + val, recIdx != -1);
+                    LDK.Assert.assertTrue('Unable to find code in SnomedCombo for: [' + val + ']', recIdx != -1);
                 }
             }
         }
@@ -178,6 +178,9 @@ Ext4.define('EHR.form.field.SnomedCombo', {
     setValue: function(val){
         if (Ext4.isString(val)) {
             this.ensureRecord(val);
+        }
+        else if (Ext4.isArray(val) && val.length == 1 && val[0].isModel) {
+            this.ensureRecord(val[0].get('code'));
         }
         else if (Ext4.isObject(val) && val.code){
             this.ensureRecord(val.code);
