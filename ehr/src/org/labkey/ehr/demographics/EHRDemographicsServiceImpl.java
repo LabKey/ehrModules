@@ -39,6 +39,7 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.study.Study;
+import org.labkey.api.util.CPUTimer;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.Pair;
@@ -111,7 +112,12 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     private String getCacheKey(Container c, String id)
     {
         assert c != null && c.getId() != null : "Attempting to cache a record without a container: " + id;
-        return getClass().getName() + "||" + c.getId() + "||" + id;
+        return getCacheKeyPrefix(c) + id;
+    }
+
+    private String getCacheKeyPrefix(Container c)
+    {
+        return getClass().getName() + "||" + c.getId() + "||";
     }
 
     /**
@@ -219,10 +225,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     private void recacheRecords(Container c, List<String> ids)
     {
-        for (String id : ids)
-        {
-            _cache.remove(getCacheKey(c, id));
-        }
+        _cache.removeUsingPrefix(getCacheKeyPrefix(c));
 
         asyncCache(c, ids);
     }
@@ -305,19 +308,22 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     private void updateForProvider(Container c, User u, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
     {
+        CPUTimer timer = new CPUTimer(p.getName());
+        timer.start();
+
         int start = 0;
         int batchSize = 500;
         // Use a set to be sure there are no duplicates
         List<String> allIds = new ArrayList<>(new HashSet<>(ids));
-        while (start < ids.size())
+        while (start < allIds.size())
         {
-            List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
+            List<String> sublist = allIds.subList(start, Math.min(allIds.size(), start + batchSize));
             start = start + batchSize;
 
             Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
             Set<String> idsToUpdate = new TreeSet<>();
 
-            for (String id : ids)
+            for (String id : sublist)
             {
                 synchronized (this)
                 {
@@ -342,13 +348,16 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
             }
 
-            idsToUpdate.removeAll(ids);
+            idsToUpdate.removeAll(allIds);
             if (!idsToUpdate.isEmpty())
             {
                 _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 10 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
                 reportDataChangeForProvider(c, p, idsToUpdate);
             }
         }
+
+        timer.stop();
+        _log.info("updated demographics provider: " + p.getName() + " for " + ids.size() + " ids.  " + (ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]") + " took " + timer.getDuration());
     }
 
     // Create and cache IDs in the background

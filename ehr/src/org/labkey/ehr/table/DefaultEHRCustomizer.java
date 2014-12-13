@@ -1345,7 +1345,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     return new AgeDisplayColumn(colInfo);
                 }
             });
-            wrap.setLabel("Age (Years and Days");
+            wrap.setLabel("Age (Years and Days)");
 
             table.addColumn(wrap);
         }
