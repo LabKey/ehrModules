@@ -225,7 +225,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     private void recacheRecords(Container c, List<String> ids)
     {
-        _cache.removeUsingPrefix(getCacheKeyPrefix(c));
+        for (String id : ids)
+        {
+            _cache.remove(getCacheKey(c, id));
+        }
 
         asyncCache(c, ids);
     }
