@@ -23,6 +23,7 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Table;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.etl.DataIterator;
 import org.labkey.api.etl.DataIteratorBuilder;
@@ -192,11 +193,12 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
         }
 
         @Override
-        public int truncateRows(User user, Container container, Map<String, Object> extraScriptContext)
-                throws BatchValidationException, QueryUpdateServiceException, SQLException
+        protected int truncateRows(User user, Container container) throws QueryUpdateServiceException, SQLException
         {
-            throw new UnsupportedOperationException("truncate is not supported for all tables");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_filterColumn), _filterValue, CompareType.EQUAL);
+            return Table.delete(getDbTable(), filter);
         }
+
     }
 
     protected class ValuesManager
