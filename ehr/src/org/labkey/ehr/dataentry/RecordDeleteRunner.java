@@ -132,7 +132,7 @@ public class RecordDeleteRunner implements Job
                     }
 
                     _log.info("deleting " + keys.size() + " records from dataset " + ds.getLabel() + " in container: " + c.getPath());
-                    ti.getUpdateService().deleteRows(u, c, keys, new HashMap<String, Object>());
+                    ti.getUpdateService().deleteRows(u, c, keys, null, new HashMap<String, Object>());
                 }
             }
         }

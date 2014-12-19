@@ -25,7 +25,6 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.Results;
@@ -1278,13 +1277,13 @@ public class EHRManager
             {
                 if (!keysToDelete.isEmpty())
                 {
-                    ti.getUpdateService().deleteRows(u, c, keysToDelete, new HashMap<String, Object>());
+                    ti.getUpdateService().deleteRows(u, c, keysToDelete, null, new HashMap<String, Object>());
                 }
 
 
                 if (!requestsToQueue.isEmpty())
                 {
-                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, new HashMap<String, Object>());
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<String, Object>());
                 }
             }
             catch (InvalidKeyException e)
@@ -1448,7 +1447,7 @@ public class EHRManager
 
             BatchValidationException errors = new BatchValidationException();
             if (rows.size() > 0)
-                flagsTable.getUpdateService().insertRows(u, flagsTable.getUserSchema().getContainer(), rows, errors, getExtraContext());
+                flagsTable.getUpdateService().insertRows(u, flagsTable.getUserSchema().getContainer(), rows, errors, null, getExtraContext());
 
             if (errors.hasErrors())
                 throw errors;
@@ -1520,7 +1519,7 @@ public class EHRManager
         try
         {
             if (rows.size() > 0)
-                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, getExtraContext());
+                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, getExtraContext());
 
             return distinctIds;
         }

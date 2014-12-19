@@ -639,7 +639,7 @@ public class TriggerScriptHelper
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
-        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, null, getExtraContext());
 
         if (errors.hasErrors())
             throw errors;
@@ -677,7 +677,7 @@ public class TriggerScriptHelper
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
-        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, null, getExtraContext());
 
         if (errors.hasErrors())
             throw errors;
@@ -699,7 +699,7 @@ public class TriggerScriptHelper
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
-        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, null, getExtraContext());
 
         if (errors.hasErrors())
             throw errors;
@@ -741,7 +741,7 @@ public class TriggerScriptHelper
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
-        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, null, getExtraContext());
         if (errors.hasErrors())
             throw errors;
 
@@ -764,7 +764,7 @@ public class TriggerScriptHelper
             row.put("lsid", lsid);
             keyRow.put("lsid", lsid);
 
-            ti.getUpdateService().updateRows(getUser(), getContainer(), Arrays.asList(row), Arrays.asList(keyRow), getExtraContext());
+            ti.getUpdateService().updateRows(getUser(), getContainer(), Arrays.asList(row), Arrays.asList(keyRow), null, getExtraContext());
 
             EHRDemographicsService.get().getAnimal(getContainer(), id);
         }
@@ -1468,7 +1468,7 @@ public class TriggerScriptHelper
         if (!rows.isEmpty())
         {
             TableInfo ti = getTableInfo("study", "Demographics");
-            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, getExtraContext());
+            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, null, getExtraContext());
             EHRDemographicsServiceImpl.get().getAnimals(getContainer(), ids);
         }
         else
@@ -1915,7 +1915,7 @@ public class TriggerScriptHelper
                 Map<String, Object> extraContext = getExtraContext();
                 extraContext.put("skipRequestInPastCheck", true);
                 BatchValidationException errors = new BatchValidationException();
-                requests.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, extraContext);
+                requests.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, null, extraContext);
                 if (errors.hasErrors())
                     throw errors;
 
@@ -1932,7 +1932,7 @@ public class TriggerScriptHelper
                 clinpathRow.put("QCStateLabel", "Request: Pending");
 
                 clinpathRows.add(clinpathRow);
-                clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, errors, getExtraContext());
+                clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, errors, null, getExtraContext());
                 if (errors.hasErrors())
                     throw errors;
             }
@@ -2129,7 +2129,7 @@ public class TriggerScriptHelper
             _log.info("closing housing records: " + toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
-            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, context);
+            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
         }
     }
 
@@ -2202,7 +2202,7 @@ public class TriggerScriptHelper
                 {
                     Map<String, Object> extraContext = getExtraContext();
                     extraContext.put("skipAnnounceChangedParticipants", true);
-                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, extraContext);
+                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, extraContext);
                 }
             }
             catch (InvalidKeyException e)

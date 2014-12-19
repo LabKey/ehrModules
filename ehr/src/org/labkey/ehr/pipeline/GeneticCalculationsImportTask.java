@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
@@ -370,9 +369,12 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             getJob().getLogger().info("Inserting rows");
             BatchValidationException errors = new BatchValidationException();
 
+            Map<Enum, Object> options = new HashMap<>();
+            options.put(QueryUpdateService.ConfigParameters.Logger, getJob().getLogger());
+
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
-                qus.insertRows(getJob().getUser(), getJob().getContainer(), rows, errors, new HashMap<String, Object>());
+                qus.insertRows(getJob().getUser(), getJob().getContainer(), rows, errors, options, new HashMap<String, Object>());
 
                 if (errors.hasErrors())
                     throw errors;
