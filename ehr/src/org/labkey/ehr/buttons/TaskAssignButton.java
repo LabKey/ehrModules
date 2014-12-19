@@ -31,7 +31,7 @@ public class TaskAssignButton extends SimpleButtonConfigFactory
     public TaskAssignButton(Module owner)
     {
         super(owner, "Assign Tasks", "EHR.window.TaskAssignWindow.buttonHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromFilePath("ehr/window/TaskAssignWindow.js"));
+        setClientDependencies(ClientDependency.fromPath("ehr/window/TaskAssignWindow.js"));
     }
 
     public boolean isAvailable(TableInfo ti)

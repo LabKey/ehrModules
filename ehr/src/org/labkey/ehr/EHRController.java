@@ -1247,7 +1247,7 @@ public class EHRController extends SpringActionController
             view.setHidePageTitle(true);
             view.setFrame(WebPartView.FrameType.PORTAL);
 
-            view.addClientDependency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(def.getClientDependencies());
 
             return view;
@@ -1288,7 +1288,7 @@ public class EHRController extends SpringActionController
             view.setHidePageTitle(true);
             view.setFrame(WebPartView.FrameType.PORTAL);
 
-            view.addClientDependency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(def.getClientDependencies());
 
             return view;
@@ -1328,7 +1328,7 @@ public class EHRController extends SpringActionController
             LinkedHashSet<String> cssDependencyPaths = new LinkedHashSet<>();
 
             LinkedHashSet<ClientDependency> dependencies = new LinkedHashSet<>();
-            dependencies.add(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            dependencies.add(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
             dependencies.addAll(def.getClientDependencies());
             for (ClientDependency cd : dependencies)
             {

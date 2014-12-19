@@ -30,7 +30,7 @@ public class ScheduleTaskButton extends SimpleButtonConfigFactory
     public ScheduleTaskButton(Module owner, String formType)
     {
         super(owner, "Schedule Task", "EHR.DatasetButtons.compareWeightsHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromFilePath("ehr/window/CompareWeightsWindow.js"), ClientDependency.fromFilePath("onprc_ehr/buttons.js"));
+        setClientDependencies(ClientDependency.fromPath("ehr/window/CompareWeightsWindow.js"), ClientDependency.fromPath("onprc_ehr/buttons.js"));
     }
 
     public boolean isAvailable(TableInfo ti)

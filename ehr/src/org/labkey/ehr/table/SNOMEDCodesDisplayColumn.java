@@ -93,6 +93,6 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
     @Override
     public @NotNull Set<ClientDependency> getClientDependencies()
     {
-        return Collections.singleton(ClientDependency.fromFilePath("ehr/ehr_api.lib.xml"));
+        return Collections.singleton(ClientDependency.fromPath("ehr/ehr_api.lib.xml"));
     }
 }

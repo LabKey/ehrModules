@@ -16,19 +16,14 @@
 package org.labkey.ehr.dataentry;
 
 import org.json.JSONObject;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.SingleQueryFormSection;
-import org.labkey.api.ehr.security.EHRInProgressInsertPermission;
 import org.labkey.api.module.Module;
-import org.labkey.api.security.User;
-import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +49,7 @@ public class SingleQueryForm extends AbstractDataEntryForm
             s.addConfigSource("SingleQuery");
         }
 
-        addClientDependency(ClientDependency.fromFilePath("ehr/model/sources/SingleQuery.js"));
+        addClientDependency(ClientDependency.fromPath("ehr/model/sources/SingleQuery.js"));
     }
 
     public static SingleQueryForm create(DataEntryFormContext ctx, Module owner, TableInfo ti)

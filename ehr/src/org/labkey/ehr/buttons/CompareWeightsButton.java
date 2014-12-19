@@ -16,10 +16,8 @@
 package org.labkey.ehr.buttons;
 
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
-import org.labkey.api.study.DataSetTable;
 import org.labkey.api.view.template.ClientDependency;
 
 /**
@@ -32,7 +30,7 @@ public class CompareWeightsButton extends SimpleButtonConfigFactory
     public CompareWeightsButton(Module owner)
     {
         super(owner, "Compare Weights", "EHR.DatasetButtons.compareWeightsHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromFilePath("ehr/window/CompareWeightsWindow.js"), ClientDependency.fromFilePath("onprc_ehr/buttons.js"));
+        setClientDependencies(ClientDependency.fromPath("ehr/window/CompareWeightsWindow.js"), ClientDependency.fromPath("onprc_ehr/buttons.js"));
     }
 
     public boolean isAvailable(TableInfo ti)

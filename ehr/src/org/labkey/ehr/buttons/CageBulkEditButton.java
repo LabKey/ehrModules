@@ -16,15 +16,11 @@
 package org.labkey.ehr.buttons;
 
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
-import org.labkey.api.security.permissions.Permission;
-import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 /**
@@ -38,7 +34,7 @@ public class CageBulkEditButton extends SimpleButtonConfigFactory
 
         LinkedHashSet cds = new LinkedHashSet<ClientDependency>();
         cds.add(ClientDependency.fromModuleName("ehr"));
-        cds.add(ClientDependency.fromFilePath("ehr/window/BulkEditCageTypeWindow.js"));
+        cds.add(ClientDependency.fromPath("ehr/window/BulkEditCageTypeWindow.js"));
         setClientDependencies(cds);
     }
 
