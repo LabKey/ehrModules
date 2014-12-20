@@ -30,6 +30,7 @@ import org.labkey.ehr.EHRModule;
  */
 public class AbstractEHRRole extends AbstractRole
 {
+    @SafeVarargs
     protected AbstractEHRRole(String name, String description, Class<? extends Permission>... perms)
     {
         super(name, description, EHRModule.class, perms);
@@ -38,6 +39,6 @@ public class AbstractEHRRole extends AbstractRole
     @Override
     public boolean isApplicable(SecurityPolicy policy, SecurableResource resource)
     {
-        return resource instanceof Container ? ((Container)resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class)) : false;
+        return resource instanceof Container && ((Container) resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
     }
 }
