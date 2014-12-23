@@ -30,7 +30,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         extraContext: extraContext || {},
         queryName: extraContext.queryName,
         schemaName: extraContext.schemaName,
-        tablesModified: [extraContext.schemaName + ';' + extraContext.queryName],
+        tablesModified: [(extraContext.schemaName + ';' + extraContext.queryName).toString()],
         notificationRecipients : [],
         participantsModified: [],
         publicParticipantsModified: [],
