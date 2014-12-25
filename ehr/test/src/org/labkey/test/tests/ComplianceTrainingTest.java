@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -490,7 +491,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     }
 
     @Override
-    public java.util.List<String> getAssociatedModules()
+    public List<String> getAssociatedModules()
     {
         return null;
     }
