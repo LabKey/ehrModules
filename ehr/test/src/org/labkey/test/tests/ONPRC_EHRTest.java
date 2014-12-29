@@ -1486,7 +1486,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         goToProjectHome();
 
         //retain pipeline log for debugging
-        getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), GENETICS_PIPELINE_LOG_PATH), new FileFilter()
+        getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), getModulePath() + GENETICS_PIPELINE_LOG_PATH), new FileFilter()
         {
             @Override
             public boolean accept(File pathname)

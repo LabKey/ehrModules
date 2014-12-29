@@ -17,6 +17,7 @@ package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
@@ -46,7 +47,7 @@ import java.util.HashMap;
  */
 public class AbstractONPRC_EHRTest extends AbstractEHRTest
 {
-    protected static final String REFERENCE_STUDY_PATH = "/server/customModules/onprc_ehr/resources/referenceStudy";
+    protected static final String REFERENCE_STUDY_PATH = "/resources/referenceStudy";
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
     protected static final String ID_PREFIX = "9999";
 
@@ -63,7 +64,16 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
 
     public AbstractONPRC_EHRTest()
     {
+    }
 
+    public String getModuleName()
+    {
+        return "onprc_ehr";
+    }
+
+    public String getModulePath()
+    {
+        return "/server/customModules/" + getModuleName();
     }
 
     @Override
@@ -130,39 +140,57 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     @Override
     protected void populateInitialData()
     {
-        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateData.view");
+        beginAt(getBaseURL() + "/" + getModuleName() + "/" + getContainerPath() + "/populateData.view");
 
+        log("Repopulate Lookup Sets");
         clickButton("Delete Data From Lookup Sets", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
         clickButton("Populate Lookup Sets", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
         sleep(2000);
 
+        log("Repopulate Procedures");
         clickButton("Delete Data From Procedures", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
         clickButton("Populate Procedures", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
         sleep(2000);
 
+        log("Repopulate Everything");
         clickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
         clickButton("Populate All", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
 
+        log("Repopulate SNOMED Codes");
         //NOTE: this is excluded from populate all since it changes rarely
         clickButton("Delete Data From SNOMED Codes", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
         clickButton("Populate SNOMED Codes", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
 
         //also populate templates
         beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
 
+        log("Repopulate Templates");
         clickButton("Delete Data From Form Templates", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         clickButton("Populate Form Templates", 0);
         waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
 
+        log("Repopulate Formulary");
         clickButton("Delete Data From Formulary", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         clickButton("Populate Formulary", 0);
@@ -172,10 +200,10 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     @Override
     protected void doStudyImport()
     {
-        File path = new File(TestFileUtils.getLabKeyRoot(), REFERENCE_STUDY_PATH);
+        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + REFERENCE_STUDY_PATH);
         setPipelineRoot(path.getPath());
 
-        goToModule("Pipeline");
+        beginAt(getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
