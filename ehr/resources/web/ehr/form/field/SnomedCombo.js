@@ -147,12 +147,6 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                     }
                 }, me, {single: true});
             }
-            else {
-                if (val && val.length && val.length > 6) {
-                    //log to server
-                    LDK.Assert.assertTrue('Unable to find code in SnomedCombo for: [' + val + ']', recIdx != -1);
-                }
-            }
         }
     },
 

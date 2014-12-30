@@ -128,14 +128,24 @@ Ext4.define('EHR.data.StoreCollection', {
         }
     },
 
-    onClientStoreAdd: function(store){
+    onClientStoreAdd: function(store, records){
+        //NOTE: this is added in case a record is removed then re-added, such as drag/drop reorder
+        if (Ext4.isArray(records)){
+            Ext4.Array.forEach(records, function(record){
+                var recIdx = store.removed.indexOf(record);
+                if (recIdx > -1){
+                    Ext4.Array.remove(store.removed, record);
+                }
+            }, this);
+        }
+
         if (!this.hasIgnoredClientEvent(store.storeId, 'add', true))
             this.fireEvent('clientdatachanged', 'add');
     },
 
     onClientStoreRemove: function(store, record){
         //note: stores do not normally keep track of removed phantom records
-        if (record.phantom){
+        if (record.phantom && store.removed.indexOf(record) == -1) {
             store.removed.push(record);
         }
 
@@ -148,7 +158,7 @@ Ext4.define('EHR.data.StoreCollection', {
         //note: stores do not normally keep track of removed phantom records
         if (records){
             for (var i=0;i<records.length;i++){
-                if (records[i].phantom){
+                if (records[i].phantom && store.removed.indexOf(records[i]) == -1) {
                     store.removed.push(records[i]);
                 }
             }

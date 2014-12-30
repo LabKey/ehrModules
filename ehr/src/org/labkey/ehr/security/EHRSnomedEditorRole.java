@@ -15,8 +15,7 @@
  */
 package org.labkey.ehr.security;
 
-import org.labkey.api.ehr.security.EHRFormularyEditPermission;
-import org.labkey.api.ehr.security.EHRHousingTransferPermission;
+import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -27,16 +26,16 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * Date: 1/17/13
  * Time: 7:42 PM
  */
-public class EHRFormularyEditorRole extends AbstractEHRRole
+public class EHRSnomedEditorRole extends AbstractEHRRole
 {
-    public EHRFormularyEditorRole()
+    public EHRSnomedEditorRole()
     {
-        super("EHR Formulary Editor Role", "This role is used to grant edit rights to ehr.drug_defaults.",
+        super("EHR Snomed Editor Role", "This role is used to grant edit rights to SNOMED and associated tables.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,
             DeletePermission.class,
-            EHRFormularyEditPermission.class
+            EHRSnomedEditPermission.class
         );
     }
 }

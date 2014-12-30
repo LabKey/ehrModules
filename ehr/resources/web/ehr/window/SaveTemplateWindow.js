@@ -269,7 +269,8 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
                 title: this.down('#templateName').getValue(),
                 userid: this.down('#templateUser').getValue(),
                 description: this.down('#templateDescription').getValue(),
-                formType: this.formType
+                formType: this.formType,
+                category: 'Section'
             }],
             success: function(data){
                 Ext4.Array.forEach(rows, function(r){

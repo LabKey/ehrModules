@@ -114,12 +114,12 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 });
 
 function onComplete(event, errors, helper){
-    if (!helper.isETL()){
+    if (!helper.isETL() && !helper.isValidateOnly()){
         var housingRows = helper.getRows();
         var idsToClose = [];
         if (housingRows){
             for (var i=0;i<housingRows.length;i++){
-                if (housingRows[i].row.date && !housingRows[i].row.enddate){
+                if (housingRows[i].row.date){
                     idsToClose.push({
                         Id: housingRows[i].row.Id,
                         date: EHR.Server.Utils.datetimeToString(housingRows[i].row.date),  //stringify to serialize properly

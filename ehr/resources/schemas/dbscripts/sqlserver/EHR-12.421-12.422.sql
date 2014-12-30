@@ -1,0 +1,1 @@
+CREATE INDEX IDX_treatment_times_treatmentid ON ehr.treatment_times (treatmentid);

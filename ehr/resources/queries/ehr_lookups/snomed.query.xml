@@ -2,12 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="snomed" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</tableUrl>
                 <titleColumn>meaning</titleColumn>
-                <insertUrl />
-                <importUrl />
-                <updateUrl />
-                <deleteUrl />
             </table>
         </tables>
     </metadata>

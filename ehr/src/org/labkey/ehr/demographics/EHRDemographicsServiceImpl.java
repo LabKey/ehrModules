@@ -317,10 +317,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         int start = 0;
         int batchSize = 500;
         // Use a set to be sure there are no duplicates
-        List<String> allIds = new ArrayList<>(new HashSet<>(ids));
-        while (start < allIds.size())
+        List<String> uniqueIds = new ArrayList<>(new HashSet<>(ids));
+        while (start < uniqueIds.size())
         {
-            List<String> sublist = allIds.subList(start, Math.min(allIds.size(), start + batchSize));
+            List<String> sublist = uniqueIds.subList(start, Math.min(uniqueIds.size(), start + batchSize));
             start = start + batchSize;
 
             Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
@@ -351,7 +351,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
             }
 
-            idsToUpdate.removeAll(allIds);
+            idsToUpdate.removeAll(uniqueIds);
             if (!idsToUpdate.isEmpty())
             {
                 _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 10 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));

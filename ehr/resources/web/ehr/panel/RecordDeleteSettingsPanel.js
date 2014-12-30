@@ -71,7 +71,7 @@ Ext4.define('EHR.panel.RecordDeleteSettingsPanel', {
 
     saveData: function(){
         Ext4.Msg.wait('Saving...');
-      LABKEY.Ajax.requestst({
+      LABKEY.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ehr', 'setRecordDeleteSettings'),
             params: {
                 enabled: this.down('#enabled').getValue()

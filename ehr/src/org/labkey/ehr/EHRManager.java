@@ -27,6 +27,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyStorageSpec;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
@@ -53,6 +54,7 @@ import org.labkey.api.exp.query.ExpSchema;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.AliasManager;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
@@ -623,8 +625,8 @@ public class EHRManager
             }
 
             //add indexes
-            String[][] toIndex = new String[][]{{"taskid"}, {"requestid"}, {"participantid", "date"}};
-            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}};
+            String[][] toIndex = new String[][]{{"taskid"}, {"participantid", "date"}};
+            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             DbSchema schema = StudyService.get().getDatasetSchema();
             Set<String> distinctIndexes = new HashSet<>();
@@ -671,11 +673,17 @@ public class EHRManager
                 {
                     toAdd.add(new String[]{"parentid"});
                     toAdd.add(new String[]{"objectid"});
+
+                    toAdd.add(new String[]{"requestid"});
+                    toRemove.remove(new String[]{"requestid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Clinical Encounters"))
                 {
                     toAdd.add(new String[]{"caseno"});
                     toAdd.add(new String[]{"objectid"});
+
+                    toAdd.add(new String[]{"requestid"});
+                    toRemove.remove(new String[]{"requestid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Demographics"))
                 {
@@ -692,12 +700,14 @@ public class EHRManager
                     toRemove.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC"});
                     toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC", "include:hx,qcstate,datefinalized,category"});
                     toRemove.add(new String[]{"date", "include:hx,caseid"});
-                    toAdd.add(new String[]{"date", "participantid", "lsid", "qcstate", "include:hx,caseid"});
                     toAdd.add(new String[]{"objectid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Treatment Orders"))
                 {
                     toAdd.add(new String[]{"objectid"});
+
+                    toAdd.add(new String[]{"requestid"});
+                    toRemove.remove(new String[]{"requestid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Cases"))
                 {
@@ -725,9 +735,17 @@ public class EHRManager
                 else if (d.getName().equalsIgnoreCase("drug"))
                 {
                     toAdd.add(new String[]{"treatmentid"});
-                    toAdd.add(new String[]{"qcstate", "include:treatmentid"});
 
                     toRemove.add(new String[]{"qcstate", "include:treatmentid,vetreview"});
+                    toRemove.add(new String[]{"qcstate", "include:treatmentid"});
+
+                    toAdd.add(new String[]{"requestid"});
+                    toRemove.remove(new String[]{"requestid"});
+                }
+                else if (d.getName().equalsIgnoreCase("blood"))
+                {
+                    toAdd.add(new String[]{"requestid"});
+                    toRemove.remove(new String[]{"requestid"});
                 }
 
                 //ensure indexes removed, unless explicitly requested by a table
@@ -873,10 +891,52 @@ public class EHRManager
                         }
                     }
                 }
+
+                //then disable if needed.  only attempt on SQLServer
+                if (schema.getSqlDialect().isSqlServer())
+                {
+                    if (!"demographics".equalsIgnoreCase(d.getName()))
+                    {
+                        PropertyStorageSpec.Index[] idxToDisable = new PropertyStorageSpec.Index[]{
+                                new PropertyStorageSpec.Index(false, "container", "participantsequencenum"),
+                                new PropertyStorageSpec.Index(false, "participantsequencenum"),
+                                new PropertyStorageSpec.Index(false, "container", "qcstate"),
+                                new PropertyStorageSpec.Index(false, "qcstate")
+                        };
+
+                        for (PropertyStorageSpec.Index toDisable : idxToDisable)
+                        {
+                            String idxName = AliasManager.makeLegalName(tableName + '_' + StringUtils.join(toDisable.columnNames, "_"), DbScope.getLabkeyScope().getSqlDialect());
+                            if (doesIndexExist(schema, tableName, idxName))
+                            {
+                                messages.add("will disable index: " + tableName + "." + idxName);
+                                if (commitChanges)
+                                {
+                                    new SqlExecutor(schema).execute(new SQLFragment("ALTER INDEX " + idxName + " ON studydataset." + tableName + " DISABLE"));
+                                }
+                            }
+                            else
+                            {
+                                _log.warn("unable to find index: " + tableName + "." + idxName);
+                                String indexName = getIndexName(schema.getSqlDialect(), tableName, toDisable.columnNames);
+                                if (doesIndexExist(schema, tableName, indexName))
+                                {
+                                    messages.add("will disable index: " + tableName + "." + indexName);
+                                    if (commitChanges)
+                                    {
+                                        new SqlExecutor(schema).execute(new SQLFragment("ALTER INDEX " + indexName + " ON studydataset." + tableName + " DISABLE"));
+                                    }
+                                }
+                                else
+                                {
+                                    _log.warn("unable to find index: " + tableName + "." + indexName);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            //add study.participant indexes
-            createParticipantIndexes(messages, commitChanges, rebuildIndexes);
             createEHRLookupIndexes(messages, commitChanges, rebuildIndexes);
 
             //increase length of encounters remark col
@@ -955,32 +1015,6 @@ public class EHRManager
         }
 
         return indexName;
-    }
-
-    private void createParticipantIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
-    {
-        DbSchema schema = DbSchema.get("study");
-        TableInfo realTable = schema.getTable("participant");
-        String indexName = "EHR_INDEX_container_participantid";
-        List<String> cols = Arrays.asList("container", "participantid");
-        String label = "participant";
-
-        boolean exists = doesIndexExist(schema, "participant", indexName);
-
-        if (commitChanges && (!exists || rebuildIndexes))
-        {
-            if (exists)
-                dropIndex(schema, realTable, indexName, cols, label, messages);
-
-            createIndex(schema, realTable, label, indexName, cols, null, messages);
-        }
-        else if ((!exists || rebuildIndexes))
-        {
-            if (exists)
-                messages.add("Will drop index on column(s): container, participantid" + " for table: study.participant");
-
-            messages.add("Will create index on column(s): container, participantid" + " for table: study.participant");
-        }
     }
 
     private void createEHRLookupIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException

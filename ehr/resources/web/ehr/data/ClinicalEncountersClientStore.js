@@ -101,8 +101,10 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
         var procedureStore = EHR.DataEntryUtils.getProceduresStore();
         LDK.Assert.assertNotEmpty('Unable to find procedureStore from ClinicalEncountersClientStore', procedureStore);
         var procRecIdx = procedureStore.findExact('rowid', procedureId);
+        LDK.Assert.assertTrue('Unable to find procedure record in ClinicalEncountersClientStore for procedureId: [' + procedureId + ']', procRecIdx > -1);
+
         var procedureRec = procedureStore.getAt(procRecIdx);
-        LDK.Assert.assertNotEmpty('Unable to find procedure record from ClinicalEncountersClientStore', procedureRec);
+        LDK.Assert.assertNotEmpty('Unable to find procedure record from ClinicalEncountersClientStore.  ProcedureId was: [' + procedureId + ']', procedureRec);
 
         return procedureRec;
     }

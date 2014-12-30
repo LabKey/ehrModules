@@ -51,7 +51,7 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
                 EHRPathologyEntryPermission.class,
                 EHRClinicalEntryPermission.class,
                 EHRSurgeryEntryPermission.class,
-                EHRFormularyEditPermission.class,
+                EHRSnomedEditPermission.class,
                 EHRLocationEditPermission.class,
                 EHRHousingTransferPermission.class,
                 EHRProtocolEditPermission.class,

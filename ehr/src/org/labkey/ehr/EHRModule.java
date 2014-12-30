@@ -26,7 +26,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
-import org.labkey.api.ehr.security.EHRFormularyEditPermission;
+import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
@@ -77,7 +77,7 @@ import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
-import org.labkey.ehr.security.EHRFormularyEditorRole;
+import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRHousingTransferRole;
@@ -114,7 +114,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.421;
+        return 12.423;
     }
 
     public boolean hasScripts()
@@ -163,7 +163,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRProcedureManagementRole());
         RoleManager.registerRole(new EHRLocationManagementRole());
         RoleManager.registerRole(new EHRHousingTransferRole());
-        RoleManager.registerRole(new EHRFormularyEditorRole());
+        RoleManager.registerRole(new EHRSnomedEditorRole());
     }
 
     @Override
@@ -225,7 +225,8 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "roomUtilization");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "cage"), "ehr_lookups", "cage");
         EHRService.get().registerMoreActionsButton(new CageBulkEditButton(this), "ehr_lookups", "cage");
-        EHRService.get().registerMoreActionsButton(new EHRShowEditUIButton(this, "ehr_lookups", "drug_defaults", EHRFormularyEditPermission.class), "ehr_lookups", "drug_defaults");
+        EHRService.get().registerMoreActionsButton(new EHRShowEditUIButton(this, "ehr_lookups", "drug_defaults", EHRSnomedEditPermission.class), "ehr_lookups", "drug_defaults");
+        EHRService.get().registerMoreActionsButton(new EHRShowEditUIButton(this, "ehr_lookups", "drug_defaults", EHRSnomedEditPermission.class), "ehr_lookups", "snomed_subset_codes");
 
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedures"), EHRSchema.EHR_LOOKUPS, "procedures");
         EHRService.get().registerMoreActionsButton(new ProcedureEditButton(this, EHRSchema.EHR_LOOKUPS, "procedure_default_flags"), EHRSchema.EHR_LOOKUPS, "procedure_default_flags");

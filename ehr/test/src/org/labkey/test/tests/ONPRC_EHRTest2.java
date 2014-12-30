@@ -632,6 +632,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Assert.assertNotEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(2, "pairid"), "Pair ID doesnt match, 1: " + grid.getFieldValue(1, "pairid") + ", 2: " + grid.getFieldValue(2, "pairid"));
 
         _helper.addRecordToGrid(grid);
+        sleep(200);
         grid.setGridCell(3, "Id", SUBJECTS[2]);
         grid.setGridCell(3, "lowestcage", "A2");
         grid.setGridCell(3, "room", ROOMS[0]);

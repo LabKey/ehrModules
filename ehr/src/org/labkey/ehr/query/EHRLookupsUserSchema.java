@@ -26,7 +26,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
-import org.labkey.api.ehr.security.EHRFormularyEditPermission;
+import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ehr.security.EHRHousingTransferPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
@@ -182,7 +182,11 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
         else if ("drug_defaults".equalsIgnoreCase(name))
         {
-            return getCustomPermissionTable(createSourceTable(name), EHRFormularyEditPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
+        }
+        else if ("snomed_subset_codes".equalsIgnoreCase(name))
+        {
+            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
         }
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
         {
@@ -220,7 +224,12 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private TableInfo createSNOMEDTable(String name)
     {
-        return new ContainerScopedTable(this, this.createSourceTable(name), "code").init();
+        ContainerScopedTable ret = new ContainerScopedTable(this, this.createSourceTable(name), "code");
+        ret.addPermissionMapping(InsertPermission.class, EHRSnomedEditPermission.class);
+        ret.addPermissionMapping(UpdatePermission.class, EHRSnomedEditPermission.class);
+        ret.addPermissionMapping(DeletePermission.class, EHRSnomedEditPermission.class);
+
+        return ret.init();
     }
 
     private TableInfo createVeterinariansTable(String name)

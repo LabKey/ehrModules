@@ -4,15 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var console = require("console");
-var EHR = require("ehr/triggers").EHR;
-var LABKEY = require("labkey");
+require("ehr/triggers").initScript(this);
 
-var triggerHelper = org.labkey.ehr.utils.TriggerScriptHelper.create(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id);
-
-console.log("** evaluating: " + this['javax.script.filename']);
-
-function beforeBoth(row, errors) {
+function onUpsert(helper, scriptErrors, row, oldRow) {
     row.location = row.room;
     if (row.cage)
         row.location += '-' + row.cage;
@@ -34,37 +28,21 @@ function beforeBoth(row, errors) {
         };
         row.joinToCage = newArray.join(',');
     }
-
-    //run registered scripts
-    var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'ehr', 'cage', true) || [];
-    if (handlers.length){
-        for (var i=0;i<handlers.length;i++){
-            handlers[i].call(this, {}, errors, row);
-        }
-    }
 }
 
-function beforeInsert(row, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function beforeUpdate(row, oldRow, errors) {
+function onUpdate(helper, scriptErrors, row, oldRow) {
     row.cage = row.cage || oldRow.cage;
     row.room = row.room || oldRow.room;
-
-    beforeBoth(row, errors);
-
 }
 
 var pendingChanges = [];
 
 //reset the array with each batch
-function init(){
+function onInit(){
     pendingChanges = [];
 }
 
-function afterInsert(row){
+function onAfterInsert(row){
     //trigger recache of housing data, since this could result in pairing differences
     if (row.room && row.cage){
         var key = row.room + '<>' + row.cage;
@@ -74,7 +52,7 @@ function afterInsert(row){
     }
 }
 
-function afterUpdate(row, oldRow){
+function onAfterUpdate(helper, errors, row, oldRow){
     //trigger recache of housing data, since this could result in pairing differences
     if (row.room && row.cage){
         var key = row.room + '<>' + row.cage;
@@ -91,19 +69,23 @@ function afterUpdate(row, oldRow){
                 if (cageCol > 0) {
                     var key2 = row.room + '<>' + cageRow + cageCol;
                     if (pendingChanges.indexOf(key2) == -1) {
-                        console.log('also reporting change for potentially altered cage: ' + key2);
                         pendingChanges.push(key2);
                     }
                 }
             }
         }
     }
+
+    if (oldRow && oldRow.room && oldRow.cage){
+        var key = oldRow.room + '<>' + oldRow.cage;
+        if (pendingChanges.indexOf(key) == -1){
+            pendingChanges.push(key);
+        }
+    }
 }
 
-function complete(){
-    if (pendingChanges.length){
-        console.log('reporting cage changes: ');
-        console.log(pendingChanges);
-        triggerHelper.reportCageChange(pendingChanges);
+function onComplete(event, errors, helper){
+    if (!helper.isValidateOnly() && pendingChanges.length){
+        helper.getJavaHelper().reportCageChange(pendingChanges);
     }
 }

@@ -117,23 +117,38 @@ public class RecordDeleteRunner implements Job
             for (DataSet ds : s.getDatasets())
             {
                 TableInfo ti = schema.getTable(ds.getName());  //use UserSchema so we can delete using UpdateService
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.DeleteRequested.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel(), EHRService.QCSTATES.RequestDenied.getLabel()), CompareType.IN);
-                TableSelector ts = new TableSelector(ti, Collections.singleton("lsid"), filter, null);
-                String[] lsids = ts.getArray(String.class);
+                deleteRecordsFromTable(ti, "lsid");
+            }
 
-                if (lsids.length > 0)
+            //NOTE: consider letting modules register extra tables to delete
+            UserSchema ehrSchema = QueryService.get().getUserSchema(u, c, "ehr");
+            if (ehrSchema != null)
+            {
+                deleteRecordsFromTable(ehrSchema.getTable("tasks"), "taskid");
+                deleteRecordsFromTable(ehrSchema.getTable("requests"), "requestid");
+            }
+        }
+    }
+
+    private void deleteRecordsFromTable(TableInfo ti, String pkField)
+    {
+        try
+        {
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.DeleteRequested.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel(), EHRService.QCSTATES.RequestDenied.getLabel()), CompareType.IN);
+            TableSelector ts = new TableSelector(ti, Collections.singleton(pkField), filter, null);
+            String[] pks = ts.getArray(String.class);
+            if (pks.length > 0)
+            {
+                List<Map<String, Object>> keys = new ArrayList<>();
+                for (String pk : pks)
                 {
-                    List<Map<String, Object>> keys = new ArrayList<>();
-                    for (String lsid : lsids)
-                    {
-                        Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                        row.put("lsid", lsid);
-                        keys.add(row);
-                    }
-
-                    _log.info("deleting " + keys.size() + " records from dataset " + ds.getLabel() + " in container: " + c.getPath());
-                    ti.getUpdateService().deleteRows(u, c, keys, null, new HashMap<String, Object>());
+                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                    row.put(pkField, pk);
+                    keys.add(row);
                 }
+
+                _log.info("deleting " + keys.size() + " records from table: " + ti.getName() + " in container: " + ti.getUserSchema().getContainer().getPath());
+                ti.getUpdateService().deleteRows(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), keys, null, new HashMap<String, Object>());
             }
         }
         catch (BatchValidationException | InvalidKeyException | QueryUpdateServiceException | SQLException e)

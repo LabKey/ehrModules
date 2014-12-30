@@ -85,12 +85,14 @@ import javax.mail.Address;
 import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -834,7 +836,7 @@ public class TriggerScriptHelper
         if (services == null)
             return null;
 
-        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
+        List<String> testNames = Arrays.asList(StringUtils.split(services, ",;"));
         if (testNames.size() == 0)
             return null;
 
@@ -1963,7 +1965,7 @@ public class TriggerScriptHelper
         if (services == null)
             return null;
 
-        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
+        List<String> testNames = Arrays.asList(StringUtils.split(services, ",;"));
         if (testNames.size() == 0)
             return null;
 
@@ -1977,7 +1979,7 @@ public class TriggerScriptHelper
                 if (shouldCreate)
                 {
                     Map<String, Object> row = new HashMap<>();
-                    row.put("sevice", service);
+                    row.put("service", service);
                     row.put("formtype", serviceMap.get(service).get("formtype"));
                     row.put("labwork_service", serviceMap.get(service).get("labwork_service"));
                     toCreate.add(row);
@@ -1996,8 +1998,8 @@ public class TriggerScriptHelper
             return;
         }
 
-        TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
-        int deleted = Table.delete(snomedTags, new SimpleFilter(FieldKey.fromString("recordid"), objectid, CompareType.EQUAL));
+        //NOTE: filter on both recordId + container in order to utilize index
+        int deleted = new SqlExecutor(DbSchema.get(EHRSchema.EHR_SCHEMANAME)).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE recordid = ? AND container = ?", objectid, getContainer().getId()));
         _log.info("deleted " + deleted + "snomed tags for record: " + objectid);
     }
 
@@ -2011,11 +2013,12 @@ public class TriggerScriptHelper
             return;
         }
 
-        _log.info("deleting SNOMED tags for: " + objectid);
-        TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
-        Table.delete(snomedTags, new SimpleFilter(FieldKey.fromString("recordid"), objectid, CompareType.EQUAL));
+        //first delete existing rows
+        deleteSnomedTags(objectid);
+
         if (codes != null)
         {
+            TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
             String[] codeList = StringUtils.split(codes, ";");
             int sort = 0;
 
@@ -2094,26 +2097,59 @@ public class TriggerScriptHelper
         List<Map<String, Object>> toUpdate = new ArrayList<>();
         List<Map<String, Object>> oldKeys = new ArrayList<>();
 
+        //sort on date
+        records = new ArrayList(records);
+        Collections.sort(records, new Comparator<Map<String, Object>>()
+        {
+            private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2)
+            {
+                try
+                {
+                    Date date = dateTimeFormat.parse(o1.get("date").toString());
+                    Date date2 = dateTimeFormat.parse(o2.get("date").toString());
+
+                    return  date == null ? -1 : date.compareTo(date2);
+                }
+                catch (ParseException e)
+                {
+                    return 0;
+                }
+            }
+        });
+
+        Set<String> encounteredLsids = new HashSet<>();
         for (Map<String, Object> row : records)
         {
+            Date date = _dateTimeFormat.parse(row.get("date").toString());
+            if (date.getHours() == 0 && date.getMinutes() == 0)
+            {
+                Exception e = new Exception();
+                _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+            }
+
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
             filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
+
+            //we want to only close those records starting prior to this record
+            filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
             filter.addCondition(FieldKey.fromString("objectid"), row.get("objectid"), CompareType.NEQ_OR_NULL);
+            if (!encounteredLsids.isEmpty())
+            {
+                filter.addCondition(FieldKey.fromString("lsid"), encounteredLsids, CompareType.NOT_IN);
+            }
 
             TableSelector ts = new TableSelector(housing, Collections.singleton("lsid"), filter, null);
             List<String> ret = ts.getArrayList(String.class);
-            if (ret.size() > 0)
+            if (!ret.isEmpty())
             {
+                encounteredLsids.addAll(ret);
                 for (String lsid : ret)
                 {
                     Map<String, Object> r = new CaseInsensitiveHashMap<>();
                     r.put("lsid", lsid);
-                    Date date = _dateTimeFormat.parse(row.get("date").toString());
-                    if (date.getHours() == 0 && date.getMinutes() == 0)
-                    {
-                        Exception e = new Exception();
-                        _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
-                    }
                     r.put("enddate", date);
                     toUpdate.add(r);
 

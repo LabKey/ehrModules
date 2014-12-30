@@ -261,7 +261,9 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
         }
     }
 
-    EHR.Server.Triggers.rowInit(helper, scriptErrors, row, oldRow);
+    //NOTE: it would be better not to call in the same scope, but we currently
+    //let scripts place methods like onBecomePublic in the global scope
+    EHR.Server.Triggers.rowInit.call(this, helper, scriptErrors, row, oldRow);
 
     //NOTE: if this record is a cancelled request, do not allow it to be part of a task
     if (row.QCStateLabel == 'Request: Cancelled' || row.QCStateLabel == 'Request: Denied'){
@@ -735,12 +737,12 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     }
 
     //update SNOMED tags if necessary.  note: this must occur prior to actual insert, since LK strips out properties that do not match actual fields
-    if (!helper.isETL() && helper.getSNOMEDCodeFieldName()){
+    if (!helper.isETL() && helper.getSNOMEDCodeFieldName() && !helper.isValidateOnly()){
         if (row && oldRow && row.codesRaw === oldRow.codesRaw){
             console.log('codes match: ' + (oldRow.codesRaw || 'none'));
         }
 
-        if (!helper.isValidateOnly() && row.objectid){
+        if (row.objectid){
             console.log('updating snomed tags: ' + row.codesRaw);
             helper.getJavaHelper().updateSNOMEDTags(row.Id, row.objectid, (row.codesRaw ? row.codesRaw : null));
         }

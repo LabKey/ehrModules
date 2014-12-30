@@ -58,6 +58,10 @@ EHR.model.DataModelManager.registerMetadata('ResearchProcedures', {
             }
         },
         'study.drug': {
+            category: {
+                defaultValue: 'Research',
+                editable: false
+            },
             project: {
                 allowBlank: false
             },

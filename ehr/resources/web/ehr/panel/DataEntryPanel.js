@@ -158,7 +158,6 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             errorMsgs = Ext4.Array.unique(errorMsgs);
 
             serverMsg += '.  The error messages were: ' + errorMsgs.join('\n') + '\n\n';
-            serverMsg += '.  The response JSON was:\n' + Ext4.encode(responseJson.result);
         }
         else if (!responseJson){
             if (response){

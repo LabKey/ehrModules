@@ -768,7 +768,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
             SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +
                 "FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
-                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
+                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
                 " GROUP BY t.recordid " +
                 " )");
 
@@ -791,7 +791,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             String name2 = "codesRaw";
             SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'") +
                     "FROM ehr.snomed_tags t " +
-                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
+                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
                     " GROUP BY t.recordid " +
                     " )");
 
@@ -1260,6 +1260,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeSNOMED(AbstractTableInfo table)
     {
+        _addLinkDisablers = false;
         doSharedCustomization(table);
 
         String codeAndMeaning = "codeAndMeaning";
@@ -1272,6 +1273,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             table.addColumn(col);
         }
+
+        table.setUpdateURL(DetailsURL.fromString("/ehr/snomedManagement.view?code=${code}&doEdit=1"));
+        table.setDetailsURL(DetailsURL.fromString("/ehr/snomedManagement.view?code=${code}"));
     }
 
     private void customizeSNOMEDTags(AbstractTableInfo table)

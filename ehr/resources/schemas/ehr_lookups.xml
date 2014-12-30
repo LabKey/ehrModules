@@ -822,6 +822,7 @@
                     <ns:fkTable>snomed_subsets</ns:fkTable>
                     <ns:fkColumnName>subset</ns:fkColumnName>
                 </ns:fk>
+                <ns:url>/query/executeQuery.view?schemaName=ehr_lookups&amp;query.queryName=snomed_subset_codes&amp;query.primaryCategory~eq=${primaryCategory}</ns:url>
             </ns:column>
             <ns:column columnName="secondaryCategory">
             </ns:column>
@@ -869,6 +870,9 @@
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="subset">
+
+            </ns:column>
+            <ns:column columnName="description">
 
             </ns:column>
             <ns:column columnName="container">

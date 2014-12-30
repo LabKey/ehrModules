@@ -274,6 +274,7 @@ ehr/resources/queries/ehr_lookups/rooms.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_combo_list.sql -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text
+ehr/resources/queries/ehr_lookups/snomed_subset_codes/.qview.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subsets/.qview.xml -text
 ehr/resources/queries/ehr_lookups/yearMonth.sql -text
 ehr/resources/queries/study/Arrival.js -text
@@ -528,6 +529,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.416-12.417.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.418-12.419.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.419-12.420.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.421-12.422.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -607,6 +609,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.413-12.414.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.414-12.415.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.420-12.421.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.422-12.423.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -764,6 +767,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.416-12.417.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.418-12.419.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.419-12.420.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.421-12.422.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -842,6 +846,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.413-12.414.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.414-12.415.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.420-12.421.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.422-12.423.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -952,6 +957,8 @@ ehr/resources/views/searchPanel.html -text
 ehr/resources/views/searchPanel.view.xml -text
 ehr/resources/views/serviceRequests.html -text
 ehr/resources/views/serviceRequests.view.xml -text
+ehr/resources/views/snomedManagement.html -text
+ehr/resources/views/snomedManagement.view.xml -text
 ehr/resources/views/taskDetails.html -text
 ehr/resources/views/taskDetails.view.xml -text
 ehr/resources/views/treatmentDetails.html -text
@@ -1310,7 +1317,6 @@ ehr/src/org/labkey/ehr/security/EHRBehaviorEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRClinicalEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRDataEntryRole.java -text
-ehr/src/org/labkey/ehr/security/EHRFormularyEditorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullSubmitterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRFullUpdaterRole.java -text
 ehr/src/org/labkey/ehr/security/EHRHousingTransferRole.java -text
@@ -1322,6 +1328,7 @@ ehr/src/org/labkey/ehr/security/EHRProtocolManagementRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestAdminRole.java -text
 ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text
+ehr/src/org/labkey/ehr/security/EHRSnomedEditorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSurgeryEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
