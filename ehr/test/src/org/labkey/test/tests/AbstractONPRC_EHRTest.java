@@ -203,14 +203,6 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + REFERENCE_STUDY_PATH);
         setPipelineRoot(path.getPath());
-        getArtifactCollector().addArtifactLocation(path, new FileFilter()
-        {
-            @Override
-            public boolean accept(File pathname)
-            {
-                return pathname.getName().endsWith(".log");
-            }
-        });
 
         beginAt(getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
