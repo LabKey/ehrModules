@@ -401,7 +401,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         int batchSize = 500;
         // Use a set to remove duplicates
         List<String> allIds = new ArrayList<>(new HashSet<>(ids));
-        while (start < ids.size())
+        while (start < allIds.size())
         {
             List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
             start = start + batchSize;

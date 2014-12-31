@@ -1999,8 +1999,20 @@ public class TriggerScriptHelper
         }
 
         //NOTE: filter on both recordId + container in order to utilize index
-        int deleted = new SqlExecutor(DbSchema.get(EHRSchema.EHR_SCHEMANAME)).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE recordid = ? AND container = ?", objectid, getContainer().getId()));
-        _log.info("deleted " + deleted + "snomed tags for record: " + objectid);
+        //also, this has been split into 2 steps in order to avoid doing a DELETE unless actually required, and to perform that delete using the table PKs
+        TableInfo ti = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("recordid"), objectid);
+        filter.addCondition(FieldKey.fromString("container"), getContainer().getId());
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("objectid"), filter, null);
+        List<String> pks = ts.getArrayList(String.class);
+        if (!pks.isEmpty())
+        {
+            for (String pk : pks)
+            {
+                new SqlExecutor(ti.getSchema()).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE objectid = ?", pk));
+            }
+            _log.info("deleted " + pks.size() + "snomed tags for record: " + objectid);
+        }
     }
 
     public void updateSNOMEDTags(String id, String objectid, String codes) throws Exception

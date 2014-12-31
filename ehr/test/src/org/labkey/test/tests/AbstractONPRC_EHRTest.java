@@ -33,6 +33,7 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -202,6 +203,14 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + REFERENCE_STUDY_PATH);
         setPipelineRoot(path.getPath());
+        getArtifactCollector().addArtifactLocation(path, new FileFilter()
+        {
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.getName().endsWith(".log");
+            }
+        });
 
         beginAt(getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
