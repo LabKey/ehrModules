@@ -238,7 +238,7 @@ EHR.Server.Utils = new function(){
                             error.field = i;
                             helper.addSkippedError(row._recordid, error);
                         }
-                        else {
+                        else if (!helper.isETL()){
                             console.log('No _recordId provided, cannot serialize skipped error');
                         }
                         continue;
