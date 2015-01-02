@@ -924,6 +924,8 @@ ehr/resources/views/manageRequest.html -text
 ehr/resources/views/manageRequest.view.xml -text
 ehr/resources/views/manageTask.html -text
 ehr/resources/views/manageTask.view.xml -text
+ehr/resources/views/moreReports.html -text
+ehr/resources/views/moreReports.view.xml -text
 ehr/resources/views/necropsyDetails.html -text
 ehr/resources/views/necropsyDetails.view.xml -text
 ehr/resources/views/participantView.html -text
