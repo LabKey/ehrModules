@@ -53,7 +53,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.sql.DataTruncation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,112 +150,111 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         LineNumberReader lnr = null;
         BufferedReader reader = null;
 
-        ExperimentService.get().ensureTransaction();
         try
         {
-            getJob().getLogger().info("Inspecting file length: " + output.getPath());
-            lnr = new LineNumberReader(new BufferedReader(new FileReader(output)));
-            while (lnr.readLine() != null) {
-                if (lnr.getLineNumber() > 3)
-                    break;
-            }
-            int lineNumber = lnr.getLineNumber();
-            lnr.close();
-
-            if (lineNumber < 3)
-                throw new PipelineJobException("Too few lines found in output.  Line count was: " + lineNumber);
-
-            //delete all previous records
-            getJob().getLogger().info("Deleting existing rows");
-            Table.delete(kinshipTable, new SimpleFilter(FieldKey.fromString("container"), getJob().getContainerId(), CompareType.EQUAL));
-
-            //NOTE: this process creates and deletes a ton of rows each day.  the rowId can balloon very quickly, so we reset it here
-            SqlSelector ss = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT max(rowid) as expt FROM " + kinshipTable.getSelectName()));
-            List<Long> ret = ss.getArrayList(Long.class);
-            Integer maxVal;
-            if (ret.isEmpty())
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
-                maxVal = 0;
-            }
-            else
-            {
-                maxVal = ret.get(0) == null ? 0 : ret.get(0).intValue();
-            }
-
-            SqlExecutor ex = new SqlExecutor(kinshipTable.getSchema());
-            if (kinshipTable.getSqlDialect().isSqlServer())
-            {
-                ex.execute(new SQLFragment("DBCC CHECKIDENT ('" + kinshipTable.getSelectName() + "', RESEED, " + maxVal + ")"));
-            }
-            else if (kinshipTable.getSqlDialect().isPostgreSQL())
-            {
-                //find sequence name.  this was autocreated by the serial
-                String seqName = "kinship_rowid_seq";
-                SqlSelector series = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT relname FROM pg_class WHERE relkind='S' AND relname = ?", seqName));
-                if (!series.exists())
+                getJob().getLogger().info("Inspecting file length: " + output.getPath());
+                lnr = new LineNumberReader(new BufferedReader(new FileReader(output)));
+                while (lnr.readLine() != null)
                 {
-                    throw new PipelineJobException("Unable to find sequence with name: " + seqName);
+                    if (lnr.getLineNumber() > 3)
+                        break;
+                }
+                int lineNumber = lnr.getLineNumber();
+                lnr.close();
+
+                if (lineNumber < 3)
+                    throw new PipelineJobException("Too few lines found in output.  Line count was: " + lineNumber);
+
+                //delete all previous records
+                getJob().getLogger().info("Deleting existing rows");
+                Table.delete(kinshipTable, new SimpleFilter(FieldKey.fromString("container"), getJob().getContainerId(), CompareType.EQUAL));
+
+                //NOTE: this process creates and deletes a ton of rows each day.  the rowId can balloon very quickly, so we reset it here
+                SqlSelector ss = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT max(rowid) as expt FROM " + kinshipTable.getSelectName()));
+                List<Long> ret = ss.getArrayList(Long.class);
+                Integer maxVal;
+                if (ret.isEmpty())
+                {
+                    maxVal = 0;
                 }
                 else
                 {
-                    maxVal++;
-                    ex.execute(new SQLFragment("SELECT setval(?, ?)", "ehr." + seqName, maxVal));
+                    maxVal = ret.get(0) == null ? 0 : ret.get(0).intValue();
                 }
-            }
-            else
-            {
-                throw new PipelineJobException("Unknown SQL Dialect: " + kinshipTable.getSqlDialect().getProductName());
-            }
 
-            ExperimentService.get().commitTransaction();
-            ExperimentService.get().ensureTransaction();
-
-            reader = new BufferedReader(new FileReader(output));
-
-            getJob().getLogger().info("Inserting rows");
-            String line = null;
-            int lineNum = 0;
-            while ((line = reader.readLine()) != null){
-                String[] fields = line.split("\t");
-                if (fields.length < 3)
-                    continue;
-                if ("coefficient".equalsIgnoreCase(fields[2]))
-                    continue; //skip header
-
-                if (fields[0].equalsIgnoreCase(fields[1]))
-                    continue; //dont import self-kinship
-
-                Map row = new HashMap<String, Object>();
-                assert fields[0].length() < 80 : "Field Id value too long: [" + fields[0] + ']';
-                assert fields[1].length() < 80 : "Field Id2 value too long: [" + fields[1] + "]";
-
-                row.put("Id", fields[0]);
-                row.put("Id2", fields[1]);
-                row.put("coefficient", Double.parseDouble(fields[2]));
-
-                row.put("container", job.getContainer().getId());
-                row.put("created", new Date());
-                row.put("createdby", job.getUser().getUserId());
-                Table.insert(job.getUser(), kinshipTable, row);
-                lineNum++;
-
-                if (lineNum % 100000 == 0)
+                SqlExecutor ex = new SqlExecutor(kinshipTable.getSchema());
+                if (kinshipTable.getSqlDialect().isSqlServer())
                 {
-                    getJob().getLogger().info("processed " + lineNum + " rows");
+                    ex.execute(new SQLFragment("DBCC CHECKIDENT ('" + kinshipTable.getSelectName() + "', RESEED, " + maxVal + ")"));
                 }
+                else if (kinshipTable.getSqlDialect().isPostgreSQL())
+                {
+                    //find sequence name.  this was autocreated by the serial
+                    String seqName = "kinship_rowid_seq";
+                    SqlSelector series = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT relname FROM pg_class WHERE relkind='S' AND relname = ?", seqName));
+                    if (!series.exists())
+                    {
+                        throw new PipelineJobException("Unable to find sequence with name: " + seqName);
+                    }
+                    else
+                    {
+                        maxVal++;
+                        ex.execute(new SQLFragment("SELECT setval(?, ?)", "ehr." + seqName, maxVal));
+                    }
+                }
+                else
+                {
+                    throw new PipelineJobException("Unknown SQL Dialect: " + kinshipTable.getSqlDialect().getProductName());
+                }
+                transaction.commit();
             }
 
-            ExperimentService.get().commitTransaction();
-            job.getLogger().info("Inserted " + lineNum + " rows into ehr.kinship");
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+            {
+                reader = new BufferedReader(new FileReader(output));
 
+                getJob().getLogger().info("Inserting rows");
+                String line = null;
+                int lineNum = 0;
+                while ((line = reader.readLine()) != null)
+                {
+                    String[] fields = line.split("\t");
+                    if (fields.length < 3)
+                        continue;
+                    if ("coefficient".equalsIgnoreCase(fields[2]))
+                        continue; //skip header
+
+                    if (fields[0].equalsIgnoreCase(fields[1]))
+                        continue; //dont import self-kinship
+
+                    Map row = new HashMap<String, Object>();
+                    assert fields[0].length() < 80 : "Field Id value too long: [" + fields[0] + ']';
+                    assert fields[1].length() < 80 : "Field Id2 value too long: [" + fields[1] + "]";
+
+                    row.put("Id", fields[0]);
+                    row.put("Id2", fields[1]);
+                    row.put("coefficient", Double.parseDouble(fields[2]));
+
+                    row.put("container", job.getContainer().getId());
+                    row.put("created", new Date());
+                    row.put("createdby", job.getUser().getUserId());
+                    Table.insert(job.getUser(), kinshipTable, row);
+                    lineNum++;
+
+                    if (lineNum % 100000 == 0)
+                    {
+                        getJob().getLogger().info("processed " + lineNum + " rows");
+                    }
+                }
+
+                job.getLogger().info("Inserted " + lineNum + " rows into ehr.kinship");
+                transaction.commit();
+            }
         }
         catch (RuntimeSQLException | IOException e)
         {
-            if (e instanceof DataTruncation)
-            {
-                getJob().getLogger().warn("Data Truncation: " + ((DataTruncation) e).getIndex());
-            }
-
             throw new PipelineJobException(e);
         }
         finally
@@ -266,8 +264,6 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             if (reader != null)
                 try{reader.close();}catch (Exception ignored){}
-
-            ExperimentService.get().closeTransaction();
         }
     }
 
@@ -307,36 +303,39 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         LineNumberReader lnr = null;
         BufferedReader reader = null;
 
-        ExperimentService.get().ensureTransaction();
         try
         {
-            getJob().getLogger().info("Inspecting file length: " + output.getPath());
-            lnr = new LineNumberReader(new BufferedReader(new FileReader(output)));
-            while (lnr.readLine() != null) {
-                if (lnr.getLineNumber() > 3)
-                    break;
-            }
-            int lineNumber = lnr.getLineNumber();
-            lnr.close();
-
-            if (lineNumber < 3)
-                throw new PipelineJobException("Too few lines found in inbreeding output.  Line count was: " + lineNumber);
-
-            //delete all previous records
-            getJob().getLogger().info("Deleting existing rows");
-            TableInfo realTable = getRealTable(ti);
-            if (realTable == null)
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
-                throw new PipelineJobException("Unable to find real table for Inbreeding dataset");
-            }
+                getJob().getLogger().info("Inspecting file length: " + output.getPath());
+                lnr = new LineNumberReader(new BufferedReader(new FileReader(output)));
+                while (lnr.readLine() != null)
+                {
+                    if (lnr.getLineNumber() > 3)
+                        break;
+                }
+                int lineNumber = lnr.getLineNumber();
+                lnr.close();
 
-            //delete using table, since it is extremely slow otherwise
-            Table.delete(realTable, new SimpleFilter(FieldKey.fromString("participantId"), null, CompareType.NONBLANK));
-            ExperimentService.get().commitTransaction();
+                if (lineNumber < 3)
+                    throw new PipelineJobException("Too few lines found in inbreeding output.  Line count was: " + lineNumber);
+
+                //delete all previous records
+                getJob().getLogger().info("Deleting existing rows");
+                TableInfo realTable = getRealTable(ti);
+                if (realTable == null)
+                {
+                    throw new PipelineJobException("Unable to find real table for Inbreeding dataset");
+                }
+
+                //delete using table, since it is extremely slow otherwise
+                Table.delete(realTable, new SimpleFilter(FieldKey.fromString("participantId"), null, CompareType.NONBLANK));
+                transaction.commit();
+            }
 
             reader = new BufferedReader(new FileReader(output));
 
-            String line = null;
+            String line;
             int lineNum = 0;
             List<Map<String, Object>> rows = new ArrayList<>();
             Date date = new Date();
