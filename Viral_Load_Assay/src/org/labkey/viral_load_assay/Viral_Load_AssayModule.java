@@ -62,6 +62,7 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
         return true;
     }
 
+    @NotNull
     protected Collection<WebPartFactory> createWebPartFactories()
     {
         return Collections.emptyList();
@@ -79,6 +80,7 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
         LaboratoryService.get().registerDataProvider(new ViralLoadAssayDataProvider(this));
     }
 
+    @NotNull
     @Override
     public Set<DbSchema> getSchemasToTest()
     {
