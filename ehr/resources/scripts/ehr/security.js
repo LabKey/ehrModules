@@ -164,13 +164,12 @@ EHR.Server.Security = new function(){
          * individual scripts will need to worry about this.
          *
          * @param {string} event The type of event (ie. insert/update/delete), as passed by LabKey
-         * @param {object} scriptContext A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
          * @param {object}row The row object, as passed by LabKey
          * @param {object}oldRow The original row object (prior to update), as passed by LabKey
          */
         verifyPermissions: function(event, row, oldRow){
             EHR.Server.Security.normalizeQcState(row, oldRow);
-            return _helper.getJavaHelper().hasPermission(_helper.getSchemaName(), _helper.getQueryName(), event, oldRow ? oldRow.QCStateLabel :  null, row.QCStateLabel);
+            return (_helper.isETL() && LABKEY.Security.currentUser.isSystemAdmin) || _helper.getJavaHelper().hasPermission(_helper.getSchemaName(), _helper.getQueryName(), event, oldRow ? oldRow.QCStateLabel :  null, row.QCStateLabel);
         },
 
         /**
