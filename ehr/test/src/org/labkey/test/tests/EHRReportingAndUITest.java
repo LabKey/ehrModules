@@ -93,7 +93,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         waitForText("details", WAIT_FOR_PAGE * 2);
         DataRegionTable dr = new DataRegionTable("query", this);
-        dr.clickLink(0, 0);
+        clickAndWait(dr.link(0, 0));
         //these are the sections we expect
         waitForText("Drug Details");
         waitForText("Clinical Remarks From ");
@@ -105,7 +105,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         waitForText(ROOM_ID2);
         dr = new DataRegionTable("query", this);
-        dr.clickLink(1, "Room");
+        clickAndWait(dr.link(1, "Room"));
 
         //these are the sections we expect
         waitForText("Cage Details");
@@ -120,7 +120,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         waitForText("details");
         dr = new DataRegionTable("query", this);
-        dr.clickLink(0, 0);
+        clickAndWait(dr.link(0, 0));
         waitForText("Labwork Summary");
         waitForText("Results", WAIT_FOR_JAVASCRIPT * 2);
         waitForText("No results found");
@@ -134,7 +134,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         dr = new DataRegionTable("query", this);
         dr.setSort("date", SortDirection.DESC);
         waitForText("details");
-        dr.clickLink(0, 0);
+        clickAndWait(dr.link(0, 0));
         waitForText("Encounter Details");
         waitForText("Weight Monitoring Needed");
         assertNoErrorText();
@@ -184,7 +184,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         beginAt("/query/" + getContainerPath() + "/executeQuery.view?schemaName=study&query.queryName=animal");
         waitForText("Animal");
         DataRegionTable dr = new DataRegionTable("query", this);
-        dr.clickLink(1,"Id");
+        clickAndWait(dr.link(1, "Id"));
         log("Inspecting details page");
         waitForElement(Locator.tagContainingText("th", "Overview: "));
         waitForElement(Locator.tagContainingText("th", "Weights - "));

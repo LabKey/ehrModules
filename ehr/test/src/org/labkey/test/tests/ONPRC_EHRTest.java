@@ -902,7 +902,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         waitAndClickAndWait(Locator.tagContainingText("a", "Animal Groups"));
         waitForElement(Locator.tagContainingText("span", "Active Groups"));
         DataRegionTable dr = new DataRegionTable("query", this);
-        dr.clickLink(0, dr.getColumn("Name"));
+        clickAndWait(dr.link(0, dr.getColumn("Name")));
         DataRegionTable membersTable = new DataRegionTable(_helper.getAnimalHistoryDataRegionName("Group Members"), this);
         Assert.assertEquals(2, membersTable.getDataRowCount());
 
