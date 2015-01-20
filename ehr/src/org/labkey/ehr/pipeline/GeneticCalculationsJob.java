@@ -153,7 +153,7 @@ public class GeneticCalculationsJob implements Job
         props.put("enabled", isEnabled.toString());
         props.put("container", c.getId());
         props.put("hourOfDay", hourOfDay.toString());
-        PropertyManager.saveProperties(props);
+        props.save();
 
         //unschedule in case settings have changed
         unschedule();

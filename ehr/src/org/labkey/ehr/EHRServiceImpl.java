@@ -276,7 +276,7 @@ public class EHRServiceImpl extends EHRService
     {
         PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(c, DATE_CATEGORY, true);
         props.put("dateFormat", format);
-        PropertyManager.saveProperties(props);
+        props.save();
         _dateFormats.put(c.getId(), format);
     }
 

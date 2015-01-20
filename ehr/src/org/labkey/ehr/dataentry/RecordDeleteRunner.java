@@ -186,7 +186,7 @@ public class RecordDeleteRunner implements Job
     {
         PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(c, PROPERTY_DOMAIN, true);
         props.put(ENABLED_PROP, isEnabled.toString());
-        PropertyManager.saveProperties(props);
+        props.save();
     }
 }
 
