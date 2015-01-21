@@ -104,7 +104,8 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                         schemaName: q.schemaName,
                         queryName: q.queryName,
                         filters: filterArray,
-                        sort: q.serverStoreSort,
+                        //note: changed to removeableSort so it will take priority over any view-based sorts
+                        removeableSort: q.serverStoreSort,
                         scope: this,
                         success: this.onDataRegionLoad
                     }

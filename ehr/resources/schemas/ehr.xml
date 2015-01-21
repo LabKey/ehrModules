@@ -1517,18 +1517,22 @@
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="startdate">
+                <ns:columnTitle>Start Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="enddate">
+                <ns:columnTitle>End Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="allowed">
+                <ns:columnTitle># Allowed</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="frequency">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="daysBetween">
+                <ns:columnTitle>Minimum # of Days Between</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="createdby">

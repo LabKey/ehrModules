@@ -371,10 +371,8 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     }
 
                     if (found && record && found != record){
-                        LDK.Assert.assertEquality('Record PK and rowNumber do not match', found, record);
-                        console.error('records dont match');
-                        console.log(record);
-                        console.log(found);
+                        // i believe this will happen because certain server-side errors are 1-based, not 0-based for rowNumber
+                        //LDK.Assert.assertEquality('Record PK and rowNumber do not match', found, record);
                     }
                     else {
                         record = found;
@@ -591,6 +589,15 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 this.remove(r);
             }, this);
         }
+
+        //NOTE: this is disabled because it serverToClient() is called before clientToServer().
+        //as a result, if the client already has a record (like auto-bound forms), we get a false positive
+        //there is a similar check in clientStore, which should accomplish the same thing.
+        //var clientStoreIds = Ext4.Object.getKeys(targetChildStores);
+        //if (clientStoreIds.length == 1){
+        //    var cs = sc.clientStores.get(clientStoreIds[0]);
+        //    LDK.Assert.assertEquality('Server/Client stores do not have the same record count: ' + this.storeId + ' (' + this.getCount() + ') / ' + cs.storeId + ' (' + cs.getCount() + ')', cs.getCount(), this.getCount());
+        //}
     },
 
     //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection

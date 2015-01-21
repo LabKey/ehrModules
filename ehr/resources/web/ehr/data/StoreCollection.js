@@ -10,7 +10,8 @@ Ext4.define('EHR.data.StoreCollection', {
 
     clientStores: null,
     serverStores: null,
-
+    hasLoaded: false, //will be set true after initial load
+    clientDataChangeBuffer: 150,
     ignoredClientEvents: {},
 
     constructor: function(){
@@ -21,7 +22,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.callParent(arguments);
         this.addEvents('commitcomplete', 'commitexception', 'validation', 'initialload', 'load', 'clientdatachanged', 'serverdatachanged');
 
-        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: 150});
+        this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: this.clientDataChangeBuffer});
     },
 
     getKey: function(o){
@@ -124,6 +125,12 @@ Ext4.define('EHR.data.StoreCollection', {
                     }
                 }
                 this.fireEvent('initialload', this);
+
+                //note: delay this flag until after the 1st client->server transform
+                Ext4.defer(function(){
+                    this.hasLoaded = true;
+                }, (this.clientDataChangeBuffer * 2), this);
+
             }
         }
     },
@@ -604,9 +611,20 @@ Ext4.define('EHR.data.StoreCollection', {
                     }, this);
                 }
                 else if (json.exception){
+                    var tables = [];
+                    Ext4.Array.forEach(recordArr, function(command){
+                        Ext4.Array.forEach(command, function(r){
+                            if (r.store && r.store.queryName){
+                                tables.push(r.store.queryName);
+                            }
+                        }, this);
+                    }, this);
+
+                    tables = Ext4.unique(tables);
+
                     LDK.Utils.logToServer({
                         level: 'ERROR',
-                        message: 'StoreCollection exception: ' + json.exception
+                        message: 'StoreCollection exception: ' + json.exception + ('\nTables involved: [' + tables.join(',') + ']\nValidate Only: ' + validateOnly)
                     });
 
                     console.error(json.exception);
@@ -627,13 +645,34 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     //private
-    reportLongRequest: function(duration, response, options, json){
+    possiblyReportLongRequest: function(duration, response, options, json){
         var msg = ['Long running request:'];
         msg.push('Duration: ' + duration);
 
+        // non-validation should allow more total time/transaction, since it might involve more work on the actual insert/update
+        // validation could involve warming the DemographicsCache, so we allow more per-row time, but less overall time/transaction
+        var perRowWarningThrehsold = 0.2;
+        var totalTransactionWarningThrehsold = 45;
+        var perRowValidationWarningThrehsold = 5; //could involve DemographicCache warmup
+        var totalValidationTransactionWarningThrehsold = 25; //total transaction thresold is lower for validation, since we expect small batches and dont actually insert into the DB
+
         if (this.formConfig){
             msg.push('Form Type: ' + this.formConfig.name);
+
+            if (this.formConfig.perRowWarningThreshold){
+                perRowWarningThrehsold = this.formConfig.perRowWarningThreshold;
+            }
+            if (this.formConfig.totalTransactionWarningThrehsold){
+                perRowWarningThrehsold = this.formConfig.totalTransactionWarningThrehsold;
+            }
+            if (this.formConfig.perRowValidationWarningThrehsold){
+                perRowWarningThrehsold = this.formConfig.perRowValidationWarningThrehsold;
+            }
+            if (this.formConfig.totalValidationTransactionWarningThrehsold){
+                perRowWarningThrehsold = this.formConfig.totalValidationTransactionWarningThrehsold;
+            }
         }
+
         if (this.taskId){
             msg.push('TaskId: ' + this.taskId);
         }
@@ -654,24 +693,27 @@ Ext4.define('EHR.data.StoreCollection', {
             msg.push('Error Count: ' + json.errorCount);
         }
 
-        if (options && options.jsonData){
-            if (options.jsonData.commands){
+        var totalRows = 0;
+        if (options && options.jsonData) {
+            if (options.jsonData.commands) {
                 msg.push('Total Commands: ' + options.jsonData.commands.length);
                 msg.push('Validate Only: ' + !!options.jsonData.validateOnly);
 
-                var totalRows = 0;
-                Ext4.Array.forEach(options.jsonData.commands, function(command){
+                Ext4.Array.forEach(options.jsonData.commands, function (command) {
                     totalRows += command.rows.length;
                 }, this);
 
                 msg.push('Total Rows: ' + totalRows + (totalRows ? ' (' + (duration / totalRows) + ' sec/row)' : null));
+            }
 
-                //tone down alerts.  if we have a large number of records, but an acceptable time/record then cancel the alert
-                if (duration < 45 && (duration / totalRows) <= 0.2){
+            if (options && options.jsonData && !!options.jsonData.validateOnly) {
+                //note: abort if either is true.
+                if (duration < totalValidationTransactionWarningThrehsold || (duration / totalRows) <= perRowValidationWarningThrehsold) {
                     return;
                 }
-                //also tone down validation warnings.  this could involve caching demographics, so be less strict
-                if (!!options.jsonData.validateOnly && duration < 25 && (duration / totalRows) < 5){
+            }
+            else {
+                if (duration < totalTransactionWarningThrehsold || (duration / totalRows) <= perRowWarningThrehsold) {
                     return;
                 }
             }
@@ -698,9 +740,7 @@ Ext4.define('EHR.data.StoreCollection', {
             //provide logging for especially long running requests
             if (options && options.startTime){
                 var duration = (new Date() - options.startTime) / 1000;
-                if (duration > 20){
-                    this.reportLongRequest(duration, response, options, json);
-                }
+                this.possiblyReportLongRequest(duration, response, options, json);
             }
 
             if (!json || !json.result)

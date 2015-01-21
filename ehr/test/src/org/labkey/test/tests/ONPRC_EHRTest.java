@@ -1752,7 +1752,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4ComboRef causeField = _ext4Helper.queryOne("window field[name=cause]", Ext4ComboRef.class);
         causeField.waitForEnabled();
         causeField.waitForStoreLoad();
-        causeField.setValue("Experimental");
+        causeField.setValue("EUTHANASIA, EXPERIMENTAL");
         Assert.assertEquals(caseNo, _ext4Helper.queryOne("window field[name=necropsy]", Ext4FieldRef.class).getValue());
         waitAndClick(deathWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(deathWindow);
@@ -1800,9 +1800,9 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
 
         Ext4ComboRef procedureCombo = new Ext4ComboRef(proceduresGrid.getActiveEditor(1, "procedureid"), this);
         procedureCombo.setComboByDisplayValue("Lymph Node and Skin Biopsy - FITC");
-        sleep(100);
+        proceduresGrid.completeEdit();
+        sleep(300);
         proceduresGrid.setGridCell(1, "chargetype", "Center Staff");
-        sleep(100);
         proceduresGrid.setGridCellJS(1, "instructions", "These are my instructions");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Add Procedure Defaults"));

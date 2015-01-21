@@ -1386,6 +1386,20 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: false
             }
         },
+        'ehr.protocolProcedures': {
+            startdate: {
+                allowBlank: false
+            },
+            enddate: {
+                allowBlank: false
+            },
+            procedureName: {
+                allowBlank: false
+            },
+            allowed: {
+                allowBlank: false
+            }
+        },
         'ehr.protocol': {
             protocol: {
                 xtype: 'hidden',

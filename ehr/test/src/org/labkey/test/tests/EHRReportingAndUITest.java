@@ -309,6 +309,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         //weight
         waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        sleep(500);
         waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
         waitForElement(Locator.tagWithText("div", "3.73 kg")); //first animal
@@ -317,9 +318,10 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         //NOTE: since 14.1 this part of the test is failing very regularly.  It will begin to load the DataRegion, but it seems to stall at this stage.
         //Maybe there's some sort of timing induced JS error on the page preventing the DR from rendering?
         sleep(500);
-        waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data"), 2);
+        waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden(), 2);
+        log("raw data tab count: " + getElementCount(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden()));
         sleep(500);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").index(1));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden().index(1));
         sleep(500);
         //TODO: why not loading?
         waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 5);

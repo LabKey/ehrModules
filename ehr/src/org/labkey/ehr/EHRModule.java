@@ -220,6 +220,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol"), "ehr", "protocol");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol_counts"), "ehr", "protocol_counts");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolexemptions"), "ehr", "protocolexemptions");
+        EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolprocedures"), "ehr", "protocolprocedures");
         EHRService.get().registerMoreActionsButton(new ProjectEditButton(this, "ehr", "project"), "ehr", "project");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "rooms");
         EHRService.get().registerMoreActionsButton(new LocationEditButton(this, "ehr_lookups", "rooms"), "ehr_lookups", "roomUtilization");

@@ -329,10 +329,18 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                             this.prepareServerModelForDelete(serverModel);
                         }
                         else {
+                            LDK.Assert.assertTrue('Server model not found, remove() will not be successful: ' + key, serverStore.indexOf(serverModel) > -1);
+
                             serverStore.remove(serverModel);
                         }
                     }
                 }, this);
+            }
+
+            // if we have a 1:1 store mapping, verify record count is the same
+            // Note: on the very first storeCollection load we can get false positives, so skip then
+            if (sc.hasLoaded && Ext4.Object.getKeys(map).length == 1){
+                LDK.Assert.assertEquality('Client/Server stores do not have the same record count: ' + this.storeId + ' (' + this.getCount() + ') / ' + serverStore.storeId + ' (' + serverStore.getCount() + ')', this.getCount(), serverStore.getCount());
             }
         }
     },

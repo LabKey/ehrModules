@@ -45,7 +45,7 @@ Ext4.define('EHR.grid.Panel', {
         }
 
         this.callParent();
-        this.addEvents('animalchange');
+        this.addEvents('animalchange', 'storevalidationcomplete');
         this.enableBubble('animalchange');
 
         this.getSelectionModel().on('selectionchange', function(sm, models){
@@ -56,12 +56,14 @@ Ext4.define('EHR.grid.Panel', {
             this.fireEvent('animalchange', id);
         }, this);
 
+        // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
+        // single row changes, or more importantly single row changes that only involve validation/tooltip error message differences
+        this.on('storevalidationcomplete', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
         this.store.on('datachanged', function(s){
             this.needsRefresh = true;
-            this.onStoreValidationComplete();
-        }, this, {buffer: 100, delay: 20});
+            this.fireEvent('storevalidationcomplete');
+        }, this);
         this.store.on('validation', this.onStoreValidation, this);
-        this.store.on('validation', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
 
         var width = 20;
         Ext4.Array.forEach(this.columns, function(col){
@@ -90,12 +92,25 @@ Ext4.define('EHR.grid.Panel', {
             store: store,
             record: record
         };
+
+        this.fireEvent('storevalidationcomplete');
     },
 
     onStoreValidationComplete: function(){
+        //NOTE: if actively editing, dont update the grid.  defer until either edit or cancel
         if (this.editingPlugin.editing){
             //console.log('defer grid refresh: ' + this.store.storeId);
-            this.editingPlugin.on('edit', this.onStoreValidationComplete, this, {single: true, delay: 100});
+
+            var callback = function(){
+                this.mun(this.editingPlugin, 'edit', callback, this);
+                this.mun(this.editingPlugin, 'canceledit', callback, this);
+
+                this.onStoreValidationComplete();
+            };
+
+            this.mon(this.editingPlugin, 'edit', callback, this, {single: true, delay: 100});
+            this.mon(this.editingPlugin, 'canceledit', callback, this, {single: true, delay: 100});
+
             return;
         }
 

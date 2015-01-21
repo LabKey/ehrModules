@@ -1814,7 +1814,7 @@ public class TriggerScriptHelper
             @Override
             public void exec(ResultSet rs) throws SQLException
             {
-                Integer totalAllowed = rs.getInt("TotalAnimals");
+                Integer totalAllowed = rs.getInt("allowed");
                 String species = rs.getString("Species");
                 Set<String> animals = new CaseInsensitiveHashSet();
                 String animalString = rs.getString("Animals");
@@ -2139,7 +2139,7 @@ public class TriggerScriptHelper
             if (date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate housing records with a rounded date for animal:  " + row.get("Id") + ".  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));

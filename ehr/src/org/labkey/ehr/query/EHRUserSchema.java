@@ -68,6 +68,8 @@ public class EHRUserSchema extends SimpleUserSchema
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROTOCOL_EXEMPTIONS.equalsIgnoreCase(name))
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
+        else if (EHRSchema.TABLE_PROTOCOL_PROCEDURES.equalsIgnoreCase(name))
+            return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
             return getProjectTable(schemaTable);
         else if (EHRSchema.TABLE_ANIMAL_GROUPS.equalsIgnoreCase(name))

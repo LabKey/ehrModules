@@ -953,7 +953,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                     //otherwise show both
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " +
-                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName(), "' / '", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + ", '')", "' / '", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + ", '')") +
                     " END"
             );
 
@@ -1788,17 +1788,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "ELSE\n" +
                     "  CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
-                    "ac.ageclass AS AgeClassAtTime\n" +
-                    "\n" +
-                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
-                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")" +
-                    "LEFT JOIN ehr_lookups.ageclass ac\n" +
-                        "ON (\n" +
-                        "  (CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) >= ac.\"min\" AND\n" +
-                        "  ((CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" is null) AND\n" +
+                        //NOTE: written as subselect so we ensure a single row returned in case data in ehr_lookups.ageclass has rows that allow dupes
+                        "(SELECT ac.ageclass FROM ehr_lookups.ageclass ac\n" +
+                        "  WHERE " +
+                        "  (CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) >= ac.\"min\" AND\n" +
+                        "  ((CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" is null) AND\n" +
                         "  d.species = ac.species AND\n" +
                         "  (d.gender = ac.gender OR ac.gender IS NULL)\n" +
-                        ")");
+                        ") AS AgeClassAtTime \n" +
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")"
+                );
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();

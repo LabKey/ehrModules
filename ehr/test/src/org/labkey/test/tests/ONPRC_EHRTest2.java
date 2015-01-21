@@ -619,6 +619,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.setGridCell(1, "cage", "A1");
 
         _helper.addRecordToGrid(grid);
+        sleep(200);
         grid.setGridCell(2, "Id", SUBJECTS[1]);
         grid.setGridCell(2, "lowestcage", "A1");
         grid.setGridCell(2, "room", ROOMS[0]);
@@ -681,15 +682,29 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitAndClick(Ext4Helper.Locators.menuItem("Clinical Treatment"));
 
         waitForElement(Ext4Helper.Locators.window("Treatment Orders"));
-        waitForElement(Ext4Helper.Locators.window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0])));
-        Ext4FieldRef enddateField = _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class);
-        enddateField.waitForEnabled();
-        sleep(100);
+        waitForElement(Ext4Helper.Locators.window("Treatment Orders").append(Locator.tagWithText("div", SUBJECTS[0]))); //a proxy for the form initially loading
+
+        // there is a timing issue on TeamCity related to setting the enddate field.
+        // i am guessing that it has to do with the form initially validating and loading from
+        // the server.  if the timing is bad, the test might attempt to set the datefield at the same time, erasing that value
+        _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).waitForEnabled();
+
+        final Ext4FieldRef qcField = _ext4Helper.queryOne("window[title=Treatment Orders] field[fieldLabel='Status']", Ext4FieldRef.class);
+        waitFor(new Checker()
+        {
+            @Override
+            public boolean check()
+            {
+                return qcField.getValue() != null;
+            }
+        }, "QCState field was never set", WAIT_FOR_JAVASCRIPT);
+
+        sleep(500);
         String dateVal = _tf.format(prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 1, 20));
         log("setting end date field: " + dateVal);
-        enddateField.setValue(dateVal);
-        sleep(100);
-        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
+        _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).setValue(dateVal);
+        sleep(500);
+        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue(), "Unable to set enddate field to: " + dateVal);
         getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
         waitForElement(Ext4Helper.Locators.window("Choose Project"));
@@ -736,7 +751,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Ext4FieldRef enddateField2 = _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class);
         enddateField2.setValue(_tf.format(enddate));
         sleep(100);
-        Assert.assertNotNull(enddateField2.getValue());
+        Assert.assertNotNull(enddateField2.getValue(), "End date was not set.  Expected: " + _tf.format(enddate));
 
         waitAndClick(Ext4Helper.Locators.window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(Ext4Helper.Locators.window("Change End Date"));

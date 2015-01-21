@@ -42,6 +42,7 @@ public class EHRSchema
     public static final String TABLE_PROTOCOL = "protocol";
     public static final String TABLE_PROTOCOL_COUNTS = "protocol_counts";
     public static final String TABLE_PROTOCOL_EXEMPTIONS = "protocolexemptions";
+    public static final String TABLE_PROTOCOL_PROCEDURES = "protocolProcedures";
     public static final String TABLE_PROJECT = "project";
     public static final String TABLE_ANIMAL_GROUP_MEMBERS = "animal_group_members";
     public static final String TABLE_ANIMAL_GROUPS = "animal_groups";

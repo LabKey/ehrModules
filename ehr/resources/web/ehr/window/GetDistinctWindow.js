@@ -113,6 +113,12 @@ Ext4.define('EHR.window.GetDistinctWindow', {
         return filters;
     },
 
+    getDataRegionParameters: function(dataRegion){
+        var params = dataRegion.getParameters();
+
+        return Ext4.Object.isEmpty(params) ? null : params;
+    },
+
     selectDistinct: function(){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         var field = this.down('#field').getValue();
@@ -122,6 +128,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
             column: field,
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
+            parameters: this.getDataRegionParameters(dataRegion),
             filterArray: this.getDataRegionFilterArray(dataRegion),
             viewName: dataRegion.viewName,
             scope: this,
