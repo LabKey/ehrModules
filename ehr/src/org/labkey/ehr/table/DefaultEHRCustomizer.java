@@ -1788,9 +1788,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "ELSE\n" +
                     "  CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
+                    "ac.ageclass AS AgeClassAtTime\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
-                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")");
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")" +
+                    "LEFT JOIN ehr_lookups.ageclass ac\n" +
+                        "ON (\n" +
+                        "  (CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) >= ac.\"min\" AND\n" +
+                        "  ((CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" is null) AND\n" +
+                        "  d.species = ac.species AND\n" +
+                        "  (d.gender = ac.gender OR ac.gender IS NULL)\n" +
+                        ")");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
