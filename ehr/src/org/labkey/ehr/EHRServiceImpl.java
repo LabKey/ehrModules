@@ -36,6 +36,7 @@ import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.history.HistoryDataSource;
+import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -63,6 +64,7 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
+import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 
@@ -125,6 +127,10 @@ public class EHRServiceImpl extends EHRService
         _extraTriggerScripts.add(Pair.of(owner, script));
     }
 
+    public void registerLabworkType(LabworkType type)
+    {
+        LabworkManager.get().registerType(type);
+    }
 
     public List<Resource> getExtraTriggerScripts(Container c)
     {
