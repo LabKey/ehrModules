@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;

@@ -1275,7 +1275,6 @@ ehr/src/org/labkey/ehr/history/DefaultDrugsDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultEncountersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultHousingDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultLabworkDataSource.java -text
-ehr/src/org/labkey/ehr/history/DefaultLabworkType.java -text
 ehr/src/org/labkey/ehr/history/DefaultObservationsDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultPregnanciesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListCloseDataSource.java -text
@@ -1285,12 +1284,10 @@ ehr/src/org/labkey/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
 ehr/src/org/labkey/ehr/history/HematologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/LabworkManager.java -text
-ehr/src/org/labkey/ehr/history/LabworkType.java -text
 ehr/src/org/labkey/ehr/history/MicrobiologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/MiscTestsLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ParasitologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/SerologyLabworkType.java -text
-ehr/src/org/labkey/ehr/history/SortingLabworkType.java -text
 ehr/src/org/labkey/ehr/history/UrinalysisLabworkType.java -text
 ehr/src/org/labkey/ehr/history/iStatLabworkType.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text

@@ -15,13 +15,12 @@
  */
 package org.labkey.ehr.history;
 
-import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.data.Results;
+import org.labkey.api.ehr.history.DefaultLabworkType;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 
 /**

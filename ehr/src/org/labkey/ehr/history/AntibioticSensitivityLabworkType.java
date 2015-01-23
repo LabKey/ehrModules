@@ -20,6 +20,7 @@ import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.history.DefaultLabworkType;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 

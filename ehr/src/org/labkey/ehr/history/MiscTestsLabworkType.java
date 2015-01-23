@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.ehr.history.DefaultLabworkType;
+
 /**
  * User: bimber
  * Date: 3/6/13
