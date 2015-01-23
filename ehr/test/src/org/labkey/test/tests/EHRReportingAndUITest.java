@@ -312,19 +312,18 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         sleep(500);
         waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
-        waitForElement(Locator.tagWithText("div", "3.73 kg")); //first animal
-        waitForElement(Locator.tagWithText("div", "3.56 kg")); //second animal
-        waitForElements(Locator.css("svg tspan"), 30);  //kinda ugly proxy for graphs loading
-        //NOTE: since 14.1 this part of the test is failing very regularly.  It will begin to load the DataRegion, but it seems to stall at this stage.
-        //Maybe there's some sort of timing induced JS error on the page preventing the DR from rendering?
-        sleep(500);
+        //waitForElements(Locator.css("svg tspan"), 30);  //kinda ugly proxy for graphs loading
+        waitForElement(Locator.tagContainingText("div", "Last Weight:").notHidden());
+        waitForElement(Locator.tagWithText("div", "3.73 kg").notHidden()); //first animal
+        waitForElement(Locator.tagWithText("div", "3.56 kg").notHidden()); //second animal
+
+        // NOTE: this DR has been failing to load on TC intermittently since 14.1/14.2.  it worked solidly before,
+        // and this seems like some sort of WebDriver/JS interaction problem.  The DR shows the loading indicator, but
+        // never loads.  Cant repro locally.
+        sleep(5000);  //plenty of time for graphs + page to load
         waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden(), 2);
-        log("raw data tab count: " + getElementCount(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden()));
-        sleep(500);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden().index(1));
-        sleep(500);
-        //TODO: why not loading?
-        waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 5);
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden().index(0));
+        waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);  //proxy for DR loading
 
         //chronological history
         waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));

@@ -114,6 +114,7 @@ EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/EHR_ComplianceDBUserSchema.java
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/query/EHRComplianceTableCustomizer.java -text
 EHR_ComplianceDB/tools/SOP_Lists.zip -text
 ehr/module.properties -text
+ehr/resources/data/lookup_sets.tsv -text
 ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text
 ehr/resources/pipeline/install.r -text
@@ -610,6 +611,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.414-12.415.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.420-12.421.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.422-12.423.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -847,6 +849,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.414-12.415.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.417-12.418.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.420-12.421.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.422-12.423.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text

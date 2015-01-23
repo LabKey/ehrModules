@@ -117,10 +117,15 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 weights = weightMap[row.Id];
             }
 
-            var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid, row.quantity);
-            if (msg != null){
-                EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
-                EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, errorQC);
+            if (row.objectid) {
+                var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
+                if (msg != null) {
+                    EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
+                    EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, errorQC);
+                }
+            }
+            else {
+                console.error('objectid not provided for blood draw, cannot calculate allowable blood volume.  this probably indicates an error with the form submitting these data')
             }
         }
     }

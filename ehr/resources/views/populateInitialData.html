@@ -7870,19 +7870,71 @@ var panel = new Ext.Panel({
             pendingDeletes++;
             deleteAll('ehr', 'module_properties', 'rowid')
         }
-//    },{
-//        xtype: 'button',
-//        text: 'Populate Animal Groups',
-//        scope: this,
-//        handler: populateAnimalGroups
-//    },{
-//        xtype: 'button',
-//        text: 'Delete Data From Animal Groups',
-//        scope: this,
-//        handler: function(){
-//            pendingDeletes++;
-//            deleteAll('ehr', 'animal_groups', 'rowid')
-//        }
+    },{
+        xtype: 'button',
+        text: 'Populate Lookup Sets',
+        scope: this,
+        handler: function(){
+            pendingInserts++;
+
+            //records for reports:
+            var config = {
+                schemaName: 'ehr_lookups',
+                queryName: 'lookup_sets',
+                moduleResource: '/data/lookup_sets.tsv',
+                success: onSuccess,
+                failure: onError,
+                scope: this
+            };
+
+            var origSuccess = config.success;
+            config.success = function(results, xhr, c) {
+                console.log('lookup set records inserted');
+
+                LABKEY.Ajax.request({
+                    url: LABKEY.ActionURL.buildURL('admin', 'caches', '/'),
+                    method:  'post',
+                    params: {
+                        clearCaches: 1
+                    },
+                    scope: this,
+                    success: function(){
+                        console.log('cleared caches');
+                        results.queryName = 'lookup_sets';
+                        origSuccess.call(config.scope, results, xhr, c);
+                    },
+                    failure: function(){
+                        console.error(arguments);
+                    }
+                });
+            };
+
+            LABKEY.Ajax.request({
+                url: LABKEY.ActionURL.buildURL("query", "import", config.containerPath, {
+                    module: 'ehr',
+                    moduleResource: config.moduleResource
+                }),
+                method: 'POST',
+                timeout: 100000,
+                success: LABKEY.Utils.getCallbackWrapper(config.success, config.scope),
+                failure: LABKEY.Utils.getCallbackWrapper(config.failure, config.scope, true),
+                jsonData: {
+                    schemaName: config.schemaName,
+                    queryName: config.queryName
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+    },{
+        xtype: 'button',
+        text: 'Delete Data From Lookup Sets',
+        scope: this,
+        handler: function(){
+            pendingDeletes++;
+            deleteAll('ehr_lookups', 'lookup_sets', 'setname');
+        }
     },{
         xtype: 'button',
         text: 'Populate All',

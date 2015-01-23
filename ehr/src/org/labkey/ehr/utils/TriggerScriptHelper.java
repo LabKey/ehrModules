@@ -99,6 +99,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -943,16 +944,15 @@ public class TriggerScriptHelper
         return ret;
     }
 
-    //NOTE: the interval start/stop are inclusive
-    private Double getOtherDrawsQuantity(String id, Date intervalStart, Date intervalStop, List<Map<String, Object>> recordsInTransaction, String rowObjectId, Double rowQuantity)
+    private String checkOtherDrawsQuantity(String id, Date date, String rowObjectId, double rowQuantity, int interval, double maxAllowable, double weight, List<Map<String, Object>> recordsInTransaction)
     {
-        intervalStart = DateUtils.truncate(intervalStart, Calendar.DATE);
-        intervalStop = DateUtils.truncate(intervalStop, Calendar.DATE);
-
-        //if provided, we inspect the other records in this transaction and add their values
+        // If provided, we inspect the other records in this transaction and add their values
+        // First determine which other records from this transction should be considered
         //first determine which other records from this transaction should be considered
         Set<String> ignoredObjectIds = new HashSet<>();
-        double quantityInTransaction = 0.0;
+
+        // All of the bloods that we need to consider
+        List<BloodInfo> allBloods = new ArrayList<>();
 
         //NOTE: we expect this will not contain the current row, but check for it anyway
         boolean foundRow = false;
@@ -969,15 +969,6 @@ public class TriggerScriptHelper
 
                 try
                 {
-                    Date d = ConvertHelper.convert(map.get("date"), Date.class);
-                    d = DateUtils.truncate(d, Calendar.DATE);
-                    if (d.getTime() >= intervalStart.getTime() && d.getTime() <= intervalStop.getTime())
-                    {
-                        Double quantity = ConvertHelper.convert(map.get("quantity"), Double.class);
-                        if (quantity != null)
-                            quantityInTransaction += quantity;
-                    }
-
                     String objectId = ConvertHelper.convert(map.get("objectid"), String.class);
                     if (objectId != null)
                     {
@@ -988,20 +979,33 @@ public class TriggerScriptHelper
                             foundRow = true;
                         }
                     }
+                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class));
+                    allBloods.add(bloodsIntransc);
                 }
                 catch (ConversionException e)
                 {
                     _log.error("TriggerScriptHelper.verifyBloodVolume was unable to parse date", e);
-                    continue;
                 }
             }
         }
 
         if (!foundRow)
         {
-            quantityInTransaction += rowQuantity;
             ignoredObjectIds.add(rowObjectId);
+
+            //TODO: this needs to include the current volume
         }
+
+        // Look forward and backward one interval for existing database records
+        Calendar intervalStart = Calendar.getInstance();
+        intervalStart.setTime(date);
+        intervalStart.add(Calendar.DATE, (-1 * interval));  //draws drop off on the morning of the nth date
+        intervalStart = DateUtils.truncate(intervalStart, Calendar.DATE);
+
+        Calendar intervalStop = Calendar.getInstance();
+        intervalStop.setTime(date);
+        intervalStop.add(Calendar.DATE, interval);
+        intervalStop = DateUtils.truncate(intervalStop, Calendar.DATE);
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
         filter.addCondition(FieldKey.fromString("date"), intervalStart, CompareType.DATE_GTE);
@@ -1009,18 +1013,126 @@ public class TriggerScriptHelper
         filter.addCondition(FieldKey.fromString("quantity"), null, CompareType.NONBLANK);
         filter.addCondition(FieldKey.fromString("countsAgainstVolume"), true);
 
-        if (ignoredObjectIds != null && ignoredObjectIds.size() > 0)
-            filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
-
-        TableInfo ti = getTableInfo("study", "Blood Draws");
-        TableSelector ts = new TableSelector(ti, Collections.singleton("quantity"), filter, null);
-
-        for (Double q : ts.getArray(Double.class))
+        // Don't pull database records that may be old versions of records that are changing in this transaction
+        if (ignoredObjectIds.size() > 0)
         {
-            quantityInTransaction += q;
+            filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
         }
 
-        return quantityInTransaction;
+        TableInfo ti = getTableInfo("study", "Blood Draws");
+
+        // Get records from the database in our date range that aren't part of the current transaction
+        TableSelector tsdate = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
+        allBloods.addAll(tsdate.getArrayList(BloodInfo.class));
+
+        // Iterate over all of the blood records
+        TreeSet<Double> overages = new TreeSet<>();
+        for (BloodInfo blood1 : allBloods)
+        {
+            double bloodNextInterval = 0;
+
+            // Find all of the other records within 30 days (looking forward only)
+            for (BloodInfo blood2 : allBloods)
+            {
+                if (blood1.getObjectId().equals(blood2.getObjectId()))
+                {
+                    // Be sure to count the record itself
+                    bloodNextInterval += blood1.getQuantity();
+                }
+                else
+                {
+                    if (blood1.countsAgainstInterval(blood2, interval))
+                    {
+                        bloodNextInterval += blood2.getQuantity();
+                    }
+                }
+            }
+
+            if (bloodNextInterval > maxAllowable)
+            {
+                overages.add(bloodNextInterval);
+            }
+        }
+
+        //always report the most severe overage
+        if (!overages.isEmpty())
+        {
+            return "Blood volume of " + rowQuantity + " (" + overages.descendingSet().iterator().next() + " over " + interval + " days) exceeds the allowable volume of " + maxAllowable + " mL (weight: " + weight + " kg)";
+        }
+
+        return null;
+    }
+
+    public static class BloodInfo implements Comparable<BloodInfo>
+    {
+        private String _objectId;
+        private Date _date;
+        private double _quantity;
+
+        public BloodInfo() {}
+
+        public BloodInfo(String objectId, Date date, Double quantity)
+        {
+            _objectId = objectId;
+            setDate(date);
+            _quantity = quantity;
+        }
+
+        @Override
+        public int compareTo(@NotNull BloodInfo o)
+        {
+            return getDate().compareTo(o.getDate());
+        }
+
+        public Date getDate()
+        {
+            return _date;
+        }
+
+        public String getObjectId()
+        {
+            return _objectId;
+        }
+
+        public double getQuantity()
+        {
+            return _quantity;
+        }
+
+        public void setObjectId(String objectId)
+        {
+            _objectId = objectId;
+        }
+
+        public void setDate(Date date)
+        {
+            //NOTE: consider whole-days only for blood volume calculations
+            _date = date == null ? null : DateUtils.truncate(date, Calendar.DATE);
+        }
+
+        public void setQuantity(double quantity)
+        {
+            _quantity = quantity;
+        }
+
+        final long MILLIS_PER_DAY = 24 * 3600 * 1000;
+
+        public boolean countsAgainstInterval(BloodInfo blood2, int intervalInDays)
+        {
+            Date date2 = blood2.getDate();
+            if (date2 == null)
+            {
+                return false;
+            }
+
+            //NOTE: we expect BloodInfo to truncate these to nearest DATE
+            long msDiff = getDate().getTime() - date2.getTime();
+            long daysDiff = Math.round(msDiff / ((double) MILLIS_PER_DAY));
+
+             return blood2.getQuantity() > 0 &&
+                     getDate().compareTo(date2) >= 0 && daysDiff >= 0 && //must be before or same day as this draw
+                     daysDiff < intervalInDays;  // and within the selected interval.  note: draws drop doff on the nth day, so use LT, not LTE
+        }
     }
 
     private Double extractWeightForId(List<Map<String, Object>> weightsInTransaction)
@@ -1091,42 +1203,14 @@ public class TriggerScriptHelper
             return "Unable to calculate allowable blood volume";
 
         Double bloodPerKg = (Double)bloodBySpecies.get("blood_per_kg");
-        Integer interval = ((Double)bloodBySpecies.get("blood_draw_interval")).intValue();
+        Number interval = (Number)bloodBySpecies.get("blood_draw_interval");
         Double maxDrawPct = (Double)bloodBySpecies.get("max_draw_pct");
         if (bloodPerKg == null || interval == null || maxDrawPct == null)
             return "Unable to calculate allowable blood volume";
 
-        Double maxAllowable = Math.round((weight * bloodPerKg * maxDrawPct) * 100) / 100.0;
+        double maxAllowable = Math.round((weight * bloodPerKg * maxDrawPct) * 100) / 100.0;
 
-        //find draws over the interval
-        Calendar intervalMin = Calendar.getInstance();
-        intervalMin.setTime(date);
-        intervalMin.add(Calendar.DATE, (-1 * interval) + 1);  //draws drop off on the morning of the nth date
-
-        Double bloodPrevious = getOtherDrawsQuantity(id, intervalMin.getTime(), date, recordsInTransaction, objectId, quantity);
-        if (bloodPrevious == null)
-            bloodPrevious = 0.0;
-
-        if (bloodPrevious > maxAllowable)
-        {
-            return "Blood volume of " + quantity + " (" + bloodPrevious + " total) exceeds allowable volume of " + maxAllowable + " mL over the previous " + interval + " days (" + weight + " kg)";
-        }
-
-        // if we didnt already have an error, check the future interval
-        Calendar intervalMax = Calendar.getInstance();
-        intervalMax.setTime(date);
-        intervalMax.add(Calendar.DATE, interval);
-
-        Double bloodFuture = getOtherDrawsQuantity(id, date, intervalMax.getTime(), recordsInTransaction, objectId, quantity);
-        if (bloodFuture == null)
-            bloodFuture = 0.0;
-
-        if (bloodFuture > maxAllowable)
-        {
-            return "Blood volume of " + bloodFuture + " conflicts with future draws. Max allowable is : " + maxAllowable + " mL (" + weight + " kg)";
-        }
-
-        return null;
+        return checkOtherDrawsQuantity(id, date, objectId, quantity, interval.intValue(), maxAllowable, weight.doubleValue(), recordsInTransaction);
     }
 
     private Map<String, Object> getBloodForSpecies(String species)
@@ -1912,6 +1996,10 @@ public class TriggerScriptHelper
                 }
 
                 TableInfo requests = getTableInfo("ehr", "requests");
+                //TODO: inherit sendEmail from parentrequest
+                //secondarily look at the clinpath service type and look for the service-level sendEmail bit
+                //row.put("sendEmail", shouldSendEmail(requests, parentRequestId, rowMap.get("service")));
+
                 List<Map<String, Object>> rows = new ArrayList<>();
                 rows.add(row);
                 Map<String, Object> extraContext = getExtraContext();

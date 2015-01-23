@@ -1,14 +1,17 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
     <ns:table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Lookup Sets</ns:tableTitle>
-        <ns:pkColumnName>setname</ns:pkColumnName>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:columns>
+            <ns:column columnName="rowid">
+
+            </ns:column>
             <ns:column columnName="setname">
-                <ns:isKeyField>true</ns:isKeyField>
+
             </ns:column>
             <ns:column columnName="label">
                 <ns:columnTitle>Label</ns:columnTitle>
@@ -21,6 +24,9 @@
             </ns:column>
             <ns:column columnName="titleColumn">
                 <ns:columnTitle>Title Column</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -1601,6 +1607,11 @@
                 <ns:shownInDetailsView>false</ns:shownInDetailsView>
                 <ns:shownInInsertView>false</ns:shownInInsertView>
                 <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="createdby">

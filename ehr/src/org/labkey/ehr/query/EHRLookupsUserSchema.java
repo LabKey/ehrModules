@@ -102,13 +102,13 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private Map<String, Map<String, Object>> getPropertySetNames()
     {
-        Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) DataEntryManager.get().getCache().get(LookupSetTable.CACHE_KEY);
+        Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) DataEntryManager.get().getCache().get(LookupSetTable.getCacheKey(getContainer()));
         if (nameMap != null)
             return nameMap;
 
         nameMap = new CaseInsensitiveHashMap<>();
 
-        TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS));
+        TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS), new SimpleFilter(FieldKey.fromString("container"), getContainer().getId()), null);
         Map<String, Object>[] rows = ts.getMapArray();
         if (rows.length > 0)
         {
@@ -122,7 +122,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
 
         nameMap = Collections.unmodifiableMap(nameMap);
-        DataEntryManager.get().getCache().put(LookupSetTable.CACHE_KEY, nameMap);
+        DataEntryManager.get().getCache().put(LookupSetTable.getCacheKey(getContainer()), nameMap);
 
         return nameMap;
     }
@@ -191,6 +191,15 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
         {
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        }
+        else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
+        {
+            ContainerScopedTable ret = new ContainerScopedTable(this, createSourceTable(name), "setname");
+            ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
+            ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
+            ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
+
+            return ret.init();
         }
 
         if (available.contains(name))

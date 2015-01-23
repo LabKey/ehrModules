@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.query.UserSchema;
 
@@ -28,12 +29,17 @@ import java.util.Map;
  */
 public class LookupSetTable extends AbstractDataDefinedTable
 {
-    public static final String CACHE_KEY = LabworkTypeTable.class.getName() + "||values";
+    private static final String CACHE_KEY = LookupSetTable.class.getName() + "||values";
 
     private static final String FILTER_COL = "set_name";
     private static final String VALUE_COL = "value";
 
     private String _keyField;
+
+    public static String getCacheKey(Container c)
+    {
+        return CACHE_KEY + "||" + c.getId();
+    }
 
     public LookupSetTable(UserSchema schema, SchemaTableInfo table, String setName, Map<String, Object> map)
     {

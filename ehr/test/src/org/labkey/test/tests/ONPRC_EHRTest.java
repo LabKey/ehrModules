@@ -151,27 +151,28 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         startCal.add(Calendar.DATE, -15);
         startCal.add(Calendar.HOUR, 12);
         Object[][] bloodData = new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), -1, 0), 1.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 0, 0), 1.5, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 1, -4), 2.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 1, 0), 2.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 1, 4), 2.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 2, 0), 1.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 3, 1), 1.5, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 4, 0), 2.0, EHRQCState.REVIEW_REQUIRED.label},
-                {animalId, prepareDate(startCal.getTime(), 5, 4), 1.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 4, -2), 2.0, EHRQCState.COMPLETED.label},
-                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.REVIEW_REQUIRED.label},
-                {animalId, prepareDate(startCal.getTime(), 5, 2), 1.0, EHRQCState.IN_PROGRESS.label},
-                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.IN_PROGRESS.label},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval - 1, 0), 1.5, EHRQCState.REQUEST_PENDING.label},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 0), 2.0, EHRQCState.REQUEST_APPROVED.label},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_PENDING.label},
+                {animalId, prepareDate(startCal.getTime(), -1, 0), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 0, 0), 1.5, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, -4), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, 0), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, 4), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 2, 0), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 3, 1), 1.5, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 4, 0), 2.0, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 4), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 4, -2), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 2), 1.0, EHRQCState.IN_PROGRESS.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.IN_PROGRESS.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval - 1, 0), 1.5, EHRQCState.REQUEST_PENDING.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_PENDING.label, generateGUID()},
                 //add draw far in future
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval - 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label}
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval - 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()}
         };
 
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "QCStateLabel"}, bloodData);
+        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "QCStateLabel", "objectid"}, bloodData);
         getApiHelper().deleteAllRecords("study", "blood", new Filter("Id", animalId, Filter.Operator.EQUAL));
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Arrays.asList(insertCommand), getExtraContext(), true);
 
@@ -224,7 +225,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
             minDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             minDate.add(Calendar.DATE, (-1 * bloodDrawInterval) + 1);
 
-            Date rowMinDate = row.get("BloodRemaining/minDate") instanceof Date ? (Date)row.get("BloodRemaining/minDate") : _df.parse(row.get("BloodRemaining/minDate").toString());
+            Date rowMinDate = row.get("BloodRemaining/minDate") instanceof Date ? (Date) row.get("BloodRemaining/minDate") : _df.parse(row.get("BloodRemaining/minDate").toString());
             Assert.assertEquals(minDate.getTime(), rowMinDate);
 
             Double lastWeight = null;
@@ -264,8 +265,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         for (Map<String, Object> row : resp3.getRows())
         {
             //note: some servers seem to return this as a string?
-            Date rowDate = (row.get("date") instanceof  Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
-            Date rowDropDate = (row.get("dropdate") instanceof  Date) ? (Date) row.get("dropdate") : _df.parse(row.get("dropdate").toString());
+            Date rowDate = (row.get("date") instanceof Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
+            Date rowDropDate = (row.get("dropdate") instanceof Date) ? (Date) row.get("dropdate") : _df.parse(row.get("dropdate").toString());
 
             Calendar dropDate = new GregorianCalendar();
             dropDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
@@ -286,7 +287,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         for (Map<String, Object> row : resp4.getRows())
         {
             //note: some servers seem to return this as a string?
-            Date rowDate = (row.get("date") instanceof  Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
+            Date rowDate = (row.get("date") instanceof Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
 
             Double lastWeight = null;
             Date lastWeightDate = null;
@@ -388,8 +389,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 1), 73, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
         }, Maps.of(
-                "quantity", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"),
-                "num_tubes", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)")
+                "quantity", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)"),
+                "num_tubes", Arrays.asList("ERROR: Blood volume of 73.0 (93.0 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)")
         ), Maps.of("targetQC", null));
 
         //2 requests that will exceed the volume together
@@ -397,10 +398,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Double warn1 = 20.0 + amount;
         Double warn2 = 20.0 + amount + amount;
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn2 +" total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
+        expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn2 + " over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)");
         if (warn1 > allowableBlood)
         {
-            expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)");
+            expectedErrors.add("ERROR: Blood volume of 40.0 (" + warn1 + " over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)");
         }
 
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
@@ -421,10 +422,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         additionalExtraContext.put("targetQC", null);
 
         List<String> expectedErrors2 = new ArrayList<>();
-        expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn2 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
+        expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn2 + " over " + bloodDrawInterval + " days) exceeds the allowable volume of " + newAllowableBlood + " mL (weight: " + newWeight + " kg)");
         if (warn1 > newAllowableBlood)
         {
-            expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn1 + " total) exceeds allowable volume of " + newAllowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + newWeight + " kg)");
+            expectedErrors2.add("ERROR: Blood volume of 40.0 (" + warn1 + " over " + bloodDrawInterval + " days) exceeds the allowable volume of " + newAllowableBlood + " mL (weight: " + newWeight + " kg)");
         }
 
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
@@ -440,18 +441,54 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), 70.5, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
         }, Maps.of(
                 "quantity", Arrays.asList(
-                        "INFO: Blood volume of 70.5 (74.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
+                        "INFO: Blood volume of 70.5 (74.5 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)"
                 ),
                 "num_tubes", Arrays.asList(
-                        "INFO: Blood volume of 70.5 (74.5 total) exceeds allowable volume of " + allowableBlood + " mL over the previous " + bloodDrawInterval + " days (" + mostRecentWeight + " kg)"
+                        "INFO: Blood volume of 70.5 (74.5 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)"
                 ),
                 "date", Arrays.asList("INFO: Date is in the future")
         ), Maps.of("targetQC", null));
 
-        // this should succeed.  2ml is the total taken on this date
+        // this should fail
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), (allowableBlood - 4), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), (allowableBlood - 5), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
         }, Collections.<String, List<String>>emptyMap());
+
+        // advance one day and it should succeed, showing the draw drops off correctly
+        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2 + 1, 1), (allowableBlood - 5), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
+        }, Collections.<String, List<String>>emptyMap());
+
+        //insert record between two existing records.  this record will itself be valid in either direction over the window; however, it will invalidate the previous draw
+        Map<String, Object> newRow = new HashMap<>();
+        newRow.put("Id", animalId);
+        newRow.put("date", prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval - 2, 4));
+        newRow.put("quantity", 2);
+        newRow.put("QCStateLabel", EHRQCState.REQUEST_APPROVED.label);
+        newRow.put("objectid", generateGUID());
+        newRow.put("recordid", "recordID");
+
+        getApiHelper().insertRow("study", "blood", newRow, false);
+
+        Map<String, Object> newRow2 = new HashMap<>();
+        newRow2.put("Id", animalId);
+        newRow2.put("date", prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval + 2, 4));
+        newRow2.put("quantity", 6);
+        newRow2.put("QCStateLabel", EHRQCState.REQUEST_APPROVED.label);
+        newRow2.put("objectid", generateGUID());
+        newRow2.put("recordid", "recordID");
+
+        getApiHelper().insertRow("study", "blood", newRow2, false);
+        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval, 4), 62.0, EHRQCState.REQUEST_APPROVED.label, generateGUID(), "recordID"}
+        }, Maps.of(
+                "quantity", Arrays.asList(
+                        "ERROR: Blood volume of 62.0 (74.0 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)"
+                ),
+                "num_tubes", Arrays.asList(
+                        "ERROR: Blood volume of 62.0 (74.0 over " + bloodDrawInterval + " days) exceeds the allowable volume of " + allowableBlood + " mL (weight: " + mostRecentWeight + " kg)"
+                )
+        ), Maps.of("targetQC", null));
     }
 
     @Test
@@ -1801,9 +1838,10 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         Ext4ComboRef procedureCombo = new Ext4ComboRef(proceduresGrid.getActiveEditor(1, "procedureid"), this);
         procedureCombo.setComboByDisplayValue("Lymph Node and Skin Biopsy - FITC");
         proceduresGrid.completeEdit();
-        sleep(300);
-        proceduresGrid.setGridCell(1, "chargetype", "Center Staff");
+        sleep(100);
         proceduresGrid.setGridCellJS(1, "instructions", "These are my instructions");
+        sleep(100);
+        proceduresGrid.setGridCellJS(1, "chargetype", "Center Staff");
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Add Procedure Defaults"));
         waitForElement(Ext4Helper.Locators.window("Add Procedure Defaults"));

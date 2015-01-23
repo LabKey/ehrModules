@@ -700,16 +700,18 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         }, "QCState field was never set", WAIT_FOR_JAVASCRIPT);
 
         sleep(500);
-        String dateVal = _tf.format(prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 1, 20));
-        log("setting end date field: " + dateVal);
-        _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).setValue(dateVal);
-        sleep(500);
-        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue(), "Unable to set enddate field to: " + dateVal);
+
         getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
         waitForElement(Ext4Helper.Locators.window("Choose Project"));
         _ext4Helper.queryOne("window[title=Choose Project] [fieldLabel='Project']", Ext4ComboRef.class).setComboByDisplayValue(PROJECT_ID);
         waitAndClick(Ext4Helper.Locators.window("Choose Project").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+
+        String dateVal = _tf.format(prepareDate(DateUtils.truncate(new Date(), Calendar.DATE), 1, 20));
+        log("setting end date field: " + dateVal);
+        _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).setValue(dateVal);
+        sleep(500);
+        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue(), "Unable to set enddate field to: " + dateVal);
 
         Ext4FieldRef treatmentField = getFieldInWindow("Treatment", Ext4FieldRef.class);
         treatmentField.getEval("expand()");

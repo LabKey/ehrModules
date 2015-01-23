@@ -15,6 +15,7 @@
  */
 package org.labkey.test.tests;
 
+import org.junit.Assert;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -212,6 +213,15 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void populateInitialData()
     {
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/populateInitialData.view");
+
+        log("Repopulate Lookup Sets");
+        clickButton("Delete Data From Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        clickButton("Populate Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        sleep(2000);
+
+        log("Repopulate All Data");
         clickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
         clickButton("Populate All", 0);

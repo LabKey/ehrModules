@@ -463,7 +463,7 @@ public class EHRClientAPIHelper
             Map<String, List<String>> errors = processResponse(response);
 
             //JSONHelper.compareMap()
-            assertEquals("Incorrect number of fields have errors", expectedErrors.keySet().size(), errors.keySet().size());
+            assertEquals("Incorrect number of fields have errors.  Fields with errors were: " + errors.keySet().toString(), expectedErrors.keySet().size(), errors.keySet().size());
             for (String field : expectedErrors.keySet())
             {
                 assertEquals("No errors found for field: " + field, true, errors.containsKey(field));

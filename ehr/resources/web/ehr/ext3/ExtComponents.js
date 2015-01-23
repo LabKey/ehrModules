@@ -1128,7 +1128,8 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
                 schemaName: 'study',
                 sql: this.makeSql(),
                 sort: 'project',
-                autoLoad: true,
+                //note: dont auto-load since we might be starting without a bound Id
+                //autoLoad: true,
                 listeners: {
                     scope: this,
                     // NOTE: WNPRCDataEntryTest intermittently fails when this combo fails to load
@@ -1175,6 +1176,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
 
         this.mon(this.ownerCt, 'participantchange', this.getProjects, this);
     },
+
     makeSql: function(id, date){
         var sql = "SELECT DISTINCT a.project, a.project.account, a.project.protocol as protocol FROM study.assignment a " +
                 "WHERE a.id='"+id+"' " +
@@ -1196,8 +1198,8 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
 
         return sql;
     },
-    getProjects : function(field, id)
-    {
+
+    getProjects : function(field, id){
         if(!id && this.ownerCt.boundRecord)
             id = this.ownerCt.boundRecord.get('Id');
 
@@ -1209,7 +1211,6 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
         this.emptyText = 'Select project...';
         this.store.baseParams.sql = this.makeSql(id, date);
         this.store.load();
-
     }
 });
 Ext.reg('ehr-project', EHR.ext.ProjectField);
