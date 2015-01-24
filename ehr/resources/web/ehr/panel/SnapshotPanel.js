@@ -414,7 +414,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (results && results.length){
             var row = results[0];
             if (row.animals){
-                var animals = row.animals.split(',');
+                animals = row.animals.replace(/( )*,( )*/g, ',');
+                animals = animals.split(',');
+                animals.sort();
                 animals = animals.remove(id);
             }
         }
@@ -423,7 +425,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         toSet['pairingType'] = pairingType;
 
         if (animals.length > 3){
-            toSet['cagemates'] = animals.length - 1 + ' animals';
+            toSet['cagemates'] = animals.length + ' animals';
         }
         else if (animals.length == 0){
             toSet['cagemates'] = 'None';
