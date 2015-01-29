@@ -52,7 +52,8 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
     protected static final String ID_PREFIX = "9999";
 
-    protected static final SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+    //NOTE: use 0-23H to be compatible w/ client-side Ext4 fields
+    protected static final SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     protected static final SimpleDateFormat _df = new SimpleDateFormat("yyyy-MM-dd");
 
     protected final String RHESUS = "RHESUS MACAQUE";
@@ -332,7 +333,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         Calendar beforeInterval = new GregorianCalendar();
         beforeInterval.setTime(date);
         beforeInterval.add(Calendar.DATE, daysOffset);
-        beforeInterval.add(Calendar.HOUR, hoursOffset);
+        beforeInterval.add(Calendar.HOUR_OF_DAY, hoursOffset);
 
         return beforeInterval.getTime();
     }

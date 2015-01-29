@@ -21,7 +21,7 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
 
         if (!this.redacted){
             items[0].items.push({
-                itemId: 'treatments',
+                name: 'treatments',
                 xtype: 'ehr-snapshotchildpanel',
                 headerLabel: 'Current Medications / Prescribed Diets',
                 emptyText: 'There are no active medications'

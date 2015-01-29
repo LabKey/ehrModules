@@ -261,8 +261,15 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
             // Id field fires the participantchange event (ie. when record is bound).  If there is a bug,
             // it doesnt seem to hit users or at least hasnt been reported.  therefore give it another try to reload:
             log("project field failed to load");
-            refresh();
-            waitForMprPageLoad();
+
+            // my best guess is that we initiate 2 different requests to populate the combo (one blank on load and one with the ID once populated)
+            // these happen very close to one another, and in theory they could return out of sequence.
+
+            //switching IDs causes the project field to re-calculate.  this is a workaround, not a fix
+            _extHelper.setExtFormElementByLabel("Id:", PROTOCOL_MEMBER_IDS[0] + "\t");
+            sleep(1000);
+            _extHelper.setExtFormElementByLabel("Id:", PROJECT_MEMBER_ID + "\t");
+            sleep(1000);
             _extHelper.selectComboBoxItem("Project:", PROJECT_ID + " (" + DUMMY_PROTOCOL + ")\u00A0");
         }
 
