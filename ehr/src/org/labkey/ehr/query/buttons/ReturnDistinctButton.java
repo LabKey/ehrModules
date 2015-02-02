@@ -18,7 +18,7 @@ package org.labkey.ehr.query.buttons;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
-import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.view.template.ClientDependency;
 
 /**
@@ -36,6 +36,6 @@ public class ReturnDistinctButton extends SimpleButtonConfigFactory
 
     public boolean isAvailable(TableInfo ti)
     {
-        return super.isAvailable(ti) && ti instanceof DataSetTable;
+        return super.isAvailable(ti) && ti instanceof DatasetTable;
     }
 }

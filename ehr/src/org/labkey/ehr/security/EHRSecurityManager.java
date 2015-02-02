@@ -28,8 +28,8 @@ import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.study.DataSet;
-import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.Dataset;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
@@ -66,7 +66,7 @@ public class EHRSecurityManager
         Study s = StudyService.get().getStudy(c);
         if (s != null)
         {
-            getDataSets(s);
+            getDatasets(s);
         }
 
         getQCStateInfo(c);
@@ -74,9 +74,9 @@ public class EHRSecurityManager
 
     public boolean testPermission (User u, TableInfo ti, Class<? extends Permission> perm, EHRQCState qcState)
     {
-        if (ti instanceof DataSetTable)
+        if (ti instanceof DatasetTable)
         {
-            SecurableResource sr = ((DataSetTable)ti).getDataset();
+            SecurableResource sr = ((DatasetTable)ti).getDataset();
             return testPermission(u, sr, perm, qcState);
         }
         else
@@ -91,9 +91,9 @@ public class EHRSecurityManager
         String className = getPermissionClassName(perm, qcState);
 
         //NOTE: See getResourceProps() in SecurityApiActions for notes on this hack
-        if (resource instanceof DataSet)
+        if (resource instanceof Dataset)
         {
-            DataSet ds = (DataSet)resource;
+            Dataset ds = (Dataset)resource;
             permissions = ds.getPermissions(u);
         }
         else
@@ -194,10 +194,10 @@ public class EHRSecurityManager
     }
 
     //internally cache datasets by container
-    private List<? extends DataSet> getDataSets(Study s)
+    private List<? extends Dataset> getDatasets(Study s)
     {
         String cacheKey = EHRSecurityManager.class.getName() + "||studyDatasets||" + s.getContainer().getId();
-        List<? extends DataSet> datasets = (List<DataSet>) DataEntryManager.get().getCache().get(cacheKey);
+        List<? extends Dataset> datasets = (List<Dataset>) DataEntryManager.get().getCache().get(cacheKey);
         if (datasets != null)
         {
             return datasets;
@@ -216,7 +216,7 @@ public class EHRSecurityManager
             if (s == null)
                 return null;
 
-            for (DataSet sr : getDataSets(s))
+            for (Dataset sr : getDatasets(s))
             {
                 if (sr.getLabel().equalsIgnoreCase(queryName) || sr.getName().equalsIgnoreCase(queryName))
                 {

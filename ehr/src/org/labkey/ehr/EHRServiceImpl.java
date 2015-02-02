@@ -56,7 +56,7 @@ import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
-import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
@@ -595,9 +595,9 @@ public class EHRServiceImpl extends EHRService
     public boolean hasPermission (TableInfo ti, Class<? extends Permission> perm)
     {
         SecurableResource sr;
-        if (ti instanceof DataSetTable)
+        if (ti instanceof DatasetTable)
         {
-            sr =((DataSetTable) ti).getDataset();
+            sr =((DatasetTable) ti).getDataset();
         }
         else
         {

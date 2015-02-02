@@ -25,7 +25,7 @@ import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
 /**
@@ -116,8 +116,8 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
     {
         if (resource instanceof Container)
             return ((Container)resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
-        else if (resource instanceof DataSet)
-            return ((DataSet)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
+        else if (resource instanceof Dataset)
+            return ((Dataset)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
 
         return false;
     }

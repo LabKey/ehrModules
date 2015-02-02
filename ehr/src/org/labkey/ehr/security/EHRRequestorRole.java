@@ -16,8 +16,6 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.data.Container;
-import org.labkey.api.ehr.security.EHRRequestCancelledAdminPermission;
-import org.labkey.api.ehr.security.EHRRequestCancelledDeletePermission;
 import org.labkey.api.ehr.security.EHRRequestCancelledInsertPermission;
 import org.labkey.api.ehr.security.EHRRequestCancelledUpdatePermission;
 import org.labkey.api.ehr.security.EHRRequestDeniedInsertPermission;
@@ -26,8 +24,6 @@ import org.labkey.api.ehr.security.EHRRequestPendingDeletePermission;
 import org.labkey.api.ehr.security.EHRRequestPendingInsertPermission;
 import org.labkey.api.ehr.security.EHRRequestPendingUpdatePermission;
 import org.labkey.api.ehr.security.EHRRequestPermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredAdminPermission;
-import org.labkey.api.ehr.security.EHRRequestSampleDeliveredDeletePermission;
 import org.labkey.api.ehr.security.EHRRequestSampleDeliveredInsertPermission;
 import org.labkey.api.ehr.security.EHRRequestSampleDeliveredUpdatePermission;
 import org.labkey.api.module.ModuleLoader;
@@ -38,7 +34,7 @@ import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
 /**
@@ -100,8 +96,8 @@ public class EHRRequestorRole extends AbstractEHRDatasetRole
     {
         if (resource instanceof Container)
             return ((Container)resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
-        else if (resource instanceof DataSet)
-            return ((DataSet)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
+        else if (resource instanceof Dataset)
+            return ((Dataset)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
 
         return false;
     }

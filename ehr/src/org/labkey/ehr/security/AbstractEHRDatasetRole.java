@@ -20,7 +20,7 @@ import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.roles.AbstractRole;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
 /**
@@ -37,7 +37,7 @@ public class AbstractEHRDatasetRole extends AbstractRole
     @Override
     public boolean isApplicable(SecurityPolicy policy, SecurableResource resource)
     {
-        return resource instanceof DataSet &&
-                ((DataSet)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
+        return resource instanceof Dataset &&
+                ((Dataset)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
     }
 }

@@ -5,7 +5,7 @@
  */
 /**
  * @cfg formType
- * @cfg dataSets An array of dataset names that should have records inserted
+ * @cfg datasets An array of dataset names that should have records inserted
  */
 Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
     extend: 'Ext.window.Window',
@@ -18,7 +18,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
          * This add a button that allows the user to create a task from a list of IDs, that contains one record per ID.  It was originally
          * created to allow users to create a weight task based on a list of IDs (like animals needed weights).
          */
-        createTaskFromIdsHandler: function(dataRegionName, formType, taskLabel, dataSets){
+        createTaskFromIdsHandler: function(dataRegionName, formType, taskLabel, datasets){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
             if (!checked || !checked.length){
@@ -31,7 +31,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
                 title: 'Schedule ' + taskLabel,
                 taskLabel: taskLabel,
                 formType: formType,
-                dataSets: dataSets
+                datasets: datasets
             }).show();
         }
     },
@@ -264,7 +264,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
 
         var toUpdate = [];
         var date = this.down('#date').getValue();
-        Ext4.each(this.dataSets, function(q){
+        Ext4.each(this.datasets, function(q){
             var obj = {
                 schemaName: 'study',
                 queryName: q,

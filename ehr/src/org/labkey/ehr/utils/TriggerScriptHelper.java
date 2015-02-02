@@ -66,7 +66,7 @@ import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.GUID;
@@ -169,7 +169,7 @@ public class TriggerScriptHelper
         for (String queryName : queryNames)
         {
             int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
-            DataSet dataset = StudyService.get().getDataset(container, datasetId);
+            Dataset dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
                 _log.info("Non existent table: study." + queryName);
                 continue;
@@ -194,7 +194,7 @@ public class TriggerScriptHelper
         User user = getUser();
 
         int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
-        DataSet dataset = StudyService.get().getDataset(container, datasetId);
+        Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
             return;
@@ -213,7 +213,7 @@ public class TriggerScriptHelper
         User user = getUser();
 
         int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
-        DataSet dataset = StudyService.get().getDataset(container, datasetId);
+        Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
             return;
@@ -232,7 +232,7 @@ public class TriggerScriptHelper
         User user = getUser();
 
         int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
-        DataSet dataset = StudyService.get().getDataset(container, datasetId);
+        Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
             return;

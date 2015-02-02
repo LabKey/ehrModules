@@ -26,7 +26,6 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
@@ -56,8 +55,8 @@ import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.study.DataSet;
-import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.Dataset;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.view.NavTree;
@@ -115,9 +114,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         //NOTE: no datasets should be included below.  these should be customized in customizeDataset()
-        if (table instanceof DataSetTable)
+        if (table instanceof DatasetTable)
         {
-            customizeDataset((DataSetTable)table);
+            customizeDataset((DatasetTable)table);
         }
         else if (matches(table, "study", "StudyData"))
         {
@@ -440,7 +439,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void customizeDataset(DataSetTable ds)
+    private void customizeDataset(DatasetTable ds)
     {
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
@@ -451,13 +450,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
-        ColumnInfo datasets = ti.getColumn(FieldKey.fromString("DataSets"));
+        ColumnInfo datasets = ti.getColumn(FieldKey.fromString("Datasets"));
         if (datasets != null)
         {
             ti.removeColumn(datasets);
         }
 
-        ColumnInfo dataset = ti.getColumn(FieldKey.fromString("DataSet"));
+        ColumnInfo dataset = ti.getColumn(FieldKey.fromString("Dataset"));
         if (dataset != null)
         {
             dataset.setHidden(true);
@@ -681,7 +680,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             }
             else
             {
-                TableInfo departure = getRealTableForDataSet(ti, "Departure");
+                TableInfo departure = getRealTableForDataset(ti, "Departure");
                 if (departure != null)
                 {
                     SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".death, (SELECT max(d.date) as expr FROM studydataset." + departure.getName() + " d WHERE d.participantid = " + ExprColumn.STR_TABLE_ALIAS + ".participantid))");
@@ -725,13 +724,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private TableInfo getRealTableForDataSet(AbstractTableInfo ti, String label)
+    private TableInfo getRealTableForDataset(AbstractTableInfo ti, String label)
     {
         Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
         if (ehrContainer == null)
             return null;
 
-        DataSet ds;
+        Dataset ds;
         Study s = StudyService.get().getStudy(ehrContainer);
         if (s == null)
             return null;
@@ -742,7 +741,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             // NOTE: this seems to happen during study import on TeamCity.  It does not seem to happen during normal operation
             _log.info("A dataset was requested that does not exist: " + label + " in container: " + ehrContainer.getPath());
             StringBuilder sb = new StringBuilder();
-            for (DataSet d : s.getDatasets())
+            for (Dataset d : s.getDatasets())
             {
                 sb.append(d.getName() + ", ");
             }
@@ -1022,7 +1021,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void configureMoreActionsBtn(AbstractTableInfo ti, ButtonBarConfig cfg)
     {
         List<ButtonConfigFactory> buttons = new ArrayList<>(EHRService.get().getMoreActionsButtons(ti));
-        if (ti instanceof DataSetTable)
+        if (ti instanceof DatasetTable)
         {
             EHRShowEditUIButton btn = new EHRShowEditUIButton(ModuleLoader.getInstance().getModule(EHRModule.class), ti.getPublicSchemaName(), ti.getName(), EHRDataAdminPermission.class);
             if (btn.isAvailable(ti))
@@ -1321,7 +1320,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "totalAnimals";
         if (table.getColumn(name) == null)
         {
-            TableInfo realTable = getRealTableForDataSet(table, "Animal Group Members");
+            TableInfo realTable = getRealTableForDataset(table, "Animal Group Members");
             if (realTable != null)
             {
                 SQLFragment sql = new SQLFragment("(select count(distinct g.participantid) as total from studydataset." + realTable.getName() + " g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.date <= {fn now()} AND (g.enddate IS NULL or CAST(g.enddate as date) > {fn curdate()})))");

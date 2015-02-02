@@ -67,7 +67,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
 import org.labkey.api.security.permissions.DeletePermission;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
@@ -230,7 +230,7 @@ public class EHRManager
             return messages;
         }
 
-        for (DataSet ds : s.getDatasets())
+        for (Dataset ds : s.getDatasets())
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "study");
             TableInfo ti = us.getTable(ds.getName(), true);
@@ -477,10 +477,10 @@ public class EHRManager
                 }
             }
 
-            List<? extends DataSet> datasets = study.getDatasets();
+            List<? extends Dataset> datasets = study.getDatasets();
             boolean shouldClearCaches = false;
 
-            for (DataSet dataset : datasets)
+            for (Dataset dataset : datasets)
             {
                 Domain domain = dataset.getDomain();
                 List<? extends DomainProperty> dprops = domain.getProperties();
@@ -630,7 +630,7 @@ public class EHRManager
 
             DbSchema schema = StudyService.get().getDatasetSchema();
             Set<String> distinctIndexes = new HashSet<>();
-            for (DataSet d : study.getDatasets())
+            for (Dataset d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = schema.getTable(tableName);
@@ -944,7 +944,7 @@ public class EHRManager
             {
                 for (String label : new String[]{"Clinical Encounters", "Gross Findings"})
                 {
-                    DataSet ds = study.getDatasetByLabel(label);
+                    Dataset ds = study.getDatasetByLabel(label);
                     if (ds != null)
                     {
                         _log.info("increasing size of remark column for dataset: " + label);

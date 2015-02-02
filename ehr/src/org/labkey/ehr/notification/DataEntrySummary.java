@@ -18,7 +18,6 @@ package org.labkey.ehr.notification;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -33,7 +32,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
@@ -197,19 +196,19 @@ public class DataEntrySummary implements NotificationSection
 
         for (final Study s : studies)
         {
-            List<DataSet> datasets = new ArrayList<>();
+            List<Dataset> datasets = new ArrayList<>();
             datasets.addAll(s.getDatasets());
-            Collections.sort(datasets, new Comparator<DataSet>()
+            Collections.sort(datasets, new Comparator<Dataset>()
             {
                 @Override
-                public int compare(DataSet o1, DataSet o2)
+                public int compare(Dataset o1, Dataset o2)
                 {
                     return o1.getLabel().toLowerCase().compareTo(o2.getLabel().toLowerCase());
                 }
             });
 
             DbSchema schema = StudyService.get().getDatasetSchema();
-            for (DataSet ds : datasets)
+            for (Dataset ds : datasets)
             {
                 TableInfo ti = schema.getTable(ds.getDomain().getStorageTableName());
 
@@ -250,7 +249,7 @@ public class DataEntrySummary implements NotificationSection
         msg.append("<hr>");
     }
 
-    private String generateUrl(DataSet ds, SimpleFilter filter)
+    private String generateUrl(Dataset ds, SimpleFilter filter)
     {
         DetailsURL url = DetailsURL.fromString("/query/executeQuery.view", ds.getContainer());
         String ret = AppProps.getInstance().getBaseServerUrl() + url.getActionURL().toString();

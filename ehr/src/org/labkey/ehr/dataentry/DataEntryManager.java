@@ -31,8 +31,8 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.study.DataSet;
-import org.labkey.api.study.DataSetTable;
+import org.labkey.api.study.Dataset;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
@@ -208,7 +208,7 @@ public class DataEntryManager
         private Container _container;
         private Map<String, TableInfo> _tableMap = new HashMap<>();
         private Map<String, UserSchema> _userSchemas = new HashMap<>();
-        private Map<String, DataSet> _dataSetMap = null;
+        private Map<String, Dataset> _datasetMap = null;
 
         public DataEntryFormContextImpl(Container c, User u)
         {
@@ -233,7 +233,7 @@ public class DataEntryManager
             TableInfo ti = us.getTable(queryName);
             _tableMap.put(key, ti);
 
-            if (ti instanceof DataSetTable)
+            if (ti instanceof DatasetTable)
             {
                 String key2 = schemaName + "||" + ti.getTitle();
                 _tableMap.put(key2, ti);
@@ -263,25 +263,25 @@ public class DataEntryManager
             return _user;
         }
 
-        public Map<String, DataSet> getDatasetMap()
+        public Map<String, Dataset> getDatasetMap()
         {
-            if (_dataSetMap == null)
+            if (_datasetMap == null)
             {
-                Map<String, DataSet> dataSetMap = new HashMap<>();
+                Map<String, Dataset> datasetMap = new HashMap<>();
                 Study s = StudyService.get().getStudy(getContainer());
                 if (s != null)
                 {
-                    List<? extends DataSet> datasets = s.getDatasets();
-                    for (DataSet d : datasets)
+                    List<? extends Dataset> datasets = s.getDatasets();
+                    for (Dataset d : datasets)
                     {
-                        dataSetMap.put(d.getName(), d);
-                        dataSetMap.put(d.getLabel(), d);
+                        datasetMap.put(d.getName(), d);
+                        datasetMap.put(d.getLabel(), d);
                     }
                 }
-                _dataSetMap = dataSetMap;
+                _datasetMap = datasetMap;
             }
 
-            return _dataSetMap;
+            return _datasetMap;
         }
     }
 }

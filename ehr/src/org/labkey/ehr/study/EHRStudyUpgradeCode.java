@@ -22,7 +22,7 @@ import org.labkey.api.exp.PropertyType;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
@@ -80,7 +80,7 @@ public class EHRStudyUpgradeCode implements UpgradeCode
                     boolean changed = false;
                     if (id > 0)
                     {
-                        DataSet d = s.getDataset(id);
+                        Dataset d = s.getDataset(id);
                         if (d != null)
                         {
                             Domain domain = d.getDomain();

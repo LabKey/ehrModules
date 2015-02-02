@@ -108,7 +108,7 @@ public class AbstractONPRC_EHRTest extends AbstractEHRTest
         super.initProject();
 
         //this applies the standard property descriptors, creates indexes, etc.
-        // NOTE: this currently will log an error from DataSetDefinition whenever we create a new column.  This really isnt a bug, so ignore
+        // NOTE: this currently will log an error from DatasetDefinition whenever we create a new column.  This really isnt a bug, so ignore
         checkLeaksAndErrors();
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/ensureDatasetProperties.view");
         waitAndClickAndWait(Locator.lkButton("OK"));

@@ -32,7 +32,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.study.DataSet;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.PageFlowUtil;
@@ -114,7 +114,7 @@ public class RecordDeleteRunner implements Job
         // Push a fake ViewContext onto the HttpView stack
         try (ViewContext.StackResetter ignored = ViewContext.pushMockViewContext(u, c, new ActionURL("ehr", "fake.view", c)))
         {
-            for (DataSet ds : s.getDatasets())
+            for (Dataset ds : s.getDatasets())
             {
                 TableInfo ti = schema.getTable(ds.getName());  //use UserSchema so we can delete using UpdateService
                 deleteRecordsFromTable(ti, "lsid");
