@@ -384,7 +384,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         waitAndClick(Locator.id(btn.getId()));
 
         log("Compare Weights - no selection");
-        uncheckAllOnPage(dataRegionName);
+        new DataRegionTable(dataRegionName, this).uncheckAllOnPage();
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_"+dataRegionName+"']" +Locator.lkButton("More Actions").getPath()), "Compare Weights");
         assertAlert("No records selected");
 
