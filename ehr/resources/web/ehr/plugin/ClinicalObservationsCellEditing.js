@@ -8,13 +8,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
     alias: 'plugin.clinicalobservationscellediting',
 
     constructor: function(config){
-        this.observationTypesStore = this.observationTypesStore || Ext4.create('LABKEY.ext4.Store', {
-            type: 'labkey-store',
-            schemaName: 'onprc_ehr',
-            queryName: 'observation_types',
-            columns: 'value,editorconfig',
-            autoLoad: true
-        });
+        this.observationTypesStore = EHR.DataEntryUtils.getObservationTypesStore();
 
         this.callParent(arguments);
     },

@@ -11,22 +11,18 @@ Ext4.define('EHR.grid.ClinicalObservationGridPanel', {
     alias: 'widget.ehr-clinicalobservationgridpanel',
 
     initComponent: function(){
-        this.observationTypesStore = Ext4.create('LABKEY.ext4.Store', {
-            type: 'labkey-store',
-            schemaName: 'onprc_ehr',
-            queryName: 'observation_types',
-            columns: 'value,editorconfig',
-            autoLoad: true
-        });
+        this.observationTypesStore = EHR.DataEntryUtils.getObservationTypesStore();
 
         this.callParent(arguments);
     },
 
     getEditingPlugin: function(){
+        LDK.Assert.assertNotEmpty('this.observationTypesStore is null in ClinicalObservationsGridPanel', this.observationTypesStore);
+
         return Ext4.create('EHR.grid.plugin.ClinicalObservationsCellEditing', {
             pluginId: this.editingPluginId,
             clicksToEdit: this.clicksToEdit,
-            observationTypesStore: this.observationTypesStore
+            observationTypesStore: EHR.DataEntryUtils.getObservationTypesStore()
         });
     }
 });

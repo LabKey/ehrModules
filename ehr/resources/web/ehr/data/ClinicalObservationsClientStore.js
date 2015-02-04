@@ -9,12 +9,6 @@ Ext4.define('EHR.data.ClinicalObservationsClientStore', {
     constructor: function(){
         this.callParent(arguments);
 
-        this.observationTypesStore = Ext4.create('LABKEY.ext4.Store', {
-            type: 'labkey-store',
-            schemaName: 'onprc_ehr',
-            queryName: 'observation_types',
-            columns: 'value,editorconfig',
-            autoLoad: true
-        });
+        this.observationTypesStore = EHR.DataEntryUtils.getObservationTypesStore();
     }
 });

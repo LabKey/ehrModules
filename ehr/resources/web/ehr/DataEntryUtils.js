@@ -627,6 +627,22 @@ EHR.DataEntryUtils = new function(){
             return EHR._snomedStore;
         },
 
+        getObservationTypesStore: function(){
+            if (EHR._observationTypesStore)
+                return EHR._observationTypesStore;
+
+            //TODO: this really belongs in ONPRC_EHR module, not here.  We should also move ClinicalObservationsGrid/EditingPlugin as well
+            EHR._observationTypesStore = Ext4.create('LABKEY.ext4.data.Store', {
+                type: 'labkey-store',
+                schemaName: 'onprc_ehr',
+                queryName: 'observation_types',
+                columns: 'value,editorconfig',
+                autoLoad: true
+            });
+
+            return EHR._observationTypesStore;
+        },
+
         getProceduresStore: function(){
             if (EHR._proceduresStore)
                 return EHR._proceduresStore;

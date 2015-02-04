@@ -106,7 +106,7 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                         return false;
                     }
 
-                    var store = this.up('grid').observationTypesStore;
+                    var store = EHR.DataEntryUtils.getObservationTypesStore();
                     var rec = store.findRecord('value', type);
                     LDK.Assert.assertNotEmpty('Unable to find record matching type: ' + type, rec);
 
