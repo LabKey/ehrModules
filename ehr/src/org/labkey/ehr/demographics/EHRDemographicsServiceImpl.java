@@ -487,8 +487,6 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     private int cacheLivingAnimalsForAllContainers(boolean validateOnCreate)
     {
-        _log.info("attempting to recache demographics for all living animals on all containers set to do so");
-
         //cache all living animals to be cached, if set
         ModuleProperty shouldCache = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRCacheDemographicsPropName);
         User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
@@ -510,6 +508,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     {
                         continue;
                     }
+
+                    _log.info("Recaching EHR demographics for all living animals in " + s.getContainer().getPath());
 
                     EHRDemographicsServiceImpl.get().cacheLivingAnimals(s.getContainer(), u, validateOnCreate);
                     totalCached++;
