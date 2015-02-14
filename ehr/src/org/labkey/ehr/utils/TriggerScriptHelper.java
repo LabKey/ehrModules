@@ -615,7 +615,7 @@ public class TriggerScriptHelper
         return null;
     }
 
-    public void announceIdsModified(List<String> tablesModified, List<String> ids)
+    public void announceIdsModified(List<String> tablesModified, List<String> ids, boolean isEtl)
     {
         List<Pair<String, String>> modified = new ArrayList<>();
         for (String table : tablesModified)
@@ -624,7 +624,7 @@ public class TriggerScriptHelper
             modified.add(Pair.of(tokens[0], tokens[1]));
         }
 
-        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), modified, ids, false);
+        EHRDemographicsServiceImpl.get().reportDataChange(getContainer(), modified, ids, isEtl);
     }
 
     public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException

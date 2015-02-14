@@ -497,10 +497,10 @@ EHR.Server.Triggers.complete = function(event, errors) {
     }
 
     if (helper.announceAllModifiedParticipants() && helper.getParticipantsModified().length){
-        helper.getJavaHelper().announceIdsModified(helper.getTablesModified(), helper.getParticipantsModified());
+        helper.getJavaHelper().announceIdsModified(helper.getTablesModified(), helper.getParticipantsModified(), helper.isETL());
     }
     else if (helper.getPublicParticipantsModified().length && !helper.skipAnnounceChangedParticipants()){
-        helper.getJavaHelper().announceIdsModified(helper.getTablesModified(), helper.getPublicParticipantsModified());
+        helper.getJavaHelper().announceIdsModified(helper.getTablesModified(), helper.getPublicParticipantsModified(), helper.isETL());
     }
 
     if (helper.getRows().length){

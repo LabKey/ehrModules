@@ -249,6 +249,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         if (async)
         {
+            for (String id : ids)
+            {
+                _cache.remove(getCacheKey(c, id));
+            }
+
             JobRunner.getDefault().execute(new Runnable(){
                 public void run()
                 {
