@@ -62,10 +62,6 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         }
     }
 
-    if (row.cage){
-        row.cage = row.cage.toUpperCase();
-    }
-
     //the editors dont let us record this precision anyway, and it just throws off date overlaps
     if (row.date){
         row.date.setSeconds(0);
