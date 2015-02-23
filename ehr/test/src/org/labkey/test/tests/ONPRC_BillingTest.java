@@ -47,6 +47,12 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         return PROJECT_NAME;
     }
 
+    @Override
+    String getModuleDirectory()
+    {
+        return "onprc_ehr";
+    }
+
     @BeforeClass
     @LogMethod
     public static void doSetup() throws Exception
@@ -56,7 +62,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doNotificationTests()
+    public void testNotifications()
     {
         setupNotificationService();
 
@@ -88,7 +94,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void billingPipelineTest()
+    public void testBillingPipeline()
     {
         beginAt(getBaseURL() + "/onprc_billing/" + getContainerPath() + "/financeManagement.view");
         waitAndClickAndWait(Locator.linkContainingText("Perform Billing Run"));

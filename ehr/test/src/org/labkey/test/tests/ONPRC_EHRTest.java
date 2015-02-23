@@ -66,7 +66,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 @Category({External.class, EHR.class, ONPRC.class})
-public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
+public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
@@ -75,6 +75,12 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     protected String getProjectName()
     {
         return PROJECT_NAME;
+    }
+
+    @Override
+    String getModuleDirectory()
+    {
+        return "onprc_ehr";
     }
 
     @BeforeClass
@@ -101,7 +107,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void bloodVolumeApiTest() throws Exception
+    public void testBloodVolumeApi() throws Exception
     {
         goToProjectHome();
 
@@ -492,7 +498,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void assignmentApiTest() throws Exception
+    public void testAssignmentApi() throws Exception
     {
         goToProjectHome();
 
@@ -646,7 +652,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void animalGroupsApiTest() throws Exception
+    public void testAnimalGroupsApi() throws Exception
     {
         goToProjectHome();
 
@@ -665,7 +671,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void projectProtocolApiTest() throws Exception
+    public void testProjectProtocolApi() throws Exception
     {
         goToProjectHome();
 
@@ -700,7 +706,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void drugApiTest()
+    public void testDrugApi()
     {
         goToProjectHome();
 
@@ -759,7 +765,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void arrivalApiTest() throws Exception
+    public void testArrivalApi() throws Exception
     {
         goToProjectHome();
 
@@ -812,7 +818,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doCustomActionsTests() throws Exception
+    public void testCustomActions() throws Exception
     {
         // make sure we have age class records for these species
         // NOTE: consider populating species table in populateData.html, and switching this test to use ONPRC-style names (ie. RHESUS MACAQUE vs. Rhesus).
@@ -950,7 +956,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void printableReportsTest()
+    public void testPrintableReports()
     {
         // NOTE: these primarily run SSRS, so we will just setup the UI and test whether the URL matches expectations
         goToProjectHome();
@@ -978,7 +984,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doLabworkResultEntryTest() throws Exception
+    public void testLabworkResultEntry() throws Exception
     {
         _helper.goToTaskForm("Lab Results");
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Task 1");
@@ -1215,7 +1221,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doExamEntryTest() throws Exception
+    public void testExamEntry() throws Exception
     {
         _helper.goToTaskForm("Exams/Cases");
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Exam 1");
@@ -1379,7 +1385,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doWeightEntryTest() throws Exception
+    public void testWeightEntry() throws Exception
     {
         _helper.goToTaskForm("Weights");
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Weight 1");
@@ -1540,7 +1546,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void doNotificationTests()
+    public void testNotifications()
     {
         setupNotificationService();
 
@@ -1609,7 +1615,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void observationsGridTest()
+    public void testObservationsGrid()
     {
         _helper.goToTaskForm("Bulk Clinical Entry");
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Observations 1");
@@ -1671,7 +1677,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void pathologyTest()
+    public void testPathology()
     {
         _helper.goToTaskForm("Necropsy", false);
 
@@ -1722,7 +1728,8 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
         _ext4Helper.clickExt4Tab("Histologic Findings");
         Ext4GridRef histologyGrid = _helper.getExt4GridForFormSection("Histologic Findings");
         _helper.addRecordToGrid(histologyGrid, "Add Record");
-        waitAndClick(histologyGrid.getCell(1, "codesRaw"));
+        scrollIntoView(histologyGrid.getCell(1,7));
+        waitAndClick(histologyGrid.getCell(1, 7));
         waitForElement(Ext4Helper.Locators.window("Manage SNOMED Codes"));
         Ext4ComboRef field = Ext4ComboRef.getForLabel(this, "Add Code");
         field.waitForEnabled();
@@ -1827,7 +1834,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void surgeryFormTest()
+    public void testSurgeryForm()
     {
         _helper.goToTaskForm("Surgeries");
 
@@ -1988,7 +1995,7 @@ public class ONPRC_EHRTest extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void behaviorRoundsTest() throws Exception
+    public void testBehaviorRounds() throws Exception
     {
         _helper.goToTaskForm("BSU Rounds");
 

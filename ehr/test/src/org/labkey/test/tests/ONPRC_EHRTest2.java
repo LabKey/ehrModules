@@ -54,9 +54,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
 
-    public ONPRC_EHRTest2()
-    {
 
+    @Override
+    String getModuleDirectory()
+    {
+        return "onprc_ehr";
     }
 
     @Override
@@ -89,7 +91,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void birthStatusApiTest() throws Exception
+    public void testBirthStatusApi() throws Exception
     {
         goToProjectHome();
 
@@ -438,7 +440,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void flagsApiTest() throws Exception
+    public void testFlagsApi() throws Exception
     {
         //NOTE: auto-closing of active flags is also covered by assignment test, which updates condition
 
@@ -498,7 +500,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void arrivalFormTest() throws Exception
+    public void testArrivalForm() throws Exception
     {
         _helper.goToTaskForm("Arrival", "Submit Final", false);
 
@@ -604,7 +606,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void pairingObservationsTest() throws Exception
+    public void testPairingObservations() throws Exception
     {
         _helper.goToTaskForm("Pairing Observations");
         ensureRoomExists(ROOMS[0]);
@@ -644,12 +646,12 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.setGridCell(3, "lowestcage", "A1");
         sleep(100);
         Assert.assertEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(3, "pairid"));
-
+        sleep(100);
         _helper.discardForm();
     }
 
     @Test
-    public void manageTreatmentsTest() throws Exception
+    public void testManageTreatment() throws Exception
     {
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", SUBJECTS[0]));
         getApiHelper().deleteAllRecords("study", "treatment_order", new Filter("Id", SUBJECTS[0]));
@@ -765,7 +767,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void manageCasesTest() throws Exception
+    public void testManageCases() throws Exception
     {
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", SUBJECTS[0]));
         getApiHelper().deleteAllRecords("study", "cases", new Filter("Id", SUBJECTS[0]));
@@ -830,7 +832,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         vetField.setComboByDisplayValue("admin");
 
         waitAndClick(Ext4Helper.Locators.window("Open Case: " + SUBJECTS[0]).append(Ext4Helper.Locators.ext4ButtonEnabled("Open & Immediately Close")));
-        sleep(100);
+        sleep(1000);
         waitAndClick(Ext4Helper.Locators.menuItem("Close With Reopen Date").notHidden());
         waitForElement(Ext4Helper.Locators.window("Error"));
         waitAndClick(Ext4Helper.Locators.window("Error").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));

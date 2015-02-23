@@ -15,21 +15,28 @@
  */
 package org.labkey.test.tests;
 
+import org.jetbrains.annotations.Nullable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
+import org.labkey.test.SortDirection;
+import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.ext4cmp.Ext4ComboRef;
+import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
-
+import java.io.File;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This should contain tests designed to validate EHR data entry or associated business logic.
@@ -37,18 +44,46 @@ import static org.junit.Assert.*;
  * or similar business logic.
  */
 @Category({External.class, EHR.class, ONPRC.class})
-public class WNPRCEHRDataEntryTest extends AbstractEHRTest
+public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
+    public static final String PROJECT_NAME = "WNPRC_TestProject";
+    protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant
+
+    @Nullable
+    @Override
+    protected String getProjectName()
+    {
+        return PROJECT_NAME;
+    }
+
+    @Override
+    public BrowserType bestBrowser()
+    {
+        return BrowserType.CHROME;
+    }
+
     @BeforeClass @LogMethod
     public static void doSetup() throws Exception
     {
-        WNPRCEHRDataEntryTest initTest = (WNPRCEHRDataEntryTest)getCurrentTest();
+        WNPRC_EHRTest initTest = (WNPRC_EHRTest)getCurrentTest();
 
-        initTest.initProject();
+        initTest.initProject("EHR");
+        initTest.clickFolder("EHR");
+        initTest.goToFolderManagement();
+        initTest.click(Locator.linkWithText("Folder Type"));
+        initTest.checkCheckbox(Locator.tagWithAttribute("input", "title", "WNPRC_EHR"));
+        initTest.click(Locator.tagWithText("span", "Update Folder"));
+    }
+
+    public void importStudy()
+    {
+        goToManageStudy();
+
+        importStudyFromZip(new File(TestFileUtils.getSampledataPath(), "\\study\\EHR Study Anon.zip"));
     }
 
     @Test
-    public void weightDataEntryTest()
+    public void testWeightDataEntry()
     {
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
@@ -65,7 +100,6 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
 
         setFormElement(Locator.name("title"), TASK_TITLE);
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)
-
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         log("Add blank weight entries");
@@ -176,6 +210,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-weight-records-grid')]"), WAIT_FOR_JAVASCRIPT);
         waitAndClick(Locator.extButtonEnabled("Validate"));
         waitForElement(Locator.xpath("//button[text() = 'Submit Final' and "+Locator.ENABLED+"]"), WAIT_FOR_JAVASCRIPT);
+        sleep(1000);
         click(Locator.extButton("Submit Final"));
         _extHelper.waitForExtDialog("Finalize Form");
         _extHelper.clickExtButton("Finalize Form", "Yes");
@@ -197,7 +232,7 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
     }
 
     @Test
-    public void mprDataEntryTest()
+    public void testMprDataEntry()
     {
         clickProject(PROJECT_NAME);
         clickFolder(FOLDER_NAME);
@@ -336,16 +371,241 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         log("MPR save complete");
         waitForElement(Locator.tagWithText("span", "Data Entry"));
         log("returned to data entry page");
-
+        sleep(500);
         stopImpersonating();
     }
+
+    @Test
+    public void testDetailsPages()
+    {
+        clickProject(getProjectName());
+        clickFolder(FOLDER_NAME);
+
+        waitAndClickAndWait(Locator.linkWithText("Browse All Datasets"));
+
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Drug Administration");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Drug Administration:", VIEW_TEXT));
+
+        waitForText(WAIT_FOR_PAGE * 2, "details");
+        DataRegionTable dr = new DataRegionTable("query", this);
+        clickAndWait(dr.link(0, 0));
+        //these are the sections we expect
+        waitForText("Drug Details");
+        waitForText("Clinical Remarks From ");
+        assertNoErrorText();
+
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Housing");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Housing:", VIEW_TEXT));
+
+        waitForText(ROOM_ID2);
+        dr = new DataRegionTable("query", this);
+        clickAndWait(dr.link(1, "Room"));
+
+        //these are the sections we expect
+        waitForText("Cage Details");
+        waitForText("Animals Currently Housed");
+        waitForText("Cage Observations For This Location");
+        waitForText("All Animals Ever Housed");
+        assertNoErrorText();
+
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Clinpath Runs");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Clinpath Runs:", VIEW_TEXT));
+
+        waitForText("details");
+        dr = new DataRegionTable("query", this);
+        clickAndWait(dr.link(0, 0));
+        waitForText("Labwork Summary");
+        waitForText(WAIT_FOR_JAVASCRIPT * 2, "Results");
+        waitForText("No results found");
+        assertNoErrorText();
+
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Clinical Encounters");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Clinical Encounters:", VIEW_TEXT));
+
+        waitForText("details");
+        dr = new DataRegionTable("query", this);
+        dr.setSort("date", SortDirection.ASC);
+        waitForText("details");
+        clickAndWait(dr.link(0, 0));
+        waitForText("Encounter Details");
+        //waitForText("Weight Monitoring Needed");
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Biopsies");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Biopsies:", VIEW_TEXT));
+        waitForText("volutpat");
+        dr = new DataRegionTable("query", this);
+        //click(dr.link(0, 0));
+        clickAndWait(Locator.linkWithText("Details"));
+        //these are the sections we expect
+        waitForText("Biopsy Details", "Morphologic Diagnoses", "Histology");
+        assertNoErrorText();
+
+        beginAt("/ehr/" + getContainerPath() + "/datasets.view");
+        waitForText("Necropsies");
+        waitAndClick(LabModuleHelper.getNavPanelItem("Necropsies:", VIEW_TEXT));
+        waitForText("details");
+        dr = new DataRegionTable("query", this);
+        click(dr.link(0, 0));
+        //these are the sections we expect
+        waitForText("Necropsy Details","Morphologic Diagnoses","Histology");
+        assertNoErrorText();
+    }
+
+    @Test
+    public void testAnimalHistory()
+    {
+        String dataRegionName;
+        clickProject(getProjectName());
+        clickFolder(FOLDER_NAME);
+
+        waitAndClick(Locator.linkWithText("Animal History"));
+
+        log("Verify Single animal history");
+        String query = "textfield[itemId=subjArea]";
+        _helper.waitForCmp(query);
+        Ext4FieldRef subjField = getAnimalHistorySubjField();
+        subjField.setValue(PROTOCOL_MEMBER_IDS[0]);
+
+        refreshAnimalHistoryReport();
+        waitForElement(Locator.tagContainingText("th", "Overview: " + PROTOCOL_MEMBER_IDS[0]));
+        waitForElement(Locator.tagContainingText("div", "There are no active medications"));
+        waitForElement(Locator.tagContainingText("div", "5.62 kg")); //loading of the weight section
+        _helper.waitForCmp(query);
+        subjField = _ext4Helper.queryOne("#subjArea", Ext4FieldRef.class);
+        assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
+
+        //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
+        log("Verify entire colony history");
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Entire Database"));
+        sleep(2000);
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
+        waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
+        waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
+        sleep(2000); //allow page to resize
+        //dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
+        //assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
+        waitForElement(Locator.linkWithText("Rhesus"));
+        waitForElement(Locator.linkWithText("Cynomolgus"));
+        waitForElement(Locator.linkWithText("Marmoset"));
+
+        log("Verify location based history");
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Current Location"));
+
+        _helper.waitForCmp("#areaField");
+        _ext4Helper.queryOne("#areaField", Ext4FieldRef.class).setValue(AREA_ID);
+        sleep(200); //wait for 2nd field to filter
+        _ext4Helper.queryOne("#roomField", Ext4FieldRef.class).setValue(ROOM_ID);
+        _ext4Helper.queryOne("#cageField", Ext4FieldRef.class).setValue(CAGE_ID);
+        refreshAnimalHistoryReport();
+        waitForElement(Locator.linkContainingText("9794992"), WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
+
+        log("Verify Project search");
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
+        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
+        waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
+        Ext4FieldRef.waitForField(this, "Center Project");
+        Ext4ComboRef.getForLabel(this, "Center Project").setComboByDisplayValue(PROJECT_ID);
+        _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
+
+        waitForElement(Ext4Helper.Locators.ext4Button(PROJECT_MEMBER_ID + " (X)"), WAIT_FOR_JAVASCRIPT);
+        refreshAnimalHistoryReport();
+        waitForElement(Locator.tagContainingText("span", "Demographics - " + PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT * 2);
+
+        log("Verify Protocol search");
+        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
+        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
+        waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
+        Ext4FieldRef.waitForField(this, "IACUC Protocol");
+        Ext4ComboRef.getForLabel(this, "IACUC Protocol").setComboByDisplayValue(PROTOCOL_ID);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+
+        // Check protocol search results.
+        refreshAnimalHistoryReport();
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
+        assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
+
+        // Check animal count after removing one from search.
+        waitAndClick(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
+        waitForElementToDisappear(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        refreshAnimalHistoryReport();
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, getDataRegionRowCount(dataRegionName));
+
+        // Re-add animal.
+        getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
+        waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
+        refreshAnimalHistoryReport();
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
+        waitForText(PROTOCOL_MEMBER_IDS[0]);
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, getDataRegionRowCount(dataRegionName));
+
+        log("Check subjectField parsing");
+        getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
+        refreshAnimalHistoryReport();
+        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
+        assertEquals("Did not find the expected number of Animals", 5, getDataRegionRowCount(dataRegionName));
+
+        waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
+        assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
+
+        waitAndClick(Ext4Helper.Locators.ext4Button("Clear"));
+        refreshAnimalHistoryReport();
+        waitForElement(Ext4Helper.Locators.window("Error"));
+        assertElementNotPresent(Ext4Helper.Locators.ext4ButtonContainingText("(X)"));
+        assertTextPresent("Must enter at least one subject");
+        waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
+
+        log("checking specific tabs");
+
+        //snapshot
+        getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
+        refreshAnimalHistoryReport();
+        waitAndClick(Ext4Helper.Locators.ext4Tab("General"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Snapshot"));
+        waitForText("Location:");
+        waitForText("Gender:");
+        waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
+
+        //weight
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        sleep(500);
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
+        waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
+        waitForElement(Locator.tagContainingText("div", "Last Weight:").notHidden());
+        waitForElement(Locator.tagWithText("div", "3.73 kg").notHidden()); //first animal
+        waitForElement(Locator.tagWithText("div", "3.56 kg").notHidden()); //second animal
+        waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden(), 2);
+
+        // NOTE: this DR has been failing to load on TC intermittently since 14.1/14.2.  it worked solidly before,
+        // and this seems like some sort of WebDriver/JS interaction problem.  The DR shows the loading indicator, but
+        // never loads.  Cant repro locally.
+
+        // TODO: consider re-enabling with a future WebDriver version.
+        //waitAndClick(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden().index(0));
+        //waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);  //proxy for DR loading
+
+        //chronological history
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
+        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical History"));
+        waitForElement(Locator.tagContainingText("div", "No records found since:"));
+    }
+
 
     private void waitForMprPageLoad()
     {
         waitForElement(Locator.tagWithText("span", "Treatments & Procedures"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.name("Id"), WAIT_FOR_PAGE);
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
-        waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-drug_administration-records-grid')]"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.css(".ehr-drug_administration-records-grid"), WAIT_FOR_JAVASCRIPT);
 
         final Locator fieldLocator = Locator.tag("input").withAttribute("name", "Id").withClass("x-form-field").notHidden();
 
@@ -362,6 +622,13 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         sleep(200);
     }
 
+    private void refreshAnimalHistoryReport()
+    {
+        waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
+        sleep(200);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
+    }
+
     private void setDoseConcFields()
     {
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "concentration", "5");
@@ -370,9 +637,14 @@ public class WNPRCEHRDataEntryTest extends AbstractEHRTest
         waitForElement(Locator.xpath("//div[@class='x-form-invalid-msg']"), WAIT_FOR_JAVASCRIPT);
     }
 
-    @Override
-    public BrowserType bestBrowser()
+    private void selectHistoryTab(String tab)
     {
-        return BrowserType.CHROME;
+        click(Locator.tagWithText("span", tab));
+    }
+
+    //@Override
+    String getModuleDirectory()
+    {
+        return "WNPRC_EHR";
     }
 }

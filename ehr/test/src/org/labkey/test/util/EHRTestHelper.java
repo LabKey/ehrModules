@@ -28,7 +28,7 @@ import org.labkey.remoteapi.security.GetUsersCommand;
 import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
-import org.labkey.test.tests.EHRReportingAndUITest;
+import org.labkey.test.tests.AbstractEHRTest;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -77,7 +77,7 @@ public class EHRTestHelper
 
     public void clickVisibleButton(String text)
     {
-        _test.click(Locator.xpath("//button[text()='" + text + "' and " + EHRReportingAndUITest.VISIBLE + " and not(contains(@class, 'x-hide-display'))]"));
+        _test.click(Locator.xpath("//button[text()='" + text + "' and " + AbstractEHRTest.VISIBLE + " and not(contains(@class, 'x-hide-display'))]"));
     }
 
     public void setDataEntryFieldInTab(String tabName, String fieldName, String value)
@@ -288,6 +288,7 @@ public class EHRTestHelper
 
     public void discardForm()
     {
+        _test.scrollIntoView(getDataEntryButton("More Actions"));
         _test.waitAndClick(getDataEntryButton("More Actions"));
         _test.click(Ext4Helper.Locators.menuItem("Discard"));
         _test.waitForElement(Ext4Helper.Locators.window("Discard Form"));

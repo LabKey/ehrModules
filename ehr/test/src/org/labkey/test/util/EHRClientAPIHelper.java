@@ -380,6 +380,7 @@ public class EHRClientAPIHelper
             {
                 JSONObject errors = o.getJSONObject("extraContext").getJSONObject("skippedErrors");
                 Iterator keys = errors.keys();
+
                 while (keys.hasNext())
                 {
                     String key = (String)keys.next();

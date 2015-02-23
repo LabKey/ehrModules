@@ -15,7 +15,8 @@
  */
 package org.labkey.test.tests;
 
-import org.junit.Assert;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -30,6 +31,7 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.util.AdvancedSqlTest;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
@@ -41,24 +43,27 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
-    protected String PROJECT_NAME = "EHR_TestProject";
-    protected String FOLDER_NAME = "EHR";
     protected String CONTAINER_PATH = getProjectName() + "/" + FOLDER_NAME;
-    protected String STUDY_ZIP = "/sampledata/study/EHR Study Anon.zip";
+    protected static String FOLDER_NAME = "EHR";
+    protected static String STUDY_ZIP = "/sampledata/study/EHR Study Anon.zip";
     protected static final String STUDY_ZIP_NO_DATA = "/sampledata/study/EHR Study Anon Small.zip";
 
     protected static final String PROJECT_ID = "640991"; // project with one participant
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
-    protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant
+
     protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
     protected static final String ROOM_ID2 = "2043365";
@@ -71,6 +76,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String DEAD_ANIMAL_ID = "test9118022";
     protected static final String TASK_TITLE = "Test weight task";
     protected static final String MPR_TASK_TITLE = "Test MPR task";
+    protected static final String VIEW_TEXT = "Browse All";
 
     protected static EHRUser DATA_ADMIN = new EHRUser("admin@ehrstudy.test", "EHR Administrators", EHRRole.DATA_ADMIN);
     protected static EHRUser REQUESTER = new EHRUser("requester@ehrstudy.test", "EHR Requestors", EHRRole.REQUESTER);
@@ -79,7 +85,27 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static EHRUser REQUEST_ADMIN = new EHRUser("request_admin@ehrstudy.test", "EHR Request Admins", EHRRole.REQUEST_ADMIN);
     protected static EHRUser FULL_UPDATER = new EHRUser("full_updater@ehrstudy.test", "EHR Full Updaters", EHRRole.FULL_UPDATER);
 
+    protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
+    protected static String[] ROOMS = {"Room1", "Room2", "Room3"};
+    protected static String[] CAGES = {"A1", "B2", "A3"};
+    protected static Integer[] PROJECTS = {12345, 123456, 1234567};
+
+    protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    protected static String FIELD_QCSTATELABEL = "QCStateLabel";
+    protected static String FIELD_OBJECTID = "objectid";
+    protected static String FIELD_LSID = "lsid";
+
+    protected String[] weightFields = {"Id", "date", "enddate", "project", "weight", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid"};
+    protected Object[] weightData1 = {"TestSubject1", EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
+    protected List<Long> _saveRowsTimes;
+    protected SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+    protected Random _randomGenerator = new Random();
+
+    protected EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getContainerPath());
+
+    abstract String getModuleDirectory();
 
     //xpath fragment
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
@@ -87,20 +113,32 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected EHRTestHelper _helper = new EHRTestHelper(this);
 
     @Override
+    public BrowserType bestBrowser()
+    {
+        return BrowserType.CHROME;
+    }
+
+    @Override
     public List<String> getAssociatedModules()
     {
         return Arrays.asList("ehr");
     }
 
-    @Override
-    protected String getProjectName()
-    {
-        return PROJECT_NAME;
-    }
+    //@Override
+    //abstract String getProjectName();
+//    {
+//        return PROJECT_NAME;
+//    }
 
     public String getContainerPath()
     {
         return CONTAINER_PATH;
+    }
+
+
+    public String getModulePath()
+    {
+        return "/server/customModules/" + getModuleDirectory();
     }
 
     @Override
@@ -124,6 +162,84 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
                 Pattern.compile("qcstate", Pattern.CASE_INSENSITIVE),//qcstate IDs aren't predictable
                 Pattern.compile("stacktrace", Pattern.CASE_INSENSITIVE)
         };
+    }
+
+    @LogMethod
+    protected void createTestSubjects() throws Exception
+    {
+        String[] fields;
+        Object[][] data;
+        JSONObject insertCommand;
+
+        //insert into demographics
+        log("Creating test subjects");
+        fields = new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"};
+        data = new Object[][]{
+                {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
+                {SUBJECTS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {SUBJECTS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //for simplicity, also create the animals from MORE_ANIMAL_IDS right now
+        data = new Object[][]{
+                {MORE_ANIMAL_IDS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(MORE_ANIMAL_IDS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //used as initial dates
+        Date pastDate1 = TIME_FORMAT.parse("2012-01-03 09:30");
+        Date pastDate2 = TIME_FORMAT.parse("2012-05-03 19:20");
+
+        //set housing
+        log("Creating initial housing records");
+        fields = new String[]{"Id", "date", "enddate", "room", "cage"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                {SUBJECTS[0], pastDate2, null, ROOMS[0], CAGES[0]},
+                {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
+                {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Housing", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Housing", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //set a base weight
+        log("Setting initial weights");
+        fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate2, 10.5, EHRQCState.COMPLETED.label},
+                {SUBJECTS[0], new Date(), 12, EHRQCState.COMPLETED.label},
+                {SUBJECTS[1], new Date(), 12, EHRQCState.COMPLETED.label},
+                {SUBJECTS[2], new Date(), 12, EHRQCState.COMPLETED.label}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Weight", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+        //set assignment
+        log("Setting initial assignments");
+        fields = new String[]{"Id", "date", "enddate", "project"};
+        data = new Object[][]{
+                {SUBJECTS[0], pastDate1, pastDate2, PROJECTS[0]},
+                {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
+                {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Assignment", "lsid", fields, data);
+        getApiHelper().deleteAllRecords("study", "Assignment", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
+
     }
 
     @Override
@@ -174,39 +290,53 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    protected void doStudyImport()
-    {
-        goToModule("Study");
-        startImportStudyFromZip(new File(TestFileUtils.getLabKeyRoot(), STUDY_ZIP), skipStudyImportQueryValidation());
-        waitForPipelineJobsToComplete(1, "Study import", false);
-    }
+    abstract void importStudy();
 
     protected boolean skipStudyImportQueryValidation()
     {
         return false;
     }
 
+    protected void createProjectAndFolders(String type)
+    {
+        _containerHelper.createProject(getProjectName(), type);
+        createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, type, null);
+    }
+
     protected void createProjectAndFolders()
     {
-        _containerHelper.createProject(getProjectName(), null);
-        createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, "EHR", null);
+        createProjectAndFolders("EHR");
+    }
+
+    protected void initProject() throws Exception
+    {
+        initProject("EHR");
     }
 
     @LogMethod
-    protected void initProject() throws Exception
+    protected void initProject(String type) throws Exception
     {
-        createProjectAndFolders();
+        createProjectAndFolders(type);
         setEHRModuleProperties();
         createUsersandPermissions();  //note: we create the users prior to study import, b/c that user is used by TableCustomizers
         populateInitialData();
-        doStudyImport();
-
+        importStudy();
+        shutoffProfiler();
         //note: these expect the study to exist
         setupStudyPermissions();
         defineQCStates();
 
         populateHardTableRecords();
         primeCaches();
+    }
+
+    protected void shutoffProfiler()
+    {
+        goToAdminConsole();
+        clickAndWait(Locator.linkWithText("profiler"));
+        uncheckCheckbox(Locator.inputById("enabled"));
+        clickAndWait(Locator.tagContainingText("Span", "Save"));
+        goToProjectHome();
     }
 
     @LogMethod
@@ -224,8 +354,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         log("Repopulate All Data");
         clickButton("Delete All", 0);
         waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
+        log("Delete completed");
         clickButton("Populate All", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 300000);
+        log("Test data population completed");
     }
 
     @LogMethod
@@ -444,6 +576,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return "/sampledata/study/ehrTestStudyPolicy.xml";
     }
 
+    protected EHRClientAPIHelper getApiHelper()
+    {
+        return new EHRClientAPIHelper(this, getContainerPath());
+    }
+
+    protected JSONObject getExtraContext()
+    {
+        JSONObject extraContext = getApiHelper().getExtraContext();
+        extraContext.remove("targetQC");
+        extraContext.remove("isLegacyFormat");
+
+        return extraContext;
+    }
+
     @LogMethod
     private void setEhrUserPasswords()
     {
@@ -454,6 +600,209 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setInitialPassword(FULL_UPDATER.getEmail(), PasswordUtil.getPassword());
         setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
     }
+
+
+
+
+    protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()
+    {
+        {
+            // Data Admin - Users with this role are permitted to make any edits to datasets
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.ABNORMAL, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.COMPLETED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
+            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "insert"));
+
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.ABNORMAL, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.COMPLETED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
+            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "update"));
+
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.ABNORMAL, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.COMPLETED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
+            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "delete"));
+
+            //for the purpose of tests, full updater is essentially the save as data admin.  they just lack admin privs, which we dont really test
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.ABNORMAL, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.COMPLETED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "insert"));
+            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "insert"));
+
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.ABNORMAL, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.COMPLETED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "update"));
+            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "update"));
+
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.ABNORMAL, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.COMPLETED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "delete"));
+            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "delete"));
+
+            // Requester - Users with this role are permitted to submit requests, but not approve them
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_CANCELLED, "update"));
+
+            // Full Submitter - Users with this role are permitted to submit and approve records.  They cannot modify public data.
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.COMPLETED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "insert"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
+
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "update"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.COMPLETED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "update"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "update"));
+
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "delete"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.COMPLETED, "delete"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "delete"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
+            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "delete"));
+
+            // Basic Submitter - Users with this role are permitted to submit and edit non-public records, but cannot alter public ones
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "insert"));
+            //request approved: none
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
+            //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
+
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "update"));
+            //request approved: none
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
+            //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "update"));
+
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "delete"));
+
+            // Request Admin is basically the same as Full Submitter, except they also have RequestAdmin Permission, which is not currently tested.  It is primarily used in UI
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.ABNORMAL, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.COMPLETED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "insert"));
+
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.ABNORMAL, "update"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.COMPLETED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "update"));
+
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.ABNORMAL, "delete"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.COMPLETED, "delete"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
+            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "delete"));
+        }
+    };
 
     public static class EHRUser
     {
@@ -494,6 +843,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         {
             return _role;
         }
+
     }
 
     public static class Permission
