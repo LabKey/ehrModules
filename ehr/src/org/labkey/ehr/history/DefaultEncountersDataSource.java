@@ -164,7 +164,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
                 CompareType.CompareClause cc = (CompareType.CompareClause)fc;
                 Object val = (cc.getParamVals() != null && cc.getParamVals().length > 0) ? cc.getParamVals()[0] : null;
                 FieldKey fk = FieldKey.fromParts(FieldKey.fromString("recordid"), cc.getFieldKeys().get(0));
-                newFilter.addCondition(fk, val, cc.getComparison());
+                newFilter.addCondition(fk, val, cc.getCompareType());
             }
             else
             {
