@@ -423,7 +423,6 @@ EHR.Server.Utils = new function(){
                     msgFrom: siteEmail,
                     msgSubject: config.msgSubject,
                     msgRecipients: config.recipients,
-                    allowUnregisteredUser: true,
                     msgContent: [
                         LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
                     ],
