@@ -2,6 +2,7 @@ package org.labkey.test.tests;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.test.Locator;
 import org.labkey.test.util.DataRegionTable;
@@ -155,10 +156,30 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForText("Weight:");
         waitAndClick(LabModuleHelper.getNavPanelItem("Weight:", VIEW_TEXT));
         DataRegionTable dr = new DataRegionTable("query", this);
+        saveLocation();
         checkCheckbox(Locator.checkboxByName(".select").index(0));
         checkCheckbox(Locator.checkboxByName(".select").index(1));
         dr.clickHeaderButton("More Actions", false, "Compare Weights");
         waitForText(1000, "Weight 1", "Weight 2", "Days Between", "% Change");
+        waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
+        dr.clickHeaderButton("More Actions", false, "Jump To History");
+        assertTextPresent("Animal History");
+        recallLocation();
+        recallLocation(1000);
+        List<String> submenuItems = dr.getHeaderButtonSubmenuText("More Actions");
+        Assert.assertTrue("More Actions submenu did not include Jump To History option", submenuItems.contains("Jump To History"));
+        Assert.assertTrue("More Actions submenu did not include Return Distinct Values option", submenuItems.contains("Return Distinct Values"));
+        Assert.assertTrue("More Actions submenu did not include Show Record History option", submenuItems.contains("Show Record History"));
+        Assert.assertTrue("More Actions submenu did not include Compare Weights option", submenuItems.contains("Compare Weights"));
+        Assert.assertTrue("More Actions submenu did not include Edit Records option", submenuItems.contains("Edit Records"));
+        impersonate("requester@ehrstudy.test");
+        submenuItems = dr.getHeaderButtonSubmenuText("More Actions");
+        Assert.assertTrue("More Actions submenu did not include Jump To History option", submenuItems.contains("Jump To History"));
+        Assert.assertTrue("More Actions submenu did not include Return Distinct Values option", submenuItems.contains("Return Distinct Values"));
+        Assert.assertTrue("More Actions submenu did not include Show Record History option", submenuItems.contains("Show Record History"));
+        Assert.assertTrue("More Actions submenu did not include Compare Weights option", submenuItems.contains("Compare Weights"));
+        Assert.assertFalse("More Actions submenu included Edit Records option", submenuItems.contains("Edit Records"));
+        stopImpersonating();
     }
 
     @LogMethod
