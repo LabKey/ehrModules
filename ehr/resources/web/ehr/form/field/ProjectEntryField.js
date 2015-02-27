@@ -33,7 +33,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             queryMode: 'local',
             plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
                 createWindow: function(){
-                    return Ext4.create('Ext.window.Window', {
+                    this.window = Ext4.create('Ext.window.Window', {
                         modal: true,
                         closeAction: 'destroy',
                         bodyStyle: 'padding: 5px',
@@ -42,7 +42,15 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                             xtype: 'ehr-projectfield',
                             width: 400,
                             fieldLabel: 'Project',
-                            itemId: 'projectField'
+                            itemId: 'projectField',
+                            listeners: {
+                                specialkey: function(field, e){
+                                    if (e.getKey() === e.ENTER && !field.isExpanded){
+                                        var btn = field.up('window').down('button[text=Submit]');
+                                        btn.handler.apply(btn.scope, [btn]);
+                                    }
+                                }
+                            }
                         },{
                             xtype: 'ldk-linkbutton',
                             linkTarget: '_blank',
@@ -66,7 +74,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                 LDK.Assert.assertTrue('Project record not found for id: ' + project, !!rec);
 
                                 if (rec){
-                                    this.onWindowClose({
+                                    this.onPrompt('ok', {
                                         project: project,
                                         displayName: rec.get('displayName'),
                                         protocolDisplayName: rec.get('protocol/displayName'),
@@ -87,8 +95,18 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                             handler: function(btn){
                                 btn.up('window').close();
                             }
-                        }]
+                        }],
+                        listeners: {
+                            show: function(win){
+                                var field = win.down('combo');
+                                field.focus.defer(100, field);
+                            }
+                        }
                     }).show();
+                },
+
+                onBeforeComplete: function(){
+                    return !this.window || !this.windows.isVisible();
                 }
             })],
             validationDelay: 500,
