@@ -145,11 +145,11 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertEquals(1, resp2.getRows().size());
 
         Double bloodPerKg = (Double) resp2.getRows().get(0).get("blood_per_kg");
-        assert bloodPerKg > 0;
+        Assert.assertTrue("Bad 'blood_per_kg': " + bloodPerKg, bloodPerKg > 0);
         Double maxDrawPct = (Double) resp2.getRows().get(0).get("max_draw_pct");
-        assert maxDrawPct > 0;
+        Assert.assertTrue("Bad 'max_draw_pct': " + maxDrawPct, maxDrawPct > 0);
         Integer bloodDrawInterval = ((Double) resp2.getRows().get(0).get("blood_draw_interval")).intValue();
-        assert bloodDrawInterval == 21;  //NOTE: this is hard coded in some queries right now
+        Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 21, bloodDrawInterval.intValue());  //NOTE: this is hard coded in some queries right now
 
         log("Creating blood draws");
         Calendar startCal = new GregorianCalendar();
@@ -1007,7 +1007,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         for (String[] arr : panels)
         {
             Ext4GridRef panelGrid2 = _helper.getExt4GridForFormSection("Panels / Services");
-            assert panelGrid2.getId().equals(panelGrid.getId());
+            Assert.assertEquals(panelGrid.getId(), panelGrid2.getId());
 
             _helper.addRecordToGrid(panelGrid);
             panelGrid.setGridCell(panelIdx, "Id", MORE_ANIMAL_IDS[(panelIdx % MORE_ANIMAL_IDS.length)]);
