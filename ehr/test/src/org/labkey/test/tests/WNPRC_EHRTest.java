@@ -268,6 +268,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
         stopImpersonating();
 
+        // this might be a workaround (not fix) for Issue 22361
+        recallLocation();
+
         log("Fulfill MPR task");
         impersonate(BASIC_SUBMITTER.getEmail());
         recallLocation();
