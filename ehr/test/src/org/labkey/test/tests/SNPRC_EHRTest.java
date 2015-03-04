@@ -171,9 +171,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         click(Locator.tagWithText("span", "Refresh"));
         waitForText("Overview: 12345");
         //spot check a few of the data points
-        assertTextPresent("Room1 / A1");
-        assertTextPresent("There are no active medications");
-        assertTextPresent("Rhesus");
+        assertTextPresent("Room1 / A1", "There are no active medications", "Rhesus");
         recallLocation();
         click(Locator.xpath("//label[.='Entire Database']/../input"));
         click(Locator.tagWithText("span", "Refresh"));
