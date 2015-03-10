@@ -25,6 +25,7 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
+import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 
 import java.util.ArrayList;
@@ -83,11 +84,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     {
         //TODO: can I interact with this as a menu webpart?
         log("Add quick search webpart");
-        //goToEHRFolder();
-        //addWebPart("Quick Search");
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
-        _portalHelper.addWebPart("Quick Search");
+        (new PortalHelper(this)).addWebPart("Quick Search");
         log("Quick Search - Show Animal");
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
