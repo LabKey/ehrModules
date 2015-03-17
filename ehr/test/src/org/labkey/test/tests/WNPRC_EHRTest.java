@@ -22,8 +22,8 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
@@ -33,6 +33,7 @@ import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
+
 import java.io.File;
 import java.util.Date;
 
@@ -43,7 +44,7 @@ import static org.junit.Assert.assertEquals;
  * NOTE: EHRApiTest may be a better location for tests designed to test server-side trigger scripts
  * or similar business logic.
  */
-@Category({External.class, EHR.class, ONPRC.class})
+@Category({CustomModules.class, EHR.class, ONPRC.class})
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
     public static final String PROJECT_NAME = "WNPRC_TestProject";

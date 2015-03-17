@@ -34,8 +34,8 @@ import org.labkey.remoteapi.query.Sort;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.EHRClientAPIHelper;
@@ -67,7 +67,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-@Category({External.class, EHR.class, ONPRC.class})
+@Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";

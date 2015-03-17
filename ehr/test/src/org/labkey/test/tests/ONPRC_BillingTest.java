@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
+import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -35,7 +35,7 @@ import java.util.Set;
 /**
 
  */
-@Category({External.class, EHR.class, ONPRC.class})
+@Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_Billing_TestProject";

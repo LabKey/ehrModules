@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
@@ -31,10 +32,7 @@ import org.labkey.test.util.RReportHelper;
 
 import java.io.File;
 
-/**
- * Created by RyanS on 1/21/2015.
- */
-@Category ({EHR.class})
+@Category ({CustomModules.class, EHR.class})
 public class SNPRC_EHRTest extends AbstractGenericEHRTest
 {
     private boolean _hasCreatedBirthRecords = false;

@@ -30,12 +30,12 @@ import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.AdvancedSqlTest;
-import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.Maps;
@@ -49,9 +49,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-@Category({External.class, EHR.class, ONPRC.class})
+@Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
