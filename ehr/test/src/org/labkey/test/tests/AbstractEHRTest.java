@@ -124,12 +124,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return Arrays.asList("ehr");
     }
 
-    //@Override
-    //abstract String getProjectName();
-//    {
-//        return PROJECT_NAME;
-//    }
-
     public String getContainerPath()
     {
         return CONTAINER_PATH;
@@ -613,7 +607,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
-            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
@@ -626,7 +619,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
-            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
@@ -639,7 +631,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.DELETE_REQUESTED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.IN_PROGRESS, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
-            //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
@@ -653,7 +644,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "insert"));
-            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "insert"));
@@ -666,7 +656,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "update"));
-            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "update"));
@@ -679,7 +668,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.DELETE_REQUESTED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.IN_PROGRESS, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_APPROVED, "delete"));
-            //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "delete"));
@@ -703,7 +691,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "insert"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
@@ -712,11 +699,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
 
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "update"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.COMPLETED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "update"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
@@ -724,17 +709,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "update"));
 
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.ABNORMAL, "delete"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.COMPLETED, "delete"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.DELETE_REQUESTED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.IN_PROGRESS, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_APPROVED, "delete"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
-            //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "delete"));
 
             // Basic Submitter - Users with this role are permitted to submit and edit non-public records, but cannot alter public ones
@@ -746,7 +726,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "insert"));
-            //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
 
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "update"));
@@ -757,7 +736,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_CANCELLED, "update"));
-            //add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.SCHEDULED, "update"));
 
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "delete"));
@@ -768,7 +746,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "insert"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
@@ -777,11 +754,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "insert"));
 
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.ABNORMAL, "update"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.COMPLETED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "update"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
@@ -789,17 +764,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "update"));
 
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.ABNORMAL, "delete"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.COMPLETED, "delete"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.DELETE_REQUESTED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.IN_PROGRESS, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_APPROVED, "delete"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_CANCELLED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
-            //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "delete"));
         }
     };
@@ -890,7 +860,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         DELETE_REQUESTED("Delete Requested", "Records are requested to be deleted", true),
         IN_PROGRESS("In Progress", "Draft Record, not public", false),
         REQUEST_APPROVED("Request: Approved", "Request has been approved", true),
-        //REQUEST_COMPLETE("Request: Complete", "Request has been completed", true),
         REQUEST_DENIED("Request: Denied", "Request has been denied", true),
         REQUEST_CANCELLED("Request: Cancelled", "Request has been cancelled", true),
         REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false),

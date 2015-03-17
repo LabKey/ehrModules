@@ -31,4 +31,7 @@ abstract class AbstractONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
     @Override
     public void testCustomButtons(){}
+
+    @Override
+    public void customActionsTest(){}
 }

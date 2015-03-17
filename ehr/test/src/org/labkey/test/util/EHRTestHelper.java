@@ -248,6 +248,7 @@ public class EHRTestHelper
 
     public void applyTemplate(Ext4GridRef grid, String templateName, boolean bulkEdit, Date date)
     {
+        _test.sleep(2000);
         grid.clickTbarButton("Templates");
 
         _test.waitAndClick(Ext4Helper.Locators.menuItem("Templates").notHidden());

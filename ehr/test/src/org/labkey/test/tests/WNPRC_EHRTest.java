@@ -68,6 +68,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         WNPRC_EHRTest initTest = (WNPRC_EHRTest)getCurrentTest();
 
         initTest.initProject("EHR");
+        initTest.createTestSubjects();
         initTest.clickFolder("EHR");
         initTest.goToFolderManagement();
         initTest.click(Locator.linkWithText("Folder Type"));
@@ -79,7 +80,13 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     {
         goToManageStudy();
 
-        importStudyFromZip(new File(TestFileUtils.getSampledataPath(), "\\study\\EHR Study Anon.zip"));
+        importStudyFromZip(new File(TestFileUtils.getSampledataPath(), "study" + File.separator + "EHR Study Anon.zip"));
+    }
+
+    @Override
+    protected boolean doSetUserPasswords()
+    {
+        return true;
     }
 
     @Test
@@ -152,14 +159,14 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.tagWithText("em", "No data to show."), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
         waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
+        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
         _extHelper.clickExtTab("Tasks By Room");
         waitForElement(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
+        assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
         _extHelper.clickExtTab("Tasks By Id");
         waitForElement(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
-
+        assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
+        sleep(1000); //Weird
         stopImpersonating();
 
         log("Fulfill measurement task");
@@ -228,7 +235,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         setFilter("query", "date", "Equals", DATE_FORMAT.format(new Date()));
         assertTextPresent("3.333", "4.444", "5.555");
-        assertEquals("Completed was not present the expected number of times", 3, getElementCount(Locator.xpath("//td[text() = 'Completed']")));
+        assertEquals("Completed was not present the expected number of times", 6, getElementCount(Locator.xpath("//td[text() = 'Completed']")));
     }
 
     @Test
@@ -258,14 +265,15 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         waitForElement(Locator.tagWithText("em", "No data to show."), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
+        //TODO: make these more
         waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
+        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a").withText(MPR_TASK_TITLE)));
         _extHelper.clickExtTab("Tasks By Room");
         waitForElement(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
+        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a").withText(MPR_TASK_TITLE)));
         _extHelper.clickExtTab("Tasks By Id");
         waitForElement(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
-        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
+        assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a").withText(MPR_TASK_TITLE)));
         stopImpersonating();
 
         // this might be a workaround (not fix) for Issue 22361
@@ -307,7 +315,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
             _extHelper.setExtFormElementByLabel("Id:", PROTOCOL_MEMBER_IDS[0] + "\t");
             sleep(1000);
             _extHelper.setExtFormElementByLabel("Id:", PROJECT_MEMBER_ID + "\t");
-            sleep(1000);
+            sleep(5000);
             _extHelper.selectComboBoxItem("Project:", PROJECT_ID + " (" + DUMMY_PROTOCOL + ")\u00A0");
         }
 
@@ -374,7 +382,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         log("MPR save complete");
         waitForElement(Locator.tagWithText("span", "Data Entry"));
         log("returned to data entry page");
-        sleep(500);
+        sleep(1500);
         stopImpersonating();
     }
 
@@ -435,13 +443,11 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForText("details");
         clickAndWait(dr.link(0, 0));
         waitForText("Encounter Details");
-        //waitForText("Weight Monitoring Needed");
         beginAt("/ehr/" + getContainerPath() + "/datasets.view");
         waitForText("Biopsies");
         waitAndClick(LabModuleHelper.getNavPanelItem("Biopsies:", VIEW_TEXT));
         waitForText("volutpat");
         dr = new DataRegionTable("query", this);
-        //click(dr.link(0, 0));
         clickAndWait(Locator.linkWithText("Details"));
         //these are the sections we expect
         waitForText("Biopsy Details", "Morphologic Diagnoses", "Histology");
@@ -484,13 +490,10 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
         waitAndClick(Ext4Helper.Locators.ext4Radio("Entire Database"));
-        sleep(2000);
+        sleep(5000);
         waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
-        sleep(2000); //allow page to resize
-        //dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        //assertEquals("Did not find the expected number of Animals", 44, getDataRegionRowCount(dataRegionName));
         waitForElement(Locator.linkWithText("Rhesus"));
         waitForElement(Locator.linkWithText("Cynomolgus"));
         waitForElement(Locator.linkWithText("Marmoset"));
@@ -581,12 +584,12 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //weight
         waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
         sleep(500);
+        scrollIntoView(Ext4Helper.Locators.ext4Tab("Weights"));
         waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
-        waitForElement(Locator.tagContainingText("div", "Last Weight:").notHidden());
-        waitForElement(Locator.tagWithText("div", "3.73 kg").notHidden()); //first animal
-        waitForElement(Locator.tagWithText("div", "3.56 kg").notHidden()); //second animal
-        waitForElements(Ext4Helper.Locators.ext4Tab("Raw Data").notHidden(), 2);
+        waitForElement(Locator.tagContainingText("div", "Most Recent Weight").notHidden());
+        waitForElement(Locator.tagWithText("a", "3.73").notHidden()); //first animal
+        waitForElement(Locator.tagWithText("a", "3.56").notHidden()); //second animal
 
         // NOTE: this DR has been failing to load on TC intermittently since 14.1/14.2.  it worked solidly before,
         // and this seems like some sort of WebDriver/JS interaction problem.  The DR shows the loading indicator, but

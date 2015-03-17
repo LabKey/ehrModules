@@ -177,7 +177,6 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         click(Locator.tagWithText("span", "Refresh"));
         //check count and links for one subject
         DataRegionTable tbl = new DataRegionTable("aqwp2", this);
-        //DataRegionTable tbl = DataRegionTable.getTableNameByTitle("", this)
         Assert.assertEquals(tbl.getDataRowCount(), 49);
         assertElementPresent(Locator.linkWithText("test1020148"));
         assertElementPresent(Locator.linkWithText("male"));

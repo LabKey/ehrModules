@@ -434,6 +434,31 @@ public class EHRClientAPIHelper
         return 0;
     }
 
+    public String insertData(String email, String schemaName, String queryName, String[] fields, Object[][] data, Map<String, Object> additionalExtraContext)
+    {
+        _test.log("Inserting data into " + schemaName + "." + queryName);
+        try
+        {
+            JSONObject extraContext = getExtraContext();
+            extraContext.put("errorThreshold", "INFO");
+            extraContext.put("targetQC", "In Progress");
+            if (additionalExtraContext != null)
+            {
+                for (String key : additionalExtraContext.keySet())
+                {
+                    extraContext.put(key, additionalExtraContext.get(key));
+                }
+            }
+
+            JSONObject insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+            return doSaveRows(email, Collections.singletonList(insertCommand), extraContext, true);
+        }
+        catch (JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void testValidationMessage(String email, String schemaName, String queryName, String[] fields, Object[][] data, Map<String, List<String>> expectedErrors)
     {
         testValidationMessage(email, schemaName, queryName, fields, data, expectedErrors, null);

@@ -78,12 +78,6 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         initTest.createTestSubjects();
     }
 
-//    @Override
-//    public void doCleanup(boolean afterTest) throws TestTimeoutException
-//    {
-//
-//    }
-
     @Override
     protected boolean doSetUserPasswords()
     {

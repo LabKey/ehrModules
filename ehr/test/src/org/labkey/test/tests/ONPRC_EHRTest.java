@@ -21,8 +21,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.Timeout;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -71,6 +73,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
 
+    @ClassRule
+    public static Timeout globalTimeout = new Timeout(3600000); // 60 minutes
+
     @Override
     protected String getProjectName()
     {
@@ -93,12 +98,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         initTest.createTestSubjects();
         new RReportHelper(initTest).ensureRConfig();
     }
-
-//    @Override
-//    public void doCleanup(boolean afterTest) throws TestTimeoutException
-//    {
-//
-//    }
 
     @Override
     protected boolean doSetUserPasswords()

@@ -29,7 +29,6 @@ import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -146,6 +145,10 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     @Override
     protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
     {
+        clickProject(PROJECT_NAME);
+        super._containerHelper.enableModule("ONPRC_Billing");
+        super._containerHelper.enableModule("ONPRC_BillingPublic");
+        super._containerHelper.enableModule("SLA");
         super.setEHRModuleProperties(
                 new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath()),
                 new ModulePropertyValue("SLA", "/" + getProjectName(), "SLAContainer", "/" + getContainerPath())
@@ -156,9 +159,6 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     protected void createProjectAndFolders()
     {
         _containerHelper.createProject(PROJECT_NAME, "EHR");
-
-        clickProject(PROJECT_NAME);
-        _containerHelper.enableModules(Arrays.asList("ONPRC_Billing", "ONPRC_BillingPublic", "SLA"));
     }
 
     @Override

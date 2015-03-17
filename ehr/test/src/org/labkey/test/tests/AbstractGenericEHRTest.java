@@ -113,22 +113,33 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     }
 
     @Test
-    public void testWeightValidation()
+    public void testWeightValidation() throws Exception
     {
+        //initialize wieght of subject 0
+        String[] fields;
+        Object[][] data;
+        JSONObject insertCommand;
+        fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
+        data = new Object[][]{
+                {SUBJECTS[3], new Date(), 12, EHRQCState.COMPLETED.label},
+        };
+        insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", "lsid", fields, data);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+
         //expect weight out of range
-        Object[][] data = new Object[][]{
-                {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+        data = new Object[][]{
+                {SUBJECTS[3], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         Map<String, List<String>> expected = new HashMap<>();
         expected.put("weight", Arrays.asList(
-                        "WARN: Weight above the allowable value of 35.0 kg for Rhesus",
+                        "WARN: Weight above the allowable value of 20.0 kg for Cynomolgus",
                         "INFO: Weight gain of >10%. Last weight 12 kg")
         );
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
 
         //expect INFO for +10% diff
         data = new Object[][]{
-                {SUBJECTS[0], new Date(), null, null, 20, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+                {SUBJECTS[3], new Date(), null, null, 20, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("INFO: Weight gain of >10%. Last weight 12 kg"));
@@ -136,7 +147,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         //expect INFO for -10% diff
         data = new Object[][]{
-                {SUBJECTS[0], new Date(), null, null, 5, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
+                {SUBJECTS[3], new Date(), null, null, 5, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("INFO: Weight drop of >10%. Last weight 12 kg"));
@@ -178,24 +189,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         dr.clickHeaderButton("More Actions", false, "Compare Weights");
         waitForText(5000, "Weight 1", "Weight 2", "Days Between", "% Change");
         waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
-        dr.clickHeaderButton("More Actions", "Jump To History");
-        waitForText("Overview: " + animal1, "Overview: " + animal2);
-        waitForText("Weights - " + animal1, "Weights - " + animal2);
+        dr.clickHeaderButton("More Actions", true, "Jump To History");
+        assertTextPresent("Animal History");
+        sleep(5000);
         recallLocation();
         List<String> submenuItems = dr.getHeaderButtonSubmenuText("More Actions");
-        Assert.assertTrue("More Actions submenu did not include Jump To History option", submenuItems.contains("Jump To History"));
-        Assert.assertTrue("More Actions submenu did not include Return Distinct Values option", submenuItems.contains("Return Distinct Values"));
-        Assert.assertTrue("More Actions submenu did not include Show Record History option", submenuItems.contains("Show Record History"));
-        Assert.assertTrue("More Actions submenu did not include Compare Weights option", submenuItems.contains("Compare Weights"));
-        Assert.assertTrue("More Actions submenu did not include Edit Records option", submenuItems.contains("Edit Records"));
-        impersonate("requester@ehrstudy.test");
-        submenuItems = dr.getHeaderButtonSubmenuText("More Actions");
-        Assert.assertTrue("More Actions submenu did not include Jump To History option", submenuItems.contains("Jump To History"));
-        Assert.assertTrue("More Actions submenu did not include Return Distinct Values option", submenuItems.contains("Return Distinct Values"));
-        Assert.assertTrue("More Actions submenu did not include Show Record History option", submenuItems.contains("Show Record History"));
-        Assert.assertTrue("More Actions submenu did not include Compare Weights option", submenuItems.contains("Compare Weights"));
-        Assert.assertFalse("More Actions submenu included Edit Records option", submenuItems.contains("Edit Records"));
-        stopImpersonating();
+        List<String> expectedSubmenu = Arrays.asList("Jump To History", "Return Distinct Values","Show Record History","Compare Weights","Edit Records");
+        Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
     }
 
     @LogMethod
