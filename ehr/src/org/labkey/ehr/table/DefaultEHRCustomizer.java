@@ -769,7 +769,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             SQLFragment sql = new SQLFragment("(SELECT ");
             sql.append(groupConcatSQL);
             sql.append(
-                "FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
+                " FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
                 " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
                 " GROUP BY t.recordid " +
                 " )");
