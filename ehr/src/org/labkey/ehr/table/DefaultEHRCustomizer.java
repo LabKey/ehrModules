@@ -791,7 +791,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             //programmatic version
             String name2 = "codesRaw";
-            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'") +
+            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence() +
                     "FROM ehr.snomed_tags t " +
                     " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
                     " GROUP BY t.recordid " +
