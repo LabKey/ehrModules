@@ -1142,7 +1142,6 @@ ehr/src/org/labkey/ehr/buttons/LocationEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/ProcedureEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/ProjectEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/ProtocolEditButton.java -text
-ehr/src/org/labkey/ehr/buttons/ScheduleTaskButton.java -text
 ehr/src/org/labkey/ehr/buttons/TaskAssignButton.java -text
 ehr/src/org/labkey/ehr/dataentry/DataEntryManager.java -text
 ehr/src/org/labkey/ehr/dataentry/RecordDeleteRunner.java -text
