@@ -449,7 +449,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(LabModuleHelper.getNavPanelItem("Biopsies:", VIEW_TEXT));
         waitForText("volutpat");
         dr = new DataRegionTable("query", this);
-        clickAndWait(Locator.linkWithText("Details"));
+        waitAndClickAndWait(Locator.linkWithText("Details"));
         //these are the sections we expect
         waitForText("Biopsy Details", "Morphologic Diagnoses", "Histology");
         assertNoErrorText();
