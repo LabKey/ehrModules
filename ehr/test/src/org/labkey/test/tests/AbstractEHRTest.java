@@ -58,8 +58,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 {
     protected String CONTAINER_PATH = getProjectName() + "/" + FOLDER_NAME;
     protected static String FOLDER_NAME = "EHR";
-    protected static String STUDY_ZIP = "/sampledata/study/EHR Study Anon.zip";
-    protected static final String STUDY_ZIP_NO_DATA = "/sampledata/study/EHR Study Anon Small.zip";
+    protected static final File STUDY_ZIP = TestFileUtils.getSampleData("EHR Study Anon.zip");
+    protected static final File STUDY_ZIP_NO_DATA = TestFileUtils.getSampleData("EHR Study Anon Small.zip");
 
     protected static final String PROJECT_ID = "640991"; // project with one participant
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
@@ -560,14 +560,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _ext4Helper.clickTabContainingText("Study Security");
         clickButton("Study Security", defaultWaitForPage);
 
-        File studyXML = new File(TestFileUtils.getLabKeyRoot(), getStudyPolicyXML());
-        setFormElement(Locator.name("fileUpload"), studyXML);
+        setFormElement(Locator.name("fileUpload"), getStudyPolicyXML());
         clickButton("Import");
     }
 
-    protected String getStudyPolicyXML()
+    protected File getStudyPolicyXML()
     {
-        return "/sampledata/study/ehrTestStudyPolicy.xml";
+        return TestFileUtils.getSampleData("ehrTestStudyPolicy.xml");
     }
 
     protected EHRClientAPIHelper getApiHelper()

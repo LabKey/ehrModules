@@ -1244,6 +1244,10 @@ ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text
+ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon[!!-~]Small.zip -text
+ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon.zip -text
+ehr/test/sampledata/ehrTestStudyPolicy.xml -text
+ehr/test/sampledata/onprcEHRStudyPolicy.xml -text
 ehr/test/src/org/labkey/test/categories/EHR.java -text
 ehr/test/src/org/labkey/test/tests/AbstractEHRTest.java -text
 ehr/test/src/org/labkey/test/tests/AbstractGenericEHRTest.java -text

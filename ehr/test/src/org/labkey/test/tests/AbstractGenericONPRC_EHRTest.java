@@ -215,9 +215,9 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
     }
 
     @Override
-    protected String getStudyPolicyXML()
+    protected File getStudyPolicyXML()
     {
-        return "/sampledata/study/onprcEHRStudyPolicy.xml";
+        return TestFileUtils.getSampleData("onprcEHRStudyPolicy.xml");
     }
 
     @LogMethod

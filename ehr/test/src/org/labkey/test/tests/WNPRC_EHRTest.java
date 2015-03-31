@@ -81,7 +81,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     {
         goToManageStudy();
 
-        importStudyFromZip(new File(TestFileUtils.getSampledataPath(), "study" + File.separator + "EHR Study Anon.zip"));
+        importStudyFromZip(STUDY_ZIP);
     }
 
     @Override
