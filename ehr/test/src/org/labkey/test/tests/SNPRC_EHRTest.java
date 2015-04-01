@@ -153,8 +153,8 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         goToProjectHome();
         clickFolder("EHR");
         click(Locator.linkWithText("Mature Female Exposed To Fertile Male"));
-        //TODO: need test data with necessary criteria to be returned by this query
-        assertTextPresent("No data to show.");
+        assertTextPresent("test3844307");
+        assertTextPresent("test5598475");
     }
 
     @Test
@@ -168,6 +168,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         setFormElement(Locator.inputByNameContaining("textfield"), "12345");
         click(Locator.tagWithText("span", "Refresh"));
         waitForText("Overview: 12345");
+        waitForTextToDisappear("Loading...");
         //spot check a few of the data points
         assertTextPresent("Room1 / A1", "There are no active medications", "Rhesus");
         recallLocation();
