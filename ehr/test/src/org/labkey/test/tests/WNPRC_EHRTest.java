@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
-import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
@@ -34,7 +33,6 @@ import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
 
-import java.io.File;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -495,9 +493,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
-        waitForElement(Locator.linkWithText("Rhesus"));
-        waitForElement(Locator.linkWithText("Cynomolgus"));
-        waitForElement(Locator.linkWithText("Marmoset"));
+        waitForElement(Locator.tagContainingText("a","Rhesus"));
+        waitForElement(Locator.tagContainingText("a","Cynomolgus"));
+        waitForElement(Locator.tagContainingText("a","Marmoset"));
 
         log("Verify location based history");
         waitAndClick(Ext4Helper.Locators.ext4Radio("Current Location"));
