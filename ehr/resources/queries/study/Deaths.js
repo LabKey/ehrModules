@@ -64,7 +64,9 @@ function onComplete(event, errors, helper){
             ids.push(id);
         }
 
-        console.log('sending death notification');
-        helper.getJavaHelper().sendDeathNotification(ids);
+        if (!helper.isETL()) {
+            console.log('sending death notification');
+            helper.getJavaHelper().sendDeathNotification(ids);
+        }
     }
 }
