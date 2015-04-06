@@ -152,9 +152,8 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
     {
         goToProjectHome();
         clickFolder("EHR");
-        click(Locator.linkWithText("Mature Female Exposed To Fertile Male"));
-        assertTextPresent("test3844307");
-        assertTextPresent("test5598475");
+        clickAndWait(Locator.linkWithText("Mature Female Exposed To Fertile Male"));
+        assertTextPresent("test3844307", "test5598475");
     }
 
     @Test
