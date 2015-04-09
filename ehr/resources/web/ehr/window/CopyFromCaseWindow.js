@@ -246,7 +246,8 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
             if (item.records && item.records.length) {
 
                 if (item.shouldClearStore) {
-                    item.targetStore.removeAll();
+                    //NOTE: Ext4 does not seem to always fire the right events with removeAll(), and this should accomplish the same thing
+                    item.targetStore.remove(item.targetStore.getRange());
                     LDK.Assert.assertEquality('Records not removed from target store in CopyFromCaseWindow', 0, item.targetStore.getCount());
                 }
 

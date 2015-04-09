@@ -122,12 +122,12 @@ Ext4.define('EHR.plugin.Databind', {
 
     onRecordAdd: function(store, rec){
         var boundRecord = this.panel.getForm().getRecord();
-        if (boundRecord){
-            return;
-        }
 
-        if (this.panel.bindConfig.autoBindFirstRecord){
-            this.bindRecord(store.getAt(0));
+        if (this.panel.bindConfig.autoBindFirstRecord && store.getCount()){
+            LDK.Assert.assertTrue('expected only one record in store: ' + store.storeId, 1, store.getCount());
+            if (boundRecord !== store.getAt(0)){
+                this.bindRecord(store.getAt(0));
+            }
         }
     },
 
