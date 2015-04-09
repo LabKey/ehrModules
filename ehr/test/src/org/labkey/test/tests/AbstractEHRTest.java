@@ -294,7 +294,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void createProjectAndFolders(String type)
     {
         _containerHelper.createProject(getProjectName(), type);
-        createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, type, null);
+        _containerHelper.createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, type, null);
     }
 
     protected void createProjectAndFolders()
