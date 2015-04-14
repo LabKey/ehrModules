@@ -70,6 +70,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
         final Map<FieldKey, ColumnInfo> cols = getColumns(ti);
         Sort sort = getSort();
 
+        // Fetch the three most recent weights for each animal
         for (String id : ids)
         {
             SimpleFilter filter = getFilter(Collections.singleton(id));

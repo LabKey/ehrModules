@@ -101,7 +101,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         // NOTE: we expect to recache all living animals each night.  the purpose of a 25HR window is to make sure the
         // existing record is present so we can validate.  any other incidental cached records would expire shortly after
-        _cache = CacheManager.getStringKeyCache(10000, (CacheManager.DAY + CacheManager.HOUR), "EHRDemographicsServiceImpl");
+        _cache = CacheManager.getStringKeyCache(50000, (CacheManager.DAY + CacheManager.HOUR), "EHRDemographicsServiceImpl");
     }
 
     public static EHRDemographicsServiceImpl get()
@@ -320,13 +320,12 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         timer.start();
 
         int start = 0;
-        int batchSize = 500;
         // Use a set to be sure there are no duplicates
         List<String> uniqueIds = new ArrayList<>(new HashSet<>(ids));
         while (start < uniqueIds.size())
         {
-            List<String> sublist = uniqueIds.subList(start, Math.min(uniqueIds.size(), start + batchSize));
-            start = start + batchSize;
+            List<String> sublist = uniqueIds.subList(start, Math.min(uniqueIds.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
+            start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
             Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
             Set<String> idsToUpdate = new TreeSet<>();
@@ -403,14 +402,13 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         Map<String, Map<String, Object>> ret = new HashMap<>();
         //NOTE: SQLServer can complain if requesting more than 2000 at a time, so break into smaller sets
         int start = 0;
-        int batchSize = 500;
         // Use a set to remove duplicates
         List<String> allIds = new ArrayList<>(new HashSet<>(ids));
         while (start < allIds.size())
         {
-            List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + batchSize));
-            start = start + batchSize;
-            _log.info("creating demographics records for " + sublist.size() + " animals");
+            List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
+            start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
+            _log.info("Creating demographics records for " + sublist.size() + " animals");
 
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {
@@ -455,7 +453,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         return records;
     }
 
-    public void cacheLivingAnimals(Container c, User u, boolean validateOnCreate)
+    public void cacheAnimals(Container c, User u, boolean validateOnCreate, boolean livingOnly)
     {
         UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         if (us == null)
@@ -465,20 +463,27 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         if (demographics == null)
             throw new IllegalArgumentException("Unable to find demographics table");
 
-        TableSelector ts = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL), null);
-        List<String> ids = ts.getArrayList(String.class);
-
-        TableSelector ts2 = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("death"), "-30d", CompareType.DATE_GTE), null);
-        List<String> recentlyDeadIds = ts2.getArrayList(String.class);
-        if (recentlyDeadIds.size() > 0)
+        List<String> ids = new ArrayList<>();
+        if (livingOnly)
         {
+            TableSelector ts = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL), null);
+            ids.addAll(ts.getArrayList(String.class));
+
+            TableSelector ts2 = new TableSelector(demographics, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromString("death"), "-30d", CompareType.DATE_GTE), null);
+            List<String> recentlyDeadIds = ts2.getArrayList(String.class);
             ids.addAll(recentlyDeadIds);
+        }
+        else
+        {
+            TableSelector ts = new TableSelector(demographics, Collections.singleton("Id"), null, null);
+            ids.addAll(ts.getArrayList(String.class));
         }
 
         if (ids.size() > 0)
         {
             _log.info("Forcing recache of " + ids.size() + " animals");
             createRecords(c, ids, validateOnCreate);
+            _log.info("Cache load complete");
         }
     }
 
@@ -516,7 +521,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
                     _log.info("Recaching EHR demographics for all living animals in " + s.getContainer().getPath());
 
-                    EHRDemographicsServiceImpl.get().cacheLivingAnimals(s.getContainer(), u, validateOnCreate);
+                    EHRDemographicsServiceImpl.get().cacheAnimals(s.getContainer(), u, validateOnCreate, true);
                     totalCached++;
                 }
             }

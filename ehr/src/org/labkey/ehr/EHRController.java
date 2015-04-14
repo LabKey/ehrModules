@@ -136,27 +136,42 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
-    public class CacheLivingAnimalsAction extends ConfirmAction<Object>
+    public static class CacheLivingAnimalsForm
     {
-        public void validateCommand(Object form, Errors errors)
+        private boolean _includeAll;
+
+        public boolean isIncludeAll()
+        {
+            return _includeAll;
+        }
+
+        public void setIncludeAll(boolean includeAll)
+        {
+            _includeAll = includeAll;
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class CacheLivingAnimalsAction extends ConfirmAction<CacheLivingAnimalsForm>
+    {
+        public void validateCommand(CacheLivingAnimalsForm form, Errors errors)
         {
 
         }
 
-        public URLHelper getSuccessURL(Object form)
+        public URLHelper getSuccessURL(CacheLivingAnimalsForm form)
         {
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(CacheLivingAnimalsForm form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will force the EHR to cache demographics data on all living animals, and log errors if there is an existing record that does not match the current record.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
+            return new HtmlView("This action will force the EHR to cache demographics data on all " + (form.isIncludeAll() ? "" : "living") + " animals, and log errors if there is an existing record that does not match the current record.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(CacheLivingAnimalsForm form, BindException errors) throws Exception
         {
-            EHRDemographicsServiceImpl.get().cacheLivingAnimals(getContainer(), getUser(), true);
+            EHRDemographicsServiceImpl.get().cacheAnimals(getContainer(), getUser(), true, !form.isIncludeAll());
             return true;
         }
     }
