@@ -107,7 +107,7 @@ Ext4.define('EHR.window.ManageRecordWindow', {
         }
 
         if (results.jsDependencies){
-            LABKEY.requiresScript(results.jsDependencies, true, this.onJsLoad, this, true);
+            LABKEY.requiresScript(results.jsDependencies, this.onJsLoad, this, true);
         }
         else {
             this.onJsLoad();
