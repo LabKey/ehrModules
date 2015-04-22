@@ -17,6 +17,7 @@ package org.labkey.test.tests;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,7 +39,6 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
-import org.testng.Assert;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -626,7 +626,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         //should update pairId
         grid.setGridCell(2, "room", ROOMS[2]);
         sleep(200);
-        Assert.assertNotEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(2, "pairid"), "Pair ID doesnt match, 1: " + grid.getFieldValue(1, "pairid") + ", 2: " + grid.getFieldValue(2, "pairid"));
+        Assert.assertNotEquals("Pair ID doesnt match, 1: " + grid.getFieldValue(1, "pairid") + ", 2: " + grid.getFieldValue(2, "pairid"), grid.getFieldValue(1, "pairid"), grid.getFieldValue(2, "pairid"));
 
         _helper.addRecordToGrid(grid);
         sleep(200);
@@ -707,7 +707,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         log("setting end date field: " + dateVal);
         _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).setValue(dateVal);
         sleep(500);
-        Assert.assertNotNull(_ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue(), "Unable to set enddate field to: " + dateVal);
+        Assert.assertNotNull("Unable to set enddate field to: " + dateVal, _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
 
         Ext4FieldRef treatmentField = getFieldInWindow("Treatment", Ext4FieldRef.class);
         treatmentField.getEval("expand()");
@@ -749,7 +749,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Ext4FieldRef enddateField2 = _ext4Helper.queryOne("window[title='Change End Date'] [fieldLabel='End Date']", Ext4FieldRef.class);
         enddateField2.setValue(_tf.format(enddate));
         sleep(100);
-        Assert.assertNotNull(enddateField2.getValue(), "End date was not set.  Expected: " + _tf.format(enddate));
+        Assert.assertNotNull("End date was not set.  Expected: " + _tf.format(enddate), enddateField2.getValue());
 
         waitAndClick(Ext4Helper.Locators.window("Change End Date").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(Ext4Helper.Locators.window("Change End Date"));

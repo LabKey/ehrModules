@@ -15,6 +15,7 @@
  */
 package org.labkey.test.util;
 
+import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
@@ -38,7 +39,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -257,7 +257,7 @@ public class EHRTestHelper
         _test.waitForElement(Ext4Helper.Locators.window("Apply Template"));
         Ext4ComboRef combo = new Ext4ComboRef(Ext4ComboRef.getForLabel(_test, "Template Name").getId(), _test);
         combo.waitForStoreLoad();
-        Assert.assertEquals(combo.getDisplayValue(), templateName);
+        Assert.assertEquals(templateName, combo.getDisplayValue());
 
         if (date != null)
         {
@@ -283,7 +283,7 @@ public class EHRTestHelper
     {
         Locator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
         _test.assertElementPresent(l);
-        Assert.assertEquals(_test.getElementCount(l), 1, "More than 1 matching element found, use a more specific xpath");
+        Assert.assertEquals("More than 1 matching element found, use a more specific xpath", 1, _test.getElementCount(l));
         _test.click(l);
     }
 
