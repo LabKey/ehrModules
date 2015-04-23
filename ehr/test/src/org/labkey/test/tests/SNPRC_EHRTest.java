@@ -36,6 +36,7 @@ import java.io.File;
 public class SNPRC_EHRTest extends AbstractGenericEHRTest
 {
     private boolean _hasCreatedBirthRecords = false;
+    private static final int POPULATE_TIMEOUT_MS = 300000;
 
     public String getModuleDirectory()
     {
@@ -100,6 +101,66 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
 
         clickButton("Start Import"); // Validate queries page
         waitForPipelineJobsToComplete(1, "Study import", false, MAX_WAIT_SECONDS * 2500);
+    }
+
+    @Override
+    protected void populateInitialData()
+    {
+        beginAt(getBaseURL() + "/" + getModuleDirectory() + "/" + getContainerPath() + "/populateData.view");
+
+        log("Repopulate Lookup Sets");
+        clickButton("Delete Data From Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        clickButton("Populate Lookup Sets", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+        sleep(2000);
+
+        log("Repopulate Procedures");
+        clickButton("Delete Data From Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        clickButton("Populate Procedures", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+        sleep(2000);
+
+        log("Repopulate Everything");
+        clickButton("Delete All", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        clickButton("Populate All", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        log("Repopulate SNOMED Codes");
+        //NOTE: this is excluded from populate all since it changes rarely
+        clickButton("Delete Data From SNOMED Codes", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        clickButton("Populate SNOMED Codes", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+
+        //also populate templates
+        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
+
+        log("Repopulate Templates");
+        clickButton("Delete Data From Form Templates", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        clickButton("Populate Form Templates", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+
+        log("Repopulate Formulary");
+        clickButton("Delete Data From Formulary", 0);
+        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
+        clickButton("Populate Formulary", 0);
+        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
     }
 
     @Test
