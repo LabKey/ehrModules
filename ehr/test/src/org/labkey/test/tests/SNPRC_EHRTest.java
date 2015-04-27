@@ -31,6 +31,7 @@ import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.RReportHelper;
 
 import java.io.File;
+import java.util.List;
 
 @Category ({CustomModules.class, EHR.class})
 public class SNPRC_EHRTest extends AbstractGenericEHRTest
@@ -218,6 +219,27 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
     }
 
     @Test
+    public void testLookups()
+    {
+        goToProjectHome();
+        clickFolder("EHR");
+        navigateToQuery("ehr", "animalExposure");
+
+        DataRegionTable query = new DataRegionTable("query", this);
+        List<String> row = query.getRowDataAsText(0);
+
+        for (int i = 0; i < row.size(); i++)
+        {
+            String cell = row.get(i);
+            if (cell.startsWith("<"))
+            {
+                List<String> header = query.getColumnHeaders();
+                Assert.fail("Broken lookup '" + cell + "' for column '" + header.get(i));
+            }
+        }
+    }
+
+    @Test
     public void testAnimalHistory()
     {
         goToProjectHome();
@@ -238,7 +260,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         DataRegionTable tbl = new DataRegionTable("aqwp2", this);
         Assert.assertEquals(tbl.getDataRowCount(), 49);
         assertElementPresent(Locator.linkWithText("test1020148"));
-        assertElementPresent(Locator.linkWithText("male"));
+        assertElementPresent(Locator.linkWithText("Male"));
         assertElementPresent(Locator.linkWithText("Alive"));
     }
 
