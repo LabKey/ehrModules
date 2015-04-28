@@ -234,7 +234,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
             if (cell.startsWith("<"))
             {
                 List<String> header = query.getColumnHeaders();
-                Assert.fail("Broken lookup '" + cell + "' for column '" + header.get(i));
+                Assert.fail("Broken lookup '" + cell + "' for column '" + header.get(i) + "'");
             }
         }
     }
