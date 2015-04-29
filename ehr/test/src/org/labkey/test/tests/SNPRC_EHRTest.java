@@ -149,7 +149,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
 
         //also populate templates
-        beginAt(getBaseURL() + "/onprc_ehr/" + getContainerPath() + "/populateTemplates.view");
+        beginAt(getBaseURL() + "/" + getModuleDirectory() + "/" + getContainerPath() + "/populateTemplates.view");
 
         log("Repopulate Templates");
         clickButton("Delete Data From Form Templates", 0);
