@@ -41,13 +41,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 
 abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
 {
     protected static final String REFERENCE_STUDY_PATH = "/resources/referenceStudy";
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
     protected static final String ID_PREFIX = "9999";
-    private static final int POPULATE_TIMEOUT_MS = 300000;
 
     //NOTE: use 0-23H to be compatible w/ client-side Ext4 fields
     protected static final SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -64,6 +64,12 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
     public String getModulePath()
     {
         return "/server/customModules/" + getModuleDirectory();
+    }
+
+    @Override
+    public List<String> getAssociatedModules()
+    {
+        return Arrays.asList("ehr", "onprc_ehr");
     }
 
     @Override
@@ -159,59 +165,16 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
     {
         beginAt(getBaseURL() + "/" + getModuleDirectory() + "/" + getContainerPath() + "/populateData.view");
 
-        log("Repopulate Lookup Sets");
-        clickButton("Delete Data From Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-
-        clickButton("Populate Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-        sleep(2000);
-
-        log("Repopulate Procedures");
-        clickButton("Delete Data From Procedures", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-
-        clickButton("Populate Procedures", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-        sleep(2000);
-
-        log("Repopulate Everything");
-        clickButton("Delete All", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-
-        clickButton("Populate All", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-
-        log("Repopulate SNOMED Codes");
-        //NOTE: this is excluded from populate all since it changes rarely
-        clickButton("Delete Data From SNOMED Codes", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
-
-        clickButton("Populate SNOMED Codes", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
-        Assert.assertFalse(elementContains(Locator.id("msgbox"), "ERROR"));
+        repopulate("Lookup Sets");
+        repopulate("Procedures");
+        repopulate("All");
+        repopulate("SNOMED Codes");
 
         //also populate templates
         beginAt(getBaseURL() + "/" + getModuleDirectory() + "/" + getContainerPath() + "/populateTemplates.view");
 
-        log("Repopulate Templates");
-        clickButton("Delete Data From Form Templates", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        clickButton("Populate Form Templates", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
-
-        log("Repopulate Formulary");
-        clickButton("Delete Data From Formulary", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), POPULATE_TIMEOUT_MS);
-        clickButton("Populate Formulary", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), POPULATE_TIMEOUT_MS);
+        repopulate("Templates");
+        repopulate("Formulary");
     }
 
     @Override

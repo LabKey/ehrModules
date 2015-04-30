@@ -17,6 +17,7 @@ package org.labkey.test.tests;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -34,9 +35,12 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -60,6 +64,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static String FOLDER_NAME = "EHR";
     protected static final File STUDY_ZIP = TestFileUtils.getSampleData("EHR Study Anon.zip");
     protected static final File STUDY_ZIP_NO_DATA = TestFileUtils.getSampleData("EHR Study Anon Small.zip");
+
+    protected static final int POPULATE_TIMEOUT_MS = 300000;
 
     protected static final String PROJECT_ID = "640991"; // project with one participant
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
@@ -333,25 +339,48 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         goToProjectHome();
     }
 
+    @LogMethod(quiet = true)
+    protected void populate(@LoggedParam String tableLabel)
+    {
+        pauseJsErrorChecker();
+        Locator completeDiv = Locator.tagContainingText("div", "Populate Complete");
+        List<WebElement> completeEl = completeDiv.findElements(getDriver());
+        clickButton("Populate " + tableLabel, 0);
+        if (completeEl.size() > 0)
+            longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
+        waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
+        Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
+        resumeJsErrorChecker();
+    }
+
+    @LogMethod(quiet = true)
+    protected void deleteDataFrom(@LoggedParam String tableLabel)
+    {
+        pauseJsErrorChecker();
+        Locator completeDiv = Locator.tagContainingText("div", "Delete Complete");
+        List<WebElement> completeEl = completeDiv.findElements(getDriver());
+        clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
+        if (completeEl.size() > 0)
+            longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
+        waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
+        Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
+        resumeJsErrorChecker();
+    }
+
+    @LogMethod(quiet = true)
+    protected void repopulate(@LoggedParam String tableLabel)
+    {
+        deleteDataFrom(tableLabel);
+        populate(tableLabel);
+    }
+
     @LogMethod
     protected void populateInitialData()
     {
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/populateInitialData.view");
 
-        log("Repopulate Lookup Sets");
-        clickButton("Delete Data From Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        clickButton("Populate Lookup Sets", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 200000);
-        sleep(2000);
-
-        log("Repopulate All Data");
-        clickButton("Delete All", 0);
-        waitForElement(Locator.tagContainingText("div", "Delete Complete"), 200000);
-        log("Delete completed");
-        clickButton("Populate All", 0);
-        waitForElement(Locator.tagContainingText("div", "Populate Complete"), 300000);
-        log("Test data population completed");
+        repopulate("Lookup Sets");
+        repopulate("All");
     }
 
     @LogMethod
