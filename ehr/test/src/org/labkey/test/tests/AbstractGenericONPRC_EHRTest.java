@@ -173,7 +173,7 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
         //also populate templates
         beginAt(getBaseURL() + "/" + getModuleDirectory() + "/" + getContainerPath() + "/populateTemplates.view");
 
-        repopulate("Templates");
+        repopulate("Form Templates");
         repopulate("Formulary");
     }
 
