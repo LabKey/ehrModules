@@ -6,6 +6,7 @@ var pendingInserts = 0;
 var pendingDeletes = 0;
 
 function deleteAll(schemaName, queryName, pk){
+    document.getElementById('msgbox').innerHTML = '<div>Deleting ' + queryName + '</div>';
     LABKEY.Query.selectRows({
         schemaName: schemaName,
         queryName: queryName,
@@ -31,7 +32,7 @@ function deleteAll(schemaName, queryName, pk){
                         console.log('success deleting rows: '+queryName);
                         pendingDeletes--;
                         if(pendingDeletes==0){
-                            document.getElementById('_init_ehr_success').innerHTML = 'Delete Complete';
+                            document.getElementById('msgbox').innerHTML = '<div>Delete Complete</div>';
                         }
                     },
                     failure: EHR.Utils.onError
@@ -41,7 +42,7 @@ function deleteAll(schemaName, queryName, pk){
                 console.log('nothing to delete: '+queryName)
                 pendingDeletes--;
                 if(pendingDeletes==0){
-                    document.getElementById('_init_ehr_success').innerHTML = 'Delete Complete';
+                    document.getElementById('msgbox').innerHTML = '<div>Delete Complete</div>';
                 }
             }
         },
@@ -7655,7 +7656,7 @@ function populateSnomed(){
 		['r-42118', 'centrilobular (qualifier value)'],
 		['r-4207c', 'fibrinous'],
 		['w-10527', 'intraductal (qualifier)'],
-		['w-10528', 'papillary']		
+		['w-10528', 'papillary']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -7719,7 +7720,7 @@ function onSuccess(result){
     console.log('Success: '+result.queryName);
 
     if(pendingInserts==0){
-        Ext.get('_init_ehr_success').update('Populate Complete');
+        document.getElementById('msgbox').innerHTML = '<div>Populate Complete</div>';
     }
 }
 
@@ -7727,8 +7728,10 @@ var onError = LDK.Utils.getErrorCallback({
     callback: function(result){
         pendingInserts--;
 
+        console.log('Error: ' + result.errorMsg);
+
         if(pendingInserts==0){
-            Ext.get('_init_ehr_success').update('Populate Complete');
+            document.getElementById('msgbox').innerHTML = '<div>Populate Complete</div>';
         }
     }
 });
@@ -7981,4 +7984,4 @@ This page will insert data into various EHR schema tables
 
 <div id="_init_ehr"></div>
 
-<div id="_init_ehr_success"></div>
+<div id="msgbox"></div>
