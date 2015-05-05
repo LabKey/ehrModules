@@ -164,6 +164,14 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
     }
 
+    protected String getMale() {
+        return "m";
+    }
+
+    protected String getFemale() {
+        return "f";
+    }
+
     @LogMethod
     protected void createTestSubjects() throws Exception
     {
@@ -175,11 +183,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         log("Creating test subjects");
         fields = new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"};
         data = new Object[][]{
-                {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {SUBJECTS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
-                {SUBJECTS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {SUBJECTS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+                {SUBJECTS[0], "Rhesus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {SUBJECTS[2], "Marmoset", (new Date()).toString(), getFemale(), new Date(), "Alive"},
+                {SUBJECTS[3], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {SUBJECTS[4], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"}
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
@@ -187,11 +195,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         //for simplicity, also create the animals from MORE_ANIMAL_IDS right now
         data = new Object[][]{
-                {MORE_ANIMAL_IDS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {MORE_ANIMAL_IDS[1], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {MORE_ANIMAL_IDS[2], "Marmoset", (new Date()).toString(), "f", new Date(), "Alive"},
-                {MORE_ANIMAL_IDS[3], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"},
-                {MORE_ANIMAL_IDS[4], "Cynomolgus", (new Date()).toString(), "m", new Date(), "Alive"}
+                {MORE_ANIMAL_IDS[0], "Rhesus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[1], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[2], "Marmoset", (new Date()).toString(), getFemale(), new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[3], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"},
+                {MORE_ANIMAL_IDS[4], "Cynomolgus", (new Date()).toString(), getMale(), new Date(), "Alive"}
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(MORE_ANIMAL_IDS, ";"), Filter.Operator.IN));

@@ -78,6 +78,16 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
     }
 
     @Override
+    protected String getMale() {
+        return "M";
+    }
+
+    @Override
+    protected String getFemale() {
+        return "F";
+    }
+
+    @Override
     protected boolean doSetUserPasswords()
     {
         return true;
