@@ -147,15 +147,13 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
         TableInfo kinshipTable = ehrSchema.getTable("kinship");
 
-        LineNumberReader lnr = null;
-        BufferedReader reader = null;
+        getJob().getLogger().info("Inspecting file length: " + output.getPath());
 
         try
         {
-            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
+                 LineNumberReader lnr = new LineNumberReader(new BufferedReader(new FileReader(output))))
             {
-                getJob().getLogger().info("Inspecting file length: " + output.getPath());
-                lnr = new LineNumberReader(new BufferedReader(new FileReader(output)));
                 while (lnr.readLine() != null)
                 {
                     if (lnr.getLineNumber() > 3)
@@ -211,10 +209,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 transaction.commit();
             }
 
-            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
+                 BufferedReader reader = new BufferedReader(new FileReader(output)))
             {
-                reader = new BufferedReader(new FileReader(output));
-
                 getJob().getLogger().info("Inserting rows");
                 String line = null;
                 int lineNum = 0;
@@ -235,7 +232,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                     row.put("Id", fields[0]);
                     row.put("Id2", fields[1]);
-                    row.put("coefficient", Double.parseDouble(fields[2]));
+                    try
+                    {
+                        row.put("coefficient", Double.parseDouble(fields[2]));
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        throw new PipelineJobException("Invalid kinship coefficient on line " + (lineNum + 1) + " for IDs " + fields[0] + " and " + fields[1] + ": " + fields[2], e);
+                    }
 
                     row.put("container", job.getContainer().getId());
                     row.put("created", new Date());
@@ -256,14 +260,6 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         catch (RuntimeSQLException | IOException e)
         {
             throw new PipelineJobException(e);
-        }
-        finally
-        {
-            if (lnr != null)
-                try{lnr.close();}catch (Exception ignored){}
-
-            if (reader != null)
-                try{reader.close();}catch (Exception ignored){}
         }
     }
 
