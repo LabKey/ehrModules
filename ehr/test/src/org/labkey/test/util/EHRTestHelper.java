@@ -107,7 +107,7 @@ public class EHRTestHelper
     }
 
 
-    public boolean deleteUserAPI(String email) throws Exception
+    public boolean deleteUserAPI(String email) throws CommandException, IOException
     {
         //note: always execute against root, so we are sure the user exists
         Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());

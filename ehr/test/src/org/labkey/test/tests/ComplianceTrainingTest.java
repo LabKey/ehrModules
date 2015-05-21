@@ -128,7 +128,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
             _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.<String, Object>of("title", employeeTitle1), "title");
             _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.<String, Object>of("title", employeeTitle2), "title");
         }
-        catch (Exception e)
+        catch (CommandException e)
         {
             if (!ignoreErrors)
                 throw new RuntimeException(e);
@@ -474,11 +474,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
             insertCmd.addRow(rowMap);
             insertCmd.execute(cn, getProjectName());
         }
-        catch (CommandException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e)
+        catch (CommandException | IOException e)
         {
             throw new RuntimeException(e);
         }

@@ -18,6 +18,7 @@ package org.labkey.test.tests;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -43,6 +44,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -268,7 +270,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             log(FULL_UPDATER.getEmail() + ": " + _helper.deleteUserAPI(FULL_UPDATER.getEmail()));
             log(FULL_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(FULL_SUBMITTER.getEmail()));
         }
-        catch (Throwable ignored)
+        catch (CommandException | IOException ignored)
         {
             log("unable to delete users: " + ignored.getMessage());
         }
@@ -277,7 +279,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         {
             deleteHardTableRecords();
         }
-        catch (Throwable ignored)
+        catch (CommandException | IOException ignored)
         {
             log("there was an error deleting records from EHR hard tables");
             log(ignored.getMessage());
@@ -472,7 +474,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         saveResp = insertCmd.execute(cn, getContainerPath());
     }
 
-    private void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws Exception
+    private void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
         Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
 
@@ -489,7 +491,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    protected void deleteHardTableRecords() throws Exception
+    protected void deleteHardTableRecords() throws CommandException, IOException
     {
         log("Deleting initial records from EHR hard tables");
 

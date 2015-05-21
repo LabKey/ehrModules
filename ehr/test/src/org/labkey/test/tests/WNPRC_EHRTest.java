@@ -370,8 +370,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
             {
                 _extHelper.clickExtButton("Error", "OK", 0);
                 waitForElementToDisappear(ExtHelper.Locators.window("Error"));
-                setDoseConcFields();
             }
+            setDoseConcFields();
         }
 
         _helper.setDataEntryFieldInTab("Treatments & Procedures", "remark", "Yum");

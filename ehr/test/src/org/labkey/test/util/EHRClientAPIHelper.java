@@ -79,18 +79,25 @@ public class EHRClientAPIHelper
         return new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
     }
 
-    public boolean doesRowExist(String schema, String query, Map<String, Object> row, String pkCol) throws Exception
+    public boolean doesRowExist(String schema, String query, Map<String, Object> row, String pkCol) throws CommandException
     {
         return doesRowExist(schema, query, new Filter(pkCol, row.get(pkCol), Filter.Operator.EQUAL));
     }
 
-    public boolean doesRowExist(String schema, String query, Filter filter) throws Exception
+    public boolean doesRowExist(String schema, String query, Filter filter) throws CommandException
     {
         SelectRowsCommand select = new SelectRowsCommand(schema, query);
         select.addFilter(filter);
-        SelectRowsResponse resp = select.execute(getConnection(), _containerPath);
+        try
+        {
+            SelectRowsResponse resp = select.execute(getConnection(), _containerPath);
 
-        return resp.getRowCount().intValue() > 0;
+            return resp.getRowCount().intValue() > 0;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getRowCount(String schema, String query) throws Exception
@@ -101,7 +108,7 @@ public class EHRClientAPIHelper
         return resp.getRowCount().intValue();
     }
 
-    public SaveRowsResponse insertRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws Exception
+    public SaveRowsResponse insertRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
     {
         try
         {
@@ -110,7 +117,7 @@ public class EHRClientAPIHelper
             SaveRowsResponse resp = insertCmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
-                throw new Exception("Expected command to fail");
+                throw new RuntimeException("Expected command to fail");
 
             return resp;
 
@@ -122,9 +129,13 @@ public class EHRClientAPIHelper
             else
                 return null;
         }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
-    public SaveRowsResponse updateRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws Exception
+    public SaveRowsResponse updateRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
     {
         try
         {
@@ -134,7 +145,7 @@ public class EHRClientAPIHelper
             SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
-                throw new Exception("Expected command to fail");
+                throw new RuntimeException("Expected command to fail");
 
             return resp;
         }
@@ -145,9 +156,13 @@ public class EHRClientAPIHelper
             else
                 return null;
         }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void deleteIfExists(String schema, String query, Map<String, Object> row, String pkCol) throws Exception
+    public void deleteIfExists(String schema, String query, Map<String, Object> row, String pkCol) throws CommandException
     {
         if (doesRowExist(schema, query, row,pkCol))
         {
@@ -155,7 +170,7 @@ public class EHRClientAPIHelper
         }
     }
 
-    public SaveRowsResponse deleteRow(String schema, String query, Map<String, Object> row, String pkCol, boolean expectFailure) throws Exception
+    public SaveRowsResponse deleteRow(String schema, String query, Map<String, Object> row, String pkCol, boolean expectFailure) throws CommandException
     {
         try
         {
@@ -164,15 +179,19 @@ public class EHRClientAPIHelper
 
             SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
             if (expectFailure)
-                throw new Exception("Expected command to fail");
+                throw new RuntimeException("Expected command to fail");
 
             return resp;
         }
-        catch (Exception e)
+        catch (CommandException e)
         {
             if (expectFailure)
                 return null;
             else throw e;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
