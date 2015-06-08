@@ -117,12 +117,12 @@ public class EHRClientAPIHelper
             SaveRowsResponse resp = insertCmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
-                throw new RuntimeException("Expected command to fail");
+                throw new CommandException("Expected command to fail");
 
             return resp;
 
         }
-        catch (RuntimeException e)
+        catch (CommandException e)
         {
             if (!expectFailure)
                 throw e;
@@ -145,11 +145,11 @@ public class EHRClientAPIHelper
             SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
-                throw new RuntimeException("Expected command to fail");
+                throw new CommandException("Expected command to fail");
 
             return resp;
         }
-        catch (RuntimeException e)
+        catch (CommandException e)
         {
             if (!expectFailure)
                 throw e;
@@ -179,11 +179,11 @@ public class EHRClientAPIHelper
 
             SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
             if (expectFailure)
-                throw new RuntimeException("Expected command to fail");
+                throw new CommandException("Expected command to fail");
 
             return resp;
         }
-        catch (RuntimeException e)
+        catch (CommandException e)
         {
             if (expectFailure)
                 return null;
