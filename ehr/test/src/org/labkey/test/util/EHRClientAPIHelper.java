@@ -122,7 +122,7 @@ public class EHRClientAPIHelper
             return resp;
 
         }
-        catch (CommandException e)
+        catch (RuntimeException e)
         {
             if (!expectFailure)
                 throw e;
@@ -149,7 +149,7 @@ public class EHRClientAPIHelper
 
             return resp;
         }
-        catch (CommandException e)
+        catch (RuntimeException e)
         {
             if (!expectFailure)
                 throw e;
@@ -183,7 +183,7 @@ public class EHRClientAPIHelper
 
             return resp;
         }
-        catch (CommandException e)
+        catch (RuntimeException e)
         {
             if (expectFailure)
                 return null;
