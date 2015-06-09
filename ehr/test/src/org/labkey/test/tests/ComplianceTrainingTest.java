@@ -245,7 +245,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         map2.put("employeeid", employee2);
         _apiHelper.insertRow("ehr_compliancedb", "employees", map2, true);
 
-        _apiHelper.deleteRow("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation1), "location", true);
+        _apiHelper.deleteRow("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation1), "location", false);
         _apiHelper.deleteRow("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory2), "categoryname", true);
 
         map2.put("type", employeeType2);
