@@ -532,6 +532,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             addIsNumericId(ti);
         }
+        else if (matches(ti, "study", "arrival"))
+        {
+            addIsNumericId(ti);
+        }
 
         appendHistoryCol(ti);
     }

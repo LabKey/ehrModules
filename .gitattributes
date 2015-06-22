@@ -1154,6 +1154,7 @@ ehr/src/org/labkey/ehr/demographics/ActiveAssignmentsDemographicsProvider.java -
 ehr/src/org/labkey/ehr/demographics/ActiveProblemsDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/ActiveTreatmentsDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/AnimalRecordImpl.java -text
+ehr/src/org/labkey/ehr/demographics/ArrivalDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/BasicDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/BirthDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/DeathsDemographicsProvider.java -text

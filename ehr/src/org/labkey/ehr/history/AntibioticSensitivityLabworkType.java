@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
@@ -28,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,7 +84,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     @Override
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
-        final Map<String, Map<String, List<String>>> rows = new HashMap<>();
+        final Map<String, Map<String, List<String>>> rows = new CaseInsensitiveHashMap<>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -115,7 +115,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
             }
         });
 
-        Map<String, List<String>> sortedRows = new HashMap<>();
+        Map<String, List<String>> sortedRows = new CaseInsensitiveHashMap<>();
         for (String runId : rows.keySet())
         {
             Map<String, List<String>> runMap = rows.get(runId);

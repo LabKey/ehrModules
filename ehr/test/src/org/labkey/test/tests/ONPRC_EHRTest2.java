@@ -228,7 +228,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
                 {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
         }, Maps.of(
                 "Id", Arrays.asList(
-                        "INFO: Id not found in demographics table: " + offspringId5
+                        "INFO: Id has been entered in a birth or arrival form, but this form has not been finalized yet.  This might indicate a problem with the ID: " + offspringId5
                 )
         ), additionalContext);
 

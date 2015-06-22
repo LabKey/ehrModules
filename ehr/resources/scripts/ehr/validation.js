@@ -201,8 +201,8 @@ EHR.Server.Validation = {
                                 }
                                 // the intent is to allow entry of records to proceed if we have a saved draft birth record.  this allows the ID to get reserved
                                 // without creating the full demographics record yet.  it should be allowable to enter data against the ID.
-                                else if (data.hasBirthRecord) {
-                                    EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'INFO');
+                                else if (data.hasBirthRecord || data.hasArrivalRecord) {
+                                    EHR.Server.Utils.addError(scriptErrors, idProp, 'Id has been entered in a birth or arrival form, but this form has not been finalized yet.  This might indicate a problem with the ID: ' + row[idProp], 'INFO');
                                 }
                                 else {
                                     EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'WARN');

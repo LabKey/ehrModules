@@ -648,10 +648,25 @@ public class TriggerScriptHelper
             throw errors;
     }
 
-    public void createHousingRecord(String id, Date date, @Nullable String enddate, String room, @Nullable String cage) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         if (id == null || date == null || room == null)
             return;
+
+        //check for a pre-existing death record
+        Date deathDate = new TableSelector(getTableInfo("study", "deaths"), Collections.singleton("date"), new SimpleFilter(FieldKey.fromString("Id"), id), null).getObject(Date.class);
+        if (deathDate != null)
+        {
+            if (deathDate.before(date))
+            {
+                _log.error("attempting to create a housing record that starts after the death date: " + _dateTimeFormat.format(date), new Exception());
+                return;
+            }
+            else if (enddate == null || enddate.after(deathDate))
+            {
+                enddate = deathDate;
+            }
+        }
 
         TableInfo ti = getTableInfo("study", "housing");
 
@@ -1427,11 +1442,13 @@ public class TriggerScriptHelper
                 demographicsProps.put(key, row.get(key));
             }
         }
-        demographicsProps.put("date", row.get("birth"));
+
+        //allow the potential for entry without birth date
+        demographicsProps.put("date", row.get("birth") != null ? row.get("birth") : row.get("date"));
         demographicsProps.put("calculated_status", "Alive");
         createDemographicsRecord(id, demographicsProps);
 
-        if (row.containsKey("birth"))
+        if (row.get("birth") != null)
         {
             Map<String, Object> birthProps = new HashMap<>();
             for (String key : new String[]{"Id", "dam", "sire"})

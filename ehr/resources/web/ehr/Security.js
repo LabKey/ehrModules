@@ -113,6 +113,7 @@ EHR.Security = new function(){
 
             // Load up names and labels as aliases for the permission map
             multi.add(LABKEY.Query.selectRows, {
+                containerPath: ctx ? ctx['EHRStudyContainer'] : null,
                 schemaName: 'study',
                 queryName: 'datasets',
                 columns: ['Name', 'Label'],

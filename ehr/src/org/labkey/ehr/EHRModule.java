@@ -55,6 +55,7 @@ import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
+import org.labkey.ehr.demographics.ArrivalDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
@@ -138,6 +139,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider());
+        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider());
