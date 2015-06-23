@@ -131,7 +131,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         if (!output.exists())
             throw new PipelineJobException("Unable to find file: " + output.getPath());
 
-        action.addOutput(output, actionLabel, false);
+        action.addOutput(output, actionLabel, false, true);
 
         return action;
     }

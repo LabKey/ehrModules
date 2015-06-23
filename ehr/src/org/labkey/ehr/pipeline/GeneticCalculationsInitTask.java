@@ -153,7 +153,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
                 throw new PipelineJobException("Unable to query pedigree table", e);
             }
 
-            action.addOutput(outputFile, "Pedigree TSV", false);
+            action.addOutput(outputFile, "Pedigree TSV", false, true);
         }
         catch (IOException e)
         {
