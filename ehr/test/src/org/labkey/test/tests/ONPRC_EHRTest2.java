@@ -527,7 +527,9 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         String source = "Boston";
         _helper.toggleBulkEditField("Source");
 
-        _ext4Helper.queryOne("window field[fieldLabel=Source]", Ext4ComboRef.class).setComboByDisplayValue(source);
+        Ext4ComboRef sourceField = _ext4Helper.queryOne("window field[fieldLabel=Source]", Ext4ComboRef.class);
+        sourceField.waitForStoreLoad();
+        sourceField.setComboByDisplayValue(source);
 
         String gender = "female";
         _helper.toggleBulkEditField("Gender");
@@ -709,8 +711,9 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         sleep(500);
         Assert.assertNotNull("Unable to set enddate field to: " + dateVal, _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).getDateValue());
 
-        Ext4FieldRef treatmentField = getFieldInWindow("Treatment", Ext4FieldRef.class);
+        Ext4ComboRef treatmentField = getFieldInWindow("Treatment", Ext4ComboRef.class);
         treatmentField.getEval("expand()");
+        treatmentField.waitForStoreLoad();
         treatmentField.setValue("E-YY035");
         sleep(200);
         Ext4ComboRef combo = getFieldInWindow("Frequency", Ext4ComboRef.class);
