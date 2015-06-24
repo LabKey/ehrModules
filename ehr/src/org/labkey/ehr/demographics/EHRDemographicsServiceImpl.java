@@ -407,8 +407,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         while (start < allIds.size())
         {
             List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
+            _log.info("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
-            _log.info("Creating demographics records for " + sublist.size() + " animals");
 
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
             {

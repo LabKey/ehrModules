@@ -7,6 +7,8 @@
 require("ehr/triggers").initScript(this);
 EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
+var demographicsUpdates = [];
+
 function onInit(event, helper){
     helper.setScriptOptions({
         requiresStatusRecalc: true
@@ -38,8 +40,8 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 
                 var death = EHR.Server.Utils.normalizeDate(row.death);
                 if (!death || death.getTime() != row.date.getTime()) {
-                    console.log('updating demographics death date');
-                    helper.getJavaHelper().updateDemographicsRecord(row.Id, {
+                    console.log('queuing demographics death date');
+                    demographicsUpdates.push({
                         Id: row.Id,
                         death: row.date
                     });
@@ -57,6 +59,12 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 });
 
 function onComplete(event, errors, helper){
+
+    if (demographicsUpdates.length > 0) {
+        console.log('updating demographics death date for ' + demographicsUpdates.length + " animals");
+        helper.getJavaHelper().updateDemographicsRecord(demographicsUpdates);
+    }
+
     var deaths = helper.getDeaths();
     if (deaths){
         var ids = [];
