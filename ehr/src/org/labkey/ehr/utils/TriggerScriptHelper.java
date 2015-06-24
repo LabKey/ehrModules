@@ -766,30 +766,49 @@ public class TriggerScriptHelper
         EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
     }
 
-    public void updateDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
     {
-        if (id == null || props == null || props.isEmpty())
+        updatedRows = new ArrayList<>(updatedRows);
+        if (updatedRows == null || updatedRows.isEmpty())
             return;
 
+        Set<String> ids = new HashSet<>(updatedRows.size());
+        List<Map<String, Object>> newRows = new ArrayList<>(updatedRows.size());
+        List<Map<String, Object>> keyRows = new ArrayList<>(updatedRows.size());
+
         TableInfo ti = getTableInfo("study", "demographics");
-        TableSelector ts = new TableSelector(ti, Collections.singleton("lsid"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
-        String lsid = ts.getObject(String.class);
-        if (lsid != null)
-        {
-            Map<String, Object> row = new CaseInsensitiveHashMap<>();
-            Map<String, Object> keyRow = new CaseInsensitiveHashMap<>();
-            row.putAll(props);
-            row.put("lsid", lsid);
-            keyRow.put("lsid", lsid);
 
-            ti.getUpdateService().updateRows(getUser(), getContainer(), Arrays.asList(row), Arrays.asList(keyRow), null, getExtraContext());
-
-            EHRDemographicsService.get().getAnimal(getContainer(), id);
-        }
-        else
+        for (Map<String, Object> updatedRow : updatedRows)
         {
-            _log.error("Unable to find demographics record for id: " + id);
+            String id = (String)updatedRow.get("Id");
+            if (id == null)
+            {
+                throw new IllegalArgumentException("No 'Id' field in updated row: " + updatedRow);
+            }
+
+            TableSelector ts = new TableSelector(ti, Collections.singleton("lsid"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
+            String lsid = ts.getObject(String.class);
+            if (lsid != null)
+            {
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                Map<String, Object> keyRow = new CaseInsensitiveHashMap<>();
+                row.putAll(updatedRow);
+                row.put("lsid", lsid);
+                keyRow.put("lsid", lsid);
+
+                newRows.add(row);
+                keyRows.add(keyRow);
+                ids.add(id);
+            }
+            else
+            {
+                _log.error("Unable to find demographics record for id: " + id);
+            }
         }
+
+        ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+
+        EHRDemographicsService.get().getAnimals(getContainer(), ids);
     }
 
     public Map<String, Object> getExtraContext()
