@@ -397,11 +397,13 @@ public class EHRClientAPIHelper
             //append errors from extraContext
             if (o.has("extraContext") && o.getJSONObject("extraContext").has("skippedErrors"))
             {
-                Map<String, Object> errors = new HashMap<>(o.getJSONObject("extraContext").getJSONObject("skippedErrors"));
+                JSONObject errors = o.getJSONObject("extraContext").getJSONObject("skippedErrors");
+                Iterator keys = errors.keys();
 
-                for (String key : errors.keySet())
+                while (keys.hasNext())
                 {
-                    JSONArray errorArray = (JSONArray)errors.get(key);
+                    String key = (String)keys.next();
+                    JSONArray errorArray = errors.getJSONArray(key);
                     for (int i=0;i<errorArray.length();i++)
                     {
                         JSONObject subError = errorArray.getJSONObject(i);
@@ -504,6 +506,7 @@ public class EHRClientAPIHelper
             JSONObject insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
             String response = doSaveRows(email, Collections.singletonList(insertCommand), extraContext, false);
             Map<String, List<String>> errors = processResponse(response);
+
 
             //JSONHelper.compareMap()
             assertEquals("Incorrect number of fields have errors.  Fields with errors were: " + errors.keySet().toString(), expectedErrors.keySet().size(), errors.keySet().size());
