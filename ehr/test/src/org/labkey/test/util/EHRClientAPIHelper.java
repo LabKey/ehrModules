@@ -398,11 +398,9 @@ public class EHRClientAPIHelper
             if (o.has("extraContext") && o.getJSONObject("extraContext").has("skippedErrors"))
             {
                 JSONObject errors = o.getJSONObject("extraContext").getJSONObject("skippedErrors");
-                Iterator keys = errors.keys();
 
-                while (keys.hasNext())
+                for (String key : errors.keySet())
                 {
-                    String key = (String)keys.next();
                     JSONArray errorArray = errors.getJSONArray(key);
                     for (int i=0;i<errorArray.length();i++)
                     {
