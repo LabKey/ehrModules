@@ -226,7 +226,7 @@ public class SNPRC_EHRTest extends AbstractGenericEHRTest
         click(Locator.xpath("//label[.='Entire Database']/../input"));
         click(Locator.tagWithText("span", "Refresh"));
         //check count and links for one subject
-        DataRegionTable tbl = new DataRegionTable("aqwp2", this);
+        DataRegionTable tbl = DataRegionTable.findDataRegionWithin(this, PortalHelper.Locators.webPart("Overview").findElement(getDriver()));
         Assert.assertEquals(tbl.getDataRowCount(), 49);
         assertElementPresent(Locator.linkWithText("test1020148"));
         assertElementPresent(Locator.linkWithText("Male"));
