@@ -116,7 +116,15 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
         try
         {
             UserSchema us = QueryService.get().getUserSchema(job.getUser(), job.getContainer(), "study");
+            if (us == null)
+            {
+                throw new IllegalStateException("Could not find schema 'study'");
+            }
             TableInfo pedTable = us.getTable("pedigree");
+            if (pedTable == null)
+            {
+                throw new IllegalStateException("Could not find query 'pedigree' in study schema");
+            }
             TableSelector ts = new TableSelector(pedTable, PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species"));
 
             File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
