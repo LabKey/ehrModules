@@ -31,6 +31,7 @@ import org.labkey.api.pipeline.file.AbstractFileAnalysisProvider;
 import org.labkey.api.pipeline.file.FileAnalysisTaskPipeline;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
 import org.labkey.ehr.EHRManager;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * User: bbimber
@@ -114,7 +116,9 @@ public class GeneticCalculationsRunnable
             if (!inputFile.exists())
                 inputFile.createNewFile();
 
-            PipelineService.get().queueJob(protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters));
+            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters);
+            PipelineService.get().queueJob(job);
+            job.setLogFile(new File(job.getLogFile().getParent() + "/kinship_" + DateUtil.formatDateTime(new Date(), "yyyy-MM-dd_HH-mm-ss") + ".txt.log"));
         }
         catch (ClassNotFoundException e)
         {
