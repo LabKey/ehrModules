@@ -193,7 +193,7 @@ EHR.Utils = new function(){
         },
 
         //private
-        //this object provides a numeric heirarchy to the error severities returned by the server
+        //this object provides a numeric hierarchy to the error severities returned by the server
         errorSeverity: {
             DEBUG: 0,
             INFO: 1,
