@@ -906,7 +906,7 @@ public class EHRManager
 
                         for (PropertyStorageSpec.Index toDisable : idxToDisable)
                         {
-                            String idxName = AliasManager.makeLegalName(tableName + '_' + StringUtils.join(toDisable.columnNames, "_"), DbScope.getLabkeyScope().getSqlDialect());
+                            String idxName = AliasManager.makeLegalName(tableName + '_' + StringUtils.join(toDisable.columnNames, "_"), DbScope.getLabKeyScope().getSqlDialect());
                             if (doesIndexExist(schema, tableName, idxName))
                             {
                                 messages.add("will disable index: " + tableName + "." + idxName);
@@ -940,7 +940,7 @@ public class EHRManager
             createEHRLookupIndexes(messages, commitChanges, rebuildIndexes);
 
             //increase length of encounters remark col
-            if (commitChanges && DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+            if (commitChanges && DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
             {
                 for (String label : new String[]{"Clinical Encounters", "Gross Findings"})
                 {
@@ -949,7 +949,7 @@ public class EHRManager
                     {
                         _log.info("increasing size of remark column for dataset: " + label);
                         SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
-                        SqlExecutor se = new SqlExecutor(DbScope.getLabkeyScope());
+                        SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
                         se.execute(sql);
                     }
                 }
@@ -1092,7 +1092,7 @@ public class EHRManager
     //so this code will let admins compress them after the fact
     public void compressEHRSchemaIndexes()
     {
-        if (!DbScope.getLabkeyScope().getSqlDialect().isSqlServer() && isEnterpriseEdition(EHRSchema.getInstance().getSchema()))
+        if (!DbScope.getLabKeyScope().getSqlDialect().isSqlServer() && isEnterpriseEdition(EHRSchema.getInstance().getSchema()))
         {
             _log.error("Index compression on EHR can only be performed on SQL server currently.");
             return;
