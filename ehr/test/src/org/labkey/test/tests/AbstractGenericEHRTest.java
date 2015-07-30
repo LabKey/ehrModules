@@ -299,7 +299,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             if (o.has("exception"))
             {
                 //TODO
-                throw new RuntimeException("NYI");
+                throw new RuntimeException(o.get("exception").toString());
             }
             else if (o.has("result"))
             {
