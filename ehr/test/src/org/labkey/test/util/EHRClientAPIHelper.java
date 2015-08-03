@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -46,7 +47,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -265,9 +265,8 @@ public class EHRClientAPIHelper
 
     public String doSaveRows(String email, List<JSONObject> commands, JSONObject extraContext, boolean expectSuccess)
     {
-        long start = System.currentTimeMillis();
         HttpContext context = WebTestHelper.getBasicHttpContext();
-        HttpPost method = null;
+        HttpPost method;
         HttpResponse response = null;
         try (CloseableHttpClient client = (CloseableHttpClient)WebTestHelper.getHttpClient(email, PasswordUtil.getPassword()))
         {
@@ -278,7 +277,7 @@ public class EHRClientAPIHelper
             String requestUrl = WebTestHelper.getBaseURL() + "/query/" + _containerPath + "/saveRows.view";
             method = new HttpPost(requestUrl);
             method.addHeader("Content-Type", "application/json");
-            method.setEntity(new StringEntity(json.toString(), "application/json", "UTF-8"));
+            method.setEntity(new StringEntity(json.toString(), ContentType.create("application/json", "UTF-8")));
 
             response = client.execute(method, context);
             int status = response.getStatusLine().getStatusCode();
