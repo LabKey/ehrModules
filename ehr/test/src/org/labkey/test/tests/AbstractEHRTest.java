@@ -94,7 +94,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static EHRUser FULL_UPDATER = new EHRUser("full_updater@ehrstudy.test", "EHR Full Updaters", EHRRole.FULL_UPDATER);
 
     protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
-    protected String[] ROOMS = {"Room1", "Room2", "Room3"};
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
@@ -174,7 +173,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return "f";
     }
 
-    protected void setRooms() { ROOMS[0] = "Room1";  ROOMS[1] = "Room2"; ROOMS[2] = "Room3"; }
+    protected String[] getRooms()
+    {
+        return new String[]{"Room1", "Room2", "Room3"};
+    }
 
     @LogMethod
     protected void createTestSubjects() throws Exception
@@ -215,13 +217,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         //set housing
         log("Creating initial housing records");
-        setRooms();
         fields = new String[]{"Id", "date", "enddate", "room", "cage"};
         data = new Object[][]{
-                {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
-                {SUBJECTS[0], pastDate2, null, ROOMS[0], CAGES[0]},
-                {SUBJECTS[1], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
-                {SUBJECTS[1], pastDate2, null, ROOMS[2], CAGES[2]}
+                {SUBJECTS[0], pastDate1, pastDate2, getRooms()[0], CAGES[0]},
+                {SUBJECTS[0], pastDate2, null, getRooms()[0], CAGES[0]},
+                {SUBJECTS[1], pastDate1, pastDate2, getRooms()[0], CAGES[0]},
+                {SUBJECTS[1], pastDate2, null, getRooms()[2], CAGES[2]}
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "Housing", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Housing", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
