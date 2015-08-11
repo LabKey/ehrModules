@@ -11,6 +11,7 @@
 
 #options(echo=TRUE);
 options(error = dump.frames);
+library(methods);
 library(kinship2);
 library(getopt);
 library(Matrix);
