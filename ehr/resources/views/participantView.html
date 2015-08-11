@@ -21,7 +21,12 @@
             participantId: participantId,
             defaultReport: ctx.DefaultAnimalHistoryReport,
             defaultTab: 'General',
-            autoLoadDefaultTab: true
+            autoLoadDefaultTab: true,
+            idNormalizer: function(subjects)
+            {
+                // Preserve the ID as passed on the URL
+                return [subjects];
+            }
         }).render(webpart.wrapperDivId);
     });
 </script>
