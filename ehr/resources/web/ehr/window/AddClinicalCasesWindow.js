@@ -145,7 +145,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
         var area = this.down('#areaField').getValue() || [];
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
         var ids = this.down('#idField').getValue();
-        ids = EHR.Utils.splitIds(ids);
+        ids = LDK.Utils.splitIds(ids);
 
         if (!this.allowNoSelection && !area.length && !rooms.length && !ids.length){
             Ext4.Msg.alert('Error', 'Must provide at least one room or an area');

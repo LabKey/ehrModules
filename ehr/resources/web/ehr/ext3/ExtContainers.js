@@ -165,7 +165,7 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
         //we clean up, combine subjects
         var subjectList = this.subjArea.getValue();
         if(subjectList){
-            subjectList = EHR.Utils.splitIds(subjectList);
+            subjectList = LDK.Utils.splitIds(subjectList);
             if(subjectList.length && this.targetStore){
                 var records = [];
                 Ext.each(subjectList, function(s){

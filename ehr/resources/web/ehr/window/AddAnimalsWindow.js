@@ -124,7 +124,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
         form.getAnimals = function(){
             //we clean up, combine subjects
-            var subjectList = EHR.Utils.splitIds(this.down('#subjArea').getValue());
+            var subjectList = LDK.Utils.splitIds(this.down('#subjArea').getValue());
             if(subjectList.length > 0){
                 this.addSubjects(subjectList)
             }

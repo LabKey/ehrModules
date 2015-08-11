@@ -47,7 +47,7 @@ Ext4.define('EHR.window.CopyBehaviorExamWindow', {
             return;
         }
 
-        ids = EHR.Utils.splitIds(ids);
+        ids = LDK.Utils.splitIds(ids);
 
         var obsStore = this.storeCollection.getClientStoreByName('Clinical Observations');
         LDK.Assert.assertNotEmpty('Unable to find observations store in CopyBehaviorExamWindow', obsStore);

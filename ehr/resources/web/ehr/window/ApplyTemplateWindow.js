@@ -248,7 +248,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         };
 
         if (this.down('#subjectIds')){
-            var subjectArray = EHR.Utils.splitIds(this.down('#subjectIds').getValue());
+            var subjectArray = LDK.Utils.splitIds(this.down('#subjectIds').getValue());
             Ext4.Array.each(subjectArray, function(subj){
                 ret.push(Ext4.apply({
                     Id: subj
