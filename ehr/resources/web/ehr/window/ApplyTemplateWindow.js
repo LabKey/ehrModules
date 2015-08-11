@@ -248,23 +248,12 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
         };
 
         if (this.down('#subjectIds')){
-            var subjectArray = this.down('#subjectIds').getValue();
-            if (subjectArray){
-                subjectArray = Ext4.String.trim(subjectArray);
-                subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
-                subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-                subjectArray = subjectArray.toLowerCase();
-
-                if (subjectArray){
-                    subjectArray = subjectArray.split(';');
-                }
-
-                Ext4.Array.each(subjectArray, function(subj){
-                    ret.push(Ext4.apply({
-                        Id: subj
-                    }, obj));
-                }, this);
-            }
+            var subjectArray = EHR.Utils.splitIds(this.down('#subjectIds').getValue());
+            Ext4.Array.each(subjectArray, function(subj){
+                ret.push(Ext4.apply({
+                    Id: subj
+                }, obj));
+            }, this);
         }
         else if (this.down('#encounterRecords')){
             var combo = this.down('#encounterRecords');

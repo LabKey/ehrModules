@@ -242,16 +242,9 @@ Ext4.define('EHR.window.FormTemplateWindow', {
         if (this.idSelectionMode == 'none' || this.idSelectionMode == 'multi'){
             var date = this.down('#dateField').getValue();
             var idField = this.down('#idField');
-            var subjectArray = idField ? idField.getValue() : '';
-            subjectArray = Ext4.String.trim(subjectArray);
-            subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
-            subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-            subjectArray = subjectArray.toLowerCase();
+            var subjectArray = EHR.Utils.splitIds(idField ? idField.getValue() : '');
 
-            if (subjectArray){
-                subjectArray = subjectArray.split(';');
-            }
-            else {
+            if (subjectArray.length == 0){
                 subjectArray = [null];
             }
 

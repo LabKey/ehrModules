@@ -63,12 +63,7 @@ function makePanel(){
                         if (!value)
                             return;
 
-                        value = Ext4.String.trim(value);
-                        value = value.replace(/[\s,;]+/g, ';');
-                        value = value.replace(/(^;|;$)/g, '');
-                        value = value.toLowerCase();
-                        value = value.split(';');
-                        value = Ext4.unique(value);
+                        value = EHR.Utils.splitIds(value);
 
                         if (value.length > 1){
                             window.location = LABKEY.ActionURL.buildURL(

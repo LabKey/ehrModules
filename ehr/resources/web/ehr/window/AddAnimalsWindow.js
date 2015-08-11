@@ -124,12 +124,8 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
         form.getAnimals = function(){
             //we clean up, combine subjects
-            var subjectList = this.down('#subjArea').getValue();
-            if(subjectList){
-                subjectList = subjectList.replace(/[\s,;]+/g, ';');
-                subjectList = subjectList.replace(/(^;|;$)/g, '');
-                subjectList = subjectList.toLowerCase();
-                subjectList = subjectList.split(';');
+            var subjectList = EHR.Utils.splitIds(this.down('#subjArea').getValue());
+            if(subjectList.length > 0){
                 this.addSubjects(subjectList)
             }
             else {

@@ -584,7 +584,6 @@ EHR.Utils = new function(){
             }
 
             return subjectArray;
-
         },
 
         editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap, copyFilters){
