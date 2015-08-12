@@ -93,7 +93,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
-        assertTitleContains("Animal Details: "+MORE_ANIMAL_IDS[0]);
+        assertTitleContains("Animal Details: "+ getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0]));
 
         log("Quick Search - Show Project");
         clickProject(getProjectName());
@@ -110,6 +110,11 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         _ext4Helper.queryOne("#protocolField", Ext4ComboRef.class).setComboByDisplayValue(PROTOCOL_ID);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Protocol"));
         waitForElement(Locator.linkWithText(PROTOCOL_ID), WAIT_FOR_JAVASCRIPT);
+    }
+
+    protected String getExpectedAnimalIDCasing(String id)
+    {
+        return id.toLowerCase();
     }
 
     @Test
