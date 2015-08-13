@@ -424,7 +424,7 @@ EHR.reports.snapshot = function(panel, tab, showActionsBtn){
         }
         else {
             toAdd.push({
-                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Display History\'.',
+                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Show Hx\'.',
                 style: 'padding-bottom: 20px;',
                 border: false
             });
@@ -466,7 +466,7 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
     function renderSubjects(subjects, tab){
         if (subjects.length > 10){
             tab.add({
-                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Display History\'.',
+                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail or click the link labeled \'Show Hx\'.',
                 style: 'padding-bottom: 20px;',
                 border: false
             });
