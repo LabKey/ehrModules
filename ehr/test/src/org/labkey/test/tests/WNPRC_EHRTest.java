@@ -15,6 +15,7 @@
  */
 package org.labkey.test.tests;
 
+import com.google.common.base.Function;
 import org.jetbrains.annotations.Nullable;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,11 +28,15 @@ import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
+import org.labkey.test.util.LabKeyExpectedConditions;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Date;
 
@@ -100,9 +105,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         log("Create weight measurement task.");
         waitAndClickAndWait(Locator.linkWithText("Enter Weights"));
-        waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
-        waitForElement(Locator.xpath("//input[@name='title' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
-        _helper.waitForElementWithValue(this, "title", "Weight", 10000);
+        WebElement titleEl = waitForElement(Locator.xpath("//input[@name='title' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
+        waitForFormElementToEqual(titleEl, "Weight");
 
         setFormElement(Locator.name("title"), TASK_TITLE);
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)

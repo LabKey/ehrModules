@@ -53,7 +53,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -348,7 +347,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         select5.addFilter(new Filter("Id", animalId, Filter.Operator.EQUAL));
         SelectRowsResponse resp5 = select5.execute(getApiHelper().getConnection(), getContainerPath());
 
-        List<Date> dates = new ArrayList(weightByDay.keySet());
+        List<Date> dates = new ArrayList<>(weightByDay.keySet());
         Collections.sort(dates);
         Date mostRecentWeightDate = dates.get(dates.size() - 1);
         Double mostRecentWeight = weightByDay.get(mostRecentWeightDate);
@@ -1192,7 +1191,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         while (i < 10)
         {
             i++;
-            Map<String, Object> row = new HashMap();
+            Map<String, Object> row = new HashMap<>();
             row.put("Id", ID_PREFIX + i);
             createdIds.add(ID_PREFIX + i);
             row.put("date", new Date());
@@ -1202,7 +1201,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
             apiHelper.deleteIfExists(schema, query, row, "Id");
             apiHelper.insertRow(schema, query, row, false);
 
-            Map<String, Object> parentageRow = new HashMap();
+            Map<String, Object> parentageRow = new HashMap<>();
             parentageRow.put("Id", ID_PREFIX + i);
             parentageRow.put("date", new Date());
             parentageRow.put("relationship", "Sire");
@@ -1528,14 +1527,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         goToProjectHome();
 
         //retain pipeline log for debugging
-        getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), getModulePath() + GENETICS_PIPELINE_LOG_PATH), new FileFilter()
-        {
-            @Override
-            public boolean accept(File pathname)
-            {
-                return pathname.getName().endsWith(".log");
-            }
-        });
+        getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), getModulePath() + GENETICS_PIPELINE_LOG_PATH),
+                pathname -> pathname.getName().endsWith(".log"));
 
         waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
         waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
@@ -1561,13 +1554,13 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Ext4ComboRef.waitForComponent(this, "field[fieldLabel^='Add User Or Group']");
         Ext4ComboRef combo = Ext4ComboRef.getForLabel(this, "Add User Or Group");
         combo.waitForStoreLoad();
-        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, DATA_ADMIN.getEmail());
+        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), Ext4Helper.TextMatchTechnique.CONTAINS, DATA_ADMIN.getEmail());
         waitForElement(Ext4Helper.Locators.ext4Button("Remove"));
 
         Ext4FieldRef.waitForComponent(this, "field[fieldLabel^='Add User Or Group']");
         combo = Ext4ComboRef.getForLabel(this, "Add User Or Group");
         combo.waitForStoreLoad();
-        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), true, BASIC_SUBMITTER.getEmail());
+        _ext4Helper.selectComboBoxItem(Locator.id(combo.getId()), Ext4Helper.TextMatchTechnique.CONTAINS, BASIC_SUBMITTER.getEmail());
         waitForElement(Ext4Helper.Locators.ext4Button("Remove"), 2);
         waitAndClick(Ext4Helper.Locators.ext4Button("Close"));
 
@@ -1589,7 +1582,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         //iterate all notifications and run them.
         log("running all notifications");
-        List<String> skippedNotifications = Arrays.asList(new String[]{"ETL Validation Notification"});
+        List<String> skippedNotifications = Arrays.asList("ETL Validation Notification");
 
         int count = getElementCount(Locator.tagContainingText("a", "Run Report In Browser"));
         for (int i = 0; i < count; i++)
@@ -1629,7 +1622,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //first BCS
         Ext4FieldRef editor = obsGrid.getActiveEditor(1, "observation");
         editor.getFnEval("this.expand()");
-        Assert.assertEquals("ehr-simplecombo", (String)editor.getFnEval("return this.xtype"));
+        Assert.assertEquals("ehr-simplecombo", editor.getFnEval("return this.xtype"));
         waitForElement(Locator.tagContainingText("li", "1.5").notHidden().withClass("x4-boundlist-item"));
         waitForElement(Locator.tagContainingText("li", "4.5").notHidden().withClass("x4-boundlist-item"));
         obsGrid.completeEdit();
@@ -1638,7 +1631,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         obsGrid.setGridCell(1, "category", "Alopecia Score");
         editor = obsGrid.getActiveEditor(1, "observation");
         editor.getFnEval("this.expand()");
-        Assert.assertEquals("ehr-simplecombo", (String)editor.getFnEval("return this.xtype"));
+        Assert.assertEquals("ehr-simplecombo", editor.getFnEval("return this.xtype"));
         waitForElement(Locator.tagContainingText("li", "1").notHidden().withClass("x4-boundlist-item"));
         waitForElement(Locator.tagContainingText("li", "4").notHidden().withClass("x4-boundlist-item"));
         assertElementNotPresent(Locator.tagContainingText("li", "4.5").notHidden().withClass("x4-boundlist-item"));
@@ -1647,7 +1640,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //then pain score
         obsGrid.setGridCell(1, "category", "Pain Score");
         editor = obsGrid.getActiveEditor(1, "observation");
-        Assert.assertEquals("ldk-numberfield", (String)editor.getFnEval("return this.xtype"));
+        Assert.assertEquals("ldk-numberfield", editor.getFnEval("return this.xtype"));
         assertElementNotPresent(Locator.tagContainingText("li", "4").notHidden().withClass("x4-boundlist-item"));
         obsGrid.completeEdit();
         obsGrid.setGridCell(1, "observation", "10");
@@ -1660,14 +1653,14 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //verify BCS working on new row
         editor = obsGrid.getActiveEditor(2, "observation");
         editor.getFnEval("this.expand()");
-        Assert.assertEquals("ehr-simplecombo", (String)editor.getFnEval("return this.xtype"));
+        Assert.assertEquals("ehr-simplecombo", editor.getFnEval("return this.xtype"));
         waitForElement(Locator.tagContainingText("li", "1.5").notHidden().withClass("x4-boundlist-item"));
         waitForElement(Locator.tagContainingText("li", "4.5").notHidden().withClass("x4-boundlist-item"));
         obsGrid.completeEdit();
 
         //now return to original row and make sure editor remembered
         editor = obsGrid.getActiveEditor(1, "observation");
-        Assert.assertEquals("ldk-numberfield", (String)editor.getFnEval("return this.xtype"));
+        Assert.assertEquals("ldk-numberfield", editor.getFnEval("return this.xtype"));
         assertElementNotPresent(Locator.tagContainingText("li", "4.5").notHidden().withClass("x4-boundlist-item"));
         obsGrid.completeEdit();
         Assert.assertEquals("10", obsGrid.getFieldValue(1, "observation"));
