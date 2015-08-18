@@ -36,7 +36,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
         });
 
         Ext4.apply(this, {
-            title: 'Clinical History:',
+            title: 'Clinical History: ' + this.subjectId,
             bodyStyle: 'padding: 3px;',
             width: 1260,
             modal: true,

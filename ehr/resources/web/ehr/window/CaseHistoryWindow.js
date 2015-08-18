@@ -31,7 +31,7 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
 
     initComponent: function(){
         Ext4.apply(this, {
-            title: 'Case History:'
+            title: 'Case History: ' + this.subjectId
         });
 
         this.callParent(arguments);
