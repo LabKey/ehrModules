@@ -415,15 +415,15 @@ EHR.Utils = new function(){
         getEHRContext: function(msgTarget, requiredProps){
             var ctx = LABKEY.getModuleContext('ehr');
             var requiredProps = requiredProps || ['EHRStudyContainer'];
-            var missingProps = false;
+            var missingProps = [];
             for (var i=0;i<requiredProps.length;i++){
                 if(!ctx[requiredProps[i]])
-                    missingProps = true;
+                    missingProps.push(requiredProps[i]);
             }
 
-            if (missingProps){
+            if (missingProps.length > 0){
                 if (msgTarget)
-                    Ext4.get(msgTarget).update('The module properties for EHR have not been set.  Please ask you administrator to configure this under the folder settings page.');
+                    Ext4.get(msgTarget).update('The following module properties for the EHR have not been set: ' + missingProps.join(', ') + '.  Please ask you administrator to configure this under the folder settings page.');
                 return null;
             }
 
