@@ -20,4 +20,13 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     if (!row.calculated_status && !helper.isETL()){
         row.calculated_status = helper.getJavaHelper().getCalculatedStatusValue(row.Id);
     }
+
+    // Trim animal IDs in these columns
+    if (row.dam){
+        row.dam = EHR.Server.Utils.trim(row.dam);
+    }
+    if (row.sire){
+        row.sire = EHR.Server.Utils.trim(row.sire);
+    }
+
 }
