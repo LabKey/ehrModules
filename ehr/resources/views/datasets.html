@@ -52,14 +52,15 @@ Ext4.onReady(function () {
                     ]
                 }
 
-                if(EHR.Security.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.queryName})){
-                    cfg.items.push({
-                        xtype: 'ldk-linkbutton',
-                        tooltip: item.searchTooltip || 'Click to update records',
-                        href: LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
-                        text: 'Update Records'
-                    });
-                }
+                //NOTE: disabled because there is now a menu item on each dataset under 'more actions' that toggles to the edit UI.  that link will retain filters, and is accessible from all pages
+                //if (EHR.Security.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.queryName})){
+                //    cfg.items.push({
+                //        xtype: 'ldk-linkbutton',
+                //        tooltip: item.searchTooltip || 'Click to update records',
+                //        href: LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
+                //        text: 'Update Records'
+                //    });
+                //}
 
                 return cfg;
             }
