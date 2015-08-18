@@ -18,6 +18,7 @@
                     </column>
                     <column columnName="enddate">
                         <columnTitle>Close Date</columnTitle>
+                        <isHidden>false</isHidden>
                     </column>
                     <column columnName="reviewdate">
                         <columnTitle>Next Review Date</columnTitle>
