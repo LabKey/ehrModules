@@ -537,3 +537,21 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
         }
     }
 };
+
+EHR.reports.kinshipSummary = function(panel, tab){
+    var title = panel.getTitleSuffix();
+    var filterArray = panel.getFilterArray(tab);
+    filterArray = filterArray.removable.concat(filterArray.nonRemovable);
+    tab.add({
+        xtype: 'ldk-webpartpanel',
+        title: 'Kinship' + title,
+        style: 'margin-bottom: 20px;',
+        border: false,
+        items: [{
+            xtype: 'ehr-kinshippanel',
+            style: 'padding-bottom: 20px;',
+            border: false,
+            filterArray: filterArray
+        }]
+    });
+};

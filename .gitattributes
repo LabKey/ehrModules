@@ -1046,6 +1046,7 @@ ehr/resources/web/ehr/panel/ExamInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/GeneticCalculationSettingsPanel.js -text
 ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
 ehr/resources/web/ehr/panel/HousingSummaryPanel.js -text
+ehr/resources/web/ehr/panel/KinshipPanel.js -text
 ehr/resources/web/ehr/panel/LabworkSummaryPanel.js -text
 ehr/resources/web/ehr/panel/LocationFilterType.js -text
 ehr/resources/web/ehr/panel/ManageCasesPanel.js -text

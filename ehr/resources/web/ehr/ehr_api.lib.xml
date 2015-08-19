@@ -9,6 +9,7 @@
         <!--Misc Ext4 components-->
         <script path="ehr/panel/WeightGraphPanel.js"/>
         <script path="ehr/panel/WeightSummaryPanel.js"/>
+        <script path="ehr/panel/KinshipPanel.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
         <script path="ehr/panel/NarrowSnapshotPanel.js"/>

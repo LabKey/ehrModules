@@ -30,6 +30,14 @@
                         <url>/ehr/participantView.view?participantId=${Id2}</url>
                     </column>
                 </columns>
+                <buttonBarOptions alwaysShowRecordSelectors="true" includeStandardButtons="true">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <item insertPosition="end" text="More Actions">
+                        <item text="Limit To Animals In Selection">
+                            <onClick>EHR.DatasetButtons.limitKinshipSelection(dataRegionName);</onClick>
+                        </item>
+                    </item>
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

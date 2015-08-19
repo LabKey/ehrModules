@@ -233,8 +233,43 @@ EHR.DatasetButtons = new function(){
                     });
                 }
             }, this);
+        },
+
+        limitKinshipSelection: function(dataRegionName){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            //find distinct IDs
+            var sql = "SELECT DISTINCT s.Id FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
+
+            LABKEY.Query.executeSql({
+                method: 'POST',
+                schemaName: 'study',
+                sql: sql,
+                scope: this,
+                failure: LDK.Utils.getErrorCallback(),
+                success: function(data){
+                    var ids = [];
+                    for (var i = 0; i < data.rows.length; i++){
+                        ids.push(data.rows[i].Id);
+                    }
+
+                    if (!ids.length){
+                        Ext4.Msg.alert('No IDs found');
+                    }
+                    else if (ids.length > 200){
+                        Ext4.Msg.alert('This can only be used with 200 IDs or fewer');
+                    }
+                    else{
+                        dataRegion.addFilter(LABKEY.Filter.create('Id2', ids.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+                        dataRegion.refresh();
+                    }
+                }
+            });
         }
     }
 }
-
-
