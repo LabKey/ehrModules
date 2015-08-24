@@ -35,7 +35,7 @@ EHR.Server.ScriptHelper = require("ehr/ScriptHelper").EHR.Server.ScriptHelper;
 EHR.Assert = require("ldk/Assert").LDK.Server.Assert;
 
 /**
- * This class handles the serer-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
+ * This class handles the server-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
  * complex code into one single pathway for all incoming records.  The trigger scripts of individual records can include this code (see example script below).  This
  * replaces the default functions LabKey expects including beforeInsert, beforeUpdate, etc.  Without the dataset's trigger script, you will include this code, then
  * create functions only to handle the dataset-specific needs.  For example, the Blood Draws dataset contains extra validation that is needed prior to every insert/update.
@@ -550,9 +550,13 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
-    //trim spaces around Id
-    if (row.Id){
-        row.Id = EHR.Server.Utils.trim(row.Id);
+    //trim spaces around fields that may contain Ids
+    var fieldNames = ['Id', 'dam', 'sire'];
+    for (var fieldIndex = 0; fieldIndex < fieldNames.length; fieldIndex++) {
+        var field = fieldNames[fieldIndex];
+        if (row[field]) {
+            row[field] = EHR.Server.Utils.trim(row[field]);
+        }
     }
 
     //normalize these values to JS date objects
