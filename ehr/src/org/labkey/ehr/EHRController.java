@@ -47,7 +47,7 @@ import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.CSRF;
-import org.labkey.api.security.RequiresPermissionClass;
+import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -99,7 +99,7 @@ public class EHRController extends SpringActionController
         setActionResolver(_actionResolver);
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetDataEntryItemsAction extends ApiAction<GetDataEntryItemsForm>
     {
@@ -151,7 +151,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class CacheLivingAnimalsAction extends ConfirmAction<CacheLivingAnimalsForm>
     {
         public void validateCommand(CacheLivingAnimalsForm form, Errors errors)
@@ -176,7 +176,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class PrimeDataEntryCacheAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -201,7 +201,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(DeletePermission.class)
+    @RequiresPermission(DeletePermission.class)
     @CSRF
     public class DiscardFormAction extends ApiAction<DiscardFormForm>
     {
@@ -284,7 +284,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(UpdatePermission.class)
+    @RequiresPermission(UpdatePermission.class)
     public class UpdateQueryAction extends SimpleViewAction<EHRQueryForm>
     {
         private EHRQueryForm _form;
@@ -441,7 +441,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetDemographicsAction extends ApiAction<GetDemographicsForm>
     {
@@ -489,7 +489,7 @@ public class EHRController extends SpringActionController
             _ids = ids;
         }
     }
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
     {
@@ -512,7 +512,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SetRecordDeleteSettingsAction extends ApiAction<RecordDeleteForm>
     {
@@ -524,7 +524,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetAnimalDetailsAction extends ApiAction<AnimalDetailsForm>
     {
@@ -593,7 +593,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class GetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
     {
@@ -613,7 +613,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class GetRecordDeleteSettingsAction extends ApiAction<Object>
     {
@@ -690,7 +690,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetLabResultSummary extends ApiAction<LabResultSummaryForm>
     {
@@ -727,7 +727,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     //TODO: should enable @CSRF if we have SSRS updated to pass token.
     public class GetClinicalHistoryAction extends ApiAction<HistoryForm>
     {
@@ -771,7 +771,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetCaseHistoryAction extends ApiAction<HistoryForm>
     {
@@ -809,7 +809,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
         public void validateCommand(EnsureDatasetPropertiesForm form, Errors errors)
@@ -848,7 +848,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -878,7 +878,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class EnsureQcStatesAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -917,7 +917,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class VerifyDatasetResourcesAction extends SimpleViewAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -980,7 +980,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class DoGeneticCalculationsAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -1004,7 +1004,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     public class DeletedRecordsRunnerAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
@@ -1123,7 +1123,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetReportLinksAction extends ApiAction<ReportLinkForm>
     {
@@ -1180,7 +1180,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetDataEntryFormDetailsAction extends ApiAction<EnterDataForm>
     {
@@ -1234,7 +1234,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    @RequiresPermission(EHRDataEntryPermission.class)
     public class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
@@ -1275,7 +1275,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    @RequiresPermission(EHRDataEntryPermission.class)
     public class DataEntryFormForQueryAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
@@ -1316,7 +1316,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    @RequiresPermission(EHRDataEntryPermission.class)
     @CSRF
     public class DataEntryFormJsonForQueryAction extends ApiAction<EnterDataForm>
     {
@@ -1418,7 +1418,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(UpdatePermission.class)
+    @RequiresPermission(UpdatePermission.class)
     @CSRF
     public class ManageFlagsAction extends ApiAction<ManageFlagsForm>
     {
