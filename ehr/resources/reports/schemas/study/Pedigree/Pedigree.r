@@ -13,6 +13,8 @@ library(Rlabkey)
 #str(labkey.data);
 #warnings();
 
+labkey.setCurlOptions(ssl.verifypeer=FALSE, ssl.verifyhost=FALSE)
+
 #NOTE: to run directly in R instead of through labkey, uncomment this:
 #labkey.url.base = "http://localhost:8080/labkey/"
 
