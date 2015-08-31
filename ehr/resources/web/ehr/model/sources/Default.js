@@ -1382,6 +1382,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     showInactive: true
                 }
             },
+            gender: {
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('meaning', 'Unknown', LABKEY.Filter.Types.NEQ)]
+                }
+            },
             description: {
                 hidden: false
             }

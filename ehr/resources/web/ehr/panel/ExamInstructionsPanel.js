@@ -14,6 +14,7 @@ Ext4.define('EHR.panel.ExamInstructionsPanel', {
         if (btnCfg){
             btnCfg = this.dataEntryPanel.configureButton(btnCfg);
             if (btnCfg){
+                btnCfg.defaultDate = new Date();
                 btnCfg.text = 'Apply Template To Form';
                 buttons.push(btnCfg);
             }

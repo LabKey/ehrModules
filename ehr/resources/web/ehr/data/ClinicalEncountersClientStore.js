@@ -32,7 +32,7 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
             if (!lookupRec)
                 return;
 
-            if (lookupRec.get('remark')){
+            if (lookupRec.get('remark')&& record.get('remark')== null){
                 record.beginEdit();
                 record.set('remark', lookupRec.get('remark'));
                 record.endEdit(true);

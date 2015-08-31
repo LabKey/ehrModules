@@ -27,6 +27,15 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     if (!row.weight && row.wdate){
         EHR.Server.Utils.addError(scriptErrors, 'weight', 'This field is required when supplying a weight date', 'WARN');
     }
+
+    // the highest error this can produce is WARN.  therefore skip this check if we would ignore it anyway in order to save the overhead.
+    // this would normally occur when finalizing a form
+    if (!helper.isETL() && row.Id && row.weight && row.species && EHR.Server.Utils.shouldIncludeError('WARN', helper.getErrorThreshold(), helper)){
+        var msg = helper.getJavaHelper().verifyWeightRange(row.Id, row.weight, row.species);
+        if (msg != null){
+            EHR.Server.Utils.addError(scriptErrors, 'weight', msg, 'WARN');
+        }
+    }
 }
 
 EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Birth', function(scriptErrors, helper, row, oldRow) {

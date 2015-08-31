@@ -24,9 +24,10 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
     initComponent: function(){
         this.sortMode = this.sortMode || 'date';
+
         if (this.minDate && !Ext4.isDate(this.minDate))
-            this.minDate = LDK.ConvertUtils.parseDate(this.maxDate);
-        if (this.maxDate && !Ext4.isDate(this.minDate))
+            this.minDate = LDK.ConvertUtils.parseDate(this.minDate);
+        if (this.maxDate && !Ext4.isDate(this.maxDate))
             this.maxDate = LDK.ConvertUtils.parseDate(this.maxDate);
 
         Ext4.apply(this, {

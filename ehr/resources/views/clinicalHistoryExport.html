@@ -38,7 +38,7 @@
                 });
 
                 toAdd.push({
-                    xtype: 'ehr-clinicalhistorypanel',
+                    xtype: LABKEY.ActionURL.getParameter('caseId') ? 'ehr-casehistorypanel' : 'ehr-clinicalhistorypanel',
                     printMode: true,
                     hideExportBtn: true,
                     border: true,

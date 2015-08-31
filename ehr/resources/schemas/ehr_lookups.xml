@@ -48,6 +48,7 @@
     </ns:table>
     <ns:table tableName="cageclass" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Cage Size Requirements, By Weight</ns:tableTitle>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -85,6 +86,7 @@
     </ns:table>
     <ns:table tableName="conc_units" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Conc Field Field Values</ns:tableTitle>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -102,6 +104,7 @@
     </ns:table>
     <ns:table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Volume Units Field Values</ns:tableTitle>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -116,6 +119,7 @@
     <ns:table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Cages</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -254,6 +258,7 @@
     </ns:table>
     <ns:table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Areas</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -269,6 +274,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="clinpath_status" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Clinpath Status Field Values</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -282,6 +288,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Blood Draw Services</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -377,6 +384,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Gender Codes</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -762,6 +770,7 @@
     <ns:table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>SNOMED Codes</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>code</ns:pkColumnName>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
@@ -803,6 +812,7 @@
     <ns:table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>SNOMED Subset Codes</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -866,6 +876,7 @@
     </ns:table>
     <ns:table tableName="snomed_subsets" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>SNOMED Subsets</ns:tableTitle>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1287,6 +1298,7 @@
     </ns:table>
     <ns:table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Formulary</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1384,6 +1396,7 @@
     </ns:table>
     <ns:table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Reference Procedures List</ns:tableTitle>
         <ns:tableUrl>/ehr/procedureDetails.view?procedureId=${rowid}</ns:tableUrl>
         <ns:importUrl></ns:importUrl>
@@ -1457,6 +1470,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="cage_type" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Cage Types</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1499,6 +1513,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Cage Divider Types</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1638,6 +1653,7 @@
     </ns:table>
     <ns:table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Default Treatments Per Procedure</ns:tableTitle>
         <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
@@ -1712,6 +1728,7 @@
     </ns:table>
     <ns:table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Default Charges Per Procedure</ns:tableTitle>
         <ns:columns>
             <ns:column columnName="rowid">
@@ -1724,6 +1741,7 @@
     </ns:table>
     <ns:table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Default SNOMED Codes Per Procedure</ns:tableTitle>
         <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
@@ -1754,6 +1772,7 @@
     </ns:table>
     <ns:table tableName="procedure_default_comments" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:tableTitle>Default Narratives</ns:tableTitle>
         <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
@@ -1776,6 +1795,7 @@
     <ns:table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Rooms</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="room">
 
@@ -1882,6 +1902,7 @@
     <ns:table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Flag Categories</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="category">
                 <ns:columnTitle>Category</ns:columnTitle>
@@ -1907,6 +1928,7 @@
     <ns:table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Labwork Service Types</ns:tableTitle>
         <ns:description>This table lists all the types of labwork that can be ordered</ns:description>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1965,6 +1987,7 @@
     <ns:table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Labwork Panels</ns:tableTitle>
         <ns:description>This table lists all the tests expected to be generated from each lab service type</ns:description>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1999,6 +2022,7 @@
     <ns:table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Flag Values</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="rowid">
                 <ns:isAutoInc>true</ns:isAutoInc>

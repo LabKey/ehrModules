@@ -1559,6 +1559,11 @@
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+            <ns:column columnName="remark">
+                <ns:columnTitle>Additional Information</ns:columnTitle>
+                <ns:isUserEditable>true</ns:isUserEditable>
+                <ns:isHidden>false</ns:isHidden>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="status" tableDbType="TABLE" useColumnOrder="true">

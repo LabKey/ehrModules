@@ -72,6 +72,8 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             queryMode: 'local',
             fieldLabel: 'Template Name',
             itemId: 'templateName',
+            anyMatch: true,
+            caseSensitive: false,
             store: {
                 type: 'labkey-store',
                 schemaName: 'ehr',

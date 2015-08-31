@@ -79,7 +79,7 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
             targetStore: 'histology',
             schemaName: 'study',
             queryName: 'histology',
-            columns: ['tissue', 'remark', 'codesRaw', 'formSort']
+            columns: ['tissue', 'sort_order', 'remark', 'codesRaw', 'formSort']
         },
         pathologyDiagnoses: {
             label: 'Diagnoses',
@@ -208,6 +208,7 @@ Ext4.define('EHR.window.CopyFromCaseWindow', {
                 schemaName: section.schemaName,
                 queryName: section.queryName,
                 columns: section.columns.join(','),
+                sort: 'formSort',
                 filterArray: [LABKEY.Filter.create('parentid', objectIds[0], LABKEY.Filter.Types.EQUAL)],
                 scope: this,
                 success: function(results){

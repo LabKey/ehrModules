@@ -25,6 +25,7 @@ Ext4.define('EHR.form.field.AreaField', {
                 schemaName: 'ehr_lookups',
                 queryName: 'areas',
                 sort: 'area',
+                filterArray: [LABKEY.Filter.create('dateDisabled', true, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
             })
         });
@@ -34,6 +35,7 @@ Ext4.define('EHR.form.field.AreaField', {
         if (this.pairedWithRoomField)
             this.addRoomListeners();
     },
+
 
     addRoomListeners: function(){
         this.on('select', function(field, records){

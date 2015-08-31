@@ -5,6 +5,7 @@
  */
 /**
  * @cfg dataEntryPanel
+ * @cfg defaultDate
  */
 Ext4.define('EHR.window.FormTemplateWindow', {
     extend: 'Ext.window.Window',
@@ -75,7 +76,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                     timeFormat: 'H:i',
                     labelWidth: 150,
                     width: 400,
-                    value: null
+                    value: this.defaultDate
                 }]
             };
         }
@@ -148,6 +149,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
             displayField: 'title',
             anyMatch: true,
             queryMode: 'local',
+            caseSensitive: false,
             store: {
                 type: 'labkey-store',
                 schemaName: 'ehr',
@@ -198,6 +200,11 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 valueField: 'entityid',
                 displayField: 'title',
                 sort: 'title',
+                anyMatch: true,
+                caseSensitive: false,
+                //Added 4-22-2015  Blasa
+                typeAhead: true,
+                queryMode: 'local',
                 store: {
                     type: 'labkey-store',
                     autoLoad: true,
@@ -312,7 +319,8 @@ EHR.DataEntryUtils.registerDataEntryFormButton('APPLYFORMTEMPLATE', {
 
         Ext4.create('EHR.window.FormTemplateWindow', {
             dataEntryPanel: panel,
-            idSelectionMode: btn.idSelectionMode
+            idSelectionMode: btn.idSelectionMode,
+            defaultDate: btn.defaultDate
         }).show();
     }
 });
