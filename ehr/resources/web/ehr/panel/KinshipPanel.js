@@ -22,7 +22,9 @@ Ext4.define('EHR.panel.KinshipPanel', {
         this.add({
             xtype: 'tabpanel',
             style: 'margin-bottom: 20px',
-            items: [{
+            items: [
+                this.getQWPConfig(),
+                {
                 xtype: 'panel',
                 itemId: 'matrixPanel',
                 title: 'Matrix',
@@ -50,7 +52,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
                         handler: this.refreshMatrix
                     }]
                 }]
-            }, this.getQWPConfig()]
+            }]
         });
 
         this.loadData();
@@ -144,6 +146,10 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
         primaryIds = Ext4.unique(primaryIds);
         primaryIds.sort();
+
+        if (distinct.length == 0 && primaryIds.length == 0) {
+            return 'No kinship values to show';
+        }
 
         var html = '<table border="1" style="border-collapse: collapse;"><tr><td></td>';
         Ext4.Array.forEach(distinct, function(id){
