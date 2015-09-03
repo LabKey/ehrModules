@@ -1,0 +1,1 @@
+ALTER TABLE ehr.project ALTER COLUMN Title VARCHAR(400);
