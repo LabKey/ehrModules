@@ -465,7 +465,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (results){
             Ext4.each(results, function(row){
                 var val = row['project/investigatorId/lastName'] || '';
-                val += ' [' + row['project/displayName'] + ']';
+                val += ' [' + (row['project/displayName'] || row['protocol/displayName']) + ']';
 
                 if (val)
                     values.push(val);
