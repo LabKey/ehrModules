@@ -138,6 +138,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeProtocolTable((AbstractTableInfo) table);
         }
+        else if (matches(table, "ehr", "animal_group_members"))
+        {
+            addIsActiveCol((AbstractTableInfo) table);
+        }
         else if (matches(table, "ehr_lookups", "procedures"))
         {
             customizeProcedures((AbstractTableInfo) table);
@@ -505,6 +509,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             customizeBloodTable(ti);
         }
         else if (matches(ti, "study", "assignment"))
+        {
+            addIsActiveCol(ti);
+        }
+        else if (matches(ti, "study", "animalAccounts"))
         {
             addIsActiveCol(ti);
         }
