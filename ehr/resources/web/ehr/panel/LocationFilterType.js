@@ -7,6 +7,12 @@ Ext4.define('EHR.panel.LocationFilterType', {
     extend: 'LDK.panel.AbstractFilterType',
     alias: 'widget.ehr-locationfiltertype',
 
+    searchOptions: {
+        area: true,
+        room: true,
+        cage: true
+    },
+
     initComponent: function(){
         this.items = this.getItems();
 
@@ -19,13 +25,50 @@ Ext4.define('EHR.panel.LocationFilterType', {
     },
 
     getItems: function(){
-        var toAdd = [];
+        var toAdd = [], searchItems = [];
         var ctx = this.filterContext;
 
         toAdd.push({
             width: 200,
             html: 'Search By Location:<br><i>(Note: when you select an area, the corresponding rooms will be selected in the room field.)</i>'
         });
+
+        if(this.searchOptions.area) {
+            searchItems.push({
+                xtype: 'ehr-areafield',
+                itemId: 'areaField',
+                fieldLabel: 'Area(s)',
+                pairedWithRoomField: true,
+                getRoomField: function(){
+                    return this.up('panel').down('#roomField');
+                },
+                value: ctx.area ? ctx.area.split(',') :  null
+            })
+        }
+
+        if(this.searchOptions.room) {
+            searchItems.push({
+                xtype: 'ehr-roomfield',
+                itemId: 'roomField',
+                fieldLabel: 'Room',
+                value: ctx.room ? ctx.room.split(',') :  null,
+                listeners: {
+                    change: function(field){
+                        var areaField = field.up('panel').down('#areaField');
+                        areaField.reset();
+                    }
+                }
+            })
+        }
+
+        if(this.searchOptions.cage) {
+            searchItems.push({
+                xtype: 'ehr-cagefield',
+                itemId: 'cageField',
+                fieldLabel: 'Cage',
+                value: ctx.cage
+            })
+        }
 
         toAdd.push({
             xtype: 'panel',
@@ -40,43 +83,21 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 handler: this.tabbedReportPanel.onSubmit,
                 scope: this.tabbedReportPanel
             }],
-            items: [{
-                xtype: 'ehr-areafield',
-                itemId: 'areaField',
-                fieldLabel: 'Area(s)',
-                pairedWithRoomField: true,
-                getRoomField: function(){
-                    return this.up('panel').down('#roomField');
-                },
-                value: ctx.area ? ctx.area.split(',') :  null
-            },{
-                xtype: 'ehr-roomfield',
-                itemId: 'roomField',
-                fieldLabel: 'Room',
-                value: ctx.room ? ctx.room.split(',') :  null,
-                listeners: {
-                    change: function(field){
-                        var areaField = field.up('panel').down('#areaField');
-                        areaField.reset();
-                    }
-                }
-            },{
-                xtype: 'ehr-cagefield',
-                itemId: 'cageField',
-                fieldLabel: 'Cage',
-                value: ctx.cage
-            }]
+            items: searchItems
         });
 
         return toAdd;
     },
 
     getFilters: function(){
-        var obj = {
-            area: this.down('#areaField').getValue(),
-            room: this.down('#roomField').getValue(),
-            cage: this.down('#cageField').getValue()
-        };
+        var obj = {};
+
+        if(this.down('#areaField'))
+            obj.area = this.down('#areaField').getValue();
+        if(this.down('#roomField'))
+            obj.room = this.down('#roomField').getValue();
+        if(this.down('#cageField'))
+            obj.cage = this.down('#cageField').getValue();
 
         for (var key in obj){
             if (Ext4.isArray(obj[key]))
@@ -91,6 +112,7 @@ Ext4.define('EHR.panel.LocationFilterType', {
             removable: [],
             nonRemovable: []
         };
+        var area, room, cage;
 
         var areaFieldName = tab.report.areaFieldName;
         var roomFieldName = tab.report.roomFieldName;
@@ -102,16 +124,24 @@ Ext4.define('EHR.panel.LocationFilterType', {
         }
 
         var roomField = this.down('#roomField');
-        var room = this.down('#roomField').getValue();
-        if(Ext4.isArray(room)){
-            room = room.join(';');
+        if(roomField) {
+            room = roomField.getValue();
+            if (Ext4.isArray(room)) {
+                room = room.join(';');
+            }
         }
 
-        var cage = this.down('#cageField').getValue();
+        var cageField = this.down('#cageField');
+        if(cageField) {
+            cage = cageField.getValue();
+        }
+
         var areaField = this.down('#areaField');
-        var area = areaField.getValue();
-        if(Ext4.isArray(area)){
-            area = area.join(';');
+        if(areaField) {
+            area = areaField.getValue();
+            if (Ext4.isArray(area)) {
+                area = area.join(';');
+            }
         }
 
         //rooms always relate to a specific area.  if we're filtering on room, omit the area
@@ -153,26 +183,35 @@ Ext4.define('EHR.panel.LocationFilterType', {
 
     getTitle: function(){
         var title = [];
+        var area, room, cage;
 
-        var roomText = this.down('#roomField').getValue();
-        if (Ext4.isArray(roomText)){
-            if (roomText.length < 8)
-                roomText = 'Room: ' + roomText.join(', ');
-            else
-                roomText = 'Multiple rooms selected';
+        var roomField = this.down('#roomField');
+        if(roomField) {
+            room = roomField.getValue();
+            if (Ext4.isArray(room)) {
+                if (room.length < 8)
+                    room = 'Room: ' + room.join(', ');
+                else
+                    room = 'Multiple rooms selected';
+            }
         }
 
-        var cage = this.down('#cageField').getValue();
+        var cageField = this.down('#cageField');
+        if(cageField)
+            cage = cageField.getValue();
 
-        var area = this.down('#areaField').getValue();
-        area = Ext4.isArray(area) ? area.join(', ') : area;
+        var areaField = this.down('#areaField');
+        if(areaField) {
+            area = areaField.getValue();
+            area = Ext4.isArray(area) ? area.join(', ') : area;
+        }
 
         //see note in getFilterArray() about area/room
-        if (area && !roomText)
+        if (area && !room)
             title.push('Area: ' + area);
 
-        if (roomText)
-            title.push(roomText);
+        if (room)
+            title.push(room);
 
         if (cage)
             title.push('Cage: ' + cage);
