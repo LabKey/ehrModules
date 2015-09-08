@@ -1430,7 +1430,7 @@ public class EHRManager
         //find animals already with this flag on this date
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("flag"), flag);
         filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
-        //note: this is done to accomodate future dates, since enddateCoalesced would convert open-ended records to today
+        //note: this is done to accommodate future dates, since enddateCoalesced would convert open-ended records to today
         filter.addClause(new SimpleFilter.OrClause(
             new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.DATE_GTE, date),
             new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)
