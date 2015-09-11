@@ -311,7 +311,6 @@ ehr/resources/queries/study/Departure.query.xml -text
 ehr/resources/queries/study/Departure/.qview.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration.js -text
 ehr/resources/queries/study/Drug[!!-~]Administration.query.xml -text
-ehr/resources/queries/study/Flag_Remarks.sql -text
 ehr/resources/queries/study/Hematology[!!-~]Results.js -text
 ehr/resources/queries/study/Hematology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Results/.qview.xml -text
