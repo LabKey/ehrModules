@@ -925,21 +925,23 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         ColumnInfo col = ds.getColumn(colName);
         ColumnInfo unitCol = ds.getColumn(unitColName);
-        String name = col.getName() + "WithUnits";
 
-        if (col != null && unitCol != null && ds.getColumn(name) == null)
+        if (col != null && unitCol != null)
         {
-
-            SQLFragment sql = new SQLFragment("CASE " +
-                " WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName() + " IS NULL THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)" +
-                " ELSE " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName()) +
-                " END"
-            );
-            ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
-            newCol.setLabel(label);
-            newCol.setHidden(true);
-            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            ds.addColumn(newCol);
+            String name = col.getName() + "WithUnits";
+            if (ds.getColumn(name) == null)
+            {
+                SQLFragment sql = new SQLFragment("CASE " +
+                        " WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName() + " IS NULL THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)" +
+                        " ELSE " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName()) +
+                        " END"
+                );
+                ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
+                newCol.setLabel(label);
+                newCol.setHidden(true);
+                newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                ds.addColumn(newCol);
+            }
         }
     }
 
