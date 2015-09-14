@@ -70,10 +70,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         initTest.initProject("EHR");
         initTest.createTestSubjects();
         initTest.clickFolder("EHR");
-        initTest.goToFolderManagement();
-        initTest.click(Locator.linkWithText("Folder Type"));
-        initTest.checkCheckbox(Locator.tagWithAttribute("input", "title", "WNPRC_EHR"));
-        initTest.click(Locator.tagWithText("span", "Update Folder"));
+        initTest._containerHelper.enableModule("WNPRC_EHR");
     }
 
     public void importStudy()
@@ -631,7 +628,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     {
         waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
         sleep(200);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
+        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "selectChange");
     }
 
     private void setDoseConcFields()
