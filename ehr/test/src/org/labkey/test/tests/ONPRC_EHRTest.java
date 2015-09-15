@@ -37,6 +37,7 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.components.BodyWebPart;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
@@ -944,7 +945,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitForElement(Locator.tagContainingText("span", "Active Groups"));
         DataRegionTable dr = new DataRegionTable("query", this);
         clickAndWait(dr.link(0, dr.getColumn("Name")));
-        DataRegionTable membersTable = new DataRegionTable(_helper.getAnimalHistoryDataRegionName("Group Members"), this);
+        DataRegionTable membersTable = DataRegionTable.findDataRegionWithin(this, new BodyWebPart(this, "Group Members"));
         Assert.assertEquals(2, membersTable.getDataRowCount());
 
         //more reports
