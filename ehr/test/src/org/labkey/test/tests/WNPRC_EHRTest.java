@@ -529,7 +529,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         // Check protocol search results.
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
@@ -537,7 +537,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElementToDisappear(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, new DataRegionTable(dataRegionName, this).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
@@ -546,20 +546,20 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
         waitForText(PROTOCOL_MEMBER_IDS[0]);
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
         dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", 5, new DataRegionTable(dataRegionName, this).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", 5, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
 
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Clear"));
-        refreshAnimalHistoryReport();
+        waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
         waitForElement(Ext4Helper.Locators.window("Error"));
         assertElementNotPresent(Ext4Helper.Locators.ext4ButtonContainingText("(X)"));
         assertTextPresent("Must enter at least one subject");

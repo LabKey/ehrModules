@@ -37,6 +37,7 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -59,8 +60,8 @@ public class EHRTestHelper
     public String getAnimalHistoryDataRegionName(String title)
     {
         // Specific to the EHR Animal History page.
-        _test.waitForElement(Locator.xpath("//table[@name='webpart' and ./*/*/*/a//span[text()='"+title+"' or starts-with(text(), '"+title+" - ')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 6);
-        return _test.getAttribute(Locator.xpath("//table[@name='webpart' and ./*/*/*/a//span[text()='" + title + "' or starts-with(text(), '" + title + " -')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), "id").substring(11);
+        WebElement dataRegion = _test.waitForElement(Locator.xpath("//table[@name='webpart' and ./*/*/*/a//span[text()='" + title + "' or starts-with(text(), '" + title + " - ')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 6);
+        return dataRegion.getAttribute("id").substring(11);
     }
 
     public String getWeightDataRegionName()
