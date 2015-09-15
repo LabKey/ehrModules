@@ -57,16 +57,11 @@ public class EHRTestHelper
         _test = test;
     }
 
-    public String getAnimalHistoryDataRegionName(String title)
+    public DataRegionTable getAnimalHistoryDataRegion(String title)
     {
         // Specific to the EHR Animal History page.
         WebElement dataRegion = _test.waitForElement(Locator.xpath("//table[@name='webpart' and ./*/*/*/a//span[text()='" + title + "' or starts-with(text(), '" + title + " - ')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 6);
-        return dataRegion.getAttribute("id").substring(11);
-    }
-
-    public String getWeightDataRegionName()
-    {
-        return _test.getAttribute(Locator.xpath("//div[contains(@class, 'ldk-wp') and ./*/*/*//th[contains(text(), 'Weights - test')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), "id").substring(11);
+        return new DataRegionTable(dataRegion.getAttribute("id").substring(11), _test, true, false);
     }
 
     public void selectDataEntryRecord(String query, String Id, boolean keepExisting)
@@ -147,14 +142,8 @@ public class EHRTestHelper
 
     public void waitForCmp(final String query)
     {
-        _test.waitFor(new BaseWebDriverTest.Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return null != _test._ext4Helper.queryOne(query, Ext4CmpRef.class);
-            }
-        }, "Component did not appear for query: " + query, WAIT_FOR_JAVASCRIPT);
+        _test.waitFor(() -> null != _test._ext4Helper.queryOne(query, Ext4CmpRef.class),
+                "Component did not appear for query: " + query, WAIT_FOR_JAVASCRIPT);
     }
 
     public Boolean waitForElementWithValue(final BaseWebDriverTest test, final String name, final String value, final int msTimeout)
@@ -197,7 +186,7 @@ public class EHRTestHelper
         _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
         _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
         _test.waitForElement(Locator.tagContainingText("span", "Colony Management:"));  //proxy for list loading
-        _test.waitAndClick(_test.WAIT_FOR_PAGE, Locator.tagContainingText("a", name).withClass("labkey-text-link"), _test.WAIT_FOR_PAGE);
+        _test.waitAndClick(WAIT_FOR_PAGE, Locator.tagContainingText("a", name).withClass("labkey-text-link"), WAIT_FOR_PAGE);
 
         _test.waitForElement(Ext4Helper.Locators.ext4Button(waitButtonName), WAIT_FOR_PAGE * 2);
         Ext4CmpRef saveBtn = _test._ext4Helper.queryOne("button[text='" + waitButtonName + "']", Ext4CmpRef.class);

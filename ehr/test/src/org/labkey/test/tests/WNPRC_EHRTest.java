@@ -490,9 +490,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
-        waitForElement(Locator.tagContainingText("a","Rhesus"));
-        waitForElement(Locator.tagContainingText("a","Cynomolgus"));
-        waitForElement(Locator.tagContainingText("a","Marmoset"));
+        waitForElement(Locator.tagContainingText("a", "Rhesus"));
+        waitForElement(Locator.tagContainingText("a", "Cynomolgus"));
+        waitForElement(Locator.tagContainingText("a", "Marmoset"));
 
         log("Verify location based history");
         waitAndClick(Ext4Helper.Locators.ext4Radio("Current Location"));
@@ -528,32 +528,27 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         // Check protocol search results.
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, _helper.getAnimalHistoryDataRegion("Demographics").getDataRowCount());
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
         waitAndClick(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
         waitForElementToDisappear(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, _helper.getAnimalHistoryDataRegion("Demographics").getDataRowCount());
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
         waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        waitForText(PROTOCOL_MEMBER_IDS[0]);
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, _helper.getAnimalHistoryDataRegion("Demographics").getDataRowCount());
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
-        dataRegionName = _helper.getAnimalHistoryDataRegionName("Demographics");
-        assertEquals("Did not find the expected number of Animals", 5, new DataRegionTable(dataRegionName, this, true, false).getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", 5, _helper.getAnimalHistoryDataRegion("Demographics").getDataRowCount());
 
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
