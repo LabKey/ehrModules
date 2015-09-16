@@ -588,14 +588,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.waitForRowCount(1);
         final Ext4FieldRef field = grid.getActiveEditor(1, "Id");
         field.clickTrigger();
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return field.getValue() != null && field.getValue().toString().equals(lastId.toString());
-            }
-        }, "Expected ID not set", WAIT_FOR_JAVASCRIPT);
+        waitFor(() -> field.getValue() != null && field.getValue().toString().equals(lastId.toString()),
+                "Expected ID not set", WAIT_FOR_JAVASCRIPT);
         grid.completeEdit();
 
         _helper.discardForm();
@@ -688,14 +682,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _ext4Helper.queryOne("window[title=Treatment Orders] fieldcontainer[fieldLabel='End Date']", Ext4FieldRef.class).waitForEnabled();
 
         final Ext4FieldRef qcField = _ext4Helper.queryOne("window[title=Treatment Orders] field[fieldLabel='Status']", Ext4FieldRef.class);
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return qcField.getValue() != null;
-            }
-        }, "QCState field was never set", WAIT_FOR_JAVASCRIPT);
+        waitFor(() -> qcField.getValue() != null, "QCState field was never set", WAIT_FOR_JAVASCRIPT);
 
         sleep(500);
 

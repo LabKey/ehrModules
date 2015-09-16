@@ -334,14 +334,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         sleep(250);
 
         //this store can take a long time to load, which is problematic for the combo helper
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return (Boolean) executeScript("return !Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").isLoading && Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").getCount() > 0");
-            }
-        }, "SNOMED Store did not load", WAIT_FOR_PAGE * 2);
+        waitFor(() -> (Boolean) executeScript("return !Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").isLoading && Ext.StoreMgr.get(\"ehr_lookups||snomed||code||meaning||Drug Administration||code\").getCount() > 0"),
+                "SNOMED Store did not load", WAIT_FOR_PAGE * 2);
 
         //not an ideal solution, but the custom template isnt being selected with the standard helper
         String selection = "amoxicillin (c-54620)";
@@ -607,14 +601,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         final Locator fieldLocator = Locator.tag("input").withAttribute("name", "Id").withClass("x-form-field").notHidden();
 
         waitForElement(fieldLocator, WAIT_FOR_JAVASCRIPT);
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator.toBy()).getAttribute("value"));
-            }
-        }, "Id field did not populate", WAIT_FOR_PAGE);
+        waitFor(() -> PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator.toBy()).getAttribute("value")),
+                "Id field did not populate", WAIT_FOR_PAGE);
 
         sleep(200);
     }

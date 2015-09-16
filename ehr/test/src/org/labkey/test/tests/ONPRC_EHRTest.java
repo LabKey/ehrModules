@@ -1255,14 +1255,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
         waitForElementToDisappear(Ext4Helper.Locators.window("Apply Template To Form"));
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return "BAR prior to sedation.".equals(_helper.getExt4FieldForFormSection("SOAP", "Subjective").getValue());
-            }
-        }, "Subjective field not set", WAIT_FOR_JAVASCRIPT);
+        waitFor(() -> "BAR prior to sedation.".equals(_helper.getExt4FieldForFormSection("SOAP", "Subjective").getValue()),
+                "Subjective field not set", WAIT_FOR_JAVASCRIPT);
 
         sleep(100);
 
@@ -1687,14 +1681,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Ext4FieldRef.getForLabel(this, "Year").setValue(2013);
         waitAndClick(Ext4Helper.Locators.window("Create Case Number").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         final String caseNoBase = "2013A00";
-        waitFor(new Checker()
-        {
-            @Override
-            public boolean check()
-            {
-                return Ext4FieldRef.getForLabel(ONPRC_EHRTest.this, "Case Number").getValue().toString().startsWith(caseNoBase);
-            }
-        }, "Case Number field was not set", WAIT_FOR_JAVASCRIPT);
+        waitFor(() -> Ext4FieldRef.getForLabel(ONPRC_EHRTest.this, "Case Number").getValue().toString().startsWith(caseNoBase),
+                "Case Number field was not set", WAIT_FOR_JAVASCRIPT);
         Assert.assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNoBase));
         String caseNo = Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString();
 
