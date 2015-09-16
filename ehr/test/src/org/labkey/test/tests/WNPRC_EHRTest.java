@@ -623,7 +623,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     {
         waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
         sleep(200);
-        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "selectChange");
+        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "selectChange", longWait());
     }
 
     private void setDoseConcFields()
