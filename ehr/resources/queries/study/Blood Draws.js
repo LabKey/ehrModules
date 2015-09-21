@@ -8,7 +8,7 @@ require("ehr/triggers").initScript(this);
 
 EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.AFTER_BECOME_PUBLIC, 'study', 'Blood Draws', function(errors, helper, row, oldRow){
     if (row && row.additionalServices){
-        helper.getJavaHelper().createRequestsForBloodAdditionalServices(row.Id, row.date, row.project, row.performedby, row.additionalServices);
+        helper.getJavaHelper().createRequestsForBloodAdditionalServices(row.Id, row.date, row.project, row.account, row.performedby, row.additionalServices, (row.requestid||null));
     }
 });
 
@@ -120,6 +120,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             if (row.objectid) {
                 var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
                 if (msg != null) {
+                    //TODO: change all future bloods draws to review required, if submitted for medical purpose.
                     EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
                     EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, errorQC);
                 }

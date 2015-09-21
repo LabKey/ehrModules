@@ -561,10 +561,15 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     //normalize these values to JS date objects
     //NOTE: it is important to only assign a value to these if they started with a value
-    if (row.date)
+    if (row.date) {
         row.date = EHR.Server.Utils.normalizeDate(row.date);
-    if (row.enddate)
+    }
+    if (row.begindate){
+        row.begindate= EHR.Server.Utils.normalizeDate(row.begindate);
+    }
+    if (row.enddate) {
         row.enddate = EHR.Server.Utils.normalizeDate(row.enddate);
+    }
 
     if (helper.isETL()){
         helper.logDebugMsg('Row is from ETL');
@@ -645,8 +650,13 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     //enddate: verify either blank or not prior to date
     if (!helper.isETL() && row.enddate && row.date){
+
         var start = row.date.getTime();
         var end = row.enddate.getTime();
+
+        if (row.begindate){
+           start = row.begindate.getTime();
+        }
 
         if (start > end){
             EHR.Server.Utils.addError(scriptErrors, 'enddate', 'End date must be after start date', 'WARN');
@@ -815,7 +825,10 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
                     console.error('More than 1 description handler has been registered for the table: ' + helper.getSchemaName() + '.' + helper.getQueryName());
                 }
 
-                handlers[0].call(this, row, helper)
+                var description = handlers[0].call(this, row, helper)
+                if (description && description.length > 0) {
+                    row.description = description.join(',\n');
+                }
             }
         }
 

@@ -84,15 +84,25 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     @Override
     protected String getCategoryText(Results rs) throws SQLException
     {
-        String category = rs.getString("category");
-        return category == null ?  "Medication Ending" : category + " Medication Ending";
+        FieldKey fieldKey = FieldKey.fromParts("category");
+        if (rs.hasColumn(fieldKey))
+        {
+            String category = rs.getString(fieldKey);
+            return category == null ? "Medication Ending" : category + " Medication Ending";
+        }
+        return "Medication Ending";
     }
 
     @Override
     protected String getPrimaryGroup(Results rs) throws SQLException
     {
-        String category = rs.getString("category");
-        return category == null ?  "Clinical" : "Surgical".equals(category) ? "Surgery" : category;
+        FieldKey fieldKey = FieldKey.fromParts("category");
+        if (rs.hasColumn(fieldKey))
+        {
+            String category = rs.getString(fieldKey);
+            return category == null ?  "Clinical" : "Surgical".equals(category) ? "Surgery" : category;
+        }
+        return "Clinical";
     }
 
     @Override

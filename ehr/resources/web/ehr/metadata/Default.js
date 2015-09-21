@@ -751,11 +751,17 @@ EHR.Metadata.registerMetadata('Default', {
 //                    }
                 }
             }
+            ,objectid: { setInitialValue: function (v, rec){
+                return v || LABKEY.Utils.generateUUID();
+            },
+                parentConfig:false,
+                hidden :true
+            }
             ,enddate: {
                 //hidden: true
                 xtype: 'xdatetime',
                 extFormat: 'Y-m-d H:i',
-                shownInGrid: false
+                shownInGrid: true
             }
             ,remark: {
                 shownInGrid: false
@@ -1444,7 +1450,7 @@ EHR.Metadata.registerMetadata('Default', {
 
                             LABKEY.Query.executeSql({
                                 schemaName: 'study',
-                                sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.Necropsies WHERE caseno LIKE '" + year + prefix + "%'",
+                                sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.biopsies WHERE caseno LIKE '" + year + prefix + "%'",
                                 scope: this,
                                 success: function(data){
                                     var caseno;

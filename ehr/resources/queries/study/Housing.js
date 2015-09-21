@@ -78,6 +78,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             var housingRecords = map[row.Id];
             for (var i=0;i<housingRecords.length;i++){
                 if (row.objectid == housingRecords[i].objectid){
+                    console.log ('same housing record');
                     continue;
                 }
 

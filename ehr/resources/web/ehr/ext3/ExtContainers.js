@@ -450,7 +450,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
         this.processData(data);
     },
     processData: function(data){
-        //remove header
+        //remove header from tsv file
         var header = data.shift();
         var skippedRows = [];
         var runsStore = Ext.StoreMgr.get("study||Clinpath Runs||||");
@@ -676,8 +676,6 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         this.processData(data);
     },
     processData: function(data){
-        //remove header
-        var header = data.shift();
         var skippedRows = [];
         var runsStore = Ext.StoreMgr.get("study||Clinpath Runs||||");
         var unitStore = Ext.StoreMgr.get("ehr_lookups||hematology_tests||testid||testid");
@@ -781,7 +779,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 }
                 //note: at the moment WBC is the only test with 6 chars, so this test is possibly redundant
                 else if (value.match(/^0(\d){4,}$/) && test=='WBC') {
-                    tests[test] = value.substr(1,3) / 10;
+                    tests[test] = value.substr(1,4) / 100;
                 }
                 else if (value.match(/^0\d{4}$/)){
                     if (test=='RBC') {

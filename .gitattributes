@@ -244,6 +244,7 @@ ehr/resources/queries/ehr_lookups/alopecia_score.query.xml -text
 ehr/resources/queries/ehr_lookups/animal_condition.query.xml -text
 ehr/resources/queries/ehr_lookups/animal_condition.sql -text
 ehr/resources/queries/ehr_lookups/areas/.qview.xml -text
+ehr/resources/queries/ehr_lookups/blood_draw_services.js -text
 ehr/resources/queries/ehr_lookups/cage.js -text
 ehr/resources/queries/ehr_lookups/cage.query.xml -text
 ehr/resources/queries/ehr_lookups/cage_positions/.qview.xml -text

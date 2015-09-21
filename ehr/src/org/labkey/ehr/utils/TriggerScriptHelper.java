@@ -74,6 +74,7 @@ import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
+import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -561,6 +562,24 @@ public class TriggerScriptHelper
         return ret;
     }
 
+    public boolean getAlertOnComplete (String servicename){
+
+        boolean alert = false;
+        servicename = StringUtils.trimToNull(servicename);
+
+        if (servicename == null)
+            return false;
+
+        Map<String, Map<String, Object>> serviceMap = getLabworkServices();
+
+        if (serviceMap.containsKey(servicename)){
+            alert = (Boolean)serviceMap.get(servicename).get("alertOnComplete");
+        }
+
+        return alert;
+
+    }
+
     public Map<String, Object> getWeightRangeForSpecies(String species)
     {
         String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||weightRangeMap";
@@ -648,7 +667,7 @@ public class TriggerScriptHelper
             throw errors;
     }
 
-    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, String cond) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         if (id == null || date == null || room == null)
             return;
@@ -685,6 +704,7 @@ public class TriggerScriptHelper
         row.put("date", date);
         row.put("room", room);
         row.put("objectid", new GUID().toString());
+        row.put("cond", cond);
 
         if (enddate != null)
             row.put("enddate", enddate);
@@ -1163,13 +1183,13 @@ public class TriggerScriptHelper
             long msDiff = getDate().getTime() - date2.getTime();
             long daysDiff = Math.round(msDiff / ((double) MILLIS_PER_DAY));
 
-             return blood2.getQuantity() > 0 &&
-                     getDate().compareTo(date2) >= 0 && daysDiff >= 0 && //must be before or same day as this draw
-                     daysDiff < intervalInDays;  // and within the selected interval.  note: draws drop doff on the nth day, so use LT, not LTE
+            return blood2.getQuantity() > 0 &&
+                    getDate().compareTo(date2) >= 0 && daysDiff >= 0 && //must be before or same day as this draw
+                    daysDiff < intervalInDays;  // and within the selected interval.  note: draws drop doff on the nth day, so use LT, not LTE
         }
     }
 
-    private Double extractWeightForId(List<Map<String, Object>> weightsInTransaction)
+    private Double extractWeightForId(String id, List<Map<String, Object>> weightsInTransaction)
     {
         if (weightsInTransaction == null)
             return null;
@@ -1225,7 +1245,7 @@ public class TriggerScriptHelper
         if (species == null)
             return "Unknown species, unable to calculate allowable blood volume";
 
-        Double weight = extractWeightForId(weightsInTransaction);
+        Double weight = extractWeightForId(id, weightsInTransaction);
         if (weight == null)
             weight = ar.getMostRecentWeight();
 
@@ -1275,7 +1295,7 @@ public class TriggerScriptHelper
             {
                 _log.info("processing cancelled/denied request email for " + requestIds.size() + " records");
 
-                TableInfo requestTable = getTableInfo("ehr", "requests");
+                final TableInfo requestTable = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
                 TableSelector ts = new TableSelector(requestTable, filter, null);
 
@@ -1305,8 +1325,8 @@ public class TriggerScriptHelper
                             StringBuilder html = new StringBuilder();
 
                             html.append("One or more records from the request titled " + title + " have been cancelled or denied.  ");
-                            html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/dataEntryFormDetails.view?requestId=" + requestid + "&formType=" + formtype + "'>");
-                            html.append("Click here to view them</a>.  <p>");
+                            appendLinkToRequest(requestid, formtype, html, requestTable);
+
 
                             sendMessage(subject, html.toString(), recipients);
                         }
@@ -1352,7 +1372,7 @@ public class TriggerScriptHelper
             {
                 _log.info("processing completed request email for " + requestIds.size() + " records");
 
-                TableInfo requestTable = getTableInfo("ehr", "requests");
+                final TableInfo requestTable = getTableInfo("ehr", "requests");
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
                 TableSelector ts = new TableSelector(requestTable, filter, null);
 
@@ -1382,8 +1402,7 @@ public class TriggerScriptHelper
                             StringBuilder html = new StringBuilder();
 
                             html.append("One or more records from the request titled " + title + " have been marked completed.  ");
-                            html.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + getContainer().getPath() + "/dataEntryFormDetails.view?requestId=" + requestid + "&formType=" + formtype + "'>");
-                            html.append("Click here to view them</a>.  <p>");
+                            appendLinkToRequest(requestid, formtype, html, requestTable);
 
                             sendMessage(subject, html.toString(), recipients);
                         }
@@ -1421,6 +1440,26 @@ public class TriggerScriptHelper
             }
         });
     }
+
+    private void appendLinkToRequest(String requestid, String formtype, StringBuilder html, TableInfo requestTable)
+    {
+        StringExpression urlExpression = requestTable.getDetailsURL(null, getContainer());
+        Map<FieldKey, Object> props = new HashMap<>();
+        props.put(FieldKey.fromParts("formtype"), formtype);
+        props.put(FieldKey.fromParts("requestid"), requestid);
+        props.put(FieldKey.fromParts("container"), getContainer());
+        String url = urlExpression.eval(props);
+        if (url != null)
+        {
+            html.append("<a href='");
+            html.append(AppProps.getInstance().getBaseServerUrl());
+            html.append(url);
+            html.append("'>");
+            html.append("Click here to view them</a>.  <p>");
+        }
+    }
+
+
 
     private Set<UserPrincipal> getRecipients(Integer... userIds)
     {
@@ -1987,7 +2026,7 @@ public class TriggerScriptHelper
         return StringUtils.join(errors, "<>");
     }
 
-    public void createRequestsForBloodAdditionalServices(String id, Date date, Integer project, String performedby, String services) throws Exception
+    public void createRequestsForBloodAdditionalServices(String id, Date date, Integer project, String account, String performedby, String services, String requestid) throws Exception
     {
         try
         {
@@ -2005,6 +2044,13 @@ public class TriggerScriptHelper
                 return;
             }
 
+            String[] notifyList = new String [3];
+
+            if (requestid != null)
+            {
+                notifyList = getNotifyList(requestid);
+            }
+
             for (Map<String, Object> rowMap : toAutomaticallyCreate)
             {
                 rowMap = new CaseInsensitiveHashMap<>(rowMap);
@@ -2017,7 +2063,12 @@ public class TriggerScriptHelper
                 row.put("priority", "Routine");
                 row.put("formtype", rowMap.get("formtype"));
                 row.put("title", "Labwork Request From Blood Draw: " + rowMap.get("labwork_service"));
-                row.put("notify1", getUser().getUserId());
+                row.put("notify1", (notifyList[0]==null) ? getUser().getUserId():notifyList[0]); //waiting to hear from users if they want to get the usersid or another notifier
+                row.put("notify2",notifyList[1]);
+                row.put("notify3",notifyList[2]);
+
+                boolean alertRequest = getAlertOnComplete((String)rowMap.get("service"));
+                row.put("sendemail",alertRequest);
 
                 if (row.get("formtype") == null)
                 {
@@ -2051,6 +2102,7 @@ public class TriggerScriptHelper
                 clinpathRow.put("Id", id);
                 clinpathRow.put("date", dateRequested);
                 clinpathRow.put("project", project);
+                clinpathRow.put("account", account);
                 clinpathRow.put("requestId", requestId);
                 clinpathRow.put("tissue", getTissueForService((String)rowMap.get("service")));
                 clinpathRow.put("collectedBy", performedby);
@@ -2069,6 +2121,21 @@ public class TriggerScriptHelper
             _log.error(e.getMessage(), e);
             throw e;
         }
+    }
+
+    private String [] getNotifyList(String requestId){
+        String [] notifyList  = new String [3];
+        TableInfo ti = getTableInfo("ehr", "requests");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("notify1", "notify2", "notify3"),filter, null);
+        Map <String,Object> requestObject = ts.getMap();
+
+        notifyList[0]=ConvertHelper.convert(requestObject.get("notify1"), String.class);
+        notifyList[1]=ConvertHelper.convert(requestObject.get("notify2"), String.class);
+        notifyList[2]=ConvertHelper.convert(requestObject.get("notify3"), String.class);
+
+        return notifyList;
+
     }
 
     private String getTissueForService(String service)
@@ -2263,7 +2330,7 @@ public class TriggerScriptHelper
             if (date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.warn("Attempting to terminate housing records with a rounded date for animal:  " + row.get("Id") + ".  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
@@ -2461,5 +2528,12 @@ public class TriggerScriptHelper
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("species"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
 
         return ts.getObject(String.class);
+    }
+
+    public void clearLabworkServicesCache(){
+
+        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices";
+        DataEntryManager.get().getCache().remove(cacheKey);
+
     }
 }

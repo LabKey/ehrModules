@@ -9,7 +9,7 @@ SELECT
   a.id,
   a.species,
 
-  COALESCE(a.Total, 0) AS TotalAssignments,
+  COALESCE(a.Total, 0) AS TotalAssignments
 
 FROM ehr.protocol p
 

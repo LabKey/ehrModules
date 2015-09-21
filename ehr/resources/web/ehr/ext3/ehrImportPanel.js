@@ -440,7 +440,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
                     var extraContext = {
                         targetQC : o.targetQC,
                         errorThreshold: o.errorThreshold,
-                        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+                        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
                         importPathway: 'ehr-ext3DataEntry'
                     };
 
@@ -820,7 +820,7 @@ EHR.ext.ImportPanel.Buttons = {
         requiredPermission: 'admin',
         targetQC: 'Completed',
         errorThreshold: 'INFO',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: function(o){
@@ -842,7 +842,7 @@ EHR.ext.ImportPanel.Buttons = {
         requiredQC: 'Completed',
         targetQC: 'Completed',
         errorThreshold: 'INFO',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: function(o){
@@ -864,7 +864,7 @@ EHR.ext.ImportPanel.Buttons = {
         requiredQC: 'Completed',
         targetQC: 'Completed',
         errorThreshold: 'INFO',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: function(o){
@@ -887,7 +887,7 @@ EHR.ext.ImportPanel.Buttons = {
         targetQC: 'Completed',
         requiredPermission: 'admin',
         errorThreshold: 'ERROR',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'foreceSubmitBtn',
         handler: function(o){
@@ -1062,7 +1062,28 @@ EHR.ext.ImportPanel.Buttons = {
                                                     sort: 'meaning',
                                                     autoLoad: true
                                                 })
-                                            }]
+                                            },{
+                                                    emptyText:''
+                                                    ,fieldLabel: 'Dam'
+                                                    ,ref: '../damField'
+                                                    ,xtype: 'combo'
+                                                    ,displayField:'Id'
+                                                    ,valueField: 'Id'
+                                                    ,typeAhead: true
+                                                    ,lazyInit: false
+                                                    ,mode: 'local'
+                                                    ,triggerAction: 'all'
+                                                    ,editable: true
+                                                    ,store: new LABKEY.ext.Store({
+                                                    schemaName: 'study',
+                                                    sql: "SELECT * FROM study.demographics WHERE gender.code = 'f'",
+                                                    //queryName: 'demographics',
+                                                    sort: 'id',
+                                                    autoLoad: true
+                                                    //maxRows: 100,
+
+                                                    })
+                                                }]
                                         }],
                                         buttons: [{
                                             text:'Submit',
@@ -1072,6 +1093,7 @@ EHR.ext.ImportPanel.Buttons = {
                                             handler: function(s){
                                                 obj.gender = s.ownerCt.ownerCt.genderField.getValue();
                                                 obj.species = s.ownerCt.ownerCt.speciesField.getValue();
+                                                obj.dam = s.ownerCt.ownerCt.damField.getValue();
 
                                                 doInsert();
 
@@ -1080,8 +1102,9 @@ EHR.ext.ImportPanel.Buttons = {
                                         },{
                                             text: 'Close',
                                             scope: this,
-                                            handler: function(){
+                                            handler: function(s){
                                                 s.ownerCt.ownerCt.hide();
+                                                return;
                                             }
                                         }]
                                     });
@@ -1113,7 +1136,7 @@ EHR.ext.ImportPanel.Buttons = {
         name: 'basicsubmit',
         requiredQC: 'Completed',
         errorThreshold: 'INFO',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: function(o){
@@ -1153,7 +1176,7 @@ EHR.ext.ImportPanel.Buttons = {
         requiredQC: 'Review Required',
         targetQC: 'Review Required',
         errorThreshold: 'WARN',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'reviewBtn',
         disableOn: 'ERROR',
@@ -1233,7 +1256,7 @@ EHR.ext.ImportPanel.Buttons = {
         requiredQC: 'Scheduled',
         targetQC: 'Scheduled',
         errorThreshold: 'WARN',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'scheduledBtn',
         disableOn: 'ERROR',
@@ -1266,7 +1289,7 @@ EHR.ext.ImportPanel.Buttons = {
         ref: 'discardBtn',
         targetQC: 'Delete Requested',
         requiredQC: 'Delete Requested',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         handler: this.requestDelete,
         //handler: this.onSubmit,
         scope: this
@@ -1281,7 +1304,7 @@ EHR.ext.ImportPanel.Buttons = {
         ref: 'deleteBtn',
         targetQC: 'Delete Requested',
         requiredQC: 'Delete Requested',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         handler: this.requestDelete,
         //handler: this.onSubmit,
         scope: this
@@ -1296,7 +1319,7 @@ EHR.ext.ImportPanel.Buttons = {
         //targetQC: 'In Progress',
         requiredQC: 'In Progress',
         errorThreshold: 'WARN',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'closeBtn',
         handler: this.onSubmit,
@@ -1337,7 +1360,7 @@ EHR.ext.ImportPanel.Buttons = {
         targetQC: 'Request: Pending',
         requiredQC: 'Request: Pending',
         errorThreshold: 'WARN',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "requestServices.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "requestServices.view"),
         disabled: true,
         ref: 'requestBtn',
         handler: this.onSubmit,
@@ -1354,7 +1377,7 @@ EHR.ext.ImportPanel.Buttons = {
         targetQC: 'Request: Approved',
         requiredQC: 'Request: Approved',
         errorThreshold: 'WARN',
-        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL : LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'approveBtn',
         handler: this.onSubmit,

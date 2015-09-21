@@ -698,7 +698,37 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }
         }
 
+        if (this.queryName == 'Housing'){
+            var map = {};
+            var allRecords = this.getRange();
+            for (var idx = 0; idx < allRecords.length; ++idx){
+                var record = allRecords[idx];
 
+                var date = record.get('date');
+                var id = record.get('Id');
+                var room = record.get('room');
+                if (!id || !date)
+                    continue;
+
+                if (!map[id])
+                    map[id] = [];
+
+                map[id].push({
+                    Id: id,
+                    objectid: record.get('objectid'),
+                    date: date,
+                    enddate: record.fields.get('enddate') ? record.get('enddate') : null,
+                    qcstate: record.get('QCState'),
+                    room: record.get('room'),
+                    cage: record.get('cage'),
+                    divider: record.fields.get('divider') ? record.get('divider') : null
+                });
+            }
+
+            if (!LABKEY.Utils.isEmptyObj(map)){
+                ret.housingInTransaction = map;
+            }
+        }
 
         return ret;
     },

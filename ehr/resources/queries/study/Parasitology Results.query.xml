@@ -50,7 +50,6 @@
                     <column columnName="qualresult">
                         <displayWidth>120</displayWidth>
                         <columnTitle>Qualitative Result</columnTitle>
-                        <isHidden>true</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>qualitative_results</fkTable>

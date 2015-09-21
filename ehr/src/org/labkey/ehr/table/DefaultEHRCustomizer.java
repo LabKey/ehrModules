@@ -500,8 +500,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "housing"))
         {
-            customizeHousing(ti);
-
             addIsActiveColWithTime(ti);
         }
         else if (matches(ti, "study", "blood") || matches(ti, "study", "Blood Draws"))
@@ -695,7 +693,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo departure = getRealTableForDataset(ti, "Departure");
                 if (departure != null)
                 {
-                    SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".death, (SELECT max(d.date) as expr FROM studydataset." + departure.getName() + " d WHERE d.participantid = " + ExprColumn.STR_TABLE_ALIAS + ".participantid))");
+                    SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".death, (SELECT max(d.date) as expr FROM studydataset." + departure.getName() + " d WHERE d.participantid = " + ExprColumn.STR_TABLE_ALIAS + ".participantid AND "+ ExprColumn.STR_TABLE_ALIAS + ".calculated_status != 'Alive' ))");
                     ExprColumn newCol = new ExprColumn(ti, lastDayAtCenter, sql, JdbcType.TIMESTAMP, ti.getColumn("death"), ti.getColumn("Id"));
                     newCol.setLabel("Last Day At Center");
                     newCol.setDescription("This column calculates the last known date this animal was present at the center.  It preferentially uses death, but will use the most recent departure date if death is not known.  It is used when calculating age.");
@@ -1254,23 +1252,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setDescription("This column shows whether the draw is being counted against the available blood volume.  Future request that have not yet been approved will not count against the allowable volume.");
             col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             ti.addColumn(col);
-        }
-    }
-
-    private void customizeHousing(AbstractTableInfo ti)
-    {
-        if (ti.getColumn("previousLocation") == null)
-        {
-            UserSchema us = getEHRStudyUserSchema(ti);
-            if (us != null)
-            {
-                ColumnInfo lsidCol = ti.getColumn("lsid");
-                ColumnInfo col = ti.addColumn(new WrappedColumn(lsidCol, "previousLocation"));
-                col.setLabel("Previous Location");
-                col.setUserEditable(false);
-                col.setIsUnselectable(true);
-                col.setFk(new QueryForeignKey(us, null, "housingPreviousLocation", "lsid", "location"));
-            }
         }
     }
 

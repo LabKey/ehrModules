@@ -39,7 +39,7 @@ EHR.Server.Utils = new function(){
 
             LABKEY.Query.selectRows({
                 schemaName: 'core',
-                queryName: 'Users',
+                queryName: 'UsersAndGroups',
                 columns: 'UserId,DisplayName',
                 filterArray: [
                     LABKEY.Filter.create('UserId', id, LABKEY.Filter.Types.EQUAL)

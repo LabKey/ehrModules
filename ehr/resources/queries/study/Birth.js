@@ -52,7 +52,7 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 
         //if room provided, we insert into housing.  if this animal already has an active housing record, skip
         if (row.room && row.Id && row.date){
-            helper.getJavaHelper().createHousingRecord(row.Id, row.date, (isLiving ? null : row.date), row.room, (row.cage || null));
+            helper.getJavaHelper().createHousingRecord(row.Id, row.date, (isLiving ? null : row.date), row.room, (row.cage || null), (row.cond || null));
         }
 
         if (!helper.isGeneratedByServer()){

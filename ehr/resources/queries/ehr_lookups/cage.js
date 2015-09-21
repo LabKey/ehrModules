@@ -4,7 +4,11 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-require("ehr/triggers").initScript(this);
+var console = require("console");
+var triggers = require("ehr/triggers");
+triggers.initScript(this);
+var EHR = triggers.EHR;
+var LABKEY = require("labkey");
 
 function onUpsert(helper, scriptErrors, row, oldRow) {
     row.location = row.room;

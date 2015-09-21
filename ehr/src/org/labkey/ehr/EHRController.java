@@ -31,9 +31,10 @@ import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
-import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.query.BatchValidationException;
@@ -53,6 +54,7 @@ import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
@@ -73,7 +75,6 @@ import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.pipeline.GeneticCalculationsRunnable;
-import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -296,12 +297,14 @@ public class EHRController extends SpringActionController
             _form = form;
 
             String schemaName = form.getSchemaName();
-            String queryName = form.getQueryName();
 
             QueryView queryView = QueryView.create(form, errors);
             TableInfo ti = queryView.getTable();
             List<String> pks = ti.getPkColumnNames();
             String keyField = null;
+
+            String queryName =  (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
+
             if (pks.size() == 1)
                 keyField = pks.get(0);
 
