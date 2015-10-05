@@ -551,7 +551,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Refresh"));
         waitForElement(Ext4Helper.Locators.window("Error"));
         assertElementNotPresent(Ext4Helper.Locators.ext4ButtonContainingText("(X)"));
-        assertTextPresent("Must enter at least one subject");
+        assertTextPresent("Must enter at least one Subject");
         waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
 
         log("checking specific tabs");

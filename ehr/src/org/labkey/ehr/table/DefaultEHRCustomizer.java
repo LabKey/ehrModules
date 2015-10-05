@@ -102,6 +102,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (us != null)
         {
             Container c = us.getContainer();
+            if (!c.getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class)))
+            {
+                _log.error("Attempting to use DefaultEHRCustomizer on table (" + us.getName() + "." + table.getName() + ") even though the module is not enabled: " + c.getPath());
+                return;
+            }
+
             String df = EHRService.get().getDateFormat(c);
             if (df != null)
             {

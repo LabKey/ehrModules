@@ -95,7 +95,8 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     filterTypes: [{
         xtype: 'ldk-singlesubjectfiltertype',
         inputValue: LDK.panel.SingleSubjectFilterType.filterName,
-        label: LDK.panel.SingleSubjectFilterType.label
+        label: 'Single Animal',
+        nounSingular: 'Animal'
     },{
         xtype: 'ehr-multianimalfiltertype',
         inputValue: EHR.panel.MultiAnimalFilterType.filterName,

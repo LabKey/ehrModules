@@ -22,7 +22,7 @@ Ext4.define('EHR.panel.ParticipantDetailsPanel', {
     filterTypes: [{
         xtype: 'ehr-hiddensinglesubjectfiltertype',
         inputValue: LDK.panel.SingleSubjectFilterType.filterName,
-        label: LDK.panel.SingleSubjectFilterType.label
+        label: 'Single Animal'
     }],
 
     getFilterOptionsItems: function(){
