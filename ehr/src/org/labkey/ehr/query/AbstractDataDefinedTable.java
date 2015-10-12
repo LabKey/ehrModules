@@ -31,6 +31,7 @@ import org.labkey.api.etl.DataIteratorContext;
 import org.labkey.api.etl.LoggingDataIterator;
 import org.labkey.api.etl.SimpleTranslator;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
@@ -292,6 +293,7 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
             //enforce uniqueness for values
             final ValuesManager vm = new ValuesManager();
             ColumnInfo valueCol = getRealTable().getColumn(_valueColumn);
+            final BatchValidationException errors = _context.getErrors();
             it.addColumn(valueCol, new Callable()
             {
                 @Override
@@ -299,10 +301,16 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
                 {
                     String value = (String)it.getInputColumnValue(inputColMap.get(_valueColumn));
                     if (value == null)
-                        throw new ValidationException("Missing value for column: " + _valueColumn);
+                    {
+                        errors.addRowError(new ValidationException("Missing value for column: " + _valueColumn));
+                        throw errors;
+                    }
 
                     if (vm.testIfRowExists(value))
-                        throw new ValidationException("There is already a record in the table " + getName() + " where " + _valueColumn + " equals " + value);
+                    {
+                        errors.addRowError(new ValidationException("There is already a record in the table " + getName() + " where " + _valueColumn + " equals " + value));
+                        throw errors;
+                    }
 
                     return value;
                 }

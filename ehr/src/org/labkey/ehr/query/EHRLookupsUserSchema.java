@@ -91,7 +91,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     public synchronized Set<String> getVisibleTableNames()
     {
         Set<String> available = new CaseInsensitiveTreeSet();
-        available.addAll(super.getTableNames());
+        available.addAll(super.getVisibleTableNames());
 
         available.addAll(getPropertySetNames().keySet());
         available.addAll(getLabworkTypeNames().keySet());
