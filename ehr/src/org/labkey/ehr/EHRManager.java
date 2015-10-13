@@ -478,7 +478,6 @@ public class EHRManager
             }
 
             List<? extends Dataset> datasets = study.getDatasets();
-            boolean shouldClearCaches = false;
 
             for (Dataset dataset : datasets)
             {
@@ -595,11 +594,7 @@ public class EHRManager
                 if (changed)
                 {
                     domain.save(u);
-                    shouldClearCaches = true;
                 }
-
-                if (toUpdate.size() > 0)
-                    shouldClearCaches = true;
 
                 for (PropertyDescriptor pd : toUpdate)
                 {
@@ -957,11 +952,8 @@ public class EHRManager
 
             transaction.commit();
 
-            if (shouldClearCaches)
-            {
-                Introspector.flushCaches();
-                CacheManager.clearAllKnownCaches();
-            }
+            Introspector.flushCaches();
+            CacheManager.clearAllKnownCaches();
         }
         catch (SQLException e)
         {
