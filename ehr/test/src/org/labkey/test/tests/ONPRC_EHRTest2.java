@@ -524,7 +524,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         click(Ext4Helper.Locators.menuItem("Bulk Edit"));
         waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
 
-        String source = "Unknown";
+        String source = "Boston";
         _helper.toggleBulkEditField("Source");
 
         Ext4ComboRef sourceField = _ext4Helper.queryOne("window field[fieldLabel=Source]", Ext4ComboRef.class);
@@ -557,8 +557,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         for (int i = 1;i<=3;i++)
         {
-            Assert.assertEquals("0", grid.getFieldValue(i, "source"));
-            Assert.assertEquals("F", grid.getFieldValue(i, "gender"));
+            Assert.assertEquals("bos", grid.getFieldValue(i, "source"));
+            Assert.assertEquals("f", grid.getFieldValue(i, "gender"));
             Assert.assertEquals(species, grid.getFieldValue(i, "species"));
             Assert.assertEquals(geographic_origin, grid.getFieldValue(i, "geographic_origin"));
             Assert.assertEquals(ROOMS[0], grid.getFieldValue(i, "initialRoom"));
