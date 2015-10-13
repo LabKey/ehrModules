@@ -293,7 +293,6 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
             //enforce uniqueness for values
             final ValuesManager vm = new ValuesManager();
             ColumnInfo valueCol = getRealTable().getColumn(_valueColumn);
-            final BatchValidationException errors = _context.getErrors();
             it.addColumn(valueCol, new Callable()
             {
                 @Override
@@ -302,14 +301,12 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
                     String value = (String)it.getInputColumnValue(inputColMap.get(_valueColumn));
                     if (value == null)
                     {
-                        errors.addRowError(new ValidationException("Missing value for column: " + _valueColumn));
-                        throw errors;
+                        _context.getErrors().addRowError(new ValidationException("Missing value for column: " + _valueColumn));
                     }
 
                     if (vm.testIfRowExists(value))
                     {
-                        errors.addRowError(new ValidationException("There is already a record in the table " + getName() + " where " + _valueColumn + " equals " + value));
-                        throw errors;
+                        _context.getErrors().addRowError(new ValidationException("There is already a record in the table " + getName() + " where " + _valueColumn + " equals " + value));
                     }
 
                     return value;
