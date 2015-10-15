@@ -16,7 +16,7 @@ SELECT c.room, c.cage, c.joinToCage FROM ehr_lookups.cage c
 
 UNION ALL
 
-SELECT h.room, h.cage, null as joinToCage FROM study.housing h WHERE h.enddate is null
+SELECT h.room, h.cage, null as joinToCage FROM study.housing h WHERE h.isActive = true
 
 ) c
 WHERE c.room is not null and c.room != ''

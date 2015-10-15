@@ -16,7 +16,7 @@ LEFT JOIN study.housing h
 
 ON (c.room=h.room AND c.cage=h.cage)
 
-WHERE h.enddate IS NULL
+WHERE h.isActive = true
 
 GROUP BY c.location, c.room, c.cage
 
