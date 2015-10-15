@@ -1452,8 +1452,8 @@ public class TriggerScriptHelper
         if (url != null)
         {
             html.append("<a href='");
-            html.append(AppProps.getInstance().getBaseServerUrl());
-            html.append(url);
+            html.append(PageFlowUtil.filter(AppProps.getInstance().getBaseServerUrl()));
+            html.append(PageFlowUtil.filter(url));
             html.append("'>");
             html.append("Click here to view them</a>.  <p>");
         }
@@ -1802,7 +1802,7 @@ public class TriggerScriptHelper
             }
 
             msg.setRecipients(Message.RecipientType.TO, StringUtils.join(emails, ","));
-            msg.setBodyContent(bodyHtml, "text/html");
+            msg.setEncodedHtmlContent(bodyHtml);
 
             MailHelper.send(msg, getUser(), getContainer());
         }
