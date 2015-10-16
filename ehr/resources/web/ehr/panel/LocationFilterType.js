@@ -7,6 +7,8 @@ Ext4.define('EHR.panel.LocationFilterType', {
     extend: 'LDK.panel.AbstractFilterType',
     alias: 'widget.ehr-locationfiltertype',
 
+    filterType: LABKEY.Filter.Types.EQUALS_ONE_OF,
+
     searchOptions: {
         area: true,
         room: true,
@@ -146,11 +148,11 @@ Ext4.define('EHR.panel.LocationFilterType', {
 
         //rooms always relate to a specific area.  if we're filtering on room, omit the area
         if(area && !room){
-            filterArray.nonRemovable.push(LABKEY.Filter.create(areaFieldName, area, LABKEY.Filter.Types.EQUALS_ONE_OF));
+            filterArray.nonRemovable.push(LABKEY.Filter.create(areaFieldName, area, this.filterType));
         }
 
         if(room){
-            filterArray.nonRemovable.push(LABKEY.Filter.create(roomFieldName, room, LABKEY.Filter.Types.EQUALS_ONE_OF));
+            filterArray.nonRemovable.push(LABKEY.Filter.create(roomFieldName, room, this.filterType));
         }
 
         if(cage){
