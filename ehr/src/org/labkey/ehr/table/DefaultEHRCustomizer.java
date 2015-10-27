@@ -536,6 +536,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             addIsActiveCol(ti);
         }
+        else if (matches(ti, "study", "parentage"))
+        {
+            addIsActiveCol(ti, false);
+        }
         else if (matches(ti, "study", "demographics"))
         {
             customizeDemographics(ti);
