@@ -19,8 +19,10 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.Timeout;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -54,6 +56,12 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
 
+
+    @ClassRule
+    public static Timeout globalTimeout()
+    {
+        return new Timeout(4500000); // 75 minutes
+    }
 
     @Override
     String getModuleDirectory()
