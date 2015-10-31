@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.module.Module;
 
 /**
  * User: bimber
@@ -24,8 +25,8 @@ import org.labkey.api.ehr.history.DefaultLabworkType;
  */
 public class MiscTestsLabworkType extends DefaultLabworkType
 {
-    public MiscTestsLabworkType()
+    public MiscTestsLabworkType(Module module)
     {
-        super("Misc Tests", "study", "Misc Tests");
+        super("Misc Tests", "study", "Misc Tests", module);
     }
 }

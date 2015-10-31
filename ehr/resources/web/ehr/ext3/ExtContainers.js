@@ -620,6 +620,8 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         this.ownerCt.hide();
         Ext.Msg.wait('Loading...');
 
+        fileContent = fileContent.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+
         Ext.Ajax.request({
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
             params: {

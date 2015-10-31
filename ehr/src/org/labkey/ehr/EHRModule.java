@@ -59,11 +59,19 @@ import org.labkey.ehr.demographics.ArrivalDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
-import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.demographics.DepartureDemographicsProvider;
+import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
 import org.labkey.ehr.demographics.WeightsDemographicsProvider;
+import org.labkey.ehr.history.AntibioticSensitivityLabworkType;
+import org.labkey.ehr.history.ChemistryLabworkType;
+import org.labkey.ehr.history.HematologyLabworkType;
+import org.labkey.ehr.history.MicrobiologyLabworkType;
+import org.labkey.ehr.history.MiscTestsLabworkType;
+import org.labkey.ehr.history.ParasitologyLabworkType;
+import org.labkey.ehr.history.SerologyLabworkType;
+import org.labkey.ehr.history.iStatLabworkType;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -78,7 +86,6 @@ import org.labkey.ehr.security.EHRBehaviorEntryRole;
 import org.labkey.ehr.security.EHRClinicalEntryRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
-import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRHousingTransferRole;
@@ -89,6 +96,7 @@ import org.labkey.ehr.security.EHRProcedureManagementRole;
 import org.labkey.ehr.security.EHRProtocolManagementRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
+import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRVeternarianRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
@@ -166,6 +174,17 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRLocationManagementRole());
         RoleManager.registerRole(new EHRHousingTransferRole());
         RoleManager.registerRole(new EHRSnomedEditorRole());
+
+        EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(this));
+        EHRService.get().registerLabworkType(new ChemistryLabworkType(this));
+        EHRService.get().registerLabworkType(new HematologyLabworkType(this));
+
+        EHRService.get().registerLabworkType(new iStatLabworkType(this));
+        EHRService.get().registerLabworkType(new MicrobiologyLabworkType(this));
+        EHRService.get().registerLabworkType(new MiscTestsLabworkType(this));
+        EHRService.get().registerLabworkType(new ParasitologyLabworkType(this));
+
+        EHRService.get().registerLabworkType(new SerologyLabworkType(this));
     }
 
     @Override

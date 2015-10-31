@@ -1,27 +1,18 @@
-<script type="text/javascript">
-    Ext4.onReady(function (){
-        var webpart = <%=webpartContext%>;
-        var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
-        if(!ctx)
-            return;
+<script src="/ehr/lib/underscore.js"></script>
+<script src="/ehr/lib/underscore-string.js"></script>
+<script src="/ehr/lib/knockout.js"></script>
+<script src="/ehr/lib/knockout-mapping.js"></script>
+<script type="application/javascript">
+    var require = {
+        paths: {
+            "text":              "/ehr/lib/require-text", // Make Text Plugin work
+            "classify":          "/ehr/lib/classify",
+            "supersqlstore":     "/ehr/lib/supersqlstore",
+            "pageapp":           "/ehr/HousingAndAssignmentHistory"
+        },
+        waitSeconds: 0
+    };
 
-        /* get the participant id from the request URL: this parameter is required. */
-        var participantId = LABKEY.ActionURL.getParameter('participantId');
-
-        if (!participantId){
-            alert('Must Provide Id');
-            return;
-        }
-
-        var title = 'Animal Details: ' + participantId;
-        document.title = title;
-        LABKEY.Utils.setWebpartTitle(title, webpart.id);
-
-        Ext4.create('EHR.panel.ParticipantDetailsPanel', {
-            participantId: participantId,
-            defaultReport: ctx.DefaultAnimalHistoryReport,
-            defaultTab: 'General',
-            autoLoadDefaultTab: true
-        }).render(webpart.wrapperDivId);
-    });
+    webpartContext = <%=webpartContext%>;
 </script>
+<script src="/ehr/lib/require.js" data-main="/ehr/requirements-participantView"></script>

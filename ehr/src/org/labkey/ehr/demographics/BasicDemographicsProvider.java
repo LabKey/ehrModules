@@ -51,6 +51,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
 
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
+        keys.add(FieldKey.fromString("Id/numRoommates/NumRoommates"));
         keys.add(FieldKey.fromString("gender"));
         keys.add(FieldKey.fromString("gender/meaning"));
         keys.add(FieldKey.fromString("gender/origGender"));
@@ -59,6 +60,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.add(FieldKey.fromString("birth"));
         keys.add(FieldKey.fromString("death"));
         keys.add(FieldKey.fromString("geographic_origin"));
+        keys.add(FieldKey.fromString("origin"));
 
         keys.add(FieldKey.fromString("dam"));
         keys.add(FieldKey.fromString("sire"));

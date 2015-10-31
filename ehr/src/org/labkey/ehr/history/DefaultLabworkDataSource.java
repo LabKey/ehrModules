@@ -181,9 +181,9 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     @Override
     public Set<String> getAllowableCategoryGroups(Container c, User u)
     {
-        Set<String> types = new HashSet<String>();
+        Set<String> types = new HashSet<>();
         types.add("Labwork");
-        for (LabworkType type : LabworkManager.get().getTypes())
+        for (LabworkType type : LabworkManager.get().getTypes(c))
         {
             types.add(type.getName());
         }

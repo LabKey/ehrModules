@@ -22,6 +22,7 @@ import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
@@ -45,9 +46,9 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     private String _microbeField = "microbe/meaning";
     private String _antibioticField = "antibiotic/meaning";
 
-    public AntibioticSensitivityLabworkType()
+    public AntibioticSensitivityLabworkType(Module module)
     {
-        super("Antibiotic Sensitivity", "study", "Antibiotic Sensitivity");
+        super("Antibiotic Sensitivity", "study", "Antibiotic Sensitivity", module);
         _resultField = "result";
     }
 

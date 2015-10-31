@@ -72,18 +72,39 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
     initComponent: function()
     {
         this.storeConfig = this.storeConfig || {};
-        this.store = this.store || new EHR.ext.AdvancedStore(Ext.applyIf(this.storeConfig, {
-            //xtype: 'ehr-store',
-            containerPath: this.containerPath,
-            schemaName: this.schemaName,
-            queryName: this.queryName,
-            viewName: this.viewName || '~~UPDATE~~',
-            columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
-            storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
-            filterArray: this.filterArray || [],
-            metadata: this.metadata
-            //autoLoad: true
-        }));
+
+        if (!this.store) {
+            var newStoreConfig = Ext.applyIf(this.storeConfig, {
+                //xtype: 'ehr-store',
+                containerPath: this.containerPath,
+                schemaName: this.schemaName,
+                queryName: this.queryName,
+                viewName: this.viewName || '~~UPDATE~~',
+                columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
+                storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
+                filterArray: this.filterArray || [],
+                metadata: this.metadata
+                //autoLoad: true
+            });
+
+            // Issue 4241: Ensure that we have a unique storeid.
+            //
+            //  ** Note that there are some places in the code (such as form/formpanel configurations) where the
+            //     storeid is hardcoded, so it is not a good idea to change this unless necessary.  This should only
+            //     get invoked if there are multiple grids on a page that save to the same schema/query/view.
+            if ( typeof(Ext.StoreMgr.get(newStoreConfig.storeId)) !== 'undefined' ) {
+                var base = newStoreConfig.storeId;
+                var iterator = 1;  // the next one will start with //2, because this will get incremented before assignment
+                var newid = "";
+                do {
+                    iterator++;
+                    newid = base + "//" + iterator;
+                } while (typeof(Ext.StoreMgr.get(newid)) !== 'undefined');
+                newStoreConfig.storeId = newid;
+            }
+
+            this.store = new EHR.ext.AdvancedStore(newStoreConfig);
+        }
 
         //set buttons
         var tbar = {xtype: 'toolbar', items: []};

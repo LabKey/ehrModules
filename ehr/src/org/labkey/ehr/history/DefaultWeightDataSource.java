@@ -18,6 +18,7 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.Formats;
 
 import java.sql.SQLException;
 
@@ -38,7 +39,10 @@ public class DefaultWeightDataSource extends AbstractDataSource
     protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         if (rs.hasColumn(FieldKey.fromString("weight")) && rs.getObject("weight") != null)
-            return "Weight: " + rs.getString("weight") + " kg";
+        {
+            double serverWeight = rs.getDouble("weight");
+            return "Weight: " + Formats.f2.format(serverWeight) +" kg";
+        }
 
         return null;
     }

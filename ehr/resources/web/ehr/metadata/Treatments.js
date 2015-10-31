@@ -45,6 +45,9 @@ EHR.Metadata.registerMetadata('Treatments', {
                         onTriggerClick: Ext.emptyFn
                     }
                 }
+            },
+            route: {
+                shownInGrid: true
             }
         }
     }

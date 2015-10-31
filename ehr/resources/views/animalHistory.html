@@ -1,16 +1,18 @@
-<script type="text/javascript">
+<script src="/ehr/lib/underscore.js"></script>
+<script src="/ehr/lib/underscore-string.js"></script>
+<script src="/ehr/lib/knockout.js"></script>
+<script src="/ehr/lib/knockout-mapping.js"></script>
+<script type="application/javascript">
+    var require = {
+        paths: {
+            "text":              "/ehr/lib/require-text", // Make Text Plugin work
+            "classify":          "/ehr/lib/classify",
+            "supersqlstore":     "/ehr/lib/supersqlstore",
+            "pageapp":           "/ehr/HousingAndAssignmentHistory"
+        },
+        waitSeconds: 0
+    };
 
-    Ext4.onReady(function (){
-        var webpart = <%=webpartContext%>;
-        var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId, ['DefaultAnimalHistoryReport']);
-        if(!ctx)
-            return;
-
-        Ext4.create('EHR.panel.AnimalHistoryPanel', {
-            defaultReport: ctx.DefaultAnimalHistoryReport,
-            defaultTab: 'General',
-            renderTo: webpart.wrapperDivId
-        });
-    });
-
+    webpartContext = <%=webpartContext%>;
 </script>
+<script src="/ehr/lib/require.js" data-main="/ehr/requirements-animalHistory"></script>

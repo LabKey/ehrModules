@@ -17,6 +17,7 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
@@ -34,9 +35,9 @@ public class SerologyLabworkType extends DefaultLabworkType
     private String _methodField = "method";
     private String _numericResultsField = "numericresult";
 
-    public SerologyLabworkType()
+    public SerologyLabworkType(Module module)
     {
-        super("Serology", "study", "Serology Results");
+        super("Serology", "study", "Serology Results", module);
         _testIdField = "agent/meaning";
     }
 

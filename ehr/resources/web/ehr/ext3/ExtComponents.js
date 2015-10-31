@@ -1119,7 +1119,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
             ,typeAhead: true
             ,triggerAction: 'all'
             ,forceSelection: true
-            ,mode: 'local'
+            ,mode: 'remote'
             ,disabled: false
             ,plugins: ['ehr-usereditablecombo']
             ,validationDelay: 500

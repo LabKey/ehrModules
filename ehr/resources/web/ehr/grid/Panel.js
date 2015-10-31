@@ -18,6 +18,7 @@ Ext4.define('EHR.grid.Panel', {
         }
 
         this.configureColumns();
+        this.sortColumns();
 
         Ext4.apply(this, {
             cls: 'ldk-grid',
@@ -215,6 +216,64 @@ Ext4.define('EHR.grid.Panel', {
         if (firstEditableColumn != -1){
             this.firstEditableColumn = firstEditableColumn;
         }
+    },
+
+    sortColumns: function() {
+        var self = this;
+        var columnsWithAbsoluteIndex = [];
+        var columnsWithRelativePlacements = [];
+        var holdingTank = [];
+
+        // Sort the fields into three categories
+        jQuery.each(this.columns, function(index, value) {
+            if (value.columnConfig && ('columnIndex' in value.columnConfig) ) {
+                columnsWithAbsoluteIndex.push(value);
+            }
+            else if (value.columnConfig && ('displayAfterColumn' in value.columnConfig) ) {
+                columnsWithRelativePlacements.push(value);
+            }
+            else {
+                holdingTank.push(value);
+            }
+        });
+
+        // Start out by assigning all of the fields without configuration
+        this.columns = holdingTank;
+
+        // Sort the columns that have an absolute index so that we go in ascending order
+        columnsWithAbsoluteIndex.sort(function(a,b) {
+            if      (a.columnConfig.columnIndex < b.columnConfig.columnIndex) { return -1 }
+            else if (a.columnConfig.columnIndex > b.columnConfig.columnIndex) { return  1 }
+            else                                                              { return  0 }
+        });
+
+        // Insert each of the fields with absolute
+        jQuery.each(columnsWithAbsoluteIndex, function(index, value) {
+            self.columns.splice(value.columnConfig.columnIndex, 0, value);
+        });
+
+        // Now go through and insert all of the relatively placed fields
+        //   TODO: This seems really inefficient.  Think of doing something like generating an index, sorting
+        //         by reverse index order and then inserting each.  By going from highest index to lowest index
+        //         we would prevent our insertions from screwing up the indices of the yet to be added fields.
+        //         I think this is the most efficient, because it only requires iterating over the list of
+        //         columns once.
+        jQuery.each(columnsWithRelativePlacements, function(index, value) {
+            var found = false;
+            jQuery.each(self.columns, function(index, curColVal) {
+                if (curColVal.dataIndex === value.displayAfterColumn) {
+                    self.columns.splice(index + 1, 0, value);
+                    found = true;
+                    return false; // break/short circuit
+                }
+            });
+
+            // If we didn't find the field we were looking for, just add it to the end.
+            if ( !found ) {
+                console.warn("Couldn't find column name for relative placement: ", value.displayAfterColumn);
+                self.columns.push(value);
+            }
+        });
     },
 
     getRowEditorPlugin: function(){

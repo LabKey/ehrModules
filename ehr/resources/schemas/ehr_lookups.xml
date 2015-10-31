@@ -317,7 +317,7 @@
                 <ns:columnTitle>Labwork Service Type</ns:columnTitle>
                 <ns:fk>
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>labwork_panels</ns:fkTable>
+                    <ns:fkTable>labwork_services</ns:fkTable>
                     <ns:fkColumnName>servicename</ns:fkColumnName>
                 </ns:fk>
             </ns:column>

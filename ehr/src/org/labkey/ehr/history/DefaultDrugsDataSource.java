@@ -23,6 +23,7 @@ import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.ehr.history.HistoryRowImpl;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
+import org.labkey.api.util.Formats;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -66,7 +67,8 @@ public class DefaultDrugsDataSource extends AbstractDataSource
 
         if (rs.hasColumn(FieldKey.fromString("volume")) && rs.getObject("volume") != null)
         {
-            sb.append("Volume: " + rs.getString("volume"));
+            double serverVolume  = rs.getDouble("volume");
+            sb.append("Volume: " + Formats.f2.format(serverVolume));
 
             if (rs.hasColumn(FieldKey.fromString("vol_units")) && rs.getObject("vol_units") != null)
                 sb.append(" " + rs.getString("vol_units"));
@@ -76,7 +78,8 @@ public class DefaultDrugsDataSource extends AbstractDataSource
 
         if (rs.hasColumn(FieldKey.fromString("amount")) && rs.getObject("amount") != null)
         {
-            sb.append("Amount: " + rs.getString("amount"));
+            double serverAmount = rs.getDouble("amount");
+            sb.append("Amount: " + Formats.f2.format(serverAmount));
 
             if (rs.hasColumn(FieldKey.fromString("amount_units")) && rs.getObject("amount_units") != null)
                 sb.append(" " + rs.getString("amount_units"));

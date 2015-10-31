@@ -30,6 +30,11 @@
                         <displayWidth>120</displayWidth>
                         <sortColumn>AgeInYears</sortColumn>
                     </column>
+                    <column columnName="monthsAndDays">
+                        <columnTitle>Age (Months and Days)</columnTitle>
+                        <displayWidth>120</displayWidth>
+                        <sortColumn>AgeInMonths</sortColumn>
+                    </column>
                     <column columnName="species">
                         <isHidden>true</isHidden>
                     </column>

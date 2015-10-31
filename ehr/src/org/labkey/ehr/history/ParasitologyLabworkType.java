@@ -17,6 +17,7 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
@@ -32,9 +33,9 @@ public class ParasitologyLabworkType extends DefaultLabworkType
 {
     private String _methodField = "method";
 
-    public ParasitologyLabworkType()
+    public ParasitologyLabworkType(Module module)
     {
-        super("Parasitology", "study", "Parasitology Results");
+        super("Parasitology", "study", "Parasitology Results", module);
         _testIdField = "organism/meaning";
     }
 

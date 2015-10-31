@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.ehr.history.SortingLabworkType;
+import org.labkey.api.module.Module;
 
 /**
  * User: bimber
@@ -24,9 +25,9 @@ import org.labkey.api.ehr.history.SortingLabworkType;
  */
 public class HematologyLabworkType extends SortingLabworkType
 {
-    public HematologyLabworkType()
+    public HematologyLabworkType(Module module)
     {
-        super("Hematology", "study", "hematologyRefRange", "Hematology");
+        super("Hematology", "study", "hematologyRefRange", "Hematology", module);
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

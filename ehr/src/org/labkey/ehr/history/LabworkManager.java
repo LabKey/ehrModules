@@ -39,17 +39,6 @@ public class LabworkManager
 
     private LabworkManager()
     {
-        registerType(new AntibioticSensitivityLabworkType());
-        registerType(new ChemistryLabworkType());
-        registerType(new HematologyLabworkType());
-
-        registerType(new iStatLabworkType());
-        registerType(new MicrobiologyLabworkType());
-        registerType(new MiscTestsLabworkType());
-        registerType(new ParasitologyLabworkType());
-        registerType(new UrinalysisLabworkType());
-
-        registerType(new SerologyLabworkType());
     }
 
     public static LabworkManager get()
@@ -62,10 +51,23 @@ public class LabworkManager
         _types.add(type);
     }
 
+    public Collection<LabworkType> getTypes(Container c)
+    {
+        List<LabworkType> result = new ArrayList<>(_types.size());
+        for (LabworkType type : _types)
+        {
+            if (type.isEnabled(c))
+            {
+                result.add(type);
+            }
+        }
+        return Collections.unmodifiableCollection(result);
+    }
+
     public List<String> getResults(Container c, User u, String runId, boolean redacted)
     {
         List<String> list = new ArrayList<>();
-        for (LabworkType type : _types)
+        for (LabworkType type : getTypes(c))
         {
             list.addAll(type.getResults(c, u, runId, redacted));
         }
@@ -76,7 +78,7 @@ public class LabworkManager
     public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted)
     {
         Map<String, List<String>> map = new HashMap<>();
-        for (LabworkType type : _types)
+        for (LabworkType type : getTypes(c))
         {
             merge(map, type.getResults(c, u, runIds, redacted));
         }
@@ -87,7 +89,7 @@ public class LabworkManager
     public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
     {
         Map<String, List<String>> map = new HashMap<>();
-        for (LabworkType type : _types)
+        for (LabworkType type : getTypes(c))
         {
             merge(map, type.getResults(c, u, id, minDate, maxDate, redacted));
         }
@@ -107,10 +109,5 @@ public class LabworkManager
 
             map.put(runId, existing);
         }
-    }
-
-    public Collection<LabworkType> getTypes()
-    {
-        return Collections.unmodifiableCollection(_types);
     }
 }

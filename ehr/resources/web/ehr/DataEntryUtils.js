@@ -480,6 +480,9 @@ EHR.DataEntryUtils = new function(){
             col.customized = true;
             col.sortable = true;
 
+            // Make the column config available for sortColumns() to properly sort the fields.
+            col.columnConfig = meta.columnConfig;
+
             col.hidden = meta.hidden;
             col.format = meta.extFormat;
 

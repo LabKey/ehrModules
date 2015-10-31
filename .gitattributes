@@ -110,6 +110,7 @@ EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/EHR_ComplianceDBUserSchema.java
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/query/EHRComplianceTableCustomizer.java -text
 EHR_ComplianceDB/tools/SOP_Lists.zip -text
 ehr/module.properties -text
+ehr/resources/credits/scripts.txt -text
 ehr/resources/data/lookup_sets.tsv -text
 ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text
@@ -254,6 +255,7 @@ ehr/resources/queries/ehr_lookups/cages.sql -text
 ehr/resources/queries/ehr_lookups/cages/Animals[!!-~]Housed.qview.xml -text
 ehr/resources/queries/ehr_lookups/cagesMissingColumn.sql -text
 ehr/resources/queries/ehr_lookups/dateRange.sql -text
+ehr/resources/queries/ehr_lookups/filtered_labwork_services.sql -text
 ehr/resources/queries/ehr_lookups/flag_values.js -text
 ehr/resources/queries/ehr_lookups/flag_values/.qview.xml -text
 ehr/resources/queries/ehr_lookups/flag_values/Active[!!-~]Flags.qview.xml -text
@@ -890,11 +892,15 @@ ehr/resources/web/ehr/DataEntryUtils.js -text
 ehr/resources/web/ehr/DemographicsCache.js -text
 ehr/resources/web/ehr/DemographicsRecord.js -text
 ehr/resources/web/ehr/ExtOverrides.js -text
+ehr/resources/web/ehr/HousingAndAssignmentHistory.css -text
+ehr/resources/web/ehr/HousingAndAssignmentHistory.js -text
+ehr/resources/web/ehr/HousingAndAssignmentHistoryTemplate.html -text
 ehr/resources/web/ehr/Security.js -text
 ehr/resources/web/ehr/buttons/ClinicalActionsButton.js -text
 ehr/resources/web/ehr/buttons/encounterButtons.js -text
 ehr/resources/web/ehr/buttons/housingButtons.js -text
 ehr/resources/web/ehr/buttons/roundsButtons.js -text
+ehr/resources/web/ehr/d3-graph-template.html -text
 ehr/resources/web/ehr/data/AssignmentClientStore.js -text
 ehr/resources/web/ehr/data/BloodDrawClientStore.js -text
 ehr/resources/web/ehr/data/ClinicalEncountersClientStore.js -text
@@ -984,6 +990,15 @@ ehr/resources/web/ehr/images/crest.ico -text
 ehr/resources/web/ehr/images/crest.png -text
 ehr/resources/web/ehr/images/lkbtn-red.gif -text
 ehr/resources/web/ehr/landscape.css -text
+ehr/resources/web/ehr/lib/classify.js -text
+ehr/resources/web/ehr/lib/knockout-mapping.js -text
+ehr/resources/web/ehr/lib/knockout.js -text
+ehr/resources/web/ehr/lib/require-text.js -text
+ehr/resources/web/ehr/lib/require.js -text
+ehr/resources/web/ehr/lib/supersqlstore.js -text
+ehr/resources/web/ehr/lib/text.js -text
+ehr/resources/web/ehr/lib/underscore-string.js -text
+ehr/resources/web/ehr/lib/underscore.js -text
 ehr/resources/web/ehr/metadata/Anesthesia.js -text
 ehr/resources/web/ehr/metadata/Assay.js -text
 ehr/resources/web/ehr/metadata/Biopsy.js -text
@@ -1085,6 +1100,8 @@ ehr/resources/web/ehr/plugin/ResizableTextArea.js -text
 ehr/resources/web/ehr/plugin/RowEditor.js -text
 ehr/resources/web/ehr/printFormatting.css -text
 ehr/resources/web/ehr/reports.js -text
+ehr/resources/web/ehr/requirements-animalHistory.js -text
+ehr/resources/web/ehr/requirements-participantView.js -text
 ehr/resources/web/ehr/studyButtons.js -text
 ehr/resources/web/ehr/stylesheet.css -text
 ehr/resources/web/ehr/utils.js -text
@@ -1204,7 +1221,6 @@ ehr/src/org/labkey/ehr/history/MicrobiologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/MiscTestsLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ParasitologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/SerologyLabworkType.java -text
-ehr/src/org/labkey/ehr/history/UrinalysisLabworkType.java -text
 ehr/src/org/labkey/ehr/history/iStatLabworkType.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/DataEntrySummary.java -text
@@ -1248,6 +1264,7 @@ ehr/src/org/labkey/ehr/security/EHRSurgeryEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
+ehr/src/org/labkey/ehr/table/AgeMonthsDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/SNOMEDCodesDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text

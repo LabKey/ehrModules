@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.ehr.history.SortingLabworkType;
+import org.labkey.api.module.Module;
 
 /**
  * User: bimber
@@ -24,9 +25,9 @@ import org.labkey.api.ehr.history.SortingLabworkType;
  */
 public class iStatLabworkType extends SortingLabworkType
 {
-    public iStatLabworkType()
+    public iStatLabworkType(Module module)
     {
-        super("iStat", "study", "iStatRefRange", "iStat");
+        super("iStat", "study", "iStatRefRange", "iStat", module);
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

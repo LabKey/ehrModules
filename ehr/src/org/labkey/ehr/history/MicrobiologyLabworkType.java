@@ -17,6 +17,7 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
@@ -32,9 +33,9 @@ public class MicrobiologyLabworkType extends DefaultLabworkType
 {
     private static final String _tissueField = "tissue/meaning";
 
-    public MicrobiologyLabworkType()
+    public MicrobiologyLabworkType(Module module)
     {
-        super("Microbiology", "study", "Microbiology Results");
+        super("Microbiology", "study", "Microbiology Results", module);
         _qualResultField = "quantity";
         _testIdField = "organism/meaning";
     }

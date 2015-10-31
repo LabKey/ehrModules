@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.ehr.history.SortingLabworkType;
+import org.labkey.api.module.Module;
 
 /**
  * User: bimber
@@ -24,9 +25,9 @@ import org.labkey.api.ehr.history.SortingLabworkType;
  */
 public class ChemistryLabworkType extends SortingLabworkType
 {
-    public ChemistryLabworkType()
+    public ChemistryLabworkType(Module module)
     {
-        super("Biochemistry", "study", "chemistryRefRange", "Biochemistry");
+        super("Biochemistry", "study", "chemistryRefRange", "Biochemistry", module);
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

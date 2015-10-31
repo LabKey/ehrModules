@@ -892,10 +892,10 @@ EHR.Metadata.registerMetadata('Default', {
                 },
                 lookup: {
                     schemaName: 'ehr_lookups',
-                    queryName: 'clinpath_tests',
-                    displayColumn: 'testname',
-                    keyColumn: 'testname',
-                    sort: 'testname',
+                    queryName: 'filtered_labwork_services',
+                    displayColumn: 'servicename',
+                    keyColumn: 'servicename',
+                    sort: 'servicename',
                     columns: '*'
                 }
             },
