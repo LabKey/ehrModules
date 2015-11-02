@@ -142,18 +142,18 @@ public class EHRModule extends ExtendedSimpleModule
 
         // NOTE: deliberately register these prior to doStartupAfterSpringConfig(), so other modules
         // can override them
-        EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider());
+        EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider(this));
 
-        EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider());
+        EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
 
         RoleManager.registerRole(new EHRDataAdminRole());
         RoleManager.registerRole(new EHRRequestorRole());

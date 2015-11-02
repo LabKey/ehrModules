@@ -18,6 +18,7 @@ package org.labkey.ehr.demographics;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.demographics.AbstractDemographicsProvider;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.ehr.table.AgeDisplayColumn;
 
@@ -35,9 +36,9 @@ import java.util.Set;
  */
 public class BasicDemographicsProvider extends AbstractDemographicsProvider
 {
-    public BasicDemographicsProvider()
+    public BasicDemographicsProvider(Module owner)
     {
-        super("study", "Demographics");
+        super(owner, "study", "Demographics");
     }
 
     public String getName()

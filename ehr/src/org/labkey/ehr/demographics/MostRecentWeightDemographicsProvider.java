@@ -19,6 +19,7 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.ehr.demographics.AbstractDemographicsProvider;
 import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
 import java.util.Collection;
@@ -32,9 +33,9 @@ import java.util.Set;
  */
 public class MostRecentWeightDemographicsProvider extends AbstractDemographicsProvider
 {
-    public MostRecentWeightDemographicsProvider()
+    public MostRecentWeightDemographicsProvider(Module owner)
     {
-        super("study", "demographicsMostRecentWeight");
+        super(owner, "study", "demographicsMostRecentWeight");
         _supportsQCState = false;
     }
 

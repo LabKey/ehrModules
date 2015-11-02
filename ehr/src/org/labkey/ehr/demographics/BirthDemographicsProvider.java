@@ -18,6 +18,7 @@ package org.labkey.ehr.demographics;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
 import java.util.Collection;
@@ -31,9 +32,9 @@ import java.util.Set;
  */
 public class BirthDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public BirthDemographicsProvider()
+    public BirthDemographicsProvider(Module owner)
     {
-        super("study", "Birth", "birthInfo");
+        super(owner, "study", "Birth", "birthInfo");
         _supportsQCState = false;
     }
 

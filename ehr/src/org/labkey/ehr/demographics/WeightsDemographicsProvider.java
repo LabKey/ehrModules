@@ -26,6 +26,7 @@ import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 
@@ -45,9 +46,9 @@ import java.util.Set;
  */
 public class WeightsDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public WeightsDemographicsProvider()
+    public WeightsDemographicsProvider(Module owner)
     {
-        super("study", "Weight", "weights");
+        super(owner, "study", "Weight", "weights");
     }
 
     protected Set<FieldKey> getFieldKeys()
