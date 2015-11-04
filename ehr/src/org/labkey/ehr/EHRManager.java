@@ -50,6 +50,7 @@ import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
+import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.exp.query.ExpSchema;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -1182,8 +1183,12 @@ public class EHRManager
                 String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
                 long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.get(0));
 
-                String deleteSql = "DELETE FROM exp.propertydescriptor WHERE propertyid = ?";
-                long deleted = executor.execute(deleteSql, oldIds.get(0));
+                PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(oldIds.get(0));
+                if (toDelete != null)
+                {
+                    PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());
+                    OntologyManager.deletePropertyDescriptor(toDelete);
+                }
             }
             else
             {
@@ -1196,8 +1201,16 @@ public class EHRManager
                 String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid IN ? AND sortorder = ?";
                 executor.execute(updateSql, propertyId, d.getTypeId(), oldIds, minSort);
 
-                String deleteSql1 = "DELETE FROM exp.propertydescriptor WHERE propertyid != ? AND propertyid IN ?";
-                executor.execute(deleteSql1, propertyId, oldIds);
+                oldIds.remove(propertyId);
+                for (Integer id : oldIds)
+                {
+                    PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(id);
+                    if (toDelete != null)
+                    {
+                        PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());
+                        OntologyManager.deletePropertyDescriptor(toDelete);
+                    }
+                }
 
                 String deleteSql2 = "DELETE FROM exp.propertydomain WHERE propertyid != ? AND domainId = ? AND propertyid IN ? AND sortorder != ?";
                 executor.execute(deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
