@@ -406,7 +406,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         List<String> allIds = new ArrayList<>(new HashSet<>(ids));
         while (start < allIds.size())
         {
-            List<String> sublist = allIds.subList(start, Math.min(ids.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
+            List<String> sublist = allIds.subList(start, Math.min(allIds.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
             _log.info("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
@@ -429,7 +429,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         // NOTE: the above fill only create an AnimalRecord for IDs that exist in the demographics table.
         // we also want to cache each attempt to find an ID.  requesting a non-existing ID still requires a query,
         // so make note of the fact it doesnt exist
-        for (String id : ids)
+        for (String id : allIds)
         {
             if (!ret.containsKey(id))
                 ret.put(id, new HashMap<String, Object>());
@@ -446,9 +446,9 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
 
         double duration = ((new Date()).getTime() - startTime.getTime()) / 1000.0;
-        if (duration > (2.0 * ids.size()))
+        if (duration > (2.0 * allIds.size()))
         {
-            _log.warn("recached " + ids.size() + " records in " + duration + " seconds");
+            _log.warn("recached " + allIds.size() + " records in " + duration + " seconds");
         }
         return records;
     }
