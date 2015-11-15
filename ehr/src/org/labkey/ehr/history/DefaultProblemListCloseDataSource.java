@@ -24,6 +24,7 @@ import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.Date;
@@ -56,7 +57,7 @@ public class DefaultProblemListCloseDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
 
         sb.append(safeAppend(rs, "Category", "category"));
-        sb.append("Opened On: ").append(_dateFormat.format(start));
+        sb.append("Opened On: ").append(DateUtil.formatDateTime(start, DATE_FORMAT));
 
         return sb.toString();
     }

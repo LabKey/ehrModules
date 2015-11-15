@@ -17,12 +17,11 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
-import org.labkey.api.ehr.history.HistoryRowImpl;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -93,7 +92,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
         //TODO: conditional based on whether it has ended or not?  maybe a note for 'ending in X days?'
         if (rs.hasColumn(FieldKey.fromString("enddate")) && rs.getObject("enddate") != null)
         {
-            sb.append("End: ").append(_dateFormat.format(rs.getDate("enddate")));
+            sb.append("End: ").append(DateUtil.formatDateTime(rs.getDate("enddate"), DATE_FORMAT));
 
             if (rs.hasColumn(FieldKey.fromString("duration")))
             {

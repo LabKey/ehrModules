@@ -24,6 +24,7 @@ import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -60,7 +61,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
                 long diff = (end.getTime() - start.getTime());
                 diff = diff / (1000 * 60 * 60 * 24);
 
-                sb.append("Date Started: ").append(_dateFormat.format(start)).append(diff > 0 ? " (" + diff + " days ago)" : "").append("\n");
+                sb.append("Date Started: ").append(DateUtil.formatDateTime(start, DATE_FORMAT)).append(diff > 0 ? " (" + diff + " days ago)" : "").append("\n");
             }
         }
 

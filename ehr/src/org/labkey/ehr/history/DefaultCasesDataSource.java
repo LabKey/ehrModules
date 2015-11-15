@@ -18,6 +18,7 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -49,7 +50,7 @@ public class DefaultCasesDataSource extends AbstractDataSource
 
         if (rs.getObject(FieldKey.fromString("enddate")) != null)
         {
-            sb.append("Closed On: ").append(_dateFormat.format(rs.getDate(FieldKey.fromString("enddate"))));
+            sb.append("Closed On: ").append(DateUtil.formatDateTime(rs.getDate(FieldKey.fromString("enddate")), DATE_FORMAT));
         }
 
         return sb.toString();
