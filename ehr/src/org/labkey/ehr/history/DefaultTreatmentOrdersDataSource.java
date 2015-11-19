@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
@@ -38,7 +39,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
@@ -92,7 +93,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
         //TODO: conditional based on whether it has ended or not?  maybe a note for 'ending in X days?'
         if (rs.hasColumn(FieldKey.fromString("enddate")) && rs.getObject("enddate") != null)
         {
-            sb.append("End: ").append(DateUtil.formatDateTime(rs.getDate("enddate"), DATE_FORMAT));
+            sb.append("End: ").append(DateUtil.formatDate(c, rs.getDate("enddate")));
 
             if (rs.hasColumn(FieldKey.fromString("duration")))
             {

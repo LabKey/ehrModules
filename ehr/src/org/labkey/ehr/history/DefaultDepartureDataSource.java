@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 
@@ -33,7 +34,7 @@ public class DefaultDepartureDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 

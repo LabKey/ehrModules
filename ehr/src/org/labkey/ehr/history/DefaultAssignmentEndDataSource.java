@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
@@ -42,7 +43,7 @@ public class DefaultAssignmentEndDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -73,7 +74,7 @@ public class DefaultAssignmentEndDataSource extends AbstractDataSource
     }
 
     @Override
-    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
+    protected @NotNull List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
         return super.getRows(c, u, filter, redacted);

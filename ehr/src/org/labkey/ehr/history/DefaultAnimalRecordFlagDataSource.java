@@ -15,9 +15,9 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
-import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -36,7 +36,7 @@ public class DefaultAnimalRecordFlagDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 

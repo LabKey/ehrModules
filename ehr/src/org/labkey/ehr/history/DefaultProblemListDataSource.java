@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
@@ -35,7 +36,7 @@ public class DefaultProblemListDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -43,7 +44,7 @@ public class DefaultProblemListDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "Problem #", "problem_no"));
         if (rs.getObject(FieldKey.fromString("enddate")) != null)
         {
-            sb.append("Closed On: ").append(DateUtil.formatDateTime(rs.getDate(FieldKey.fromString("enddate")), DATE_FORMAT));
+            sb.append("Closed On: ").append(DateUtil.formatDate(c, rs.getDate(FieldKey.fromString("enddate"))));
         }
 
         return sb.toString();

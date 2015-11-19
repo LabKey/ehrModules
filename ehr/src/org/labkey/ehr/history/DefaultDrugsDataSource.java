@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
@@ -28,7 +29,6 @@ import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         String category = rs.getString("category");
@@ -113,7 +113,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
+    public @NotNull List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         List<HistoryRow> rows = super.getRows(c, u, filter, redacted);
         Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<>();
@@ -135,6 +135,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
         }
 
         List<HistoryRow> newRows = new ArrayList<>();
+
         for (List<HistoryRowImpl> records : groupedRowMap.values())
         {
             StringBuilder sb = new StringBuilder();

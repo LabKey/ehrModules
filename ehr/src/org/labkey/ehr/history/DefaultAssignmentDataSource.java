@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
@@ -37,12 +38,12 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
         if (rs.hasColumn(FieldKey.fromString("date")) && rs.getObject("date") != null)
-            sb.append("Assignment Start: ").append(DateUtil.formatDateTime(rs.getDate("date"), DATE_FORMAT)).append("\n");
+            sb.append("Assignment Start: ").append(DateUtil.formatDate(c, rs.getDate("date"))).append("\n");
 
         FieldKey projname = FieldKey.fromString("project/name");
         if (rs.hasColumn(projname) && rs.getObject(projname) != null)
@@ -62,7 +63,7 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
         }
 
         if (rs.hasColumn(FieldKey.fromString("enddate")) && rs.getObject("enddate") != null)
-            sb.append("Removal Date: ").append(DateUtil.formatDateTime(rs.getDate("enddate"), DATE_FORMAT)).append("\n");
+            sb.append("Removal Date: ").append(DateUtil.formatDate(c, rs.getDate("enddate"))).append("\n");
 
         return sb.toString();
     }

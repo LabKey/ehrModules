@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
@@ -46,7 +47,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -61,7 +62,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
                 long diff = (end.getTime() - start.getTime());
                 diff = diff / (1000 * 60 * 60 * 24);
 
-                sb.append("Date Started: ").append(DateUtil.formatDateTime(start, DATE_FORMAT)).append(diff > 0 ? " (" + diff + " days ago)" : "").append("\n");
+                sb.append("Date Started: ").append(DateUtil.formatDate(c, start)).append(diff > 0 ? " (" + diff + " days ago)" : "").append("\n");
             }
         }
 
@@ -75,7 +76,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     }
 
     @Override
-    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
+    protected @NotNull List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
         filter.addCondition(FieldKey.fromString("enddate"), new Date(), CompareType.DATE_LTE);

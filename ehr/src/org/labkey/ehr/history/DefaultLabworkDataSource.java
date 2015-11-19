@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
@@ -57,7 +58,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -107,7 +108,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate, boolean redacted)
+    public @NotNull List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
         Date start = new Date();
 

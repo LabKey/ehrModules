@@ -19,9 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
-import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.ehr.history.HistoryRow;
@@ -30,7 +30,6 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr.EHRManager;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,48 +61,43 @@ public class DefaultObservationsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected List<HistoryRow> processRows(TableSelector ts, final boolean redacted, final Collection<ColumnInfo> cols)
+    protected List<HistoryRow> processRows(Container c, TableSelector ts, final boolean redacted, final Collection<ColumnInfo> cols)
     {
         final Map<String, List<Map<String, Object>>> idMap = new HashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
-        {
-            @Override
-            public void exec(ResultSet rs) throws SQLException
+        ts.forEach(rs -> {
+            Results results = new ResultsImpl(rs, cols);
+
+            String html = getObservationLine(results, redacted);
+            if (!StringUtils.isEmpty(html) || EHRManager.VET_REVIEW.equals(results.getString("category")))
             {
-                Results results = new ResultsImpl(rs, cols);
+                Map<String, Object> rowMap = new CaseInsensitiveHashMap<>();
 
-                String html = getObservationLine(results, redacted);
-                if (!StringUtils.isEmpty(html) || EHRManager.VET_REVIEW.equals(results.getString("category")))
-                {
-                    Map<String, Object> rowMap = new CaseInsensitiveHashMap<>();
+                rowMap.put("date", results.getTimestamp(getDateField()));
+                rowMap.put("categoryText", getCategoryText(results));
+                rowMap.put("categoryGroup", getPrimaryGroup(results));
+                rowMap.put("categoryColor", getCategoryColor(results));
+                rowMap.put("performedBy", results.getString(FieldKey.fromString("performedby")));
+                rowMap.put("qcStateLabel", results.getString(FieldKey.fromString("qcState/Label")));
+                rowMap.put("publicData", results.getBoolean(FieldKey.fromString("qcState/PublicData")));
+                rowMap.put("subjectId", results.getString(FieldKey.fromString(_subjectIdField)));
+                rowMap.put("taskId", results.getString(FieldKey.fromString("taskId")));
+                rowMap.put("taskRowId", results.getInt(FieldKey.fromString("taskId/rowid")));
+                rowMap.put("formType", results.getString(FieldKey.fromString("taskId/formtype")));
+                rowMap.put("objectId", results.getString(FieldKey.fromString("objectId")));
+                rowMap.put("html", html);
 
-                    rowMap.put("date", results.getTimestamp(getDateField()));
-                    rowMap.put("categoryText", getCategoryText(results));
-                    rowMap.put("categoryGroup", getPrimaryGroup(results));
-                    rowMap.put("categoryColor", getCategoryColor(results));
-                    rowMap.put("performedBy", results.getString(FieldKey.fromString("performedby")));
-                    rowMap.put("qcStateLabel", results.getString(FieldKey.fromString("qcState/Label")));
-                    rowMap.put("publicData", results.getBoolean(FieldKey.fromString("qcState/PublicData")));
-                    rowMap.put("subjectId", results.getString(FieldKey.fromString(_subjectIdField)));
-                    rowMap.put("taskId", results.getString(FieldKey.fromString("taskId")));
-                    rowMap.put("taskRowId", results.getInt(FieldKey.fromString("taskId/rowid")));
-                    rowMap.put("formType", results.getString(FieldKey.fromString("taskId/formtype")));
-                    rowMap.put("objectId", results.getString(FieldKey.fromString("objectId")));
-                    rowMap.put("html", html);
+                Date roundedDate = DateUtils.truncate((Date)rowMap.get("date"), Calendar.DATE);
+                String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate.toString();
+                List<Map<String, Object>> obsRows = idMap.get(key);
+                if (obsRows == null)
+                    obsRows = new ArrayList<>();
 
-                    Date roundedDate = DateUtils.truncate((Date)rowMap.get("date"), Calendar.DATE);
-                    String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate.toString();
-                    List<Map<String, Object>> obsRows = idMap.get(key);
-                    if (obsRows == null)
-                        obsRows = new ArrayList<>();
-
-                    obsRows.add(rowMap);
-                    idMap.put(key, obsRows);
-                }
+                obsRows.add(rowMap);
+                idMap.put(key, obsRows);
             }
         });
 
-        List<HistoryRow> rows = new ArrayList<HistoryRow>();
+        List<HistoryRow> rows = new ArrayList<>();
         for (String key : idMap.keySet())
         {
             List<Map<String, Object>> toAdd = idMap.get(key);
@@ -216,7 +210,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs, boolean redacted) throws SQLException
+    protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         throw new UnsupportedOperationException("This should not be called");
     }
