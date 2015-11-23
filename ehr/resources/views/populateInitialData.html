@@ -232,14 +232,23 @@ function populateFormPanelSections(){
         queryName: config.queryName,
         success: function (allRows) {
             console.log("rows",allRows.rows);
-            LABKEY.Query.deleteRows({
-                rows: allRows.rows,
-                schemaName: config.schemaName,
-                queryName: config.queryName,
-                success: function() {
-                    LABKEY.Query.insertRows(makeObject(config, data, fields));
-                }
-            });
+            if (allRows.rows.length > 0)
+            {
+                LABKEY.Query.deleteRows({
+                    rows: allRows.rows,
+                    schemaName: config.schemaName,
+                    queryName: config.queryName,
+                    success: function ()
+                    {
+                        LABKEY.Query.insertRows(makeObject(config, data, fields));
+                    }
+                });
+            }
+            else
+            {
+                // Nothng to delete, so just insert
+                LABKEY.Query.insertRows(makeObject(config, data, fields));
+            }
         }
     });
 }

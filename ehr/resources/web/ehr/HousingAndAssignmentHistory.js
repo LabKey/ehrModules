@@ -6,7 +6,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
         link.href = url;
         document.getElementsByTagName("head")[0].appendChild(link);
     }
-    loadCss('/ehr/HousingAndAssignmentHistory.css');
+    loadCss(LABKEY.contextPath + '/ehr/HousingAndAssignmentHistory.css');
 
 
     var $ = jQuery;
