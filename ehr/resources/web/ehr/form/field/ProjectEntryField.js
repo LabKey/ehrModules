@@ -106,7 +106,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                 },
 
                 onBeforeComplete: function(){
-                    return !this.window || !this.windows.isVisible();
+                    return !this.window || !this.window.isVisible();
                 }
             })],
             validationDelay: 500,
