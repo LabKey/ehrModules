@@ -404,7 +404,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         waitAndClickAndWait(Locator.lkButton("OK"));
 
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/cacheLivingAnimals.view");
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 2);
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 4);
     }
 
     @LogMethod
