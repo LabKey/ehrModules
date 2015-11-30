@@ -78,7 +78,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         assertNoErrorText();
     }
 
-
     @Test
     public void testQuickSearch()
     {
@@ -93,7 +92,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
-        assertTitleContains("Animal Details: "+ getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0]));
+        waitForElement(Locator.css(".labkey-wp-title-left").withText("Overview: " + getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0])));
+        assertTitleContains("Animal Details: " + getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0]));
 
         log("Quick Search - Show Project");
         clickProject(getProjectName());
