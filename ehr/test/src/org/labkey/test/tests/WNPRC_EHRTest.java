@@ -33,6 +33,7 @@ import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Date;
 
@@ -611,7 +612,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     {
         waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
         sleep(200);
-        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "selectChange", longWait());
+        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "selectChange", new WebDriverWait(getDriver(), 60));
     }
 
     private void setDoseConcFields()
