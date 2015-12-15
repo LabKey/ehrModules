@@ -105,6 +105,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
         target.add({
             xtype: 'ldk-contentresizingpanel',
             itemId: 'matrixArea',
+            overflowX: 'auto',
             listeners: {
                 scope: this,
                 afterrender: function(panel){
