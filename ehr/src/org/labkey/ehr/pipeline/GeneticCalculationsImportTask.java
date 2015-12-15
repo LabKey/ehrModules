@@ -16,6 +16,7 @@
 package org.labkey.ehr.pipeline;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
@@ -116,6 +117,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         }
     }
 
+    @NotNull
     public RecordedActionSet run() throws PipelineJobException
     {
         List<RecordedAction> actions = new ArrayList<>();

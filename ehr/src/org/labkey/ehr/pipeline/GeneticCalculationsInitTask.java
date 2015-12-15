@@ -17,6 +17,7 @@ package org.labkey.ehr.pipeline;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -92,6 +93,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
         }
     }
 
+    @NotNull
     public RecordedActionSet run() throws PipelineJobException
     {
         PipelineJob job = getJob();
