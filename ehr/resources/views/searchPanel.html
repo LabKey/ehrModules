@@ -62,6 +62,7 @@ Ext4.onReady(function(){
             }
         }
     }
+var  au = metadata[LABKEY.ActionURL.getParameter('queryName')];
 
     if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
         EHR.Utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
