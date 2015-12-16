@@ -543,6 +543,18 @@
             <ns:column columnName="dateDisabled">
                 <ns:columnTitle>Date Disabled</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="species_code">
+                <ns:columnTitle>Species Code</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="arc_species_code">
+                <ns:columnTitle>Arc Species Code</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Object ID</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="tid">
+                <ns:columnTitle>TID</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <!--TODO: move-->
