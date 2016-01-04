@@ -34,4 +34,7 @@ abstract class AbstractONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
     @Override
     public void customActionsTest(){}
+
+    @Override
+    public void testCalculatedAgeColumns(){}
 }

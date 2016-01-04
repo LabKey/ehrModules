@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.junit.Assert.*;
+
 //Inherit from this class instead of AbstractEHRTest when you want to run these tests, which should work across all ehr modules
 public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 {
@@ -271,6 +273,23 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         //log the average save time
         //TODO: eventually we should set a threshold and assert we dont exceed it
         calculateAverage();
+    }
+
+    @Test
+    public void testCalculatedAgeColumns()
+    {
+        String subjectId = "test2008446";
+
+        beginAt(String.format("query/%s/executeQuery.view?schemaName=study&query.queryName=Weight&query.viewName=&query.Id~contains=%s", getContainerPath(), subjectId));
+        _customizeViewsHelper.openCustomizeViewPanel();
+        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTime");
+        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTimeYearsRounded");
+        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTimeMonths");
+        _customizeViewsHelper.applyCustomView();
+
+        DataRegionTable table = new DataRegionTable("query", this);
+        List<String> row = table.getRowDataAsText(0);
+        assertEquals("Calculated ages are incorrect", Arrays.asList("3.9", "3.0", "47.0"), row.subList(3, 6));
     }
 
     private void calculateAverage()
