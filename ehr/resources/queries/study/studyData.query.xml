@@ -103,6 +103,7 @@
                     </column>
                     <column columnName="datefinalized">
                         <propertyURI>urn:ehr.labkey.org/#DateFinalized</propertyURI>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="daterequested">
                         <propertyURI>urn:ehr.labkey.org/#DateRequested</propertyURI>
