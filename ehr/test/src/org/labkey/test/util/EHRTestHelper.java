@@ -280,11 +280,8 @@ public class EHRTestHelper
 
     public void discardForm()
     {
-        _test.scrollIntoView(getDataEntryButton("More Actions"));
-        _test.waitAndClick(getDataEntryButton("More Actions"));
-        _test.click(Ext4Helper.Locators.menuItem("Discard"));
-        _test.waitForElement(Ext4Helper.Locators.window("Discard Form"));
-        _test.clickAndWait(Ext4Helper.Locators.ext4Button("Yes"));
+        _test._ext4Helper.clickExt4MenuButton(false, getDataEntryButton("More Actions"), false, "Discard");
+        _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
     }

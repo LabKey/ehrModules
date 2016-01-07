@@ -132,7 +132,7 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
         // NOTE: this currently will log an error from DatasetDefinition whenever we create a new column.  This really isnt a bug, so ignore
         checkLeaksAndErrors();
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/ensureDatasetProperties.view");
-        waitAndClickAndWait(Locator.lkButton("OK"));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), 120000);
         resetErrors();
 
         cacheIds(Arrays.asList(MORE_ANIMAL_IDS));
@@ -365,4 +365,7 @@ abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
         getApiHelper().deleteAllRecords("study", "weight", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
         getApiHelper().deleteAllRecords("study", "animal_group_members", new Filter("Id", StringUtils.join(ids, ";"), Filter.Operator.IN));
     }
+
+    @Override //Block test that doesn't work with ONPRC
+    public void testCalculatedAgeColumns(){}
 }

@@ -644,7 +644,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.setGridCell(3, "lowestcage", "A1");
         sleep(100);
         Assert.assertEquals(grid.getFieldValue(1, "pairid"), grid.getFieldValue(3, "pairid"));
-        sleep(100);
+        sleep(200);
         _helper.discardForm();
     }
 
