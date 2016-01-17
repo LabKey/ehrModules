@@ -874,9 +874,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                     public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
                     {
-                        String objectid = (String) ctx.get("objectid");
+                        Object objectid = ctx.get("objectid");
                         Date date = (Date) ctx.get("date");
-                        String id = (String) ctx.get(ID_COL);
+                        Object id = ctx.get(ID_COL);
 
                         out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
                     }
