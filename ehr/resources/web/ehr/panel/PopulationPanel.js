@@ -173,6 +173,8 @@ Ext4.define('EHR.panel.PopulationPanel', {
             for (var i=0;i<repeats;i++){
                 Ext4.each(valueArray, function(header, j){
                     LDK.Assert.assertNotEmpty('Population panel has a blank header value for the column: ' + colName + '.  This probably indicates bad data.', header);
+                    if (!header)
+                        header = 'Unknown ' + colName;
 
                     var style = (idx == 0 ? 'border-bottom: solid 1px;' : '') + 'text-align: center;margin-right: 3px;margin-left: 3px;margin-bottom:3px;';
 
@@ -310,7 +312,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             else {
                 Ext4.each(keys, function(key){
                     Ext4.each(valueArray, function(value){
-                        newKeys.push(key + '<>' + value);
+                        newKeys.push((key ? key : '') + '<>' + value);
                     }, this);
                 }, this);
             }
