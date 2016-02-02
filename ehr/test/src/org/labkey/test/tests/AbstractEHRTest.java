@@ -142,6 +142,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return "/server/customModules/" + getModuleDirectory();
     }
 
+    public String getFolderName() { return FOLDER_NAME; }
+
     @Override
     public void checkLinks()
     {

@@ -86,11 +86,11 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         //TODO: can I interact with this as a menu webpart?
         log("Add quick search webpart");
         clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        clickFolder(getFolderName());
         (new PortalHelper(this)).addWebPart("Quick Search");
         log("Quick Search - Show Animal");
         clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        clickFolder(getFolderName());
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
@@ -99,7 +99,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         log("Quick Search - Show Project");
         clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        clickFolder(getFolderName());
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#projectField", Ext4ComboRef.class).setComboByDisplayValue(PROJECT_ID);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Project"));
@@ -107,7 +107,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         log("Quick Search - Show Protocol");
         clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        clickFolder(getFolderName());
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         _ext4Helper.queryOne("#protocolField", Ext4ComboRef.class).setComboByDisplayValue(PROTOCOL_ID);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Protocol"));
