@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010-2016 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 requirejs(["module", "pageapp"], function(module) {
 
     Ext4.onReady(function (){
