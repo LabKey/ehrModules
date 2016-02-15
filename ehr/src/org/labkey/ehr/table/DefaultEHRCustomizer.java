@@ -454,9 +454,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
 
-        if (!ti.getColumn("Id").isLocked())
+        ColumnInfo idColumn = ti.getColumn("Id");
+        if (idColumn != null && !idColumn.isLocked())
         {
-            setConceptURI(ti.getColumn("Id"), PARTICIPANT_CONCEPT_URI);
+            setConceptURI(idColumn, PARTICIPANT_CONCEPT_URI);
         }
 
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
