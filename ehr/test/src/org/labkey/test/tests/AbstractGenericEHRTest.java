@@ -164,17 +164,39 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     }
 
     @Test
-    public void testSecurity() throws Exception
+    public void testSecurityDataAdmin() throws Exception
     {
         testUserAgainstAllStates(DATA_ADMIN);
+    }
+
+    @Test
+    public void testSecurityRequester() throws Exception
+    {
         testUserAgainstAllStates(REQUESTER);
+    }
+
+    @Test
+    public void testSecurityBasicSubmitter() throws Exception
+    {
         testUserAgainstAllStates(BASIC_SUBMITTER);
+    }
+
+    @Test
+    public void testSecurityFullSubmitter() throws Exception
+    {
         testUserAgainstAllStates(FULL_SUBMITTER);
+    }
+
+    @Test
+    public void testSecurityFullUpdater() throws Exception
+    {
         testUserAgainstAllStates(FULL_UPDATER);
+    }
+
+    @Test
+    public void testSecurityRequestAdmin() throws Exception
+    {
         testUserAgainstAllStates(REQUEST_ADMIN);
-        goToProjectHome();  //NOTE: this is designed to force the test to sign in, assuming our session was timed out from all the API tests
-        signIn();
-        resetErrors(); //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
     }
 
     @Test
@@ -205,7 +227,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
     }
 
-    @LogMethod
     private void testUserAgainstAllStates(@LoggedParam EHRUser user) throws Exception
     {
         JSONObject extraContext = new JSONObject();
@@ -273,6 +294,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         //log the average save time
         //TODO: eventually we should set a threshold and assert we dont exceed it
         calculateAverage();
+
+        simpleSignIn(); //NOTE: this is designed to force the test to sign in, assuming our session was timed out from all the API tests
+        resetErrors();  //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
     }
 
     @Test
