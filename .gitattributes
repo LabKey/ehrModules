@@ -458,6 +458,7 @@ ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.report.xml -text
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.r -text
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.report.xml -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.30-12.10.sql -text
@@ -532,6 +533,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.419-12.420.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.421-12.422.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.424-12.425.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.425-12.426.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -614,6 +616,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.420-12.421.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.422-12.423.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.424-12.425.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.20-12.30.sql -text
@@ -688,6 +691,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.419-12.420.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.421-12.422.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.424-12.425.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.425-12.426.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
