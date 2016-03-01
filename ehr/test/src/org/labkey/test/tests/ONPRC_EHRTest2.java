@@ -64,7 +64,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Override
-    String getModuleDirectory()
+    protected String getModuleDirectory()
     {
         return "onprc_ehr";
     }

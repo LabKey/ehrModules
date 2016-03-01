@@ -44,7 +44,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Override
-    String getModuleDirectory()
+    protected String getModuleDirectory()
     {
         return "onprc_ehr";
     }

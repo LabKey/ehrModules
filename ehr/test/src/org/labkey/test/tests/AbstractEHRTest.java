@@ -112,7 +112,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getContainerPath());
 
-    abstract String getModuleDirectory();
+    protected abstract String getModuleDirectory();
 
     //xpath fragment
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
@@ -306,7 +306,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    abstract void importStudy();
+    protected abstract void importStudy();
 
     protected boolean skipStudyImportQueryValidation()
     {
@@ -616,6 +616,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected EHRClientAPIHelper getApiHelper()
     {
+        if (Thread.interrupted())
+            throw new RuntimeException("Test thread has been terminated");
         return new EHRClientAPIHelper(this, getContainerPath());
     }
 

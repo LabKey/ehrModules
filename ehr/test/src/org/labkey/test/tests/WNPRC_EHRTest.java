@@ -628,8 +628,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         click(Locator.tagWithText("span", tab));
     }
 
-    //@Override
-    String getModuleDirectory()
+    @Override
+    protected String getModuleDirectory()
     {
         return "WNPRC_EHR";
     }
