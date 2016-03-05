@@ -57,13 +57,6 @@ public class EHRTestHelper
         _test = test;
     }
 
-    public DataRegionTable getAnimalHistoryDataRegion(String title)
-    {
-        // Specific to the EHR Animal History page.
-        WebElement dataRegion = _test.waitForElement(Locator.xpath("//table[@name='webpart' and ./*/*/*/a//span[text()='" + title + "' or starts-with(text(), '" + title + " - ')]]//table[starts-with(@id,'dataregion_') and not(contains(@id, 'header'))]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 6);
-        return new DataRegionTable(dataRegion.getAttribute("id").substring(11), _test, true, false);
-    }
-
     public void selectDataEntryRecord(String query, String Id, boolean keepExisting)
     {
         _test._extHelper.selectExtGridItem("Id", Id, -1, "ehr-" + query + "-records-grid", keepExisting);

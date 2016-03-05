@@ -125,7 +125,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     },
 
     onDataRegionLoad: function(dr){
-        var drEl = Ext4.get('dataregion_'+dr.id);
+        var drEl = Ext4.get(dr.domId);
         LDK.Assert.assertNotEmpty('Unable to find dataRegion element in DataEntryFormDetailsPanel', drEl);
         var itemWidth = drEl.getSize().width + 150;
         if (itemWidth > this.getWidth()){

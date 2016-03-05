@@ -350,8 +350,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
 
         assertTrue("Submit button not disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
 
-        DataRegionTable dr1 = _helper.getDrForQueryWebpart("Unread SOPs (Less Than 10 Months Until Renewal)");
-        DataRegionTable dr2 = _helper.getDrForQueryWebpart("Dates SOPs Were Last Read");
+        DataRegionTable dr1 = DataRegionTable.findDataRegionWithinWebpart(this, "Unread SOPs (Less Than 10 Months Until Renewal)");
+        DataRegionTable dr2 = DataRegionTable.findDataRegionWithinWebpart(this, "Dates SOPs Were Last Read");
         assertEquals("Incorrect row count found", 1, dr1.getDataRowCount());
         assertEquals("Incorrect row count found", 0, dr2.getDataRowCount());
 
@@ -360,8 +360,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         reloadPage();
 
 
-        dr1 = _helper.getDrForQueryWebpart("Unread SOPs (Less Than 10 Months Until Renewal)");
-        dr2 = _helper.getDrForQueryWebpart("Dates SOPs Were Last Read");
+        dr1 = DataRegionTable.findDataRegionWithinWebpart(this, "Unread SOPs (Less Than 10 Months Until Renewal)");
+        dr2 = DataRegionTable.findDataRegionWithinWebpart(this, "Dates SOPs Were Last Read");
         assertEquals("Incorrect row count found", 0, dr1.getDataRowCount());
         assertEquals("Incorrect row count found", 1, dr2.getDataRowCount());
 
@@ -386,14 +386,6 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         waitForText("Mark Read");
         waitForText("Mark Reread");
     }
-
-//    private DataRegionTable getDataRegion(int idx)
-//    {
-//        Locator.XPathLocator form = Locator.xpath("//form[div/table[starts-with(@id, 'dataregion_')]]").index(idx);
-//        waitForElement(form);
-//        String id = getAttribute(form, "id");
-//        return new DataRegionTable(id, this);
-//    }
 
     protected void setUpTest() throws Exception
     {
