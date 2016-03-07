@@ -230,7 +230,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClickAndWait(Locator.linkWithText("Browse All Datasets"));
         waitAndClickAndWait(LabModuleHelper.getNavPanelItem("Weight:", "Browse All"));
 
-        setFilter("query", "date", "Equals", DATE_FORMAT.format(new Date()));
+        (new DataRegionTable("query", this)).setFilter("date", "Equals", DATE_FORMAT.format(new Date()));
         assertTextPresent("3.333", "4.444", "5.555");
         assertEquals("Completed was not present the expected number of times", 6, getElementCount(Locator.xpath("//td[text() = 'Completed']")));
     }
