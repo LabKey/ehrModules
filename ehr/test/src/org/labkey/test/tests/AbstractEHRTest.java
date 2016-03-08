@@ -424,6 +424,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         if (extraProps != null)
             props.addAll(Arrays.asList(extraProps));
 
+        goToProjectHome();
         setModuleProperties(props);
     }
 
