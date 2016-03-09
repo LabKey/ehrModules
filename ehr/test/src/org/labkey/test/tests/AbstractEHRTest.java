@@ -79,9 +79,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String AREA_ID = "A1/AB190"; // arbitrary area
     protected static final String PROTOCOL_PROJECT_ID = "795644"; // Project with exactly 3 members
     protected static final String PROTOCOL_ID = "protocol101";
-    protected static final String[] PROTOCOL_MEMBER_IDS = {"test3997535", "test4551032", "test5904521"}; //{"test2008446", "test3804589", "test4551032", "test5904521", "test6390238"}; // Protocol members, sorted ASC alphabetically
-    protected static final String[] MORE_ANIMAL_IDS = {"test1020148","test1099252","test1112911","test727088","test4564246"}; // Some more, distinct, Ids
-    protected static final String DEAD_ANIMAL_ID = "test9118022";
+    protected static final String[] PROTOCOL_MEMBER_IDS = {"TEST3997535", "TEST4551032", "TEST5904521"}; //{"test2008446", "test3804589", "test4551032", "test5904521", "test6390238"}; // Protocol members, sorted ASC alphabetically
+    protected static final String[] MORE_ANIMAL_IDS = {"TEST1020148","TEST1099252","TEST1112911","TEST727088","TEST4564246"}; // Some more, distinct, Ids
+    protected static final String DEAD_ANIMAL_ID = "TEST9118022";
     protected static final String TASK_TITLE = "Test weight task";
     protected static final String MPR_TASK_TITLE = "Test MPR task";
     protected static final String VIEW_TEXT = "Browse All";
@@ -105,7 +105,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static String FIELD_LSID = "lsid";
 
     protected String[] weightFields = {"Id", "date", "enddate", "project", "weight", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid"};
-    protected Object[] weightData1 = {"TestSubject1", EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
+    protected Object[] weightData1 = {"TESTSUBJECT1", EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
     protected List<Long> _saveRowsTimes;
     protected SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     protected Random _randomGenerator = new Random();
