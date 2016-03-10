@@ -24,11 +24,13 @@ import org.labkey.test.SortDirection;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.selenium.EphemeralWebElement;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
 import org.labkey.test.util.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
@@ -521,29 +523,30 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
         waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
 
+        WebElement demographicWebpart = new EphemeralWebElement(PortalHelper.Locators.webPartWithTitleContaining("Demographics"), getDriver()).withTimeout(1000);
         // Check protocol search results.
         refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithinWebpart(this, "Demographics").getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
         waitAndClick(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"));
         waitForElementToDisappear(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, DataRegionTable.findDataRegionWithinWebpart(this, "Demographics").getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Append -->"));
         waitForElement(Ext4Helper.Locators.ext4Button(PROTOCOL_MEMBER_IDS[0] + " (X)"), WAIT_FOR_JAVASCRIPT);
         refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithinWebpart(this, "Demographics").getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace -->"));
         refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", 5, DataRegionTable.findDataRegionWithinWebpart(this, "Demographics").getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", 5, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
         waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
