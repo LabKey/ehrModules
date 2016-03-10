@@ -9,7 +9,7 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
     initComponent: function(){
         this.filterArray = [
             LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
-            LABKEY.Filter.create('gender/meaning', 'Unknown', LABKEY.Filter.Types.NEQ)
+            //LABKEY.Filter.create('gender/meaning', 'Unknown', LABKEY.Filter.Types.NEQ)
         ];
         this.childFilterArray = [
             LABKEY.Filter.create('Id/demographics/calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
