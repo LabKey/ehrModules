@@ -24,6 +24,7 @@ import org.labkey.test.SortDirection;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.selenium.EphemeralWebElement;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
@@ -35,7 +36,6 @@ import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Date;
 
@@ -460,7 +460,6 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     @Test
     public void testAnimalHistory()
     {
-        String dataRegionName;
         clickProject(getProjectName());
         clickFolder(FOLDER_NAME);
 
@@ -613,9 +612,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
     private void refreshAnimalHistoryReport()
     {
-        waitForElement(Ext4Helper.Locators.ext4Tab("Demographics"));
-        sleep(200);
-        doAndWaitForPageSignal(() -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")), "dataRegionSelectionChange", new WebDriverWait(getDriver(), 60));
+        new AnimalHistoryPage(getDriver()).refreshReport();
     }
 
     private void setDoseConcFields()

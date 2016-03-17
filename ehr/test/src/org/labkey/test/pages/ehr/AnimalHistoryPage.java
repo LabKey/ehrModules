@@ -17,7 +17,10 @@ package org.labkey.test.pages.ehr;
 
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class AnimalHistoryPage extends ParticipantViewPage
@@ -36,5 +39,14 @@ public class AnimalHistoryPage extends ParticipantViewPage
     {
         test.beginAt(WebTestHelper.buildURL("ehr", containerPath, "animalHistory"));
         return new AnimalHistoryPage(test.getDriver());
+    }
+
+    public void refreshReport()
+    {
+        doAndWaitForPageSignal(
+                () -> doAndWaitForPageSignal(
+                        () -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")),
+                        REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60)),
+                DataRegionTable.SELECTION_SIGNAL, new WebDriverWait(getDriver(), 60));
     }
 }

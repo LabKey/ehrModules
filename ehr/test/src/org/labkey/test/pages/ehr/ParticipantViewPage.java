@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ParticipantViewPage extends LabKeyPage
 {
-    private static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
+    public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     private final Elements _elements;
 
     public ParticipantViewPage(WebDriver driver)
