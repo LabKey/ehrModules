@@ -314,7 +314,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         DataRegionTable table = new DataRegionTable("query", this);
         int columnCount = table.getColumnCount();
         List<String> row = table.getRowDataAsText(0);
-        assertEquals("Calculated ages are incorrect", Arrays.asList("3.9", "3.0", "47.0"), row.subList(columnCount - 4, columnCount - 1));
+        assertEquals("Calculated ages are incorrect", Arrays.asList("3.9", "3.0", "47.0"), row.subList(columnCount - 3, columnCount));
     }
 
     private void calculateAverage()
