@@ -23,7 +23,6 @@ import org.labkey.test.Locator;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LabModuleHelper;
-import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 //Inherit from this class instead of AbstractEHRTest when you want to run these tests, which should work across all ehr modules
 public abstract class AbstractGenericEHRTest extends AbstractEHRTest
@@ -94,8 +93,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
-        waitForElement(Locator.css(".labkey-wp-title-left").withText("Overview: " + getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0])));
-        assertTitleContains("Animal Details: " + getExpectedAnimalIDCasing(MORE_ANIMAL_IDS[0]));
+        waitForElement(Locator.css(".labkey-wp-title-left").withText("Overview: " + MORE_ANIMAL_IDS[0]));
+        assertTitleContains("Animal Details: " + MORE_ANIMAL_IDS[0]);
 
         log("Quick Search - Show Project");
         clickProject(getProjectName());
@@ -112,11 +111,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         _ext4Helper.queryOne("#protocolField", Ext4ComboRef.class).setComboByDisplayValue(PROTOCOL_ID);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Protocol"));
         waitForElement(Locator.linkWithText(PROTOCOL_ID), WAIT_FOR_JAVASCRIPT);
-    }
-
-    protected String getExpectedAnimalIDCasing(String id)
-    {
-        return id.toLowerCase();
     }
 
     @Test
