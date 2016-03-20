@@ -73,7 +73,7 @@ public class ParticipantViewPage extends LabKeyPage
 
     public DataRegionTable getActiveReportDataRegion(BaseWebDriverTest test)
     {
-        WebElement el = DataRegionTable.Locators.dataRegion().notHidden().findElement(getDriver());
+        WebElement el = DataRegionTable.Locators.dataRegion().notHidden().waitForElement(getDriver(), 30000);
         return new DataRegionTable(test, el);
     }
 
