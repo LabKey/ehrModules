@@ -85,17 +85,6 @@ public class EHRTestHelper
         _test.sleep(100);
     }
 
-    public int createUserAPI(String email, String containerPath) throws CommandException, IOException
-    {
-        _test.log("creating user via API: " + email);
-        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-        CreateUserCommand uc = new CreateUserCommand(email);
-        uc.setSendEmail(true);
-        CreateUserResponse resp = uc.execute(cn, containerPath);
-        return resp.getUserId().intValue();
-    }
-
-
     public boolean deleteUserAPI(String email) throws CommandException, IOException
     {
         //note: always execute against root, so we are sure the user exists

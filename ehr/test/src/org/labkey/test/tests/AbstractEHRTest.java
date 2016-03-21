@@ -33,11 +33,13 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.util.AdvancedSqlTest;
+import org.labkey.test.util.ApiPermissionsHelper;
 import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.PermissionsHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.WebElement;
@@ -126,6 +128,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
 
     protected EHRTestHelper _helper = new EHRTestHelper(this);
+    protected PermissionsHelper _permissionsHelper = new ApiPermissionsHelper(this);
 
     @Override
     public BrowserType bestBrowser()
@@ -566,33 +569,33 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         enableEmailRecorder();
 
-        DATA_ADMIN.setUserId(_helper.createUserAPI(DATA_ADMIN.getEmail(), getProjectName()));
-        REQUESTER.setUserId(_helper.createUserAPI(REQUESTER.getEmail(), getProjectName()));
-        BASIC_SUBMITTER.setUserId(_helper.createUserAPI(BASIC_SUBMITTER.getEmail(), getProjectName()));
-        FULL_SUBMITTER.setUserId(_helper.createUserAPI(FULL_SUBMITTER.getEmail(), getProjectName()));
-        FULL_UPDATER.setUserId(_helper.createUserAPI(FULL_UPDATER.getEmail(), getProjectName()));
-        REQUEST_ADMIN.setUserId(_helper.createUserAPI(REQUEST_ADMIN.getEmail(), getProjectName()));
+        _userHelper.createUser(DATA_ADMIN.getEmail(), true, true);
+        _userHelper.createUser(REQUESTER.getEmail(), true, true);
+        _userHelper.createUser(BASIC_SUBMITTER.getEmail(), true, true);
+        _userHelper.createUser(FULL_SUBMITTER.getEmail(), true, true);
+        _userHelper.createUser(FULL_UPDATER.getEmail(), true, true);
+        _userHelper.createUser(REQUEST_ADMIN.getEmail(), true, true);
 
-        _helper.createPermissionsGroupAPI(DATA_ADMIN.getGroup(), getProjectName(), DATA_ADMIN.getUserId());
-        _helper.createPermissionsGroupAPI(REQUESTER.getGroup(), getProjectName(), REQUESTER.getUserId());
-        _helper.createPermissionsGroupAPI(BASIC_SUBMITTER.getGroup(), getProjectName(), BASIC_SUBMITTER.getUserId());
-        _helper.createPermissionsGroupAPI(FULL_SUBMITTER.getGroup(), getProjectName(), FULL_SUBMITTER.getUserId());
-        _helper.createPermissionsGroupAPI(FULL_UPDATER.getGroup(), getProjectName(), FULL_UPDATER.getUserId());
-        _helper.createPermissionsGroupAPI(REQUEST_ADMIN.getGroup(), getProjectName(), REQUEST_ADMIN.getUserId());
+        clickProject(getProjectName());
+
+        _permissionsHelper.createPermissionsGroup(DATA_ADMIN.getGroup(), DATA_ADMIN.getEmail());
+        _permissionsHelper.createPermissionsGroup(REQUESTER.getGroup(), REQUESTER.getEmail());
+        _permissionsHelper.createPermissionsGroup(BASIC_SUBMITTER.getGroup(), BASIC_SUBMITTER.getEmail());
+        _permissionsHelper.createPermissionsGroup(FULL_SUBMITTER.getGroup(), FULL_SUBMITTER.getEmail());
+        _permissionsHelper.createPermissionsGroup(FULL_UPDATER.getGroup(), FULL_UPDATER.getEmail());
+        _permissionsHelper.createPermissionsGroup(REQUEST_ADMIN.getGroup(), REQUEST_ADMIN.getEmail());
 
         goToEHRFolder();
 
-        _permissionsHelper.enterPermissionsUI();
         if (!getContainerPath().equals(getProjectName()))
             _permissionsHelper.uncheckInheritedPermissions();
 
-        _securityHelper.setProjectPerm(DATA_ADMIN.getGroup(), "EHR Data Entry");
-        _securityHelper.setProjectPerm(REQUESTER.getGroup(), "EHR Data Entry");
-        _securityHelper.setProjectPerm(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
-        _securityHelper.setProjectPerm(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
-        _securityHelper.setProjectPerm(FULL_UPDATER.getGroup(), "EHR Data Entry");
-        _securityHelper.setProjectPerm(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
-        _permissionsHelper.savePermissions();
+        _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(FULL_UPDATER.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
 
         //this is slow, so dont set passwords unless subclasses need it
         if (doSetUserPasswords())
@@ -615,9 +618,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void setupStudyPermissions() throws Exception
     {
         goToEHRFolder();
-        _permissionsHelper.enterPermissionsUI();
-        _ext4Helper.clickTabContainingText("Study Security");
-        clickButton("Study Security", defaultWaitForPage);
+        goToManageStudy();
+        clickAndWait(Locator.linkWithText("Manage Security"));
 
         setFormElement(Locator.name("fileUpload"), getStudyPolicyXML());
         clickButton("Import");
@@ -654,9 +656,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setInitialPassword(FULL_UPDATER.getEmail(), PasswordUtil.getPassword());
         setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
     }
-
-
-
 
     protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()
     {

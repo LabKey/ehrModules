@@ -766,9 +766,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //create vet user
         goToEHRFolder();
-        _permissionsHelper.enterPermissionsUI();
         _securityHelper.setProjectPerm(DATA_ADMIN.getEmail(), getContainerPath(), "EHR Veternarian");
-        _permissionsHelper.exitPermissionsUI();
 
         //create records
         log("Creating test subjects");
