@@ -50,6 +50,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
@@ -60,7 +61,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     @ClassRule
     public static Timeout globalTimeout()
     {
-        return new Timeout(4500000); // 75 minutes
+        return new Timeout(75, TimeUnit.MINUTES);
     }
 
     @Override
@@ -360,10 +361,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         if (!isAlive)
         {
             //if the animal was born dead, we expect these flags to be endded automatically
-            groupSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
-            spfFlagSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
-            conditionSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
-            housingSelect.addFilter(new Filter("enddate", null, Filter.Operator.NON_BLANK));
+            groupSelect.addFilter(new Filter("enddate", null, Filter.Operator.NONBLANK));
+            spfFlagSelect.addFilter(new Filter("enddate", null, Filter.Operator.NONBLANK));
+            conditionSelect.addFilter(new Filter("enddate", null, Filter.Operator.NONBLANK));
+            housingSelect.addFilter(new Filter("enddate", null, Filter.Operator.NONBLANK));
         }
 
         if (isPublic)
@@ -766,7 +767,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //create vet user
         goToEHRFolder();
-        _securityHelper.setProjectPerm(DATA_ADMIN.getEmail(), getContainerPath(), "EHR Veternarian");
+        _permissionsHelper.setPermissions(DATA_ADMIN.getEmail(), "EHR Veternarian");
 
         //create records
         log("Creating test subjects");
