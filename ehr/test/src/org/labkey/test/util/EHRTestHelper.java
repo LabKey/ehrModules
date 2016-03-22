@@ -262,7 +262,9 @@ public class EHRTestHelper
 
     public void discardForm()
     {
-        _test._ext4Helper.clickExt4MenuButton(false, getDataEntryButton("More Actions"), false, "Discard");
+        WebElement dataEntryButton = getDataEntryButton("More Actions").findElement(_test.getDriver());
+        _test.scrollIntoView(dataEntryButton);
+        _test._ext4Helper.clickExt4MenuButton(false, dataEntryButton, false, "Discard");
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
