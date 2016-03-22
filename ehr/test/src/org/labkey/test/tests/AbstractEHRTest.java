@@ -576,7 +576,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _userHelper.createUser(FULL_UPDATER.getEmail(), true, true);
         _userHelper.createUser(REQUEST_ADMIN.getEmail(), true, true);
 
-        clickProject(getProjectName());
+        goToEHRFolder();
 
         _permissionsHelper.createPermissionsGroup(DATA_ADMIN.getGroup(), DATA_ADMIN.getEmail());
         _permissionsHelper.createPermissionsGroup(REQUESTER.getGroup(), REQUESTER.getEmail());
@@ -584,8 +584,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _permissionsHelper.createPermissionsGroup(FULL_SUBMITTER.getGroup(), FULL_SUBMITTER.getEmail());
         _permissionsHelper.createPermissionsGroup(FULL_UPDATER.getGroup(), FULL_UPDATER.getEmail());
         _permissionsHelper.createPermissionsGroup(REQUEST_ADMIN.getGroup(), REQUEST_ADMIN.getEmail());
-
-        goToEHRFolder();
 
         if (!getContainerPath().equals(getProjectName()))
             _permissionsHelper.uncheckInheritedPermissions();
