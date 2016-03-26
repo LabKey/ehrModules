@@ -154,7 +154,7 @@ public class EHRServiceImpl extends EHRService
 
     public Collection<DemographicsProvider> getDemographicsProviders(Container c)
     {
-        Map<String, DemographicsProvider> providers = new HashMap<String, DemographicsProvider>();
+        Map<String, DemographicsProvider> providers = new HashMap<>();
         for (DemographicsProvider p : _demographicsProviders)
         {
             if (p.isAvailable(c))
@@ -241,11 +241,7 @@ public class EHRServiceImpl extends EHRService
         {
             return customizerClass.newInstance();
         }
-        catch (InstantiationException e)
-        {
-            _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
-        }
-        catch (IllegalAccessException e)
+        catch (InstantiationException | IllegalAccessException e)
         {
             _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
         }
