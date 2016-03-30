@@ -53,6 +53,7 @@ import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
+import org.labkey.ehr.demographics.ActiveFlagsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ArrivalDemographicsProvider;
@@ -151,6 +152,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveFlagsDemographicsProvider(this));
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
