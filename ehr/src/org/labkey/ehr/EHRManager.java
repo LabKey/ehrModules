@@ -48,6 +48,7 @@ import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.OntologyManager;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.exp.property.PropertyService;
@@ -104,12 +105,6 @@ public class EHRManager
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
-    @Queryable
-    public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exemption";
-    @Queryable
-    public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exemption";
-    @Queryable
-    public static final String CAGE_MEDICAL_EXEMPTION_FLAG = "Medical management, Cage Exemption";
     @Queryable
     public static final String VET_REVIEW = "Vet Review";
     @Queryable
@@ -624,12 +619,11 @@ public class EHRManager
             String[][] toIndex = new String[][]{{"taskid"}, {"participantid", "date"}};
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
-            DbSchema schema = StudyService.get().getDatasetSchema();
             Set<String> distinctIndexes = new HashSet<>();
             for (Dataset d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
-                TableInfo realTable = schema.getTable(tableName);
+                TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
                 if (realTable == null)
                 {
                     _log.error("Table not found for dataset: " + d.getLabel() + " / " + d.getTypeURI());
@@ -747,11 +741,11 @@ public class EHRManager
                 //ensure indexes removed, unless explicitly requested by a table
                 for (String[] cols : toRemove)
                 {
-                    String indexName = getIndexName(schema.getSqlDialect(), tableName, cols);
+                    String indexName = getIndexName(realTable.getSqlDialect(), tableName, cols);
                     boolean found = false;
                     for (String[] addedIndex : toAdd)
                     {
-                        String addedIndexName = getIndexName(schema.getSqlDialect(), tableName, addedIndex);
+                        String addedIndexName = getIndexName(realTable.getSqlDialect(), tableName, addedIndex);
                         if (addedIndexName.equalsIgnoreCase(indexName))
                         {
                             found = true;
@@ -764,14 +758,14 @@ public class EHRManager
                         break;
                     }
 
-                    boolean exists = doesIndexExist(schema, tableName, indexName);
+                    boolean exists = doesIndexExist(realTable.getSchema(), tableName, indexName);
                     if (exists)
                     {
                         if (commitChanges)
                         {
                             messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
                             String sqlString;
-                            if (schema.getSqlDialect().isSqlServer())
+                            if (realTable.getSqlDialect().isSqlServer())
                             {
                                 sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
                             }
@@ -781,7 +775,7 @@ public class EHRManager
                             }
 
                             SQLFragment sql = new SQLFragment(sqlString);
-                            SqlExecutor se = new SqlExecutor(schema);
+                            SqlExecutor se = new SqlExecutor(realTable.getSchema());
                             se.execute(sql);
                         }
                         else
@@ -830,18 +824,18 @@ public class EHRManager
                     if (missingCols)
                         continue;
 
-                    String indexName = getIndexName(schema.getSqlDialect(), tableName, indexCols);
+                    String indexName = getIndexName(realTable.getSqlDialect(), tableName, indexCols);
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
                     distinctIndexes.add(indexName);
 
                     Set<String> indexNames = new CaseInsensitiveHashSet();
-                    DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
+                    DatabaseMetaData meta = realTable.getSchema().getScope().getConnection().getMetaData();
                     ResultSet rs = null;
                     try
                     {
-                        rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
+                        rs = meta.getIndexInfo(realTable.getSchema().getScope().getDatabaseName(), realTable.getSchema().getName(), tableName, false, false);
                         while (rs.next())
                         {
                             indexNames.add(rs.getString("INDEX_NAME"));
@@ -857,7 +851,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            dropIndex(schema, realTable, indexName, cols, d.getLabel(), messages);
+                            dropIndex(realTable.getSchema(), realTable, indexName, cols, d.getLabel(), messages);
                         }
                         else
                         {
@@ -873,13 +867,13 @@ public class EHRManager
                             List<String> columns = new ArrayList<>();
                             for (String name : cols)
                             {
-                                if (schema.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
+                                if (realTable.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
                                     name += " " + directionMap.get(name);
 
                                 columns.add(name);
                             }
 
-                            createIndex(schema, realTable, d.getLabel(), indexName, columns, includedCols, messages);
+                            createIndex(realTable.getSchema(), realTable, d.getLabel(), indexName, columns, includedCols, messages);
                         }
                         else
                         {
@@ -889,7 +883,7 @@ public class EHRManager
                 }
 
                 //then disable if needed.  only attempt on SQLServer
-                if (schema.getSqlDialect().isSqlServer())
+                if (realTable.getSqlDialect().isSqlServer())
                 {
                     if (!"demographics".equalsIgnoreCase(d.getName()))
                     {
@@ -903,24 +897,24 @@ public class EHRManager
                         for (PropertyStorageSpec.Index toDisable : idxToDisable)
                         {
                             String idxName = AliasManager.makeLegalName(tableName + '_' + StringUtils.join(toDisable.columnNames, "_"), DbScope.getLabKeyScope().getSqlDialect());
-                            if (doesIndexExist(schema, tableName, idxName))
+                            if (doesIndexExist(realTable.getSchema(), tableName, idxName))
                             {
                                 messages.add("will disable index: " + tableName + "." + idxName);
                                 if (commitChanges)
                                 {
-                                    new SqlExecutor(schema).execute(new SQLFragment("ALTER INDEX " + idxName + " ON studydataset." + tableName + " DISABLE"));
+                                    new SqlExecutor(realTable.getSchema()).execute(new SQLFragment("ALTER INDEX " + idxName + " ON studydataset." + tableName + " DISABLE"));
                                 }
                             }
                             else
                             {
                                 _log.warn("unable to find index: " + tableName + "." + idxName);
-                                String indexName = getIndexName(schema.getSqlDialect(), tableName, toDisable.columnNames);
-                                if (doesIndexExist(schema, tableName, indexName))
+                                String indexName = getIndexName(realTable.getSqlDialect(), tableName, toDisable.columnNames);
+                                if (doesIndexExist(realTable.getSchema(), tableName, indexName))
                                 {
                                     messages.add("will disable index: " + tableName + "." + indexName);
                                     if (commitChanges)
                                     {
-                                        new SqlExecutor(schema).execute(new SQLFragment("ALTER INDEX " + indexName + " ON studydataset." + tableName + " DISABLE"));
+                                        new SqlExecutor(realTable.getSchema()).execute(new SQLFragment("ALTER INDEX " + indexName + " ON studydataset." + tableName + " DISABLE"));
                                     }
                                 }
                                 else

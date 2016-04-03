@@ -50,6 +50,10 @@ Ext4.define('EHR.window.RoomTransferWindow', {
                 itemId: 'performedbyField',
                 fieldLabel: 'Performed By',
                 value: LABKEY.Security.currentUser.displayName
+            },{
+                xtype: 'checkbox',
+                itemId: 'copyCagesField',
+                fieldLabel: 'Copy Cages?'
             }],
             buttons: [{
                 text: 'Submit',
@@ -107,6 +111,7 @@ Ext4.define('EHR.window.RoomTransferWindow', {
         var date = this.down('#dateField').getValue();
         var reason = this.down('#reasonField').getValue();
         var performedby = this.down('#performedbyField').getValue();
+        var copyCages = this.down('#copyCagesField').getValue();
 
         var toAdd = [];
         Ext4.Array.forEach(results.rows, function(r){
@@ -114,7 +119,7 @@ Ext4.define('EHR.window.RoomTransferWindow', {
                 Id: r.Id,
                 date: date,
                 room: dest,
-                cage: r.cage,
+                cage: copyCages ? r.cage :  null,
                 reason: reason,
                 performedby: performedby
             }))

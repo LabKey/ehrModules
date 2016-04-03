@@ -596,6 +596,70 @@ EHR.Utils = new function(){
             }
 
             window.location = LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, params);
+        },
+
+        showFlagPopup: function(id, el){
+            var ctx = EHR.Utils.getEHRContext() || {};
+            Ext4.create('Ext.window.Window', {
+                title: 'Flag Details: ' + id,
+                width: 880,
+                modal: true,
+                bodyStyle: 'padding: 5px;',
+                items: [{
+                    xtype: 'grid',
+                    cls: 'ldk-grid', //variable row height
+                    border: false,
+                    store: {
+                        type: 'labkey-store',
+                        containerPath: ctx['EHRStudyContainer'],
+                        schemaName: 'study',
+                        queryName: 'flags',
+                        columns: 'Id,date,enddate,flag/category,flag/value,remark,performedby',
+                        filterArray: [LABKEY.Filter.create('Id', id), LABKEY.Filter.create('isActive', true)],
+                        autoLoad: true
+                    },
+                    viewConfig: {
+                        //loadMask: !(Ext4.isIE && Ext4.ieVersion <= 8)
+                    },
+                    columns: [{
+                        header: 'Category',
+                        dataIndex: 'flag/category'
+                    },{
+                        header: 'Meaning',
+                        dataIndex: 'flag/value',
+                        tdCls: 'ldk-wrap-text',
+                        width: 200
+                    },{
+                        header: 'Date Added',
+                        dataIndex: 'date',
+                        xtype: 'datecolumn',
+                        format: 'Y-m-d',
+                        width: 110
+                    },{
+                        header: 'Date Removed',
+                        dataIndex: 'enddate',
+                        xtype: 'datecolumn',
+                        format: 'Y-m-d',
+                        width: 110
+                    },{
+                        header: 'Remark',
+                        dataIndex: 'remark',
+                        tdCls: 'ldk-wrap-text',
+                        width: 210
+                    },{
+                        header: 'Entered By',
+                        dataIndex: 'performedby',
+                        width: 110
+                    }],
+                    border: false
+                }],
+                buttons: [{
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }]
+            }).show(el);
         }
     }
 };

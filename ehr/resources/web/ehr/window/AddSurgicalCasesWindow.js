@@ -54,7 +54,7 @@ Ext4.define('EHR.window.AddSurgicalCasesWindow', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            sort: 'Id/curLocation/room,Id/curLocation/cage,Id,remark',
+            sort: 'Id/curLocation/room_sortValue,Id/curLocation/cage_sortValue,Id,remark',
             columns: 'Id,objectid,remark,Id/curLocation/location',
             filterArray: casesFilterArray,
             scope: this,

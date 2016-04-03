@@ -59,7 +59,20 @@ Ext4.define('EHR.panel.EnterDataPanel', {
     },
 
     getItems: function(){
-        return [{
+        return [
+            {
+                xtype: 'panel',
+                bodyStyle: 'margin: 5px;',
+                title: 'Enter New Data',
+                itemId: 'enterNew',
+                defaults: {
+                    border: false
+                },
+                items: [{
+                    html: 'Loading...'
+                }]
+            },
+            {
             xtype: 'ldk-querypanel',
             bodyStyle: 'margin: 5px;',
             title: 'My Tasks',
@@ -77,17 +90,6 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 queryName: 'tasks',
                 viewName: 'Active Tasks'
             }
-        },{
-            xtype: 'panel',
-            bodyStyle: 'margin: 5px;',
-            title: 'Enter New Data',
-            itemId: 'enterNew',
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: 'Loading...'
-            }]
         },{
             title: 'Queues',
             bodyStyle: 'margin: 5px;',

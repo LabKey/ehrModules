@@ -217,6 +217,7 @@ ehr/api-src/org/labkey/api/ehr/security/EHRScheduledInsertPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledUpdatePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSurgeryEntryPermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRTemplateCreatorPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRVeternarianPermission.java -text
 ehr/module.properties -text
 ehr/resources/credits/scripts.txt -text
@@ -1377,6 +1378,7 @@ ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text
 ehr/src/org/labkey/ehr/security/EHRSnomedEditorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSurgeryEntryRole.java -text
+ehr/src/org/labkey/ehr/security/EHRTemplateCreatorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text

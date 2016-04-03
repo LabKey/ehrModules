@@ -489,7 +489,7 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
             ignoreParentClicks: true,
             items: [{
                 text: 'Save As Template',
-                hidden: !LABKEY.Security.currentUser.isAdmin,
+                hidden: !EHR.Security.isTemplateCreator(),
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     Ext4.create('EHR.window.SaveTemplateWindow', {

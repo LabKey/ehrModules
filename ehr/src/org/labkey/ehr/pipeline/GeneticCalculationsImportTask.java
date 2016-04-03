@@ -29,6 +29,7 @@ import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
@@ -270,9 +271,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         Domain domain = ti.getDomain();
         if (domain != null)
         {
-            String tableName = domain.getStorageTableName();
-            DbSchema dbSchema = StudyService.get().getDatasetSchema();
-            return dbSchema.getTable(tableName);
+            return StorageProvisioner.createTableInfo(domain);
         }
 
         return null;

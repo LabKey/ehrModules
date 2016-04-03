@@ -34,10 +34,10 @@ import java.util.Map;
  */
 public class AnimalRecordImpl implements AnimalRecord
 {
-    private Map<String, Object> _props = new CaseInsensitiveHashMap<>();
-    private Container _container;
-    private String _id;
-    private Date _created;
+    private Map<String, Object> _props = Collections.unmodifiableMap(new CaseInsensitiveHashMap<>());
+    private final Container _container;
+    private final String _id;
+    private final Date _created;
 
     private AnimalRecordImpl(Container c, String id)
     {
@@ -46,37 +46,37 @@ public class AnimalRecordImpl implements AnimalRecord
         _created = new Date();
     }
 
+    private AnimalRecordImpl(Container c, String id, Map<String, Object> props)
+    {
+        this(c, id);
+        if (props != null)
+        {
+            _props = Collections.unmodifiableMap(new CaseInsensitiveHashMap<>(props));
+        }
+    }
+
     public static AnimalRecordImpl create(Container c, String id, Map<String, Object> props)
     {
-        AnimalRecordImpl rec = new AnimalRecordImpl(c, id);
-        rec.applyAll(props);
-
-        return rec;
+        return new AnimalRecordImpl(c, id, props);
     }
 
     public AnimalRecord createCopy()
     {
-        AnimalRecordImpl ret = new AnimalRecordImpl(getContainer(), getId());
-        ret.applyAll(_props);
-
-        return ret;
+        return new AnimalRecordImpl(getContainer(), getId(), _props);
     }
 
     public synchronized void update(DemographicsProvider p, Map<String, Object> props)
     {
+        Map<String, Object> mergedProps = new CaseInsensitiveHashMap<>(_props);
         for (String key : p.getKeys())
         {
-            _props.remove(key);
+            mergedProps.remove(key);
         }
 
         if (props != null)
-            _props.putAll(props);
-    }
+            mergedProps.putAll(props);
 
-    private void applyAll(Map<String, Object> props)
-    {
-        if (props != null)
-            _props.putAll(props);
+        _props = Collections.unmodifiableMap(mergedProps);
     }
 
     public String getId()
@@ -97,7 +97,7 @@ public class AnimalRecordImpl implements AnimalRecord
     @NotNull
     public Map<String, Object> getProps()
     {
-        return Collections.unmodifiableMap(_props);
+        return _props;
     }
 
     public String getGender()

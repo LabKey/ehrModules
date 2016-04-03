@@ -185,7 +185,7 @@ Ext4.define('EHR.window.AddClinicalCasesWindow', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            sort: 'Id/curlocation/room,Id/curlocation/cage,Id',
+            sort: 'Id/curlocation/room_sortValue,Id/curlocation/cage_sortValue,Id',
             columns: 'Id,Id/curLocation/location,objectid,mostRecentP2,Id/Utilization/use,problemCategories',
             filterArray: filterArray,
             scope: this,

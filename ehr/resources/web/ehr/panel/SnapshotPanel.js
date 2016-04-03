@@ -419,6 +419,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 animals.sort();
                 animals = animals.remove(id);
             }
+
+            pairingType = row.category;
         }
 
         toSet['cagemates'] = cagemates;
@@ -466,6 +468,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.each(results, function(row){
                 var val = row['project/investigatorId/lastName'] || '';
                 val += ' [' + (row['project/displayName'] || row['protocol/displayName']) + ']';
+                val += ' [' + row['project/protocol/displayName'] + ']';
 
                 if (val)
                     values.push(val);
@@ -489,6 +492,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         if (!reviewdate || Ext4.Date.clearTime(reviewdate).getTime() <= Ext4.Date.clearTime(new Date()).getTime()){
                             text = text + ' (' + date.format('Y-m-d') + ')';
 
+                            values.push(text);
+                        }
+                        else if (reviewdate && Ext4.Date.clearTime(reviewdate).getTime() > Ext4.Date.clearTime(new Date()).getTime()){
+                            text = text + ' - None (Reopens: '  + reviewdate.format('Y-m-d') + ')';
                             values.push(text);
                         }
                     }
@@ -670,7 +677,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }
         }
 
-        toSet['flags'] = values.length ? values.join('<br>') : null;
+        toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + this.subjectId + '\', this);">' + values.join('<br>') + '</div>' : null;
     },
 
     appendBirthResults: function(toSet, results, birth){
@@ -742,7 +749,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
                 parentMap[text] = Ext4.unique(parentMap[text]);
                 var method = parentMap[text].join(', ');
-                values.push('<a href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'parentage', 'query.Id~eq': this.subjectId}) + '" target="_blank">' + text + (method ? ' (' + method + ')' : '') + '</a>');
+                values.push('<a href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'parentage', 'query.Id~eq': this.subjectId, 'query.isActive~eq': true}) + '" target="_blank">' + text + (method ? ' (' + method + ')' : '') + '</a>');
             }, this);
 
             if (values.length)

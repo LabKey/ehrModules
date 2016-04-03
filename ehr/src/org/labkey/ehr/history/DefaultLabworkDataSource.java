@@ -67,6 +67,10 @@ public class DefaultLabworkDataSource extends AbstractDataSource
 
         //sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Service/Panel", "servicerequested"));
+
+        //Modified 9-9-2015 Blasa
+        sb.append(safeAppend(rs, "Testing Performed by", "chargetype"));
+
         sb.append(safeAppend(rs, "Sample Type", "sampletype"));
 
         if (rs.hasColumn(FieldKey.fromString("tissue")) && rs.getObject("tissue") != null)
@@ -104,7 +108,9 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "remark");
+        //return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "remark");
+            //Modified 9-9-2015  Added chargetype
+        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "chargetype","remark");
     }
 
     @Override

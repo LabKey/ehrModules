@@ -38,6 +38,7 @@ import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -772,9 +773,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else
         {
-            String tableName = ds.getDomain().getStorageTableName();
-            DbSchema dbSchema = StudyService.get().getDatasetSchema();
-            return dbSchema.getTable(tableName);
+            return StorageProvisioner.createTableInfo(ds.getDomain());
         }
     }
 

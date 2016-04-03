@@ -25,6 +25,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.ldk.notification.NotificationSection;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
@@ -207,10 +208,9 @@ public class DataEntrySummary implements NotificationSection
                 }
             });
 
-            DbSchema schema = StudyService.get().getDatasetSchema();
             for (Dataset ds : datasets)
             {
-                TableInfo ti = schema.getTable(ds.getDomain().getStorageTableName());
+                TableInfo ti = StorageProvisioner.createTableInfo(ds.getDomain());
 
                 long rowCount = 0;
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("created"), getYesterday(), CompareType.DATE_EQUAL);

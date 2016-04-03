@@ -19,6 +19,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.CompareType;
@@ -121,17 +122,19 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     }
 
     /**
-     * Queries the cache for the animal record, creating if not found
+     * Queries the cache for the animal record, creating if not found.
+     * Always returns a copy of the original
      */
     public AnimalRecord getAnimal(Container c, String id)
     {
         List<AnimalRecord> ret = getAnimals(c, Collections.singletonList(id));
 
-        return ret.size() > 0 ? ret.get(0).createCopy() : null;
+        return !ret.isEmpty() ? ret.get(0) : null;
     }
 
     /**
-     * Queries the cache for the animal record, creating if not found
+     * Queries the cache for the animal record, creating if not found.
+     * Always returns a copy of the original
      */
     public List<AnimalRecord> getAnimals(Container c, Collection<String> ids)
     {
@@ -155,9 +158,13 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             }
         }
 
-        if (toCreate.size() > 0)
+        if (!toCreate.isEmpty())
         {
-            records.addAll(createRecords(c, toCreate, validateOnCreate));
+            //always return copy of record
+            for (AnimalRecord ret : createRecords(c, toCreate, validateOnCreate))
+            {
+                records.add(ret.createCopy());
+            }
         }
 
         return records;
@@ -220,6 +227,21 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             }
         }
 
+        // Remove when caching issues are resolved
+        if (record.getProps().size() < 4)
+        {
+            User u = EHRService.get().getEHRUser(record.getContainer());
+            if (u != null)
+            {
+                TableInfo demographicsTable = getDemographicsTableInfo(record.getContainer(), u);
+                TableSelector ts = new TableSelector(demographicsTable, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromParts("Id"), record.getId()), null);
+                if (ts.exists())
+                {
+                    _log.warn("Caching only " + record.getProps().size() + " properties for known animal " + record.getId(), new Throwable());
+                }
+            }
+        }
+
         _cache.put(key, record);
     }
 
@@ -235,7 +257,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     public void reportDataChange(Container c, String schema, String query, List<String> ids)
     {
-        reportDataChange(c, Arrays.asList(Pair.of(schema, query)), ids, false);
+        reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), ids, false);
     }
 
     public void reportDataChange(final Container c, final List<Pair<String, String>> changed, final List<String> ids, boolean async)
@@ -336,35 +358,35 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 {
                     String key = getCacheKey(c, id);
                     AnimalRecordImpl ar = _cache.get(key);
+
+                    //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
+                    if (doAfterUpdate)
+                        idsToUpdate.addAll(p.getIdsToUpdate(c, id, ar == null ? null : ar.getProps(), props.get(id)));
+
                     if (ar != null)
                     {
-                        //NOTE: we want to continue even if the map is NULL.  this is important to clear out the existing values.
-                        if (doAfterUpdate)
-                            idsToUpdate.addAll(p.getIdsToUpdate(c, id, ar.getProps(), props.get(id)));
-
+                        // Only need to update the cache if the animal has a current record in the cache. Otherwise,
+                        // it will be recalculated and recached lazily as needed
                         ar.update(p, props.get(id));   //perform update only after we determine which additional IDs should be recached
+                        cacheRecord(ar, false);
                     }
                     else
                     {
-                        ar = AnimalRecordImpl.create(c, id, props.get(id));
-                        if (doAfterUpdate)
-                            idsToUpdate.addAll(p.getIdsToUpdate(c, id, null, props.get(id)));
+                        _log.error("Animal record not found in cache for: " + id + ". Discovered during update of provider: " + p.getName(), new Exception());
                     }
-
-                    cacheRecord(ar, false);
                 }
             }
 
             idsToUpdate.removeAll(uniqueIds);
             if (!idsToUpdate.isEmpty())
             {
-                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 10 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
+                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
                 reportDataChangeForProvider(c, p, idsToUpdate);
             }
         }
 
         timer.stop();
-        _log.info("updated demographics provider: " + p.getName() + " for " + ids.size() + " ids.  " + (ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]") + " took " + timer.getDuration());
+        _log.info("updated demographics provider: " + p.getName() + " for " + ids.size() + " ids.  " + (ids.size() > 100 ? "" : "[" + StringUtils.join(ids, ",") + "]") + " took " + timer.getDuration());
     }
 
     // Create and cache IDs in the background
@@ -455,13 +477,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     public void cacheAnimals(Container c, User u, boolean validateOnCreate, boolean livingOnly)
     {
-        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
-        if (us == null)
-            throw new IllegalArgumentException("Unable to find study schema");
-
-        TableInfo demographics = us.getTable("demographics");
-        if (demographics == null)
-            throw new IllegalArgumentException("Unable to find demographics table");
+        TableInfo demographics = getDemographicsTableInfo(c, u);
 
         List<String> ids = new ArrayList<>();
         if (livingOnly)
@@ -479,12 +495,25 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             ids.addAll(ts.getArrayList(String.class));
         }
 
-        if (ids.size() > 0)
+        if (!ids.isEmpty())
         {
             _log.info("Forcing recache of " + ids.size() + " animals");
             createRecords(c, ids, validateOnCreate);
             _log.info("Cache load complete");
         }
+    }
+
+    @NotNull
+    private TableInfo getDemographicsTableInfo(Container c, User u)
+    {
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
+        if (us == null)
+            throw new IllegalArgumentException("Unable to find study schema");
+
+        TableInfo demographics = us.getTable("demographics");
+        if (demographics == null)
+            throw new IllegalArgumentException("Unable to find demographics table");
+        return demographics;
     }
 
     /**

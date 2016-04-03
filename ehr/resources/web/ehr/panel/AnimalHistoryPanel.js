@@ -49,7 +49,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
                 label: rec.get('reporttitle'),
                 category: rec.get('category'),
                 reportType: rec.get('reporttype'),
-                subjectFieldName: 'Id',
+                subjectFieldName: rec.get('subjectIdFieldName') || 'Id',
                 containerPath: rec.get('containerpath'),
                 schemaName: rec.get('schemaname'),
                 queryName: rec.get('queryname'),

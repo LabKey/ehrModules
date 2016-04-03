@@ -128,7 +128,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'blood',
-            sort: 'date,Id/curlocation/room,Id/curlocation/cage,Id',
+            sort: 'date,Id/curlocation/room_sortValue,Id/curlocation/cage_sortValue,Id',
             columns: 'lsid,Id,date,project,tube_type,quantity,charge_type,additionalServices,instructions,daterequested,reason,objectid,requestid',
             filterArray: filterArray,
             scope: this,

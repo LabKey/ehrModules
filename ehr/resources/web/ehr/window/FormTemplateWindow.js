@@ -166,6 +166,13 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 change: function(field, val){
                     if(this.templateRecordMap[val]){
                         var combos = this.query('combo[section]');
+
+                        // Clear all combo values first
+                        Ext4.Array.forEach(combos, function(combo){
+                            combo.setValue(null);
+                        });
+
+                        // Set combos based on value from the template, if present
                         Ext4.Array.forEach(this.templateRecordMap[val], function(row){
                             var found = false;
                             Ext4.Array.forEach(combos, function(combo){
@@ -201,6 +208,7 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 displayField: 'title',
                 sort: 'title',
                 anyMatch: true,
+                emptyText: 'Select an Option',     //Added 2-19-2016 Blasa
                 caseSensitive: false,
                 //Added 4-22-2015  Blasa
                 typeAhead: true,

@@ -27,6 +27,7 @@ import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
+import org.labkey.api.ehr.security.EHRTemplateCreatorPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
@@ -99,6 +100,7 @@ import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRSurgeryEntryRole;
+import org.labkey.ehr.security.EHRTemplateCreatorRole;
 import org.labkey.ehr.security.EHRVeternarianRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
@@ -163,6 +165,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRFullSubmitterRole());
         RoleManager.registerRole(new EHRFullUpdaterRole());
         RoleManager.registerRole(new EHRRequestAdminRole());
+        RoleManager.registerRole(new EHRTemplateCreatorRole());
 
         RoleManager.registerRole(new EHRVeternarianRole());
         RoleManager.registerRole(new EHRDataEntryRole());
