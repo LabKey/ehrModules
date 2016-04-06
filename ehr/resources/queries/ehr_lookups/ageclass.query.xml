@@ -27,9 +27,6 @@
               <column columnName="max">
                 <columnTitle>Max</columnTitle>
               </column>
-              <column columnName="dataset">
-                <columnTitle>Dataset</columnTitle>
-              </column>
             </columns>
             <pkColumnName>key</pkColumnName>
             </table>
