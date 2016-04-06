@@ -29,6 +29,7 @@ import org.labkey.test.util.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
@@ -43,7 +44,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest
+abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest implements SqlserverOnlyTest
 {
     protected static final String REFERENCE_STUDY_PATH = "/resources/referenceStudy";
     protected static final String GENETICS_PIPELINE_LOG_PATH = REFERENCE_STUDY_PATH + "/kinship/EHR Kinship Calculation/kinship.txt.log";
