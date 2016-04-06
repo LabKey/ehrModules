@@ -136,8 +136,11 @@
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">
                     <includeScript>/ehr/studyButtons.js</includeScript>
-                    <item text="Views">
-                        <originalText>Views</originalText>
+                    <item text="Grid Views">
+                        <originalText>Grid Views</originalText>
+                    </item>
+                    <item text="Reports">
+                        <originalText>Reports</originalText>
                     </item>
                     <item text="Export">
                         <originalText>Export</originalText>
@@ -145,8 +148,8 @@
                     <item text="Print">
                         <originalText>Print</originalText>
                     </item>
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
+                    <item text="Paging">
+                        <originalText>Paging</originalText>
                     </item>
                 </buttonBarOptions>
             </table>

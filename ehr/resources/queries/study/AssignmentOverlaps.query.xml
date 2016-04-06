@@ -14,8 +14,14 @@
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
 
-                    <item text="Views">
-                        <originalText>Views</originalText>
+                    <item text="Grid Views">
+                        <originalText>Grid Views</originalText>
+                    </item>
+                    <item text="Reports">
+                        <originalText>Reports</originalText>
+                    </item>
+                    <item text="Insert">
+                        <originalText>Insert</originalText>
                     </item>
                     <item text="Insert New">
                         <originalText>Insert New</originalText>
@@ -35,8 +41,8 @@
                     <item text="Import Data">
                         <originalText>Import Data</originalText>
                     </item>
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
+                    <item text="Paging">
+                        <originalText>Paging</originalText>
                     </item>
                     <item text="More Actions" insertPosition="end" requiresSelection="true">
                         <item text="Jump To History">

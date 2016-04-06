@@ -114,8 +114,11 @@
                     <!--<item text="Create New">-->
                         <!--<originalText>Insert New</originalText>-->
                     <!--</item>-->
-                    <item text="Views">
-                        <originalText>Views</originalText>
+                    <item text="Grid Views">
+                        <originalText>Grid Views</originalText>
+                    </item>
+                    <item text="Reports">
+                        <originalText>Reports</originalText>
                     </item>
                     <item text="Export">
                         <originalText>Export</originalText>
@@ -126,8 +129,8 @@
                     <!--<item text="Import Data">-->
                         <!--<originalText>Import Data</originalText>-->
                     <!--</item>-->
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
+                    <item text="Paging">
+                        <originalText>Paging</originalText>
                     </item>
                     <!--<item text="Delete">-->
                         <!--<originalText>Delete</originalText>-->
