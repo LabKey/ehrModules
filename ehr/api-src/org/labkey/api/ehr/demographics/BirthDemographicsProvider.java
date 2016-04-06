@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
@@ -30,21 +30,29 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class TBDemographicsProvider extends AbstractListDemographicsProvider
+public class BirthDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public TBDemographicsProvider(Module owner)
+    public BirthDemographicsProvider(Module owner)
     {
-        super(owner, "study", "demographicsMostRecentTBDate", "tb");
+        super(owner, "study", "Birth", "birthInfo");
         _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<>();
+        Set<FieldKey> keys = new HashSet<FieldKey>();
+        keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
-        keys.add(FieldKey.fromString("MostRecentTBDate"));
-        keys.add(FieldKey.fromString("MonthsSinceLastTB"));
-        keys.add(FieldKey.fromString("MonthsUntilDue"));
+        keys.add(FieldKey.fromString("date"));
+        keys.add(FieldKey.fromString("enddate"));
+        keys.add(FieldKey.fromString("type"));
+
+        //onprc column names
+        keys.add(FieldKey.fromString("birth_condition"));
+        keys.add(FieldKey.fromString("date_type"));
+
+        //wnprc
+        keys.add(FieldKey.fromString("cond"));
 
         return keys;
     }
@@ -53,15 +61,9 @@ public class TBDemographicsProvider extends AbstractListDemographicsProvider
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);
+        //NOTE: deliberately include draft data
+        //filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
-    }
-
-    @Override
-    public boolean requiresRecalc(String schema, String query)
-    {
-        return ("study".equalsIgnoreCase(schema) && "TB Tests".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "TB".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "Demographics".equalsIgnoreCase(query));
     }
 }

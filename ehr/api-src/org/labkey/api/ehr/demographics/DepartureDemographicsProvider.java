@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
+import org.labkey.api.data.CompareType;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.ehr.demographics.AbstractDemographicsProvider;
 import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
@@ -25,28 +28,29 @@ import java.util.Set;
 
 /**
  * User: bimber
- * Date: 7/9/13
- * Time: 10:12 PM
+ * Date: 7/14/13
+ * Time: 10:29 AM
  */
-public class HousingDemographicsProvider extends AbstractListDemographicsProvider
+public class DepartureDemographicsProvider extends AbstractDemographicsProvider
 {
-    public HousingDemographicsProvider(Module owner)
+    public DepartureDemographicsProvider(Module owner)
     {
-        super(owner, "study", "demographicsCurLocation", "activeHousing");
+        super(owner, "study", "demographicsMostRecentDeparture");
         _supportsQCState = false;
     }
 
-    protected Collection<FieldKey> getFieldKeys()
+    public String getName()
+    {
+        return "Most Recent Departure";
+    }
+
+    protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();
-        keys.add(FieldKey.fromString("area"));
-        keys.add(FieldKey.fromString("room"));
-        keys.add(FieldKey.fromString("room_sortValue"));
-        keys.add(FieldKey.fromString("cage"));
-        keys.add(FieldKey.fromString("cage_sortValue"));
-        keys.add(FieldKey.fromString("date"));
-        keys.add(FieldKey.fromString("cond"));
-        keys.add(FieldKey.fromString("reason"));
+
+        keys.add(FieldKey.fromString("Id"));
+        keys.add(FieldKey.fromString("MostRecentDeparture"));
+        keys.remove("objectid");
 
         return keys;
     }
@@ -54,9 +58,6 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
     @Override
     public boolean requiresRecalc(String schema, String query)
     {
-        return ("study".equalsIgnoreCase(schema) && "Housing".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "Death".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "Departure".equalsIgnoreCase(query)) ||
-                ("ehr_lookups".equalsIgnoreCase(schema) && "cage".equalsIgnoreCase(query));
+        return ("study".equalsIgnoreCase(schema) && "Departure".equalsIgnoreCase(query));
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;

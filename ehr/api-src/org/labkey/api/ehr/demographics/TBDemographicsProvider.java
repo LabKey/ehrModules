@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
@@ -30,28 +30,21 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class ActiveFlagsDemographicsProvider extends AbstractListDemographicsProvider
+public class TBDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public ActiveFlagsDemographicsProvider(Module module)
+    public TBDemographicsProvider(Module owner)
     {
-        super(module, "study", "Animal Record Flags", "activeFlags");
+        super(owner, "study", "demographicsMostRecentTBDate", "tb");
+        _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
-        keys.add(FieldKey.fromString("lsid"));
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("Id"));
-        keys.add(FieldKey.fromString("date"));
-        keys.add(FieldKey.fromString("enddate"));
-        keys.add(FieldKey.fromString("flag"));
-        keys.add(FieldKey.fromString("flag/category"));
-        keys.add(FieldKey.fromString("flag/value"));
-        keys.add(FieldKey.fromString("performedby"));
-        keys.add(FieldKey.fromString("remark"));
-
-        keys.add(FieldKey.fromString("flag/category/doHighlight"));
-        keys.add(FieldKey.fromString("flag/category/omitFromOverview"));
+        keys.add(FieldKey.fromString("MostRecentTBDate"));
+        keys.add(FieldKey.fromString("MonthsSinceLastTB"));
+        keys.add(FieldKey.fromString("MonthsUntilDue"));
 
         return keys;
     }
@@ -60,19 +53,15 @@ public class ActiveFlagsDemographicsProvider extends AbstractListDemographicsPro
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);
-        filter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
-        filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
     }
 
     @Override
-    public Collection<String> getKeysToTest()
+    public boolean requiresRecalc(String schema, String query)
     {
-        //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
-        Set<String> keys = new HashSet<>(super.getKeysToTest());
-        keys.remove(_propName);
-
-        return keys;
+        return ("study".equalsIgnoreCase(schema) && "TB Tests".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "TB".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Demographics".equalsIgnoreCase(query));
     }
 }

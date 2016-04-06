@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
@@ -30,22 +30,22 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class DeathsDemographicsProvider extends AbstractListDemographicsProvider
+public class ActiveProblemsDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public DeathsDemographicsProvider(Module owner)
+    public ActiveProblemsDemographicsProvider(Module owner)
     {
-        super(owner, "study", "Deaths", "deathInfo");
+        super(owner, "study", "Problem List", "activeProblems");
     }
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<>();
+        Set<FieldKey> keys = new HashSet<FieldKey>();
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("enddate"));
-        keys.add(FieldKey.fromString("cause"));
-        keys.add(FieldKey.fromString("manner"));
+        keys.add(FieldKey.fromString("category"));
+        keys.add(FieldKey.fromString("remark"));
 
         return keys;
     }
@@ -54,8 +54,27 @@ public class DeathsDemographicsProvider extends AbstractListDemographicsProvider
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);
+        filter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
         filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
+    }
+
+    @Override
+    public Collection<String> getKeysToTest()
+    {
+        //for now, simply skip the whole provider.  because different records can be active from day to day, this makes validation tricky
+        Set<String> keys = new HashSet<>(super.getKeysToTest());
+        keys.remove(_propName);
+
+        return keys;
+    }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "Cases".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Problem List".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "problems".equalsIgnoreCase(query));
     }
 }

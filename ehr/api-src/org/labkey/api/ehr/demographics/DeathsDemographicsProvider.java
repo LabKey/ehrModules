@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
@@ -30,29 +30,22 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class BirthDemographicsProvider extends AbstractListDemographicsProvider
+public class DeathsDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public BirthDemographicsProvider(Module owner)
+    public DeathsDemographicsProvider(Module owner)
     {
-        super(owner, "study", "Birth", "birthInfo");
-        _supportsQCState = false;
+        super(owner, "study", "Deaths", "deathInfo");
     }
 
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("enddate"));
-        keys.add(FieldKey.fromString("type"));
-
-        //onprc column names
-        keys.add(FieldKey.fromString("birth_condition"));
-        keys.add(FieldKey.fromString("date_type"));
-
-        //wnprc
-        keys.add(FieldKey.fromString("cond"));
+        keys.add(FieldKey.fromString("cause"));
+        keys.add(FieldKey.fromString("manner"));
 
         return keys;
     }
@@ -61,8 +54,7 @@ public class BirthDemographicsProvider extends AbstractListDemographicsProvider
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = super.getFilter(ids);
-        //NOTE: deliberately include draft data
-        //filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
+        filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
 
         return filter;
     }

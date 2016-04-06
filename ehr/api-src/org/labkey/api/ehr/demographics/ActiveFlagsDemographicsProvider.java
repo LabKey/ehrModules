@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
@@ -30,11 +29,11 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class ActiveProblemsDemographicsProvider extends AbstractListDemographicsProvider
+public class ActiveFlagsDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public ActiveProblemsDemographicsProvider(Module owner)
+    public ActiveFlagsDemographicsProvider(Module module)
     {
-        super(owner, "study", "Problem List", "activeProblems");
+        super(module, "study", "Animal Record Flags", "activeFlags");
     }
 
     protected Set<FieldKey> getFieldKeys()
@@ -44,8 +43,14 @@ public class ActiveProblemsDemographicsProvider extends AbstractListDemographics
         keys.add(FieldKey.fromString("Id"));
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("enddate"));
-        keys.add(FieldKey.fromString("category"));
+        keys.add(FieldKey.fromString("flag"));
+        keys.add(FieldKey.fromString("flag/category"));
+        keys.add(FieldKey.fromString("flag/value"));
+        keys.add(FieldKey.fromString("performedby"));
         keys.add(FieldKey.fromString("remark"));
+
+        keys.add(FieldKey.fromString("flag/category/doHighlight"));
+        keys.add(FieldKey.fromString("flag/category/omitFromOverview"));
 
         return keys;
     }
@@ -68,13 +73,5 @@ public class ActiveProblemsDemographicsProvider extends AbstractListDemographics
         keys.remove(_propName);
 
         return keys;
-    }
-
-    @Override
-    public boolean requiresRecalc(String schema, String query)
-    {
-        return ("study".equalsIgnoreCase(schema) && "Cases".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "Problem List".equalsIgnoreCase(query)) ||
-                ("study".equalsIgnoreCase(schema) && "problems".equalsIgnoreCase(query));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 LabKey Corporation
+ * Copyright (c) 2015-2016 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.demographics;
+package org.labkey.api.ehr.demographics;
 
-import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.demographics.AbstractDemographicsProvider;
 import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
@@ -31,33 +29,35 @@ import java.util.Set;
  * Date: 7/14/13
  * Time: 10:29 AM
  */
-public class DepartureDemographicsProvider extends AbstractDemographicsProvider
+public class ArrivalDemographicsProvider extends AbstractListDemographicsProvider
 {
-    public DepartureDemographicsProvider(Module owner)
+    public ArrivalDemographicsProvider(Module owner)
     {
-        super(owner, "study", "demographicsMostRecentDeparture");
+        super(owner, "study", "Arrival", "arrivalInfo");
         _supportsQCState = false;
-    }
-
-    public String getName()
-    {
-        return "Most Recent Departure";
     }
 
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();
-
+        keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
-        keys.add(FieldKey.fromString("MostRecentDeparture"));
-        keys.remove("objectid");
+        keys.add(FieldKey.fromString("date"));
+        keys.add(FieldKey.fromString("enddate"));
+        keys.add(FieldKey.fromString("source"));
+        keys.add(FieldKey.fromString("acquisitionType"));
+        keys.add(FieldKey.fromString("rearingType"));
 
         return keys;
     }
 
     @Override
-    public boolean requiresRecalc(String schema, String query)
+    protected SimpleFilter getFilter(Collection<String> ids)
     {
-        return ("study".equalsIgnoreCase(schema) && "Departure".equalsIgnoreCase(query));
+        SimpleFilter filter = super.getFilter(ids);
+        //NOTE: deliberately include draft data
+        //filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
+
+        return filter;
     }
 }
