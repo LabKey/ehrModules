@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
@@ -74,7 +75,10 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     private boolean _hasCreatedBirthRecords = false;
 
     @ClassRule
-    public static Timeout globalTimeout = new Timeout(3600000); // 60 minutes
+    public static Timeout globalTimeout()
+    {
+        return new Timeout(60, TimeUnit.MINUTES); // 60 minutes
+    }
 
     @Override
     protected String getProjectName()
