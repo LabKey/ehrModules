@@ -612,7 +612,14 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
     private void refreshAnimalHistoryReport()
     {
-        new AnimalHistoryPage(getDriver()).refreshReport();
+        try
+        {
+            new AnimalHistoryPage(getDriver()).refreshReport();
+        }
+        catch (NoSuchElementException e)
+        {
+            new AnimalHistoryPage(getDriver()).refreshReport();
+        }
     }
 
     private void setDoseConcFields()
