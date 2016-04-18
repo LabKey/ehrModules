@@ -6,10 +6,10 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ComponentElements;
 import org.labkey.test.pages.LabKeyPage;
-import org.labkey.test.selenium.LazyWebElement;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -65,7 +65,14 @@ public class ParticipantViewPage extends LabKeyPage
     {
         if (!reportTab.getAttribute("class").contains("active"))
         {
-            doAndWaitForPageSignal(reportTab::click, REPORT_TAB_SIGNAL);
+            try
+            {
+                doAndWaitForPageSignal(reportTab::click, REPORT_TAB_SIGNAL);
+            }
+            catch (StaleElementReferenceException ignore) // Tab signal might fire more than once
+            {
+                reportTab.isDisplayed(); // Make sure it was actually the signal that was stale
+            }
             _ext4Helper.waitForMaskToDisappear();
         }
         return this;
