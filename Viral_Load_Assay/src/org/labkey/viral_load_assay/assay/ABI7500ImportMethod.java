@@ -53,12 +53,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,7 +68,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/26/12
  * Time: 3:58 PM
@@ -539,7 +536,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
     }
 
     @Override
-    public void doGenerateTemplate(JSONObject json, HttpServletRequest request, HttpServletResponse response, boolean exportAsWebpage) throws BatchValidationException
+    public void doGenerateTemplate(JSONObject json, HttpServletRequest request, HttpServletResponse response) throws BatchValidationException
     {
         BatchValidationException errors = new BatchValidationException();
 
@@ -568,14 +565,11 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 throw errors;
             }
 
-            if (!exportAsWebpage)
-            {
-                String filename = json.getString("templateName") + ".txt";
-                response.setContentType("text/tab-separated-values");
-                response.setHeader("Content-disposition", "attachment; filename=\"" + filename +"\"");
-                response.setHeader("Pragma", "private");
-                response.setHeader("Cache-Control", "private");
-            }
+            String filename = json.getString("templateName") + ".txt";
+            response.setContentType("text/tab-separated-values");
+            response.setHeader("Content-disposition", "attachment; filename=\"" + filename +"\"");
+            response.setHeader("Pragma", "private");
+            response.setHeader("Cache-Control", "private");
 
             Map<Integer, String[]> rowMap = new HashMap<Integer, String[]>();
 
