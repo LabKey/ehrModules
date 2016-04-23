@@ -59,7 +59,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.dao.DeadlockLoserDataAccessException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -227,21 +226,6 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             }
         }
 
-        // Remove when caching issues are resolved
-        if (record.getProps().size() < 4)
-        {
-            User u = EHRService.get().getEHRUser(record.getContainer());
-            if (u != null)
-            {
-                TableInfo demographicsTable = getDemographicsTableInfo(record.getContainer(), u);
-                TableSelector ts = new TableSelector(demographicsTable, Collections.singleton("Id"), new SimpleFilter(FieldKey.fromParts("Id"), record.getId()), null);
-                if (ts.exists())
-                {
-                    _log.warn("Caching only " + record.getProps().size() + " properties for known animal " + record.getId(), new Throwable());
-                }
-            }
-        }
-
         _cache.put(key, record);
     }
 
@@ -352,6 +336,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
             Set<String> idsToUpdate = new TreeSet<>();
 
+            Set<String> uncachedIds = new HashSet<>();
+
             for (String id : sublist)
             {
                 synchronized (this)
@@ -372,9 +358,14 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     }
                     else
                     {
-                        _log.error("Animal record not found in cache for: " + id + ". Discovered during update of provider: " + p.getName(), new Exception());
+                        uncachedIds.add(id);
                     }
                 }
+            }
+
+            if (!uncachedIds.isEmpty())
+            {
+                _log.warn("Animal record not found in cache for: " + uncachedIds + ". Not a problem if these are newly inserted animals. Discovered during update of provider: " + p.getName());
             }
 
             idsToUpdate.removeAll(uniqueIds);
