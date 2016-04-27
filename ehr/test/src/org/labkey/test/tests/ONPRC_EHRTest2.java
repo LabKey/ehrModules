@@ -507,6 +507,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     {
         _helper.goToTaskForm("Arrival", "Submit Final", false);
 
+        waitAndClick(Ext4Helper.Locators.ext4Button("Lock Entry"));
+
         waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
 
@@ -576,12 +578,13 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
 
         waitAndClick(_helper.getDataEntryButton("Submit Final"));
-        waitForElement(Ext4Helper.Locators.window("Finalize Form"));
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.Locators.window("Finalize Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
+        waitForElement(Ext4Helper.Locators.window("Finalize Birth/Arrival Form"));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.Locators.window("Finalize Birth/Arrival Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
 
         waitForElement(Locator.tagWithText("span", "Enter Data"));
 
         _helper.goToTaskForm("Arrival", "Submit Final", false);
+        waitAndClick(Ext4Helper.Locators.ext4Button("Lock Entry"));
 
         waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
