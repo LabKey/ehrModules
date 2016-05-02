@@ -1176,6 +1176,7 @@ ehr/resources/web/ehr/panel/AnimalDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/BasicAggregationPanel.js -text
+ehr/resources/web/ehr/panel/BloodSummaryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditPanel.js -text
 ehr/resources/web/ehr/panel/CaseHistoryPanel.js -text
@@ -1347,6 +1348,7 @@ ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsJob.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRunnable.java -text
 ehr/src/org/labkey/ehr/query/AbstractDataDefinedTable.java -text
+ehr/src/org/labkey/ehr/query/BloodPlotData.java -text
 ehr/src/org/labkey/ehr/query/DataEntryTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text

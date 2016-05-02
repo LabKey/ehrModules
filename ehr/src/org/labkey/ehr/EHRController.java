@@ -25,11 +25,19 @@ import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbScope;
+import org.labkey.api.data.DisplayColumn;
+import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.JsonWriter;
 import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
@@ -39,12 +47,15 @@ import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.CSRF;
@@ -75,6 +86,7 @@ import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.pipeline.GeneticCalculationsRunnable;
+import org.labkey.ehr.query.BloodPlotData;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -1575,6 +1587,90 @@ public class EHRController extends SpringActionController
         public void setLivingAnimalsOnly(Boolean livingAnimalsOnly)
         {
             _livingAnimalsOnly = livingAnimalsOnly;
+        }
+    }
+
+    public static class IdForm
+    {
+        private String _ids;
+        private int _interval;
+
+        public String getIds() {return _ids;}
+
+        public void setIds(String id) {_ids = id;}
+
+        public int getInterval()
+        {
+            return _interval;
+        }
+
+        public void setInterval(int interval)
+        {
+            _interval = interval;
+        }
+
+        public List<String> getIdList()
+        {
+            List<String> list = new ArrayList<>();
+            String[] ids = _ids.split(",");
+            for(String id : ids)
+                list.add(id);
+
+            return list;
+        }
+    }
+
+    @RequiresPermission(ReadPermission.class)
+    public class BloodPlotDataAction extends ApiAction<IdForm>
+    {
+
+        @Override
+        public ApiResponse execute(IdForm idForm, BindException errors) throws Exception
+        {
+            ApiSimpleResponse response = new ApiSimpleResponse();
+
+            UserSchema schema = QueryService.get().getUserSchema(getUser(), getContainer(), "study");
+            TableInfo bloodDrawsTable = schema.getTable("currentBloodDraws");
+
+            SimpleFilter filter = new SimpleFilter();
+            filter.addCondition(FieldKey.fromParts("id"), idForm.getIdList(), CompareType.IN);
+
+            TableSelector selector = new TableSelector(bloodDrawsTable, filter, null);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("DATE_INTERVAL", idForm.getInterval());
+            selector.setNamedParameters(params);
+
+            List<BloodPlotData> bloodData = selector.getArrayList(BloodPlotData.class);
+            List<JSONObject> jsonData = new ArrayList<>();
+            for (BloodPlotData data : bloodData)
+            {
+                jsonData.add(data.toJSON());
+            }
+
+            List<DisplayColumn> cols = new ArrayList<>();
+            List<JSONObject> colModels = new ArrayList<>();
+            for (ColumnInfo ci : bloodDrawsTable.getColumns())
+            {
+                DisplayColumn dc = new DataColumn(ci);
+                if (ci.getJdbcType() == JdbcType.DATE || ci.getJdbcType() == JdbcType.TIMESTAMP)
+                    dc.setFormatString("yyyy-MM-dd");
+
+                colModels.add(new JSONObject(JsonWriter.getColModel(dc)));
+                cols.add(dc);
+            }
+
+            JSONArray fields = new JSONArray(JsonWriter.getNativeColProps(cols, null, false).values());
+            JSONArray columnModel = new JSONArray(colModels);
+            JSONObject meta = new JSONObject().put("fields", fields).put("root", "rows");
+
+            response.put("rows", jsonData);
+            response.put("metaData", meta);
+            response.put("rowCount", jsonData.size());
+            response.put("columnModel", columnModel);
+
+            return response;
+
         }
     }
 }
