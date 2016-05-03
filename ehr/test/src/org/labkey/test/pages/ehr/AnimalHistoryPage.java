@@ -47,6 +47,6 @@ public class AnimalHistoryPage extends ParticipantViewPage
                 () -> doAndWaitForPageSignal(
                         () -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")),
                         REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60)),
-                DataRegionTable.SELECTION_SIGNAL, new WebDriverWait(getDriver(), 60));
+                DataRegionTable.UPDATE_SIGNAL, new WebDriverWait(getDriver(), 60));
     }
 }
