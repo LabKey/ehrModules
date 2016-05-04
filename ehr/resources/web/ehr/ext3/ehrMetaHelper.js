@@ -311,7 +311,7 @@ EHR.ext.metaHelper = new function(){
         },
 
         //private
-        //not in use, perhaps could be depreciated
+        //not in use, perhaps could be deprecated
         setLongTextRenderer: function(col, meta){
             if(col.multiline || (undefined === col.multiline && col.scale > 255 && meta.jsonType === "string"))
             {

@@ -586,7 +586,7 @@ Ext.reg('ehr-triggernumberfield', EHR.ext.TriggerNumberField);
 /**
  * This is a RadioGroup that will either be true or null.  It was originally designed to be an option on data entry forms,
  * but the conversion between null and false proves difficult and this was never used.
- * @depreciated
+ * @deprecated
  */
 EHR.ext.ApproveRadio = Ext.extend(Ext.form.RadioGroup, {
     initComponent: function() {
@@ -1396,7 +1396,7 @@ Ext.reg('ehr-drugdosefield', EHR.ext.DrugDoseField);
 
 
 //this vtype is used in date range panels
-//@depreciated
+//@deprecated
 Ext.apply(Ext.form.VTypes, {
     daterange : function(val, field)
     {

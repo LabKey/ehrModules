@@ -64,7 +64,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
-        //@depreciated
+        //@deprecated
         if(this.monitorPermissions){
             EHR.Security.init({
                 success: Ext.emptyFn,
@@ -162,7 +162,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.reader.onMetaChange(meta);
     },
 
-    //@depreciated
+    //@deprecated
     //the original intent was to enforce QCState permissions in the store, but it was never fully implemented
     verifyPermission: function(store, rec, operation){
         var qc;
@@ -516,7 +516,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
-    //@depreciated
+    //@deprecated
     getLookupStore: function(){
         //not needed .  used in editorgridpanel.  should be shifted to metaHelper.
     },

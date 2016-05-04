@@ -1079,7 +1079,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
 Ext.reg('ehr-treatmentselector', EHR.ext.TreatmentSelector);
 
 /**
- * This should probably be depreciated.  It was originally created to supplement EHR.ext.TreatmentSelector
+ * This should probably be deprecated.  It was originally created to supplement EHR.ext.TreatmentSelector
  * by allowing admin users to pick a date (the normal one will only query treatments on the current date.
  * This was necessary to allow users to retroactively mark treatments as complete.  However, EHR.ext.TreatmentSelector
  * was modified to conditionally show the date field, which is probably a better solution.

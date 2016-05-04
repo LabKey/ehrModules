@@ -518,7 +518,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             },
         //NOTE: this was originally created as an admin mechanism to allow certain users to retroactively enter treatments
         //I since edited to primary AddTreatments btn to conditionally show a date picker for admins, so this button can probably
-        //be depriciated.
+        //be deprecated.
         'addtreatments2': {
                 text: 'Add Treatments - Admin',
                 requiredQC: 'In Progress',
