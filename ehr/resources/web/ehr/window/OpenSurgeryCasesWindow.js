@@ -141,7 +141,7 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
                 height: 75,
                 width: 250,
                 rowIdx: rowIdx,
-                value: caseRec ? ((caseRec.remark ? (caseRec.remark + '\n' + (new Date().format('Y-m-d')) + ': ') : '') + obj.procedureNames.join(', ')) : 'Open Sx Case: ' + obj.procedureNames.join(', ')
+                value: caseRec ? ((caseRec.remark ? (caseRec.remark + '\n' + Ext4.util.Format.date(new Date(), 'Y-m-d') + ': ') : '') + obj.procedureNames.join(', ')) : 'Open Sx Case: ' + obj.procedureNames.join(', ')
             });
 
             toAdd.push({
