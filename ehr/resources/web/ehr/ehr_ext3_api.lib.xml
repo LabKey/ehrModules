@@ -40,14 +40,11 @@
         <script path="ehr/metadata/Treatments.js"/>
     </library>
     <dependencies>
-        <dependency path="clientapi"/>
+        <dependency path="clientapi/ext3"/>
         <dependency path="LDK.context"/>
         <dependency path="ehr/ehr_api"/>
-        <dependency path="ux/CheckCombo/CheckCombo.css"/>
-        <dependency path="ux/CheckCombo/CheckCombo.js"/>
         <dependency path="Ext.ux.form.LovCombo.js"/>
         <dependency path="Ext.ux.form.LovCombo.css"/>
         <dependency path="StatusBar.js"/>
-        <dependency path="Ext.ux.form.LovCombo.js"/>
     </dependencies>
 </libraries>

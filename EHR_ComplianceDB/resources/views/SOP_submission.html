@@ -119,7 +119,7 @@ Ext4.onReady(function(){
             rows.push({
                 SOPID: checked[i],
                 EmployeeId: username,
-                Date: new Date().format("Y-m-d")
+                Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
             });
         }
 
@@ -160,7 +160,7 @@ Ext4.onReady(function(){
             rows: [{
                 RequirementName: 'SOP REVIEW-ANNUAL',
                 EmployeeId: username,
-                Date: new Date().format("Y-m-d")
+                Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
             }],
             success: function(){
                 Ext4.Msg.alert('SOPs Complete', 'Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.', function(){
