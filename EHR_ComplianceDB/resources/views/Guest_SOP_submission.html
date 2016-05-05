@@ -121,7 +121,7 @@ function markRead(dataRegion, dataRegionName) {
         rows.push({
             SOP_ID: checked[i]
             ,EmployeeId: username
-            ,Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
+            ,Date: new Date().format("Y-m-d")
             });
     }
 
@@ -172,7 +172,7 @@ function submitRequest() {
          rows: [{
             RequirementName: 'SOP REVIEW-ANNUAL'
             ,EmployeeId: username
-            ,Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
+            ,Date: new Date().format("Y-m-d")
          }],
          success: function(){
             alert('Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.');
