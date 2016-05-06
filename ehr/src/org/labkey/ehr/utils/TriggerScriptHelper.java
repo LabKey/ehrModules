@@ -1473,14 +1473,14 @@ public class TriggerScriptHelper
                 {
                     if (up instanceof  User)
                     {
-                        recipients.add((User)up);
+                        recipients.add(up);
                     }
                     else
                     {
                         for (UserPrincipal u : SecurityManager.getAllGroupMembers((Group)up, MemberType.ACTIVE_USERS))
                         {
                             if (((User)u).isActive())
-                                recipients.add((User)u);
+                                recipients.add(u);
                         }
                     }
                 }

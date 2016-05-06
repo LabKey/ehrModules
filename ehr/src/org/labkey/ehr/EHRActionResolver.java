@@ -89,7 +89,7 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
         @Override
         public ModelAndView handleRequest() throws Exception
         {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+            EHRServiceImpl service = EHRServiceImpl.get();
 
             //TODO: best method to find action name?
             Resource r = service.getActionOverride(getViewContext().getActionURL().getAction(), getContainer());

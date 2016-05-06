@@ -500,7 +500,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "animal_group_members"))
         {
-            customizeAnimalGroupMembers((AbstractTableInfo) ti);
+            customizeAnimalGroupMembers(ti);
         }
         else if (matches(ti, "study", "pathologyDiagnoses") || matches(ti, "study", "Pathology Diagnoses"))
         {

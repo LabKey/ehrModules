@@ -1160,7 +1160,7 @@ public class EHRController extends SpringActionController
                 {
                     EHRService.REPORT_LINK_TYPE type = EHRService.REPORT_LINK_TYPE.valueOf(linkType);
 
-                    List<EHRServiceImpl.ReportLink> items = ((EHRServiceImpl)EHRServiceImpl.get()).getReportLinks(getContainer(), getUser(), type);
+                    List<EHRServiceImpl.ReportLink> items = EHRServiceImpl.get().getReportLinks(getContainer(), getUser(), type);
                     for (EHRServiceImpl.ReportLink link : items)
                     {
                         JSONObject item = link.toJSON(getContainer());
