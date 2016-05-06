@@ -1713,7 +1713,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         _ext4Helper.clickExt4Tab("Histologic Findings");
         Ext4GridRef histologyGrid = _helper.getExt4GridForFormSection("Histologic Findings");
         _helper.addRecordToGrid(histologyGrid, "Add Record");
-        scrollIntoView(histologyGrid.getCell(1,7));
+        scrollIntoView(histologyGrid.getCell(1,7), true);
         waitAndClick(histologyGrid.getCell(1, 7));
         waitForElement(Ext4Helper.Locators.window("Manage SNOMED Codes"));
         Ext4ComboRef field = Ext4ComboRef.getForLabel(this, "Add Code");
