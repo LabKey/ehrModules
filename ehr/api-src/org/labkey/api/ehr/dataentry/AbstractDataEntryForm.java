@@ -142,7 +142,7 @@ public class AbstractDataEntryForm implements DataEntryForm
 
     protected List<Class<? extends Permission>> getAvailabilityPermissions()
     {
-        return Collections.<Class<? extends Permission>>singletonList(InsertPermission.class);
+        return Collections.singletonList(InsertPermission.class);
     }
 
     public boolean isAvailable()

@@ -179,7 +179,7 @@ public class EHRServiceImpl extends EHRService
         if (list == null)
             list = new ArrayList<>();
 
-        list.add(Pair.<Module, Class<? extends TableCustomizer>>of(owner, customizerClass));
+        list.add(Pair.of(owner, customizerClass));
 
         map.put(query, list);
         _tableCustomizers.put(schema, map);

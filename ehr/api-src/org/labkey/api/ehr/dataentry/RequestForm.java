@@ -77,6 +77,6 @@ public class RequestForm extends AbstractDataEntryForm
     @Override
     protected List<Class<? extends Permission>> getAvailabilityPermissions()
     {
-        return Collections.<Class<? extends Permission>>singletonList(EHRRequestPendingInsertPermission.class);
+        return Collections.singletonList(EHRRequestPendingInsertPermission.class);
     }
 }

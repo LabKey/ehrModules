@@ -104,29 +104,29 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     {
         try
         {
-            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.<String, Object>of("requirementname", requirementName1), "requirementname");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.<String, Object>of("requirementname", requirementName2), "requirementname");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.<String, Object>of("requirementname", requirementName3), "requirementname");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.of("requirementname", requirementName1), "requirementname");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.of("requirementname", requirementName2), "requirementname");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "requirements", Maps.of("requirementname", requirementName3), "requirementname");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "requirementtype", Maps.<String, Object>of("type", requirementType1), "type");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "requirementtype", Maps.<String, Object>of("type", requirementType2), "type");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "requirementtype", Maps.of("type", requirementType1), "type");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "requirementtype", Maps.of("type", requirementType2), "type");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee1), "employeeid");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee2), "employeeid");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee3), "employeeid");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.of("employeeid", employee1), "employeeid");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.of("employeeid", employee2), "employeeid");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employees", Maps.of("employeeid", employee3), "employeeid");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory1), "categoryname");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory2), "categoryname");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeecategory", Maps.of("categoryname", employeeCategory1), "categoryname");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeecategory", Maps.of("categoryname", employeeCategory2), "categoryname");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetypes", Maps.<String, Object>of("type", employeeType1), "type");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetypes", Maps.<String, Object>of("type", employeeType2), "type");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetypes", Maps.of("type", employeeType1), "type");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetypes", Maps.of("type", employeeType2), "type");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation1), "location");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation2), "location");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation3), "location");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation1), "location");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation2), "location");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation3), "location");
 
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.<String, Object>of("title", employeeTitle1), "title");
-            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.<String, Object>of("title", employeeTitle2), "title");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.of("title", employeeTitle1), "title");
+            _apiHelper.deleteIfExists("ehr_compliancedb", "employeetitles", Maps.of("title", employeeTitle2), "title");
         }
         catch (CommandException e)
         {
@@ -142,16 +142,16 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         //this section will insert dummy data and make sure the code works as expected
 
         log("checking triggers for requirements table");
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "requirementtype", Maps.<String, Object>of("type", requirementType1), "type");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "requirementtype", Maps.of("type", requirementType1), "type");
 
         //expect failure b/c type wont match
-        _apiHelper.insertRow("ehr_compliancedb", "requirements", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirements", Maps.of(
                 "type", "garbage value",
                 "requirementname", requirementName1
         ), true);
 
         //expect success
-        _apiHelper.insertRow("ehr_compliancedb", "requirements", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirements", Maps.of(
                 "type", requirementType1,
                 "requirementname", requirementName1
         ), false);
@@ -169,30 +169,30 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
 
         log("checking triggers for employees table");
 
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory1), "categoryname");
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation1), "location");
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeetitles", Maps.<String, Object>of("title", employeeTitle1), "title");
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeetypes", Maps.<String, Object>of("type", employeeType1), "type");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeecategory", Maps.of("categoryname", employeeCategory1), "categoryname");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation1), "location");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeetitles", Maps.of("title", employeeTitle1), "title");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeetypes", Maps.of("type", employeeType1), "type");
 
-        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.of(
                 "category", "garbage value",
                 "lastName", employeeLastName1,
                 "employeeid", employee1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.of(
                 "location", "garbage value",
                 "lastName", employeeLastName1,
                 "employeeid", employee1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.of(
                 "title", "garbage value",
                 "lastName", employeeLastName1,
                 "employeeid", employee1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employees", Maps.of(
                 "type", "garbage value",
                 "lastName", employeeLastName1,
                 "employeeid", employee1
@@ -231,10 +231,10 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         assertEquals(employeeTitle2, resp.getRows().get(0).get("title"));
         assertEquals(employeeType2, resp.getRows().get(0).get("type"));
 
-        _apiHelper.updateRow("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee1, "location", "garbage value"), true);
+        _apiHelper.updateRow("ehr_compliancedb", "employees", Maps.of("employeeid", employee1, "location", "garbage value"), true);
 
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory2), "categoryname");
-        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation2), "location");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeecategory", Maps.of("categoryname", employeeCategory2), "categoryname");
+        _apiHelper.createdIfNeeded("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation2), "location");
 
         Map<String, Object> map2 = new HashMap<>();
         map2.put("category", employeeCategory2);
@@ -245,59 +245,59 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         map2.put("employeeid", employee2);
         _apiHelper.insertRow("ehr_compliancedb", "employees", map2, true);
 
-        _apiHelper.deleteRow("ehr_compliancedb", "employeelocations", Maps.<String, Object>of("location", employeeLocation1), "location", false);
-        _apiHelper.deleteRow("ehr_compliancedb", "employeecategory", Maps.<String, Object>of("categoryname", employeeCategory2), "categoryname", true);
+        _apiHelper.deleteRow("ehr_compliancedb", "employeelocations", Maps.of("location", employeeLocation1), "location", false);
+        _apiHelper.deleteRow("ehr_compliancedb", "employeecategory", Maps.of("categoryname", employeeCategory2), "categoryname", true);
 
         map2.put("type", employeeType2);
         _apiHelper.insertRow("ehr_compliancedb", "employees", map2, true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.of(
                 "employeeid", employee1,
                 "requirementname", "garbage value"
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.of(
                 "employeeid", "garbage value",
                 "requirementname", requirementName1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "employeerequirementexemptions", Maps.of(
                 "employeeid", employee1,
                 "requirementname", requirementName1
         ), false);
 
-        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.of(
                 "employeeid", "garbage value",
                 "requirementname", requirementName1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.of(
                 "employeeid", "garbage value",
                 "requirementname", requirementName1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementsperemployee", Maps.of(
                 "employeeid", employee1,
                 "requirementname", requirementName1
         ), false);
 
         //requirementspercategory
-        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.of(
                 "category", employeeCategory1,
                 "requirementname", "garbage value"
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.of(
                 "category", "garbage value",
                 "requirementname", requirementName1
         ), true);
 
-        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of(
+        _apiHelper.insertRow("ehr_compliancedb", "requirementspercategory", Maps.of(
                 "employeeid", employeeCategory1,
                 "requirementname", requirementName1
         ), false);
 
-        _apiHelper.deleteRow("ehr_compliancedb", "employees", Maps.<String, Object>of("employeeid", employee1), "employeeid", true);
+        _apiHelper.deleteRow("ehr_compliancedb", "employees", Maps.of("employeeid", employee1), "employeeid", true);
 
         Map<String, Object> map3 = new HashMap<>();
         map3.put("lastName", employeeLastName1);
@@ -307,16 +307,16 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employees", "employeeid", new String[]{"employeeid"}, new Object[][]{{employee2}}, new Object[][]{{employee1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
 
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee1), "employeeid"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee1), "employeeid"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee1), "employeeid"));
 
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.<String, Object>of("employeeid", employee2), "employeeid"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee2), "employeeid"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee2), "employeeid"));
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirements", "requirementname", new String[]{"requirementname"}, new Object[][]{{requirementName2}}, new Object[][]{{requirementName1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName1), "requirementname"));
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.<String, Object>of("requirementname", requirementName2), "requirementname"));
+        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName1), "requirementname"));
+        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName2), "requirementname"));
     }
 
     @Test

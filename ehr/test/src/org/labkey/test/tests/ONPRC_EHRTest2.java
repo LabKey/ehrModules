@@ -274,7 +274,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         //test opening case.  expect no warning b/c birth is now final
         getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "cases", new String[]{"Id", "date", "category", "_recordId"}, new Object[][]{
                 {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
-        }, Collections.<String, List<String>>emptyMap(), additionalContext);
+        }, Collections.emptyMap(), additionalContext);
 
         getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
         {
@@ -499,7 +499,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
                 "flag", Arrays.asList(
                         "INFO: There are already 1 active flag(s) of the same type spanning this date."
                 )
-        ), Maps.<String, Object>of("targetQC", null, "errorThreshold", "INFO"));
+        ), Maps.of("targetQC", null, "errorThreshold", "INFO"));
     }
 
     @Test

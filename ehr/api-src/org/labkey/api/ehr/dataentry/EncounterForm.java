@@ -58,6 +58,6 @@ public class EncounterForm extends TaskForm
     @Override
     protected List<Class<? extends Permission>> getAvailabilityPermissions()
     {
-        return Collections.<Class<? extends Permission>>singletonList(EHRInProgressInsertPermission.class);
+        return Collections.singletonList(EHRInProgressInsertPermission.class);
     }
 }

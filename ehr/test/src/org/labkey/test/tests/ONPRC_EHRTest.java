@@ -115,9 +115,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         goToProjectHome();
 
         UpdateRowsCommand updateRowsCommand = new UpdateRowsCommand("ehr_lookups", "species");
-        updateRowsCommand.addRow(Maps.<String, Object>of("common", "Rhesus", "blood_draw_interval", 21));
-        updateRowsCommand.addRow(Maps.<String, Object>of("common", "Cynomolgus", "blood_draw_interval", 21));
-        updateRowsCommand.addRow(Maps.<String, Object>of("common", "Marmoset", "blood_draw_interval", 21));
+        updateRowsCommand.addRow(Maps.of("common", "Rhesus", "blood_draw_interval", 21));
+        updateRowsCommand.addRow(Maps.of("common", "Cynomolgus", "blood_draw_interval", 21));
+        updateRowsCommand.addRow(Maps.of("common", "Marmoset", "blood_draw_interval", 21));
         updateRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         //refresh caches to match new blood volumes.  this really should be automatic on the server
@@ -461,12 +461,12 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         // this should fail
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2, 1), (allowableBlood - 5), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
-        }, Collections.<String, List<String>>emptyMap());
+        }, Collections.emptyMap());
 
         // advance one day and it should succeed, showing the draw drops off correctly
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval * 2 + 1, 1), (allowableBlood - 5), EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"}
-        }, Collections.<String, List<String>>emptyMap());
+        }, Collections.emptyMap());
 
         //insert record between two existing records.  this record will itself be valid in either direction over the window; however, it will invalidate the previous draw
         Map<String, Object> newRow = new HashMap<>();
@@ -523,7 +523,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //create project
         String protocolTitle = generateGUID();
         InsertRowsCommand protocolCommand = new InsertRowsCommand("ehr", "protocol");
-        protocolCommand.addRow(Maps.<String, Object>of("protocol", null, "title", protocolTitle));
+        protocolCommand.addRow(Maps.of("protocol", null, "title", protocolTitle));
         protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         SelectRowsCommand protocolSelect = new SelectRowsCommand("ehr", "protocol");
@@ -533,7 +533,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         InsertRowsCommand projectCommand = new InsertRowsCommand("ehr", "project");
         String projectName = generateGUID();
-        projectCommand.addRow(Maps.<String, Object>of("project", null, "name", projectName, "protocol", protocolId));
+        projectCommand.addRow(Maps.of("project", null, "name", projectName, "protocol", protocolId));
         projectCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         SelectRowsCommand projectSelect = new SelectRowsCommand("ehr", "project");
@@ -621,7 +621,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         // insert second animal, should succeed
         getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "assignment", new String[]{"Id", "date", "enddate", "project", "_recordId"}, new Object[][]{
                 {SUBJECTS[3], prepareDate(new Date(), 10, 0), null, projectId, "recordID"}
-        }, Collections.<String, List<String>>emptyMap());
+        }, Collections.emptyMap());
 
         // try 2, should fail
         getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "assignment", new String[]{"Id", "date", "enddate", "project", "_recordId"}, new Object[][]{
@@ -636,7 +636,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         // add assignmentsInTransaction, should fail
         Map<String, Object> additionalExtraContext = new HashMap<>();
         JSONArray assignmentsInTransaction = new JSONArray();
-        assignmentsInTransaction.put(Maps.<String, Object>of(
+        assignmentsInTransaction.put(Maps.of(
                 "Id", SUBJECTS[4],
                 "objectid", generateGUID(),
                 "date", _df.format(new Date()),
@@ -681,7 +681,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //auto-assignment of IDs
         String protocolTitle = generateGUID();
         InsertRowsCommand protocolCommand = new InsertRowsCommand("ehr", "protocol");
-        protocolCommand.addRow(Maps.<String, Object>of("protocol", null, "title", protocolTitle));
+        protocolCommand.addRow(Maps.of("protocol", null, "title", protocolTitle));
         protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         SelectRowsCommand protocolSelect = new SelectRowsCommand("ehr", "protocol");
@@ -691,7 +691,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         InsertRowsCommand projectCommand = new InsertRowsCommand("ehr", "project");
         String projectName = generateGUID();
-        projectCommand.addRow(Maps.<String, Object>of("project", null, "name", projectName, "protocol", protocolId));
+        projectCommand.addRow(Maps.of("project", null, "name", projectName, "protocol", protocolId));
         projectCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         SelectRowsCommand projectSelect = new SelectRowsCommand("ehr", "project");
@@ -724,7 +724,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         // successful
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "drug", new String[]{"Id", "date", "code", "outcome", "remark", "amount", "volume", "QCStateLabel", "objectid", "_recordId"}, new Object[][]{
                 {MORE_ANIMAL_IDS[0], new Date(), "code", "Normal", null, 1.0, 2.0, EHRQCState.COMPLETED.label, generateGUID(), "recordID"}
-        }, Collections.<String, List<String>>emptyMap());
+        }, Collections.emptyMap());
 
 
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "drug", new String[]{"Id", "date", "code", "outcome", "remark", "amount", "volume", "QCStateLabel", "objectid", "_recordId"}, new Object[][]{
@@ -838,7 +838,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
             {
                 log("creating ehr.ageclass record for: " + species);
                 InsertRowsCommand ir1 = new InsertRowsCommand("ehr_lookups", "ageclass");
-                ir1.addRow(Maps.<String, Object>of("species", species, "min", 0, "max", 1, "label", "Infant"));
+                ir1.addRow(Maps.of("species", species, "min", 0, "max", 1, "label", "Infant"));
                 ir1.execute(getApiHelper().getConnection(), getContainerPath());
             }
         }
