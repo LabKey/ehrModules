@@ -50,6 +50,10 @@ Ext4.define('EHR.panel.KinshipPanel', {
                         text: 'Reload',
                         scope: this,
                         handler: this.refreshMatrix
+                        },{
+                        text: 'Export',
+                        scope: this,
+                        handler: this.exportMatrixToCSV
                     }]
                 }]
             }]
@@ -93,6 +97,24 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
         this.results = results;
         this.refreshMatrix();
+    },
+
+    exportMatrixToCSV: function(){
+        var table = document.getElementById("matrix-table").innerHTML;
+        var data = table.replace(/<tbody>/g, ',')
+                .replace(/<\/tbody>/g, '')
+                .replace(/<tr>/g, '')
+                .replace(/<\/tr>/g, '\r\n')
+                .replace(/<td>/g, '')
+                .replace(/<\/td>/g, ',')
+                .replace(/\t/g, '')
+                .replace(/\n/g, '');
+
+        var link = document.createElement('a');
+        var date = new Date().format('Y-m-d_H-i-s');
+        link.download = "kinship_matrix_" + date + ".csv";
+        link.href = "data:application/csv" + encodeURI(data);
+        link.click();
     },
 
     refreshMatrix: function(){
@@ -152,7 +174,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
             return 'No kinship values to show';
         }
 
-        var html = '<table border="1" style="border-collapse: collapse;"><tr><td></td>';
+        var html = '<table id="matrix-table" border="1" style="border-collapse: collapse;"><tr><td></td>';
         Ext4.Array.forEach(distinct, function(id){
             html += '<td>' + id + '</td>';
         }, this);
