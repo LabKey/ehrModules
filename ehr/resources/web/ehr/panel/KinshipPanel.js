@@ -236,6 +236,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
             queryConfig: {
                 frame: 'none',
                 containerPath: this.containerPath,
+                allowHeaderLock: false,
                 schemaName: 'ehr',
                 queryName: 'kinship',
                 filterArray: this.filterArray,
