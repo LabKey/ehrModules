@@ -19,11 +19,29 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
         this.callParent();
 
+        var me = this;
+
         this.add({
             xtype: 'tabpanel',
             style: 'margin-bottom: 20px',
-            items: [
-                this.getQWPConfig(),
+            items: [{
+                xtype: 'panel',
+                id: 'rawDataPanel',
+                title: 'Raw Data',
+                items: [{
+                    xtype: 'checkbox',
+                    fieldLabel: 'Only Show IDs In My Selection',
+                    margin: '10 0 10 10',
+                    checked: false,
+                    id: 'limitRawDataToSelection',
+                    labelWidth: 180,
+                    listeners: {
+                        change: function(check, value){me.onRawDataCheckChange.call(me, check, value);}
+                        },
+                    scope: this
+                    },
+                    this.getQWPConfig()
+                ]},
                 {
                 xtype: 'panel',
                 itemId: 'matrixPanel',
@@ -75,6 +93,23 @@ Ext4.define('EHR.panel.KinshipPanel', {
             failure: LDK.Utils.getErrorCallback(),
             success: this.onDataLoad
         });
+    },
+
+    onRawDataCheckChange: function(check, value){
+
+        check.disable();
+        if(value == true)
+        {
+            this.filterArray.push(LABKEY.Filter.create('id2', this.filterArray[0].getValue(), this.filterArray[0].getFilterType()));
+        }
+        else if(this.filterArray.length > 1)
+        {
+            this.filterArray = [this.filterArray[0]];
+        }
+
+        var panel = Ext4.getCmp('rawDataPanel');
+        panel.remove(Ext4.getCmp('rawDataGrid'));
+        panel.insert(this.getQWPConfig());
     },
 
     onDataLoad: function(results){
@@ -196,15 +231,16 @@ Ext4.define('EHR.panel.KinshipPanel', {
     getQWPConfig: function(){
         return {
             xtype: 'ldk-querypanel',
-            title: 'Raw Data',
             style: 'margin: 5px;',
+            id: 'rawDataGrid',
             queryConfig: {
                 frame: 'none',
                 containerPath: this.containerPath,
                 schemaName: 'ehr',
                 queryName: 'kinship',
                 filterArray: this.filterArray,
-                failure: LDK.Utils.getErrorCallback()
+                failure: function() {Ext4.getCmp('limitRawDataToSelection').enable();LDK.Utils.getErrorCallback()},
+                success: function() {Ext4.getCmp('limitRawDataToSelection').enable()}
             }
         }
     }
