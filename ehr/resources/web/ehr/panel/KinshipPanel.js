@@ -149,7 +149,14 @@ Ext4.define('EHR.panel.KinshipPanel', {
         var date = new Date().format('Y-m-d_H-i-s');
         link.download = "kinship_matrix_" + date + ".csv";
         link.href = "data:application/csv" + encodeURI(data);
-        link.click();
+
+        var evt = new MouseEvent('click', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true
+        });
+        link.dispatchEvent(evt);
+
     },
 
     refreshMatrix: function(){
