@@ -135,27 +135,14 @@ Ext4.define('EHR.panel.KinshipPanel', {
     },
 
     exportMatrixToCSV: function(){
-        var table = document.getElementById("matrix-table").innerHTML;
-        var data = table.replace(/<tbody>/g, ',')
-                .replace(/<\/tbody>/g, '')
-                .replace(/<tr>/g, '')
-                .replace(/<\/tr>/g, '\r\n')
-                .replace(/<td>/g, '')
-                .replace(/<\/td>/g, ',')
-                .replace(/\t/g, '')
-                .replace(/\n/g, '');
-
-        var link = document.createElement('a');
-        var date = new Date().format('Y-m-d_H-i-s');
-        link.download = "kinship_matrix_" + date + ".csv";
-        link.href = "data:application/csv" + encodeURI(data);
-
-        var evt = new MouseEvent('click', {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true
-        });
-        link.dispatchEvent(evt);
+        if(Ext4.isDefined(this.export)) {
+            var date = new Date().format('Y-m-d_H-i-s');
+            LABKEY.Utils.convertToTable({
+                fileNamePrefix: "kinship_matrix_" + date,
+                rows: this.export,
+                delim: 'COMMA'
+            });
+        }
 
     },
 
@@ -217,17 +204,26 @@ Ext4.define('EHR.panel.KinshipPanel', {
         }
 
         var html = '<table id="matrix-table" border="1" style="border-collapse: collapse;"><tr><td></td>';
+        this.export = [];
+        this.export.push([' ']);
         Ext4.Array.forEach(distinct, function(id){
+            this.export[0].push(id);
             html += '<td>' + id + '</td>';
         }, this);
         html += '</tr>';
 
+        var i = 1, idKin;
         Ext4.Array.forEach(primaryIds, function(id){
+            this.export.push([]);
+            this.export[i].push(id);
             html += '<tr><td>' + id + '</td>';
             Ext4.Array.forEach(distinct, function(id2){
-                html += '<td>' + (idMap[id][id2] === undefined ? '' : idMap[id][id2]) + '</td>';
+                idKin = (idMap[id][id2] === undefined ? ' ' : idMap[id][id2])
+                this.export[i].push(idKin);
+                html += '<td>' + idKin + '</td>';
             }, this);
             html += '</tr>';
+            i++;
         }, this);
 
         html += '</table>';
