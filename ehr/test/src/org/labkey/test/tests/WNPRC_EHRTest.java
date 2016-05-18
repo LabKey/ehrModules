@@ -450,8 +450,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForText("Necropsies");
         waitAndClick(LabModuleHelper.getNavPanelItem("Necropsies:", VIEW_TEXT));
         waitForText("details");
-        dr = new DataRegionTable("query", this);
-        click(dr.link(0, 0));
+        dr = new DataRegionTable("query", getDriver());
+        dr.link(0, 0).click();
         //these are the sections we expect
         waitForText("Necropsy Details","Morphologic Diagnoses","Histology");
         assertNoErrorText();

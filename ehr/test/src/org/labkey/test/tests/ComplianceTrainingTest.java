@@ -324,8 +324,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     {
         goToProjectHome();
         waitAndClickAndWait(Locator.linkContainingText("Employee List"));
-        DataRegionTable dr = new DataRegionTable("query", this);
-        waitAndClickAndWait(dr.detailsLink(0));
+        DataRegionTable dr = new DataRegionTable("query", getDriver());
+        clickAndWait(dr.detailsLink(0));
         waitForElement(Locator.tagContainingText("th", "Employee Details"));
         waitForElement(Locator.tagContainingText("span", "Training / Requirement Summary"));
         waitForElement(Locator.tagContainingText("span", "Training History"));
@@ -333,8 +333,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
 
         goToProjectHome();
         waitAndClickAndWait(Locator.linkContainingText("View/Edit Requirements Tracked In System"));
-        dr = new DataRegionTable("query", this);
-        waitAndClickAndWait(dr.detailsLink(0));
+        dr = new DataRegionTable("query", getDriver());
+        clickAndWait(dr.detailsLink(0));
         waitForElement(Locator.tagContainingText("th", "Requirement Details"));
         waitForElement(Locator.tagContainingText("span", "All Employees Who Must Complete This Requirement"));
         waitForElement(Locator.tagContainingText("span", "Categories/Units That Must Complete This Requirement"));
