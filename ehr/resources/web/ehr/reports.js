@@ -604,3 +604,15 @@ EHR.reports.kinshipSummary = function(panel, tab){
         }]
     });
 };
+
+EHR.reports.underDevelopment = function(panel, tab){
+    tab.add({
+        xtype: 'panel',
+        border: false,
+        html: 'The site is currently under development and we expect this tab to be enabled soon.',
+        bodyStyle: 'padding: 5px;',
+        defaults: {
+            border: false
+        }
+    });
+};
