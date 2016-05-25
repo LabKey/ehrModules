@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests;
+package org.labkey.test.tests.onprc_ehr;
 
 /**
 Inherit from this class if you do not wish to run the generic tests in AbstractGenericONPRC_EHRTest
  */
-abstract class AbstractONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
+public abstract class AbstractONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 {
     @Override
     public void testQuickSearch(){}

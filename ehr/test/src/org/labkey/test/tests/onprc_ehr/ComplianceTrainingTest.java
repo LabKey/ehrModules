@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests;
+package org.labkey.test.tests.onprc_ehr;
 
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -35,9 +35,9 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.EHRClientAPIHelper;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.LabModuleHelper;
+import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 

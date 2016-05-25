@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests;
+package org.labkey.test.tests.external.onprc;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,6 +24,7 @@ import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.tests.onprc_ehr.AbstractONPRC_EHRTest;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.SchemaHelper;

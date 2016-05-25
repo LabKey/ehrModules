@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.util;
+package org.labkey.test.util.ehr;
 
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
@@ -22,14 +22,14 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.security.AddGroupMembersCommand;
 import org.labkey.remoteapi.security.CreateGroupCommand;
 import org.labkey.remoteapi.security.CreateGroupResponse;
-import org.labkey.remoteapi.security.CreateUserCommand;
-import org.labkey.remoteapi.security.CreateUserResponse;
 import org.labkey.remoteapi.security.DeleteUserCommand;
 import org.labkey.remoteapi.security.GetUsersCommand;
 import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
-import org.labkey.test.tests.AbstractEHRTest;
+import org.labkey.test.tests.ehr.AbstractEHRTest;
+import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;

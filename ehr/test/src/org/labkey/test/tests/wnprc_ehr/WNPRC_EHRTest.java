@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests;
+package org.labkey.test.tests.wnprc_ehr;
 
 import org.jetbrains.annotations.Nullable;
 import org.junit.BeforeClass;
@@ -26,10 +26,11 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.selenium.EphemeralWebElement;
+import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
-import org.labkey.test.util.LabModuleHelper;
+import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;

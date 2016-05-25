@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests;
+package org.labkey.test.tests.ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -34,8 +34,8 @@ import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
-import org.labkey.test.util.EHRClientAPIHelper;
-import org.labkey.test.util.EHRTestHelper;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
+import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
