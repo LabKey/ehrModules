@@ -168,7 +168,7 @@ Ext4.define('EHR.plugin.Databind', {
         form.suspendEvents();
         form.loadRecord(record);
         form.resumeEvents();
-        form.isValid.defer(100, form);
+        Ext4.defer(form.isValid, 100, form);
 
         this.panel.fireEvent('bindrecord', this.panel, record);
     },

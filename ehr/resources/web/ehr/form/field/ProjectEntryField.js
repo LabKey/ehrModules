@@ -99,7 +99,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                         listeners: {
                             show: function(win){
                                 var field = win.down('combo');
-                                field.focus.defer(100, field);
+                                Ext4.defer(field.focus, 100, field);
                             }
                         }
                     }).show();

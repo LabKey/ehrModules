@@ -130,7 +130,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
                         }
 
                         field.setDisabled(!field.isDisabled());
-                        field.focus.defer(100, field);
+                        Ext4.defer(field.focus, 100, field);
                     }, this);
                 }
                 else {

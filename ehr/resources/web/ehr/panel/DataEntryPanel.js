@@ -608,7 +608,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         };
 
         //we delay this event so that any modified fields can fire their blur events and/or commit changes
-        this.storeCollection.commitChanges.defer(300, this.storeCollection, [true, extraContext]);
+        Ext4.defer(this.storeCollection.commitChanges, 300, this.storeCollection, [true, extraContext]);
     },
 
     //allows subclasses to provide custom warnings prior to saving

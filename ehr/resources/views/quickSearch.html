@@ -4,7 +4,7 @@ Ext4.onReady(makePanel)
 
 function makePanel(){
     if (!window.EHR || !window.EHR.ext || !window.EHR.Utils){
-        makePanel.defer(10);
+        Ext4.defer(makePanel, 10);
         return;
     }
 
