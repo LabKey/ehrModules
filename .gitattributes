@@ -1347,7 +1347,6 @@ ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsInitTask.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsJob.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRunnable.java -text
-ehr/src/org/labkey/ehr/query/AbstractDataDefinedTable.java -text
 ehr/src/org/labkey/ehr/query/BloodPlotData.java -text
 ehr/src/org/labkey/ehr/query/DataEntryTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text

@@ -18,6 +18,7 @@ package org.labkey.ehr.query;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
+import org.labkey.api.ldk.table.AbstractDataDefinedTable;
 import org.labkey.api.query.UserSchema;
 
 import java.util.Map;
