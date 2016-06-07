@@ -15,6 +15,7 @@
  */
 package org.labkey.test.util.ehr;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
@@ -27,9 +28,12 @@ import org.labkey.remoteapi.security.GetUsersCommand;
 import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.Locators;
+import org.labkey.test.pages.ehr.ParticipantViewPage;
 import org.labkey.test.tests.ehr.AbstractEHRTest;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -37,16 +41,27 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import static org.junit.Assert.fail;
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_JAVASCRIPT;
 import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_PAGE;
+import static org.labkey.test.util.TestLogger.increaseIndent;
+import static org.labkey.test.util.TestLogger.log;
 
 public class EHRTestHelper
 {
@@ -268,6 +283,77 @@ public class EHRTestHelper
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
         _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
+    }
+
+    public void verifyAllReportTabs(ParticipantViewPage participantView)
+    {
+        verifyReportTabs(participantView, Collections.emptyMap());
+    }
+
+    /**
+     * Verify that the specified reports have no errors
+     * @param participantView Should be on a participant view or animal history page with some animals selected
+     * @param reportsByCategory Reports that should be verified, sorted by category. An empty Map means to verify all
+     *                          reports in all categories. A category without any reports specified means to verify all
+     *                          reports in that category.
+     */
+    public void verifyReportTabs(ParticipantViewPage participantView, @NotNull Map<String, Collection<String>> reportsByCategory)
+    {
+        List<String> errors = new ArrayList<>();
+        Set<String> categoryTabs = reportsByCategory.keySet();
+        if (categoryTabs.isEmpty())
+            categoryTabs = participantView.elements().findCategoryTabs().keySet();
+        List<String> firstBadReport = null;
+        for (String category : categoryTabs)
+        {
+            log("Category: " + category);
+            increaseIndent();
+            participantView.clickCategoryTab(category);
+
+            Collection<String> reportTabs = reportsByCategory.getOrDefault(category, participantView.elements().findReportTabs().keySet());
+
+            for (String report : reportTabs)
+            {
+                log("Report: " + report);
+                try
+                {
+                    participantView.clickReportTab(report);
+                }
+                catch(WebDriverException fail)
+                {
+                    throw new AssertionError("There appears to be an error in the report: " + report, fail);
+                }
+
+                List<WebElement> errorEls = Locator.CssLocator.union(Locators.labkeyError, Locator.css(".error")).findElements(_test.getDriver());
+                if (!errorEls.isEmpty())
+                {
+                    List<String> errorTexts = _test.getTexts(errorEls);
+                    if (!String.join("", errorTexts).trim().isEmpty())
+                    {
+                        errors.add("Error in: " + category + " - " + report);
+                        for (String errorText : errorTexts)
+                            if (!errorText.trim().isEmpty())
+                                errors.add("\t" + errorText.trim());
+                        firstBadReport = Arrays.asList(category, report);
+                    }
+                }
+            }
+
+            TestLogger.decreaseIndent();
+        }
+        if (!errors.isEmpty())
+        {
+            try
+            {
+                participantView.clickCategoryTab(firstBadReport.get(0));
+                participantView.clickReportTab(firstBadReport.get(1));
+            }
+            finally
+            {
+                errors.add(0, "Error(s) in animal history report(s)");
+                fail(String.join("\n", errors).replaceAll("\n+", "\n"));
+            }
+        }
     }
 }
 

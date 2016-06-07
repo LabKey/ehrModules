@@ -15,6 +15,7 @@
  */
 package org.labkey.test.pages.ehr;
 
+import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.util.DataRegionTable;
@@ -39,6 +40,17 @@ public class AnimalHistoryPage extends ParticipantViewPage
     {
         test.beginAt(WebTestHelper.buildURL("ehr", containerPath, "animalHistory"));
         return new AnimalHistoryPage(test.getDriver());
+    }
+
+    @Override
+    protected void waitForPage()
+    {
+        waitForElement(Locator.inputByNameContaining("textfield"));
+    }
+
+    public void setSearchText(String text)
+    {
+        setFormElement(Locator.inputByNameContaining("textfield"), text);
     }
 
     public void refreshReport()
