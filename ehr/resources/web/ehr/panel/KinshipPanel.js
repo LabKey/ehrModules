@@ -34,7 +34,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
                     margin: '10 0 10 10',
                     checked: false,
                     id: 'limitRawDataToSelection',
-                    labelWidth: 180,
+                    labelWidth: 210,
                     listeners: {
                         change: function(check, value){me.onRawDataCheckChange.call(me, check, value);}
                         },
@@ -55,17 +55,20 @@ Ext4.define('EHR.panel.KinshipPanel', {
                         xtype: 'checkbox',
                         fieldLabel: 'Only Show IDs In My Selection',
                         checked: true,
+                        margin: '0 0 5 0',
                         itemId: 'limitToSelection',
-                        labelWidth: 180
+                        labelWidth: 210
                     },{
                         xtype: 'ldk-numberfield',
+                        margin: '0 0 5 0',
                         fieldLabel: 'Minimum Coefficient',
                         itemId: 'minCoefficient',
-                        labelWidth: 180
+                        labelWidth: 210
                     }],
                     buttonAlign: 'left',
                     buttons: [{
                         text: 'Reload',
+                        margin: '10 10 0 0',
                         scope: this,
                         handler: this.refreshMatrix
                         },{
