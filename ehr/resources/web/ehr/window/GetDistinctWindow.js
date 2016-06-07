@@ -172,37 +172,40 @@ Ext4.define('EHR.window.GetDistinctWindow', {
 
     runSQL: function (){
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-        var checked = dataRegion.getChecked();
-        if (!checked.length){
-            Ext4.Msg.alert('Error', 'No Rows Are Checked');
-            return;
-        }
 
-        var field = this.down('#field').getValue();
-        var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
+        var noneSelected = function () {
+            Ext4.Msg.alert('Error', 'No records selected');
+        };
 
-        LABKEY.Query.executeSql({
-            method: 'POST',
-            schemaName: 'study',
-            sql: sql,
-            scope: this,
-            failure: LDK.Utils.getErrorCallback(),
-            success: function(data){
-                var ids = {};
-                for (var i = 0; i < data.rows.length; i++){
-                    if (!data.rows[i].field)
-                        continue;
+        var processSelection = function(clause) {
+            var field = this.down('#field').getValue();
+            var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + clause;
 
-                    if (data.rows[i].field && !ids[data.rows[i].field])
-                        ids[data.rows[i].field] = 0;
+            LABKEY.Query.executeSql({
+                method: 'POST',
+                schemaName: 'study',
+                sql: sql,
+                scope: this,
+                failure: LDK.Utils.getErrorCallback(),
+                success: function (data) {
+                    var ids = {};
+                    for (var i = 0; i < data.rows.length; i++) {
+                        if (!data.rows[i].field)
+                            continue;
 
-                    ids[data.rows[i].field] += 1;
+                        if (data.rows[i].field && !ids[data.rows[i].field])
+                            ids[data.rows[i].field] = 0;
 
+                        ids[data.rows[i].field] += 1;
+
+                    }
+
+                    this.displayResults(Ext4.Object.getKeys(ids));
                 }
+            });
+        };
 
-                this.displayResults(Ext4.Object.getKeys(ids));
-            }
-        });
+        LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's', processSelection, noneSelected);
     }
 
 });

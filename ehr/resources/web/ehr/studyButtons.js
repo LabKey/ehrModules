@@ -12,7 +12,7 @@ Ext4.namespace('EHR.DatasetButtons');
  * @name EHR.DatasetButtons
  * @class
  */
-EHR.DatasetButtons = new function(){
+EHR.DatasetButtons = new function () {
     var customizers = [];
 
     return {
@@ -24,12 +24,12 @@ EHR.DatasetButtons = new function(){
          * If a new button or action is to be added to the More Actions button, it should be added here.
          * @param dataRegion
          */
-        moreActionsHandler: function(dataRegion){
+        moreActionsHandler: function (dataRegion) {
             //first we get the permission map
             EHR.Security.init({
-                success: function(){
+                success: function () {
                     // NOTE: we have deprecated all core client-side code, but allow modules to register customizers that can add buttons
-                    Ext4.each(customizers, function(fn){
+                    Ext4.each(customizers, function (fn) {
                         fn.call(this, dataRegion.name);
                     }, this);
                 },
@@ -38,7 +38,7 @@ EHR.DatasetButtons = new function(){
             });
         },
 
-        registerMoreActionsCustomizer: function(fn){
+        registerMoreActionsCustomizer: function (fn) {
             customizers.push(fn);
         },
 
@@ -49,52 +49,55 @@ EHR.DatasetButtons = new function(){
          * @param queryName
          * @param schemaName
          */
-        historyHandler: function(dataRegion, dataRegionName, queryName, schemaName){
+        historyHandler: function (dataRegion, dataRegionName, queryName, schemaName) {
             dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
 
-            queryName = queryName || dataRegion.queryName;
-            schemaName = schemaName || dataRegion.schemaName;
+            var noneSelected = function () {
+                Ext4.Msg.alert('Error', 'No records selected');
+            };
 
-            var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
+            var processSelection = function (clause) {
+                queryName = queryName || dataRegion.queryName;
+                schemaName = schemaName || dataRegion.schemaName;
 
-            LABKEY.Query.executeSql({
-                method: 'POST',
-                schemaName: 'study',
-                sql: sql,
-                failure: LDK.Utils.getErrorCallback(),
-                success: function(data){
-                    var ids = new Array();
-                    for (var i = 0; i < data.rows.length; i++)
-                        ids.push(data.rows[i].Id);
+                var sql = "SELECT DISTINCT s.Id FROM " + schemaName + ".\"" + queryName + "\" s " + clause;
 
-                    LDK.Assert.assertTrue('No animals found in more actions handler.', ids.length > 0);
+                LABKEY.Query.executeSql({
+                    method: 'POST',
+                    schemaName: 'study',
+                    sql: sql,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function (data) {
+                        var ids = new Array();
+                        for (var i = 0; i < data.rows.length; i++)
+                            ids.push(data.rows[i].Id);
 
-                    if (ids.length){
-                        var ctx = EHR.Utils.getEHRContext();
-                        LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
-                        if (!ctx){
-                            return;
+                        LDK.Assert.assertTrue('No animals found in more actions handler.', ids.length > 0);
+
+                        if (ids.length) {
+                            var ctx = EHR.Utils.getEHRContext();
+                            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+                            if (!ctx) {
+                                return;
+                            }
+
+                            var hash = 'inputType:multiSubject&showReport:1&subjects:' + ids.join(',');
+                            window.location = LABKEY.ActionURL.buildURL('ehr', 'animalHistory.view#' + hash, ctx['EHRStudyContainer']);
+
+                            //force reload if on same page
+                            if (LABKEY.ActionURL.getAction() == 'animalHistory') {
+                                Ext4.History.add(hash);
+                                window.location.reload();
+                            }
                         }
-
-                        var hash = 'inputType:multiSubject&showReport:1&subjects:'+ids.join(',');
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'animalHistory.view#'+hash, ctx['EHRStudyContainer']);
-
-                        //force reload if on same page
-                        if (LABKEY.ActionURL.getAction() == 'animalHistory'){
-                            Ext4.History.add(hash);
-                            window.location.reload();
+                        else {
+                            Ext4.Msg.alert('Error', 'No animals were found for your selection.  Either no rows were checked or there is a bug.');
                         }
                     }
-                    else {
-                        Ext4.Msg.alert('Error', 'No animals were found for your selection.  Either no rows were checked or there is a bug.');
-                    }
-                }
-            });
+                });
+            };
+
+            LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's', processSelection, noneSelected);
         },
 
         /**
@@ -104,82 +107,86 @@ EHR.DatasetButtons = new function(){
          * correct history of a record, even if the Id or date changed.
          * @param dataRegionName
          */
-        showAuditHistoryHandler: function(dataRegionName){
+        showAuditHistoryHandler: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
 
-            Ext4.Msg.wait('Loading...');
+            var processSelection = function (selection) {
 
-            LABKEY.Query.selectRows({
-                schemaName: dataRegion.schemaName,
-                queryName: dataRegion.queryName,
-                columns: 'lsid,objectid,Id,Dataset/DemographicData,Dataset/DataSetId',
-                filterArray: [
-                    LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
-                ],
-                scope: this,
-                success: function(data){
-                    Ext4.Msg.hide();
+                if (selection.selected.length < 1) {
+                    Ext4.Msg.alert('Error', 'No records selected');
+                }
+                else {
+                    LABKEY.Query.selectRows({
+                        schemaName: dataRegion.schemaName,
+                        queryName: dataRegion.queryName,
+                        columns: 'lsid,objectid,Id,Dataset/DemographicData,Dataset/DataSetId',
+                        filterArray: [
+                            LABKEY.Filter.create('lsid', selection.selected.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+                        ],
+                        scope: this,
+                        success: function (data) {
+                            Ext4.Msg.hide();
 
-                    if (data.rows.length){
-                        var items = [{
-                            html: 'New browser windows or tabs should have opened to load the history of these records.  If this did not happen, please be sure popups are enabled.  You can also click the following links to view those records:',
-                            bodyStyle: 'padding: 5px;',
-                            border: false
-                        }];
+                            if (data.rows.length) {
+                                var items = [{
+                                    html: 'New browser windows or tabs should have opened to load the history of these records.  If this did not happen, please be sure popups are enabled.  You can also click the following links to view those records:',
+                                    bodyStyle: 'padding: 5px;',
+                                    border: false
+                                }];
 
-                        var url;
-                        Ext4.Array.forEach(data.rows, function(row, idx){
-                            var params = {
-                                schemaName: 'auditLog',
-                                'query.queryName': 'DatasetAuditEvent',
-                                'query.viewName': 'Detailed',
-                                'query.intkey1~eq': row['Dataset/DataSetId']
-                            };
+                                var url;
+                                Ext4.Array.forEach(data.rows, function (row, idx) {
+                                    var params = {
+                                        schemaName: 'auditLog',
+                                        'query.queryName': 'DatasetAuditEvent',
+                                        'query.viewName': 'Detailed',
+                                        'query.intkey1~eq': row['Dataset/DataSetId']
+                                    };
 
-                            //NOTE: for demographics data, the objectId is not part of the LSID.  therefore the best we can do is filter on Id, even though this might have changed over the life of the record.
-                            if (row['Dataset/DemographicData']){
-                                params['query.lsid~contains'] = row.Id;
+                                    //NOTE: for demographics data, the objectId is not part of the LSID.  therefore the best we can do is filter on Id, even though this might have changed over the life of the record.
+                                    if (row['Dataset/DemographicData']) {
+                                        params['query.lsid~contains'] = row.Id;
+                                    }
+                                    else {
+                                        params['query.lsid~contains'] = row.objectid;
+                                    }
+
+                                    url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
+
+                                    items.push({
+                                        html: '<a target="_blank" href="' + url + '">' + 'Record ' + (idx + 1) + '</a>',
+                                        border: false
+                                    });
+
+                                    window.open(url);
+                                }, this);
+
+                                Ext4.create('Ext.window.Window', {
+                                    closeAction: 'destroy',
+                                    title: 'Record History',
+                                    modal: true,
+                                    width: 350,
+                                    bodyStyle: 'padding: 5px;',
+                                    items: items,
+                                    buttons: [{
+                                        text: 'Close',
+                                        handler: function (btn) {
+                                            btn.up('window').close();
+                                        }
+                                    }]
+                                }).show();
                             }
                             else {
-                                params['query.lsid~contains'] = row.objectid;
+                                alert('Record not found');
                             }
+                        },
+                        failure: LDK.Utils.getErrorCallback()
+                    });
+                }
+            };
 
-                            url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
-
-                            items.push({
-                                html: '<a target="_blank" href="'+url+'">' + 'Record '+(idx+1) + '</a>',
-                                border: false
-                            });
-
-                            window.open(url);
-                        }, this);
-
-                        Ext4.create('Ext.window.Window', {
-                            closeAction:'destroy',
-                            title: 'Record History',
-                            modal: true,
-                            width: 350,
-                            bodyStyle: 'padding: 5px;',
-                            items: items,
-                            buttons: [{
-                                text: 'Close',
-                                handler: function(btn){
-                                    btn.up('window').close();
-                                }
-                            }]
-                        }).show();
-                    }
-                    else {
-                        alert('Record not found');
-                    }
-                },
-                failure: LDK.Utils.getErrorCallback()
-            });
+            Ext4.Msg.wait('Loading...');
+            dataRegion.getSelected({success: processSelection});
         },
 
         /**
@@ -188,42 +195,42 @@ EHR.DatasetButtons = new function(){
          * @param dataRegionName
          * @param menu
          */
-        compareWeightsHandler: function(dataRegionName){
+        compareWeightsHandler: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
+            var checked = dataRegion.getChecked();  //TODO: update to getSelected with callback
+            if (!checked || !checked.length) {
+                Ext4.Msg.alert('Error', 'No records selected');
                 return;
             }
 
-            if (checked.length > 2){
+            if (checked.length > 2) {
                 Ext4.Msg.alert('Error', 'More than 2 weights are checked.  Using the first 2.', showWindow, this);
             }
             else {
                 showWindow();
             }
 
-            function showWindow(){
+            function showWindow() {
                 Ext4.create('EHR.window.CompareWeightsWindow', {
                     dataRegionName: dataRegionName
                 }).show();
             }
         },
 
-        discardTasks: function(dataRegionName){
+        discardTasks: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
+            var checked = dataRegion.getChecked();  //TODO: update to getSelected with callback
+            if (!checked || !checked.length) {
+                Ext4.Msg.alert('Error', 'No records selected');
                 return;
             }
 
-            Ext4.Msg.confirm('Discard Tasks', 'You are about to permanently delete the selected tasks.  Do you want to do this?', function(val){
-                if (val == 'yes'){
+            Ext4.Msg.confirm('Discard Tasks', 'You are about to permanently delete the selected tasks.  Do you want to do this?', function (val) {
+                if (val == 'yes') {
                     Ext4.Msg.wait('Deleting...');
                     LABKEY.Ajax.request({
                         url: LABKEY.ActionURL.buildURL('ehr', 'discardForm', null, {taskIds: checked}),
-                        success: function(response, options){
+                        success: function (response, options) {
                             Ext4.Msg.hide();
                             Ext4.Msg.alert('Success', 'Tasks discarded');
                             dataRegion.refresh();
@@ -235,41 +242,45 @@ EHR.DatasetButtons = new function(){
             }, this);
         },
 
-        limitKinshipSelection: function(dataRegionName){
+        limitKinshipSelection: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if (!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
 
-            //find distinct IDs
-            var sql = "SELECT DISTINCT s.Id FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
+            var noneSelected = function () {
+                Ext4.Msg.alert('Error', 'No records selected');
+            };
 
-            LABKEY.Query.executeSql({
-                method: 'POST',
-                schemaName: 'study',
-                sql: sql,
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: function(data){
-                    var ids = [];
-                    for (var i = 0; i < data.rows.length; i++){
-                        ids.push(data.rows[i].Id);
-                    }
+            var processSelection = function (clause) {
 
-                    if (!ids.length){
-                        Ext4.Msg.alert('No IDs found');
+                //find distinct IDs
+                var sql = "SELECT DISTINCT s.Id FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + clause;
+
+                LABKEY.Query.executeSql({
+                    method: 'POST',
+                    schemaName: 'study',
+                    sql: sql,
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function (data) {
+                        var ids = [];
+                        for (var i = 0; i < data.rows.length; i++) {
+                            ids.push(data.rows[i].Id);
+                        }
+
+                        if (!ids.length) {
+                            Ext4.Msg.alert('No IDs found');
+                        }
+                        else if (ids.length > 200) {
+                            Ext4.Msg.alert('This can only be used with 200 IDs or fewer');
+                        }
+                        else {
+                            dataRegion.addFilter(LABKEY.Filter.create('Id2', ids.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+                            dataRegion.refresh();
+                        }
                     }
-                    else if (ids.length > 200){
-                        Ext4.Msg.alert('This can only be used with 200 IDs or fewer');
-                    }
-                    else{
-                        dataRegion.addFilter(LABKEY.Filter.create('Id2', ids.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
-                        dataRegion.refresh();
-                    }
-                }
-            });
+                });
+            };
+
+            LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's', processSelection, noneSelected);
         }
     }
 }

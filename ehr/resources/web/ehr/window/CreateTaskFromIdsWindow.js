@@ -214,16 +214,20 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LDK.Assert.assertNotEmpty('Unknown dataregion: ' + this.dataRegionName, dataRegion);
 
-        var sql = "SELECT DISTINCT s." + this.selectField + " as field FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
+        var processSelections = function(clause) {
+            var sql = "SELECT DISTINCT s." + this.selectField + " as field FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + clause;
 
-        LABKEY.Query.executeSql({
-            method:'POST',
-            schemaName: 'study',
-            sql: sql,
-            scope: this,
-            failure: LDK.Utils.getErrorCallback(),
-            success: this.onDataLoad
-        });
+            LABKEY.Query.executeSql({
+                method: 'POST',
+                schemaName: 'study',
+                sql: sql,
+                scope: this,
+                failure: LDK.Utils.getErrorCallback(),
+                success: this.onDataLoad
+            });
+        }
+
+        LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's', processSelections);
     },
 
     getTaskRecord: function(){
