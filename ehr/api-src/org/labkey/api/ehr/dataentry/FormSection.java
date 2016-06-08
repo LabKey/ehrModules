@@ -56,5 +56,7 @@ public interface FormSection
 
     abstract public void addClientDependency(ClientDependency cd);
 
+    abstract public void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll);
+
     abstract public void setTemplateMode(AbstractFormSection.TEMPLATE_MODE mode);
 }

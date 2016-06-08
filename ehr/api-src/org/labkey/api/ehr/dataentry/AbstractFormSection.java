@@ -21,6 +21,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.security.AbstractEHRPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
+import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.Dataset;
@@ -52,6 +53,7 @@ abstract public class AbstractFormSection implements FormSection
     private TEMPLATE_MODE _templateMode = TEMPLATE_MODE.MULTI;
     private boolean _allowBulkAdd = true;
     private boolean _supportFormSort = true;
+    private Boolean _showSaveTemplateForAll = null;
 
     private List<String> _configSources = new ArrayList<>();
 
@@ -255,6 +257,14 @@ abstract public class AbstractFormSection implements FormSection
         return tables;
     }
 
+    // specific forms can opt-in to allowing the save template button to be shown using _showSaveTemplateForAll.
+    // alternately, subclasses can override this method for finer control
+    // null value or false will result in admins only
+    protected boolean canSaveTemplates(DataEntryFormContext ctx)
+    {
+        return _showSaveTemplateForAll != null && _showSaveTemplateForAll ? true : ctx.getContainer().hasPermission(ctx.getUser(), AdminPermission.class);
+    }
+
     @Override
     public JSONObject toJSON(DataEntryFormContext ctx, boolean includeFormElements)
     {
@@ -272,6 +282,7 @@ abstract public class AbstractFormSection implements FormSection
             json.put("fieldConfigs", getFieldConfigs(ctx));
 
         json.put("supportsTemplates", _templateMode != TEMPLATE_MODE.NONE);
+        json.put("canSaveTemplates", canSaveTemplates(ctx));
         json.put("configSources", getConfigSources());
         json.put("tbarButtons", getTbarButtons());
         json.put("tbarMoreActionButtons", getTbarMoreActionButtons());
@@ -357,5 +368,10 @@ abstract public class AbstractFormSection implements FormSection
     public void addClientDependency(ClientDependency cd)
     {
         _clientDependencies.add(cd);
+    }
+
+    public void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll)
+    {
+        _showSaveTemplateForAll = showSaveTemplateForAll;
     }
 }

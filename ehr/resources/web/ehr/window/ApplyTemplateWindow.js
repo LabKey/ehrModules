@@ -488,7 +488,11 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
             xtype: 'menu',
             ignoreParentClicks: true,
             items: [{
-                text: 'Save As Template',
+                text: 'Save As Template',               
+                // NOTE: in the java config, we can specify canSaveTemplates.
+                // it might make more sense to use this here, which lets specific forms
+                // turn this on/off.  similar permissions could be tested server-side
+                //hidden: grid.formConfig.canSaveTemplates,
                 hidden: !EHR.Security.isTemplateCreator(),
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
