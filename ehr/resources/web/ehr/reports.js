@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010-2015 LabKey Corporation
  *
@@ -238,9 +237,31 @@ EHR.reports.weightGraph = function(panel, tab){
         }
 
         var toAdd = [];
-        for (var i=0;i<subjects.length;i++){
-            var subject = subjects[i];
-            toAdd.push(EHR.reports.renderWeightData(panel, tab, subject));
+        if (subjects.length < 10) {
+            for (var i=0;i<subjects.length;i++){
+                var subject = subjects[i];
+                toAdd.push(EHR.reports.renderWeightData(panel, tab, subject));
+            }
+        }
+        else {
+            toAdd.push({
+                html: 'Because more than 10 subjects were selected, the condensed report is being shown.  Note that you can click the animal ID to open this same report in a different tab, showing that animal in more detail.',
+                style: 'padding-bottom: 20px;',
+                border: false
+            });
+
+            var filterArray = panel.getFilterArray(tab);
+            var title = panel.getTitleSuffix();
+            toAdd.push({
+                xtype: 'ldk-querypanel',
+                style: 'margin-bottom:20px;',
+                queryConfig: {
+                    title: 'Overview' + title,
+                    schemaName: 'study',
+                    queryName: 'weight',
+                    filterArray: filterArray.removable.concat(filterArray.nonRemovable)
+                }
+            });
         }
 
         if (toAdd.length)
