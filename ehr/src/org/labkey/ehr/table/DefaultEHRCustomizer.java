@@ -145,10 +145,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeProtocolTable((AbstractTableInfo) table);
         }
-        else if (matches(table, "ehr", "animal_group_members"))
-        {
-            addIsActiveCol((AbstractTableInfo) table);
-        }
         else if (matches(table, "ehr_lookups", "procedures"))
         {
             customizeProcedures((AbstractTableInfo) table);
