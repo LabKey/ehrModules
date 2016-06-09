@@ -20,6 +20,7 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ext4.RadioButton;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -50,7 +51,7 @@ public class AnimalHistoryPage extends ParticipantViewPage
     @Override
     protected void waitForPage()
     {
-        waitForElement(Locator.inputByNameContaining("textfield"));
+        waitForElement(Ext4Helper.Locators.ext4Button("Refresh"));
     }
 
     public void setSearchText(String text)
