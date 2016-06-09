@@ -20,12 +20,11 @@ import java.util.Map;
 public class ParticipantViewPage extends LabKeyPage
 {
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
-    private final Elements _elements;
+    private Elements _elements;
 
     public ParticipantViewPage(WebDriver driver)
     {
         super(driver);
-        _elements = new Elements();
     }
 
     public static ParticipantViewPage beginAt(WebDriverWrapper driver, String participantId)
@@ -86,17 +85,23 @@ public class ParticipantViewPage extends LabKeyPage
 
     public Elements elements()
     {
+        if (null == _elements)
+            _elements = newElements();
         return _elements;
     }
 
-    public class Elements extends ComponentElements
+    protected Elements newElements()
     {
-        @Override
-        protected SearchContext getContext()
-        {
-            return getDriver();
-        }
+        return new Elements();
+    }
 
+    protected void clearCache()
+    {
+        _elements = null;
+    }
+
+    public class Elements extends LabKeyPage.ElementCache
+    {
         private Map<String, WebElement> categoryTabs = new HashMap<>();
         private Map<String, Map<String, WebElement>> reportTabsByCategory = new HashMap<>();
 

@@ -18,10 +18,15 @@ package org.labkey.test.pages.ehr;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.components.ext4.RadioButton;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.Arrays;
+
+import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
 
 
 public class AnimalHistoryPage extends ParticipantViewPage
@@ -57,8 +62,52 @@ public class AnimalHistoryPage extends ParticipantViewPage
     {
         doAndWaitForPageSignal(
                 () -> doAndWaitForPageSignal(
-                        () -> waitAndClick(Ext4Helper.Locators.ext4Button("Refresh")),
+                        () -> waitAndClick(ext4Button("Refresh")),
                         REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60)),
                 DataRegionTable.UPDATE_SIGNAL, new WebDriverWait(getDriver(), 60));
+        clearCache();
+    }
+
+    public void searchSingleAnimal(String animalId)
+    {
+        elements().singleAnimalRadioButton.check();
+        setSearchText(animalId);
+        refreshReport();
+    }
+
+    public void appendMultipleAnimals(String... animalIds)
+    {
+        elements().multipleAnimalRadioButton.check();
+        setSearchText(String.join(" ", Arrays.asList(animalIds)));
+        clickButton("Append -->", 0);
+        for (String animalId : animalIds)
+            elements().findRemoveIdButton(animalId);
+        refreshReport();
+    }
+
+    @Override
+    public ElementCache elements()
+    {
+        return (ElementCache) super.elements();
+    }
+
+    @Override
+    protected Elements newElements()
+    {
+        return new ElementCache();
+    }
+
+    protected class ElementCache extends AnimalHistoryPage.Elements
+    {
+        protected RadioButton singleAnimalRadioButton = RadioButton.RadioButton().withLabel("Single Animal").findWhenNeeded(this);
+        protected RadioButton multipleAnimalRadioButton = RadioButton.RadioButton().withLabel("Multiple Animal").findWhenNeeded(this);
+        protected RadioButton currentLocationRadioButton = RadioButton.RadioButton().withLabel("Current Location").findWhenNeeded(this);
+        protected RadioButton entireDatabaseRadioButton = RadioButton.RadioButton().withLabel("Entire Database").findWhenNeeded(this);
+        protected WebElement refreshButton = ext4Button("Refresh").findWhenNeeded(this);
+
+        protected WebElement findRemoveIdButton(String animalId)
+        {
+            return ext4Button(animalId + " (X)").waitForElement(this, 1000);
+        }
     }
 }
