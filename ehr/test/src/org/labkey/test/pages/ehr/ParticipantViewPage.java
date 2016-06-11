@@ -4,11 +4,9 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
-import org.labkey.test.components.ComponentElements;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,6 +18,7 @@ import java.util.Map;
 public class ParticipantViewPage extends LabKeyPage
 {
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
+    public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
     private Elements _elements;
 
     public ParticipantViewPage(WebDriver driver)
