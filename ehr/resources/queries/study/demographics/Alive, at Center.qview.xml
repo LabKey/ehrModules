@@ -73,6 +73,11 @@
                 <property name="columnTitle" value="Weight Date"/>
             </properties>
         </column>
+        <column name="Id/MostRecentTBDate/MostRecentTBDate">
+            <properties>
+                <property name="columnTitle" value="Most Recent TB Date"/>
+            </properties>
+        </column>
         <column name="medical"/>
         <column name="prepaid"/>
         <column name="history"/>
