@@ -137,7 +137,8 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
     protected void calculateViralLoadForRoche(Map<String, Object> map)
     {
         //calculate VL
-        Double copiesPerRxn = map.get("Concentration") == null ? null : ((Number)map.get("Concentration")).doubleValue();
+        Object concentration = map.get("Concentration");
+        Double copiesPerRxn = concentration == null ? null : (concentration instanceof Number ? ((Number)concentration).doubleValue() : Double.parseDouble(map.get("Concentration").toString()));
         map.put("copiesPerRxn", copiesPerRxn);
 
         Double cp = (Double)map.get("Cp");
@@ -148,7 +149,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
 
         Double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
 
-        Double viralLoad = null;
+        Double viralLoad;
         if (copiesPerRxn != null)
         {
             Double dilutionFactor = (1.0 / sampleVol) * (eluateVol / volPerRxn);
