@@ -589,9 +589,10 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);  //proxy for DR loading
 
         //chronological history
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical History"));
-        waitForElement(Locator.tagContainingText("div", "No records found since:"));
+        AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver()); // TODO: Update test to use this throughout
+        animalHistoryPage.clickCategoryTab("Clinical");
+        animalHistoryPage.clickReportTab("Clinical History");
+        waitForElement(Locator.tagContainingText("div", "No records found since:"), 20000);
     }
 
 
