@@ -71,7 +71,7 @@ public class ParticipantViewPage extends LabKeyPage
             {
                 reportTab.isDisplayed(); // Make sure it was actually the signal that was stale
             }
-            _ext4Helper.waitForMaskToDisappear();
+            _ext4Helper.waitForMaskToDisappear(30000);
         }
         return this;
     }
