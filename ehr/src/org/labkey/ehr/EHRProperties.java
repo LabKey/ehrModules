@@ -52,6 +52,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("parentid");
             pd.setLabel("Parent Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -69,6 +70,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("taskid");
             pd.setLabel("Task Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -86,6 +88,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("caseid");
             pd.setLabel("Case Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -103,6 +106,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("problemid");
             pd.setLabel("Problem Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -120,6 +124,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("runid");
             pd.setLabel("Run Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -153,6 +158,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("requestid");
             pd.setLabel("Request Id");
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -168,6 +174,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setName("userid");
+            pd.setScale(64);
 //            pd.setHidden(true);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
@@ -229,6 +236,7 @@ public class EHRProperties
             //pd.setShownInInsertView(false);
             pd.setShownInDetailsView(false);
             pd.setShownInUpdateView(false);
+            pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -242,6 +250,7 @@ public class EHRProperties
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("performedby");
             pd.setLabel("Performed By");
+            pd.setScale(64);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
