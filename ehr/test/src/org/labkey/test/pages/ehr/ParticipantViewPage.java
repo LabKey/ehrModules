@@ -1,5 +1,6 @@
 package org.labkey.test.pages.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
@@ -61,7 +62,7 @@ public class ParticipantViewPage extends LabKeyPage
 
     public ParticipantViewPage clickReportTab(WebElement reportTab)
     {
-        if (!reportTab.getAttribute("class").contains("active"))
+        if (!StringUtils.trimToEmpty(reportTab.getAttribute("class")).contains("active"))
         {
             try
             {
