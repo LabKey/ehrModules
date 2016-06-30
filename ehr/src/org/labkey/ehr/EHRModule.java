@@ -124,7 +124,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 16.11;
+        return 16.20;
     }
 
     public boolean hasScripts()
@@ -211,16 +211,11 @@ public class EHRModule extends ExtendedSimpleModule
             @Override
             public void moduleStartupComplete(ServletContext servletContext)
             {
-                JobRunner.getDefault().execute(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        //note: this was moved to run after startup to ensure all modules have registered
-                        DataEntryManager.get().primeAllCaches();
+                JobRunner.getDefault().execute(() -> {
+                    //note: this was moved to run after startup to ensure all modules have registered
+                    DataEntryManager.get().primeAllCaches();
 
-                        EHRDemographicsServiceImpl.get().onStartup();
-                    }
+                    EHRDemographicsServiceImpl.get().onStartup();
                 }, 10000);
             }
         });
@@ -291,13 +286,6 @@ public class EHRModule extends ExtendedSimpleModule
                 }
             });
         }
-    }
-
-    @NotNull
-    @Override
-    public Collection<String> getSummary(Container c)
-    {
-        return Collections.emptyList();
     }
 
     @Override
