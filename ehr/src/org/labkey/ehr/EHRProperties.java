@@ -52,7 +52,7 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("parentid");
             pd.setLabel("Parent Id");
-            pd.setScale(100);
+            pd.setScale(400);
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
