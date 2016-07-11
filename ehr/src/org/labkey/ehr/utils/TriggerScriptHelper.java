@@ -969,12 +969,23 @@ public class TriggerScriptHelper
         return ret;
     }
 
-    public boolean isDefaultProject(Integer project)
+    public boolean isDefaultProject(String projectId)
     {
-        if (project == null)
+        if (projectId == null)
             return false;
 
-        return getDefaultProjects().contains(project);
+        //test if integer or string
+        try
+        {
+            Integer project = ConvertHelper.convert(projectId, Integer.class);
+            return getDefaultProjects().contains(project);
+        }
+        catch (ConversionException e)
+        {
+            //ignore.  could consider trying to resolve this against displayValue
+        }
+
+        return false;
     }
 
     public Set<Integer> getDefaultProjects()
