@@ -1,13 +1,15 @@
 package org.labkey.test.pages.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -41,27 +43,20 @@ public class ParticipantViewPage extends LabKeyPage
     @Override
     protected void waitForPage()
     {
-        waitForElement(Locators.pageSignal("LDK_reportPanelLoaded"));
+        waitForElement(Locators.pageSignal(REPORT_PANEL_SIGNAL));
     }
 
-    public ParticipantViewPage clickCategoryTab(String categoryTab)
+    @LogMethod(quiet = true)
+    public ParticipantViewPage clickCategoryTab(@LoggedParam String categoryTab)
     {
-        return clickCategoryTab(elements().findCategoryTab(categoryTab));
-    }
-
-    public ParticipantViewPage clickCategoryTab(WebElement categoryTab)
-    {
-        categoryTab.click();
+        elements().findCategoryTab(categoryTab).click();
         return this;
     }
 
-    public ParticipantViewPage clickReportTab(String reportLabel)
+    @LogMethod(quiet = true)
+    public ParticipantViewPage clickReportTab(@LoggedParam String reportLabel)
     {
-        return clickReportTab(elements().findReportTab(reportLabel));
-    }
-
-    public ParticipantViewPage clickReportTab(WebElement reportTab)
-    {
+        WebElement reportTab = elements().findReportTab(reportLabel);
         if (!StringUtils.trimToEmpty(reportTab.getAttribute("class")).contains("active"))
         {
             try
@@ -77,10 +72,10 @@ public class ParticipantViewPage extends LabKeyPage
         return this;
     }
 
-    public DataRegionTable getActiveReportDataRegion(BaseWebDriverTest test)
+    public DataRegionTable getActiveReportDataRegion()
     {
         WebElement el = DataRegionTable.Locators.dataRegion().notHidden().waitForElement(getDriver(), 30000);
-        return new DataRegionTable(test, el);
+        return new DataRegionTable(el, getDriver());
     }
 
     public Elements elements()
@@ -107,12 +102,18 @@ public class ParticipantViewPage extends LabKeyPage
 
         WebElement findCategoryTab(String category)
         {
-            return findCategoryTabs().get(category);
+            WebElement categoryTab = findCategoryTabs().get(category);
+            if (categoryTab == null)
+                throw new NoSuchElementException(String.format("Did not find category named '%s'", category));
+            return categoryTab;
         }
 
         WebElement findReportTab(String reportLabel)
         {
-            return findReportTabs().get(reportLabel);
+            WebElement reportTab = findReportTabs().get(reportLabel);
+            if (reportTab == null)
+                throw new NoSuchElementException(String.format("Did not find report named '%s' in category '%s'", reportLabel, findSelectedCategory().getText()));
+            return reportTab;
         }
 
         public Map<String, WebElement> findCategoryTabs()
