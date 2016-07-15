@@ -1848,4 +1848,26 @@
             </ns:column>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="institutions" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Institutions</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="id"/>
+            <ns:column columnName="name"/>
+            <ns:column columnName="abbreviation"/>
+            <ns:column columnName="city"/>
+            <ns:column columnName="state"/>
+            <ns:column columnName="country"/>
+            <ns:column columnName="affiliate"/>
+            <ns:column columnName="web_site"/>
+            <ns:column columnName="fileStatus"/>
+            <ns:column columnName="recordClass"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
 </ns:tables>

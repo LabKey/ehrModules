@@ -25,6 +25,16 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
+import org.labkey.api.ehr.demographics.ActiveAssignmentsDemographicsProvider;
+import org.labkey.api.ehr.demographics.ActiveProblemsDemographicsProvider;
+import org.labkey.api.ehr.demographics.ActiveTreatmentsDemographicsProvider;
+import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
+import org.labkey.api.ehr.demographics.BirthDemographicsProvider;
+import org.labkey.api.ehr.demographics.DeathsDemographicsProvider;
+import org.labkey.api.ehr.demographics.DepartureDemographicsProvider;
+import org.labkey.api.ehr.demographics.HousingDemographicsProvider;
+import org.labkey.api.ehr.demographics.MostRecentWeightDemographicsProvider;
+import org.labkey.api.ehr.demographics.WeightsDemographicsProvider;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ldk.ExtendedSimpleModule;
@@ -52,18 +62,8 @@ import org.labkey.ehr.buttons.ProtocolEditButton;
 import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
-import org.labkey.api.ehr.demographics.ActiveAssignmentsDemographicsProvider;
-import org.labkey.api.ehr.demographics.ActiveProblemsDemographicsProvider;
-import org.labkey.api.ehr.demographics.ActiveTreatmentsDemographicsProvider;
-import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
-import org.labkey.api.ehr.demographics.BirthDemographicsProvider;
-import org.labkey.api.ehr.demographics.DeathsDemographicsProvider;
-import org.labkey.api.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
-import org.labkey.api.ehr.demographics.HousingDemographicsProvider;
-import org.labkey.api.ehr.demographics.MostRecentWeightDemographicsProvider;
-import org.labkey.api.ehr.demographics.WeightsDemographicsProvider;
 import org.labkey.ehr.history.AntibioticSensitivityLabworkType;
 import org.labkey.ehr.history.ChemistryLabworkType;
 import org.labkey.ehr.history.HematologyLabworkType;
@@ -105,7 +105,6 @@ import org.labkey.ehr.study.EHRStudyUpgradeCode;
 import javax.servlet.ServletContext;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -124,7 +123,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 16.20;
+        return 16.21;
     }
 
     public boolean hasScripts()
