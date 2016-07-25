@@ -9,7 +9,7 @@ Ext.namespace('EHR.ext');
 /**
  * This class was never completed.  The intent was to try to create a variant of a normal Task ImportPanel which would
  * display records in a read-only manner suitable for printing.  The thought was that in some cases paper was going to be
- * necesary.  The user could start the task in LabKey, fill out as much as possible, then print.  The printout should have
+ * necessary.  The user could start the task in LabKey, fill out as much as possible, then print.  The printout should have
  * space to fill in necessary values.  The user could take this printout back to the computer and fill in missing values.
  *
  * There may be use for this concept; however, other items were prioritized higher.
