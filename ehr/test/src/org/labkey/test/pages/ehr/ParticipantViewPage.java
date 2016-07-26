@@ -1,22 +1,28 @@
 package org.labkey.test.pages.ehr;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualTreeBidiMap;
 import org.apache.commons.lang3.StringUtils;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ParticipantViewPage extends LabKeyPage
 {
@@ -47,28 +53,16 @@ public class ParticipantViewPage extends LabKeyPage
     }
 
     @LogMethod(quiet = true)
-    public ParticipantViewPage clickCategoryTab(@LoggedParam String categoryTab)
+    public ParticipantViewPage clickCategoryTab(@LoggedParam String categoryLabel)
     {
-        elements().findCategoryTab(categoryTab).click();
+        elements().findCategoryTab(categoryLabel).select();
         return this;
     }
 
     @LogMethod(quiet = true)
     public ParticipantViewPage clickReportTab(@LoggedParam String reportLabel)
     {
-        WebElement reportTab = elements().findReportTab(reportLabel);
-        if (!StringUtils.trimToEmpty(reportTab.getAttribute("class")).contains("active"))
-        {
-            try
-            {
-                doAndWaitForPageSignal(reportTab::click, REPORT_TAB_SIGNAL);
-            }
-            catch (StaleElementReferenceException ignore) // Tab signal might fire more than once
-            {
-                reportTab.isDisplayed(); // Make sure it was actually the signal that was stale
-            }
-            _ext4Helper.waitForMaskToDisappear(30000);
-        }
+        elements().findReportTab(reportLabel).select();
         return this;
     }
 
@@ -97,86 +91,216 @@ public class ParticipantViewPage extends LabKeyPage
 
     public class Elements extends LabKeyPage.ElementCache
     {
-        private Map<String, WebElement> categoryTabs = new HashMap<>();
-        private Map<String, Map<String, WebElement>> reportTabsByCategory = new HashMap<>();
+        private BidiMap<String, Integer> categoryLabels = new DualTreeBidiMap<>();
+        private Map<Integer, CategoryTab> categoryTabs = new TreeMap<>();
+        private Map<String, BidiMap<String, Integer>> reportLabels = new TreeMap<>();
+        private Map<String, Map<Integer, ReportTab>> reportTabs = new TreeMap<>();
+        private CategoryTab selectedCategory;
 
-        WebElement findCategoryTab(String category)
+        public CategoryTab findCategoryTab(String category)
         {
-            WebElement categoryTab = findCategoryTabs().get(category);
-            if (categoryTab == null)
-                throw new NoSuchElementException(String.format("Did not find category named '%s'", category));
-            return categoryTab;
-        }
-
-        WebElement findReportTab(String reportLabel)
-        {
-            WebElement reportTab = findReportTabs().get(reportLabel);
-            if (reportTab == null)
-                throw new NoSuchElementException(String.format("Did not find report named '%s' in category '%s'", reportLabel, findSelectedCategory().getText()));
-            return reportTab;
-        }
-
-        public Map<String, WebElement> findCategoryTabs()
-        {
-            if (categoryTabs.isEmpty())
+            if (!categoryLabels.containsKey(category))
             {
+                WebElement tabEl = Locators.categoryTab.withText(category).findElement(this);
+                CategoryTab tab = new CategoryTab(tabEl, category);
+                categoryLabels.put(category, tab.getIndex());
+                categoryTabs.put(tab.getIndex(), tab);
+            }
+            return findCategoryTabs().get(categoryLabels.get(category));
+        }
+
+        public ReportTab findReportTab(String reportLabel)
+        {
+            String selectedCategory = findSelectedCategory().getLabel();
+            reportLabels.putIfAbsent(selectedCategory, new DualTreeBidiMap<>());
+
+            if (!reportLabels.get(selectedCategory).containsKey(reportLabel))
+            {
+                reportTabs.put(selectedCategory, new TreeMap<>());
+
+                WebElement tabEl = Locators.reportTab.withText(reportLabel).findElement(this);
+                ReportTab tab = new ReportTab(tabEl, reportLabel);
+                reportLabels.get(selectedCategory).put(reportLabel, tab.getIndex());
+                reportTabs.get(selectedCategory).put(tab.getIndex(), tab);
+            }
+            return getReportTabsForSelectedCategory().get(reportLabels.get(selectedCategory).get(reportLabel));
+        }
+
+        // null for category tabs, else found all report tabs for each listed category
+        private final List<String> foundAllTabs = new ArrayList<>();
+        public Map<Integer, CategoryTab> findCategoryTabs()
+        {
+            if (!foundAllTabs.contains(null))
+            {
+                foundAllTabs.add(null);
                 List<WebElement> tabs = Locators.categoryTab.findElements(this);
-                List<String> tabLabels = getTexts(tabs);
                 for (int i = 0; i < tabs.size(); i++)
                 {
-                    if (categoryTabs.containsKey(tabLabels.get(i)))
-                        throw new IllegalStateException(String.format("Duplicate categories named '%s'", tabLabels.get(i)));
-                    categoryTabs.put(tabLabels.get(i), tabs.get(i));
+                    categoryTabs.putIfAbsent(i, new CategoryTab(tabs.get(i), i));
                 }
             }
-
             return categoryTabs;
         }
 
-        public Map<String, WebElement> findReportTabs()
+        public Map<Integer, ReportTab> getReportTabsForSelectedCategory()
         {
-            String selectedCategory = findSelectedCategory().getText();
-            if (!reportTabsByCategory.containsKey(selectedCategory))
+            String selectedCategory = findSelectedCategory().getLabel();
+
+            if (!foundAllTabs.contains(selectedCategory))
             {
+                foundAllTabs.add(selectedCategory);
+                reportTabs.putIfAbsent(selectedCategory, new TreeMap<>());
+                reportLabels.putIfAbsent(selectedCategory, new DualTreeBidiMap<>());
                 List<WebElement> tabs = Locators.reportTab.findElements(this);
-                List<String> tabLabels = getTexts(tabs);
-                Map<String, WebElement> tabMap = new HashMap<>();
+
                 for (int i = 0; i < tabs.size(); i++)
                 {
-                    String reportTab = tabLabels.get(i);
-                    if (reportTab.isEmpty()) // Report tabs for inactive categories exist, but contain no text
-                        continue;
-                    if (tabMap.containsKey(reportTab))
-                        throw new IllegalStateException(String.format("Duplicate reports named '%s' in category '%s'", reportTab, selectedCategory));
-                    tabMap.put(reportTab, tabs.get(i));
+                    reportTabs.get(selectedCategory).putIfAbsent(i, new ReportTab(tabs.get(i), i));
                 }
-                reportTabsByCategory.put(selectedCategory, tabMap);
             }
-
-            return reportTabsByCategory.get(selectedCategory);
+            return reportTabs.get(selectedCategory);
         }
 
-        WebElement findSelectedCategory()
+        CategoryTab findSelectedCategory()
         {
-            return Locators.categoryTab.append(".x4-tab-active").findElement(this);
-        }
+            if (selectedCategory != null && selectedCategory.isActive())
+                return selectedCategory;
 
-        WebElement findSelectedReport()
-        {
-            List<WebElement> tabs = Locators.reportTab.append(".x4-tab-active").findElements(this);
-            for (WebElement tab : tabs)
+            for (CategoryTab categoryTab : findCategoryTabs().values())
             {
-                if (!tab.getText().isEmpty())
-                    return tab;
+                if (categoryTab.isActive())
+                {
+                    selectedCategory = categoryTab;
+                    return categoryTab;
+                }
             }
-
             return null;
+        }
+    }
+
+    public abstract class Tab
+    {
+        WebElement _el;
+        String _label;
+        Integer _index;
+
+        public Tab(WebElement el)
+        {
+            _el = el;
+        }
+
+        public Tab(WebElement el, String label)
+        {
+            this(el);
+            _label = label;
+        }
+
+        public Tab(WebElement el, Integer index)
+        {
+            this(el);
+            _index = index;
+        }
+
+        public String getLabel()
+        {
+            if (_label == null)
+                _label = _el.getText();
+            return _label;
+        }
+
+        public Integer getIndex()
+        {
+            if (_index == null)
+                _index = Locator.xpath("preceding-sibling::a").findElements(_el).size();
+            return _index;
+        }
+
+        public boolean isActive()
+        {
+            return _el.getAttribute("class").contains("x4-tab-active");
+        }
+
+        @Override
+        public String toString()
+        {
+            return getLabel();
+        }
+
+        public abstract void select();
+    }
+
+    public class CategoryTab extends Tab
+    {
+        public CategoryTab(WebElement el)
+        {
+            super(el);
+        }
+
+        public CategoryTab(WebElement el, String label)
+        {
+            super(el, label);
+        }
+
+        public CategoryTab(WebElement el, Integer index)
+        {
+            super(el, index);
+        }
+
+        @Override
+        public void select()
+        {
+            if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
+            {
+                WebElement activeReportPanel = Locators.activeReportPanel.findElement(getDriver());
+//                scrollIntoView(_el);
+                _el.click();
+                shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanel)));
+                elements().selectedCategory = this;
+                Locators.activeReportPanel.waitForElement(getDriver(), 1000);
+            }
+        }
+    }
+
+    public class ReportTab extends Tab
+    {
+        public ReportTab(WebElement el)
+        {
+            super(el);
+        }
+
+        public ReportTab(WebElement el, String label)
+        {
+            super(el, label);
+        }
+
+        public ReportTab(WebElement el, Integer index)
+        {
+            super(el, index);
+        }
+
+        @Override
+        public void select()
+        {
+            if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
+            {
+//                scrollIntoView(_el);
+                try
+                {
+                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL);
+                }
+                catch (StaleElementReferenceException ignore) // Tab signal might fire more than once
+                {
+                    _el.isDisplayed(); // Make sure it was actually the signal that was stale
+                }
+                _ext4Helper.waitForMaskToDisappear(30000);
+            }
         }
     }
 
     static class Locators extends LabKeyPage.Locators
     {
-        static Locator.CssLocator categoryTab = Locator.css(".category-tab-bar .x4-tab");
-        static Locator.CssLocator reportTab = Locator.css(".report-tab-bar .x4-tab");
+        static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
+        static final Locator.XPathLocator activeReportPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel").notHidden();
+        static final Locator.XPathLocator reportTab = activeReportPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
     }
 }

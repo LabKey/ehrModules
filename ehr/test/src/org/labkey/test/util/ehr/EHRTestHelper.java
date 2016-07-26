@@ -300,28 +300,40 @@ public class EHRTestHelper
     public void verifyReportTabs(ParticipantViewPage participantView, @NotNull Map<String, Collection<String>> reportsByCategory)
     {
         List<String> errors = new ArrayList<>();
-        Set<String> categoryTabs = reportsByCategory.keySet();
-        if (categoryTabs.isEmpty())
-            categoryTabs = participantView.elements().findCategoryTabs().keySet();
-        List<String> firstBadReport = null;
-        for (String category : categoryTabs)
+        Set<String> categoryLabels = reportsByCategory.keySet();
+        Collection<ParticipantViewPage.CategoryTab> categoryTabs = new ArrayList<>();
+        for (String categoryLabel : categoryLabels)
         {
-            log("Category: " + category);
+            categoryTabs.add(participantView.elements().findCategoryTab(categoryLabel));
+        }
+        if (categoryTabs.isEmpty())
+            categoryTabs = participantView.elements().findCategoryTabs().values();
+        List<String> firstBadReport = null;
+        for (ParticipantViewPage.CategoryTab categoryTab : categoryTabs)
+        {
+            log("Category: " + categoryTab.getLabel());
             increaseIndent();
-            participantView.clickCategoryTab(category);
+            categoryTab.select();
 
-            Collection<String> reportTabs = reportsByCategory.getOrDefault(category, participantView.elements().findReportTabs().keySet());
-
-            for (String report : reportTabs)
+            Collection<String> reportLabels = reportsByCategory.getOrDefault(categoryTab.getLabel(), Collections.emptyList());
+            Collection<ParticipantViewPage.ReportTab> reportTabs = new ArrayList<>();
+            for (String reportLabel : reportLabels)
             {
-                log("Report: " + report);
+                reportTabs.add(participantView.elements().findReportTab(reportLabel));
+            }
+            if (reportTabs.isEmpty())
+                reportTabs = participantView.elements().getReportTabsForSelectedCategory().values();
+
+            for (ParticipantViewPage.ReportTab reportTab : reportTabs)
+            {
+                log("Report: " + reportTab);
                 try
                 {
-                    participantView.clickReportTab(report);
+                    reportTab.select();
                 }
                 catch(WebDriverException fail)
                 {
-                    throw new AssertionError("There appears to be an error in the report: " + report, fail);
+                    throw new AssertionError("There appears to be an error in the report: " + reportTab.getLabel(), fail);
                 }
 
                 List<WebElement> errorEls = Locator.CssLocator.union(Locators.labkeyError, Locator.css(".error")).findElements(_test.getDriver());
@@ -330,11 +342,11 @@ public class EHRTestHelper
                     List<String> errorTexts = _test.getTexts(errorEls);
                     if (!String.join("", errorTexts).trim().isEmpty())
                     {
-                        errors.add("Error in: " + category + " - " + report);
+                        errors.add("Error in: " + categoryTab + " - " + reportTab);
                         for (String errorText : errorTexts)
                             if (!errorText.trim().isEmpty())
                                 errors.add("\t" + errorText.trim());
-                        firstBadReport = Arrays.asList(category, report);
+                        firstBadReport = Arrays.asList(categoryTab.getLabel(), reportTab.getLabel());
                     }
                 }
             }
