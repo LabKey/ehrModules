@@ -126,7 +126,7 @@ public class EHRManager
     }
 
     /**
-     * @return The value of the EHRSAdminUser
+     * @return The value of the EHRAdminUser
      */
     public User getEHRUser(Container c)
     {
