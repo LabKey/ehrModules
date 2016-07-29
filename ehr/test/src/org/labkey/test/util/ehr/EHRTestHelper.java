@@ -336,7 +336,7 @@ public class EHRTestHelper
                     throw new AssertionError("There appears to be an error in the report: " + reportTab.getLabel(), fail);
                 }
 
-                List<WebElement> errorEls = Locator.CssLocator.union(Locators.labkeyError, Locator.css(".error")).findElements(_test.getDriver());
+                List<WebElement> errorEls = Locator.findElements(_test.getDriver(), Locators.labkeyError, Locator.css(".error"));
                 if (!errorEls.isEmpty())
                 {
                     List<String> errorTexts = _test.getTexts(errorEls);
