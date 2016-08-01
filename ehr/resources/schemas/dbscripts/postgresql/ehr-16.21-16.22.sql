@@ -1,0 +1,1 @@
+CREATE INDEX EHR_INSTITUTIONS_CONTAINER_INDEX ON ehr.institutions(Container);

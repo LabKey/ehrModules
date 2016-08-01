@@ -742,6 +742,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.424-12.425.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.20-16.21.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr-16.21-16.22.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.30-12.10.sql -text
@@ -902,6 +903,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.424-12.425.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.20-16.21.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr-16.21-16.22.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/ScriptHelper.js -text
