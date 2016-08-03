@@ -252,7 +252,7 @@ public class ParticipantViewPage extends LabKeyPage
             if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
             {
                 WebElement activeReportPanel = Locators.activeReportPanel.findElement(getDriver());
-//                scrollIntoView(_el);
+                scrollIntoView(_el);
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanel)));
                 elements().selectedCategory = this;
@@ -283,7 +283,7 @@ public class ParticipantViewPage extends LabKeyPage
         {
             if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
             {
-//                scrollIntoView(_el);
+                scrollIntoView(_el);
                 try
                 {
                     doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL);
