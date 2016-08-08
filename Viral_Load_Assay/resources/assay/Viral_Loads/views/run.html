@@ -90,7 +90,6 @@
             }
 
             var cfg = {
-                xtype: 'labkey-genericchartpanel',
                 renderType: 'scatter_plot',
                 style: 'margin-bottom: 10px;margin-top:10px;',
                 width: 600,
@@ -101,7 +100,7 @@
                 userFilters: [
                     LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
                 ],
-                mainTitle: 'Standard Curve',
+                defaultTitleFn: function() { return 'Standard Curve' },
                 allowShare: false,
                 isDeveloper: false,
                 hideSave: true,
