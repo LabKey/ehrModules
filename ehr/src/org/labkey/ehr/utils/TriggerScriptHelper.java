@@ -969,7 +969,7 @@ public class TriggerScriptHelper
         return ret;
     }
 
-    public boolean isDefaultProject(String projectId)
+    public boolean isDefaultProject(Object projectId)
     {
         if (projectId == null)
             return false;
@@ -983,6 +983,7 @@ public class TriggerScriptHelper
         catch (ConversionException e)
         {
             //ignore.  could consider trying to resolve this against displayValue
+            _log.warn("unable to convert project to integer: [" + projectId + "]", new Exception());
         }
 
         return false;
