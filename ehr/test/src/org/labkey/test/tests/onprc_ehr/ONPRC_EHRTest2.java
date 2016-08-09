@@ -19,16 +19,15 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.rules.Timeout;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
@@ -50,19 +49,12 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
+@BaseWebDriverTest.ClassTimeout(minutes = 75)
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
-
-
-    @ClassRule
-    public static Timeout globalTimeout()
-    {
-        return new Timeout(75, TimeUnit.MINUTES);
-    }
 
     @Override
     protected String getModuleDirectory()
