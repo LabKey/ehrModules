@@ -1401,6 +1401,7 @@ ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon[!!-~]Small.zip -text
 ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon.zip -text
 ehr/test/sampledata/ehrTestStudyPolicy.xml -text
 ehr/test/sampledata/onprcEHRStudyPolicy.xml -text
+ehr/test/sampledata/snprcEHRStudyPolicy.xml -text
 ehr/test/src/org/labkey/test/categories/EHR.java -text
 ehr/test/src/org/labkey/test/pages/ehr/AnimalHistoryPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/BaseColonyOverviewPage.java -text
