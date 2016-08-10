@@ -126,7 +126,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 }
             }
             else {
-                console.error('objectid not provided for blood draw, cannot calculate allowable blood volume.  this probably indicates an error with the form submitting these data')
+                console.warn('objectid not provided for blood draw, cannot calculate allowable blood volume.  this probably indicates an error with the form submitting these data')
             }
         }
     }
