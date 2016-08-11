@@ -354,5 +354,17 @@
         <ns:datasetPermission datasetName="idHistory" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="idHistory" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="idHistory" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="animal_group_members" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="cases" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
     </ns:perDatasetPermissions>
 </ns:studySecurityPolicy>
