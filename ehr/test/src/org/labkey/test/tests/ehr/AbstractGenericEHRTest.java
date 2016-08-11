@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.test.Locator;
-import org.labkey.test.tests.ehr.AbstractEHRTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
@@ -210,14 +209,14 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         checkCheckbox(Locator.checkboxByName(".select").index(1));
         String animal1 = dr.getDataAsText(0,"Id");
         String animal2 = dr.getDataAsText(0, "Id");
-        dr.clickHeaderButton("More Actions", false, "Compare Weights");
+        dr.clickHeaderMenu("More Actions", false, "Compare Weights");
         waitForText(5000, "Weight 1", "Weight 2", "Days Between", "% Change");
         waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
-        dr.clickHeaderButton("More Actions", true, "Jump To History");
+        dr.clickHeaderMenu("More Actions", true, "Jump To History");
         assertTextPresent("Animal History");
         sleep(5000);
         recallLocation();
-        List<String> submenuItems = dr.getHeaderButtonSubmenuText("More Actions");
+        List<String> submenuItems = dr.getHeaderMenuOptions("More Actions");
         List<String> expectedSubmenu = Arrays.asList("Jump To History", "Return Distinct Values","Show Record History","Compare Weights","Edit Records");
         Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
     }
