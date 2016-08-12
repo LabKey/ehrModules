@@ -81,7 +81,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
     }
 
     @Override
-    public String getMessage(Container c, User u)
+    public String getMessageBodyHTML(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
         msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");

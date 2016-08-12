@@ -28,7 +28,6 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ldk.LDKService;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
@@ -148,7 +147,6 @@ abstract public class AbstractDataSource implements HistoryDataSource
         {
             String msg = "Loaded history on table " + _query + " in " + duration + " seconds";
             _log.error(msg);
-            LDKService.get().logPerfMetric(c, u, "EHRDataSource", msg, duration.doubleValue());
         }
 
         return rows;

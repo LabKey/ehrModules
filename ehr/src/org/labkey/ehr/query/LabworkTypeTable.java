@@ -24,6 +24,7 @@ import org.labkey.api.etl.DataIterator;
 import org.labkey.api.etl.DataIteratorBuilder;
 import org.labkey.api.etl.DataIteratorContext;
 import org.labkey.api.etl.SimpleTranslator;
+import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.InvalidKeyException;
@@ -59,7 +60,9 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
     @Override
     public LabworkTypeTable init()
     {
-        return (LabworkTypeTable)super.init();
+        LabworkTypeTable result = (LabworkTypeTable) super.init();
+        LDKService.get().getDefaultTableCustomizer().customize(this);
+        return result;
     }
 
     private void normalizeAliases(Map<String, Object> map)
