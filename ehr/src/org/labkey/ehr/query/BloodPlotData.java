@@ -10,20 +10,20 @@ public class BloodPlotData
 {
     private String _id;
     private Date _date;
-    private double _quantity;
+    private Double _quantity;
     private String _species;
-    private double _max_draw_pct;
+    private Double _max_draw_pct;
     private int _blood_draw_interval;
-    private double _blood_per_kg;
-    private double _mostRecentWeight;
+    private Double _blood_per_kg;
+    private Double _mostRecentWeight;
     private Date _mostRecentWeightDate;
     private Date _death;
-    private double _maxAllowableBlood;
-    private double _bloodPrevious;
-    private double _allowablePrevious;
-    private double _bloodFuture;
-    private double _allowableFuture;
-    private double _allowableBlood;
+    private Double _maxAllowableBlood;
+    private Double _bloodPrevious;
+    private Double _allowablePrevious;
+    private Double _bloodFuture;
+    private Double _allowableFuture;
+    private Double _allowableBlood;
     private Date _minDate;
     private Date _maxDate;
 
@@ -47,12 +47,12 @@ public class BloodPlotData
         _date = date;
     }
 
-    public double getQuantity()
+    public Double getQuantity()
     {
         return _quantity;
     }
 
-    public void setQuantity(double quantity)
+    public void setQuantity(Double quantity)
     {
         _quantity = quantity;
     }
@@ -67,12 +67,12 @@ public class BloodPlotData
         _species = species;
     }
 
-    public double getMax_draw_pct()
+    public Double getMax_draw_pct()
     {
         return _max_draw_pct;
     }
 
-    public void setMax_draw_pct(double max_draw_pct)
+    public void setMax_draw_pct(Double max_draw_pct)
     {
         _max_draw_pct = max_draw_pct;
     }
@@ -87,22 +87,22 @@ public class BloodPlotData
         _blood_draw_interval = blood_draw_interval;
     }
 
-    public double getBlood_per_kg()
+    public Double getBlood_per_kg()
     {
         return _blood_per_kg;
     }
 
-    public void setBlood_per_kg(double blood_per_kg)
+    public void setBlood_per_kg(Double blood_per_kg)
     {
         _blood_per_kg = blood_per_kg;
     }
 
-    public double getMostRecentWeight()
+    public Double getMostRecentWeight()
     {
         return _mostRecentWeight;
     }
 
-    public void setMostRecentWeight(double mostRecentWeight)
+    public void setMostRecentWeight(Double mostRecentWeight)
     {
         _mostRecentWeight = mostRecentWeight;
     }
@@ -127,62 +127,62 @@ public class BloodPlotData
         _death = death;
     }
 
-    public double getMaxAllowableBlood()
+    public Double getMaxAllowableBlood()
     {
         return _maxAllowableBlood;
     }
 
-    public void setMaxAllowableBlood(double maxAllowableBlood)
+    public void setMaxAllowableBlood(Double maxAllowableBlood)
     {
         _maxAllowableBlood = maxAllowableBlood;
     }
 
-    public double getBloodPrevious()
+    public Double getBloodPrevious()
     {
         return _bloodPrevious;
     }
 
-    public void setBloodPrevious(double bloodPrevious)
+    public void setBloodPrevious(Double bloodPrevious)
     {
         _bloodPrevious = bloodPrevious;
     }
 
-    public double getAllowablePrevious()
+    public Double getAllowablePrevious()
     {
         return _allowablePrevious;
     }
 
-    public void setAllowablePrevious(double allowablePrevious)
+    public void setAllowablePrevious(Double allowablePrevious)
     {
         _allowablePrevious = allowablePrevious;
     }
 
-    public double getBloodFuture()
+    public Double getBloodFuture()
     {
         return _bloodFuture;
     }
 
-    public void setBloodFuture(double bloodFuture)
+    public void setBloodFuture(Double bloodFuture)
     {
         _bloodFuture = bloodFuture;
     }
 
-    public double getAllowableFuture()
+    public Double getAllowableFuture()
     {
         return _allowableFuture;
     }
 
-    public void setAllowableFuture(double allowableFuture)
+    public void setAllowableFuture(Double allowableFuture)
     {
         _allowableFuture = allowableFuture;
     }
 
-    public double getAllowableBlood()
+    public Double getAllowableBlood()
     {
         return _allowableBlood;
     }
 
-    public void setAllowableBlood(double allowableBlood)
+    public void setAllowableBlood(Double allowableBlood)
     {
         _allowableBlood = allowableBlood;
     }
