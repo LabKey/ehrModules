@@ -37,6 +37,7 @@ import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Date;
 
@@ -349,7 +350,20 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         click(listItem);
         waitForElementToDisappear(Locator.xpath("//div[" + Locator.NOT_HIDDEN + "]/div/div[contains(text(), '" + selection + "')]"), WAIT_FOR_JAVASCRIPT);
 
-        _extHelper.selectComboBoxItem("Route:", "oral\u00a0");
+        try
+        {
+            _extHelper.selectComboBoxItem("Route:", "oral\u00a0");
+        }
+        catch (NoSuchElementException retry)
+        {
+            // Not all ehr_lookups are cleared by populateInitialData
+            // cnprc_ehr/resources/data/routes.tsv has different casing
+            WebElement comboListItem = ExtHelper.Locators.comboListItem().withText("ORAL\u00a0").findElementOrNull(getDriver());
+            if (comboListItem == null)
+                throw retry;
+            comboListItem.click();
+            shortWait().until(ExpectedConditions.stalenessOf(comboListItem));
+        }
         _extHelper.selectComboBoxItem(Locator.xpath("//input[@name='conc_units']/.."), "mg/tablet\u00a0");
 
         // NOTE: there is a timing issue causing this field to not get set properly, which is a long-standing team city problem
