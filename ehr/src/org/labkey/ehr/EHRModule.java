@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
@@ -100,7 +99,6 @@ import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRTemplateCreatorRole;
 import org.labkey.ehr.security.EHRVeternarianRole;
-import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
 import javax.servlet.ServletContext;
 import java.util.Arrays;
@@ -342,12 +340,6 @@ public class EHRModule extends ExtendedSimpleModule
         }
 
         return new JSONObject(ret);
-    }
-
-    @Override
-    public UpgradeCode getUpgradeCode()
-    {
-        return new EHRStudyUpgradeCode();
     }
 
     @Override
