@@ -16,10 +16,12 @@
 package org.labkey.ehr;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
@@ -121,7 +123,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 16.22;
+        return 16.23;
     }
 
     public boolean hasScripts()
@@ -184,6 +186,13 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerLabworkType(new ParasitologyLabworkType(this));
 
         EHRService.get().registerLabworkType(new SerologyLabworkType(this));
+    }
+
+    @Nullable
+    @Override
+    public UpgradeCode getUpgradeCode()
+    {
+        return new EHRUpgradeCode();
     }
 
     @Override

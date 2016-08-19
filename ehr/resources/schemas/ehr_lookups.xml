@@ -2081,4 +2081,17 @@
             </ns:column>
         </ns:columns>
     </ns:table>
+
+    <ns:table tableName="Calendar" tableDbType="TABLE" useColumnOrder="true">
+        <ns:description>Table with rows for each day from 1950-2029 to make certain SQL queries easier</ns:description>
+        <ns:columns>
+            <ns:column columnName="TargetDateTime" />
+            <ns:column columnName="TargetDate" />
+            <ns:column columnName="DayAfter" />
+            <ns:column columnName="Month" />
+            <ns:column columnName="Day" />
+            <ns:column columnName="Year" />
+        </ns:columns>
+    </ns:table>
+
 </ns:tables>

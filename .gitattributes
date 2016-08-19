@@ -596,6 +596,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.420-12.421.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.422-12.423.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.424-12.425.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-16.22-16.23.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.20-16.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.21-16.22.sql -text
@@ -758,6 +759,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.420-12.421.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.422-12.423.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.423-12.424.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.424-12.425.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-16.22-16.23.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.20-16.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.21-16.22.sql -text
@@ -1296,6 +1298,7 @@ ehr/src/org/labkey/ehr/EHRModule.java -text
 ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
+ehr/src/org/labkey/ehr/EHRUpgradeCode.java -text
 ehr/src/org/labkey/ehr/buttons/CageBulkEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/CompareWeightsButton.java -text
 ehr/src/org/labkey/ehr/buttons/DiscardTaskButton.java -text
