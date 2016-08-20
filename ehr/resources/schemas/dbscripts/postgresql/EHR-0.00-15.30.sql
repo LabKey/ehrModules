@@ -1085,7 +1085,7 @@ ALTER table ehr.project drop requestid;
 
 /* EHR-12.23-12.24.sql */
 
--- SELECT core.executeJavaUpgradeCode('modifyStudyColumns1');
+-- Call to Java upgrade code no longer needed
 
 /* EHR-12.26-12.27.sql */
 
