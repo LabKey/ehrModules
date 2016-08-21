@@ -357,7 +357,7 @@ EHR.ext.metaHelper = new function(){
     //                        if(col.editable)
     //                            col.init(this);
     //                        col.editable = false; //check columns apply edits immediately, so we don't want to go into edit mode
-                        //NOTE: The original EditorGrid defines it's own Ext.grid.CheckColumn
+                        //NOTE: The original EditorGrid defines its own Ext.grid.CheckColumn
                         //Ext 3.1 has a booleancolumn class.  we just use this instead
                     }
                     break;
