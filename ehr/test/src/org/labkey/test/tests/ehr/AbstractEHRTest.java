@@ -18,6 +18,7 @@ package org.labkey.test.tests.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.labkey.api.reader.TabLoader;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
@@ -944,5 +945,19 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         Ext4CmpRef.waitForComponent(this, "#subjArea");
         return _ext4Helper.queryOne("#subjArea", Ext4FieldRef.class);
+    }
+
+    public List<Map<String, Object>> loadTsv(File tsv)
+    {
+        try
+        {
+            TabLoader loader = new TabLoader(tsv, true);
+            loader.setInferTypes(false);
+            return loader.load();
+        }
+        catch (IOException fail)
+        {
+            throw new RuntimeException(fail);
+        }
     }
 }
