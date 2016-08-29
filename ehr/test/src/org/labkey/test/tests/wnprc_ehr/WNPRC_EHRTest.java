@@ -39,6 +39,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -362,7 +363,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
             if (comboListItem == null)
                 throw retry;
             comboListItem.click();
-            shortWait().until(ExpectedConditions.stalenessOf(comboListItem));
+            shortWait().until(ExpectedConditions.invisibilityOfAllElements(Arrays.asList(comboListItem)));
         }
         _extHelper.selectComboBoxItem(Locator.xpath("//input[@name='conc_units']/.."), "mg/tablet\u00a0");
 
