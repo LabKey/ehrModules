@@ -75,6 +75,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -262,7 +263,7 @@ public class EHRServiceImpl extends EHRService
 
     public Set<ClientDependency> getRegisteredClientDependencies(Container c)
     {
-        Set<ClientDependency> set = new HashSet<>();
+        Set<ClientDependency> set = new LinkedHashSet<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))
