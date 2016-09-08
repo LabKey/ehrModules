@@ -615,7 +615,7 @@ public class EHRManager
             }
 
             //add indexes
-            String[][] toIndex = new String[][]{{"taskid"}, {"participantid", "date"}};
+            String[][] toIndex = new String[][]{{"taskid"}};
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             Set<String> distinctIndexes = new HashSet<>();
@@ -630,16 +630,10 @@ public class EHRManager
                 }
 
                 List<String[]> toAdd = new ArrayList<>();
-                for (String[] cols : toIndex)
-                {
-                    toAdd.add(cols);
-                }
+                Collections.addAll(toAdd, toIndex);
 
                 List<String[]> toRemove = new ArrayList<>();
-                for (String[] cols : idxToRemove)
-                {
-                    toRemove.add(cols);
-                }
+                Collections.addAll(toRemove, idxToRemove);
 
                 if (realTable.getColumn("vetreview") != null && !d.getName().equalsIgnoreCase("drug"))
                     toRemove.add(new String[]{"qcstate", "include:vetreview"});
@@ -887,9 +881,7 @@ public class EHRManager
                     if (!"demographics".equalsIgnoreCase(d.getName()))
                     {
                         PropertyStorageSpec.Index[] idxToDisable = new PropertyStorageSpec.Index[]{
-                                new PropertyStorageSpec.Index(false, "container", "participantsequencenum"),
                                 new PropertyStorageSpec.Index(false, "participantsequencenum"),
-                                new PropertyStorageSpec.Index(false, "container", "qcstate"),
                                 new PropertyStorageSpec.Index(false, "qcstate")
                         };
 

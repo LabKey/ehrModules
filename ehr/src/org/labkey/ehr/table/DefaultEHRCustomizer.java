@@ -25,7 +25,6 @@ import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DataColumn;
-import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
@@ -777,7 +776,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         String name = "codes";
         ColumnInfo existing = ti.getColumn(name);
-        if (existing == null && ti.getColumn("objectid") != null)
+        if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
         {
             //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
@@ -786,7 +785,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             sql.append(groupConcatSQL);
             sql.append(
                 " FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
-                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
+                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
                 " GROUP BY t.recordid " +
                 " )");
 
@@ -809,7 +808,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             String name2 = "codesRaw";
             SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence() +
                     "FROM ehr.snomed_tags t " +
-                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = " + ExprColumn.STR_TABLE_ALIAS + ".container " +
+                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
                     " GROUP BY t.recordid " +
                     " )");
 
