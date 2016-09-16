@@ -7,21 +7,27 @@
             return;
 
         Ext4.get(webpart.wrapperDivId).update(
-            '<div class="ehr-tool-icon-wrapper-lg">' +
-                '<div class="ehr-tool-icon-lg tool-icon">' +
-                   '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view"><img src="<%=contextPath%>/ehr/icons/icon_browse_lg.png">Browse Data</a>' +
+            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view">' +
+                '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
+                    '<div class="ehr-tool-icon-lg">' +
+                       '<img src="<%=contextPath%>/ehr/icons/icon_browse_lg.png">Browse Data' +
+                    '</div>' +
                 '</div>' +
-            '</div>' +
-            '<div class="ehr-tool-icon-wrapper-lg">' +
-                '<div class="ehr-tool-icon-lg tool-icon">' +
-                    '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/enterData.view"><img src="<%=contextPath%>/ehr/icons/icon_data_lg.png">Enter Data</a>' +
+            '</a>' +
+            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/enterData.view">' +
+                '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
+                    '<div class="ehr-tool-icon-lg">' +
+                        '<img src="<%=contextPath%>/ehr/icons/icon_data_lg.png">Enter Data' +
+                    '</div>' +
                 '</div>' +
-            '</div>' +
-            '<div class="ehr-tool-icon-wrapper-lg">' +
-                '<div class="ehr-tool-icon-lg tool-icon">' +
-                    '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/colonyOverview.view"><img src="<%=contextPath%>/ehr/icons/icon_center_lg.png">Colony Overview</a>' +
+            '</a>' +
+            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/colonyOverview.view">' +
+                '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
+                    '<div class="ehr-tool-icon-lg">' +
+                        '<img src="<%=contextPath%>/ehr/icons/icon_center_lg.png">Colony Overview' +
+                    '</div>' +
                 '</div>' +
-            '</div>'
+            '</a>'
         );
 
     });

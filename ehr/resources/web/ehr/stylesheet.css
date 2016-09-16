@@ -37,13 +37,18 @@
     margin-right: 5px;
 }
 
-.ehr-tool-icon-lg a {
+a .ehr-tool-icon-lg {
     text-decoration: none !important;
     font-weight: normal !important;
     text-transform: none !important;
+    text-align: center;
     font-family: 'Roboto-Bold', 'Arial-Bold', 'Helvetica-Bold', sans serif;
     color: #999;
     font-size: 18px;
+}
+
+a:hover .ehr-tool-icon-lg {
+    color: black;
 }
 
 /* EO: EHR icon styles*/
