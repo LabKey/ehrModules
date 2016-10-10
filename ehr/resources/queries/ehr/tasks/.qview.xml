@@ -2,7 +2,7 @@
    <columns>
        <column name="rowid"/>
        <column name="updateTitle" />
-        <!--<column name="formtype" />-->
+        <column name="formtype" />
         <column name="assignedto" />
         <column name="duedate"/>
         <column name="createdby"/>
