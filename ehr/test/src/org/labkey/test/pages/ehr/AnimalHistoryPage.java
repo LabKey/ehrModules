@@ -50,7 +50,7 @@ public class AnimalHistoryPage extends ParticipantViewPage
     @Override
     protected void waitForPage()
     {
-        waitForElement(Ext4Helper.Locators.ext4Button("Refresh"));
+        waitForElement(Ext4Helper.Locators.ext4Button("Update Report"));
     }
 
     public void setSearchText(String text)
@@ -66,7 +66,7 @@ public class AnimalHistoryPage extends ParticipantViewPage
     public void refreshReport()
     {
         doAndWaitForPageSignal(
-            () -> waitAndClick(ext4Button("Refresh")),
+            () -> waitAndClick(ext4Button("Update Report")),
             REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
         clearCache();
     }
@@ -82,7 +82,7 @@ public class AnimalHistoryPage extends ParticipantViewPage
     {
         elements().multipleAnimalRadioButton.check();
         setMultipleSearchText(String.join(" ", Arrays.asList(animalIds)));
-        clickButton("Append -->", 0);
+        clickButton("Add", 0);
         for (String animalId : animalIds)
             elements().findRemoveIdButton(animalId);
         refreshReport();
@@ -106,11 +106,11 @@ public class AnimalHistoryPage extends ParticipantViewPage
         protected RadioButton multipleAnimalRadioButton = RadioButton.RadioButton().withLabel("Multiple Animals").findWhenNeeded(this);
         protected RadioButton currentLocationRadioButton = RadioButton.RadioButton().withLabel("Current Location").findWhenNeeded(this);
         protected RadioButton entireDatabaseRadioButton = RadioButton.RadioButton().withLabel("Entire Database").findWhenNeeded(this);
-        protected WebElement refreshButton = ext4Button("Refresh").findWhenNeeded(this);
+        protected WebElement refreshButton = ext4Button("Update Report").findWhenNeeded(this);
 
         protected WebElement findRemoveIdButton(String animalId)
         {
-            return ext4Button(animalId + " (X)").waitForElement(this, 1000);
+            return ext4Button(animalId).waitForElement(this, 1000);
         }
     }
 }
