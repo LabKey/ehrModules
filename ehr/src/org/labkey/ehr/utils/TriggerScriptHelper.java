@@ -1013,8 +1013,7 @@ public class TriggerScriptHelper
     private String checkOtherDrawsQuantity(String id, Date date, String rowObjectId, double rowQuantity, int interval, double maxAllowable, double weight, List<Map<String, Object>> recordsInTransaction)
     {
         // If provided, we inspect the other records in this transaction and add their values
-        // First determine which other records from this transction should be considered
-        //first determine which other records from this transaction should be considered
+        // First determine which other records from this transaction should be considered
         Set<String> ignoredObjectIds = new HashSet<>();
 
         // All of the bloods that we need to consider
