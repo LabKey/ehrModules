@@ -1660,7 +1660,7 @@ public class TriggerScriptHelper
         }
 
         TableSelector ts = new TableSelector(ti, Collections.singleton("date"), filter, null);
-        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Collections.singletonList(new Aggregate(FieldKey.fromString("date"), Aggregate.Type.MAX)));
+        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Collections.singletonList(new Aggregate(FieldKey.fromString("date"), Aggregate.BaseType.MAX)));
         for (List<Aggregate.Result> ag : aggs.values())
         {
             for (Aggregate.Result r : ag)
@@ -1752,7 +1752,7 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("study", "Housing");
         TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
-        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Arrays.asList(new Aggregate(FieldKey.fromString("date"), Aggregate.Type.MAX)));
+        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Arrays.asList(new Aggregate(FieldKey.fromString("date"), Aggregate.BaseType.MAX)));
         if (aggs.containsKey("date"))
         {
             for (Aggregate.Result r : aggs.get("date"))
