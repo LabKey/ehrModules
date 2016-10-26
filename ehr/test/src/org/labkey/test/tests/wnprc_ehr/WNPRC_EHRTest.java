@@ -580,6 +580,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //snapshot
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace"));
+        sleep(1000);  // TODO: Since replace now does a query, we should create a helper to click then wait for ID buttons to appear
         refreshAnimalHistoryReport();
         waitAndClick(Ext4Helper.Locators.ext4Tab("General"));
         waitAndClick(Ext4Helper.Locators.ext4Tab("Snapshot"));
