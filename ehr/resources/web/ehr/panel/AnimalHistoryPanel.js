@@ -97,11 +97,21 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         xtype: 'ldk-singlesubjectfiltertype',
         inputValue: LDK.panel.SingleSubjectFilterType.filterName,
         label: 'Single Animal',
-        nounSingular: 'Animal'
+        nounSingular: 'Animal',
+        aliasTable: {
+            schemaName: 'study',
+            queryName: 'demographics',
+            idColumn: 'Id'
+        }
     },{
         xtype: 'ehr-multianimalfiltertype',
         inputValue: EHR.panel.MultiAnimalFilterType.filterName,
-        label: EHR.panel.MultiAnimalFilterType.label
+        label: EHR.panel.MultiAnimalFilterType.label,
+        aliasTable: {
+            schemaName: 'study',
+            queryName: 'demographics',
+            idColumn: 'Id'
+        }
     },{
         xtype: 'ehr-locationfiltertype',
         inputValue: EHR.panel.LocationFilterType.filterName,
