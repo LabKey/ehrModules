@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2016 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Title: BloodSummaryPanel
  * Description: This will generate the blood report plot for each subject ID passed in.  Provides a hook to add
  *      additional items in the report.
