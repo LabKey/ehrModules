@@ -214,7 +214,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                 }, this);
                 subjectArray = Ext4.unique(subjectArray);
                 if(subjectArray.length){
-                    this.tabbedReportPanel.setSubjGrid(true, subjectArray);
+                    this.tabbedReportPanel.setSubjGrid(true, Ext4.isDefined(this.aliasTable), subjectArray);
                 }
                 Ext4.Msg.hide();
             },
@@ -269,7 +269,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                 }, this);
                 subjectArray = Ext4.unique(subjectArray);
                 if(subjectArray.length){
-                    this.tabbedReportPanel.setSubjGrid(true, subjectArray);
+                    this.tabbedReportPanel.setSubjGrid(true, Ext4.isDefined(this.aliasTable), subjectArray);
                 }
                 Ext4.Msg.hide();
             },
