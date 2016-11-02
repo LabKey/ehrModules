@@ -1071,6 +1071,36 @@
                 <ns:nullable>true</ns:nullable>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+            <ns:column columnName="diCreatedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diCreated">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="diModifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diModified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="project" tableDbType="TABLE" useColumnOrder="true">
@@ -1173,6 +1203,36 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="diCreatedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diCreated">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="diModifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diModified">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
                 <ns:isHidden>true</ns:isHidden>
@@ -1359,6 +1419,36 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="diCreatedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diCreated">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="diModifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>Users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="diModified">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
                 <ns:isHidden>true</ns:isHidden>
