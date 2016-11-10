@@ -1,2097 +1,2097 @@
-<ns:tables xmlns:ns="http://labkey.org/data/xml">
-    <ns:table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Lookup Sets</ns:tableTitle>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
+<tables xmlns="http://labkey.org/data/xml">
+    <table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Lookup Sets</tableTitle>
+        <pkColumnName>rowid</pkColumnName>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid">
 
-            </ns:column>
-            <ns:column columnName="setname">
+            </column>
+            <column columnName="setname">
 
-            </ns:column>
-            <ns:column columnName="label">
-                <ns:columnTitle>Label</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:columnTitle>Description</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="keyField">
-                <ns:columnTitle>Key Field</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="titleColumn">
-                <ns:columnTitle>Title Column</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="container">
+            </column>
+            <column columnName="label">
+                <columnTitle>Label</columnTitle>
+            </column>
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+            </column>
+            <column columnName="keyField">
+                <columnTitle>Key Field</columnTitle>
+            </column>
+            <column columnName="titleColumn">
+                <columnTitle>Title Column</columnTitle>
+            </column>
+            <column columnName="container">
 
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="tb_eye" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>TB Eye Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>eye</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="eye">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="cageclass" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Cage Size Requirements, By Weight</ns:tableTitle>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="requirementset">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Requirement Set</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="low">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Min Weight</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="high">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Max Weight</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sqft">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Required Sq Ft</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="height">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Required Height (in)</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="conc_units" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Conc Field Field Values</ns:tableTitle>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>unit</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="unit">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="denominator">
-            </ns:column>
-            <ns:column columnName="numerator">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Volume Units Field Values</ns:tableTitle>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>unit</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="unit">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Cages</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/ehr/cageDetails.view?room=${room}</ns:tableUrl>
-        <ns:pkColumnName>location</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="location">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-            </ns:column>
-            <ns:column columnName="room">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="cage">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="cage_type">
-                <ns:columnTitle>Cage Type</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>cage_type</ns:fkTable>
-                    <ns:fkColumnName>cagetype</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="divider">
-                <ns:columnTitle>Divider</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>divider_types</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>divider</ns:fkDisplayColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="length">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="width">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="height">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="hasTunnel">
-                <ns:columnTitle>Has Tunnel?</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="joinToCage">
-                <ns:columnTitle>Can Join To This Cage</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="status">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="ts">
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="uuid">
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="cagePosition" wrappedColumnName="cage">
-                <ns:columnTitle>Cage Position</ns:columnTitle>
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isUnselectable>true</ns:isUnselectable>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>cage_positions</ns:fkTable>
-                    <ns:fkColumnName>cage</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>cage</ns:fkDisplayColumnName>
-                </ns:fk>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Yes/No</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>value</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="value">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="restraint_type" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Restraint Types</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=restraint_type&amp;type=${type}</ns:tableUrl>
-        <ns:pkColumnName>type</ns:pkColumnName>
-        <ns:titleColumn>type</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="type">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="code">
-            </ns:column>
-            <ns:column columnName="include">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="routes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Routes Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>route</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="route">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Areas</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>area</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="area">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="description"/>
-            <ns:column columnName="dateDisabled"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="clinpath_status" tableDbType="TABLE" useColumnOrder="true">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Clinpath Status Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>status</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="status">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Blood Draw Services</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>service</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="service">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="automaticrequestfromblooddraw">
-                <ns:columnTitle>Automatically Create Request After Blood Draw</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="requiredtubetype">
-                <ns:columnTitle>Required Tube Type</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>blood_draw_tube_type</ns:fkTable>
-                    <ns:fkColumnName>type</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="minvolume">
-                <ns:columnTitle>Min Volume</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="labwork_service">
-                <ns:columnTitle>Labwork Service Type</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>labwork_services</ns:fkTable>
-                    <ns:fkColumnName>servicename</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="formtype">
-                <ns:columnTitle>Form Type</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="request_priority" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Request Priorities</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>priority</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="priority">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="immediatenotification">
-                <ns:columnTitle>Immediate Notification</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="clinpath_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Clinpath Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</ns:tableUrl>
-        <ns:pkColumnName>testname</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="testname">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="units">
-            </ns:column>
-            <ns:column columnName="dataset">
-            </ns:column>
-            <ns:column columnName="alertOnComplete">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="species_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Species Codes</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="code">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="scientific_name">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="common_name">
-                <ns:nullable>true</ns:nullable>
-                <ns:displayWidth>100</ns:displayWidth>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Gender Codes</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="code">
-                <ns:displayWidth>20</ns:displayWidth>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-                <ns:displayWidth>50</ns:displayWidth>
-            </ns:column>
-            <ns:column columnName="origGender">
-                <ns:columnTitle>Original Gender</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="dosage_units" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Dosage Unit Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>unit</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="unit">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="numerator">
-            </ns:column>
-            <ns:column columnName="denominator">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="amount_units" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Amount Unit Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>unit</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="unit">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="source" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Source Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=source&amp;code=${code}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="code">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="SourceCity">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="SourceState">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="SourceCountry">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="lab_test_range" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Lab Test Reference Ranges</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="test">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="species">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="gender">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="age_class">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="ref_range_min">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="ref_range_max">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="type">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="species" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Species</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>common</ns:pkColumnName>
-        <ns:titleColumn>common</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="common">
-                <ns:displayWidth>100</ns:displayWidth>
-            </ns:column>
-            <ns:column columnName="scientific_name">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="id_prefix">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="mhc_prefix">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="blood_per_kg">
-                <ns:columnTitle>Max Blood Draw (mL/kg)</ns:columnTitle>
-                <ns:description>This is the maximum blood that can be drawn per kg</ns:description>
-            </ns:column>
-            <ns:column columnName="max_draw_pct">
-                <ns:columnTitle>Max Percent Blood Drawn</ns:columnTitle>
-                <ns:description>This is the maximum percent of the animal's blood that can be drawn (expressed as a
+            </column>
+        </columns>
+    </table>
+    <table tableName="tb_eye" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>TB Eye Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>eye</pkColumnName>
+        <columns>
+            <column columnName="eye">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="cageclass" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Cage Size Requirements, By Weight</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <isHidden>true</isHidden>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="requirementset">
+                <nullable>true</nullable>
+                <columnTitle>Requirement Set</columnTitle>
+            </column>
+            <column columnName="low">
+                <nullable>true</nullable>
+                <columnTitle>Min Weight</columnTitle>
+            </column>
+            <column columnName="high">
+                <nullable>true</nullable>
+                <columnTitle>Max Weight</columnTitle>
+            </column>
+            <column columnName="sqft">
+                <nullable>true</nullable>
+                <columnTitle>Required Sq Ft</columnTitle>
+            </column>
+            <column columnName="height">
+                <nullable>true</nullable>
+                <columnTitle>Required Height (in)</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="conc_units" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Conc Field Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>unit</pkColumnName>
+        <columns>
+            <column columnName="unit">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="denominator">
+            </column>
+            <column columnName="numerator">
+            </column>
+        </columns>
+    </table>
+    <table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Volume Units Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>unit</pkColumnName>
+        <columns>
+            <column columnName="unit">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Cages</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/ehr/cageDetails.view?room=${room}</tableUrl>
+        <pkColumnName>location</pkColumnName>
+        <columns>
+            <column columnName="location">
+                <isKeyField>true</isKeyField>
+                <isUserEditable>false</isUserEditable>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInInsertView>false</shownInInsertView>
+            </column>
+            <column columnName="room">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="cage">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="cage_type">
+                <columnTitle>Cage Type</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>cage_type</fkTable>
+                    <fkColumnName>cagetype</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="divider">
+                <columnTitle>Divider</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>divider_types</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                    <fkDisplayColumnName>divider</fkDisplayColumnName>
+                </fk>
+            </column>
+            <column columnName="length">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="width">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="height">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="hasTunnel">
+                <columnTitle>Has Tunnel?</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="joinToCage">
+                <columnTitle>Can Join To This Cage</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="status">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="ts">
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="uuid">
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+                <isAutoInc>true</isAutoInc>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="cagePosition" wrappedColumnName="cage">
+                <columnTitle>Cage Position</columnTitle>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>cage_positions</fkTable>
+                    <fkColumnName>cage</fkColumnName>
+                    <fkDisplayColumnName>cage</fkDisplayColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Yes/No</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>value</pkColumnName>
+        <columns>
+            <column columnName="value">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="restraint_type" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Restraint Types</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=restraint_type&amp;type=${type}</tableUrl>
+        <pkColumnName>type</pkColumnName>
+        <titleColumn>type</titleColumn>
+        <columns>
+            <column columnName="type">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="code">
+            </column>
+            <column columnName="include">
+            </column>
+        </columns>
+    </table>
+    <table tableName="routes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Routes Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>route</pkColumnName>
+        <columns>
+            <column columnName="route">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+            </column>
+        </columns>
+    </table>
+    <table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Areas</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>area</pkColumnName>
+        <columns>
+            <column columnName="area">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="description"/>
+            <column columnName="dateDisabled"/>
+        </columns>
+    </table>
+    <table tableName="clinpath_status" tableDbType="TABLE" useColumnOrder="true">
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Clinpath Status Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>status</pkColumnName>
+        <columns>
+            <column columnName="status">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Blood Draw Services</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>service</pkColumnName>
+        <columns>
+            <column columnName="service">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="automaticrequestfromblooddraw">
+                <columnTitle>Automatically Create Request After Blood Draw</columnTitle>
+            </column>
+            <column columnName="requiredtubetype">
+                <columnTitle>Required Tube Type</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>blood_draw_tube_type</fkTable>
+                    <fkColumnName>type</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="minvolume">
+                <columnTitle>Min Volume</columnTitle>
+            </column>
+            <column columnName="labwork_service">
+                <columnTitle>Labwork Service Type</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>labwork_services</fkTable>
+                    <fkColumnName>servicename</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="formtype">
+                <columnTitle>Form Type</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="request_priority" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Request Priorities</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>priority</pkColumnName>
+        <columns>
+            <column columnName="priority">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="immediatenotification">
+                <columnTitle>Immediate Notification</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="clinpath_tests" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Clinpath Tests</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</tableUrl>
+        <pkColumnName>testname</pkColumnName>
+        <columns>
+            <column columnName="testname">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="units">
+            </column>
+            <column columnName="dataset">
+            </column>
+            <column columnName="alertOnComplete">
+            </column>
+        </columns>
+    </table>
+    <table tableName="species_codes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Species Codes</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>code</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</tableUrl>
+        <columns>
+            <column columnName="code">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="scientific_name">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="common_name">
+                <nullable>true</nullable>
+                <displayWidth>100</displayWidth>
+            </column>
+        </columns>
+    </table>
+    <table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Gender Codes</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>code</pkColumnName>
+        <titleColumn>meaning</titleColumn>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</tableUrl>
+        <columns>
+            <column columnName="code">
+                <displayWidth>20</displayWidth>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+                <displayWidth>50</displayWidth>
+            </column>
+            <column columnName="origGender">
+                <columnTitle>Original Gender</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="dosage_units" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Dosage Unit Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>unit</pkColumnName>
+        <columns>
+            <column columnName="unit">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="numerator">
+            </column>
+            <column columnName="denominator">
+            </column>
+        </columns>
+    </table>
+    <table tableName="amount_units" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Amount Unit Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>unit</pkColumnName>
+        <columns>
+            <column columnName="unit">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="source" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Source Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>code</pkColumnName>
+        <titleColumn>meaning</titleColumn>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=source&amp;code=${code}</tableUrl>
+        <columns>
+            <column columnName="code">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="SourceCity">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="SourceState">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="SourceCountry">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="lab_test_range" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Lab Test Reference Ranges</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="test">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="species">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="gender">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="age_class">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="ref_range_min">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="ref_range_max">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="type">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInInsertView>false</shownInInsertView>
+            </column>
+        </columns>
+    </table>
+    <table tableName="species" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Species</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>common</pkColumnName>
+        <titleColumn>common</titleColumn>
+        <columns>
+            <column columnName="common">
+                <displayWidth>100</displayWidth>
+            </column>
+            <column columnName="scientific_name">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="id_prefix">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="mhc_prefix">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="blood_per_kg">
+                <columnTitle>Max Blood Draw (mL/kg)</columnTitle>
+                <description>This is the maximum blood that can be drawn per kg</description>
+            </column>
+            <column columnName="max_draw_pct">
+                <columnTitle>Max Percent Blood Drawn</columnTitle>
+                <description>This is the maximum percent of the animal's blood that can be drawn (expressed as a
                     decimal, where 1 indicates 100%)
-                </ns:description>
-            </ns:column>
-            <ns:column columnName="blood_draw_interval">
-                <ns:columnTitle>Blood Reconstitution Interval (Days)</ns:columnTitle>
-                <ns:description>This is the number of days that must elapse to full reconstitute from a max blood draw
-                </ns:description>
-            </ns:column>
-            <ns:column columnName="cites_code">
-                <ns:columnTitle>Cites Code</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="dateDisabled">
-                <ns:columnTitle>Date Disabled</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
+                </description>
+            </column>
+            <column columnName="blood_draw_interval">
+                <columnTitle>Blood Reconstitution Interval (Days)</columnTitle>
+                <description>This is the number of days that must elapse to full reconstitute from a max blood draw
+                </description>
+            </column>
+            <column columnName="cites_code">
+                <columnTitle>Cites Code</columnTitle>
+            </column>
+            <column columnName="dateDisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
+        </columns>
+    </table>
     <!--TODO: move-->
-    <ns:table tableName="months" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Months</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="month">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="treatment_frequency" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Treatment Frequencies</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency&amp;rowid=${rowid}</ns:tableUrl>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="meaning">
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:columnTitle>Sort Order</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="weekofmonth">
-                <ns:columnTitle>Week of Month</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="dayofmonth">
-                <ns:columnTitle>Day of Month</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="dayofweek">
-                <ns:columnTitle>Day of Week</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="intervalindays">
-                <ns:columnTitle>Interval in Days</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="shortname">
-                <ns:columnTitle>Short Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="active">
-                <ns:columnTitle>Active?</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="treatment_frequency_times" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Treatment Frequency Times</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency_times&amp;rowid=${rowid}</ns:tableUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="frequency">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>treatment_frequency</ns:fkTable>
-                    <ns:fkColumnName>meaning</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="hourofday">
-                <ns:columnTitle>Hour of Day</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="timedescription">
-                <ns:columnTitle>Time Description</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="calculated_status_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Calculated Status Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="code">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Age Class</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="label">
-                <ns:columnTitle>Label</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="species">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="gender">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Gender</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>gender</ns:fkTable>
-                    <ns:fkColumnName>gender</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="ageclass">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="min">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="max">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="charge_items" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Charge Items Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:titleColumn>description</ns:titleColumn>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=charge_items&amp;rowid=${rowid}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="category">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:nullable>false</ns:nullable>
-                <ns:inputType>textarea</ns:inputType>
-            </ns:column>
-            <ns:column columnName="cost">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>containers</ns:fkTable>
-                    <ns:fkColumnName>entityid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Blood Draw Tube Types</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>type</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</ns:tableUrl>
-        <ns:columns>
-            <ns:column columnName="type">
-                <ns:columnTitle>Type</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="color">
-                <ns:columnTitle>Color</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>SNOMED Codes</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isKeyField>false</ns:isKeyField>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="container">
+    <table tableName="months" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Months</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="month">
+            </column>
+        </columns>
+    </table>
+    <table tableName="treatment_frequency" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Treatment Frequencies</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency&amp;rowid=${rowid}</tableUrl>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <pkColumnName>rowid</pkColumnName>
+        <titleColumn>meaning</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="meaning">
+            </column>
+            <column columnName="sort_order">
+                <columnTitle>Sort Order</columnTitle>
+            </column>
+            <column columnName="weekofmonth">
+                <columnTitle>Week of Month</columnTitle>
+            </column>
+            <column columnName="dayofmonth">
+                <columnTitle>Day of Month</columnTitle>
+            </column>
+            <column columnName="dayofweek">
+                <columnTitle>Day of Week</columnTitle>
+            </column>
+            <column columnName="intervalindays">
+                <columnTitle>Interval in Days</columnTitle>
+            </column>
+            <column columnName="shortname">
+                <columnTitle>Short Name</columnTitle>
+            </column>
+            <column columnName="active">
+                <columnTitle>Active?</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="treatment_frequency_times" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Treatment Frequency Times</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency_times&amp;rowid=${rowid}</tableUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="frequency">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>treatment_frequency</fkTable>
+                    <fkColumnName>meaning</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="hourofday">
+                <columnTitle>Hour of Day</columnTitle>
+            </column>
+            <column columnName="timedescription">
+                <columnTitle>Time Description</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="calculated_status_codes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Calculated Status Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>code</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</tableUrl>
+        <columns>
+            <column columnName="code">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Age Class</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="label">
+                <columnTitle>Label</columnTitle>
+            </column>
+            <column columnName="species">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="gender">
+                <nullable>true</nullable>
+                <columnTitle>Gender</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>gender</fkTable>
+                    <fkColumnName>gender</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="ageclass">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="min">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="max">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+        </columns>
+    </table>
+    <table tableName="charge_items" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Charge Items Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <titleColumn>description</titleColumn>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=charge_items&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="category">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
+                <nullable>false</nullable>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="cost">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="blood_draw_tube_type" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Blood Draw Tube Types</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>type</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</tableUrl>
+        <columns>
+            <column columnName="type">
+                <columnTitle>Type</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="color">
+                <columnTitle>Color</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>SNOMED Codes</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>code</pkColumnName>
+        <titleColumn>meaning</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isKeyField>false</isKeyField>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="code">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
 
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>SNOMED Subset Codes</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="primaryCategory">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed_subsets</ns:fkTable>
-                    <ns:fkColumnName>subset</ns:fkColumnName>
-                </ns:fk>
-                <ns:url>/query/executeQuery.view?schemaName=ehr_lookups&amp;query.queryName=snomed_subset_codes&amp;query.primaryCategory~eq=${primaryCategory}</ns:url>
-            </ns:column>
-            <ns:column columnName="secondaryCategory">
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>containers</ns:fkTable>
-                    <ns:fkColumnName>entityid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="snomed_subsets" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>SNOMED Subsets</ns:tableTitle>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:columnTitle>Row Id</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="subset">
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>SNOMED Subset Codes</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="code">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="primaryCategory">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed_subsets</fkTable>
+                    <fkColumnName>subset</fkColumnName>
+                </fk>
+                <url>/query/executeQuery.view?schemaName=ehr_lookups&amp;query.queryName=snomed_subset_codes&amp;query.primaryCategory~eq=${primaryCategory}</url>
+            </column>
+            <column columnName="secondaryCategory">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="snomed_subsets" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>SNOMED Subsets</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid">
+                <columnTitle>Row Id</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="subset">
 
-            </ns:column>
-            <ns:column columnName="description">
+            </column>
+            <column columnName="description">
 
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>containers</ns:fkTable>
-                    <ns:fkColumnName>entityid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="normal_abnormal" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Normal/Abnormal</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>state</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="state">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="oor_indicators" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>OOR Indicators</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>indicator</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="indicator">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="weight_ranges" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Weight Allowable Ranges Per Species</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>species</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="species">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:fk>
-                    <ns:fkTable>species</ns:fkTable>
-                    <ns:fkColumnName>common</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="min_weight">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="max_weight">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="qualitative_results" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Qualitative Results</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>result</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="result">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="treatment_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Treatment Default Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_codes&amp;rowid=${rowid}</ns:tableUrl>
-        <ns:pkColumnName>meaning</ns:pkColumnName>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="meaning">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="category">
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="route">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>routes</ns:fkTable>
-                    <ns:fkColumnName>route</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="concentration">
-            </ns:column>
-            <ns:column columnName="conc_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>conc_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="dosage">
-            </ns:column>
-            <ns:column columnName="dosage_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>dosage_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="volume">
-            </ns:column>
-            <ns:column columnName="vol_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>volume_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="amount">
-            </ns:column>
-            <ns:column columnName="amount_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>amount_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="qualifier">
-            </ns:column>
-            <ns:column columnName="frequency">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>treatment_frequency</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="blood_tube_volumes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Blood Tube Allowable Volumes</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>volume</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="tube_types">
-            </ns:column>
-            <ns:column columnName="volume">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="labwork_types" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Labwork Types</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="type">
-                <ns:columnTitle>Type</ns:columnTitle>
-                <ns:nullable>false</ns:nullable>
-            </ns:column>
-            <ns:column columnName="tableName">
-                <ns:columnTitle>Table Name</ns:columnTitle>
-                <ns:nullable>false</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="lab_tests" tableDbType="TABLE" useColumnOrder="true" hidden="true">
-        <ns:tableTitle>Lab Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:columnTitle>Row Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="type">
-                <ns:columnTitle>Type</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="testid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Test Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="name">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Full Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="units">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="aliases">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="death_remarks" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Death Remarks Field Values</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>title</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="title">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="remark">
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="usda_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>SNOMED Codes Included in USDA Report</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:titleColumn>code</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:columnTitle>SNOMED Code</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>newsnomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="keyword">
-            </ns:column>
-            <ns:column columnName="category">
-            </ns:column>
-            <ns:column columnName="usda_letter">
-                <ns:columnTitle>USDA Letter</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="include_previous">
-                <ns:columnTitle>Include Previous Dates?</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="full_snomed" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Full SNOMED Table</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=full_snomed&amp;code=${code}</ns:tableUrl>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="code">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:nullable>true</ns:nullable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--</ns:column>-->
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="snomap" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Historic SNOMED Codes</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomap&amp;rowid=${rowid}</ns:tableUrl>
-        <ns:titleColumn>meaning</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="ocode">
-            </ns:column>
-            <ns:column columnName="ncode">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:columnTitle>Meaning</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="date">
-                <ns:formatString>yyyy-MM-dd</ns:formatString>
-                <ns:columnTitle>Date</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="objectid">
-                <ns:columnTitle>Key</ns:columnTitle>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:nullable>true</ns:nullable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--</ns:column>-->
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Formulary</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="category">
-                <ns:columnTitle>Category</ns:columnTitle>
-                <ns:defaultValue>Standard</ns:defaultValue>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>meaning</ns:fkDisplayColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="route">
-                <ns:columnTitle>Default Route</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>routes</ns:fkTable>
-                    <ns:fkColumnName>route</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="frequency">
-                <ns:columnTitle>Default Frequency</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>treatment_frequency</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="concentration">
-            </ns:column>
-            <ns:column columnName="conc_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>conc_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="dosage">
-            </ns:column>
-            <ns:column columnName="dosage_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>dosage_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="volume">
-            </ns:column>
-            <ns:column columnName="vol_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>volume_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="volume_rounding">
-                <ns:columnTitle>Round Volume To Nearest</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="amount">
-                <ns:columnTitle>Amount</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="amount_units">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>amount_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="amount_rounding">
-                <ns:columnTitle>Round Amount To Nearest</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="amount_max">
-                <ns:columnTitle>Max Reasonable Amount</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="duration">
-                <ns:columnTitle>Default Duration (Days)</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="offset">
-                <ns:columnTitle>Default Offset (Hours)</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="ageclass">
-                <ns:columnTitle>Age Class</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Reference Procedures List</ns:tableTitle>
-        <ns:tableUrl>/ehr/procedureDetails.view?procedureId=${rowid}</ns:tableUrl>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:columnTitle>Procedure Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="name"/>
-            <ns:column columnName="genericName">
-                <ns:columnTitle>Generic Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="category"/>
-            <ns:column columnName="major">
-                <ns:columnTitle>Is Major?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="active">
-                <ns:defaultValue>true</ns:defaultValue>
-            </ns:column>
-            <ns:column columnName="incision">
-                <ns:columnTitle>Involves Incision?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="recoveryDays">
-                <ns:columnTitle>Recovery Days</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="followupDays">
-                <ns:columnTitle># Default Followup Days</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="analgesiaRx">
-                <ns:columnTitle>Default Analgesia Rx</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="antibioticRx">
-                <ns:columnTitle>Default Antibiotic Rx</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="remark">
-                <ns:columnTitle>Default Remark (Non-Surgical Procedures Only)</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:tableTitle>Default Flags Per Procedure</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="procedureid"/>
-            <ns:column columnName="flag"/>
-            <ns:column columnName="value"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="disallowed_medications" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Medications That Cannot Be Administered Together</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="code1"/>
-            <ns:column columnName="code2"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="cage_type" tableDbType="TABLE" useColumnOrder="true">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Cage Types</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>cagetype</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="cagetype">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Cage Type</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="length">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="width">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="height">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="sqft">
-                <ns:columnTitle>Sq. Ft.</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="cageslots">
-                <ns:columnTitle>Cage Slots</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="verticalSlots">
-                <ns:columnTitle>Vertical Slots</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="supportsTunnel">
-                <ns:columnTitle>Supports Tunnel?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="abbreviation">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Cage Divider Types</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Divider Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="divider">
-                <ns:nullable>false</ns:nullable>
-            </ns:column>
-            <ns:column columnName="countAsSeparate">
-                <ns:columnTitle>Divider Separates Cages?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="countAsPaired">
-                <ns:columnTitle>Animals Considered Paired When Separated By This Divider?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="isMoveable">
-                <ns:columnTitle>Is Movable?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="displaychar">
-                <ns:columnTitle>Display Character</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="short_description">
-                <ns:columnTitle>Short Description</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="bgcolor">
-                <ns:columnTitle>Background Color</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="border_style">
-                <ns:columnTitle>Border CSS Style</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="datedisabled">
-                <ns:columnTitle>Date Disabled</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Project Types</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="type"/>
-            <ns:column columnName="multiplier"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="usda_levels" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>USDA Levels</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="usda_level"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Geographic Origins</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isKeyField>false</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="meaning">
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="description"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="note_types" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Note Types</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="meaning"/>
-            <ns:column columnName="description"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="lookups" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Reference Values</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="set_name">
-                <ns:columnTitle>Set Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="value">
-                <ns:columnTitle>Value</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="title">
-                <ns:columnTitle>Title</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="category">
-                <ns:columnTitle>Category</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:columnTitle>Description</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:columnTitle>Sort Order</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="date_disabled">
-                <ns:columnTitle>Date Disabled</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="objectid">
-                <ns:columnTitle>Key</ns:columnTitle>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Default Treatments Per Procedure</ns:tableTitle>
-        <ns:titleColumn>rowid</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="procedureid"/>
-            <ns:column columnName="code">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="qualifier"/>
-            <ns:column columnName="route">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>routes</ns:fkTable>
-                    <ns:fkColumnName>route</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="frequency">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>treatment_frequency</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="concentration"/>
-            <ns:column columnName="conc_units">
-                <ns:columnTitle>Concentration Units</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>conc_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="dosage"/>
-            <ns:column columnName="dosage_units">
-                <ns:columnTitle>Dosage Units</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>dosage_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="volume"/>
-            <ns:column columnName="vol_units">
-                <ns:columnTitle>Volume Units</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>volume_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="amount"/>
-            <ns:column columnName="amount_units">
-                <ns:columnTitle>Amount Units</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>amount_units</ns:fkTable>
-                    <ns:fkColumnName>unit</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Default Charges Per Procedure</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="procedureid"/>
-            <ns:column columnName="chargeid"/>
-            <ns:column columnName="quantity"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Default SNOMED Codes Per Procedure</ns:tableTitle>
-        <ns:titleColumn>rowid</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="procedureid"/>
-            <ns:column columnName="groupnum">
-                <ns:columnTitle>Group #</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="qualifier"/>
-            <ns:column columnName="sort_order"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Buildings</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="name"/>
-            <ns:column columnName="description"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="procedure_default_comments" tableDbType="TABLE" useColumnOrder="true">
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:tableTitle>Default Narratives</ns:tableTitle>
-        <ns:titleColumn>rowid</ns:titleColumn>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="procedureid"/>
-            <ns:column columnName="comment">
-                <ns:columnTitle>Default Narrative</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="billingtypes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Billing Types</ns:tableTitle>
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="name"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Rooms</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:columns>
-            <ns:column columnName="room">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="normal_abnormal" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Normal/Abnormal</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>state</pkColumnName>
+        <columns>
+            <column columnName="state">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="oor_indicators" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>OOR Indicators</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>indicator</pkColumnName>
+        <columns>
+            <column columnName="indicator">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="weight_ranges" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Weight Allowable Ranges Per Species</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>species</pkColumnName>
+        <columns>
+            <column columnName="species">
+                <isKeyField>true</isKeyField>
+                <fk>
+                    <fkTable>species</fkTable>
+                    <fkColumnName>common</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="min_weight">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="max_weight">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="qualitative_results" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Qualitative Results</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>result</pkColumnName>
+        <columns>
+            <column columnName="result">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="treatment_codes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Treatment Default Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_codes&amp;rowid=${rowid}</tableUrl>
+        <pkColumnName>meaning</pkColumnName>
+        <titleColumn>meaning</titleColumn>
+        <columns>
+            <column columnName="meaning">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="category">
+            </column>
+            <column columnName="code">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="route">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>routes</fkTable>
+                    <fkColumnName>route</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="concentration">
+            </column>
+            <column columnName="conc_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>conc_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="dosage">
+            </column>
+            <column columnName="dosage_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>dosage_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="volume">
+            </column>
+            <column columnName="vol_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>volume_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="amount">
+            </column>
+            <column columnName="amount_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>amount_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="qualifier">
+            </column>
+            <column columnName="frequency">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>treatment_frequency</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="blood_tube_volumes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Blood Tube Allowable Volumes</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>volume</pkColumnName>
+        <columns>
+            <column columnName="tube_types">
+            </column>
+            <column columnName="volume">
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
+    <table tableName="labwork_types" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Labwork Types</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="type">
+                <columnTitle>Type</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="tableName">
+                <columnTitle>Table Name</columnTitle>
+                <nullable>false</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="lab_tests" tableDbType="TABLE" useColumnOrder="true" hidden="true">
+        <tableTitle>Lab Tests</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</tableUrl>
+        <pkColumnName>testid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <columnTitle>Row Id</columnTitle>
+            </column>
+            <column columnName="type">
+                <columnTitle>Type</columnTitle>
+            </column>
+            <column columnName="testid">
+                <isKeyField>true</isKeyField>
+                <columnTitle>Test Id</columnTitle>
+            </column>
+            <column columnName="name">
+                <nullable>true</nullable>
+                <columnTitle>Full Name</columnTitle>
+            </column>
+            <column columnName="units">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="aliases">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="alertOnAbnormal">
+                <columnTitle>Alert On Abnormal</columnTitle>
+            </column>
+            <column columnName="alertOnAny">
+                <columnTitle>Alert On Any</columnTitle>
+            </column>
+            <column columnName="includeInPanel">
+                <columnTitle>Include In Panel</columnTitle>
+            </column>
+            <column columnName="sort_order">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="death_remarks" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Death Remarks Field Values</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>title</pkColumnName>
+        <columns>
+            <column columnName="title">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="remark">
+            </column>
+        </columns>
+    </table>
+    <table tableName="usda_codes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>SNOMED Codes Included in USDA Report</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <titleColumn>code</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isHidden>true</isHidden>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="code">
+                <columnTitle>SNOMED Code</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>newsnomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="keyword">
+            </column>
+            <column columnName="category">
+            </column>
+            <column columnName="usda_letter">
+                <columnTitle>USDA Letter</columnTitle>
+            </column>
+            <column columnName="include_previous">
+                <columnTitle>Include Previous Dates?</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="full_snomed" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Full SNOMED Table</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>code</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=full_snomed&amp;code=${code}</tableUrl>
+        <titleColumn>meaning</titleColumn>
+        <columns>
+            <column columnName="code">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+            <!--<column columnName="container">-->
+            <!--<isUserEditable>false</isUserEditable>-->
+            <!--<nullable>true</nullable>-->
+            <!--<isHidden>true</isHidden>-->
+            <!--</column>-->
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="snomap" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Historic SNOMED Codes</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomap&amp;rowid=${rowid}</tableUrl>
+        <titleColumn>meaning</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="ocode">
+            </column>
+            <column columnName="ncode">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="meaning">
+                <columnTitle>Meaning</columnTitle>
+            </column>
+            <column columnName="date">
+                <formatString>yyyy-MM-dd</formatString>
+                <columnTitle>Date</columnTitle>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+            </column>
+            <!--<column columnName="container">-->
+            <!--<isUserEditable>false</isUserEditable>-->
+            <!--<nullable>true</nullable>-->
+            <!--<isHidden>true</isHidden>-->
+            <!--</column>-->
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Formulary</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+                <defaultValue>Standard</defaultValue>
+            </column>
+            <column columnName="code">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                    <fkDisplayColumnName>meaning</fkDisplayColumnName>
+                </fk>
+            </column>
+            <column columnName="route">
+                <columnTitle>Default Route</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>routes</fkTable>
+                    <fkColumnName>route</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="frequency">
+                <columnTitle>Default Frequency</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>treatment_frequency</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="concentration">
+            </column>
+            <column columnName="conc_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>conc_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="dosage">
+            </column>
+            <column columnName="dosage_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>dosage_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="volume">
+            </column>
+            <column columnName="vol_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>volume_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="volume_rounding">
+                <columnTitle>Round Volume To Nearest</columnTitle>
+            </column>
+            <column columnName="amount">
+                <columnTitle>Amount</columnTitle>
+            </column>
+            <column columnName="amount_units">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>amount_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="amount_rounding">
+                <columnTitle>Round Amount To Nearest</columnTitle>
+            </column>
+            <column columnName="amount_max">
+                <columnTitle>Max Reasonable Amount</columnTitle>
+            </column>
+            <column columnName="duration">
+                <columnTitle>Default Duration (Days)</columnTitle>
+            </column>
+            <column columnName="offset">
+                <columnTitle>Default Offset (Hours)</columnTitle>
+            </column>
+            <column columnName="ageclass">
+                <columnTitle>Age Class</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Reference Procedures List</tableTitle>
+        <tableUrl>/ehr/procedureDetails.view?procedureId=${rowid}</tableUrl>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid">
+                <columnTitle>Procedure Id</columnTitle>
+            </column>
+            <column columnName="name"/>
+            <column columnName="genericName">
+                <columnTitle>Generic Name</columnTitle>
+            </column>
+            <column columnName="description">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="category"/>
+            <column columnName="major">
+                <columnTitle>Is Major?</columnTitle>
+            </column>
+            <column columnName="active">
+                <defaultValue>true</defaultValue>
+            </column>
+            <column columnName="incision">
+                <columnTitle>Involves Incision?</columnTitle>
+            </column>
+            <column columnName="recoveryDays">
+                <columnTitle>Recovery Days</columnTitle>
+            </column>
+            <column columnName="followupDays">
+                <columnTitle># Default Followup Days</columnTitle>
+            </column>
+            <column columnName="analgesiaRx">
+                <columnTitle>Default Analgesia Rx</columnTitle>
+            </column>
+            <column columnName="antibioticRx">
+                <columnTitle>Default Antibiotic Rx</columnTitle>
+            </column>
+            <column columnName="remark">
+                <columnTitle>Default Remark (Non-Surgical Procedures Only)</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <tableTitle>Default Flags Per Procedure</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="procedureid"/>
+            <column columnName="flag"/>
+            <column columnName="value"/>
+        </columns>
+    </table>
+    <table tableName="disallowed_medications" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Medications That Cannot Be Administered Together</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="code1"/>
+            <column columnName="code2"/>
+        </columns>
+    </table>
+    <table tableName="cage_type" tableDbType="TABLE" useColumnOrder="true">
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Cage Types</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>cagetype</pkColumnName>
+        <columns>
+            <column columnName="cagetype">
+                <isKeyField>true</isKeyField>
+                <columnTitle>Cage Type</columnTitle>
+            </column>
+            <column columnName="length">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="width">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="height">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="sqft">
+                <columnTitle>Sq. Ft.</columnTitle>
+                <nullable>true</nullable>
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="cageslots">
+                <columnTitle>Cage Slots</columnTitle>
+            </column>
+            <column columnName="verticalSlots">
+                <columnTitle>Vertical Slots</columnTitle>
+            </column>
+            <column columnName="supportsTunnel">
+                <columnTitle>Supports Tunnel?</columnTitle>
+            </column>
+            <column columnName="abbreviation">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Cage Divider Types</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isKeyField>true</isKeyField>
+                <columnTitle>Divider Id</columnTitle>
+            </column>
+            <column columnName="divider">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="countAsSeparate">
+                <columnTitle>Divider Separates Cages?</columnTitle>
+            </column>
+            <column columnName="countAsPaired">
+                <columnTitle>Animals Considered Paired When Separated By This Divider?</columnTitle>
+            </column>
+            <column columnName="isMoveable">
+                <columnTitle>Is Movable?</columnTitle>
+            </column>
+            <column columnName="displaychar">
+                <columnTitle>Display Character</columnTitle>
+            </column>
+            <column columnName="short_description">
+                <columnTitle>Short Description</columnTitle>
+            </column>
+            <column columnName="bgcolor">
+                <columnTitle>Background Color</columnTitle>
+            </column>
+            <column columnName="border_style">
+                <columnTitle>Border CSS Style</columnTitle>
+            </column>
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Project Types</tableTitle>
+        <columns>
+            <column columnName="type"/>
+            <column columnName="multiplier"/>
+        </columns>
+    </table>
+    <table tableName="usda_levels" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>USDA Levels</tableTitle>
+        <columns>
+            <column columnName="usda_level"/>
+        </columns>
+    </table>
+    <table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Geographic Origins</tableTitle>
+        <columns>
+            <column columnName="rowid">
+                <isKeyField>false</isKeyField>
+            </column>
+            <column columnName="meaning">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="description"/>
+        </columns>
+    </table>
+    <table tableName="note_types" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Note Types</tableTitle>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="meaning"/>
+            <column columnName="description"/>
+        </columns>
+    </table>
+    <table tableName="lookups" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Reference Values</tableTitle>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInInsertView>false</shownInInsertView>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="set_name">
+                <columnTitle>Set Name</columnTitle>
+            </column>
+            <column columnName="value">
+                <columnTitle>Value</columnTitle>
+            </column>
+            <column columnName="title">
+                <columnTitle>Title</columnTitle>
+            </column>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+            </column>
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+            </column>
+            <column columnName="sort_order">
+                <columnTitle>Sort Order</columnTitle>
+            </column>
+            <column columnName="date_disabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Default Treatments Per Procedure</tableTitle>
+        <titleColumn>rowid</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="procedureid"/>
+            <column columnName="code">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="qualifier"/>
+            <column columnName="route">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>routes</fkTable>
+                    <fkColumnName>route</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="frequency">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>treatment_frequency</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="concentration"/>
+            <column columnName="conc_units">
+                <columnTitle>Concentration Units</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>conc_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="dosage"/>
+            <column columnName="dosage_units">
+                <columnTitle>Dosage Units</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>dosage_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="volume"/>
+            <column columnName="vol_units">
+                <columnTitle>Volume Units</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>volume_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="amount"/>
+            <column columnName="amount_units">
+                <columnTitle>Amount Units</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>amount_units</fkTable>
+                    <fkColumnName>unit</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Default Charges Per Procedure</tableTitle>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="procedureid"/>
+            <column columnName="chargeid"/>
+            <column columnName="quantity"/>
+        </columns>
+    </table>
+    <table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Default SNOMED Codes Per Procedure</tableTitle>
+        <titleColumn>rowid</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="procedureid"/>
+            <column columnName="groupnum">
+                <columnTitle>Group #</columnTitle>
+            </column>
+            <column columnName="code">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="qualifier"/>
+            <column columnName="sort_order"/>
+        </columns>
+    </table>
+    <table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Buildings</tableTitle>
+        <columns>
+            <column columnName="name"/>
+            <column columnName="description"/>
+        </columns>
+    </table>
+    <table tableName="procedure_default_comments" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Default Narratives</tableTitle>
+        <titleColumn>rowid</titleColumn>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="procedureid"/>
+            <column columnName="comment">
+                <columnTitle>Default Narrative</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="billingtypes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Billing Types</tableTitle>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="name"/>
+        </columns>
+    </table>
+    <table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Rooms</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="room">
 
-            </ns:column>
-            <ns:column columnName="building">
-                <ns:columnTitle>Building</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>buildings</ns:fkTable>
-                    <ns:fkColumnName>name</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="area">
-                <ns:columnTitle>Area</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>areas</ns:fkTable>
-                    <ns:fkColumnName>area</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="housingType">
-                <ns:columnTitle>Housing Type</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>housingTypes</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>value</ns:fkDisplayColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="housingCondition">
-                <ns:columnTitle>Housing Condition</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>housingDefinition</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>value</ns:fkDisplayColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="maxCages"/>
-            <ns:column columnName="sort_order">
-                <ns:columnTitle>Sort Order</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="dateDisabled"/>
-            <ns:column columnName="created"/>
-            <ns:column columnName="createdby"/>
-            <ns:column columnName="modified"/>
-            <ns:column columnName="modifiedby"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="parentageTypes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Parentage Types</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:columns>
-            <ns:column columnName="label">
-                <ns:columnTitle>Label</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="priority">
-                <ns:columnTitle>Priority</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="abbreviation">
-                <ns:columnTitle>Abbreviation</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="relationshipTypes" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Relationship Types</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:columns>
-            <ns:column columnName="label">
-                <ns:columnTitle>Label</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="gender">
-                <ns:columnTitle>Gender</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>gender</ns:fkTable>
-                    <ns:fkColumnName>gender</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="cage_positions" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Cage Positions</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:columns>
-            <ns:column columnName="cage">
-                <ns:columnTitle>Cage</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="row">
-            </ns:column>
-            <ns:column columnName="columnIdx">
-                <ns:columnTitle>Column</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:columnTitle>Sort Order</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Flag Categories</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:columns>
-            <ns:column columnName="category">
-                <ns:columnTitle>Category</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:columnTitle>Description</ns:columnTitle>
-                <ns:inputType>textarea</ns:inputType>
-            </ns:column>
-            <ns:column columnName="enforceUnique">
-                <ns:columnTitle>Enforce Single Flag Per Animal?</ns:columnTitle>
-                <ns:defaultValue>false</ns:defaultValue>
-            </ns:column>
-            <ns:column columnName="omitFromOverview">
-                <ns:columnTitle>Omit When Displaying Default Flags?</ns:columnTitle>
-                <ns:defaultValue>false</ns:defaultValue>
-            </ns:column>
-            <ns:column columnName="doHighlight">
-                <ns:columnTitle>Highlight Flags of This Category?</ns:columnTitle>
-                <ns:defaultValue>false</ns:defaultValue>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Labwork Service Types</ns:tableTitle>
-        <ns:description>This table lists all the types of labwork that can be ordered</ns:description>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>servicename</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="servicename">
-                <ns:columnTitle>Service Name</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="dataset">
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>clinpath_types</ns:fkTable>
-                    <ns:fkColumnName>value</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="chargetype">
-                <ns:columnTitle>Group</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>labworkChargeType</ns:fkTable>
-                    <ns:fkColumnName>value</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="tissue">
-                <ns:columnTitle>Tissue</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>snomed</ns:fkTable>
-                    <ns:fkColumnName>code</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="collectionmethod">
-                <ns:columnTitle>Collection Method</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>clinpath_collection_method</ns:fkTable>
-                    <ns:fkColumnName>value</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="method">
-                <ns:columnTitle>Method</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnComplete">
-                <ns:columnTitle>Alert On Complete?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="outsidelab">
-                <ns:columnTitle>From Outside Lab?</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="datedisabled">
-                <ns:columnTitle>Date Disabled</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Labwork Panels</ns:tableTitle>
-        <ns:description>This table lists all the tests expected to be generated from each lab service type</ns:description>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
+            </column>
+            <column columnName="building">
+                <columnTitle>Building</columnTitle>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>buildings</fkTable>
+                    <fkColumnName>name</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="area">
+                <columnTitle>Area</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>areas</fkTable>
+                    <fkColumnName>area</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="housingType">
+                <columnTitle>Housing Type</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>housingTypes</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                    <fkDisplayColumnName>value</fkDisplayColumnName>
+                </fk>
+            </column>
+            <column columnName="housingCondition">
+                <columnTitle>Housing Condition</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>housingDefinition</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                    <fkDisplayColumnName>value</fkDisplayColumnName>
+                </fk>
+            </column>
+            <column columnName="maxCages"/>
+            <column columnName="sort_order">
+                <columnTitle>Sort Order</columnTitle>
+                <isHidden>true</isHidden>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="dateDisabled"/>
+            <column columnName="created"/>
+            <column columnName="createdby"/>
+            <column columnName="modified"/>
+            <column columnName="modifiedby"/>
+        </columns>
+    </table>
+    <table tableName="parentageTypes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Parentage Types</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <columns>
+            <column columnName="label">
+                <columnTitle>Label</columnTitle>
+            </column>
+            <column columnName="priority">
+                <columnTitle>Priority</columnTitle>
+            </column>
+            <column columnName="abbreviation">
+                <columnTitle>Abbreviation</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="relationshipTypes" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Relationship Types</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <columns>
+            <column columnName="label">
+                <columnTitle>Label</columnTitle>
+            </column>
+            <column columnName="gender">
+                <columnTitle>Gender</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>gender</fkTable>
+                    <fkColumnName>gender</fkColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="cage_positions" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Cage Positions</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <columns>
+            <column columnName="cage">
+                <columnTitle>Cage</columnTitle>
+            </column>
+            <column columnName="row">
+            </column>
+            <column columnName="columnIdx">
+                <columnTitle>Column</columnTitle>
+            </column>
+            <column columnName="sort_order">
+                <columnTitle>Sort Order</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Flag Categories</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+            </column>
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="enforceUnique">
+                <columnTitle>Enforce Single Flag Per Animal?</columnTitle>
+                <defaultValue>false</defaultValue>
+            </column>
+            <column columnName="omitFromOverview">
+                <columnTitle>Omit When Displaying Default Flags?</columnTitle>
+                <defaultValue>false</defaultValue>
+            </column>
+            <column columnName="doHighlight">
+                <columnTitle>Highlight Flags of This Category?</columnTitle>
+                <defaultValue>false</defaultValue>
+            </column>
+        </columns>
+    </table>
+    <table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Labwork Service Types</tableTitle>
+        <description>This table lists all the types of labwork that can be ordered</description>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>servicename</pkColumnName>
+        <columns>
+            <column columnName="servicename">
+                <columnTitle>Service Name</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="dataset">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>clinpath_types</fkTable>
+                    <fkColumnName>value</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="chargetype">
+                <columnTitle>Group</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>labworkChargeType</fkTable>
+                    <fkColumnName>value</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="tissue">
+                <columnTitle>Tissue</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="collectionmethod">
+                <columnTitle>Collection Method</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>clinpath_collection_method</fkTable>
+                    <fkColumnName>value</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="method">
+                <columnTitle>Method</columnTitle>
+            </column>
+            <column columnName="alertOnComplete">
+                <columnTitle>Alert On Complete?</columnTitle>
+            </column>
+            <column columnName="outsidelab">
+                <columnTitle>From Outside Lab?</columnTitle>
+            </column>
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Labwork Panels</tableTitle>
+        <description>This table lists all the tests expected to be generated from each lab service type</description>
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
 
-            </ns:column>
-            <ns:column columnName="servicename">
-                <ns:columnTitle>Service Name</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>labwork_services</ns:fkTable>
-                    <ns:fkColumnName>servicename</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="testname">
-                <ns:columnTitle>Test Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sortorder">
-                <ns:columnTitle>Sort Order</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="method">
-                <ns:columnTitle>Method</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="testfieldname">
-                <ns:columnTitle>Test Field Name</ns:columnTitle>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Flag Values</ns:tableTitle>
-        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-            </ns:column>
-            <ns:column columnName="category">
-                <ns:columnTitle>Category</ns:columnTitle>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-                    <ns:fkTable>flag_categories</ns:fkTable>
-                    <ns:fkColumnName>category</ns:fkColumnName>
-                    <ns:fkDisplayColumnName useRawValue="true"/>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="value">
-                <ns:columnTitle>Meaning</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="code">
-                <ns:columnTitle>Code</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="description">
-                <ns:columnTitle>Description</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="objectid">
-                <ns:columnTitle>Key</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="datedisabled">
-                <ns:columnTitle>Date Disabled</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
+            </column>
+            <column columnName="servicename">
+                <columnTitle>Service Name</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>labwork_services</fkTable>
+                    <fkColumnName>servicename</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="testname">
+                <columnTitle>Test Name</columnTitle>
+            </column>
+            <column columnName="sortorder">
+                <columnTitle>Sort Order</columnTitle>
+            </column>
+            <column columnName="method">
+                <columnTitle>Method</columnTitle>
+            </column>
+            <column columnName="testfieldname">
+                <columnTitle>Test Field Name</columnTitle>
+            </column>
+        </columns>
+    </table>
+    <table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Flag Values</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInInsertView>false</shownInInsertView>
+            </column>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>flag_categories</fkTable>
+                    <fkColumnName>category</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="value">
+                <columnTitle>Meaning</columnTitle>
+            </column>
+            <column columnName="code">
+                <columnTitle>Code</columnTitle>
+            </column>
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
 
-    <ns:table tableName="Calendar" tableDbType="TABLE" useColumnOrder="true">
-        <ns:description>Table with rows for each day from 1950-2029 to make certain SQL queries easier</ns:description>
-        <ns:columns>
-            <ns:column columnName="TargetDateTime" />
-            <ns:column columnName="TargetDate" />
-            <ns:column columnName="DayAfter" />
-            <ns:column columnName="Month" />
-            <ns:column columnName="Day" />
-            <ns:column columnName="Year" />
-        </ns:columns>
-    </ns:table>
+    <table tableName="Calendar" tableDbType="TABLE" useColumnOrder="true">
+        <description>Table with rows for each day from 1950-2029 to make certain SQL queries easier</description>
+        <columns>
+            <column columnName="TargetDateTime" />
+            <column columnName="TargetDate" />
+            <column columnName="DayAfter" />
+            <column columnName="Month" />
+            <column columnName="Day" />
+            <column columnName="Year" />
+        </columns>
+    </table>
 
-</ns:tables>
+</tables>

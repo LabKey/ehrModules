@@ -7,26 +7,26 @@
         <tableName>employeerequirementexemptions</tableName>
     </tables>
     <metadata>
-        <ns:tables xmlns:ns="http://labkey.org/data/xml">
-            <ns:table tableName="employees" tableDbType="NOT_IN_DB">
-                <ns:tableTitle>Employees</ns:tableTitle>
-                <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
-                <ns:columns>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="employees" tableDbType="NOT_IN_DB">
+                <tableTitle>Employees</tableTitle>
+                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <columns>
 
-                </ns:columns>
-            </ns:table>
-            <ns:table tableName="completionDates" tableDbType="NOT_IN_DB">
-                <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
-            </ns:table>
-            <ns:table tableName="requirements" tableDbType="NOT_IN_DB">
-                <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
-            </ns:table>
-            <ns:table tableName="ComplianceRecentTests" tableDbType="NOT_IN_DB">
-                <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
-            </ns:table>
-            <ns:table tableName="employeerequirementexemptions" tableDbType="NOT_IN_DB">
-                <ns:javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</ns:javaCustomizer>
-            </ns:table>
-        </ns:tables>
+                </columns>
+            </table>
+            <table tableName="completionDates" tableDbType="NOT_IN_DB">
+                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+            </table>
+            <table tableName="requirements" tableDbType="NOT_IN_DB">
+                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+            </table>
+            <table tableName="ComplianceRecentTests" tableDbType="NOT_IN_DB">
+                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+            </table>
+            <table tableName="employeerequirementexemptions" tableDbType="NOT_IN_DB">
+                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+            </table>
+        </tables>
     </metadata>
 </templateSchema>
