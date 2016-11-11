@@ -20,8 +20,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.test.Locator;
-import org.labkey.test.components.ext4.ComboBox;
-import org.labkey.test.components.ext4.widgets.SearchPanel;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
@@ -55,6 +53,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
+        //animal queries
+        beginAt("/project/" + getContainerPath() + "/begin.view");
+        waitAndClick(Locator.linkWithText("Animal Search"));
+        waitForTextToDisappear("Loading");
+        waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
+        assertNoErrorText();
+
         //project, protocol queries
         beginAt("/project/" + getContainerPath() + "/begin.view");
         waitAndClick(Locator.linkWithText("Protocol and Project Queries"));
@@ -72,17 +77,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.tagContainingText("th", "Overview: "));
         waitForElement(Locator.tagContainingText("th", "Weights - "));
         assertNoErrorText();
-    }
-
-    @Test
-    public void testAnimalSearch() throws Exception
-    {
-        beginAt("/project/" + getContainerPath() + "/begin.view");
-        waitAndClickAndWait(Locator.linkWithText("Animal Search"));
-//        new SearchPanel(getDriver());
-        waitForElement(Locator.input("gender"));
-        assertNoErrorText();
-
     }
 
     @Test
@@ -192,6 +186,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     {
         testUserAgainstAllStates(FULL_UPDATER);
     }
+
 
     @Test
     public void testSecurityRequestAdmin() throws Exception
