@@ -9,7 +9,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="category">
                         <columnTitle>Category</columnTitle>

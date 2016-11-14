@@ -8,7 +8,6 @@
                 <columns>
                     <column columnName="date">
                         <nullable>false</nullable>
-                        <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Date</columnTitle>
                     </column>
                     <column columnName="room">

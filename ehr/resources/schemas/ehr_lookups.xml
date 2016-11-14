@@ -1259,7 +1259,6 @@
                 <columnTitle>Meaning</columnTitle>
             </column>
             <column columnName="date">
-                <formatString>yyyy-MM-dd</formatString>
                 <columnTitle>Date</columnTitle>
             </column>
             <column columnName="objectid">

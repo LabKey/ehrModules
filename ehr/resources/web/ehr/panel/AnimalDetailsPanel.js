@@ -228,7 +228,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 interval = interval + ' days ago';
             }
 
-            text = row.weight + ' kg, ' + date.format('Y-m-d') + (!Ext4.isEmpty(interval) ? ' (' + interval + ')' : '');
+            text = row.weight + ' kg, ' + date.format(LABKEY.extDefaultDateFormat) + (!Ext4.isEmpty(interval) ? ' (' + interval + ')' : '');
         }
 
         toSet['weights'] = text;

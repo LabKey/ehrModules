@@ -198,13 +198,13 @@ Ext4.define('EHR.window.SedationWindow', {
                 if (!minDate || date < minDate)
                     minDate = date;
 
-                dates.push(date.format('Y-m-d H:i'));
+                dates.push(date.format(LABKEY.extDefaultDateTimeFormat));
             }, this);
 
             items.push({
                 xtype: 'xdatetime',
                 width: 250,
-                format: 'Y-m-d H:i',
+                format: LABKEY.extDefaultDateTimeFormat,
                 timeFormat: 'H:i',
                 fieldName: 'date',
                 key: key,

@@ -19,14 +19,12 @@
                         </fk>
                     </column>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Assign Date</columnTitle>
                     </column>
                     <column columnName="projectedRelease">
                         <columnTitle>Projected Release Date</columnTitle>
                     </column>
                     <column columnName="enddate">
-                        <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Release Date</columnTitle>
                         <isHidden>false</isHidden>
                         <shownInInsertView>true</shownInInsertView>

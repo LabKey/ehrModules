@@ -633,13 +633,13 @@ EHR.Utils = new function(){
                         header: 'Date Added',
                         dataIndex: 'date',
                         xtype: 'datecolumn',
-                        format: 'Y-m-d',
+                        format: LABKEY.extDefaultDateFormat,
                         width: 110
                     },{
                         header: 'Date Removed',
                         dataIndex: 'enddate',
                         xtype: 'datecolumn',
-                        format: 'Y-m-d',
+                        format: LABKEY.extDefaultDateFormat,
                         width: 110
                     },{
                         header: 'Remark',

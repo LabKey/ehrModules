@@ -136,7 +136,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             queryName: 'treatmentSchedule',
             parameters: {
                 NumDays: 1,
-                StartDate: date.format('Y-m-d')
+                StartDate: date.format(LABKEY.extDefaultDateFormat)
             },
             sort: 'date,Id/curlocation/room_sortValue,Id/curlocation/cage_sortValue,Id',
             columns: 'primaryKey,lsid,treatmentid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category,chargetype',

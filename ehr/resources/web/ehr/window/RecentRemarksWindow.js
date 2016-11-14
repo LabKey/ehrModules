@@ -62,7 +62,7 @@ Ext4.define('EHR.window.RecentRemarksWindow', {
                 header: 'Date',
                 xtype: 'datecolumn',
                 width: 160,
-                format: 'Y-m-d H:i',
+                format: LABKEY.extDefaultDateTimeFormat,
                 dataIndex: 'date'
             },{
                 header: 'SOAP',

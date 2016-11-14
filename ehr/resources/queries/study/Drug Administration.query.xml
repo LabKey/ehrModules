@@ -13,15 +13,12 @@
                     </column>
                     <column columnName="date">
                         <columnTitle>Begin Date</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="HeaderDate">
                         <columnTitle>Header Date</columnTitle>
-                        <formatString>yyyy-MM-dd H:mm</formatString>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>End Time</columnTitle>
-                        <formatString>yyyy-MM-dd H:mm</formatString>
                         <isHidden>false</isHidden>
                     </column>
                     <column columnName="project">

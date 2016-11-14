@@ -107,16 +107,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 _log.error("Attempting to use DefaultEHRCustomizer on table (" + us.getName() + "." + table.getName() + ") even though the module is not enabled: " + c.getPath());
                 return;
             }
-
-            String df = EHRService.get().getDateFormat(c);
-            if (df != null)
-            {
-                for (ColumnInfo col : table.getColumns())
-                {
-                    if (col.getJdbcType().getJavaClass().equals(Date.class) && col.getFormat() == null)
-                        col.setFormat(df);
-                }
-            }
         }
 
         //NOTE: no datasets should be included below.  these should be customized in customizeDataset()

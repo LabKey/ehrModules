@@ -153,7 +153,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Created',
-                        value: row.getFormattedDateValue('created', 'Y-m-d')
+                        value: row.getFormattedDateValue('created', LABKEY.extDefaultDateFormat)
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Created By',

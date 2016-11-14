@@ -143,7 +143,7 @@ EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
                 var val = rec.get(field.meta.name);
 
                 if(field.meta.name == 'date'){
-                    field.meta.format = 'Y-m-d';
+                    field.meta.format = LABKEY.extDefaultDateFormat;
 
                     var html = field.renderer(val, field.meta, rec);
                     theTable.add({html: html, style: 'height: 30px;'});

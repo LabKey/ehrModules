@@ -12,7 +12,6 @@
 
                     </column>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>In Date</columnTitle>
                     </column>
                     <column columnName="enddate">
@@ -20,7 +19,6 @@
                         <isHidden>false</isHidden>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInDetailsView>true</shownInDetailsView>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Out Date</columnTitle>
                     </column>
                     <column columnName="room">

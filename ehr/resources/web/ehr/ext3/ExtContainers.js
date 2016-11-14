@@ -397,7 +397,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
         Ext.Ajax.request({
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
             params: {
-                fileName: 'ChemistryUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.csv',
+                fileName: 'ChemistryUpload_'+(new Date()).format(LABKEY.extDefaultDateFormat + '_H:m:s')+'.csv',
                 fileContent: fileContent
             },
             success: this.onFileUpload,
@@ -506,7 +506,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
             }
 
             if(!id || !date || date=='Invalid Date' || !testId || !result){
-                skippedRows.push(['ID: '+id, 'Date: '+(date && (date.format ? date.format('Y-m-d') : date)), 'TestId: '+testId, 'Result: '+result].join('; '));
+                skippedRows.push(['ID: '+id, 'Date: '+(date && (date.format ? date.format(LABKEY.extDefaultDateFormat) : date)), 'TestId: '+testId, 'Result: '+result].join('; '));
                 return;
             }
 
@@ -625,7 +625,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         Ext.Ajax.request({
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
             params: {
-                fileName: 'HematologyUpload_'+(new Date()).format('Y-m-d_H:m:s.u')+'.tsv',
+                fileName: 'HematologyUpload_'+(new Date()).format(LABKEY.extDefaultDateFormat + '_H:m:s.u')+'.tsv',
                 fileContent: fileContent
             },
             success: this.onFileUpload,

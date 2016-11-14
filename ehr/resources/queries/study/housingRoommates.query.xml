@@ -39,11 +39,9 @@
                         <!--</fk>-->
                     <!--</column>-->
                     <column columnName="roommateStart">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Cagemate Start</columnTitle>
                     </column>
                     <column columnName="roommateEnd">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Cagemate End</columnTitle>
                     </column>
                     <column columnName="startDate">

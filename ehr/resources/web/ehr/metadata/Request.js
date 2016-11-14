@@ -72,7 +72,7 @@ EHR.Metadata.registerMetadata('Request', {
         requests: {
             daterequested: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
                 //nullable: false
             }
         },

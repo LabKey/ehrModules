@@ -64,7 +64,7 @@ function createNavMenu(){
                 {name: 'Treatment Schedule - PM', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:roomCage&activeReport:treatmentSchedulePM'},
                 {name: 'Treatment Schedule - Night', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:roomCage&activeReport:treatmentScheduleNight'},
                 {name: 'Treatment Schedule - All', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:roomCage&activeReport:treatmentSchedule'},
-                {name: 'Forms Completed Today', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=TasksByLocation&query.viewName=Completion Times&query.taskid/Created~dateeq='+(new Date()).format('Y-m-d')}
+                {name: 'Forms Completed Today', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=TasksByLocation&query.viewName=Completion Times&query.taskid/Created~dateeq='+(new Date()).format(LABKEY.extDefaultDateFormat)}
             ]}
         ]
     });

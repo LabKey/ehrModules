@@ -194,9 +194,9 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         if (this.caseId)
                             params.caseId = this.caseId;
                         if (this.minDate)
-                            params.minDate = this.minDate.format('Y-m-d');
+                            params.minDate = this.minDate.format(LABKEY.extDefaultDateFormat);
                         if (this.maxDate)
-                            params.maxDate = this.maxDate.format('Y-m-d');
+                            params.maxDate = this.maxDate.format(LABKEY.extDefaultDateFormat);
                         if (this.sortMode)
                             params.sortMode = this.sortMode;
                         if (this.checkedItems && this.checkedItems.length)
@@ -272,7 +272,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             text: 'Date',
             xtype: 'datecolumn',
             dataIndex: 'date',
-            format: 'Y-m-d h:i',
+            format: LABKEY.extDefaultDateTimeFormat,
             hidden: (this.sortMode == 'date'),
             width: 180
         },{

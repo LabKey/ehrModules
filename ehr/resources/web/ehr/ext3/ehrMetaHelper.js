@@ -440,9 +440,9 @@ EHR.ext.metaHelper = new function(){
                             var format = meta.extFormat;
                             if(!format){
                                 if (date.getHours() == 0 && date.getMinutes() == 0 && date.getSeconds() == 0)
-                                    format = "Y-m-d";
+                                    format = LABKEY.extDefaultDateFormat;
                                 else
-                                    format = "Y-m-d H:i:s";
+                                    format = LABKEY.extDefaultDateTimeFormat;
                             }
                             displayValue = date.format(format);
                             break;

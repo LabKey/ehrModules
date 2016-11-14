@@ -68,6 +68,7 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
             var dateVal = '';
             if (!Ext4.isEmpty(row.MostRecentWeightDate)){
                 dateVal = row.MostRecentWeightDate.displayValue || row.MostRecentWeightDate.value;
+                dateVal = Ext4.Date.format(new Date(dateVal), LABKEY.extDefaultDateFormat).toString()
                 if (!Ext4.isEmpty(row.DaysSinceWeight)){
                     dateVal += ' (' + (row.DaysSinceWeight.displayValue || row.DaysSinceWeight.value) + ' days ago)'
                 }

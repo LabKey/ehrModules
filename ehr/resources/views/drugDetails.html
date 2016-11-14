@@ -46,7 +46,7 @@ Ext4.onReady(function (){
 
         var row = data.rows[0];
         LDK.Utils.getReadOnlyQWP({
-            title: 'Clinical Remarks From '+(new Date(row.date).format('Y-m-d')),
+            title: 'Clinical Remarks From '+(new Date(row.date).format(LABKEY.extDefaultDateFormat)),
             schemaName: 'study',
             queryName: 'Clinical Remarks',
             filterArray: [

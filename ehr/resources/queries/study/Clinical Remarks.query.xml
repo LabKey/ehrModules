@@ -19,7 +19,6 @@
                         </fk>
                     </column>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentid">
                         <!--<fk>-->

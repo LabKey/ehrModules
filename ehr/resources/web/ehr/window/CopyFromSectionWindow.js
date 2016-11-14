@@ -171,7 +171,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 if (!minDate || date < minDate)
                     minDate = date;
 
-                dates.push(date.format('Y-m-d H:i'));
+                dates.push(date.format(LABKEY.extDefaultDateTimeFormat));
             }, this);
 
             o.performedby = Ext4.unique(o.performedby);
@@ -186,7 +186,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             items.push({
                 xtype: 'xdatetime',
                 width: 300,
-                format: 'Y-m-d H:i',
+                format: LABKEY.extDefaultDateTimeFormat,
                 timeFormat: 'H:i',
                 fieldName: 'date',
                 key: key,

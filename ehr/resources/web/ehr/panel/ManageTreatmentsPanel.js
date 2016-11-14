@@ -229,13 +229,13 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 header: 'Date',
                 xtype: 'datecolumn',
                 width: 160,
-                format: 'Y-m-d H:i',
+                format: LABKEY.extDefaultDateTimeFormat,
                 dataIndex: 'date'
             },{
                 header: 'End Date',
                 xtype: 'datecolumn',
                 width: 160,
-                format: 'Y-m-d H:i',
+                format: LABKEY.extDefaultDateTimeFormat,
                 dataIndex: 'enddate'
             },{
                 header: 'Code',

@@ -433,7 +433,6 @@
         <columns>
             <column columnName="date">
                 <nullable>false</nullable>
-                <formatString>yyyy-MM-dd</formatString>
                 <columnTitle>Date</columnTitle>
             </column>
             <column columnName="room">
@@ -996,22 +995,18 @@
             </column>
             <column columnName="approve">
                 <columnTitle>3-yr Approval Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
                 <nullable>true</nullable>
             </column>
             <column columnName="lastAnnualReview">
                 <columnTitle>Date of Last Annual Update</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
                 <nullable>true</nullable>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
                 <nullable>true</nullable>
             </column>
             <column columnName="first_approval">
                 <columnTitle>First Approval Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
                 <nullable>true</nullable>
             </column>
             <column columnName="project_type">
@@ -1164,11 +1159,9 @@
             </column>
             <column columnName="startdate">
                 <columnTitle>Start Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="alwaysavailable">
                 <columnTitle>Is Always Available?</columnTitle>
@@ -1283,11 +1276,9 @@
             </column>
             <column columnName="start">
                 <columnTitle>Start Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="description">
                 <columnTitle>Additional Detail</columnTitle>

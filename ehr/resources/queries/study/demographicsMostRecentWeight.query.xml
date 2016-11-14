@@ -16,7 +16,6 @@
                         <formatString>0.##</formatString>
                     </column>
                     <column columnName="MostRecentWeightDate">
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Weight Date</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;

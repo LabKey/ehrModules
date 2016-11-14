@@ -298,20 +298,6 @@ EHR.Server.Utils = new function(){
         },
 
         /**
-         * A helper to convert a date object into a display string.  By default is will use YYYY-mm-dd.
-         * @param date The date to convert
-         * @returns {string} The display string for this date or an empty string if unable to convert
-         */
-        dateToString: function (date){
-            if (date){
-                date = EHR.Server.Utils.normalizeDate(date);
-                return (date.getFullYear() ? date.getFullYear() + '-' + EHR.Server.Utils.padDigits(date.getMonth() + 1, 2) + '-' + EHR.Server.Utils.padDigits(date.getDate(), 2) : '');
-            }
-            else
-                return '';
-        },
-
-        /**
          * A helper to convert a datetime object into a display string.  By default is will use YYYY-mm-dd H:m.
          * @param date The date to convert
          * @returns {string} The display string for this date or an empty string if unable to convert

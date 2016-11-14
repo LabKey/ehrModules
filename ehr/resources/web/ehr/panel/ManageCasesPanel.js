@@ -303,13 +303,13 @@ Ext4.define('EHR.panel.ManageCasesPanel', {
                 header: 'Open Date',
                 dataIndex: 'date',
                 xtype: 'datecolumn',
-                format: 'Y-m-d',
+                format: LABKEY.extDefaultDateFormat,
                 width: 130
             },{
                 header: 'Reopen Date',
                 dataIndex: 'reviewdate',
                 xtype: 'datecolumn',
-                format: 'Y-m-d',
+                format: LABKEY.extDefaultDateFormat,
                 width: 130
             },{
                 header: 'Description/Notes',
@@ -576,13 +576,13 @@ Ext4.define('EHR.window.EditCaseWindow', {
                     header: 'Date',
                     xtype: 'datecolumn',
                     width: 180,
-                    format: 'Y-m-d'
+                    format: LABKEY.extDefaultDateFormat
                 },{
                     dataIndex: 'enddate',
                     header: 'End Date',
                     xtype: 'datecolumn',
                     width: 180,
-                    format: 'Y-m-d'
+                    format: LABKEY.extDefaultDateFormat
                 }],
                 dockedItems: [{
                     xtype: 'toolbar',

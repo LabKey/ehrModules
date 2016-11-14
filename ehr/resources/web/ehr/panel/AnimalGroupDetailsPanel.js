@@ -61,10 +61,10 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
                     value: this.groupRow.getDisplayValue('name')
                 },{
                     fieldLabel: 'Date Created',
-                    value: this.groupRow.getFormattedDateValue('date', 'Y-m-d')
+                    value: this.groupRow.getFormattedDateValue('date', LABKEY.extDefaultDateFormat)
                 },{
                     fieldLabel: 'Date Disabled',
-                    value: this.groupRow.getFormattedDateValue('enddate', 'Y-m-d')
+                    value: this.groupRow.getFormattedDateValue('enddate', LABKEY.extDefaultDateFormat)
                 },{
                     fieldLabel: 'Purpose',
                     value: this.groupRow.getDisplayValue('purpose')

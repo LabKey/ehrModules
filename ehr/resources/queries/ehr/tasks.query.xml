@@ -24,7 +24,6 @@
                     </column>
                     <column columnName="datecompleted">
                         <columnTitle>Date Finalized</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
@@ -41,7 +40,6 @@
                     <column columnName="duedate">
                         <columnTitle>Due Date</columnTitle>
                         <nullable>true</nullable>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
@@ -53,7 +51,6 @@
                     </column>
                     <column columnName="created">
                         <columnTitle>Created</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="modifiedby">
                         <columnTitle>Modified By</columnTitle>

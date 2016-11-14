@@ -32,7 +32,6 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.DisplayColumn;
-import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.JsonWriter;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -1653,9 +1652,6 @@ public class EHRController extends SpringActionController
             for (ColumnInfo ci : bloodDrawsTable.getColumns())
             {
                 DisplayColumn dc = new DataColumn(ci);
-                if (ci.getJdbcType() == JdbcType.DATE || ci.getJdbcType() == JdbcType.TIMESTAMP)
-                    dc.setFormatString("yyyy-MM-dd");
-
                 colModels.add(new JSONObject(JsonWriter.getColModel(dc)));
                 cols.add(dc);
             }

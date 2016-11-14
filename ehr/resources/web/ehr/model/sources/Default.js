@@ -64,7 +64,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         daterequested: {
             xtype: 'xdatetime',
             noDuplicateByDefault: true,
-            extFormat: 'Y-m-d H:i'
+            extFormat: LABKEY.extDefaultDateTimeFormat
         },
         procedureid: {
             columnConfig: {
@@ -240,7 +240,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             nullable: false,
             noSaveInTemplateByDefault: true,
             editorConfig: {
-                dateFormat: 'Y-m-d',
+                dateFormat: LABKEY.extDefaultDateFormat,
                 otherToNow: true,
                 timeFormat: 'H:i'
             },
@@ -339,7 +339,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             //this will be ignored unless we use a datetime editor
             editorConfig: {
-                dateFormat: 'Y-m-d',
+                dateFormat: LABKEY.extDefaultDateFormat,
                 timeFormat: 'H:i'
             }
         },
@@ -543,7 +543,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             duedate: {
                 xtype: 'xdatetime',
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                 },
                 getInitialValue: function(val){
@@ -755,7 +755,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 shownInGrid: false
@@ -820,11 +820,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
         },
         'study.pregnancyConfirmation': {
@@ -1285,7 +1285,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.treatment_order': {
             date: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 allowBlank: false,
                 editorConfig: {
                     defaultHour: 8,
@@ -1304,7 +1304,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             enddate: {
                 xtype: 'xdatetime',
                 allowBlank: false,
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 editorConfig: {
                     defaultHour: 23,
                     defaultMinutes: 59
@@ -1485,11 +1485,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             projectedRelease: {
                 allowBlank: false,
@@ -1827,7 +1827,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 shownInGrid: false
@@ -1874,7 +1874,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 shownInGrid: false
@@ -1921,7 +1921,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 shownInGrid: false
@@ -1943,7 +1943,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {allowAnyId: true}
             },
             date: {
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             project: {hidden: true},
             account: {hidden: true},
@@ -2448,11 +2448,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.problem': {
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             project: {hidden: true},
             account: {hidden: true},
@@ -2507,7 +2507,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 columnConfig: {

@@ -13,15 +13,12 @@
 
                     </column>
                     <column columnName="date">
-                        <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="actiondate">
                         <columnTitle>Action Date</columnTitle>
-                        <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="enddate">
                         <isHidden>false</isHidden>
-                        <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="category">
                         <columnTitle>Category</columnTitle>

@@ -56,6 +56,7 @@ import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
@@ -283,16 +284,10 @@ public class EHRServiceImpl extends EHRService
         _dateFormats.put(c.getId(), format);
     }
 
+    @Override
     public String getDateFormat(Container c)
     {
-        if (_dateFormats.containsKey(c.getId()))
-            return _dateFormats.get(c.getId());
-
-        Map<String, String> props = PropertyManager.getProperties(c, DATE_CATEGORY);
-        if (props.containsKey("dateFormat"))
-            return props.get("dateFormat");
-
-        return "yyyy-MM-dd HH:mm";
+        return LookAndFeelProperties.getInstance(c).getDefaultDateFormat();
     }
 
     public User getEHRUser(Container c)

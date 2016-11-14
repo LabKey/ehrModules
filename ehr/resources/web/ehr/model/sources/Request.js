@@ -65,7 +65,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         'ehr.requests': {
             daterequested: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
         },
         'study.blood': {

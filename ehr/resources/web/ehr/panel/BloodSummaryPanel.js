@@ -137,7 +137,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                                 //TODO: Remove this if we're happy not displaying dead animal data
                                 if(row.death.value) {
                                     var dDate = new Date(row.death.value);
-                                    if (dDate && rDate && rDate.format('Y-m-d') == dDate.format('Y-m-d')) {
+                                    if (dDate && rDate && rDate.format(LABKEY.extDefaultDateFormat) == dDate.format(LABKEY.extDefaultDateFormat)) {
                                         row.isDeath = {value: true};
                                     }
                                     if (dDate && rDate && rDate > dDate) {
@@ -145,7 +145,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                                     }
                                 }
                                 //End TODO
-                                if (rDate && rDate.format('Y-m-d') == (new Date()).format('Y-m-d')) {
+                                if (rDate && rDate.format(LABKEY.extDefaultDateFormat) == (new Date()).format(LABKEY.extDefaultDateFormat)) {
                                     row.isToday = {value: true};
                                 }
                             }
@@ -321,7 +321,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
         Ext4.each(results.rows, function(row, idx){
             //capture the current day's amount
             var rowDate = new Date(row.date.value);
-            if (rowDate && rowDate.format('Y-m-d') == (new Date()).format('Y-m-d')){
+            if (rowDate && rowDate.format(LABKEY.extDefaultDateFormat) == (new Date()).format(LABKEY.extDefaultDateFormat)){
                 currentRow = row;
             }
 
@@ -406,11 +406,11 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                             if(row.isDeath) {
                                 lines.push('DEATH');
                             }
-                            lines.push('Date: ' + row.date.format('Y-m-d'));
+                            lines.push('Date: ' + row.date.format(LABKEY.extDefaultDateFormat));
                             lines.push('Drawn on this Date: ' + row.quantity);
                             lines.push('Volume Available on this Date: ' + LABKEY.Utils.roundNumber(row.allowableDisplay, 1) + ' mL');
 
-                            lines.push('Current Weight: ' + row.mostRecentWeight + ' kg (' + row.mostRecentWeightDate.format('Y-m-d') + ')');
+                            lines.push('Current Weight: ' + row.mostRecentWeight + ' kg (' + row.mostRecentWeightDate.format(LABKEY.extDefaultDateFormat) + ')');
 
                             lines.push('Drawn in Previous ' + row.blood_draw_interval + ' days: ' + LABKEY.Utils.roundNumber(row.bloodPrevious, 1));
 

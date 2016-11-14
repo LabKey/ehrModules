@@ -139,7 +139,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
     exportMatrixToCSV: function(){
         if(Ext4.isDefined(this.export)) {
-            var date = new Date().format('Y-m-d_H-i-s');
+            var date = new Date().format(LABKEY.extDefaultDateFormat + '_H-i-s');
             LABKEY.Utils.convertToTable({
                 fileNamePrefix: "kinship_matrix_" + date,
                 rows: this.export,

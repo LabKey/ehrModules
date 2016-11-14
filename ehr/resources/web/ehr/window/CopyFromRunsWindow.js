@@ -145,7 +145,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 width: 60
             });
             toAdd.push({
-                html: r.get('date').format('Y-m-d'),
+                html: r.get('date').format(LABKEY.extDefaultDateFormat),
                 width: 80
             });
             toAdd.push({

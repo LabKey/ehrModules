@@ -679,7 +679,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                     if (!id || !date)
                         continue;
 
-                    date = date.format('Y-m-d');
+                    date = date.format(LABKEY.extDefaultDateFormat);
 
                     if (!bloodDrawMap[id])
                         bloodDrawMap[id] = [];

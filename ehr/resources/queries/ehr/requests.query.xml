@@ -77,7 +77,6 @@
                     </column>
                     <column columnName="created">
                         <columnTitle>Created</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="modifiedby">
                         <columnTitle>Modified By</columnTitle>

@@ -62,15 +62,15 @@ EHR.Metadata.registerMetadata('Default', {
         ,daterequested: {
             xtype: 'xdatetime',
             noDuplicateByDefault: true,
-            extFormat: 'Y-m-d H:i'
+            extFormat: LABKEY.extDefaultDateTimeFormat
         }
         ,date: {
             allowBlank: false,
             nullable: false,
             //noDuplicateByDefault: true,
-            extFormat: 'Y-m-d H:i',
+            extFormat: LABKEY.extDefaultDateTimeFormat,
             editorConfig: {
-                dateFormat: 'Y-m-d',
+                dateFormat: LABKEY.extDefaultDateFormat,
                 otherToNow: true,
                 timeFormat: 'H:i',
                 plugins: ['ehr-participantfield-events']
@@ -97,9 +97,9 @@ EHR.Metadata.registerMetadata('Default', {
             xtype: 'xdatetime',
             hidden: true,
             noSaveInTemplateByDefault: true,
-            extFormat: 'Y-m-d H:i',
+            extFormat: LABKEY.extDefaultDateTimeFormat,
             editorConfig: {
-                dateFormat: 'Y-m-d',
+                dateFormat: LABKEY.extDefaultDateFormat,
                 timeFormat: 'H:i'
             },
             colModel: {
@@ -140,9 +140,9 @@ EHR.Metadata.registerMetadata('Default', {
                 fixed: true,
                 width: 130
             },
-            extFormat: 'Y-m-d H:i',
+            extFormat: LABKEY.extDefaultDateTimeFormat,
             editorConfig: {
-                dateFormat: 'Y-m-d',
+                dateFormat: LABKEY.extDefaultDateFormat,
                 timeFormat: 'H:i'
             }
         }
@@ -367,7 +367,7 @@ EHR.Metadata.registerMetadata('Default', {
             duedate: {
                 xtype: 'xdatetime',
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                 },
                 setInitialValue: function(val){
@@ -507,7 +507,7 @@ EHR.Metadata.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                ,extFormat: LABKEY.extDefaultDateFormat
             },
             method: {
                 shownInGrid: false
@@ -563,7 +563,7 @@ EHR.Metadata.registerMetadata('Default', {
         },
         'Prenatal Deaths': {
             conception: {
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
             ,weight: {
                 useNull: true
@@ -629,7 +629,7 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,date: {
                 xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                ,extFormat: LABKEY.extDefaultDateFormat
             }
             ,method: {
                 shownInGrid: false
@@ -760,7 +760,7 @@ EHR.Metadata.registerMetadata('Default', {
             ,enddate: {
                 //hidden: true
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 shownInGrid: true
             }
             ,remark: {
@@ -859,9 +859,9 @@ EHR.Metadata.registerMetadata('Default', {
             date: {
                 xtype: 'xdatetime',
                 //xtype: 'datefield',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                 }
                 //extFormat: 'Y-m-d'
@@ -934,7 +934,7 @@ EHR.Metadata.registerMetadata('Default', {
         'Treatment Orders': {
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d',
+                extFormat: LABKEY.extDefaultDateFormat,
                 allowBlank: false,
                 setInitialValue: function(v, rec)
                 {
@@ -948,7 +948,7 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d',
+                extFormat: LABKEY.extDefaultDateFormat,
                 colModel: {
                     //fixed: true,
                     width: 100
@@ -1159,11 +1159,11 @@ EHR.Metadata.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
         },
         Necropsies: {
@@ -1213,10 +1213,10 @@ EHR.Metadata.registerMetadata('Default', {
 //            },
             timeofdeath: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 allowBlank: false,
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                 }
             },
@@ -1758,7 +1758,7 @@ EHR.Metadata.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
         },
         'Chemistry Results': {
@@ -1804,9 +1804,9 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,date: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                    /* listeners: {
                       click: function(){
@@ -1875,7 +1875,7 @@ EHR.Metadata.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             remark: {
                 shownInGrid: false
@@ -1885,7 +1885,7 @@ EHR.Metadata.registerMetadata('Default', {
 
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             sampleType: {
                 lookup: {
@@ -1959,7 +1959,7 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,date: {
                 xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                ,extFormat: LABKEY.extDefaultDateFormat
             }
             ,method: {
                 shownInGrid: false
@@ -1990,9 +1990,9 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,date: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i',
                     defaultValue: '00:00'
                 }
@@ -2049,7 +2049,7 @@ EHR.Metadata.registerMetadata('Default', {
             }
             ,date: {
                 xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                ,extFormat: LABKEY.extDefaultDateFormat
             }
             ,method: {
                 shownInGrid: false
@@ -2061,7 +2061,7 @@ EHR.Metadata.registerMetadata('Default', {
         'Virology Results': {
             date: {
                 xtype: 'datefield'
-                ,extFormat: 'Y-m-d'
+                ,extFormat: LABKEY.extDefaultDateFormat
             },
             virus: {
                 lookup: {schemaName: 'ehr_lookups', queryName: 'virology_tests', displayColumn: 'testid', keyColumn: 'testid'}
@@ -2076,9 +2076,9 @@ EHR.Metadata.registerMetadata('Default', {
         'Hematology Morphology': {
             date: {
                 xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
+                extFormat: LABKEY.extDefaultDateTimeFormat,
                 editorConfig: {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: LABKEY.extDefaultDateFormat,
                     timeFormat: 'H:i'
                   //  defaultValue: '00:00'
                 }
@@ -2693,11 +2693,11 @@ EHR.Metadata.registerMetadata('Default', {
         'Problem List': {
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             enddate: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             },
             project: {hidden: true},
             account: {hidden: true},
@@ -2763,7 +2763,7 @@ EHR.Metadata.registerMetadata('Default', {
             },
             date: {
                 xtype: 'datefield',
-                extFormat: 'Y-m-d'
+                extFormat: LABKEY.extDefaultDateFormat
             }
         },
         Weight: {

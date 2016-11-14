@@ -13,7 +13,6 @@
                     </column>
                     <column columnName="date">
                         <columnTitle>Time of Death</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="cause">
                         <columnTitle>Type of Death</columnTitle>
