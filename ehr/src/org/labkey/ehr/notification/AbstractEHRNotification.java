@@ -17,22 +17,19 @@ package org.labkey.ehr.notification;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.Results;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRModule;
 
-import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * User: bimber
@@ -42,9 +39,6 @@ import java.util.Set;
 abstract public class AbstractEHRNotification implements Notification
 {
     protected final static Logger log = Logger.getLogger(Notification.class);
-    protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-    protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 
     protected NotificationService _ns = NotificationService.get();
     protected String _baseUrl;
@@ -82,5 +76,15 @@ abstract public class AbstractEHRNotification implements Notification
     public String getCronString()
     {
         return null;//"0 0/5 * * * ?";
+    }
+
+    public DateFormat getDateFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateFormat());
+    }
+
+    public DateFormat getDateTimeFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
     }
 }

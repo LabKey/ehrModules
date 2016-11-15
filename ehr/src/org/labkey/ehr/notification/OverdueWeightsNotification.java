@@ -56,7 +56,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
     @Override
     public String getEmailSubject(Container c)
     {
-        return "Overdue Weight Alerts: " + _dateTimeFormat.format(new Date());
+        return "Overdue Weight Alerts: " + getDateTimeFormat(c).format(new Date());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
     public String getMessageBodyHTML(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
-        msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
+        msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + getDateTimeFormat(c).format(new Date())+ ".<p>");
 
         getLivingWithoutWeight(c, u, msg);
         animalsNotWeightedInPast60Days(c, u, msg);

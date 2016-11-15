@@ -36,7 +36,7 @@ public class DeathNotification extends AbstractEHRNotification
     @Override
     public String getEmailSubject(Container c)
     {
-        return "Death Notification: " + _dateTimeFormat.format(new Date());
+        return "Death Notification: " + getDateTimeFormat(c).format(new Date());
     }
 
     @Override
