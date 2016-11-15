@@ -7,6 +7,7 @@
                 <tableTitle>Cage Observations</tableTitle>
                 <columns>
                     <column columnName="date">
+                        <formatString>Date</formatString>
                         <nullable>false</nullable>
                         <columnTitle>Date</columnTitle>
                     </column>

@@ -19,6 +19,7 @@
                     </column>
                     <column columnName="datecompleted">
                         <columnTitle>Date Finalized</columnTitle>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
@@ -40,6 +41,7 @@
                     <column columnName="duedate">
                         <columnTitle>Due Date</columnTitle>
                         <nullable>true</nullable>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>

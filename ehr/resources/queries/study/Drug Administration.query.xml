@@ -8,14 +8,13 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="Id">
-
-                    </column>
+                    <column columnName="Id"/>
                     <column columnName="date">
                         <columnTitle>Begin Date</columnTitle>
                     </column>
                     <column columnName="HeaderDate">
                         <columnTitle>Header Date</columnTitle>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>End Time</columnTitle>

@@ -8,9 +8,7 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="Id">
-
-                    </column>
+                    <column columnName="Id"/>
                     <column columnName="project">
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
@@ -20,6 +18,7 @@
                     </column>
                     <column columnName="date">
                         <columnTitle>Assign Date</columnTitle>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="projectedRelease">
                         <columnTitle>Projected Release Date</columnTitle>
@@ -29,6 +28,7 @@
                         <isHidden>false</isHidden>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInDetailsView>true</shownInDetailsView>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="account">
                         <isHidden>true</isHidden>

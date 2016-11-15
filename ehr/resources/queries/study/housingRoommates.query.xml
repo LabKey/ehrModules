@@ -40,9 +40,11 @@
                     <!--</column>-->
                     <column columnName="roommateStart">
                         <columnTitle>Cagemate Start</columnTitle>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="roommateEnd">
                         <columnTitle>Cagemate End</columnTitle>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="startDate">
                         <columnTitle>Housing Start</columnTitle>

@@ -27,6 +27,7 @@
                     <column columnName="duedate">
                         <columnTitle>Due Date</columnTitle>
                         <nullable>true</nullable>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>

@@ -10,6 +10,7 @@
                 <columns>
                     <column columnName="date">
                         <columnTitle>Date Observed</columnTitle>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="parentid">
                         <!--<fk>-->
@@ -49,6 +50,7 @@
                     <column columnName="enddate">
                         <columnTitle>Date Resolved</columnTitle>
                         <isHidden>false</isHidden>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="caseid">
                         <columnTitle>Initial Case</columnTitle>

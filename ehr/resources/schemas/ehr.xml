@@ -434,6 +434,7 @@
             <column columnName="date">
                 <nullable>false</nullable>
                 <columnTitle>Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="room">
                 <nullable>false</nullable>
@@ -996,18 +997,22 @@
             <column columnName="approve">
                 <columnTitle>3-yr Approval Date</columnTitle>
                 <nullable>true</nullable>
+                <formatString>Date</formatString>
             </column>
             <column columnName="lastAnnualReview">
                 <columnTitle>Date of Last Annual Update</columnTitle>
                 <nullable>true</nullable>
+                <formatString>Date</formatString>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
                 <nullable>true</nullable>
+                <formatString>Date</formatString>
             </column>
             <column columnName="first_approval">
                 <columnTitle>First Approval Date</columnTitle>
                 <nullable>true</nullable>
+                <formatString>Date</formatString>
             </column>
             <column columnName="project_type">
                 <columnTitle>Type</columnTitle>
@@ -1159,9 +1164,11 @@
             </column>
             <column columnName="startdate">
                 <columnTitle>Start Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="alwaysavailable">
                 <columnTitle>Is Always Available?</columnTitle>
@@ -1276,9 +1283,11 @@
             </column>
             <column columnName="start">
                 <columnTitle>Start Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="enddate">
                 <columnTitle>End Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="description">
                 <columnTitle>Additional Detail</columnTitle>

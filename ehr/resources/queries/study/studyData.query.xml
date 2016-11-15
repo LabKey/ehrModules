@@ -30,9 +30,10 @@
                     <column columnName="enddate">
                         <columnTitle>End Date</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#EndDate</propertyURI>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="date">
-                        <formatString>~~DEFAULTDATETIME~~</formatString>
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="project">
                         <fk>
@@ -187,14 +188,14 @@
                     </column>
                     <column columnName="created">
                         <isHidden>true</isHidden>
-                        <!--<formatString>yyyy-MM-dd HH:mm</formatString>-->
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="createdby">
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="modified">
                         <isHidden>true</isHidden>
-                        <!--<formatString>yyyy-MM-dd HH:mm</formatString>-->
+                        <formatString>DateTime</formatString>
                     </column>
                     <column columnName="modifiedby">
                         <isHidden>true</isHidden>

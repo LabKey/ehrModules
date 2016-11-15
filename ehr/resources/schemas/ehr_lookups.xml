@@ -1260,6 +1260,7 @@
             </column>
             <column columnName="date">
                 <columnTitle>Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="objectid">
                 <columnTitle>Key</columnTitle>

@@ -9,16 +9,17 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="Id">
-
-                    </column>
+                    <column columnName="Id"/>
                     <column columnName="date">
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="actiondate">
                         <columnTitle>Action Date</columnTitle>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="enddate">
                         <isHidden>false</isHidden>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="category">
                         <columnTitle>Category</columnTitle>

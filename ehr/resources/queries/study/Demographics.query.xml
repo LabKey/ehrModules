@@ -45,6 +45,7 @@
                     </column>
                     <column columnName="birth">
                         <!--<shownInInsertView>false</shownInInsertView>-->
+                        <formatString>Date</formatString>
                         <columnTitle>Birth</columnTitle>
                         <url>/query/executeQuery.view?
                             schemaName=study&amp;
@@ -54,6 +55,7 @@
                     </column>
                     <column columnName="death">
                         <!--<shownInInsertView>false</shownInInsertView>-->
+                        <formatString>Date</formatString>
                         <columnTitle>Death</columnTitle>
                         <url>/query/executeQuery.view?
                             schemaName=study&amp;
@@ -136,11 +138,13 @@
                     <!--NOTE: being deprecated-->
                     <column columnName="arrivedate">
                         <isHidden>true</isHidden>
+                        <formatString>DateTime</formatString>
                         <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Arrival Date</columnTitle>
                     </column>
                     <column columnName="departdate">
                         <isHidden>true</isHidden>
+                        <formatString>DateTime</formatString>
                         <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Departure Date</columnTitle>
                     </column>
@@ -190,6 +194,7 @@
                     <column columnName="wdate">
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>
+                        <formatString>DateTime</formatString>
                         <columnTitle>Weight Date</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
@@ -200,6 +205,7 @@
                     <column columnName="tbdate">
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>
+                        <formatString>Date</formatString>
                         <columnTitle>Last TB Date</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=TB Tests&amp;

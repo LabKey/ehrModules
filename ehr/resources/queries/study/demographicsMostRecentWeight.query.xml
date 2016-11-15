@@ -16,6 +16,7 @@
                         <formatString>0.##</formatString>
                     </column>
                     <column columnName="MostRecentWeightDate">
+                        <formatString>DateTime</formatString>
                         <columnTitle>Weight Date</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
