@@ -28,7 +28,8 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.ehr.EHROwnable;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -50,7 +51,7 @@ import java.util.Set;
  * Date: 2/17/13
  * Time: 6:51 PM
  */
-abstract public class AbstractDataSource implements HistoryDataSource
+abstract public class AbstractDataSource extends EHROwnable implements HistoryDataSource
 {
     private String _schema;
     private String _query;
@@ -61,18 +62,19 @@ abstract public class AbstractDataSource implements HistoryDataSource
     protected String _subjectIdField = "Id";
     protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
 
-    public AbstractDataSource(String schema, String query)
+    public AbstractDataSource(String schema, String query, Module module)
     {
-        this(schema, query, query);
+        this(schema, query, query, module);
     }
 
-    public AbstractDataSource(String schema, String query, String categoryText)
+    public AbstractDataSource(String schema, String query, String categoryText, Module module)
     {
-        this(schema, query, categoryText, categoryText);
+        this(schema, query, categoryText, categoryText, module);
     }
 
-    public AbstractDataSource(String schema, String query, String categoryText, String primaryGroup)
+    public AbstractDataSource(String schema, String query, String categoryText, String primaryGroup, Module module)
     {
+        super(module);
         _schema = schema;
         _query = query;
         _name = categoryText;
@@ -333,11 +335,6 @@ abstract public class AbstractDataSource implements HistoryDataSource
             return (label == null ? "" : label + ": ") + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
         }
         return "";
-    }
-
-    public boolean isAvailable(Container c, User u)
-    {
-        return c.getActiveModules(u).contains(ModuleLoader.getInstance().getModule("ehr"));
     }
 
     abstract protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException;

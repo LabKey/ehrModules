@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.history.HistoryRow;
-import org.labkey.api.ehr.history.AbstractDataSource;
-import org.labkey.api.ehr.history.HistoryRowImpl;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Formats;
@@ -41,9 +39,9 @@ import java.util.Set;
  */
 public class DefaultDrugsDataSource extends AbstractDataSource
 {
-    public DefaultDrugsDataSource()
+    public DefaultDrugsDataSource(Module module)
     {
-        super("study", "Drug Administration", "Medication Given", "Clinical");
+        super("study", "Drug Administration", "Medication Given", "Clinical", module);
         setShowTime(true);
     }
 

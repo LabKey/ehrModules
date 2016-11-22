@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
@@ -21,12 +21,11 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.history.HistoryRow;
-import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.module.Module;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -40,9 +39,9 @@ import java.util.Set;
  */
 public class DefaultProblemListCloseDataSource extends AbstractDataSource
 {
-    public DefaultProblemListCloseDataSource()
+    public DefaultProblemListCloseDataSource(Module module)
     {
-        super("study", "Problem List", "Master Problem Closed", "Clinical");
+        super("study", "Problem List", "Master Problem Closed", "Clinical", module);
     }
 
     @Override

@@ -194,7 +194,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 {
                     Map<String, Object> props1 = new TreeMap<>();
                     Map<String, Object> props2 = new TreeMap<>();
-                    for (DemographicsProvider p : EHRService.get().getDemographicsProviders(record.getContainer()))
+                    for (DemographicsProvider p : EHRService.get().getDemographicsProviders(record.getContainer(),EHRService.get().getEHRUser(record.getContainer())))
                     {
                         for (String fk : p.getKeysToTest())
                         {
@@ -291,7 +291,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         {
             Set<DemographicsProvider> needsUpdate = new HashSet<>();
             Set<String> providerNames = new HashSet<>();
-            for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
+            for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c, u))
             {
                 for (Pair<String, String> pair : changed)
                 {
@@ -423,7 +423,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             _log.info("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
-            for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
+            for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c, u))
             {
                 Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
                 for (String id : props.keySet())

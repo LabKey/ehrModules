@@ -26,8 +26,8 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.EHROwnable;
 import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -48,28 +48,19 @@ import java.util.TreeMap;
  * Date: 7/9/13
  * Time: 9:42 PM
  */
-abstract public class AbstractDemographicsProvider implements DemographicsProvider
+abstract public class AbstractDemographicsProvider extends EHROwnable implements DemographicsProvider
 {
     protected static final Logger _log = Logger.getLogger(AbstractDemographicsProvider.class);
 
-    private Module _owner = null;
     private String _schemaName;
     private String _queryName;
     protected boolean _supportsQCState = true;
 
     public AbstractDemographicsProvider(Module owner, String schemaName, String queryName)
     {
-        _owner = owner;
+        super(owner);
         _schemaName = schemaName;
         _queryName = queryName;
-    }
-
-    public boolean isAvailable(Container c)
-    {
-        if (_owner != null && !c.getActiveModules().contains(_owner))
-            return false;
-
-        return c.getActiveModules().contains(ModuleLoader.getInstance().getModule("ehr"));
     }
 
     public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.DefaultLabworkType;
@@ -29,20 +29,21 @@ import java.util.Set;
  * Date: 3/6/13
  * Time: 12:27 PM
  */
-public class ParasitologyLabworkType extends DefaultLabworkType
+public class MicrobiologyLabworkType extends DefaultLabworkType
 {
-    private String _methodField = "method";
+    private static final String _tissueField = "tissue/meaning";
 
-    public ParasitologyLabworkType(Module module)
+    public MicrobiologyLabworkType(Module module)
     {
-        super("Parasitology", "study", "Parasitology Results", module);
+        super("Microbiology", "study", "Microbiology Results", module);
+        _qualResultField = "quantity";
         _testIdField = "organism/meaning";
     }
 
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set(_lsidField, _idField, _dateField, _runIdField, _testIdField, _resultField, _methodField);
+        return PageFlowUtil.set(_lsidField, _idField, _dateField, _runIdField, _testIdField, _resultField, _tissueField);
     }
 
     @Override
@@ -50,21 +51,23 @@ public class ParasitologyLabworkType extends DefaultLabworkType
     {
         StringBuilder sb = new StringBuilder();
 
-        Double result = rs.getDouble(FieldKey.fromString(_resultField));
+        String quantity = null;//rs.getString(FieldKey.fromString(_qualResultField));
         String organism = rs.getString(FieldKey.fromString(_testIdField));
-        String method = rs.getString(FieldKey.fromString(_methodField));
+        String tissue = rs.getString(FieldKey.fromString(_tissueField));
 
         String delim = "";
 
-        if (method != null)
+        if (tissue != null)
         {
-            sb.append(delim).append("Method: ").append(method);
-            delim = "\n";
+            sb.append("Tissue: ").append(tissue).append("\n");
         }
 
         if (organism != null)
         {
-            sb.append(delim).append("Organism: ").append(organism);
+            sb.append(organism).append(": ");
+            if (quantity != null)
+                sb.append(quantity);
+
             delim = "\n";
         }
 

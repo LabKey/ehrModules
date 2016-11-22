@@ -17,8 +17,7 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
-import org.labkey.api.ehr.history.AbstractDataSource;
-
+import org.labkey.api.ehr.history.AbstractDataSource; import org.labkey.api.module.Module;
 import java.sql.SQLException;
 
 /**
@@ -28,9 +27,9 @@ import java.sql.SQLException;
  */
 public class DefaultBloodDrawDataSource extends AbstractDataSource
 {
-    public DefaultBloodDrawDataSource()
+    public DefaultBloodDrawDataSource(Module module)
     {
-        super("study", "Blood Draws", "Blood Draw", "Blood Draws");
+        super("study", "Blood Draws", "Blood Draw", "Blood Draws", module);
     }
 
     @Override

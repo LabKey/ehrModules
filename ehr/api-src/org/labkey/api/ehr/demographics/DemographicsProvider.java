@@ -33,7 +33,7 @@ public interface DemographicsProvider
 
     public String getName();
 
-    public boolean isAvailable(Container c);
+    public boolean isAvailable(Container c, User u);
 
     public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids);
 

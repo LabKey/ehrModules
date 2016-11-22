@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
-import org.labkey.api.ehr.history.AbstractDataSource;
-import org.labkey.api.query.FieldKey;
-
+import org.labkey.api.module.Module;
 import java.sql.SQLException;
 
 /**
@@ -27,11 +25,11 @@ import java.sql.SQLException;
  * Date: 2/17/13
  * Time: 4:52 PM
  */
-public class DefaultBirthDataSource extends AbstractDataSource
+public class DefaultDepartureDataSource extends AbstractDataSource
 {
-    public DefaultBirthDataSource()
+    public DefaultDepartureDataSource(Module module)
     {
-        super("study", "Birth", "Birth", "Births");
+        super("study", "Departure", "Departure", "Arrival/Departure", module);
     }
 
     @Override
@@ -39,11 +37,10 @@ public class DefaultBirthDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
-        if(rs.hasColumn(FieldKey.fromString("conception")) && rs.getObject("conception") != null)
-            sb.append("Conception: " + rs.getString("conception"));
+        if (!redacted)
+            sb.append(safeAppend(rs, "Authorized By", "authorize"));
 
-        if(rs.hasColumn(FieldKey.fromString("gender")) && rs.getObject("gender") != null)
-            sb.append("Gender: " + rs.getString("gender"));
+        sb.append(safeAppend(rs, "Destination", "destination"));
 
         return sb.toString();
     }

@@ -24,6 +24,7 @@ import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.HistoryRowImpl;
 import org.labkey.api.query.FieldKey;
@@ -47,9 +48,9 @@ import java.util.Set;
  */
 public class DefaultObservationsDataSource extends AbstractDataSource
 {
-    public DefaultObservationsDataSource()
+    public DefaultObservationsDataSource(Module module)
     {
-        super("study", "clinical_observations", "Observations", "Clinical");
+        super("study", "clinical_observations", "Observations", "Clinical", module);
         setShowTime(true);
     }
 

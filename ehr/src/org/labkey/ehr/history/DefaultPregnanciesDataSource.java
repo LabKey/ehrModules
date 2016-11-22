@@ -18,6 +18,7 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -30,9 +31,9 @@ import java.util.Set;
  */
 public class DefaultPregnanciesDataSource extends AbstractDataSource
 {
-    public DefaultPregnanciesDataSource()
+    public DefaultPregnanciesDataSource(Module module)
     {
-        super("study", "Pregnancy Confirmations", "Pregnancy Confirmation", "Pregnancy Confirmations");
+        super("study", "Pregnancy Confirmations", "Pregnancy Confirmation", "Pregnancy Confirmations", module);
     }
 
     @Override

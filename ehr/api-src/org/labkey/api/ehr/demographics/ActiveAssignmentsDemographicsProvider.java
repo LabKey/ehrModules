@@ -17,12 +17,10 @@ package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 

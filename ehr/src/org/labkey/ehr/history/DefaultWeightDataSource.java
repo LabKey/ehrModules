@@ -20,6 +20,7 @@ import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.Formats;
+import org.labkey.api.module.Module;
 
 import java.sql.SQLException;
 
@@ -30,9 +31,9 @@ import java.sql.SQLException;
  */
 public class DefaultWeightDataSource extends AbstractDataSource
 {
-    public DefaultWeightDataSource()
+    public DefaultWeightDataSource(Module module)
     {
-        super("study", "Weight", "Weight", "Weights");
+        super("study", "Weight", "Weight", "Weights", module);
         setShowTime(true);
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.DefaultLabworkType;

@@ -65,14 +65,14 @@ import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
-import org.labkey.ehr.history.AntibioticSensitivityLabworkType;
-import org.labkey.ehr.history.ChemistryLabworkType;
-import org.labkey.ehr.history.HematologyLabworkType;
-import org.labkey.ehr.history.MicrobiologyLabworkType;
-import org.labkey.ehr.history.MiscTestsLabworkType;
-import org.labkey.ehr.history.ParasitologyLabworkType;
-import org.labkey.ehr.history.SerologyLabworkType;
-import org.labkey.ehr.history.iStatLabworkType;
+import org.labkey.ehr.history.DefaultAssignmentDataSource;
+import org.labkey.ehr.history.DefaultBloodDrawDataSource;
+import org.labkey.ehr.history.DefaultDeliveryDataSource;
+import org.labkey.ehr.history.DefaultHousingDataSource;
+import org.labkey.ehr.history.DefaultLabworkDataSource;
+import org.labkey.ehr.history.DefaultObservationsDataSource;
+import org.labkey.ehr.history.DefaultPregnanciesDataSource;
+import org.labkey.ehr.history.DefaultWeightDataSource;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -155,6 +155,15 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
 
+        EHRService.get().registerHistoryDataSource(new DefaultAssignmentDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultBloodDrawDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultObservationsDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultDeliveryDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultLabworkDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultPregnanciesDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultWeightDataSource(this));
+        EHRService.get().registerHistoryDataSource(new DefaultHousingDataSource(this));
+
         RoleManager.registerRole(new EHRDataAdminRole());
         RoleManager.registerRole(new EHRRequestorRole());
         RoleManager.registerRole(new EHRBasicSubmitterRole());
@@ -176,16 +185,8 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRHousingTransferRole());
         RoleManager.registerRole(new EHRSnomedEditorRole());
 
-        EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(this));
-        EHRService.get().registerLabworkType(new ChemistryLabworkType(this));
-        EHRService.get().registerLabworkType(new HematologyLabworkType(this));
 
-        EHRService.get().registerLabworkType(new iStatLabworkType(this));
-        EHRService.get().registerLabworkType(new MicrobiologyLabworkType(this));
-        EHRService.get().registerLabworkType(new MiscTestsLabworkType(this));
-        EHRService.get().registerLabworkType(new ParasitologyLabworkType(this));
 
-        EHRService.get().registerLabworkType(new SerologyLabworkType(this));
     }
 
     @Nullable

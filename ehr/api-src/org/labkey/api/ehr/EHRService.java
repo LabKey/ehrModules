@@ -25,8 +25,7 @@ import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
-import org.labkey.api.ehr.history.HistoryDataSource;
-import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.ehr.history.*;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.BatchValidationException;
@@ -75,7 +74,7 @@ abstract public class EHRService
 
     abstract public void registerDemographicsProvider(DemographicsProvider provider);
 
-    abstract public Collection<DemographicsProvider> getDemographicsProviders(Container c);
+    abstract public Collection<DemographicsProvider> getDemographicsProviders(Container c, User u);
 
     abstract public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizer);
 
@@ -124,6 +123,8 @@ abstract public class EHRService
     abstract public void registerActionOverride(String actionName, Module owner, String resourcePath);
 
     abstract public void registerHistoryDataSource(HistoryDataSource source);
+
+    abstract public void registerOptionalClinicalHistoryResources(Module module);
 
     /**
      * Returns the container holding the EHR study, as defined by the passed container's module properties

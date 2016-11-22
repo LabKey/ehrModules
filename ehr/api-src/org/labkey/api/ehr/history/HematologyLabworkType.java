@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.ehr.history.SortingLabworkType;
 import org.labkey.api.module.Module;
@@ -21,13 +21,13 @@ import org.labkey.api.module.Module;
 /**
  * User: bimber
  * Date: 3/6/13
- * Time: 11:38 AM
+ * Time: 12:27 PM
  */
-public class ChemistryLabworkType extends SortingLabworkType
+public class HematologyLabworkType extends SortingLabworkType
 {
-    public ChemistryLabworkType(Module module)
+    public HematologyLabworkType(Module module)
     {
-        super("Biochemistry", "study", "chemistryRefRange", "Biochemistry", module);
+        super("Hematology", "study", "hematologyRefRange", "Hematology", module);
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

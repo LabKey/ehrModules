@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
-import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 
 import java.sql.SQLException;
 
@@ -26,22 +26,24 @@ import java.sql.SQLException;
  * Date: 2/17/13
  * Time: 4:52 PM
  */
-public class DefaultDepartureDataSource extends AbstractDataSource
+public class DefaultDeathsDataSource extends AbstractDataSource
 {
-    public DefaultDepartureDataSource()
+    public DefaultDeathsDataSource(Module module)
     {
-        super("study", "Departure", "Departure", "Arrival/Departure");
+        super("study", "Deaths", "Death", "Deaths", module);
     }
 
     @Override
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(safeAppend(rs, "Cause", "cause"));
 
         if (!redacted)
-            sb.append(safeAppend(rs, "Authorized By", "authorize"));
-
-        sb.append(safeAppend(rs, "Destination", "destination"));
+        {
+            sb.append(safeAppend(rs, "Manner", "manner"));
+            sb.append(safeAppend(rs, "Necropsy #", "necropsy"));
+        }
 
         return sb.toString();
     }

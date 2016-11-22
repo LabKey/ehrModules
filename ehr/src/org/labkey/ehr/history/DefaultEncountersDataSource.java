@@ -27,6 +27,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
@@ -53,9 +54,9 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 {
     private Map<String, Map<Integer, Map<Integer, String>>> _snomedResults = null;
 
-    public DefaultEncountersDataSource()
+    public DefaultEncountersDataSource(Module module)
     {
-        super("study", "Clinical Encounters", "Encounter", "Clinical");
+        super("study", "Clinical Encounters", "Encounter", "Clinical", module);
         setShowTime(true);
     }
 

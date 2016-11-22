@@ -35,8 +35,7 @@ import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
-import org.labkey.api.ehr.history.HistoryDataSource;
-import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.ehr.history.*;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -65,6 +64,7 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
+import org.labkey.ehr.history.DefaultEncountersDataSource;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
@@ -154,12 +154,12 @@ public class EHRServiceImpl extends EHRService
         _demographicsProviders.add(provider);
     }
 
-    public Collection<DemographicsProvider> getDemographicsProviders(Container c)
+    public Collection<DemographicsProvider> getDemographicsProviders(Container c, User u)
     {
         Map<String, DemographicsProvider> providers = new HashMap<>();
         for (DemographicsProvider p : _demographicsProviders)
         {
-            if (p.isAvailable(c))
+            if (p.isAvailable(c,u))
                 providers.put(p.getName(), p);
         }
 
@@ -411,6 +411,37 @@ public class EHRServiceImpl extends EHRService
     public void registerHistoryDataSource(HistoryDataSource source)
     {
         ClinicalHistoryManager.get().registerDataSource(source);
+    }
+
+    @Override
+    public void registerOptionalClinicalHistoryResources(Module module)
+    {
+        EHRService.get().registerHistoryDataSource(new DefaultAnimalRecordFlagDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultArrivalDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultAssignmentEndDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultBirthDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultCasesCloseDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultCasesDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultClinicalRemarksDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultDeathsDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultDepartureDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultDrugsDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultEncountersDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultProblemListCloseDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultProblemListDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultTreatmentEndDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultTreatmentOrdersDataSource(module));
+
+        //Labwork
+        EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(module));
+        EHRService.get().registerLabworkType(new ChemistryLabworkType(module));
+        EHRService.get().registerLabworkType(new HematologyLabworkType(module));
+        EHRService.get().registerLabworkType(new iStatLabworkType(module));
+        EHRService.get().registerLabworkType(new MicrobiologyLabworkType(module));
+        EHRService.get().registerLabworkType(new MiscTestsLabworkType(module));
+        EHRService.get().registerLabworkType(new ParasitologyLabworkType(module));
+        EHRService.get().registerLabworkType(new SerologyLabworkType(module));
+
     }
 
     public void registerActionOverride(String actionName, Module owner, String resourcePath)

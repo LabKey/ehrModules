@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
-import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
@@ -32,9 +32,9 @@ import java.util.Set;
  */
 public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
 {
-    public DefaultTreatmentOrdersDataSource()
+    public DefaultTreatmentOrdersDataSource(Module module)
     {
-        super("study", "Treatment Orders", "Medication Ordered", "Clinical");
+        super("study", "Treatment Orders", "Medication Ordered", "Clinical", module);
         setShowTime(true);
     }
 

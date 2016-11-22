@@ -18,6 +18,7 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.PageFlowUtil;
@@ -32,9 +33,9 @@ import java.util.Set;
  */
 public class DefaultAssignmentDataSource extends AbstractDataSource
 {
-    public DefaultAssignmentDataSource()
+    public DefaultAssignmentDataSource(Module module)
     {
-        super("study", "Assignment", "Assignment", "Assignments");
+        super("study", "Assignment", "Assignment", "Assignments", module);
     }
 
     @Override

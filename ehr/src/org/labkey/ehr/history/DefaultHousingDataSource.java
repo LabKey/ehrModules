@@ -18,6 +18,7 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
 import java.sql.SQLException;
@@ -29,9 +30,9 @@ import java.sql.SQLException;
  */
 public class DefaultHousingDataSource extends AbstractDataSource
 {
-    public DefaultHousingDataSource()
+    public DefaultHousingDataSource(Module module)
     {
-        super("study", "Housing", "Housing Transfer", "Housing Transfers");
+        super("study", "Housing", "Housing Transfer", "Housing Transfers", module);
         setShowTime(true);
     }
 

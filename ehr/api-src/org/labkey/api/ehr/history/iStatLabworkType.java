@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
-import org.labkey.api.ehr.history.DefaultLabworkType;
+import org.labkey.api.ehr.history.SortingLabworkType;
 import org.labkey.api.module.Module;
 
 /**
  * User: bimber
- * Date: 3/6/13
- * Time: 12:27 PM
+ * Date: 3/19/13
+ * Time: 11:02 PM
  */
-public class MiscTestsLabworkType extends DefaultLabworkType
+public class iStatLabworkType extends SortingLabworkType
 {
-    public MiscTestsLabworkType(Module module)
+    public iStatLabworkType(Module module)
     {
-        super("Misc Tests", "study", "Misc Tests", module);
+        super("iStat", "study", "iStatRefRange", "iStat", module);
+        _normalRangeField = "range";
+        _normalRangeStatusField = "status";
     }
 }

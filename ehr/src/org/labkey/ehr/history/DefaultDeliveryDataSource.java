@@ -19,6 +19,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.module.Module;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -30,9 +31,9 @@ import java.util.Set;
  */
 public class DefaultDeliveryDataSource extends AbstractDataSource
 {
-    public DefaultDeliveryDataSource()
+    public DefaultDeliveryDataSource(Module module)
     {
-        super("study", "Delivery", "Delivery", "Deliveries");
+        super("study", "Delivery", "Delivery", "Deliveries", module);
     }
 
     @Override

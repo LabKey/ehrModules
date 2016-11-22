@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
-import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.module.Module;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -34,9 +34,9 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     public static final String REPLACED_SOAP = "Replaced SOAP";
     public static final String REPLACEMENT_SOAP = "Replacement SOAP";
 
-    public DefaultClinicalRemarksDataSource()
+    public DefaultClinicalRemarksDataSource(Module module)
     {
-        super("study", "Clinical Remarks", "Clinical Remark", "Clinical");
+        super("study", "Clinical Remarks", "Clinical Remark", "Clinical", module);
         setShowTime(true);
     }
 

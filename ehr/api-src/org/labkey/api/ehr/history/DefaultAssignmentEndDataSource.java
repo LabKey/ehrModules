@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.history;
+package org.labkey.api.ehr.history;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.history.HistoryRow;
-import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
@@ -37,9 +36,9 @@ import java.util.Set;
  */
 public class DefaultAssignmentEndDataSource extends AbstractDataSource
 {
-    public DefaultAssignmentEndDataSource()
+    public DefaultAssignmentEndDataSource(Module module)
     {
-        super("study", "Assignment", "Assignment Release", "Assignments");
+        super("study", "Assignment", "Assignment Release", "Assignments", module);
     }
 
     @Override

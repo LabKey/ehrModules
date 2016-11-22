@@ -26,6 +26,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.AbstractDataSource;
+import org.labkey.api.module.Module;
 import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
@@ -52,9 +53,9 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     private Map<String, List<String>> _results;
     private Map<String, List<String>> _flags;
 
-    public DefaultLabworkDataSource()
+    public DefaultLabworkDataSource(Module module)
     {
-        super("study", "Clinpath Runs", "Labwork", "Labwork");
+        super("study", "Clinpath Runs", "Labwork", "Labwork", module);
     }
 
     @Override

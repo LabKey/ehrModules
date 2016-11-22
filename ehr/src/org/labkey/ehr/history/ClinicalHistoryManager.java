@@ -43,42 +43,7 @@ public class ClinicalHistoryManager
     private List<HistoryDataSource> _dataSources = new ArrayList<>();
     private Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
 
-    private ClinicalHistoryManager()
-    {
-        registerDataSource(new DefaultProblemListDataSource());
-        registerDataSource(new DefaultProblemListCloseDataSource());
-
-        registerDataSource(new DefaultCasesDataSource());
-        registerDataSource(new DefaultCasesCloseDataSource());
-
-        registerDataSource(new DefaultEncountersDataSource());
-
-        registerDataSource(new DefaultClinicalRemarksDataSource());
-        registerDataSource(new DefaultDrugsDataSource());
-        registerDataSource(new DefaultObservationsDataSource());
-        registerDataSource(new DefaultWeightDataSource());
-        registerDataSource(new DefaultAssignmentDataSource());
-        registerDataSource(new DefaultAssignmentEndDataSource());
-
-        registerDataSource(new DefaultBirthDataSource());
-        registerDataSource(new DefaultDeliveryDataSource());
-        registerDataSource(new DefaultPregnanciesDataSource());
-
-        registerDataSource(new DefaultBloodDrawDataSource());
-
-        registerDataSource(new DefaultLabworkDataSource());
-
-        registerDataSource(new DefaultDeathsDataSource());
-        registerDataSource(new DefaultArrivalDataSource());
-        registerDataSource(new DefaultDepartureDataSource());
-        registerDataSource(new DefaultHousingDataSource());
-
-        registerDataSource(new DefaultTreatmentOrdersDataSource());
-        registerDataSource(new DefaultTreatmentEndDataSource());
-        //R.Blasa   1-23-2015
-        registerDataSource(new DefaultAnimalRecordFlagDataSource());
-
-    }
+    private ClinicalHistoryManager(){}
 
     public static ClinicalHistoryManager get()
     {
