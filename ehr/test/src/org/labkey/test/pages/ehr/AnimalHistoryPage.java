@@ -29,7 +29,7 @@ import java.util.Arrays;
 import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
 
 
-public class AnimalHistoryPage extends ParticipantViewPage
+public class AnimalHistoryPage extends ParticipantViewPage<AnimalHistoryPage.ElementCache>
 {
     public AnimalHistoryPage(WebDriver driver)
     {
@@ -68,39 +68,32 @@ public class AnimalHistoryPage extends ParticipantViewPage
         doAndWaitForPageSignal(
             () -> waitAndClick(ext4Button("Update Report")),
             REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
-        clearCache();
     }
 
     public void searchSingleAnimal(String animalId)
     {
-        elements().singleAnimalRadioButton.check();
+        elementCache().singleAnimalRadioButton.check();
         setSearchText(animalId);
         refreshReport();
     }
 
     public void appendMultipleAnimals(String... animalIds)
     {
-        elements().multipleAnimalRadioButton.check();
+        elementCache().multipleAnimalRadioButton.check();
         setMultipleSearchText(String.join(" ", Arrays.asList(animalIds)));
         clickButton("Add", 0);
         for (String animalId : animalIds)
-            elements().findRemoveIdButton(animalId);
+            elementCache().findRemoveIdButton(animalId);
         refreshReport();
     }
 
     @Override
-    public ElementCache elements()
-    {
-        return (ElementCache) super.elements();
-    }
-
-    @Override
-    protected Elements newElements()
+    protected ElementCache newElementCache()
     {
         return new ElementCache();
     }
 
-    protected class ElementCache extends AnimalHistoryPage.Elements
+    protected class ElementCache extends ParticipantViewPage.ElementCache
     {
         protected RadioButton singleAnimalRadioButton = RadioButton.RadioButton().withLabel("Single Animal").findWhenNeeded(this);
         protected RadioButton multipleAnimalRadioButton = RadioButton.RadioButton().withLabel("Multiple Animals").findWhenNeeded(this);

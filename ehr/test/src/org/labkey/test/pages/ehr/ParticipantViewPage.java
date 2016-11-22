@@ -39,11 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ParticipantViewPage extends LabKeyPage
+public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> extends LabKeyPage<EC>
 {
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
-    private Elements _elements;
 
     public ParticipantViewPage(WebDriver driver)
     {
@@ -70,14 +69,14 @@ public class ParticipantViewPage extends LabKeyPage
     @LogMethod(quiet = true)
     public ParticipantViewPage clickCategoryTab(@LoggedParam String categoryLabel)
     {
-        elements().findCategoryTab(categoryLabel).select();
+        elementCache().findCategoryTab(categoryLabel).select();
         return this;
     }
 
     @LogMethod(quiet = true)
     public ParticipantViewPage clickReportTab(@LoggedParam String reportLabel)
     {
-        elements().findReportTab(reportLabel).select();
+        elementCache().findReportTab(reportLabel).select();
         return this;
     }
 
@@ -87,30 +86,19 @@ public class ParticipantViewPage extends LabKeyPage
         return new DataRegionTable(el, getDriver());
     }
 
-    public Elements elements()
+    @Override
+    protected EC newElementCache()
     {
-        if (null == _elements)
-            _elements = newElements();
-        return _elements;
+        return (EC) new ElementCache();
     }
 
-    protected Elements newElements()
+    protected class ElementCache extends LabKeyPage.ElementCache
     {
-        return new Elements();
-    }
-
-    protected void clearCache()
-    {
-        _elements = null;
-    }
-
-    public class Elements extends LabKeyPage.ElementCache
-    {
-        private BidiMap<String, Integer> categoryLabels = new DualTreeBidiMap<>();
-        private Map<Integer, CategoryTab> categoryTabs = new TreeMap<>();
-        private Map<String, BidiMap<String, Integer>> reportLabels = new TreeMap<>();
-        private Map<String, Map<Integer, ReportTab>> reportTabs = new TreeMap<>();
-        private CategoryTab selectedCategory;
+        protected final BidiMap<String, Integer> categoryLabels = new DualTreeBidiMap<>();
+        protected final Map<Integer, CategoryTab> categoryTabs = new TreeMap<>();
+        protected final Map<String, BidiMap<String, Integer>> reportLabels = new TreeMap<>();
+        protected final Map<String, Map<Integer, ReportTab>> reportTabs = new TreeMap<>();
+        protected CategoryTab selectedCategory;
 
         public CategoryTab findCategoryTab(String category)
         {
@@ -270,7 +258,7 @@ public class ParticipantViewPage extends LabKeyPage
                 scrollIntoView(_el);
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanel)));
-                elements().selectedCategory = this;
+                elementCache().selectedCategory = this;
                 Locators.activeReportPanel.waitForElement(getDriver(), 1000);
             }
         }
