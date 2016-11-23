@@ -86,13 +86,20 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         return new DataRegionTable(el, getDriver());
     }
 
+    // TODO: Fix build break... remove!!
+    public ElementCache elements()
+    {
+       return null;
+    }
+
     @Override
     protected EC newElementCache()
     {
         return (EC) new ElementCache();
     }
 
-    protected class ElementCache extends LabKeyPage.ElementCache
+    // TODO: Should be protected
+    public class ElementCache extends LabKeyPage.ElementCache
     {
         protected final BidiMap<String, Integer> categoryLabels = new DualTreeBidiMap<>();
         protected final Map<Integer, CategoryTab> categoryTabs = new TreeMap<>();
