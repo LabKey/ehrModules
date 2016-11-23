@@ -86,10 +86,28 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         return new DataRegionTable(el, getDriver());
     }
 
-    // TODO: Fix build break... remove!!
-    public ElementCache elements()
+    @LogMethod(quiet = true)
+    public CategoryTab findCategoryTab(String category)
     {
-       return null;
+        return elementCache().findCategoryTab(category);
+    }
+
+    @LogMethod(quiet = true)
+    public Map<Integer, CategoryTab> findCategoryTabs()
+    {
+        return elementCache().findCategoryTabs();
+    }
+
+    @LogMethod(quiet = true)
+    public ReportTab findReportTab(String reportLabel)
+    {
+        return elementCache().findReportTab(reportLabel);
+    }
+
+    @LogMethod(quiet = true)
+    public Map<Integer, ReportTab> getReportTabsForSelectedCategory()
+    {
+        return elementCache().getReportTabsForSelectedCategory();
     }
 
     @Override
@@ -98,8 +116,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         return (EC) new ElementCache();
     }
 
-    // TODO: Should be protected
-    public class ElementCache extends LabKeyPage.ElementCache
+    protected class ElementCache extends LabKeyPage.ElementCache
     {
         protected final BidiMap<String, Integer> categoryLabels = new DualTreeBidiMap<>();
         protected final Map<Integer, CategoryTab> categoryTabs = new TreeMap<>();

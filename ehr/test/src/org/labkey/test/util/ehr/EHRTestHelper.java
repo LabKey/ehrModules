@@ -304,10 +304,10 @@ public class EHRTestHelper
         Collection<ParticipantViewPage.CategoryTab> categoryTabs = new ArrayList<>();
         for (String categoryLabel : categoryLabels)
         {
-            categoryTabs.add(participantView.elements().findCategoryTab(categoryLabel));
+            categoryTabs.add(participantView.findCategoryTab(categoryLabel));
         }
         if (categoryTabs.isEmpty())
-            categoryTabs = participantView.elements().findCategoryTabs().values();
+            categoryTabs = participantView.findCategoryTabs().values();
         List<String> firstBadReport = null;
         for (ParticipantViewPage.CategoryTab categoryTab : categoryTabs)
         {
@@ -319,10 +319,10 @@ public class EHRTestHelper
             Collection<ParticipantViewPage.ReportTab> reportTabs = new ArrayList<>();
             for (String reportLabel : reportLabels)
             {
-                reportTabs.add(participantView.elements().findReportTab(reportLabel));
+                reportTabs.add(participantView.findReportTab(reportLabel));
             }
             if (reportTabs.isEmpty())
-                reportTabs = participantView.elements().getReportTabsForSelectedCategory().values();
+                reportTabs = participantView.getReportTabsForSelectedCategory().values();
 
             for (ParticipantViewPage.ReportTab reportTab : reportTabs)
             {
