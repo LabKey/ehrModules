@@ -1,0 +1,9 @@
+import org.labkey.gradle.util.BuildUtils;
+
+repositories {
+   flatDir dirs: project(":externalModules:labModules:LDK").file("lib")
+}
+
+dependencies {
+   BuildUtils.addLabKeyDependency(project: project, config: "compile", depProjectPath: ":externalModules:labModules:LDK")
+}

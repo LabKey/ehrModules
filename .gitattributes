@@ -1,5 +1,6 @@
 * text=auto !eol
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
+EHR_ComplianceDB/build.gradle -text
 EHR_ComplianceDB/module.properties -text
 EHR_ComplianceDB/resources/folderTypes/Compliance[!!-~]and[!!-~]Training.folderType.xml -text
 EHR_ComplianceDB/resources/module.xml -text
@@ -255,6 +256,7 @@ ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSurgeryEntryPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRTemplateCreatorPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRVeternarianPermission.java -text
+ehr/build.gradle -text
 ehr/module.properties -text
 ehr/resources/credits/scripts.txt -text
 ehr/resources/data/lookup_sets.tsv -text
