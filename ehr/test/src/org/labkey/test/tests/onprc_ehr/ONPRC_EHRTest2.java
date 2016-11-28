@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,7 +287,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         testBirthRecordStatus(offspringId7);
 
         //edit birth date, make sure reflected in demographics
-        final Calendar newBirth = new GregorianCalendar();
+        final Calendar newBirth = Calendar.getInstance();
         newBirth.setTime(birthDate);
         newBirth.add(Calendar.DATE, -4);
         getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()

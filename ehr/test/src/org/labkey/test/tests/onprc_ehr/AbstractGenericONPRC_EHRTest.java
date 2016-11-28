@@ -25,11 +25,11 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
-import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.SqlserverOnlyTest;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
@@ -40,7 +40,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -211,7 +210,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
     protected Date prepareDate(Date date, int daysOffset, int hoursOffset)
     {
-        Calendar beforeInterval = new GregorianCalendar();
+        Calendar beforeInterval = Calendar.getInstance();
         beforeInterval.setTime(date);
         beforeInterval.add(Calendar.DATE, daysOffset);
         beforeInterval.add(Calendar.HOUR_OF_DAY, hoursOffset);

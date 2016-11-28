@@ -38,12 +38,12 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.BodyWebPart;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -58,7 +58,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -148,7 +147,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 21, bloodDrawInterval.intValue());  //NOTE: this is hard coded in some queries right now
 
         log("Creating blood draws");
-        Calendar startCal = new GregorianCalendar();
+        Calendar startCal = Calendar.getInstance();
         startCal.setTime(DateUtils.truncate(new Date(), Calendar.DATE));
         startCal.add(Calendar.DATE, -15);
         startCal.add(Calendar.HOUR, 12);
@@ -223,7 +222,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         {
             Date rowDate = (Date) row.get("date");
 
-            Calendar minDate = new GregorianCalendar();
+            Calendar minDate = Calendar.getInstance();
             minDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             minDate.add(Calendar.DATE, (-1 * bloodDrawInterval) + 1);
 
@@ -270,7 +269,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
             Date rowDate = (row.get("date") instanceof Date) ? (Date) row.get("date") : _df.parse(row.get("date").toString());
             Date rowDropDate = (row.get("dropdate") instanceof Date) ? (Date) row.get("dropdate") : _df.parse(row.get("dropdate").toString());
 
-            Calendar dropDate = new GregorianCalendar();
+            Calendar dropDate = Calendar.getInstance();
             dropDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             dropDate.add(Calendar.DATE, bloodDrawInterval);
             Assert.assertEquals(dropDate.getTime(), rowDropDate);
@@ -309,12 +308,12 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
             Double previousBlood = 0.0;
             Double futureBlood = 0.0;
-            Calendar minDate = new GregorianCalendar();
+            Calendar minDate = Calendar.getInstance();
             minDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             minDate.add(Calendar.DATE, -1 * bloodDrawInterval);
             Assert.assertEquals(minDate.getTime(), row.get("minDate"));
 
-            Calendar maxDate = new GregorianCalendar();
+            Calendar maxDate = Calendar.getInstance();
             maxDate.setTime(DateUtils.truncate(rowDate, Calendar.DATE));
             maxDate.add(Calendar.DATE, bloodDrawInterval);
             Assert.assertEquals(maxDate.getTime(), row.get("maxDate"));
@@ -355,11 +354,11 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
             Assert.assertEquals(mostRecentWeight, row.get("mostRecentWeight"));
             Assert.assertEquals(DateUtils.truncate(mostRecentWeightDate, Calendar.DATE), row.get("mostRecentWeightDate"));
 
-            Calendar minDate = new GregorianCalendar();
+            Calendar minDate = Calendar.getInstance();
             minDate.setTime(DateUtils.truncate(new Date(), Calendar.DATE));
             minDate.add(Calendar.DATE, -1 * bloodDrawInterval);
 
-            Calendar maxDate = new GregorianCalendar();
+            Calendar maxDate = Calendar.getInstance();
             maxDate.setTime(DateUtils.truncate(new Date(), Calendar.DATE));
             maxDate.add(Calendar.DATE, bloodDrawInterval);
 
