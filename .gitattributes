@@ -174,8 +174,10 @@ ehr/api-src/org/labkey/api/ehr/history/DefaultDeathsDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultDepartureDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultDrugsDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultLabworkType.java -text
+ehr/api-src/org/labkey/api/ehr/history/DefaultNotesDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultProblemListCloseDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultProblemListDataSource.java -text
+ehr/api-src/org/labkey/api/ehr/history/DefaultTBDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultTreatmentEndDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultVitalsDataSource.java -text
