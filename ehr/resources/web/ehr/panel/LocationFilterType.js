@@ -66,6 +66,7 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 xtype: 'ehr-cagefield',
                 itemId: 'cageField',
                 fieldLabel: 'Cage',
+                name: 'cageField',
                 value: ctx.cage
             })
         }

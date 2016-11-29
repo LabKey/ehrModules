@@ -18,18 +18,21 @@ package org.labkey.test.pages.ehr;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
-import org.labkey.test.components.ext4.RadioButton;
-import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.components.ehr.panel.LocationFilterType;
+import org.labkey.test.components.ehr.panel.MultiAnimalFilterType;
+import org.labkey.test.components.ldk.panel.NoFiltersFilterType;
+import org.labkey.test.components.ldk.panel.SingleSubjectFilterType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Arrays;
+import java.util.List;
 
+import static org.labkey.test.components.ldk.panel.AbstractFilterType.FILTER_SIGNAL;
 import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
 
-
-public class AnimalHistoryPage extends ParticipantViewPage<AnimalHistoryPage.ElementCache>
+public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantViewPage<AnimalHistoryPage.ElementCache>
 {
     public AnimalHistoryPage(WebDriver driver)
     {
@@ -44,47 +47,80 @@ public class AnimalHistoryPage extends ParticipantViewPage<AnimalHistoryPage.Ele
     public static AnimalHistoryPage beginAt(WebDriverWrapper test, String containerPath)
     {
         test.beginAt(WebTestHelper.buildURL("ehr", containerPath, "animalHistory"));
-        return new AnimalHistoryPage(test.getDriver());
+        return new AnimalHistoryPage<>(test.getDriver());
     }
 
     @Override
     protected void waitForPage()
     {
-        waitForElement(Ext4Helper.Locators.ext4Button("Update Report"));
+        super.waitForPage();
+        Locators.pageSignal(FILTER_SIGNAL).waitForElement(shortWait());
     }
 
-    public void setSearchText(String text)
-    {
-        setFormElement(Locator.inputByNameContaining("textfield"), text);
-    }
-
-    public void setMultipleSearchText(String text)
-    {
-        setFormElement(Locator.textAreaByNameContaining("textareafield"), text);
-    }
-
-    public void refreshReport()
+    public A refreshReport()
     {
         doAndWaitForPageSignal(
-            () -> waitAndClick(ext4Button("Update Report")),
+            () -> elementCache().updateButton.click(),
             REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
+        return (A)this;
     }
 
     public void searchSingleAnimal(String animalId)
     {
-        elementCache().singleAnimalRadioButton.check();
-        setSearchText(animalId);
-        refreshReport();
+        selectSingleAnimalSearch().searchFor(animalId);
     }
 
     public void appendMultipleAnimals(String... animalIds)
     {
-        elementCache().multipleAnimalRadioButton.check();
-        setMultipleSearchText(String.join(" ", Arrays.asList(animalIds)));
-        clickButton("Add", 0);
+        selectMultiAnimalSearch().addSubjects(String.join(" ", Arrays.asList(animalIds)));
         for (String animalId : animalIds)
             elementCache().findRemoveIdButton(animalId);
         refreshReport();
+    }
+
+    public SingleSubjectFilterType<A> selectSingleAnimalSearch()
+    {
+        return new SingleSubjectFilterType<>((A)this).select();
+    }
+
+    public MultiAnimalFilterType<A> selectMultiAnimalSearch()
+    {
+        return new MultiAnimalFilterType<>((A)this).select();
+    }
+
+    public LocationFilterType<A> selectCurrectLocation()
+    {
+        return new LocationFilterType<>((A)this).select();
+    }
+
+    public NoFiltersFilterType<A> selectEntireDatabaseSearch()
+    {
+        return new NoFiltersFilterType<>((A)this).select();
+    }
+
+    public List<String> getFoundIds()
+    {
+        return getTexts(elementCache().findFoundIdButtons());
+    }
+
+    public List<String> getAliasIds()
+    {
+        return getTexts(elementCache().findAliasedIdButtons());
+    }
+
+    public List<String> getConflictedIds()
+    {
+        return getTexts(elementCache().findConflictedIdButtons());
+    }
+
+    public List<String> getNotFoundIds()
+    {
+        return getTexts(elementCache().findNotFoundIdButtons());
+    }
+
+    public List<String> getIds()
+    {
+        return getTexts(elementCache().findAllIdButtons());
     }
 
     @Override
@@ -95,15 +131,47 @@ public class AnimalHistoryPage extends ParticipantViewPage<AnimalHistoryPage.Ele
 
     protected class ElementCache extends ParticipantViewPage.ElementCache
     {
-        protected RadioButton singleAnimalRadioButton = RadioButton.RadioButton().withLabel("Single Animal").findWhenNeeded(this);
-        protected RadioButton multipleAnimalRadioButton = RadioButton.RadioButton().withLabel("Multiple Animals").findWhenNeeded(this);
-        protected RadioButton currentLocationRadioButton = RadioButton.RadioButton().withLabel("Current Location").findWhenNeeded(this);
-        protected RadioButton entireDatabaseRadioButton = RadioButton.RadioButton().withLabel("Entire Database").findWhenNeeded(this);
-        protected WebElement refreshButton = ext4Button("Update Report").findWhenNeeded(this);
+        protected final WebElement updateButton = ext4Button("Update Report").findWhenNeeded(this).withTimeout(10000);
+
+        private static final String btnPanelPrefix = "btnPanel";
+        private static final String totalPanelPrefix = "totalPanel";
+        private static final String subjects = "Subjects";
+        private static final String aliases = "Aliases";
+        private static final String conflicted = "Conflicted";
+        private static final String notfound = "NotFound";
 
         protected WebElement findRemoveIdButton(String animalId)
         {
-            return ext4Button(animalId).waitForElement(this, 1000);
+            return MultiAnimalFilterType.subjectButtonPanel.append(ext4Button(animalId)).waitForElement(this, 1000);
+        }
+
+        protected List<WebElement> findAllIdButtons()
+        {
+            return MultiAnimalFilterType.subjectButtonPanel.append(ext4Button()).waitForElements(this, 1000);
+        }
+
+        protected List<WebElement> findFoundIdButtons()
+        {
+            return MultiAnimalFilterType.subjectButtonPanel.append(Locator.id(btnPanelPrefix + subjects))
+                    .append(ext4Button()).findElements(this);
+        }
+
+        protected List<WebElement> findAliasedIdButtons()
+        {
+            return MultiAnimalFilterType.subjectButtonPanel.append(Locator.id(btnPanelPrefix + aliases))
+                    .append(ext4Button()).findElements(this);
+        }
+
+        protected List<WebElement> findConflictedIdButtons()
+        {
+            return MultiAnimalFilterType.subjectButtonPanel.append(Locator.id(btnPanelPrefix + conflicted))
+                    .append(ext4Button()).findElements(this);
+        }
+
+        protected List<WebElement> findNotFoundIdButtons()
+        {
+            return MultiAnimalFilterType.subjectButtonPanel.append(Locator.id(btnPanelPrefix + notfound))
+                    .append(ext4Button()).findElements(this);
         }
     }
 }

@@ -39,6 +39,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                     + (this.searchOptions.cage?'Cage':'');
             items.push({
                 xtype: 'ldk-linkbutton',
+                id: 'roomCageLink',
                 text: '[' + roomCageTitle + ']',
                 minWidth: 80,
                 style: 'padding-left:200px;',
@@ -103,6 +104,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                     + (this.searchOptions.protocol ? 'Protocol' : '');
             items.push({
                 xtype: 'ldk-linkbutton',
+                id: 'projectProtocolLink',
                 text: '[' + projectProtocolTitle + ']',
                 minWidth: 80,
                 handler: function (btn)
