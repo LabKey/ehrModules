@@ -27,7 +27,7 @@ import java.util.Map;
 public class EHRUpgradeCode implements UpgradeCode
 {
     /**
-     * called at 16.22-16.23
+     * called at 16.20-16.30
      */
     @SuppressWarnings({"UnusedDeclaration"})
     public void populateCalendar(final ModuleContext moduleContext)
