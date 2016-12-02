@@ -99,7 +99,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             hideHeaders: true,
             deferEmptyText: true,
             viewConfig : {
-                emptyText: this.minDate ? 'No records found since: ' + this.minDate.format('m/d/Y') : 'There are no records to display',
+                emptyText: this.minDate ? 'No records found since: ' + this.minDate.format(LABKEY.extDefaultDateFormat) : 'There are no records to display',
                 deferEmptyText: true,
                 enableTextSelection: true,
                 border: false,
@@ -319,9 +319,9 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                 '<div>{name:this.formatName}</div>', {
                     formatName: function(name) {
                         name = name.split('_');
-                        var date = name.shift();
-                        name = name.join('_');
-                        return date + ' (' + name + ')';
+                        var id = name.shift();
+                        var date = name[0];
+                        return id + ' (' + new Date(date).format(LABKEY.extDefaultDateFormat) + ')';
                     }
                 }
             ],
