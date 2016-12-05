@@ -20,12 +20,15 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.test.Locator;
+import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -356,4 +359,29 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             throw new RuntimeException(e);
         }
     }
+
+    protected void openClinicalHistoryForAnimal(String animalId)
+    {
+        getAnimalHistorySubjField().setValue(animalId);
+
+        //chronological history
+        AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver());
+        animalHistoryPage.clickCategoryTab("Clinical");
+        animalHistoryPage.clickReportTab("Clinical History");
+    }
+
+    protected void beginAtAnimalHistoryTab()
+    {
+        beginAt(getAnimalHistoryPath());
+    }
+
+    protected void checkClinicalHistoryType(List<String> expectedLabels)
+    {
+        waitAndClick(Locator.linkWithText("Show/Hide Types"));
+        List<WebElement> webDriver = getWrappedDriver().findElements(By.cssSelector("table.x4-form-type-checkbox label.x4-form-cb-label"));
+        List<String> labels = getTexts(webDriver);
+        assertEquals("Wrong Clinical History Options",expectedLabels,labels);
+    }
+
+    protected abstract String getAnimalHistoryPath();
 }

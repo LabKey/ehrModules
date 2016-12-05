@@ -37,6 +37,7 @@ import java.util.Set;
 public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_Billing_TestProject";
+    private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
 
     @Override
     protected String getProjectName()
@@ -169,5 +170,11 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
 
         //TODO: import other reference tables
+    }
+
+    @Override
+    protected String getAnimalHistoryPath()
+    {
+        return ANIMAL_HISTORY_URL;
     }
 }

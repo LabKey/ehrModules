@@ -54,7 +54,7 @@ import java.util.Map;
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
-
+    private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
     @Override
     protected String getModuleDirectory()
     {
@@ -949,5 +949,11 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     public void gridErrorsTest()
     {
         //TODO: make sure fields turn red as expected
+    }
+
+    @Override
+    protected String getAnimalHistoryPath()
+    {
+        return ANIMAL_HISTORY_URL;
     }
 }

@@ -368,4 +368,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
     @Override //Block test that doesn't work with ONPRC
     public void testCalculatedAgeColumns(){}
+
+    @Override
+    protected abstract String getAnimalHistoryPath();
 }

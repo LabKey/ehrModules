@@ -30,17 +30,19 @@ import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
-import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
+import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,6 +55,7 @@ import static org.junit.Assert.assertEquals;
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
     public static final String PROJECT_NAME = "WNPRC_TestProject";
+    private final String ANIMAL_HISTORY_URL = "/ehr/" + PROJECT_NAME + "/EHR/animalHistory.view?";
     protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant
 
     @Nullable
@@ -613,6 +616,39 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.tagContainingText("div", "No records found since:"), 20000);
     }
 
+    @Test
+    public void testClinicalHistoryPanelOptions(){
+        beginAtAnimalHistoryTab();
+        openClinicalHistoryForAnimal("TEST1020148");
+        List<String> expectedLabels = new ArrayList<String>(
+                Arrays.asList(
+                        "Alert",
+                        "Antibiotic Sensitivity",
+                        "Assignments",
+                        "Births",
+                        "Body Condition",
+                        "Deaths",
+                        "Hematology",
+                        "Labwork",
+                        "Misc Tests",
+                        "Pregnancy Confirmations",
+                        "TB Tests",
+                        "Weights",
+
+                        "Alopecia",
+                        "Arrival/Departure",
+                        "Biochemistry",
+                        "Blood Draws",
+                        "Clinical",
+                        "Deliveries",
+                        "Housing Transfers",
+                        "Microbiology",
+                        "Parasitology",
+                        "Serology",
+                        "Urinalysis",
+                        "iStat"
+                ));
+        checkClinicalHistoryType(expectedLabels);    }
 
     private void waitForMprPageLoad()
     {
@@ -652,5 +688,11 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     protected String getModuleDirectory()
     {
         return "WNPRC_EHR";
+    }
+
+    @Override
+    protected String getAnimalHistoryPath()
+    {
+        return ANIMAL_HISTORY_URL;
     }
 }

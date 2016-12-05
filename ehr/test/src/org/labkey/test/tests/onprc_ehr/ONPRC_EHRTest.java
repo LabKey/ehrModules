@@ -71,6 +71,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
+    private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
+
 
     @Override
     protected String getProjectName()
@@ -2038,6 +2040,44 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitForElementToDisappear(closeCaseWindow);
 
         _helper.discardForm();
+    }
+    @Test
+    public void testClinicalHistoryPanelOptions(){
+        beginAtAnimalHistoryTab();
+        openClinicalHistoryForAnimal("TEST1020148");
+        List<String> expectedLabels = new ArrayList<String>(
+                Arrays.asList(
+                        "Alert",
+                        "Antibiotic Sensitivity",
+                        "Assignments",
+                        "Births",
+                        "Clinical",
+                        "Deliveries",
+                        "Housing Transfers",
+                        "Microbiology",
+                        "Parasitology",
+                        "Serology",
+                        "Weights",
+
+                        "Animal Groups",
+                        "Arrival/Departure",
+                        "Biochemistry",
+                        "Blood Draws",
+                        "Deaths",
+                        "Hematology",
+                        "Labwork",
+                        "Misc Tests",
+                        "Pregnancy Confirmations",
+                        "Urinalysis",
+                        "iStat"
+                ));
+        checkClinicalHistoryType(expectedLabels);
+    }
+
+    @Override
+    protected String getAnimalHistoryPath()
+    {
+        return ANIMAL_HISTORY_URL;
     }
 }
 
