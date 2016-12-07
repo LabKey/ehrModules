@@ -362,10 +362,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
     protected void openClinicalHistoryForAnimal(String animalId)
     {
-        getAnimalHistorySubjField().setValue(animalId);
-
         //chronological history
         AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver());
+        animalHistoryPage.searchSingleAnimal(animalId);
         animalHistoryPage.clickCategoryTab("Clinical");
         animalHistoryPage.clickReportTab("Clinical History");
     }
