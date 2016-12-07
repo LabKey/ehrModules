@@ -88,7 +88,7 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
         public SearchWindow(String windowTitle)
         {
-            super(windowTitle, getDriver());
+            super(windowTitle, MultiAnimalFilterType.this.getDriver());
         }
 
         public A clickSubmit()
