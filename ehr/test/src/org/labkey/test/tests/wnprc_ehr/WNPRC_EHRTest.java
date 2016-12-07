@@ -98,8 +98,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     @Test
     public void testWeightDataEntry()
     {
-        clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        goToEHRFolder();
         saveLocation();
         impersonate(FULL_SUBMITTER.getEmail());
         recallLocation();
@@ -246,8 +245,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     @Test
     public void testMprDataEntry()
     {
-        clickProject(PROJECT_NAME);
-        clickFolder(FOLDER_NAME);
+        goToEHRFolder();
         saveLocation();
         impersonate(FULL_SUBMITTER.getEmail());
         recallLocation();
@@ -401,9 +399,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     @Test
     public void testDetailsPages()
     {
-        clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
-
+        goToEHRFolder();
         waitAndClickAndWait(Locator.linkWithText("Browse All Datasets"));
 
         beginAt("/ehr/" + getContainerPath() + "/datasets.view");
@@ -479,9 +475,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     @Test
     public void testAnimalHistory()
     {
-        clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
-
+        goToEHRFolder();
         waitAndClick(Locator.linkWithText("Animal History"));
 
         log("Verify Single animal history");
@@ -648,7 +642,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
                         "Urinalysis",
                         "iStat"
                 ));
-        checkClinicalHistoryType(expectedLabels);    }
+        checkClinicalHistoryType(expectedLabels);
+    }
 
     private void waitForMprPageLoad()
     {
