@@ -117,12 +117,6 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     }
 
     @Override
-    protected void goToEHRFolder()
-    {
-        goToProjectHome();
-    }
-
-    @Override
     @LogMethod
     protected void initProject() throws Exception
     {

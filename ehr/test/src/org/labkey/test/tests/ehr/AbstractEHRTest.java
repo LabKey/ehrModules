@@ -33,6 +33,7 @@ import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
@@ -62,10 +63,10 @@ import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.labkey.test.WebTestHelper.buildURL;
 
 abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
-    protected String CONTAINER_PATH = getProjectName() + "/" + FOLDER_NAME;
     protected static String FOLDER_NAME = "EHR";
     protected static final File STUDY_ZIP = TestFileUtils.getSampleData("EHR Study Anon.zip");
     protected static final File STUDY_ZIP_NO_DATA = TestFileUtils.getSampleData("EHR Study Anon Small.zip");
@@ -147,9 +148,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     public String getContainerPath()
     {
-        return CONTAINER_PATH;
+        return getProjectName() + "/" + FOLDER_NAME;
     }
-
 
     public String getModulePath()
     {
@@ -612,10 +612,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return false;
     }
 
-    protected void goToEHRFolder()
+    protected final void goToEHRFolder()
     {
-        clickProject(getProjectName());
-        clickFolder(FOLDER_NAME);
+        beginAt(buildURL("project", getContainerPath(), "begin"));
     }
 
     protected void setupStudyPermissions() throws Exception
@@ -941,6 +940,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         }
     }
 
+    /**
+     * @deprecated Use {@link AnimalHistoryPage#searchSingleAnimal(String)} or {@link AnimalHistoryPage#selectMultiAnimalSearch()} (String)}
+     * or a PRC specific subclass
+     */
+    @Deprecated
     protected Ext4FieldRef getAnimalHistorySubjField()
     {
         Ext4CmpRef.waitForComponent(this, "#subjArea");
