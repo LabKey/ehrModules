@@ -488,6 +488,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         if (!ids.isEmpty())
         {
+            for (String id : ids)
+            {
+                _cache.remove(getCacheKey(c, id));
+            }
+
             _log.info("Forcing recache of " + ids.size() + " animals");
             createRecords(c, ids, validateOnCreate);
             _log.info("Cache load complete");
