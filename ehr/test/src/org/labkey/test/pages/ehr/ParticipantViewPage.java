@@ -23,7 +23,6 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
@@ -34,7 +33,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,7 +61,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     @Override
     protected void waitForPage()
     {
-        waitForElement(Locators.pageSignal(REPORT_PANEL_SIGNAL));
+        waitForElement(org.labkey.test.Locators.pageSignal(REPORT_PANEL_SIGNAL));
     }
 
     @LogMethod(quiet = true)
