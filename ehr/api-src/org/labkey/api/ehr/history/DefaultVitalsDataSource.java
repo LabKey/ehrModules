@@ -56,10 +56,10 @@ public class DefaultVitalsDataSource extends AbstractDataSource
         return sb.toString();
     }
 
-    private void addVital(StringBuilder sb, String displayLabel, String suffix, String heartRate)
+    private void addVital(StringBuilder sb, String displayLabel, String suffix, String value)
     {
         sb.append(displayLabel);
-        sb.append(heartRate);
+        sb.append(value);
         sb.append(suffix);
         sb.append("\n");
     }

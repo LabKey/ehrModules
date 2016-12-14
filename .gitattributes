@@ -163,6 +163,7 @@ ehr/api-src/org/labkey/api/ehr/demographics/WeightsDemographicsProvider.java -te
 ehr/api-src/org/labkey/api/ehr/history/AbstractDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/AntibioticSensitivityLabworkType.java -text
 ehr/api-src/org/labkey/api/ehr/history/ChemistryLabworkType.java -text
+ehr/api-src/org/labkey/api/ehr/history/DefaultAccountDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultAnimalRecordFlagDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultArrivalDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultAssignmentEndDataSource.java -text
@@ -170,6 +171,7 @@ ehr/api-src/org/labkey/api/ehr/history/DefaultBirthDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultCasesCloseDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultCasesDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultClinicalRemarksDataSource.java -text
+ehr/api-src/org/labkey/api/ehr/history/DefaultCycleDatasource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultDeathsDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultDepartureDataSource.java -text
 ehr/api-src/org/labkey/api/ehr/history/DefaultDrugsDataSource.java -text
