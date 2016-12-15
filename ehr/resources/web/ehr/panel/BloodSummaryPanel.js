@@ -304,6 +304,23 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
         });
     },
 
+    getTickValues: function(rows){
+        var ticks = [], msPerDay = 86400000, totalTicks = 10;
+        var minDate = Date.parse(rows[0].date.value);
+        var maxDate = Date.parse(rows[rows.length - 1].date.value);
+        var diff = maxDate - minDate;
+        var daysTotal = diff/msPerDay;
+        var daysPerTick = Math.ceil(daysTotal/totalTicks);
+        var newTotal = Math.ceil(daysTotal/daysPerTick);
+
+        ticks[0] = (Math.ceil(minDate/msPerDay) * msPerDay) - 57600000; // Remove 16:00 offset
+        for(var i=1; i<newTotal; i++) {
+            ticks[i] = ticks[i-1] + (daysPerTick * msPerDay);
+        }
+
+        return ticks;
+    },
+
     getGraphCfg: function(dd, bds){
 
         var subject = dd.getValue('Id');
@@ -395,8 +412,10 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                             scaleType: 'discrete',
                             range: [5, 7],
                             domain: ["0 " + layerName, "1 " + layerName]
+                        },
+                        x: {
+                            tickValues: this.getTickValues(results.rows)
                         }
-
                     },
                     layers: [{
                         y: 'allowableBlood',
