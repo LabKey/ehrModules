@@ -43,6 +43,9 @@ Ext4.onReady(function (){
                 metadata: {
                     Id: {lookups: false},
                     'Id/age/AgeInYearsRounded': {duplicate: true, editorConfig: {hideTrigger: true, minValue: 0}},
+                    'Id/AssignmentCurrent/projectCode': {duplicate: true, lookups: false},
+                    'Id/AssignmentPast/projectCode': {duplicate: true, lookups: false, },
+                    'Id/attributes/flag': {duplicate: true, lookups: false, },
                     'Id/MostRecentWeight/MostRecentWeight': {duplicate: true, editorConfig: {hideTrigger: true, minValue: 0}},
                     'Id/numRoommates/AnimalsInCage': {editorConfig: {hideTrigger: true, minValue: 0}}
                 }
