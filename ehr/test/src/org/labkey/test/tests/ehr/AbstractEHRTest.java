@@ -36,12 +36,12 @@ import org.labkey.test.TestTimeoutException;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
-import org.labkey.test.util.ehr.EHRClientAPIHelper;
-import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
+import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.openqa.selenium.WebElement;
@@ -111,8 +111,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
-    protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    protected static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+    protected static final String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd kk:mm";
+    protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT_STRING);
+    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
 
     protected static String FIELD_QCSTATELABEL = "QCStateLabel";
     protected static String FIELD_OBJECTID = "objectid";
@@ -352,6 +354,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void initProject(String type) throws Exception
     {
         createProjectAndFolders(type);
+        setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();  //note: we create the users prior to study import, b/c that user is used by TableCustomizers
         populateInitialData();
@@ -416,6 +419,15 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         repopulate("Lookup Sets");
         repopulate("All");
+    }
+
+    private void setFormatStrings()
+    {
+        clickFolder(getFolderName());
+        goToProjectSettings();
+        setFormElement(Locator.name("defaultDateFormat"), DATE_FORMAT_STRING);
+        setFormElement(Locator.name("defaultDateTimeFormat"), DATE_TIME_FORMAT_STRING);
+        clickButton("Save");
     }
 
     @LogMethod

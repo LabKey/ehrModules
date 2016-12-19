@@ -84,6 +84,12 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         return new DataRegionTable(el, getDriver());
     }
 
+    public DataRegionTable getLastActiveReportDataRegion()
+    {
+        WebElement el = DataRegionTable.Locators.dataRegion().notHidden().last().waitForElement(getDriver(), 30000);
+        return new DataRegionTable(el, getDriver());
+    }
+
     @LogMethod(quiet = true)
     public CategoryTab findCategoryTab(String category)
     {
