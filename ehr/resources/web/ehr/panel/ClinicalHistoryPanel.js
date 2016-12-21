@@ -436,17 +436,18 @@ Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
     },
 
     getCheckboxes: function(){
-        var types = {};
         var store = this.clinicalHistoryPanel.getStore();
 
 
         var items = [];
-        Ext4.Array.each(store.getDistinctTypes(), function(type){
-            items.push({
-                boxLabel: type,
-                inputValue: type,
-                checked: (!this.clinicalHistoryPanel.checkedItems || Ext4.Array.indexOf(this.clinicalHistoryPanel.checkedItems, type) > -1)
-            });
+        Ext4.Array.each(store.getDistinctTypes(), function(type) {
+            if (type && type != "null") {
+                items.push({
+                    boxLabel: type,
+                    inputValue: type,
+                    checked: (!this.clinicalHistoryPanel.checkedItems || Ext4.Array.indexOf(this.clinicalHistoryPanel.checkedItems, type) > -1)
+                });
+            }
         }, this);
 
         return items;
