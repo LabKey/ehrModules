@@ -112,7 +112,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
     protected static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
-    protected static final String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd kk:mm";
+    protected static final String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd HH:mm";
     protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT_STRING);
     protected static final DateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
 
