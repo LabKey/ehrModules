@@ -70,11 +70,8 @@ import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.history.DefaultAssignmentDataSource;
 import org.labkey.ehr.history.DefaultBloodDrawDataSource;
-import org.labkey.ehr.history.DefaultDeliveryDataSource;
 import org.labkey.ehr.history.DefaultHousingDataSource;
 import org.labkey.ehr.history.DefaultLabworkDataSource;
-import org.labkey.ehr.history.DefaultObservationsDataSource;
-import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.DefaultWeightDataSource;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
@@ -160,13 +157,10 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerHistoryDataSource(new DefaultBloodDrawDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentDataSource(this));
-        EHRService.get().registerHistoryDataSource(new DefaultObservationsDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultTreatmentOrdersDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultCasesDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultCasesCloseDataSource(this));
-        EHRService.get().registerHistoryDataSource(new DefaultDeliveryDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultLabworkDataSource(this));
-        EHRService.get().registerHistoryDataSource(new DefaultPregnanciesDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultWeightDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultHousingDataSource(this));
 

@@ -64,7 +64,10 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
+import org.labkey.ehr.history.DefaultDeliveryDataSource;
 import org.labkey.ehr.history.DefaultEncountersDataSource;
+import org.labkey.ehr.history.DefaultObservationsDataSource;
+import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
@@ -416,6 +419,9 @@ public class EHRServiceImpl extends EHRService
     @Override
     public void registerOptionalClinicalHistoryResources(Module module)
     {
+        EHRService.get().registerHistoryDataSource(new DefaultObservationsDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultPregnanciesDataSource(module));
+        EHRService.get().registerHistoryDataSource(new DefaultDeliveryDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultAnimalRecordFlagDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultArrivalDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentEndDataSource(module));
