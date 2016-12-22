@@ -216,13 +216,16 @@
                     <item text="Grid Views">
                         <originalText>Grid Views</originalText>
                     </item>
-                    <item text="Reports">
+                    <item text="Reports" suppressWarning="true">
                         <originalText>Reports</originalText>
                     </item>
-                    <item text="Insert">
+                    <item text="Charts" suppressWarning="true">
+                        <originalText>Charts</originalText>
+                    </item>
+                    <item text="Insert" suppressWarning="true">
                         <originalText>Insert</originalText>
                     </item>
-                    <item text="Insert New Row">
+                    <item text="Insert New Row" suppressWarning="true">
                         <originalText>Insert New Row</originalText>
                     </item>
                     <!--<item text="Cohorts">-->
@@ -237,13 +240,13 @@
                     <item text="Print">
                         <originalText>Print</originalText>
                     </item>
-                    <item text="Import Bulk Data">
+                    <item text="Import Bulk Data" suppressWarning="true">
                         <originalText>Import Bulk Data</originalText>
                     </item>
                     <item text="Paging">
                         <originalText>Paging</originalText>
                     </item>
-                    <item text="Delete">
+                    <item text="Delete" suppressWarning="true">
                         <originalText>Delete</originalText>
                     </item>
                 </buttonBarOptions>
