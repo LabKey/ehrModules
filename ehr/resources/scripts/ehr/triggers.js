@@ -73,7 +73,7 @@ EHR.Server.Triggers.init = function(event, errors){
     this.scriptHelper = new EHR.Server.ScriptHelper(this.extraContext, event, EHR);
     var helper = this.scriptHelper;
 
-    console.log('** evaluating: ' + this['javax.script.filename'] + ' for: ' + (helper.isValidateOnly() ? 'validation/' : '') + event);
+    console.debug('** evaluating: ' + this['javax.script.filename'] + ' for: ' + (helper.isValidateOnly() ? 'validation/' : '') + event);
 
     EHR.Server.Security.init(helper);
 
@@ -504,7 +504,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
     }
 
     if (helper.getRows().length){
-        console.log('Trigger script time for ' + (helper.isValidateOnly() ? 'validation/' : '') + event + ' of ' + helper.getRows().length + ' rows into ' + helper.getQueryName() + ': ' + helper.getTimeElapsed());
+        console.debug('Trigger script time for ' + (helper.isValidateOnly() ? 'validation/' : '') + event + ' of ' + helper.getRows().length + ' rows into ' + helper.getQueryName() + ': ' + helper.getTimeElapsed());
     }
 };
 exports.complete = EHR.Server.Triggers.complete;
@@ -537,7 +537,7 @@ exports.complete = EHR.Server.Triggers.complete;
  *
  * @param {object} row The row object, as passed from LabKey.
  * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
- * @param {object} errors The errors object, as passed from LabKey.
+ * @param {object} scriptErrors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     helper.logDebugMsg('rowInit: ' + helper.getTimeElapsed());
