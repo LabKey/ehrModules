@@ -20,11 +20,9 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
+import org.labkey.ehr_compliancedb.notification.EmployeeComplianceNotification;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.util.PageFlowUtil;
-import org.labkey.api.view.WebPartFactory;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -48,7 +46,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     public double getVersion()
     {
-        return 12.36;
+        return 12.37;
     }
 
     @Override
@@ -66,7 +64,13 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
+
+        NotificationService ns = NotificationService.get();
+
         LDKService.get().registerContainerScopedTable(EHR_ComplianceDBModule.SCHEMA_NAME, EHR_ComplianceDBUserSchema.TABLE_REQUIREMENTS, "requirementname");
+
+          //Added 3-29-2016 Blasa
+          ns.registerNotification(new EmployeeComplianceNotification(this));
     }
 
     @Override

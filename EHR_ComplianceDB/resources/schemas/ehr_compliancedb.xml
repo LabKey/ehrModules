@@ -591,6 +591,10 @@
                     <fkColumnName>requirementname</fkColumnName>
                 </fk>
             </column>
+            <column columnName="comments">
+                <nullable>true</nullable>
+                <columnTitle>Comments</columnTitle>
+            </column>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>
                 <isHidden>true</isHidden>

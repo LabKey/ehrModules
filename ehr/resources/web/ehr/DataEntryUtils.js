@@ -772,8 +772,11 @@ EHR.DataEntryUtils = new function(){
 
             var storeId = ['ehr', 'project', 'project', 'displayName'].join('||');
 
+            var ctx = EHR.Utils.getEHRContext();
+
             EHR._projectStore = Ext4.StoreMgr.get(storeId) || new LABKEY.ext4.data.Store({
                 type: 'labkey-store',
+                containerPath: ctx ? ctx['EHRStudyContainer'] : null,
                 schemaName: 'ehr',
                 queryName: 'project',
                 columns: 'project,displayName,account,name,protocol,protocol/displayName,title,investigatorId/lastName',

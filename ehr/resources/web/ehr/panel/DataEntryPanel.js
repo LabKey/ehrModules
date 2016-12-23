@@ -259,7 +259,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.removeAll();
         var toAdd = [];
 
-        if (Ext4.isIE){
+        if (Ext4.isIE9m){
             toAdd.push({
                 html: '<span style="background-color: yellow;">NOTE: You are currently using Internet Explorer.  While the forms should work in IE, they respond much quicker using any other major browser, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
                 style: 'padding-bottom: 20px;padding-top: 20px;'

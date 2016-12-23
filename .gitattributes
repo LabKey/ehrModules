@@ -71,6 +71,7 @@ EHR_ComplianceDB/resources/schemas/dbscripts/postgresql/EHR_ComplianceDB-12.32-1
 EHR_ComplianceDB/resources/schemas/dbscripts/postgresql/EHR_ComplianceDB-12.33-12.34.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/postgresql/EHR_ComplianceDB-12.34-12.35.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/postgresql/EHR_ComplianceDB-12.35-12.36.sql -text
+EHR_ComplianceDB/resources/schemas/dbscripts/postgresql/EHR_ComplianceDB-12.36-12.37.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-0.00-11.20.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.20-12.30.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.30-12.31.sql -text
@@ -79,6 +80,7 @@ EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.32-12
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.33-12.34.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.34-12.35.sql -text
 EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.35-12.36.sql -text
+EHR_ComplianceDB/resources/schemas/dbscripts/sqlserver/EHR_ComplianceDB-12.36-12.37.sql -text
 EHR_ComplianceDB/resources/schemas/ehr_compliancedb.xml -text
 EHR_ComplianceDB/resources/views/Guest_SOP_submission.html -text
 EHR_ComplianceDB/resources/views/Guest_SOP_submission.view.xml -text
@@ -108,6 +110,7 @@ EHR_ComplianceDB/resources/web/ehr_compliancedb/panel/EmployeeDetailsPanel.js -t
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/EHR_ComplianceDBController.java -text
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/EHR_ComplianceDBModule.java -text
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/EHR_ComplianceDBUserSchema.java -text
+EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/notification/EmployeeComplianceNotification.java -text
 EHR_ComplianceDB/src/org/labkey/ehr_compliancedb/query/EHRComplianceTableCustomizer.java -text
 EHR_ComplianceDB/tools/SOP_Lists.zip -text
 ehr/EHR-API.iml -text

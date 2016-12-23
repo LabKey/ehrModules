@@ -12,10 +12,12 @@
             </properties>
         </column>
         <column name="requirementname"/>
+        <column name="comments"/>
     </columns>
     <sorts>
         <sort column="employeeid/lastName" descending="false"/>
         <sort column="employeeid/firstName" descending="false"/>
         <sort column="requirementname" descending="false"/>
+        <sort column="comments" descending="false"/>
     </sorts>
 </customView>
