@@ -522,11 +522,11 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     //@override
-    // overriden to remove setting a default nullCaption.  this is moved to the combo tpl
+    // overridden to remove setting a default nullCaption.  this is moved to the combo tpl
     onLoad : function(store, records, options) {
         this.isLoading = false;
 
-        //remeber the name of the id column
+        //remember the name of the id column
         this.idName = this.reader.meta.id;
 
         if(this.nullRecord)
@@ -941,7 +941,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     //private
-    //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load
+    //NOTE: the following 2 methods are overridden because the old approach causes uncommitted client-side records to get destroyed on store load
     //also added QCState permission checking
     deleteRecords : function(records, extraContext) {
         if (!this.updatable)

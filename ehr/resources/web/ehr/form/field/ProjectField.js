@@ -41,7 +41,7 @@ Ext4.define('EHR.form.field.ProjectField', {
         this.callParent(arguments);
     },
 
-    //can be overriden by child modules
+    //can be overridden by child modules
     getInnerTpl: function(){
         return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigatorId/lastName"] ? "(" + (values["investigatorId/lastName"] ? values["investigatorId/lastName"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigatorId/lastName"] ? ")" : "")]}&nbsp;</span>'];
     },

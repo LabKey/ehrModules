@@ -479,7 +479,7 @@ EHR.Server.Utils = new function(){
             }
         },
 
-        //note: can be overriden by modules
+        //note: can be overridden by modules
         isLiveBirth: function(birthCondition){
             return true;
         }

@@ -161,12 +161,12 @@ Ext.override(Ext.data.Store, {
     }
 });
 
-//only overriden to remove setting a default nullCaption.  this is moved to the combo tpl
+//only overridden to remove setting a default nullCaption.  this is moved to the combo tpl
 Ext.override(LABKEY.ext.Store, {
     onLoad : function(store, records, options) {
         this.isLoading = false;
 
-        //remeber the name of the id column
+        //remember the name of the id column
         this.idName = this.reader.meta.id;
 
         if(this.nullRecord)

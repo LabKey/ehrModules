@@ -287,7 +287,7 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     setClientModelDefaults: function(model){
-        //this method is designed to be overriden by subclasses
+        //this method is designed to be overridden by subclasses
 
         //TODO: apply inheritance
     },
