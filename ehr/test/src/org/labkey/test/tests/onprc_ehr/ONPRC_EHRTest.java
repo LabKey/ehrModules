@@ -2058,7 +2058,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                         "Parasitology",
                         "Serology",
                         "Weights",
-
+                        "Behavior",
                         "Animal Groups",
                         "Arrival/Departure",
                         "Biochemistry",

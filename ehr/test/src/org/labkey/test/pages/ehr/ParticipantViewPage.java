@@ -319,7 +319,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 scrollIntoView(_el);
                 try
                 {
-                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL);
+                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL, longWait());
                 }
                 catch (StaleElementReferenceException ignore) // Tab signal might fire more than once
                 {

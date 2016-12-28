@@ -23,10 +23,10 @@ import org.labkey.test.Locator;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
+import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -35,8 +35,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -377,9 +379,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     protected void checkClinicalHistoryType(List<String> expectedLabels)
     {
         waitAndClick(Locator.linkWithText("Show/Hide Types"));
-        List<WebElement> webDriver = getWrappedDriver().findElements(By.cssSelector("table.x4-form-type-checkbox label.x4-form-cb-label"));
-        List<String> labels = getTexts(webDriver);
-        assertEquals("Wrong Clinical History Options",expectedLabels,labels);
+        List<WebElement> elements = getWrappedDriver().findElements(By.cssSelector("table.x4-form-type-checkbox label.x4-form-cb-label"));
+        Set<String> labels = new HashSet<>(getTexts(elements));
+        assertEquals("Wrong Clinical History Options",new HashSet<>(expectedLabels),labels);
     }
 
     protected abstract String getAnimalHistoryPath();
