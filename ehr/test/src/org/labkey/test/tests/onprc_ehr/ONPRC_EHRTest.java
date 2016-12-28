@@ -897,16 +897,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         assertElementNotPresent(Locator.tagContainingText("b", "Chronological History").notHidden()); //check hide history
         assertElementNotPresent(Locator.tagContainingText("label", "Projects").notHidden()); //check redaction
 
-        //exposure report
-        log("testing exposure export");
-        goToProjectHome();
-        waitAndClickAndWait(Locator.tagContainingText("a", "Exposure Report"));
-        waitForElement(Locator.tagContainingText("label", "Enter Animal Id"));
-        Ext4FieldRef.getForLabel(this, "Enter Animal Id").setValue("12345");
-        clickAndWait(Ext4Helper.Locators.ext4Button("Submit"));
-        assertElementPresent(Locator.tagContainingText("b", "12345"));
-        assertElementPresent(Locator.tagContainingText("b", "Chronological History"));
-
         //compare lists of animals
         goToProjectHome();
         waitAndClickAndWait(Locator.tagContainingText("a", "Compare Lists of Animals"));
