@@ -1410,6 +1410,7 @@ ehr/src/org/labkey/ehr/security/EHRTemplateCreatorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/AgeMonthsDisplayColumn.java -text
+ehr/src/org/labkey/ehr/table/AgeYearMonthsDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/SNOMEDCodesDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
