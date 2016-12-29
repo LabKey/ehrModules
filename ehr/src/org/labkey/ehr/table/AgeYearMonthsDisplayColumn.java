@@ -75,7 +75,7 @@ public class AgeYearMonthsDisplayColumn extends DataColumn
         int diffYear = deathCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
         int monthPart = diffYear * 12 + deathCal.get(Calendar.MONTH) - birthCal.get(Calendar.MONTH);
 
-        return yearRounded + ":" + monthPart;
+        return yearRounded + " year" + (yearRounded == 1 ? "" : "s") + ", " + monthPart + " month" + (monthPart == 1 ? "" : "s");
     }
 
 }
