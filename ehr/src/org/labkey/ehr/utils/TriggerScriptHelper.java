@@ -667,7 +667,7 @@ public class TriggerScriptHelper
             throw errors;
     }
 
-    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, String cond) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, @Nullable String cond) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         if (id == null || date == null || room == null)
             return;
@@ -704,7 +704,9 @@ public class TriggerScriptHelper
         row.put("date", date);
         row.put("room", room);
         row.put("objectid", new GUID().toString());
-        row.put("cond", cond);
+
+        if (cond != null)
+            row.put("cond", cond);
 
         if (enddate != null)
             row.put("enddate", enddate);
