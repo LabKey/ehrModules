@@ -65,6 +65,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.labkey.test.WebTestHelper.buildURL;
 
+@BaseWebDriverTest.ClassTimeout(minutes = 60)
 abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     protected static String FOLDER_NAME = "EHR";
