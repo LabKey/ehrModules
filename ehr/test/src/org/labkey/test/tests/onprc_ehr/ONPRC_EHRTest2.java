@@ -689,7 +689,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         sleep(500);
 
-        getFieldInWindow("Center Project", Ext4FieldRef.class).getEval("expand()");
+        getFieldInWindow("Charge To", Ext4FieldRef.class).getEval("expand()");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
         waitForElement(Ext4Helper.Locators.window("Choose Project"));
         _ext4Helper.queryOne("window[title=Choose Project] [fieldLabel='Project']", Ext4ComboRef.class).setComboByDisplayValue(PROJECT_ID);
