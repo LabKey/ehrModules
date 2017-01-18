@@ -113,7 +113,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
     return {
         setOverride: function(override){
-            props.extraContext.override = override;        
+            props.extraContext.overrideOtherTriggerScripts = override;        
         },
 
         setScriptOptions: function(opts){
