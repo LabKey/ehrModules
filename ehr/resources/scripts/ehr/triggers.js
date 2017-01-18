@@ -72,6 +72,7 @@ EHR.Server.Triggers.init = function(event, errors){
     // even though it is cached globally, force code to use local passed reference 
     this.scriptHelper = new EHR.Server.ScriptHelper(this.extraContext, event, EHR);
     var helper = this.scriptHelper;
+    helper.setOverride(true);
 
     console.debug('** evaluating: ' + this['javax.script.filename'] + ' for: ' + (helper.isValidateOnly() ? 'validation/' : '') + event);
 
