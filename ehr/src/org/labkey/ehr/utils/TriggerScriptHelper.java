@@ -729,6 +729,13 @@ public class TriggerScriptHelper
             return;
 
         TableInfo ti = getTableInfo("study", "birth");
+        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("Id"), id), null);
+        if (ts.exists())
+        {
+            _log.info("Id already exists, no need to create birth record: " + id);
+            return;
+        }
+
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
         if (!row.containsKey("objectid"))
