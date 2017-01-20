@@ -112,10 +112,6 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     }
 
     return {
-        setOverride: function(override){
-            props.extraContext.overrideOtherTriggerScripts = override;        
-        },
-
         setScriptOptions: function(opts){
             LABKEY.ExtAdapter.apply(scriptOptions, opts);
         },
