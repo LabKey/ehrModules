@@ -11,7 +11,7 @@ d.birth,
 d.death,
 d.lastDayAtCenter,
 
-floor(age(d.birth, COALESCE(d.lastDayAtCenter, now()))) AS ageInYearsRounded,
+CAST(floor(age(d.birth, COALESCE(d.lastDayAtCenter, now()))) AS SMALLINT) AS ageInYearsRounded,
 
 ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE), 1) AS ageInMonths,
 
