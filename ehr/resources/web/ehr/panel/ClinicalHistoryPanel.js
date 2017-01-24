@@ -320,7 +320,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     formatName: function(name) {
                         name = name.split('_');
                         var id = name.shift();
-                        var date = name[0];
+                        var date = name[0] + ' 00:00:00';
                         return id + ' (' + new Date(date).format(LABKEY.extDefaultDateFormat) + ')';
                     }
                 }
