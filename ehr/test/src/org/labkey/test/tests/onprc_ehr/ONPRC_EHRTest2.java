@@ -727,6 +727,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitAndClick(Ext4Helper.Locators.window("Treatment Orders").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
         waitForElementToDisappear(Ext4Helper.Locators.window("Treatment Orders"));
         waitForElement(Locator.tagContainingText("div", "2.5 mL / 80 mg"));  //proxy for record in grid
+        clickAndMove(waitForElement(Ext4Helper.Locators.windowHeader("Manage Treatments: " + SUBJECTS[0])), 200, 0);
         waitAndClick(Locator.tag("img").withClass("x4-action-col-icon"));
         waitAndClick(Ext4Helper.Locators.menuItem("Edit Treatment").notHidden());
         waitForElement(Ext4Helper.Locators.window("Treatment Orders").notHidden());
