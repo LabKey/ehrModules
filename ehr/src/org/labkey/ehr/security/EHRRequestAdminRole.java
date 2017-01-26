@@ -30,7 +30,7 @@ public class EHRRequestAdminRole extends AbstractEHRDatasetRole
 {
     public EHRRequestAdminRole()
     {
-        super("EHR Request Admin", "Users with this role are permitted to submit and approve records.  They cannot modify public data.",
+        super("EHR Request Admin", "Users with this role are permitted to submit and approve request records.  They cannot modify public data.",
                 ReadPermission.class,
                 InsertPermission.class,
                 UpdatePermission.class,
