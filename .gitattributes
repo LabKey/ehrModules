@@ -1225,6 +1225,7 @@ ehr/resources/web/ehr/panel/AnimalDetailsExtendedPanel.js -text
 ehr/resources/web/ehr/panel/AnimalDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
+ehr/resources/web/ehr/panel/AnimalSearchPanel.js -text
 ehr/resources/web/ehr/panel/BasicAggregationPanel.js -text
 ehr/resources/web/ehr/panel/BloodSummaryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditDataEntryPanel.js -text
