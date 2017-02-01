@@ -1424,6 +1424,7 @@ ehr/test/sampledata/ehrTestStudyPolicy.xml -text
 ehr/test/sampledata/onprcEHRStudyPolicy.xml -text
 ehr/test/sampledata/snprcEHRStudyPolicy.xml -text
 ehr/test/src/org/labkey/test/categories/EHR.java -text
+ehr/test/src/org/labkey/test/components/ehr/panel/AnimalSearchPanel.java -text
 ehr/test/src/org/labkey/test/components/ehr/panel/LocationFilterType.java -text
 ehr/test/src/org/labkey/test/components/ehr/panel/MultiAnimalFilterType.java -text
 ehr/test/src/org/labkey/test/components/ldk/panel/AbstractFilterType.java -text
