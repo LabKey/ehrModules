@@ -5,4 +5,4 @@
 ##
 
 #installs required packages for populateKinship.r
-install.packages("kinship2", "Rlabkey", "getopt", "Matrix", "pedigree");
+install.packages("kinship2", "Rlabkey", "getopt", "Matrix", "pedigree", dependencies=TRUE);
