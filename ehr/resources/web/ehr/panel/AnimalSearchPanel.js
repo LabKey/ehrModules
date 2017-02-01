@@ -18,6 +18,7 @@ Ext4.define('EHR.panel.AnimalSearchPanel', {
     queryName: 'Demographics',
     viewName: 'Search Panel',
     defaultViewName: 'Alive, at Center',
+    title: 'Search Criteria',
     LABEL_WIDTH: 200,
     width: 660
 });
