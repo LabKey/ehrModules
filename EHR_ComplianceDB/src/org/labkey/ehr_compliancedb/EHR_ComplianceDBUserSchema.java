@@ -26,8 +26,6 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
 
-import java.util.Set;
-
 /**
  * User: bimber
  * Date: 9/24/13
@@ -43,7 +41,7 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
     }
 
     @Override
-    protected TableInfo createTable(String name)
+    public TableInfo createTable(String name)
     {
         if (TABLE_REQUIREMENTS.equalsIgnoreCase(name))
         {
