@@ -55,7 +55,7 @@ public class AgeYearMonthsDisplayColumn extends DataColumn
         return new FieldKey(getBoundColumn().getFieldKey().getParent(), colName);
     }
 
-    private static String getFormattedAge(Date birth, Date death)
+    private String getFormattedAge(Date birth, Date death)
     {
         if (birth == null)
             return null;
