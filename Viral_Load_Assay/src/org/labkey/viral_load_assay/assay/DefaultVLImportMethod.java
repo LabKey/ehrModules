@@ -69,7 +69,14 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
             {
                 String[] nameParts = StringUtils.split((String)row.get(fieldName), "_");
                 row.put("category", "Control");
-                row.put("subjectId", nameParts[0] + "_" + nameParts[1]);
+                if (nameParts.length == 1)
+                {
+                    row.put("subjectId", nameParts[0]);
+                }
+                else
+                {
+                    row.put("subjectId", nameParts[0] + "_" + nameParts[1]);
+                }
                 row.put("date", null);
                 if (nameParts.length > 2)
                 {
