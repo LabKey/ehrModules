@@ -1380,6 +1380,23 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             table.addColumn(wrap);
         }
 
+        String nameYearMonthDay = "yearsAndMonthsAndDays";
+        if (table.getColumn(nameYearMonthDay) == null)
+        {
+            WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), nameYearMonthDay);
+            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
+            {
+                @Override
+                public DisplayColumn createRenderer(ColumnInfo colInfo)
+                {
+                    return new AgeYearsMonthsDaysDisplayColumn(colInfo);
+                }
+            });
+            wrap.setLabel("Age (Years, Months, and Days)");
+
+            table.addColumn(wrap);
+        }
+
     }
 
     private void customizeProcedures(AbstractTableInfo table)

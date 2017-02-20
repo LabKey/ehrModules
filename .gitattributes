@@ -1412,8 +1412,10 @@ ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/AgeMonthsDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/AgeYearMonthsDisplayColumn.java -text
+ehr/src/org/labkey/ehr/table/AgeYearsMonthsDaysDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/DefaultEHRCustomizer.java -text
 ehr/src/org/labkey/ehr/table/SNOMEDCodesDisplayColumn.java -text
+ehr/src/org/labkey/ehr/table/TestAgeYearsAndMonths.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
