@@ -50,6 +50,12 @@ public class AgeYearsMonthsDaysDisplayColumn extends DataColumn
         keys.add(getMappedFieldKey("death"));
     }
 
+    @Override
+    public boolean isFilterable()
+    {
+        return false;
+    }
+
     private FieldKey getMappedFieldKey(String colName)
     {
         return new FieldKey(getBoundColumn().getFieldKey().getParent(), colName);
