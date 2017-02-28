@@ -1,81 +1,55 @@
 package org.labkey.ehr.table;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
-import org.labkey.api.query.FieldKey;
+import org.labkey.api.ehr.table.DurationColumn;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Set;
 
-public class AgeYearMonthsDisplayColumn extends DataColumn
+public class AgeYearMonthsDisplayColumn extends DurationColumn
 {
-
     public AgeYearMonthsDisplayColumn(ColumnInfo col)
     {
-        super(col);
-    }
-
-    @Override
-    public Class getDisplayValueClass()
-    {
-        //NOTE: this is required in order to get excel to output correctly
-        //the raw value is numeric, but the displayValue is text
-        return String.class;
+        super(col, "birth", "death");
     }
 
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return getFormattedAge((Date)ctx.get(getMappedFieldKey("birth")), (Date)ctx.get(getMappedFieldKey("death")));
+        return AgeYearMonthsDisplayColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
     }
 
-    @Override @NotNull
-    public String getFormattedValue(RenderContext ctx)
+    public static String getFormattedAge(Date birth, Date death)
     {
-        Object val = getDisplayValue(ctx);
-        return val == null ? "" : val.toString();
+        return AgeYearMonthsDisplayColumn.getFormattedDuration(birth, death);
     }
 
-    @Override
-    public void addQueryFieldKeys(Set<FieldKey> keys)
+    private static String getFormattedDuration(Date startDate, Date endDate)
     {
-        super.addQueryFieldKeys(keys);
-
-        keys.add(getMappedFieldKey("birth"));
-        keys.add(getMappedFieldKey("death"));
-    }
-
-    private FieldKey getMappedFieldKey(String colName)
-    {
-        return new FieldKey(getBoundColumn().getFieldKey().getParent(), colName);
-    }
-
-    private String getFormattedAge(Date birth, Date death)
-    {
-        if (birth == null)
+        if (startDate == null)
             return null;
 
-        Calendar birthCal = new GregorianCalendar();
-        birthCal.setTime(birth);
-        birthCal = DateUtils.truncate(birthCal, Calendar.DATE);
+        Calendar birthCal = Calendar.getInstance();
+        birthCal.setTime(startDate);
 
-        Calendar deathCal = new GregorianCalendar();
-        deathCal.setTime(death == null ? new Date() : death);
-        deathCal = DateUtils.truncate(deathCal, Calendar.DATE);
+        Calendar deathCal = Calendar.getInstance();
+        deathCal.setTime(endDate == null ? new Date() : endDate);
 
-        double yearPart = (deathCal.getTimeInMillis() - birthCal.getTimeInMillis()) / (DateUtils.MILLIS_PER_DAY * 365.25);
-        int yearRounded = (int)yearPart;
-        birthCal.set(Calendar.YEAR, birthCal.get(Calendar.YEAR) + yearRounded);
+        String yearMonthPartFromUtil;
+        try
+        {
+            yearMonthPartFromUtil = DurationFormatUtils.formatPeriod(birthCal.getTimeInMillis(), deathCal.getTimeInMillis(), "y:M");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            return "Error";
+        }
+        String[] yearMonthParts = yearMonthPartFromUtil.split(":");
+        String yearPart = yearMonthParts[0];
+        String monthPart = yearMonthParts[1];
 
-        int diffYear = deathCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
-        int monthPart = diffYear * 12 + deathCal.get(Calendar.MONTH) - birthCal.get(Calendar.MONTH);
-
-        return yearRounded + " year" + (yearRounded == 1 ? "" : "s") + ", " + monthPart + " month" + (monthPart == 1 ? "" : "s");
+        return yearPart + " year" + (yearPart.equals("1") ? "" : "s") + ", " + monthPart + " month" + (monthPart.equals("1") ? "" : "s");
     }
-
 }
