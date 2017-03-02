@@ -38,24 +38,19 @@ public class AgeDisplayColumn extends DurationColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return AgeDisplayColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
+        return AgeDisplayColumn.getFormattedAge((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
     }
 
     public static String getFormattedAge(Date birth, Date death)
     {
-        return AgeDisplayColumn.getFormattedDuration(birth, death);
-    }
-
-    private static String getFormattedDuration(Date startDate, Date endDate)
-    {
-        if (startDate == null)
+        if (birth == null)
             return null;
 
         Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
+        birthCal.setTime(birth);
 
         Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
+        deathCal.setTime(death == null ? new Date() : death);
 
         String yearMonthPartFromUtil;
         String yearDayPartFromUtil;
@@ -70,8 +65,22 @@ public class AgeDisplayColumn extends DurationColumn
         {
             return "Error";
         }
-        String yearPart = yearMonthPartFromUtil.split(":")[0];
+
+        String[] yearMonthParts = yearMonthPartFromUtil.split(":");
+        String yearPart = yearMonthParts[0];
         String dayPart = yearDayPartFromUtil.split(":")[1];
+
+        // horrible hack to keep working around formatPeriod() bug, which only manifests in the last month
+        if (yearMonthParts[1].equals("11"))
+        {
+            int dayNum = Integer.parseInt(dayPart);
+            if (dayNum < 32)  // clearly incorrect, so it must have been modded
+            {
+                dayNum += 334;  // so add (approximate) days from rest of year, which is still wrong but much less so
+                dayPart = Integer.toString(dayNum);
+            }
+
+        }
 
         return yearPart + " year" + (yearPart.equals("1") ? "" : "s") + ", " + dayPart + " day" + (dayPart.equals("1") ? "" : "s");
     }

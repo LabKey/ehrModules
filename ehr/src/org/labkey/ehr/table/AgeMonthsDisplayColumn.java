@@ -38,24 +38,19 @@ public class AgeMonthsDisplayColumn extends DurationColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return AgeMonthsDisplayColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
+        return AgeMonthsDisplayColumn.getFormattedAge((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
     }
 
     public static String getFormattedAge(Date birth, Date death)
     {
-        return AgeMonthsDisplayColumn.getFormattedDuration(birth, death);
-    }
-
-    private static String getFormattedDuration(Date startDate, Date endDate)
-    {
-        if (startDate == null)
+        if (birth == null)
             return null;
 
         Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
+        birthCal.setTime(birth);
 
         Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
+        deathCal.setTime(death == null ? new Date() : death);
 
         String monthDayPartFromUtil;
         try

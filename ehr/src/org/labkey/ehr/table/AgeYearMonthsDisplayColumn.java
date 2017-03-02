@@ -18,24 +18,19 @@ public class AgeYearMonthsDisplayColumn extends DurationColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return AgeYearMonthsDisplayColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
+        return AgeYearMonthsDisplayColumn.getFormattedAge((Date)ctx.get(getMappedFieldKey(getStartDateColumn())), (Date)ctx.get(getMappedFieldKey(getEndDateColumn())));
     }
 
     public static String getFormattedAge(Date birth, Date death)
     {
-        return AgeYearMonthsDisplayColumn.getFormattedDuration(birth, death);
-    }
-
-    private static String getFormattedDuration(Date startDate, Date endDate)
-    {
-        if (startDate == null)
+        if (birth == null)
             return null;
 
         Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
+        birthCal.setTime(birth);
 
         Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
+        deathCal.setTime(death == null ? new Date() : death);
 
         String yearMonthPartFromUtil;
         try

@@ -16,12 +16,19 @@ public class DurationColumn extends DataColumn
 
     String _startDateColumn;
     String _endDateColumn;
+    private String _durationFormat;
 
     public DurationColumn(ColumnInfo col, String startDateColumn, String endDateColumn)
+    {
+        this(col, startDateColumn, endDateColumn, null);
+    }
+
+    public DurationColumn(ColumnInfo col, String startDateColumn, String endDateColumn, String durationFormat)
     {
         super(col);
         _startDateColumn = startDateColumn;
         _endDateColumn = endDateColumn;
+        _durationFormat = durationFormat;
     }
 
     @Override
@@ -35,31 +42,31 @@ public class DurationColumn extends DataColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return DurationColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(_startDateColumn)), (Date)ctx.get(getMappedFieldKey(_endDateColumn)));
+        return DurationColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(_startDateColumn)), (Date)ctx.get(getMappedFieldKey(_endDateColumn)), _durationFormat);
     }
 
-    private static String getFormattedDuration(Date startDate, Date endDate)
+    private static String getFormattedDuration(Date startDate, Date endDate, String durationFormat)
     {
         if (startDate == null)
             return null;
 
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
 
-        Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(endDate == null ? new Date() : endDate);
 
-        String dayPartFromUtil;
+        String formattedDuration;
         try
         {
-            dayPartFromUtil = DurationFormatUtils.formatPeriod(birthCal.getTimeInMillis(), deathCal.getTimeInMillis(), "yy:MM:dd");
+            formattedDuration = DurationFormatUtils.formatPeriod(startCal.getTimeInMillis(), endCal.getTimeInMillis(), durationFormat);
         }
         catch (IllegalArgumentException iae)
         {
             return "Error";
         }
 
-        return dayPartFromUtil;
+        return formattedDuration;
     }
 
     @Override @NotNull
