@@ -765,7 +765,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
                 xtype: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subset_codes',
-                columns: 'secondaryCategory,code,code/meaning',
+                columns: 'secondaryCategory,code,code/meaning,rowid',
                 sort: 'secondaryCategory,code/meaning',
                 storeId: ['ehr_lookups', 'snomed', 'code', 'meaning', this.queryName, (this.dataIndex || this.name)].join('||'),
                 maxRows: 0,
@@ -892,7 +892,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
         else {
             this.removeStoreFilter('primaryCategory', LABKEY.Filter.Types.EQUAL).push(LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL));
             this.store.baseParams['query.queryName'] = 'snomed_subset_codes';
-            this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning';
+            this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning,rowid';
             this.store.baseParams['query.sort'] = 'secondaryCategory,code/meaning';
             if(this.store.sortInfo){
                 this.store.sortInfo.field = 'meaning';
