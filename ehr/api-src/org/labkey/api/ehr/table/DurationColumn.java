@@ -42,12 +42,12 @@ public class DurationColumn extends DataColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return DurationColumn.getFormattedDuration((Date)ctx.get(getMappedFieldKey(_startDateColumn)), (Date)ctx.get(getMappedFieldKey(_endDateColumn)), _durationFormat);
+        return getFormattedDuration((Date)ctx.get(getMappedFieldKey(_startDateColumn)), (Date)ctx.get(getMappedFieldKey(_endDateColumn)));
     }
 
-    private static String getFormattedDuration(Date startDate, Date endDate, String durationFormat)
+    protected String getFormattedDuration(Date startDate, Date endDate)
     {
-        if (startDate == null)
+        if (startDate == null || _durationFormat == null)
             return null;
 
         Calendar startCal = Calendar.getInstance();
@@ -59,7 +59,7 @@ public class DurationColumn extends DataColumn
         String formattedDuration;
         try
         {
-            formattedDuration = DurationFormatUtils.formatPeriod(startCal.getTimeInMillis(), endCal.getTimeInMillis(), durationFormat);
+            formattedDuration = DurationFormatUtils.formatPeriod(startCal.getTimeInMillis(), endCal.getTimeInMillis(), _durationFormat);
         }
         catch (IllegalArgumentException iae)
         {

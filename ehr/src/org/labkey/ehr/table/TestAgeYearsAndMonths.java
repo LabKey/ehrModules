@@ -1,8 +1,7 @@
 package org.labkey.ehr.table;
-import org.junit.*;
+import org.junit.Test;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -22,6 +21,7 @@ public class TestAgeYearsAndMonths
 
     private void testAge(GregorianCalendar startCalendar, GregorianCalendar endCalendar, String expected)
     {
+//        TODO: If using this test, need to update getFormattedDuration
 //        String result = AgeYearMonthsDisplayColumn.getFormattedAge(startCalendar.getTime(), endCalendar.getTime());
 //        Assert.assertEquals(expected,result);
     }
@@ -48,6 +48,7 @@ public class TestAgeYearsAndMonths
         GregorianCalendar twoYearsAgo = new GregorianCalendar();
         twoYearsAgo.add(Calendar.YEAR, -2);
         String expected = "2 years, 0 months";
+//        TODO: If using this test, need to update to getFormattedDuration
 //        String result = AgeYearMonthsDisplayColumn.getFormattedAge(twoYearsAgo.getTime(), null);
 //        Assert.assertEquals(expected,result);
     }
