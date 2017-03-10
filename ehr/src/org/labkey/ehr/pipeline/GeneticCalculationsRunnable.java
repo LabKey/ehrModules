@@ -117,7 +117,7 @@ public class GeneticCalculationsRunnable
             if (!inputFile.exists())
                 inputFile.createNewFile();
 
-            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters);
+            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters, null);
             PipelineService.get().queueJob(job);
             job.setLogFile(new File(job.getLogFile().getParent() + "/kinship_" + DateUtil.formatDateTime(new Date(), LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat()) + ".txt.log"));
         }
