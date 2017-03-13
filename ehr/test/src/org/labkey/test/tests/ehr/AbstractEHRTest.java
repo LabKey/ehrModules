@@ -489,6 +489,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("name", PROTOCOL_PROJECT_ID);
         rowMap.put("protocol", PROTOCOL_ID);
         insertCmd.addRow(rowMap);
+
         rowMap = new HashMap<>();
         rowMap.put("project", PROJECT_ID);
         rowMap.put("name", PROJECT_ID);
