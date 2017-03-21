@@ -529,19 +529,23 @@
             <column columnName="max_draw_pct">
                 <columnTitle>Max Percent Blood Drawn</columnTitle>
                 <description>This is the maximum percent of the animal's blood that can be drawn (expressed as a
-                    decimal, where 1 indicates 100%)
-                </description>
+                    decimal, where 1 indicates 100%)</description>
             </column>
             <column columnName="blood_draw_interval">
                 <columnTitle>Blood Reconstitution Interval (Days)</columnTitle>
-                <description>This is the number of days that must elapse to full reconstitute from a max blood draw
-                </description>
+                <description>This is the number of days that must elapse to full reconstitute from a max blood draw</description>
             </column>
             <column columnName="cites_code">
                 <columnTitle>Cites Code</columnTitle>
             </column>
             <column columnName="dateDisabled">
                 <columnTitle>Date Disabled</columnTitle>
+            </column>
+            <column columnName="USDA">
+                <description>Whether the USDA tracks pain categories for this species</description>
+            </column>
+            <column columnName="Gestation">
+                <description>Gestation period, in days</description>
             </column>
         </columns>
     </table>

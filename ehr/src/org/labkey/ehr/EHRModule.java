@@ -123,7 +123,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 17.10;
+        return 17.11;
     }
 
     public boolean hasScripts()
@@ -145,6 +145,8 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));
+
         EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));
