@@ -17,7 +17,6 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -35,7 +34,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
-import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
 
 import java.sql.ResultSet;
