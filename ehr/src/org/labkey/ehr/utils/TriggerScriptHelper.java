@@ -723,24 +723,40 @@ public class TriggerScriptHelper
             throw errors;
     }
 
-    public void createBirthRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public void createBirthRecord(String id, Map<String, Object> props, List<String> errorMsgs) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         if (id == null)
             return;
-
-        TableInfo ti = getTableInfo("study", "birth");
-        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("Id"), id), null);
-        if (ts.exists())
-        {
-            _log.info("Id already exists, no need to create birth record: " + id);
-            return;
-        }
 
         Map<String, Object> row = new CaseInsensitiveHashMap<>();
         row.putAll(props);
         if (!row.containsKey("objectid"))
         {
             row.put("objectid", new GUID().toString());
+        }
+
+        if (props.get("date") == null)
+        {
+            errorMsgs.add("Missing birth date for ID: " + id);
+            return;
+        }
+
+        //this could throw a convert exception, but this should get caught as passed as an error to the trigger script
+        Date birth = ConvertHelper.convert(props.get("date"), Date.class);
+
+        //get existing birth record for this ID.
+        TableInfo ti = getTableInfo("study", "birth");
+        Date existingBirthDate = new TableSelector(ti, PageFlowUtil.set("date"), new SimpleFilter(FieldKey.fromString("Id"), id), null).getObject(Date.class);
+        if (existingBirthDate != null)
+        {
+            long msDiff = DateUtils.truncate(existingBirthDate, Calendar.DATE).getTime() - DateUtils.truncate(birth, Calendar.DATE).getTime();
+            if (msDiff > 0)
+            {
+                errorMsgs.add("Incoming birth date does not match existing birth date.  Please update the existing birth record first or modify the incoming data.  Existing birthdate: " + _dateTimeFormat.format(birth));
+            }
+
+            //existing birth record exists with the same date, abort
+            return;
         }
 
         List<Map<String, Object>> rows = new ArrayList<>();
@@ -1510,8 +1526,10 @@ public class TriggerScriptHelper
         return recipients;
     }
 
-    public void onAnimalArrival(String id, Map<String, Object> row) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public String onAnimalArrival(String id, Map<String, Object> row, @Nullable Map<String, Object> extraBirthFieldMappings) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
+        List<String> errorMsgs = new ArrayList<>();
+
         Map<String, Object> demographicsProps = new HashMap<String, Object>();
         for (String key : new String[]{"Id", "gender", "species", "dam", "sire", "origin", "source", "geographic_origin", "birth"})
         {
@@ -1541,8 +1559,18 @@ public class TriggerScriptHelper
             birthProps.put("species", row.get("species"));
             birthProps.put("geographic_origin", row.get("geographic_origin"));
 
-            createBirthRecord(id, birthProps);
+            if (extraBirthFieldMappings != null)
+            {
+                for (String fieldName : extraBirthFieldMappings.keySet())
+                {
+                    birthProps.put(fieldName, row.get(extraBirthFieldMappings.get(fieldName)));
+                }
+            }
+
+            createBirthRecord(id, birthProps, errorMsgs);
         }
+
+        return errorMsgs.isEmpty() ? null : StringUtils.join(errorMsgs, ";");
     }
 
     private Date findMostRecentDate(String id, Date lastVal, Map<String, List<Date>> otherVals)

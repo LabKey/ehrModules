@@ -777,36 +777,63 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         log("deleting existing records");
         cleanRecords(arrivalId1, arrivalId2, arrivalId3);
-        String flagId = ensureFlagExists("Surveillance", "Quarantine", null);
+        String quarrantineFlagId = ensureFlagExists("Surveillance", "Quarantine", null);
+        String nonRestrictedFlagId = ensureFlagExists("Condition", "Nonrestricted", null);
 
         //insert into arrival
         log("Creating Ids");
+        Date birth = new Date();
+        Date arrivalDate = prepareDate(new Date(), -3, 0);
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
                 new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel"},
                 new Object[][]{
-                        {arrivalId1, prepareDate(new Date(), -3, 0), "f", RHESUS, INDIAN, new Date(), ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
+                        {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, birth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
                 }
         )), getExtraContext(), true);
 
+        //expect to fail because of birth date
+        Date incorrectBirth = DateUtils.addDays(birth, -4);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
+                new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel"},
+                new Object[][]{
+                        {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, incorrectBirth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
+                }
+        )), getExtraContext(), false);
+
         //expect to find demographics record.
         Assert.assertTrue("demographics row was not created for arrival", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", arrivalId1, Filter.Operator.EQUAL)));
+
+        //and birth
+        SelectRowsCommand birthSelect = new SelectRowsCommand("study", "housing");
+        birthSelect.addFilter(new Filter("Id", arrivalId1));
+        birthSelect.addFilter(new Filter("date", birth, Filter.Operator.DATE_EQUAL));
+        birthSelect.addFilter(new Filter("arrival_date", arrivalDate, Filter.Operator.DATE_EQUAL));
+        Assert.assertEquals(1, birthSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
 
         //validation of housing
         SelectRowsCommand housingSelect = new SelectRowsCommand("study", "housing");
         housingSelect.addFilter(new Filter("Id", arrivalId1));
         housingSelect.addFilter(new Filter("room", ROOMS[0]));
         housingSelect.addFilter(new Filter("cage", CAGES[0]));
-        housingSelect.addFilter(new Filter("date", prepareDate(new Date(), -3, 0), Filter.Operator.DATE_EQUAL));
+        housingSelect.addFilter(new Filter("date", arrivalDate, Filter.Operator.DATE_EQUAL));
         housingSelect.addFilter(new Filter("enddate", null, Filter.Operator.ISBLANK));
         Assert.assertEquals(1, housingSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
 
-        //add quarantine flag
+        //and quarantine flag
         SelectRowsCommand flagSelect = new SelectRowsCommand("study", "flags");
         flagSelect.addFilter(new Filter("Id", arrivalId1));
-        flagSelect.addFilter(new Filter("flag", flagId));
-        flagSelect.addFilter(new Filter("date", prepareDate(new Date(), -3, 0), Filter.Operator.DATE_EQUAL));
+        flagSelect.addFilter(new Filter("flag", quarrantineFlagId));
+        flagSelect.addFilter(new Filter("date", arrivalDate, Filter.Operator.DATE_EQUAL));
         flagSelect.addFilter(new Filter("enddate", null, Filter.Operator.ISBLANK));
         Assert.assertEquals(1, flagSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
+
+        //and nonrestricted flag.  added by birth triggers, should reflect arrival date not birthdate
+        SelectRowsCommand flagSelect2 = new SelectRowsCommand("study", "flags");
+        flagSelect2.addFilter(new Filter("Id", arrivalId1));
+        flagSelect2.addFilter(new Filter("flag", nonRestrictedFlagId));
+        flagSelect2.addFilter(new Filter("date", arrivalDate, Filter.Operator.DATE_EQUAL));
+        flagSelect2.addFilter(new Filter("enddate", null, Filter.Operator.ISBLANK));
+        Assert.assertEquals(1, flagSelect2.execute(getApiHelper().getConnection(), getContainerPath()).getRowCount().intValue());
 
         //demographics status
         SelectRowsCommand demographicsSelect = new SelectRowsCommand("study", "demographics");
