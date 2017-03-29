@@ -651,25 +651,25 @@ Ext4.define('EHR.data.StoreCollection', {
 
         // non-validation should allow more total time/transaction, since it might involve more work on the actual insert/update
         // validation could involve warming the DemographicsCache, so we allow more per-row time, but less overall time/transaction
-        var perRowWarningThrehsold = 0.2;
-        var totalTransactionWarningThrehsold = 45;
-        var perRowValidationWarningThrehsold = 5; //could involve DemographicCache warmup
-        var totalValidationTransactionWarningThrehsold = 25; //total transaction thresold is lower for validation, since we expect small batches and dont actually insert into the DB
+        var perRowWarningThreshold = 0.2;
+        var totalTransactionWarningThreshold = 45;
+        var perRowValidationWarningThreshold = 5; //could involve DemographicCache warmup
+        var totalValidationTransactionWarningThreshold = 25; //total transaction threshold is lower for validation, since we expect small batches and dont actually insert into the DB
 
         if (this.formConfig){
             msg.push('Form Type: ' + this.formConfig.name);
 
             if (this.formConfig.perRowWarningThreshold){
-                perRowWarningThrehsold = this.formConfig.perRowWarningThreshold;
+                perRowWarningThreshold = this.formConfig.perRowWarningThreshold;
             }
             if (this.formConfig.totalTransactionWarningThrehsold){
-                perRowWarningThrehsold = this.formConfig.totalTransactionWarningThrehsold;
+                perRowWarningThreshold = this.formConfig.totalTransactionWarningThrehsold;
             }
             if (this.formConfig.perRowValidationWarningThrehsold){
-                perRowWarningThrehsold = this.formConfig.perRowValidationWarningThrehsold;
+                perRowWarningThreshold = this.formConfig.perRowValidationWarningThrehsold;
             }
             if (this.formConfig.totalValidationTransactionWarningThrehsold){
-                perRowWarningThrehsold = this.formConfig.totalValidationTransactionWarningThrehsold;
+                perRowWarningThreshold = this.formConfig.totalValidationTransactionWarningThrehsold;
             }
         }
 
@@ -708,12 +708,12 @@ Ext4.define('EHR.data.StoreCollection', {
 
             if (options && options.jsonData && !!options.jsonData.validateOnly) {
                 //note: abort if either is true.
-                if (duration < totalValidationTransactionWarningThrehsold || (duration / totalRows) <= perRowValidationWarningThrehsold) {
+                if (duration < totalValidationTransactionWarningThreshold || (duration / totalRows) <= perRowValidationWarningThreshold) {
                     return;
                 }
             }
             else {
-                if (duration < totalTransactionWarningThrehsold || (duration / totalRows) <= perRowWarningThrehsold) {
+                if (duration < totalTransactionWarningThreshold || (duration / totalRows) <= perRowWarningThreshold) {
                     return;
                 }
             }
