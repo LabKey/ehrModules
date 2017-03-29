@@ -804,7 +804,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertTrue("demographics row was not created for arrival", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", arrivalId1, Filter.Operator.EQUAL)));
 
         //and birth
-        SelectRowsCommand birthSelect = new SelectRowsCommand("study", "housing");
+        SelectRowsCommand birthSelect = new SelectRowsCommand("study", "birth");
         birthSelect.addFilter(new Filter("Id", arrivalId1));
         birthSelect.addFilter(new Filter("date", birth, Filter.Operator.DATE_EQUAL));
         birthSelect.addFilter(new Filter("arrival_date", arrivalDate, Filter.Operator.DATE_EQUAL));
