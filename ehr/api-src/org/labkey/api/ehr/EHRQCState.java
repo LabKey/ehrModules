@@ -19,30 +19,31 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 
 /**
+ * Augments the study module's QC state with additional metadata reflecting a record's progression from draft to
+ * needing to reviewed to finalized.
  * User: bimber
  * Date: 10/29/13
- * Time: 2:48 PM
  */
 public interface EHRQCState
 {
-    public int getRowId();
+    int getRowId();
 
-    public String getLabel();
+    String getLabel();
 
-    public Container getContainer();
+    Container getContainer();
 
-    public String getDescription();
+    String getDescription();
 
-    public Boolean isPublicData();
+    Boolean isPublicData();
 
-    public Boolean isDraftData();
+    Boolean isDraftData();
 
-    public Boolean isDeleted();
+    Boolean isDeleted();
 
-    public Boolean isRequest();
+    Boolean isRequest();
 
-    public Boolean isAllowFutureDates();
+    Boolean isAllowFutureDates();
 
-    public JSONObject toJson();
+    JSONObject toJson();
 
 }

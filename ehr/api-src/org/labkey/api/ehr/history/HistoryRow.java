@@ -18,17 +18,17 @@ package org.labkey.api.ehr.history;
 import org.json.JSONObject;
 
 /**
+ * An individual item within a Clinical History, as created by a {@link HistoryDataSource}
  * User: bimber
  * Date: 3/3/13
- * Time: 9:00 PM
  */
 public interface HistoryRow
 {
-    public String getSubjectId();
+    String getSubjectId();
 
-    public JSONObject toJSON();
+    JSONObject toJSON();
 
-    public void setShowTime(Boolean showTime);
+    void setShowTime(Boolean showTime);
 
-    public String getSortDateString();
+    String getSortDateString();
 }

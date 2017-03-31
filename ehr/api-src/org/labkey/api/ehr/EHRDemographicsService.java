@@ -22,9 +22,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Caches key demographic summary data for animals, allowing for quick recall without needing to query against
+ * many tables each time we need to show a Snapshot view or similar.
+ *
  * User: bimber
  * Date: 9/14/12
- * Time: 4:44 PM
  */
 abstract public class EHRDemographicsService
 {
@@ -40,6 +42,9 @@ abstract public class EHRDemographicsService
         _instance = instance;
     }
 
+    /**
+     * Alerts the service that data has changed in a given table for a set of animals
+     */
     abstract public void reportDataChange(final Container c, final String schema, final String query, final List<String> ids);
 
     abstract public AnimalRecord getAnimal(Container c, String id);

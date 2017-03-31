@@ -87,7 +87,6 @@ import java.util.Set;
 /**
  * User: bimber
  * Date: 9/14/12
- * Time: 4:46 PM
  */
 public class EHRServiceImpl extends EHRService
 {
@@ -542,11 +541,13 @@ public class EHRServiceImpl extends EHRService
         map.put(schema, schemaMap);
     }
 
+    @NotNull
     public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti)
     {
         return getButtons(ti, _moreActionsButtons);
     }
 
+    @NotNull
     public List<ButtonConfigFactory> getTbarButtons(TableInfo ti)
     {
         return getButtons(ti, _tbarButtons);
@@ -724,6 +725,7 @@ public class EHRServiceImpl extends EHRService
         return ensureFlagActive(u, c, flag, date, null, remark, animalIds, livingAnimalsOnly);
     }
 
+    @NotNull
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, Date enddate, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
         return EHRManager.get().ensureFlagActive(u, c, flag, date, enddate, remark, animalIds, livingAnimalsOnly);

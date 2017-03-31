@@ -23,28 +23,42 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * A source for a specific type of demographic summary data for animals, such as SPF status, recent weights,
+ * or current housing.
+ *
  * User: bimber
  * Date: 7/9/13
- * Time: 9:24 PM
  */
 public interface DemographicsProvider
 {
-    public static final int MAXIMUM_BATCH_SIZE = 1000;
+    /** The maximum number of animals that will be requested to load at once in any given bulk operation */
+    int MAXIMUM_BATCH_SIZE = 1000;
 
-    public String getName();
+    String getName();
 
-    public boolean isAvailable(Container c, User u);
+    boolean isAvailable(Container c, User u);
 
-    public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids);
+    Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids);
 
-    // report whether this provider requires calculation of cached data when a row in this passed table has changed
-    // this is a somewhat blunt approach, but it errs on the side of re-calculating
-    public boolean requiresRecalc(String schema, String query);
+    /**
+     * report whether this provider requires calculation of cached data when a row in this passed table has changed
+     * this is a somewhat blunt approach, but it errs on the side of re-calculating
+     */
+    boolean requiresRecalc(String schema, String query);
 
-    // returns the top-level keys used by this provider
-    public Set<String> getKeys();
+    /** @return the top-level keys used by this provider in the map of cached data */
+    Set<String> getKeys();
 
-    public Collection<String> getKeysToTest();
+    /**
+     * @return the keys to be compared in newly cached records vs the previous cache for the same animal. Used
+     * to detect when the cache becomes stale because underlying data has changed without triggering a cache refresh.
+     */
+    Collection<String> getKeysToTest();
 
-    public Set<String> getIdsToUpdate(Container c, String id, Map<String, Object> originalProps, Map<String, Object> newProps);
+    /**
+     * Allows specific providers to inspect changes and potentially signal other animals to reache.
+     * For example, if one animal's housing changes, it's likely that its previous cagemates need to have their
+     * cagemates cached information refreshed, as do the animals in the cage it just moved into.
+     */
+    Set<String> getIdsToUpdate(Container c, String id, Map<String, Object> originalProps, Map<String, Object> newProps);
 }

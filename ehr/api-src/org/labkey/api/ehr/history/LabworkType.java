@@ -23,19 +23,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * A specific kind of clinical history, representing lab work results, typically as a panel that may
+ * de-pivot from a long skinny representing to a single "row" with separate columns for each individual test.
  * User: bimber
  * Date: 3/6/13
- * Time: 11:12 AM
  */
 public interface LabworkType
 {
-    public String getName();
+    String getName();
 
-    public boolean isEnabled(Container c);
+    boolean isEnabled(Container c);
 
-    public List<String> getResults(Container c, User u, String runId, boolean redacted);
+    List<String> getResults(Container c, User u, String runId, boolean redacted);
 
-    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted);
+    Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted);
 
-    public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
+    Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
 }

@@ -23,72 +23,76 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Cached summary information from an animal. Records should always be fully populated with all available information
+ * @see DemographicsProvider
+ * @see org.labkey.api.ehr.EHRDemographicsService
  * User: bimber
  * Date: 7/14/13
- * Time: 11:46 AM
  */
 public interface AnimalRecord
 {
-    public AnimalRecord createCopy();
+    /** @return a clone of this record */
+    AnimalRecord createCopy();
 
-    public String getId();
+    String getId();
 
-    public Container getContainer();
+    Container getContainer();
 
-    public Date getCreated();
+    Date getCreated();
 
-    @NotNull
-    public Map<String, Object> getProps();
+    /** @return the full set of cached properties */
+    @NotNull Map<String, Object> getProps();
 
-    public String getGender();
+    // Below are convenience methods for specific cached properties
+    String getGender();
 
-    public String getGenderMeaning();
+    String getGenderMeaning();
 
-    public String getOrigGender();
+    String getOrigGender();
 
-    public String getAgeInYearsAndDays();
+    String getAgeInYearsAndDays();
 
-    public String getSpecies();
+    String getSpecies();
 
-    public String getCalculatedStatus();
+    String getCalculatedStatus();
 
-    public Date getBirth();
+    Date getBirth();
 
-    public boolean hasBirthRecord();
+    boolean hasBirthRecord();
 
-    public Date getDeath();
+    Date getDeath();
 
-    public String getGeographicOrigin();
+    String getGeographicOrigin();
 
-    public String getDemographicsObjectId();
+    String getDemographicsObjectId();
 
-    public List<Map<String, Object>> getActiveAssignments();
+    List<Map<String, Object>> getActiveAssignments();
 
-    public List<Map<String, Object>> getActiveTreatments();
+    List<Map<String, Object>> getActiveTreatments();
 
-    public List<Map<String, Object>> getActiveHousing();
+    List<Map<String, Object>> getActiveHousing();
 
-    public String getCurrentRoom();
+    String getCurrentRoom();
 
-    public String getCurrentCage();
+    String getCurrentCage();
 
-    public List<Map<String, Object>> getActiveFlags();
+    List<Map<String, Object>> getActiveFlags();
 
-    public List<Map<String, Object>> getActiveProblem();
+    List<Map<String, Object>> getActiveProblem();
 
-    public List<Map<String, Object>> getActiveCases();
+    List<Map<String, Object>> getActiveCases();
 
-    public List<Map<String, Object>> getParents();
+    List<Map<String, Object>> getParents();
 
-    public List<Map<String, Object>> getWeights();
+    List<Map<String, Object>> getWeights();
 
-    public Double getMostRecentWeight();
+    Double getMostRecentWeight();
 
-    public Date getMostRecentWeightDate();
+    Date getMostRecentWeightDate();
 
-    public Date getMostRecentDeparture();
+    Date getMostRecentDeparture();
 
-    public Date getMostRecentArrival();
+    Date getMostRecentArrival();
 
-    public Integer getDaysSinceWeight();
+    Integer getDaysSinceWeight();
 }

@@ -18,14 +18,10 @@ package org.labkey.api.ehr.dataentry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.ehr.dataentry.AbstractFormSection;
-import org.labkey.api.ehr.dataentry.FormElement;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
-import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
 
 import java.util.ArrayList;
@@ -35,9 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Shows an editable grid for the wrapped table.
  * User: bimber
  * Date: 4/27/13
- * Time: 10:54 AM
  */
 public class SimpleFormSection extends AbstractFormSection
 {

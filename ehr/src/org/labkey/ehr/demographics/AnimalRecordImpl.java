@@ -28,9 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Immutable cached animal demographic record
+ *
  * User: bimber
  * Date: 7/14/13
- * Time: 11:46 AM
  */
 public class AnimalRecordImpl implements AnimalRecord
 {

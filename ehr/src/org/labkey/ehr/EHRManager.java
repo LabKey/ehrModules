@@ -17,6 +17,7 @@ package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -1407,6 +1408,7 @@ public class EHRManager
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
 
+    @NotNull
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, @Nullable Date enddate, String remark, Collection<String> toTest, boolean livingAnimalsOnly) throws BatchValidationException
     {
         final List<String> animalIds = new ArrayList<>(toTest);
@@ -1507,6 +1509,7 @@ public class EHRManager
         return null;
     }
 
+    @NotNull
     public Collection<String> terminateFlagsIfExists(User u, Container c, String flag, final Date enddate, Collection<String> animalIds)
     {
         TableInfo flagsTable = getEHRTable(c, u, "study", "flags");
@@ -1547,15 +1550,7 @@ public class EHRManager
 
             return distinctIds;
         }
-        catch (InvalidKeyException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (BatchValidationException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (QueryUpdateServiceException e)
+        catch (InvalidKeyException | BatchValidationException | QueryUpdateServiceException e)
         {
             throw new RuntimeException(e);
         }

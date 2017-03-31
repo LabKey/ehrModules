@@ -16,9 +16,7 @@
 package org.labkey.api.ehr.dataentry;
 
 import org.json.JSONObject;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.view.template.ClientDependency;
 
@@ -27,38 +25,39 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Top-level data entry form, composed of potentially many different sections for different data types.
  * User: bimber
  * Date: 4/27/13
- * Time: 8:34 AM
  */
 public interface DataEntryForm
 {
-    abstract public String getName();
+    String getName();
 
-    abstract public String getLabel();
+    String getLabel();
 
-    abstract public String getCategory();
+    String getCategory();
 
-    abstract public boolean hasPermission(Class<? extends Permission> clazz);
+    boolean hasPermission(Class<? extends Permission> clazz);
 
     /**
      * Intended for checks like testing whether an owning module is active
      */
-    abstract public boolean isAvailable();
+    boolean isAvailable();
 
-    abstract public boolean isVisible();
+    boolean isVisible();
 
-    abstract public String getJavascriptClass();
+    String getJavascriptClass();
 
-    abstract public JSONObject toJSON(boolean includeFormElements);
+    JSONObject toJSON(boolean includeFormElements);
 
-    abstract public JSONObject toJSON();
+    JSONObject toJSON();
 
-    abstract public List<FormSection> getFormSections();
+    /** @return the components to be rendered as part of the overall form */
+    List<FormSection> getFormSections();
 
-    abstract public LinkedHashSet<ClientDependency> getClientDependencies();
+    LinkedHashSet<ClientDependency> getClientDependencies();
 
-    abstract public Set<TableInfo> getTables();
+    Set<TableInfo> getTables();
 
-    abstract public boolean canRead();
+    boolean canRead();
 }

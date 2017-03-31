@@ -15,13 +15,11 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
+ * Shows a more extensive summary of an animal's basic demographic and other information.
+ *
  * User: bimber
  * Date: 6/9/13
- * Time: 4:15 PM
  */
 public class ExtendedAnimalDetailsFormSection extends AnimalDetailsFormSection
 {

@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Form section that isn't bound to an ExtJS store for its data model.
  * User: bimber
  * Date: 1/11/14
- * Time: 6:40 AM
  */
 public class NonStoreFormSection extends AbstractFormSection
 {

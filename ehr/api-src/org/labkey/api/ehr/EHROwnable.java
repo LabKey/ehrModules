@@ -5,6 +5,10 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.security.User;
 
+/**
+ * Base class for EHR resources that are owned by and enabled/disabled based on which modules are enabled
+ * in the current folder.
+ */
 public abstract class EHROwnable
 {
     protected Module _owner = null;

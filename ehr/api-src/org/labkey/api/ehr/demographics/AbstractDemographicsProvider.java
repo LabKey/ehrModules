@@ -46,7 +46,6 @@ import java.util.TreeMap;
 /**
  * User: bimber
  * Date: 7/9/13
- * Time: 9:42 PM
  */
 abstract public class AbstractDemographicsProvider extends EHROwnable implements DemographicsProvider
 {
@@ -144,7 +143,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 
     public Set<String> getIdsToUpdate(Container c, String id, Map<String, Object> originalProps, Map<String, Object> newProps)
     {
-        //this allows specific DemographicsProviders to inspect and potentially signal other animals to reache
+        // Most changes to an individual animal's data won't affect the information cached for other animals
         return Collections.emptySet();
     }
 

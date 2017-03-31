@@ -23,9 +23,9 @@ import org.labkey.api.data.JsonWriter;
 import org.labkey.api.security.User;
 
 /**
+ * Wrapper for the UI component for a single column in a query
  * User: bimber
  * Date: 5/17/13
- * Time: 12:35 PM
  */
 public class FormElement
 {

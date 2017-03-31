@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Uses separate start and end date columns to determine the difference and render in a requested format.
+ */
 public class DurationColumn extends DataColumn
 {
 

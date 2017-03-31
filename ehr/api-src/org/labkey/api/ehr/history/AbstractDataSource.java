@@ -207,7 +207,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         }
 
         HistoryRowImpl ret = new HistoryRowImpl(this, categoryText, categoryGroup, categoryColor, subjectId, date, html, qcStateLabel, publicData, taskId, taskRowId, formType, objectId);
-        if (_showTime && ret != null)
+        if (_showTime)
             ret.setShowTime(_showTime);
 
         return ret;

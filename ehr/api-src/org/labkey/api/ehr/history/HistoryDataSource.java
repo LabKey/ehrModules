@@ -23,23 +23,22 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Responsible for selecting rows from a particular data source, such as weights or hematology data,
+ * and rendering them into the display HTML to be included in the Clinical History view.
+ *
  * User: bimber
  * Date: 2/17/13
- * Time: 4:50 PM
- *
- *
- * This class is responsible for selecting rows from a target table,
- * and converting them into the display HTML
  */
 public interface HistoryDataSource
 {
-    public String getName();
+    String getName();
 
-    public boolean isAvailable(Container c, User u);
+    /** @return if the data source is enabled, typically based on the modules that are enabled in the container */
+    boolean isAvailable(Container c, User u);
 
-    public Set<String> getAllowableCategoryGroups(Container c, User u);
+    Set<String> getAllowableCategoryGroups(Container c, User u);
 
-    public List<HistoryRow> getRows(Container c, User u, String subjectId, Date minDate, Date maxDate, boolean redacted);
+    List<HistoryRow> getRows(Container c, User u, String subjectId, Date minDate, Date maxDate, boolean redacted);
 
-    public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId, boolean redacted);
+    List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId, boolean redacted);
 }

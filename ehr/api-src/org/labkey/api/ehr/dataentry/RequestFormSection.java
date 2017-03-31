@@ -16,8 +16,6 @@
 package org.labkey.api.ehr.dataentry;
 
 import org.json.JSONObject;
-import org.labkey.api.data.Container;
-import org.labkey.api.security.User;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +24,6 @@ import java.util.Map;
 /**
  * User: bimber
  * Date: 6/9/13
- * Time: 4:15 PM
  */
 public class RequestFormSection extends SimpleFormSection
 {

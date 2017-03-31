@@ -26,37 +26,39 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * One section of a larger data entry form. Typically bound to a single underlying table, but might also
+ * be instructions on usage, a read-only summary snapshot for the selected animal, etc.
  * User: bimber
  * Date: 4/27/13
- * Time: 8:36 AM
  */
 public interface FormSection
 {
-    abstract public String getName();
+    String getName();
 
-    abstract public String getLabel();
+    String getLabel();
 
-    abstract public String getXtype();
+    /** @return the ExtJS type to use for the rendered component */
+    String getXtype();
 
-    abstract public String getClientModelClass();
+    String getClientModelClass();
 
-    abstract public boolean hasPermission(DataEntryFormContext ctx, Class<? extends Permission> perm);
+    boolean hasPermission(DataEntryFormContext ctx, Class<? extends Permission> perm);
 
-    abstract public Set<Pair<String, String>> getTableNames();
+    Set<Pair<String, String>> getTableNames();
 
-    abstract public Set<TableInfo> getTables(DataEntryFormContext ctx);
+    Set<TableInfo> getTables(DataEntryFormContext ctx);
 
-    abstract public JSONObject toJSON(DataEntryFormContext ctx, boolean includeFormElements);
+    JSONObject toJSON(DataEntryFormContext ctx, boolean includeFormElements);
 
-    abstract public LinkedHashSet<ClientDependency> getClientDependencies();
+    LinkedHashSet<ClientDependency> getClientDependencies();
 
-    abstract public void setConfigSources(List<String> configSources);
+    void setConfigSources(List<String> configSources);
 
-    abstract public void addConfigSource(String source);
+    void addConfigSource(String source);
 
-    abstract public void addClientDependency(ClientDependency cd);
+    void addClientDependency(ClientDependency cd);
 
-    abstract public void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll);
+    void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll);
 
-    abstract public void setTemplateMode(AbstractFormSection.TEMPLATE_MODE mode);
+    void setTemplateMode(AbstractFormSection.TEMPLATE_MODE mode);
 }

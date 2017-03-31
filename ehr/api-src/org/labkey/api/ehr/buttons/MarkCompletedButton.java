@@ -28,7 +28,6 @@ import org.labkey.api.view.template.ClientDependency;
 /**
  * User: bimber
  * Date: 7/14/13
- * Time: 4:05 PM
  */
 public class MarkCompletedButton extends SimpleButtonConfigFactory
 {
