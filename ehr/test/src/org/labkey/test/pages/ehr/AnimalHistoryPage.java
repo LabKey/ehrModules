@@ -54,7 +54,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
     protected void waitForPage()
     {
         super.waitForPage();
-        Locators.pageSignal(FILTER_SIGNAL).waitForElement(shortWait());
+        org.labkey.test.Locators.pageSignal(FILTER_SIGNAL).waitForElement(shortWait());
     }
 
     public A refreshReport()
