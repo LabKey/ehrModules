@@ -330,7 +330,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         }
     }
 
-    static class Locators extends LabKeyPage.Locators
+    static class Locators
     {
         static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
         static final Locator.XPathLocator activeReportPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel").notHidden();
