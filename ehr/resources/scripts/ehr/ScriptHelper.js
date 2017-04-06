@@ -53,6 +53,33 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     //test to see if GUID persisted across tables
     props.sessionGUID = extraContext.sessionGUID || LABKEY.Utils.generateUUID();
 
+    /**
+     * @name scriptOptions
+     * @description Options that can be set in modules using EHR trigger scripts to opt in/out of or alter the behavior
+     *              of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
+     *              are problematic for a center, creating additional properties to modify or skip core behaviors is sometimes a good option.
+     * @param {Array} datasetsToClose An array of datasets whose records will be closed on animal departure or death.
+     * @param {Boolean} allowFutureDates Used for validation to determine if future dates can be entered.
+     * @param {Boolean} removeTimeFromDate Save Date without time values.
+     * @param {Boolean} removeTimeFromEndDate Save EndDate without time values.
+     * @param {Boolean} allowRequestsInPast Allow users to back date requests.
+     * @param {Boolean} allowDeadIds Part of row validation to allow dead animal Ids to be valid
+     * @param {Boolean} allowAnyId Allow animals whose calculated_status is not alive to be considered valid
+     * @param {Boolean} skipIdFormatCheck Skip verification of ID format. Currently only used in WNPRC
+     * @param {Boolean} skipHousingCheck Skip housing verification normally done for rows containing ID, room and date
+     * @param {Boolean} skipAssignmentCheck Skip assignment verification normally done for rows containing ID, project and date
+     * @param {Boolean} notificationTypes
+     * @param {String} errorSeveritiyForImproperHousing Error level for housing validation. ERROR, WARN, INFO, DEBUG
+     * @param {String} errorSeveritiyForImproperAssignment Error level for assignment validation. ERROR, WARN, INFO, DEBUG
+     * @param {Boolean} requiresStatusRecalc Recalculate calculated_status when changing a record
+     * @param {Boolean} allowDatesInDistantPast Skip validation errors for dates entered > 60 days in the past
+     * @param {Array} lookupValidationFields Array of fields to verify lookups return records
+     * @param {Boolean} cacheAccount First time a row is entered, lookup account based on project.
+     * @param {Boolean} announceAllModifiedParticipants Announce when modified to listeners such as demographics providers
+     *                  to update cached records.
+     * @param {Boolean} doStandardProtocolCountValidation Validate animals in protocol using ehr.protocolTotalAnimalsBySpecies
+     */
+
     var scriptOptions = {
         datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List'],
         allowFutureDates: false,
