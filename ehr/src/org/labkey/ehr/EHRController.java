@@ -126,514 +126,6 @@ public class EHRController extends SpringActionController
         }
     }
 
-    public static class CacheLivingAnimalsForm
-    {
-        private boolean _includeAll;
-
-        public boolean isIncludeAll()
-        {
-            return _includeAll;
-        }
-
-        public void setIncludeAll(boolean includeAll)
-        {
-            _includeAll = includeAll;
-        }
-    }
-
-    public static class DiscardFormForm
-    {
-        private String[] taskIds;
-        private String[] requestIds;
-
-        public String[] getTaskIds()
-        {
-            return taskIds;
-        }
-
-        public void setTaskIds(String[] taskIds)
-        {
-            this.taskIds = taskIds;
-        }
-
-        public String[] getRequestIds()
-        {
-            return requestIds;
-        }
-
-        public void setRequestIds(String[] requestIds)
-        {
-            this.requestIds = requestIds;
-        }
-    }
-
-    public static class EHRQueryForm extends QueryForm
-    {
-        private boolean _showImport = false;
-
-        public boolean isShowImport()
-        {
-            return _showImport;
-        }
-
-        public void setShowImport(boolean showImport)
-        {
-            _showImport = showImport;
-        }
-    }
-
-    public static class GetDemographicsForm
-    {
-        private String[] _ids;
-
-        public String[] getIds()
-        {
-            return _ids;
-        }
-
-        public void setIds(String[] ids)
-        {
-            _ids = ids;
-        }
-    }
-
-    public static class AnimalDetailsForm
-    {
-        private String[] _animalIds;
-        private boolean _includeAssignment;
-        private boolean _includeTreatments;
-        private boolean _includeFlags;
-
-        public String[] getAnimalIds()
-        {
-            return _animalIds;
-        }
-
-        public void setAnimalIds(String[] animalIds)
-        {
-            _animalIds = animalIds;
-        }
-
-        public boolean isIncludeAssignment()
-        {
-            return _includeAssignment;
-        }
-
-        public void setIncludeAssignment(boolean includeAssignment)
-        {
-            _includeAssignment = includeAssignment;
-        }
-
-        public boolean isIncludeTreatments()
-        {
-            return _includeTreatments;
-        }
-
-        public void setIncludeTreatments(boolean includeTreatments)
-        {
-            _includeTreatments = includeTreatments;
-        }
-
-        public boolean isIncludeFlags()
-        {
-            return _includeFlags;
-        }
-
-        public void setIncludeFlags(boolean includeFlags)
-        {
-            _includeFlags = includeFlags;
-        }
-    }
-
-    public static class ScheduleGeneticCalculationForm
-    {
-        private boolean _enabled;
-        private String containerPath;
-        private int hourOfDay;
-
-        public boolean isEnabled()
-        {
-            return _enabled;
-        }
-
-        public void setEnabled(boolean enabled)
-        {
-            _enabled = enabled;
-        }
-
-        public String getContainerPath()
-        {
-            return containerPath;
-        }
-
-        public void setContainerPath(String containerPath)
-        {
-            this.containerPath = containerPath;
-        }
-
-        public int getHourOfDay()
-        {
-            return hourOfDay;
-        }
-
-        public void setHourOfDay(int hourOfDay)
-        {
-            this.hourOfDay = hourOfDay;
-        }
-    }
-
-    public static class RecordDeleteForm
-    {
-        private boolean _enabled;
-        private int hourOfDay;
-
-        public boolean isEnabled()
-        {
-            return _enabled;
-        }
-
-        public void setEnabled(boolean enabled)
-        {
-            _enabled = enabled;
-        }
-
-        public int getHourOfDay()
-        {
-            return hourOfDay;
-        }
-
-        public void setHourOfDay(int hourOfDay)
-        {
-            this.hourOfDay = hourOfDay;
-        }
-    }
-
-    public static class LabResultSummaryForm
-    {
-        String[] _runId;
-
-        public String[] getRunId()
-        {
-            return _runId;
-        }
-
-        public void setRunId(String[] runId)
-        {
-            _runId = runId;
-        }
-    }
-
-    public static class EnsureDatasetPropertiesForm
-    {
-        boolean commitChanges = false;
-        boolean rebuildIndexes = false;
-
-        public boolean isCommitChanges()
-        {
-            return commitChanges;
-        }
-
-        public void setCommitChanges(boolean commitChanges)
-        {
-            this.commitChanges = commitChanges;
-        }
-
-        public boolean isRebuildIndexes()
-        {
-            return rebuildIndexes;
-        }
-
-        public void setRebuildIndexes(boolean rebuildIndexes)
-        {
-            this.rebuildIndexes = rebuildIndexes;
-        }
-    }
-
-    public static class HistoryForm
-    {
-        private String _parentId;
-        private String _runId;
-        private String _caseId;
-
-        private String[] _subjectIds;
-        private Date _minDate;
-        private Date _maxDate;
-        private boolean _redacted = false;
-        private boolean _includeDistinctTypes = false;
-
-        public String getParentId()
-        {
-            return _parentId;
-        }
-
-        public void setParentId(String parentId)
-        {
-            _parentId = parentId;
-        }
-
-        public String getRunId()
-        {
-            return _runId;
-        }
-
-        public void setRunId(String runId)
-        {
-            _runId = runId;
-        }
-
-        public String getCaseId()
-        {
-            return _caseId;
-        }
-
-        public void setCaseId(String caseId)
-        {
-            _caseId = caseId;
-        }
-
-        public String[] getSubjectIds()
-        {
-            return _subjectIds;
-        }
-
-        public void setSubjectIds(String[] subjectIds)
-        {
-            _subjectIds = subjectIds;
-        }
-
-        public Date getMinDate()
-        {
-            return _minDate;
-        }
-
-        public void setMinDate(Date minDate)
-        {
-            _minDate = minDate;
-        }
-
-        public Date getMaxDate()
-        {
-            return _maxDate;
-        }
-
-        public void setMaxDate(Date maxDate)
-        {
-            _maxDate = maxDate;
-        }
-
-        public boolean isRedacted()
-        {
-            return _redacted;
-        }
-
-        public void setRedacted(boolean redacted)
-        {
-            _redacted = redacted;
-        }
-
-        public boolean isIncludeDistinctTypes()
-        {
-            return _includeDistinctTypes;
-        }
-
-        public void setIncludeDistinctTypes(boolean includeDistinctTypes)
-        {
-            _includeDistinctTypes = includeDistinctTypes;
-        }
-    }
-
-    public static class ReportLinkForm
-    {
-        private String[] _linkTypes;
-
-        public String[] getLinkTypes()
-        {
-            return _linkTypes;
-        }
-
-        public void setLinkTypes(String[] linkTypes)
-        {
-            _linkTypes = linkTypes;
-        }
-    }
-
-    public static class EnterDataForm
-    {
-        private String _formType;
-        private String _taskId;
-        private String _requestId;
-
-        private String _schemaName;
-        private String _queryName;
-
-        public String getFormType()
-        {
-            return _formType;
-        }
-
-        public void setFormType(String formType)
-        {
-            _formType = formType;
-        }
-
-        public String getTaskId()
-        {
-            return _taskId;
-        }
-
-        public void setTaskId(String taskId)
-        {
-            _taskId = taskId;
-        }
-
-        public String getRequestId()
-        {
-            return _requestId;
-        }
-
-        public void setRequestId(String requestId)
-        {
-            _requestId = requestId;
-        }
-
-        public String getSchemaName()
-        {
-            return _schemaName;
-        }
-
-        public void setSchemaName(String schemaName)
-        {
-            _schemaName = schemaName;
-        }
-
-        public String getQueryName()
-        {
-            return _queryName;
-        }
-
-        public void setQueryName(String queryName)
-        {
-            _queryName = queryName;
-        }
-    }
-
-    public static class ManageFlagsForm
-    {
-        private String _flag;
-        private Date _date;
-        private Date _enddate;
-        private String _remark;
-        private String[] _animalIds;
-        private String _mode;
-        private Boolean _livingAnimalsOnly = true;
-
-        public String getFlag()
-        {
-            return _flag;
-        }
-
-        public void setFlag(String flag)
-        {
-            _flag = flag;
-        }
-
-        public Date getDate()
-        {
-            return _date;
-        }
-
-        public void setDate(Date date)
-        {
-            _date = date;
-        }
-
-        public Date getEnddate()
-        {
-            return _enddate;
-        }
-
-        public void setEnddate(Date enddate)
-        {
-            _enddate = enddate;
-        }
-
-        public String getRemark()
-        {
-            return _remark;
-        }
-
-        public void setRemark(String remark)
-        {
-            _remark = remark;
-        }
-
-        public String[] getAnimalIds()
-        {
-            return _animalIds;
-        }
-
-        public void setAnimalIds(String[] animalIds)
-        {
-            _animalIds = animalIds;
-        }
-
-        public String getMode()
-        {
-            return _mode;
-        }
-
-        public void setMode(String mode)
-        {
-            _mode = mode;
-        }
-
-        public Boolean getLivingAnimalsOnly()
-        {
-            return _livingAnimalsOnly;
-        }
-
-        public void setLivingAnimalsOnly(Boolean livingAnimalsOnly)
-        {
-            _livingAnimalsOnly = livingAnimalsOnly;
-        }
-    }
-
-    public static class IdForm
-    {
-        private String _ids;
-        private int _interval;
-
-        public String getIds()
-        {
-            return _ids;
-        }
-
-        public void setIds(String id)
-        {
-            _ids = id;
-        }
-
-        public int getInterval()
-        {
-            return _interval;
-        }
-
-        public void setInterval(int interval)
-        {
-            _interval = interval;
-        }
-
-        public List<String> getIdList()
-        {
-            List<String> list = new ArrayList<>();
-            String[] ids = _ids.split(",");
-            for (String id : ids)
-                list.add(id);
-
-            return list;
-        }
-    }
-
     @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetDataEntryItemsAction extends ApiAction<GetDataEntryItemsForm>
@@ -653,6 +145,21 @@ public class EHRController extends SpringActionController
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class CacheLivingAnimalsForm
+    {
+        private boolean _includeAll;
+
+        public boolean isIncludeAll()
+        {
+            return _includeAll;
+        }
+
+        public void setIncludeAll(boolean includeAll)
+        {
+            _includeAll = includeAll;
         }
     }
 
@@ -703,6 +210,32 @@ public class EHRController extends SpringActionController
         {
             DataEntryManager.get().primeCachesForContainer(getContainer(), getUser());
             return true;
+        }
+    }
+
+    public static class DiscardFormForm
+    {
+        private String[] taskIds;
+        private String[] requestIds;
+
+        public String[] getTaskIds()
+        {
+            return taskIds;
+        }
+
+        public void setTaskIds(String[] taskIds)
+        {
+            this.taskIds = taskIds;
+        }
+
+        public String[] getRequestIds()
+        {
+            return requestIds;
+        }
+
+        public void setRequestIds(String[] requestIds)
+        {
+            this.requestIds = requestIds;
         }
     }
 
@@ -763,6 +296,21 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class EHRQueryForm extends QueryForm
+    {
+        private boolean _showImport = false;
+
+        public boolean isShowImport()
+        {
+            return _showImport;
+        }
+
+        public void setShowImport(boolean showImport)
+        {
+            _showImport = showImport;
+        }
+    }
+
     @RequiresPermission(UpdatePermission.class)
     public class UpdateQueryAction extends SimpleViewAction<EHRQueryForm>
     {
@@ -781,7 +329,7 @@ public class EHRController extends SpringActionController
             List<String> pks = ti.getPkColumnNames();
             String keyField = null;
 
-            String queryName =  (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
+            String queryName = (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
 
             if (pks.size() == 1)
                 keyField = pks.get(0);
@@ -907,6 +455,21 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class GetDemographicsForm
+    {
+        private String[] _ids;
+
+        public String[] getIds()
+        {
+            return _ids;
+        }
+
+        public void setIds(String[] ids)
+        {
+            _ids = ids;
+        }
+    }
+
     @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetDemographicsAction extends ApiAction<GetDemographicsForm>
@@ -964,6 +527,32 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class RecordDeleteForm
+    {
+        private boolean _enabled;
+        private int hourOfDay;
+
+        public boolean isEnabled()
+        {
+            return _enabled;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            _enabled = enabled;
+        }
+
+        public int getHourOfDay()
+        {
+            return hourOfDay;
+        }
+
+        public void setHourOfDay(int hourOfDay)
+        {
+            this.hourOfDay = hourOfDay;
+        }
+    }
+
     @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SetRecordDeleteSettingsAction extends ApiAction<RecordDeleteForm>
@@ -973,6 +562,54 @@ public class EHRController extends SpringActionController
             RecordDeleteRunner.setProperties(getContainer(), form.isEnabled());
 
             return new ApiSimpleResponse("success", true);
+        }
+    }
+
+    public static class AnimalDetailsForm
+    {
+        private String[] _animalIds;
+        private boolean _includeAssignment;
+        private boolean _includeTreatments;
+        private boolean _includeFlags;
+
+        public String[] getAnimalIds()
+        {
+            return _animalIds;
+        }
+
+        public void setAnimalIds(String[] animalIds)
+        {
+            _animalIds = animalIds;
+        }
+
+        public boolean isIncludeAssignment()
+        {
+            return _includeAssignment;
+        }
+
+        public void setIncludeAssignment(boolean includeAssignment)
+        {
+            _includeAssignment = includeAssignment;
+        }
+
+        public boolean isIncludeTreatments()
+        {
+            return _includeTreatments;
+        }
+
+        public void setIncludeTreatments(boolean includeTreatments)
+        {
+            _includeTreatments = includeTreatments;
+        }
+
+        public boolean isIncludeFlags()
+        {
+            return _includeFlags;
+        }
+
+        public void setIncludeFlags(boolean includeFlags)
+        {
+            _includeFlags = includeFlags;
         }
     }
 
@@ -997,6 +634,43 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class ScheduleGeneticCalculationForm
+    {
+        private boolean _enabled;
+        private String containerPath;
+        private int hourOfDay;
+
+        public boolean isEnabled()
+        {
+            return _enabled;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            _enabled = enabled;
+        }
+
+        public String getContainerPath()
+        {
+            return containerPath;
+        }
+
+        public void setContainerPath(String containerPath)
+        {
+            this.containerPath = containerPath;
+        }
+
+        public int getHourOfDay()
+        {
+            return hourOfDay;
+        }
+
+        public void setHourOfDay(int hourOfDay)
+        {
+            this.hourOfDay = hourOfDay;
+        }
+    }
+
     @RequiresPermission(AdminPermission.class)
     @CSRF
     public class GetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
@@ -1005,7 +679,7 @@ public class EHRController extends SpringActionController
         {
             Map<String, Object> ret = new HashMap<>();
 
-            Container c  = GeneticCalculationsJob.getContainer();
+            Container c = GeneticCalculationsJob.getContainer();
             if (c != null)
                 ret.put("containerPath", c.getPath());
 
@@ -1031,6 +705,21 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class LabResultSummaryForm
+    {
+        String[] _runId;
+
+        public String[] getRunId()
+        {
+            return _runId;
+        }
+
+        public void setRunId(String[] runId)
+        {
+            _runId = runId;
+        }
+    }
+
     @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetLabResultSummary extends ApiAction<LabResultSummaryForm>
@@ -1050,6 +739,99 @@ public class EHRController extends SpringActionController
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class HistoryForm
+    {
+        private String _parentId;
+        private String _runId;
+        private String _caseId;
+
+        private String[] _subjectIds;
+        private Date _minDate;
+        private Date _maxDate;
+        private boolean _redacted = false;
+        private boolean _includeDistinctTypes = false;
+
+        public String getParentId()
+        {
+            return _parentId;
+        }
+
+        public void setParentId(String parentId)
+        {
+            _parentId = parentId;
+        }
+
+        public String getRunId()
+        {
+            return _runId;
+        }
+
+        public void setRunId(String runId)
+        {
+            _runId = runId;
+        }
+
+        public String getCaseId()
+        {
+            return _caseId;
+        }
+
+        public void setCaseId(String caseId)
+        {
+            _caseId = caseId;
+        }
+
+        public String[] getSubjectIds()
+        {
+            return _subjectIds;
+        }
+
+        public void setSubjectIds(String[] subjectIds)
+        {
+            _subjectIds = subjectIds;
+        }
+
+        public Date getMinDate()
+        {
+            return _minDate;
+        }
+
+        public void setMinDate(Date minDate)
+        {
+            _minDate = minDate;
+        }
+
+        public Date getMaxDate()
+        {
+            return _maxDate;
+        }
+
+        public void setMaxDate(Date maxDate)
+        {
+            _maxDate = maxDate;
+        }
+
+        public boolean isRedacted()
+        {
+            return _redacted;
+        }
+
+        public void setRedacted(boolean redacted)
+        {
+            _redacted = redacted;
+        }
+
+        public boolean isIncludeDistinctTypes()
+        {
+            return _includeDistinctTypes;
+        }
+
+        public void setIncludeDistinctTypes(boolean includeDistinctTypes)
+        {
+            _includeDistinctTypes = includeDistinctTypes;
         }
     }
 
@@ -1135,6 +917,32 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class EnsureDatasetPropertiesForm
+    {
+        boolean commitChanges = false;
+        boolean rebuildIndexes = false;
+
+        public void setCommitChanges(boolean commitChanges)
+        {
+            this.commitChanges = commitChanges;
+        }
+
+        public boolean isCommitChanges()
+        {
+            return commitChanges;
+        }
+
+        public boolean isRebuildIndexes()
+        {
+            return rebuildIndexes;
+        }
+
+        public void setRebuildIndexes(boolean rebuildIndexes)
+        {
+            this.rebuildIndexes = rebuildIndexes;
+        }
+    }
+
     @RequiresPermission(AdminPermission.class)
     public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
@@ -1153,7 +961,7 @@ public class EHRController extends SpringActionController
             StringBuilder msg = new StringBuilder();
             msg.append("The EHR expects certain columns to be present on all datasets.  The following changes will be made:<br><br>");
 
-            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), false, form.isRebuildIndexes());
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(), getUser(), false, form.isRebuildIndexes());
             for (String message : messages)
             {
                 msg.append("\t").append(message).append("<br>");
@@ -1169,7 +977,7 @@ public class EHRController extends SpringActionController
 
         public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
         {
-            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), true, form.isRebuildIndexes());
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(), getUser(), true, form.isRebuildIndexes());
             return true;
         }
     }
@@ -1222,7 +1030,7 @@ public class EHRController extends SpringActionController
             StringBuilder msg = new StringBuilder();
             msg.append("The EHR expects certain QCStates to exist in the study.  The following QCStates will be added:<br><br>");
 
-            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(),  getUser(), false);
+            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(), getUser(), false);
             for (String message : messages)
             {
                 msg.append("\t").append(message).append("<br>");
@@ -1238,7 +1046,7 @@ public class EHRController extends SpringActionController
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(),  getUser(), true);
+            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(), getUser(), true);
             return true;
         }
     }
@@ -1330,6 +1138,21 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class ReportLinkForm
+    {
+        private String[] _linkTypes;
+
+        public String[] getLinkTypes()
+        {
+            return _linkTypes;
+        }
+
+        public void setLinkTypes(String[] linkTypes)
+        {
+            _linkTypes = linkTypes;
+        }
+    }
+
     @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetReportLinksAction extends ApiAction<ReportLinkForm>
@@ -1369,6 +1192,66 @@ public class EHRController extends SpringActionController
 
             resultProperties.put("items", ret);
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class EnterDataForm
+    {
+        private String _formType;
+        private String _taskId;
+        private String _requestId;
+
+        private String _schemaName;
+        private String _queryName;
+
+        public String getFormType()
+        {
+            return _formType;
+        }
+
+        public void setFormType(String formType)
+        {
+            _formType = formType;
+        }
+
+        public String getTaskId()
+        {
+            return _taskId;
+        }
+
+        public void setTaskId(String taskId)
+        {
+            _taskId = taskId;
+        }
+
+        public String getRequestId()
+        {
+            return _requestId;
+        }
+
+        public void setRequestId(String requestId)
+        {
+            _requestId = requestId;
+        }
+
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        public void setSchemaName(String schemaName)
+        {
+            _schemaName = schemaName;
+        }
+
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        public void setQueryName(String queryName)
+        {
+            _queryName = queryName;
         }
     }
 
@@ -1542,6 +1425,87 @@ public class EHRController extends SpringActionController
 
     }
 
+    public static class ManageFlagsForm
+    {
+        private String _flag;
+        private Date _date;
+        private Date _enddate;
+        private String _remark;
+        private String[] _animalIds;
+        private String _mode;
+        private Boolean _livingAnimalsOnly = true;
+
+        public String getFlag()
+        {
+            return _flag;
+        }
+
+        public void setFlag(String flag)
+        {
+            _flag = flag;
+        }
+
+        public Date getDate()
+        {
+            return _date;
+        }
+
+        public void setDate(Date date)
+        {
+            _date = date;
+        }
+
+        public Date getEnddate()
+        {
+            return _enddate;
+        }
+
+        public void setEnddate(Date enddate)
+        {
+            _enddate = enddate;
+        }
+
+        public String getRemark()
+        {
+            return _remark;
+        }
+
+        public void setRemark(String remark)
+        {
+            _remark = remark;
+        }
+
+        public String[] getAnimalIds()
+        {
+            return _animalIds;
+        }
+
+        public void setAnimalIds(String[] animalIds)
+        {
+            _animalIds = animalIds;
+        }
+
+        public String getMode()
+        {
+            return _mode;
+        }
+
+        public void setMode(String mode)
+        {
+            _mode = mode;
+        }
+
+        public Boolean getLivingAnimalsOnly()
+        {
+            return _livingAnimalsOnly;
+        }
+
+        public void setLivingAnimalsOnly(Boolean livingAnimalsOnly)
+        {
+            _livingAnimalsOnly = livingAnimalsOnly;
+        }
+    }
+
     @RequiresPermission(UpdatePermission.class)
     @CSRF
     public class ManageFlagsAction extends ApiAction<ManageFlagsForm>
@@ -1615,6 +1579,42 @@ public class EHRController extends SpringActionController
             }
 
             return new ApiSimpleResponse(resp);
+        }
+    }
+
+    public static class IdForm
+    {
+        private String _ids;
+        private int _interval;
+
+        public String getIds()
+        {
+            return _ids;
+        }
+
+        public void setIds(String id)
+        {
+            _ids = id;
+        }
+
+        public int getInterval()
+        {
+            return _interval;
+        }
+
+        public void setInterval(int interval)
+        {
+            _interval = interval;
+        }
+
+        public List<String> getIdList()
+        {
+            List<String> list = new ArrayList<>();
+            String[] ids = _ids.split(",");
+            for (String id : ids)
+                list.add(id);
+
+            return list;
         }
     }
 
