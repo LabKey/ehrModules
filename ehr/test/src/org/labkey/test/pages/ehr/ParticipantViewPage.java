@@ -42,6 +42,10 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
 
+    protected static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
+    protected static final Locator.XPathLocator activeReportPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel").notHidden();
+    protected static final Locator.XPathLocator reportTab = activeReportPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
+
     public ParticipantViewPage(WebDriver driver)
     {
         super(driver);
@@ -76,6 +80,11 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     {
         elementCache().findReportTab(reportLabel).select();
         return this;
+    }
+
+    public WebElement getActiveReportPanel()
+    {
+        return activeReportPanel.findElementOrNull(getDriver());
     }
 
     public DataRegionTable getActiveReportDataRegion()
@@ -134,7 +143,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         {
             if (!categoryLabels.containsKey(category))
             {
-                WebElement tabEl = Locators.categoryTab.withText(category).findElement(this);
+                WebElement tabEl = categoryTab.withText(category).findElement(this);
                 CategoryTab tab = new CategoryTab(tabEl, category);
                 categoryLabels.put(category, tab.getIndex());
                 categoryTabs.put(tab.getIndex(), tab);
@@ -151,7 +160,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             {
                 reportTabs.put(selectedCategory, new TreeMap<>());
 
-                WebElement tabEl = Locators.reportTab.withText(reportLabel).findElement(this);
+                WebElement tabEl = reportTab.withText(reportLabel).findElement(this);
                 ReportTab tab = new ReportTab(tabEl, reportLabel);
                 reportLabels.get(selectedCategory).put(reportLabel, tab.getIndex());
                 reportTabs.get(selectedCategory).put(tab.getIndex(), tab);
@@ -166,7 +175,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             if (!foundAllTabs.contains(null))
             {
                 foundAllTabs.add(null);
-                List<WebElement> tabs = Locators.categoryTab.findElements(this);
+                List<WebElement> tabs = categoryTab.findElements(this);
                 for (int i = 0; i < tabs.size(); i++)
                 {
                     categoryTabs.putIfAbsent(i, new CategoryTab(tabs.get(i), i));
@@ -184,7 +193,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 foundAllTabs.add(selectedCategory);
                 reportTabs.putIfAbsent(selectedCategory, new TreeMap<>());
                 reportLabels.putIfAbsent(selectedCategory, new DualTreeBidiMap<>());
-                List<WebElement> tabs = Locators.reportTab.findElements(this);
+                List<WebElement> tabs = reportTab.findElements(this);
 
                 for (int i = 0; i < tabs.size(); i++)
                 {
@@ -213,22 +222,22 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public abstract class Tab
     {
-        WebElement _el;
-        String _label;
-        Integer _index;
+        final WebElement _el;
+        private String _label;
+        private Integer _index;
 
-        public Tab(WebElement el)
+        protected Tab(WebElement el)
         {
             _el = el;
         }
 
-        public Tab(WebElement el, String label)
+        protected Tab(WebElement el, String label)
         {
             this(el);
             _label = label;
         }
 
-        public Tab(WebElement el, Integer index)
+        protected Tab(WebElement el, Integer index)
         {
             this(el);
             _index = index;
@@ -264,17 +273,17 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public class CategoryTab extends Tab
     {
-        public CategoryTab(WebElement el)
+        protected CategoryTab(WebElement el)
         {
             super(el);
         }
 
-        public CategoryTab(WebElement el, String label)
+        protected CategoryTab(WebElement el, String label)
         {
             super(el, label);
         }
 
-        public CategoryTab(WebElement el, Integer index)
+        protected CategoryTab(WebElement el, Integer index)
         {
             super(el, index);
         }
@@ -284,29 +293,29 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         {
             if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
             {
-                WebElement activeReportPanel = Locators.activeReportPanel.findElement(getDriver());
+                WebElement activeReportPanelEl = activeReportPanel.findElement(getDriver());
                 scrollIntoView(_el);
                 _el.click();
-                shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanel)));
+                shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
-                Locators.activeReportPanel.waitForElement(getDriver(), 1000);
+                activeReportPanel.waitForElement(getDriver(), 1000);
             }
         }
     }
 
     public class ReportTab extends Tab
     {
-        public ReportTab(WebElement el)
+        protected ReportTab(WebElement el)
         {
             super(el);
         }
 
-        public ReportTab(WebElement el, String label)
+        protected ReportTab(WebElement el, String label)
         {
             super(el, label);
         }
 
-        public ReportTab(WebElement el, Integer index)
+        protected ReportTab(WebElement el, Integer index)
         {
             super(el, index);
         }
@@ -328,12 +337,5 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _ext4Helper.waitForMaskToDisappear(30000);
             }
         }
-    }
-
-    static class Locators
-    {
-        static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
-        static final Locator.XPathLocator activeReportPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel").notHidden();
-        static final Locator.XPathLocator reportTab = activeReportPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
     }
 }
