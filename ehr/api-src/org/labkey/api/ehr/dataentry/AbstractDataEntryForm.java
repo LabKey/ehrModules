@@ -29,6 +29,9 @@ import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.util.Pair;
+import org.labkey.api.view.HttpView;
+import org.labkey.api.view.JspView;
+import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
@@ -79,6 +82,11 @@ public class AbstractDataEntryForm implements DataEntryForm
         return _label;
     }
 
+    protected void setLabel(String label)
+    {
+        _label = label;
+    }
+
     protected void addSection(FormSection s)
     {
         _sections.add(s);
@@ -87,11 +95,6 @@ public class AbstractDataEntryForm implements DataEntryForm
     protected void setDisplayReviewRequired(boolean displayReviewRequired)
     {
         _displayReviewRequired = displayReviewRequired;
-    }
-
-    protected void setLabel(String label)
-    {
-        _label = label;
     }
 
     protected DataEntryFormContext getCtx()
@@ -231,6 +234,19 @@ public class AbstractDataEntryForm implements DataEntryForm
         return true;
     }
 
+    @Override
+    public HttpView createView()
+    {
+        JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", this);
+        view.setTitle(getLabel());
+        view.setHidePageTitle(true);
+        view.setFrame(WebPartView.FrameType.PORTAL);
+
+        view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
+        view.addClientDependencies(getClientDependencies());
+        return view;
+    }
+
     protected List<String> getButtonConfigs()
     {
         List<String> defaultButtons = new ArrayList<String>();
@@ -355,4 +371,5 @@ public class AbstractDataEntryForm implements DataEntryForm
     {
         return true;
     }
+
 }

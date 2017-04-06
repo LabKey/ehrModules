@@ -18,6 +18,7 @@ package org.labkey.api.ehr.dataentry;
 import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.view.HttpView;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.LinkedHashSet;
@@ -60,4 +61,9 @@ public interface DataEntryForm
     Set<TableInfo> getTables();
 
     boolean canRead();
+
+    /**
+     * @return the HTML-based UI to render the data entry components
+     */
+    HttpView createView();
 }
