@@ -516,7 +516,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         saveResp = insertCmd.execute(cn, getContainerPath());
     }
 
-    private void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
+    protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
         Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
 
