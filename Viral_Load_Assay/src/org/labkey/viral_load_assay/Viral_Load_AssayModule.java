@@ -16,17 +16,10 @@
 package org.labkey.viral_load_assay;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
-import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.SimpleModule;
-import org.labkey.api.query.DefaultSchema;
-import org.labkey.api.query.QuerySchema;
-import org.labkey.api.query.QueryService;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.viral_load_assay.assay.ViralLoadAssayDataProvider;
@@ -36,7 +29,6 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/1/12
  * Time: 8:46 PM
@@ -92,11 +84,5 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
     public Set<String> getSchemaNames()
     {
         return PageFlowUtil.set(SCHEMA_NAME);
-    }
-
-    @Override
-    public UpgradeCode getUpgradeCode()
-    {
-        return new Viral_Load_UpgradeCode();
     }
 }

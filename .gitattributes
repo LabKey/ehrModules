@@ -59,7 +59,6 @@ Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayController.java
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayModule.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssaySchema.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_Manager.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_UpgradeCode.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/ABI7500ImportMethod.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/DefaultVLImportMethod.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/LC480ImportMethod.java -text
