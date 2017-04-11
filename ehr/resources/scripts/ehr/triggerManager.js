@@ -77,6 +77,18 @@ EHR.Server.TriggerManager = new function(){
 
             queryEvents[schemaName][queryName][event].push(handler);
         },
+        /**
+         * Unregister EHR registered handlers
+         * @param schemaName
+         * @param queryName
+         * @param event
+         */
+        unregisterAllHandlersForQueryNameAndEvent: function (schemaName, queryName, event) {
+            if (queryEvents[schemaName] && queryEvents[schemaName][queryName] && queryEvents[schemaName][queryName][event]) {
+                queryEvents[schemaName][queryName][event] = [];
+            }
+
+        },
 
         getHandlers: function(event){
             return events[event] || [];
