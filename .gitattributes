@@ -468,7 +468,6 @@ ehr/resources/queries/study/Departure.js -text
 ehr/resources/queries/study/Departure.query.xml -text
 ehr/resources/queries/study/Departure/.qview.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration.js -text
-ehr/resources/queries/study/Drug[!!-~]Administration.query.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Results.js -text
 ehr/resources/queries/study/Hematology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Results/.qview.xml -text
@@ -577,6 +576,7 @@ ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/By[!!-~]Location.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
+ehr/resources/queries/study/drug.query.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
 ehr/resources/queries/study/housing/.qview.xml -text
 ehr/resources/queries/study/housing/Active[!!-~]Housing.qview.xml -text
