@@ -38,7 +38,6 @@ Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.20-1
 Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.21-12.22.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.22-12.23.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.23-12.24.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.24-12.25.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/postgresql/obsolete/Viral_Load_Assay-11.10-11.11.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/postgresql/obsolete/Viral_Load_Assay-11.11-11.12.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-11.10-11.20.sql -text
@@ -48,7 +47,6 @@ Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.20-12
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.21-12.22.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.22-12.23.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.23-12.24.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.24-12.25.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/obsolete/Viral_Load_Assay-11.10-11.11.sql -text
 Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/obsolete/Viral_Load_Assay-11.11-11.12.sql -text
 Viral_Load_Assay/resources/schemas/viral_load_assay.xml -text
