@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +43,7 @@ import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.BatchValidationException;
@@ -93,7 +96,7 @@ public class EHRServiceImpl extends EHRService
     private Set<Module> _registeredModules = new HashSet<>();
     private List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
     private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
-    private Map<String, List<Pair<Module, String>>> _actionOverrides = new HashMap<>();
+    private MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -138,17 +141,17 @@ public class EHRServiceImpl extends EHRService
 
     public List<Resource> getExtraTriggerScripts(Container c)
     {
-        List<Resource> resouces = new ArrayList<>();
+        List<Resource> resources = new ArrayList<>();
         Set<Module> activeModules = c.getActiveModules();
 
         for (Pair<Module, Resource> pair : _extraTriggerScripts)
         {
             if (activeModules.contains(pair.first))
             {
-                resouces.add(pair.second);
+                resources.add(pair.second);
             }
         }
-        return Collections.unmodifiableList(resouces);
+        return Collections.unmodifiableList(resources);
     }
 
     public void registerDemographicsProvider(DemographicsProvider provider)
@@ -443,33 +446,26 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerLabworkType(new MiscTestsLabworkType(module));
         EHRService.get().registerLabworkType(new ParasitologyLabworkType(module));
         EHRService.get().registerLabworkType(new SerologyLabworkType(module));
-
     }
 
     public void registerActionOverride(String actionName, Module owner, String resourcePath)
     {
-        List<Pair<Module, String>> list = _actionOverrides.get(actionName);
-        if (list == null)
-            list = new ArrayList<>();
-
-        list.add(Pair.of(owner, resourcePath));
-
-        _actionOverrides.put(actionName, list);
+        _actionOverrides.put(actionName, Pair.of(owner, Path.parse(resourcePath)));
     }
 
-    public Resource getActionOverride(String actionName, Container c)
+    public Pair<Module, Path> getActionOverride(String actionName, Container c)
     {
         if (!_actionOverrides.containsKey(actionName))
             return null;
 
         Set<Module> activeModules = c.getActiveModules();
-        for (Pair<Module, String> pair : _actionOverrides.get(actionName))
+
+        for (Pair<Module, Path> pair : _actionOverrides.get(actionName))
         {
             if (activeModules.contains(pair.first))
             {
-                Resource r = pair.first.getModuleResource(Path.parse(pair.second));
-                if (r != null)
-                    return r;
+                if (ModuleHtmlView.exists(pair.first, pair.second))
+                    return pair;
                 else
                     _log.error("Unable to find registered EHR action: " + pair.first.getName() + " / " + pair.second);
             }
