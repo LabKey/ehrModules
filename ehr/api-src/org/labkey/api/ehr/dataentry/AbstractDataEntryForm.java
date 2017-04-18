@@ -21,6 +21,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
@@ -31,6 +32,7 @@ import org.labkey.api.study.Dataset;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.HttpView;
 import org.labkey.api.view.JspView;
+import org.labkey.api.view.NavTree;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 
@@ -245,6 +247,14 @@ public class AbstractDataEntryForm implements DataEntryForm
         view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
         view.addClientDependencies(getClientDependencies());
         return view;
+    }
+
+    @Override
+    public NavTree appendNavTrail(NavTree root, String title)
+    {
+        root.addChild("Enter Data Selection", DetailsURL.fromString("/ehr/enterData.view", getCtx().getContainer()).getActionURL());
+        root.addChild(title == null ? "Enter Data" : title);
+        return root;
     }
 
     protected List<String> getButtonConfigs()

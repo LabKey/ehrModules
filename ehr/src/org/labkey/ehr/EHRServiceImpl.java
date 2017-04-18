@@ -501,6 +501,11 @@ public class EHRServiceImpl extends EHRService
         return DataEntryManager.get().getFormByName(name, c, u);
     }
 
+    public ActionURL getDataEntryFormActionURL(Container c)
+    {
+        return new ActionURL(EHRController.DataEntryFormAction.class, c);
+    }
+
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
     {
         DataEntryManager.get().registerDefaultFieldKeys(schemaName, queryName, keys);

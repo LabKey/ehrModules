@@ -36,6 +36,7 @@ import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.util.URLHelper;
+import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Collection;
@@ -147,6 +148,8 @@ abstract public class EHRService
     abstract public void registerFormType(DataEntryFormFactory fact);
 
     abstract public DataEntryForm getDataEntryForm(String name, Container c, User u);
+
+    abstract public ActionURL getDataEntryFormActionURL(Container c);
 
     abstract public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys);
 

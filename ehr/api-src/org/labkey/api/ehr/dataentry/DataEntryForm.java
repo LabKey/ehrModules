@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.view.HttpView;
+import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.LinkedHashSet;
@@ -66,4 +67,10 @@ public interface DataEntryForm
      * @return the HTML-based UI to render the data entry components
      */
     HttpView createView();
+
+    /**
+     *
+     * @return Navigation trail with any ehr data entry form updates
+     */
+    NavTree appendNavTrail(NavTree root, String title);
 }

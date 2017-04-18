@@ -1313,6 +1313,7 @@ public class EHRController extends SpringActionController
     public class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
+        private DataEntryForm _def;
 
         @Override
         public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
@@ -1323,22 +1324,23 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
-            if (def == null)
+            _def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            if (_def == null)
             {
                 errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
                 return new SimpleErrorView(errors);
             }
 
-            _title = def.getLabel();
+            _title = _def.getLabel();
 
-            return def.createView();
+            return _def.createView();
         }
 
         @Override
         public NavTree appendNavTrail(NavTree root)
         {
-            return root.addChild(_title == null ? "Enter Data" : _title);
+            root = _def.appendNavTrail(root, _title);
+            return root;
         }
     }
 
