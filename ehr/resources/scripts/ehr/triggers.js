@@ -74,6 +74,11 @@ EHR.Server.Triggers.init = function(event, errors){
     var helper = this.scriptHelper;
 
     console.debug('** evaluating: ' + this['javax.script.filename'] + ' for: ' + (helper.isValidateOnly() ? 'validation/' : '') + event);
+    if (this.extraContext.hasEHRTriggerCodeAlreadyRun){
+        console.warn('The EHR trigger code has already been initialized once for the table: ' + this['javax.script.filename'] + '.  This might indicate there is a duplicate JS trigger script');
+    }
+
+    this.extraContext.hasEHRTriggerCodeAlreadyRun = true;
 
     EHR.Server.Security.init(helper);
 
