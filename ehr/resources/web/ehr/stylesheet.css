@@ -22,6 +22,23 @@
     text-align: left;
 }
 
+table.ehr-legend {
+    background-color: #f4f4f4;
+}
+
+table.ehr-legend td {
+    padding-right: 50px;
+}
+
+table.ehr-legend td[colspan]:not([colspan="1"]) {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+table.ehr-legend td.ehr-legend-value {
+    font-weight: bold;
+}
+
 /*.ehr-tool-icon-lg {*/
 /*}*/
 
