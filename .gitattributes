@@ -280,6 +280,7 @@ ehr/resources/queries/core/PrincipalsWithoutAdmin.query.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.sql -text
 ehr/resources/queries/core/userNames.query.xml -text
 ehr/resources/queries/core/userNames.sql -text
+ehr/resources/queries/default/DefaultTriggerScript.js -text
 ehr/resources/queries/ehr/CageUtilization.query.xml -text
 ehr/resources/queries/ehr/CageUtilization.sql -text
 ehr/resources/queries/ehr/Tasks.js -text
@@ -593,7 +594,6 @@ ehr/resources/queries/study/housingRoommates/.qview.xml -text
 ehr/resources/queries/study/housingRoommates/Caged[!!-~]Housing[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
-ehr/resources/queries/study/studyData.js -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/validateFinalWeights.sql -text
 ehr/resources/queries/study/weightConsecutiveDrops.query.xml -text
@@ -1424,6 +1424,7 @@ ehr/src/org/labkey/ehr/table/SNOMEDCodesDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/TestAgeYearsAndMonths.java -text
 ehr/src/org/labkey/ehr/table/WrappingTableCustomizer.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCStateImpl.java -text
+ehr/src/org/labkey/ehr/utils/TriggerScriptFactory.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text
 ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon[!!-~]Small.zip -text
