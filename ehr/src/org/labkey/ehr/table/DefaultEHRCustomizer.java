@@ -63,7 +63,6 @@ import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRModule;
 import org.labkey.ehr.EHRSchema;
-import org.labkey.ehr.utils.TriggerScriptFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -99,8 +98,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     public void customize(TableInfo table)
     {
         // Ensure the basic EHR triggers are initialized
-        if(table instanceof AbstractTableInfo)
-            ((AbstractTableInfo)table).addTriggerFactory(new TriggerScriptFactory());
+//        if(table instanceof AbstractTableInfo)
+//            ((AbstractTableInfo)table).addTriggerFactory(new TriggerScriptFactory());
 
         LDKService.get().getBuiltInColumnsCustomizer(false).customize(table);
         UserSchema us = table.getUserSchema();
