@@ -35,6 +35,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("remark");
+            pd.setStorageColumnName("remark");
             pd.setInputType("textarea");
             return pd;
         }
@@ -51,6 +52,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("parentid");
+            pd.setStorageColumnName("parentid");
             pd.setLabel("Parent Id");
             pd.setScale(400);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -69,6 +71,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("taskid");
+            pd.setStorageColumnName("taskid");
             pd.setLabel("Task Id");
             pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -87,6 +90,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("caseid");
+            pd.setStorageColumnName("caseid");
             pd.setLabel("Case Id");
             pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -105,6 +109,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("problemid");
+            pd.setStorageColumnName("problemid");
             pd.setLabel("Problem Id");
             pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -123,6 +128,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("runid");
+            pd.setStorageColumnName("runid");
             pd.setLabel("Run Id");
             pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -140,6 +146,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("formSort");
+            pd.setStorageColumnName("formsort");
             pd.setLabel("Form Sort Order");
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
@@ -157,6 +164,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("requestid");
+            pd.setStorageColumnName("requestid");
             pd.setLabel("Request Id");
             pd.setScale(100);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -174,6 +182,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setName("userid");
+            pd.setStorageColumnName("userid");
             pd.setScale(64);
 //            pd.setHidden(true);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -194,6 +203,7 @@ public class EHRProperties
             pd.setLabel("Description");
             pd.setInputType("textarea");
             pd.setName("description");
+            pd.setStorageColumnName("description");
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -206,6 +216,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("account");
+            pd.setStorageColumnName("account");
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
         }
@@ -218,6 +229,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("project");
+            pd.setStorageColumnName("project");
             pd.setFormat("00000000");
             pd.setContainer(ContainerManager.getSharedContainer());
             return pd;
@@ -231,6 +243,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("objectid");
+            pd.setStorageColumnName("objectid");
             pd.setLabel("Key");
             pd.setHidden(true);
             //pd.setShownInInsertView(false);
@@ -249,6 +262,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("performedby");
+            pd.setStorageColumnName("performedby");
             pd.setLabel("Performed By");
             pd.setScale(64);
             pd.setContainer(ContainerManager.getSharedContainer());
@@ -263,6 +277,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("enddate");
+            pd.setStorageColumnName("enddate");
             pd.setLabel("End Date");
             pd.setShownInInsertView(true);
             pd.setShownInUpdateView(true);
@@ -280,6 +295,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("daterequested");
+            pd.setStorageColumnName("daterequested");
             pd.setLabel("Date Requested");
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
@@ -297,6 +313,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("vetreview");
+            pd.setStorageColumnName("vetreview");
             pd.setLabel("Vet Reviewer");
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
@@ -314,6 +331,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("vetreviewdate");
+            pd.setStorageColumnName("vetreviewdate");
             pd.setLabel("Vet Review Date");
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
@@ -331,6 +349,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("datefinalized");
+            pd.setStorageColumnName("datefinalized");
             pd.setLabel("Date Finalized");
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
