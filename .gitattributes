@@ -53,6 +53,7 @@ Viral_Load_Assay/resources/schemas/viral_load_assay.xml -text
 Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/ABI7500.txt -text
 Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/LC_data.txt -text
 Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/lc480.txt -text
+Viral_Load_Assay/src/org/labkey/viral_load_assay/ViralLoadCustomizer.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayController.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayModule.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssaySchema.java -text

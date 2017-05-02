@@ -91,6 +91,14 @@
                         <measure>true</measure>
                         <formatString>0.##</formatString>
                     </column>
+                    <column columnName="viralLoadOORIndicator">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
+                    <column columnName="viralLoadNumber">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
                     <column columnName="viralLoadScientific" wrappedColumnName="viralLoad">
                         <columnTitle>Viral Load</columnTitle>
                         <conceptURI>http://cpas.labkey.com/laboratory#assayResult</conceptURI>

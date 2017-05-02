@@ -70,6 +70,7 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
     {
         LaboratoryService.get().registerModule(this);
         LaboratoryService.get().registerDataProvider(new ViralLoadAssayDataProvider(this));
+        LaboratoryService.get().registerTableCustomizer(this, ViralLoadCustomizer.class, "*", "*");
     }
 
     @NotNull

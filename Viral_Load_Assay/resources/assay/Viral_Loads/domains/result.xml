@@ -84,7 +84,14 @@
         <exp:Name>viralLoad</exp:Name>
         <exp:Required>true</exp:Required>
         <exp:RangeURI>http://www.w3.org/2001/XMLSchema#double</exp:RangeURI>
+        <exp:ConceptURI>http://cpas.labkey.com/laboratory#assayResult</exp:ConceptURI>
         <exp:Label>Viral Load</exp:Label>
+    </exp:PropertyDescriptor>
+    <exp:PropertyDescriptor>
+        <exp:Name>viralLoadOORIndicator</exp:Name>
+        <exp:Required>false</exp:Required>
+        <exp:RangeURI>http://www.w3.org/2001/XMLSchema#string</exp:RangeURI>
+        <exp:Label>Viral Load OORIndicator</exp:Label>
     </exp:PropertyDescriptor>
     <exp:PropertyDescriptor>
         <exp:Name>plate</exp:Name>
