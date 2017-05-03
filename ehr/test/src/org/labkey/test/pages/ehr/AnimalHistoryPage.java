@@ -28,7 +28,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
+import static org.labkey.test.Locator.NBSP;
 import static org.labkey.test.components.ldk.panel.AbstractFilterType.FILTER_SIGNAL;
 import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
 
@@ -124,6 +126,18 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
     }
 
     @Override
+    public List<String> getTexts(List<WebElement> elements)
+    {
+        final List<String> texts = super.getTexts(elements);
+        final ListIterator<String> iterator = texts.listIterator();
+        while (iterator.hasNext())
+        {
+            iterator.set(iterator.next().replaceAll(NBSP, " ").trim());
+        }
+        return texts;
+    }
+
+    @Override
     protected ElementCache newElementCache()
     {
         return new ElementCache();
@@ -142,7 +156,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
 
         protected WebElement findRemoveIdButton(String animalId)
         {
-            return MultiAnimalFilterType.subjectButtonPanel.append(ext4Button(animalId)).waitForElement(this, 1000);
+            return MultiAnimalFilterType.subjectButtonPanel.append(ext4Button(animalId + NBSP)).waitForElement(this, 1000);
         }
 
         protected List<WebElement> findAllIdButtons()
