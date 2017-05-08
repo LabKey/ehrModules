@@ -1441,6 +1441,7 @@ ehr/test/src/org/labkey/test/components/ldk/panel/NoFiltersFilterType.java -text
 ehr/test/src/org/labkey/test/components/ldk/panel/SingleSubjectFilterType.java -text
 ehr/test/src/org/labkey/test/pages/ehr/AnimalHistoryPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/BaseColonyOverviewPage.java -text
+ehr/test/src/org/labkey/test/pages/ehr/ColonyOverviewPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/ParticipantViewPage.java -text
 ehr/test/src/org/labkey/test/tests/ehr/AbstractEHRTest.java -text
 ehr/test/src/org/labkey/test/tests/ehr/AbstractGenericEHRTest.java -text
