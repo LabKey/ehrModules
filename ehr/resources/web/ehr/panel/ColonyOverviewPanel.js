@@ -22,7 +22,7 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                 border: false
             },
             items: [{
-                html: 'This page is designed to give an overview of the colony',
+                html: 'This page is designed to give an overview of the colony.',
                 style: 'padding-bottom: 20px;'
             },{
                 xtype: 'tabpanel',
