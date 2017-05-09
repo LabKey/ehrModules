@@ -50,6 +50,11 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         //TODO: return new PopulationCompositionTab(getActiveTabPanel());
     }
 
+    public void clickSpfColonyTab()
+    {
+        clickTab("SPF Colony");
+    }
+
     public BaboonColonyTab clickBaboonColonyTab()
     {
         clickTab("Baboon Colony");
