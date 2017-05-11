@@ -15,13 +15,10 @@
  */
 package org.labkey.test.pages.ehr;
 
-import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.html.Table;
-import org.labkey.test.selenium.LazyWebElement;
 import org.labkey.test.util.DataRegionTable;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -30,7 +27,6 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
     public ColonyOverviewPage(WebDriver driver)
     {
         super(driver);
-        _elements = new Elements();
     }
 
     public static ColonyOverviewPage beginAt(WebDriverWrapper driver)
@@ -66,13 +62,6 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         return new BaboonColonyTab(getActiveTabPanel());
     }
 
-    private Elements elements()
-    {
-        if (_elements == null)
-            _elements = new Elements();
-        return (Elements) _elements;
-    }
-
     public class BaboonColonyTab extends OverviewTab
     {
         protected BaboonColonyTab(WebElement el)
@@ -80,7 +69,7 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
             super(el);
         }
 
-        protected final DataRegionTable assignedFundedDataRegion = DataRegionTable.findDataRegionWithin(ColonyOverviewPage.this, this);
+        protected final DataRegionTable assignedFundedDataRegion = DataRegionTable.DataRegion(getDriver()).find(this);
 
         public DataRegionTable getAssignedFundedDataRegion()
         {
@@ -96,16 +85,5 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         }
 
         protected final Table populationTable = new Table(getDriver(), getComponentElement());
-    }
-
-    private class Elements extends BaseColonyOverviewPage.Elements
-    {
-        @Override
-        protected SearchContext getContext()
-        {
-            return getDriver();
-        }
-
-        WebElement baboonColonyPanel = new LazyWebElement(Locator.css("button"), this);
     }
 }
