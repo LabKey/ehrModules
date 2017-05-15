@@ -70,6 +70,10 @@ abstract public class EHRService
 
     abstract public void registerLabworkType(LabworkType type);
 
+    /**
+     * Registers an additional JavaScript trigger script that runs whenever the core EHR's trigger script is initialized,
+     * in containers in which the owning module is enabled.
+     */
     abstract public void registerTriggerScript(Module owner, Resource script);
 
     abstract public List<Resource> getExtraTriggerScripts(Container c);
@@ -79,8 +83,16 @@ abstract public class EHRService
     /** @return the providers enabled in the container */
     abstract public Collection<DemographicsProvider> getDemographicsProviders(Container c, User u);
 
+    /**
+     * Attaches additional TableCustomizer that runs as part of DefaultEHRCustomizer whenever the owning
+     * module is enabled in a container
+     */
     abstract public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizer);
 
+    /**
+     * Attaches additional TableCustomizer that runs as part of DefaultEHRCustomizer whenever the owning
+     * module is enabled in a container
+     */
     abstract public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizer, String schema, String query);
 
     abstract public List<TableCustomizer> getCustomizers(Container c, String schema, String query);

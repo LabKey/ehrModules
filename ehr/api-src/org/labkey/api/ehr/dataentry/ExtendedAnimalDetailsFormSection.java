@@ -16,7 +16,8 @@
 package org.labkey.api.ehr.dataentry;
 
 /**
- * Shows a more extensive summary of an animal's basic demographic and other information.
+ * Shows a more extensive summary of an animal's basic demographic and other information, with more detail than
+ * the simpler {@link AnimalDetailsFormSection}.
  *
  * User: bimber
  * Date: 6/9/13

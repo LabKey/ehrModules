@@ -25,7 +25,6 @@ import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.ldk.table.CustomPermissionsTable;
-import org.labkey.api.module.Module;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -43,7 +42,7 @@ public class EHRUserSchema extends SimpleUserSchema
 {
     public EHRUserSchema(User user, Container container, DbSchema dbschema)
     {
-        super(EHRSchema.EHR_SCHEMANAME, null, user, container, dbschema);
+        super(EHRSchema.EHR_SCHEMANAME, "EHR-specific tables, such as projects and protocols", user, container, dbschema);
     }
 
     @Override

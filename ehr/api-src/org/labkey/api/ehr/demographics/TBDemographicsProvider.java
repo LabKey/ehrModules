@@ -15,9 +15,7 @@
  */
 package org.labkey.api.ehr.demographics;
 
-import org.labkey.api.data.CompareType;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
@@ -28,7 +26,6 @@ import java.util.Set;
 /**
  * User: bimber
  * Date: 7/14/13
- * Time: 10:29 AM
  */
 public class TBDemographicsProvider extends AbstractListDemographicsProvider
 {

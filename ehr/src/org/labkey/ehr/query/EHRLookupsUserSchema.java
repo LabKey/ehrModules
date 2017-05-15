@@ -69,7 +69,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
     {
-        super(EHRSchema.EHR_LOOKUPS, null, user, container, dbschema);
+        super(EHRSchema.EHR_LOOKUPS, "Predominantly simple and typically small value-lists, such as species or diagnosis codes", user, container, dbschema);
     }
 
     @Override

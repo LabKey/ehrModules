@@ -257,6 +257,7 @@
         </columns>
     </table>
     <table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
+        <description>The most general categorization for animal housing</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Areas</tableTitle>
@@ -288,6 +289,7 @@
         </columns>
     </table>
     <table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
+        <description>Additional services potentially available to be requested along with a blood draw, such as specific lab tests</description>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Blood Draw Services</tableTitle>
         <importUrl></importUrl>
@@ -656,6 +658,7 @@
         </columns>
     </table>
     <table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
+        <description>Categories of age, such as infant or adult, by species</description>
         <tableTitle>Age Class</tableTitle>
         <importUrl></importUrl>
         <insertUrl></insertUrl>

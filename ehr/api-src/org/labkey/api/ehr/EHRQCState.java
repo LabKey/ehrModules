@@ -34,14 +34,18 @@ public interface EHRQCState
 
     String getDescription();
 
+    /** @return if data is considered "complete" and should be included in most views and reports */
     Boolean isPublicData();
 
+    /** @return if data is still in the process of being entered. Still visible to other EHR users, but filtered out from many views */
     Boolean isDraftData();
 
     Boolean isDeleted();
 
+    /** @return if this is a request for a service, which will eventually be marked as complete by entering data in the associated record and flipping the QCState to complete or similar */
     Boolean isRequest();
 
+    /** @return if this QCState is associated with records that can be entered with a future date (like a forward-looking request) */
     Boolean isAllowFutureDates();
 
     JSONObject toJson();

@@ -1,6 +1,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <!--TODO: should deprecate-->
     <table tableName="module_properties" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Admin-configurable properties for setting up the EHR.</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -129,6 +130,7 @@
         </columns>
     </table>
     <table tableName="tasks" tableDbType="TABLE" useColumnOrder="true">
+        <description>Grouping of records across multiple datasets, associated with a particular data entry form</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <tableTitle>Tasks</tableTitle>
         <auditLogging>DETAILED</auditLogging>
@@ -202,6 +204,7 @@
         </columns>
     </table>
     <table tableName="requests" tableDbType="TABLE" useColumnOrder="true">
+        <description>Request for service of some sort, such as a blood draw. Parent record for the associated dataset rows.</description>
         <tableTitle>Requests</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -307,6 +310,7 @@
         </columns>
     </table>
     <table tableName="reports" tableDbType="TABLE" useColumnOrder="true">
+        <description>Configuration for the Animal History user interface, with each row representing one of the secondary level tabs</description>
         <tableTitle>Reports</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -423,6 +427,7 @@
         </columns>
     </table>
     <table tableName="cage_observations" tableDbType="TABLE" useColumnOrder="true">
+        <description>Observations associated with a whole cage, and not attributable to a single animal, from a specific date/time</description>
         <tableTitle>Cage Observations</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <importUrl></importUrl>
@@ -545,6 +550,7 @@
     </table>
     <!--TODO: should deprecate-->
     <table tableName="extracts" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated.</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <pkColumnName>rowid</pkColumnName>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</tableUrl>
@@ -607,6 +613,7 @@
         </columns>
     </table>
     <table tableName="formtemplates" tableDbType="TABLE" useColumnOrder="true">
+        <description>Templates, tied to a specific data entry form, that users can use to pre-populate common sets of rows and values</description>
         <tableTitle>Form Templates</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -676,6 +683,7 @@
         </columns>
     </table>
     <table tableName="notificationrecipients" tableDbType="TABLE" useColumnOrder="true">
+        <description>Subscriptions to specific notification types, to be delivered via email, based on the notification's schedule</description>
         <tableTitle>Notification Recipients</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -739,6 +747,7 @@
         </columns>
     </table>
     <table tableName="formpanelsections" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
         <tableTitle>Form Panel Sections</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -905,6 +914,7 @@
         </columns>
     </table>
     <table tableName="formtypes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
         <tableTitle>Form Types</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -968,6 +978,7 @@
         </columns>
     </table>
     <table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
+        <description>IACUC protocols</description>
         <tableTitle>IACUC Protocols</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -1332,6 +1343,7 @@
         </columns>
     </table>
     <table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
+        <description>Additional EHR-specific information associated with the study.qcstate table</description>
         <tableTitle>QCState Metadata</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -1520,6 +1532,7 @@
         </columns>
     </table>
     <table tableName="kinship" tableDbType="TABLE" useColumnOrder="true">
+        <description>Relatedness of every animal to every other animal in the colony</description>
         <tableTitle>Kinship</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>SUMMARY</auditLogging>
