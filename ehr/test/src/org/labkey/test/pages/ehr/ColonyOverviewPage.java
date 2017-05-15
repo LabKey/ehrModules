@@ -51,9 +51,10 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         clickTab("SPF Colony");
     }
 
-    public void clickCcsColonyTab()
+    public WebElement clickCcsColonyTab()
     {
         clickTab("Clinical Case Summary");
+        return getActiveTabPanel();
     }
 
     public BaboonColonyTab clickBaboonColonyTab()

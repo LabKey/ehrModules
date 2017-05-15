@@ -423,7 +423,7 @@ EHR.Utils = new function(){
 
             if (missingProps.length > 0){
                 if (msgTarget)
-                    Ext4.get(msgTarget).update('The following module properties for the EHR have not been set: ' + missingProps.join(', ') + '.  Please ask you administrator to configure this under the folder settings page.');
+                    Ext4.get(msgTarget).update('The following module properties for the EHR have not been set: ' + missingProps.join(', ') + '.  Please ask your administrator to configure this under the folder settings page.');
                 return null;
             }
 
