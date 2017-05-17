@@ -213,7 +213,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
 
             var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
             var totalValue = this.aggregateData.rowMap[rowName] ? this.aggregateData.rowMap[rowName].total : 0;
-            rows.push(this.getFormattedRowNumber(totalValue, url));
+            rows.push(EHR.Utils.getFormattedRowNumber(totalValue, url, true));
 
             var parentData = this.aggregateData.rowMap[rowName] || {};
             Ext4.each(colKeys, function(key){
@@ -238,7 +238,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
 
                 this.appendFilterParams(params);
                 var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
-                rows.push(this.getFormattedRowNumber(value, url));
+                rows.push(EHR.Utils.getFormattedRowNumber(value, url, true));
             }, this);
         }, this);
 
@@ -324,13 +324,5 @@ Ext4.define('EHR.panel.PopulationPanel', {
         }, this);
 
         return keys;
-    },
-
-    getFormattedRowNumber: function(value, url) {
-        return {
-            html: '<a href="' + url + '">' + Ext4.util.Format.number(value, '#,###') + '</a>',
-            style: 'text-align: right; padding: 2px 4px;',
-            minWidth: 60
-        };
     }
 });

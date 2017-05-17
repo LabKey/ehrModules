@@ -660,6 +660,21 @@ EHR.Utils = new function(){
                     }
                 }]
             }).show(el);
+        },
+
+        getFormattedRowNumber: function (value, url, includeBorder) {
+            var html = Ext4.util.Format.number(value, '#,###');
+
+            if(Ext4.isString(url)){
+                html = '<a href="' + url + '">' + html + '</a>';
+            }
+
+            return {
+                html: html,
+                style: 'text-align: right; padding: 2px 4px;',
+                minWidth: 60,
+                border: includeBorder
+            };
         }
     }
 };
