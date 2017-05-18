@@ -51,6 +51,11 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         clickTab("SPF Colony");
     }
 
+    public void clickHousingSummaryTab()
+    {
+        clickTab("Housing Summary");
+    }
+
     public WebElement clickCcsColonyTab()
     {
         clickTab("Clinical Case Summary");
