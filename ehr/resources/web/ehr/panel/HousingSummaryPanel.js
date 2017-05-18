@@ -6,6 +6,10 @@
 Ext4.define('EHR.panel.HousingSummaryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-housingsummarypanel',
+
+    nounSingular: 'Building',
+    nounPlural: 'Buildings',
+
     initComponent: function(){
         Ext4.apply(this, {
             style: 'padding: 5px',
@@ -98,12 +102,12 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     appendUtilizationSection: function(results){
         if (!results || !results.rows || !results.rows.length){
             return {
-                html: 'No buildings were found',
+                html: 'No ' + this.nounPlural.toLowerCase() + ' were found',
                 style: 'padding-bottom: 10px;'
             }
         }
 
-        var headerNames = ['Building', 'Total Cages', 'Empty Cages', '% Used'];
+        var headerNames = [this.nounSingular, 'Total Cages', 'Empty Cages', '% Used'];
         var cells = [];
 
         Ext4.each(headerNames, function(headerName, idx){
@@ -117,43 +121,40 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
         Ext4.each(results.rows, function(r){
             var row = new LDK.SelectRowsRow(r);
 
-            var building = row.getDisplayValue('building');
-            if (!building){
-                building = 'Unknown';
+            var area = row.getDisplayValue(this.nounSingular.toLowerCase());
+            if (!area){
+                area = 'Unknown';
             }
 
+            var urlParams = {
+                schemaName: 'ehr_lookups',
+                'query.queryName': 'roomUtilization'
+            };
+            urlParams['query.room/' + this.nounSingular.toLowerCase() + '~eq'] = area;
+            var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, urlParams);
+
             cells.push({
-                html: '<a target="_blank" href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {
-                    schemaName: 'ehr_lookups',
-                    'query.queryName': 'roomUtilization',
-                    'query.room/building~eq': building
-                }) + '">' + building + ':</a>',
+                html: '<a target="_blank" href="' + url + '">' + area + ':</a>',
                 border: false,
                 style: 'padding: 2px;padding-right: 5px;'
             });
 
-            cells.push({
-                html: '<a target="_blank" href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {
-                    schemaName: 'ehr_lookups',
-                    'query.queryName': 'availableCages',
-                    'query.room/building~eq': building,
-                    'query.isAvailable~eq': true,
-                    'query.sort': 'cage'
-                }) + '">' + row.getDisplayValue('availableCages') + '</a>',
-                border: false,
-                style: 'padding: 2px;padding-right: 5px;'
-            });
+            urlParams = {
+                schemaName: 'ehr_lookups',
+                'query.queryName': 'availableCages',
+                'query.isAvailable~eq': true,
+                'query.sort': 'cage'
+            };
+            urlParams['query.room/' + this.nounSingular.toLowerCase() + '~eq'] = area;
+            url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, urlParams);
+            cells.push(EHR.Utils.getFormattedRowNumber(row.getDisplayValue('availableCages'),url,false));
+
+            cells.push(EHR.Utils.getFormattedRowNumber(row.getDisplayValue('cagesEmpty'),null,false));
 
             cells.push({
-                html: row.getDisplayValue('cagesEmpty') + '',
+                html: Ext4.util.Format.round(row.getDisplayValue('pctUsed'), 2).toFixed(2) + '%',
                 border: false,
-                style: 'padding: 2px;padding-right: 5px;'
-            });
-
-            cells.push({
-                html: Ext4.util.Format.round(row.getDisplayValue('pctUsed'), 2) + '%',
-                border: false,
-                style: 'padding: 2px;padding-right: 5px;'
+                style: 'padding: 2px;padding-right: 5px;text-align: right;'
             });
         }, this);
 
@@ -209,22 +210,27 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 if (url)
                     val = '<a target="_blank" href="' + url + '">' + val + '</a>';
 
-                cells.push({
-                    html: val + '',
-                    border: false,
-                    style: 'padding: 2px;padding-right: 5px;'
-                });
+                if (Ext4.isNumber(val)) {
+                    cells.push(EHR.Utils.getFormattedRowNumber(val,null,false));
+                }
+                else {
+                    cells.push({
+                        html: val + '',
+                        border: false,
+                        style: 'padding: 2px;padding-right: 5px;'
+                    });
+                }
             }, this);
 
             if (cfg.sumField){
                 var pct =  (row.getValue(cfg.sumField) / total) * 100;
-                pct = Ext4.util.Format.round(pct, 2);
+                pct = Ext4.util.Format.round(pct, 2).toFixed(2);
                 pct = pct.toString();
 
                 cells.push({
                     html: '(' + pct + '%)',
                     border: false,
-                    style: 'padding: 2px;padding-right: 5px;'
+                    style: 'padding: 2px;padding-right: 5px;text-align : right'
                 })
             }
         }, this);

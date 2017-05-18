@@ -61,15 +61,11 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
 
             var val = data.aggregated[key];
             var displayVal = Ext4.isDefined(val) ? val.toString() : '';
-            if (displayVal){
-                var url = this.generateUrl(displayVal, key, data, filterCol, operator);
-                if (url)
-                    displayVal =  '<a href="' + url + '">' + displayVal + '</a>';
-            }
+            var url = displayVal ? this.generateUrl(displayVal, key, data, filterCol, operator) : null;
 
             rows.push({
-                html:  displayVal,
-                style: 'text-align: center;padding-right: 10px;'
+                html:  EHR.Utils.getFormattedRowNumber(displayVal, url, false).html,
+                style: 'padding: 2px;padding-right: 5px;text-align : right'
             });
 
             var pct;
@@ -77,7 +73,7 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
                 //NOTE: this check was added to prevent JS errors.  I think this would only happen as an artifact of page loading, but am not 100% certain.  I was never able to repro it.
                 pct = this.demographicsData ? val / this.demographicsData.rowCount : 0;
                 pct = pct * 100;
-                pct = Ext4.util.Format.round(pct, 2);
+                pct = Ext4.util.Format.round(pct, 2).toFixed(2);
                 pct = pct.toString();
             }
             else {
@@ -86,7 +82,7 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
 
             rows.push({
                 html: pct,
-                style: 'text-align: center;'
+                style: 'padding: 2px;padding-right: 5px;text-align : right'
             });
         }, this);
 
