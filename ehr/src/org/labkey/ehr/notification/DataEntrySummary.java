@@ -34,6 +34,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
+import org.labkey.api.study.StudyEntity;
 import org.labkey.ehr.EHRManager;
 
 import java.sql.ResultSet;
@@ -55,7 +56,6 @@ public class DataEntrySummary implements NotificationSection
 {
     public DataEntrySummary()
     {
-
     }
 
     public String getMessage(Container c, User u)
@@ -197,14 +197,7 @@ public class DataEntrySummary implements NotificationSection
         {
             List<Dataset> datasets = new ArrayList<>();
             datasets.addAll(s.getDatasets());
-            Collections.sort(datasets, new Comparator<Dataset>()
-            {
-                @Override
-                public int compare(Dataset o1, Dataset o2)
-                {
-                    return o1.getLabel().toLowerCase().compareTo(o2.getLabel().toLowerCase());
-                }
-            });
+            datasets.sort(Comparator.comparing(StudyEntity::getLabel, String.CASE_INSENSITIVE_ORDER));
 
             for (Dataset ds : datasets)
             {

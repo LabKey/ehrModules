@@ -2349,8 +2349,8 @@ public class TriggerScriptHelper
         List<Map<String, Object>> oldKeys = new ArrayList<>();
 
         //sort on date
-        records = new ArrayList(records);
-        Collections.sort(records, new Comparator<Map<String, Object>>()
+        records = new ArrayList<>(records);
+        records.sort(new Comparator<Map<String, Object>>()
         {
             private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
@@ -2362,7 +2362,7 @@ public class TriggerScriptHelper
                     Date date = dateTimeFormat.parse(o1.get("date").toString());
                     Date date2 = dateTimeFormat.parse(o2.get("date").toString());
 
-                    return  date == null ? -1 : date.compareTo(date2);
+                    return date == null ? -1 : date.compareTo(date2);
                 }
                 catch (ParseException e)
                 {

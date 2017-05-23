@@ -15,7 +15,6 @@
  */
 package org.labkey.api.ehr.demographics;
 
-import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.Results;
@@ -27,9 +26,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,18 +83,14 @@ abstract public class AbstractListDemographicsProvider extends AbstractDemograph
         //NOTE: records are ordered to allow validation
         if (getSort() == null)
         {
-            Collections.sort(records, new Comparator<Map<String, Object>>()
+            records.sort((o1, o2) ->
             {
-                @Override
-                public int compare(Map<String, Object> o1, Map<String, Object> o2)
-                {
-                    if (o1 == null)
-                        return -1;
-                    else if (o2 == null)
-                        return 1;
+                if (o1 == null)
+                    return -1;
+                else if (o2 == null)
+                    return 1;
 
-                    return o1.toString().compareTo(o2.toString());
-                }
+                return o1.toString().compareTo(o2.toString());
             });
         }
 

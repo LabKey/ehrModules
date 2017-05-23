@@ -22,7 +22,6 @@ import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,9 +38,9 @@ import java.util.Set;
 public class ClinicalHistoryManager
 {
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
+    private static final Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
 
-    private List<HistoryDataSource> _dataSources = new ArrayList<>();
-    private Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
+    private final List<HistoryDataSource> _dataSources = new ArrayList<>();
 
     private ClinicalHistoryManager(){}
 
@@ -101,14 +100,7 @@ public class ClinicalHistoryManager
 
     public void sortRowsByDate(List<HistoryRow> rows)
     {
-        Collections.sort(rows, new Comparator<HistoryRow>()
-        {
-            @Override
-            public int compare(HistoryRow o1, HistoryRow o2)
-            {
-                return (-1 * (o1.getSortDateString().compareTo(o2.getSortDateString())));
-            }
-        });
+        rows.sort(Comparator.comparing(HistoryRow::getSortDateString, Comparator.reverseOrder()));
     }
 
     protected List<HistoryDataSource> getDataSources(Container c, User u)
@@ -125,6 +117,6 @@ public class ClinicalHistoryManager
             }
         }
 
-        return new ArrayList(sources.values());
+        return new ArrayList<>(sources.values());
     }
 }
