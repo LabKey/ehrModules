@@ -62,6 +62,12 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         return getActiveTabPanel();
     }
 
+    public WebElement clickUtilizationColonyTab()
+    {
+        clickTab("Utilization Summary");
+        return getActiveTabPanel();
+    }
+
     public BaboonColonyTab clickBaboonColonyTab()
     {
         clickTab("Baboon Colony");
