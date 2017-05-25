@@ -43,6 +43,7 @@ import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.module.Module;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
@@ -57,6 +58,7 @@ import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
+import org.labkey.api.resource.FileResource;
 import org.labkey.api.security.CSRF;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.AdminPermission;
@@ -67,6 +69,7 @@ import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -1668,6 +1671,63 @@ public class EHRController extends SpringActionController
 
             return response;
 
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class ValidateDatasetColsAction extends ConfirmAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            //NOTE: consider allowing moduleName as a URL param?
+            List<String> msgs = new ArrayList<>();
+            for (Module module : EHRService.get().getRegisteredModules())
+            {
+                if (!getContainer().getActiveModules().contains(module))
+                {
+                    continue;
+                }
+
+                msgs.add("Validating using the datasets.xml file from module: " + module.getName() + ":<br>");
+
+                FileResource resource = (FileResource) module.getModuleResolver().lookup(Path.parse("referenceStudy/datasets/datasets_metadata.xml"));
+                if (resource == null || !resource.getFile().exists())
+                {
+                    msgs.add("dataset XML not found in module.  expected: referenceStudy/datasets/datasets_metadata.xml");
+                    continue;
+                }
+
+                List<String> moduleMsgs = EHRManager.get().validateDatasetCols(getContainer(), getUser(), resource.getFile());
+                if (moduleMsgs.isEmpty())
+                {
+                    msgs.add("No discrepanies found");
+                }
+                else
+                {
+                    msgs.addAll(moduleMsgs);
+                }
+
+                msgs.add("<hr>");
+            }
+
+            return new HtmlView("This action will compare the columns in the study datasets against those expected in the reference XML file.  " + (msgs.isEmpty() ? "No problems were found." : "The following discrepancies were found:<br><br> " + StringUtils.join(msgs, "<br>")));
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            //TODO: consider automatically fixing?
+
+            return true;
         }
     }
 }

@@ -15,8 +15,10 @@
 
 package org.labkey.ehr;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.cache.CacheManager;
@@ -76,11 +78,17 @@ import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
+import org.labkey.data.xml.ColumnType;
+import org.labkey.data.xml.TableType;
+import org.labkey.data.xml.TablesDocument;
+import org.labkey.data.xml.TablesType;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.utils.EHRQCStateImpl;
 
 import java.beans.Introspector;
+import java.io.File;
+import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,6 +102,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class EHRManager
 {
@@ -1567,5 +1576,63 @@ public class EHRManager
         map.put("generatedByServer", true);
 
         return map;
+    }
+
+    public List<String> validateDatasetCols(Container c, User u, File xml) throws IOException, XmlException
+    {
+        Study s = StudyService.get().getStudy(c);
+        if (s == null)
+        {
+            return Collections.emptyList();
+        }
+
+        TablesDocument doc = TablesDocument.Factory.parse(xml);
+        TablesType tablesXml = doc.getTables();
+
+        Map<String, Set<String>> datasetMap = new HashMap<>();
+        for (TableType tableXml : tablesXml.getTableArray())
+        {
+            String datasetName = tableXml.getTableName();
+            Set<String> colsExpected = new TreeSet<>();
+            TableType.Columns cols = tableXml.getColumns();
+            for (ColumnType ct : cols.getColumnArray())
+            {
+                colsExpected.add(ct.getColumnName());
+            }
+
+            datasetMap.put(datasetName, colsExpected);
+        }
+
+
+        List<String> ret = new ArrayList<>();
+        Set<String> skipped = PageFlowUtil.set("Container", "Created", "CreatedBy", "Dataset", "Modified", "ModifiedBy", "ParticipantSequenceNum", "SequenceNum", "_key", "lsid", "qcstate", "sourcelsid", "formSort", "project");
+        for (Dataset ds : s.getDatasets())
+        {
+            TableInfo ti = ds.getTableInfo(u);
+            Set<String> names = new TreeSet<>(ti.getColumnNameSet());
+
+            if (!datasetMap.containsKey(ds.getName()))
+            {
+                ret.add("No expected columns found for dataset: " + ds.getName());
+            }
+            else
+            {
+                Set<String> diff = new HashSet<>(Sets.difference(names, datasetMap.get(ds.getName())));
+                diff.removeAll(skipped);
+                if (!diff.isEmpty())
+                {
+                    ret.add("columns not expected in dataset " + ds.getName() + ": " + StringUtils.join(diff, ", "));
+                }
+
+                Set<String> diff2 = new HashSet<>(Sets.difference(datasetMap.get(ds.getName()), names));
+                diff2.removeAll(skipped);
+                if (!diff2.isEmpty())
+                {
+                    ret.add("columns missing from dataset " + ds.getName() + ": " + StringUtils.join(diff2, ", "));
+                }
+            }
+        }
+
+        return ret;
     }
 }
