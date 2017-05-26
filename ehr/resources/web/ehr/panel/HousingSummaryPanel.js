@@ -139,13 +139,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 style: 'padding: 2px;padding-right: 5px;'
             });
 
-            urlParams = {
-                schemaName: 'ehr_lookups',
-                'query.queryName': 'availableCages',
-                'query.isAvailable~eq': true,
-                'query.sort': 'cage'
-            };
-            urlParams['query.room/' + this.nounSingular.toLowerCase() + '~eq'] = area;
+            urlParams = this.getAvailableCagesUrl(area);
             url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, urlParams);
             cells.push(EHR.Utils.getFormattedRowNumber(row.getDisplayValue('availableCages'),url,false));
 
@@ -176,6 +170,17 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 items: cells
             }]
         }
+    },
+
+    getAvailableCagesUrl: function (area) {
+        var urlParams = {
+            schemaName: 'ehr_lookups',
+            'query.queryName': 'availableCages',
+            'query.isAvailable~eq': true,
+            'query.sort': 'cage'
+        };
+        urlParams['query.room/' + this.nounSingular.toLowerCase() + '~eq'] = area;
+        return urlParams;
     },
 
     appendSection: function(results, cfg){
