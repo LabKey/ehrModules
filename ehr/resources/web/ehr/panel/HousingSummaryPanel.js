@@ -139,7 +139,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 style: 'padding: 2px;padding-right: 5px;'
             });
 
-            urlParams = this.getAvailableCagesUrl(area);
+            urlParams = this.getAvailableCagesUrlParams(area);
             url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, urlParams);
             cells.push(EHR.Utils.getFormattedRowNumber(row.getDisplayValue('availableCages'),url,false));
 
@@ -172,7 +172,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
         }
     },
 
-    getAvailableCagesUrl: function (area) {
+    getAvailableCagesUrlParams: function (area) {
         var urlParams = {
             schemaName: 'ehr_lookups',
             'query.queryName': 'availableCages',
