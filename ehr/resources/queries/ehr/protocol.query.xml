@@ -6,15 +6,6 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
-                <columns>
-                    <column columnName="protocol">
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>protocol</fkTable>
-                            <fkColumnName>protocol</fkColumnName>
-                        </fk>
-                    </column>
-                </columns>
             </table>
         </tables>
     </metadata>
