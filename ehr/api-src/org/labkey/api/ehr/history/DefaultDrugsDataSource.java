@@ -49,7 +49,6 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
-        String category = rs.getString("category");
 
         //if this record is a scheduled treatment, skip it unless this instance is flagged as not normal
         if (rs.getObject("treatmentid") != null && (rs.getObject("outcome") == null || "Normal".equals(rs.getObject("outcome"))))
@@ -100,7 +99,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     @Override
     protected String getCategoryText(Results rs) throws SQLException
     {
-        String category = rs.getString("category");
+        String category = rs.hasColumn(FieldKey.fromString("category")) ? rs.getString("category") : null;
         return category == null ?  "Medication Given" : category + " Medication";
     }
 
