@@ -1048,6 +1048,8 @@ ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
 ehr/resources/views/recordDeleteSettings.html -text
 ehr/resources/views/recordDeleteSettings.view.xml -text
+ehr/resources/views/referenceStudyComparison.html -text
+ehr/resources/views/referenceStudyComparison.view.xml -text
 ehr/resources/views/requestDetails.html -text
 ehr/resources/views/requestDetails.view.xml -text
 ehr/resources/views/requestServices.html -text

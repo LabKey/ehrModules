@@ -1,0 +1,9 @@
+<view xmlns="http://labkey.org/data/xml/view" title="EHR Reference Study Comparison" frame="none">
+    <permissions>
+        <permission name="admin"/>
+    </permissions>
+    <dependencies>
+        <dependency path="Ext4"/>
+        <dependency path="codemirror"/>
+    </dependencies>
+</view>
