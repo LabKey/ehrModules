@@ -23,8 +23,6 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -68,15 +66,13 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         waitForElement(org.labkey.test.Locators.pageSignal(REPORT_PANEL_SIGNAL));
     }
 
-    @LogMethod(quiet = true)
-    public ParticipantViewPage clickCategoryTab(@LoggedParam String categoryLabel)
+    public ParticipantViewPage clickCategoryTab(String categoryLabel)
     {
         elementCache().findCategoryTab(categoryLabel).select();
         return this;
     }
 
-    @LogMethod(quiet = true)
-    public ParticipantViewPage clickReportTab(@LoggedParam String reportLabel)
+    public ParticipantViewPage clickReportTab(String reportLabel)
     {
         elementCache().findReportTab(reportLabel).select();
         return this;
@@ -101,25 +97,21 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         return drts;
     }
 
-    @LogMethod(quiet = true)
     public CategoryTab findCategoryTab(String category)
     {
         return elementCache().findCategoryTab(category);
     }
 
-    @LogMethod(quiet = true)
     public Map<Integer, CategoryTab> findCategoryTabs()
     {
         return elementCache().findCategoryTabs();
     }
 
-    @LogMethod(quiet = true)
     public ReportTab findReportTab(String reportLabel)
     {
         return elementCache().findReportTab(reportLabel);
     }
 
-    @LogMethod(quiet = true)
     public Map<Integer, ReportTab> getReportTabsForSelectedCategory()
     {
         return elementCache().getReportTabsForSelectedCategory();
@@ -293,12 +285,17 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         {
             if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
             {
+                log("Selecting Category: " + getLabel());
                 WebElement activeReportPanelEl = activeReportPanel.findElement(getDriver());
                 scrollIntoView(_el);
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
                 activeReportPanel.waitForElement(getDriver(), 1000);
+            }
+            else
+            {
+                log("Category already selected: " + getLabel());
             }
         }
     }
@@ -325,6 +322,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         {
             if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
             {
+                log("Selecting Report: " + getLabel());
                 scrollIntoView(_el);
                 try
                 {
@@ -335,6 +333,10 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                     _el.isDisplayed(); // Make sure it was actually the signal that was stale
                 }
                 _ext4Helper.waitForMaskToDisappear(30000);
+            }
+            else
+            {
+                log("Report already selected: " + getLabel());
             }
         }
     }
