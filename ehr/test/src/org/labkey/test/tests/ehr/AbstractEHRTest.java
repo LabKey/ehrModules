@@ -34,6 +34,7 @@ import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
@@ -59,7 +60,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
@@ -125,10 +125,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected String[] weightFields = {"Id", "date", "enddate", "project", "weight", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid"};
     protected Object[] weightData1 = {getExpectedAnimalIDCasing("TESTSUBJECT1"), EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
     protected List<Long> _saveRowsTimes;
-    protected SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-    protected Random _randomGenerator = new Random();
-
-    protected EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getContainerPath());
 
     protected abstract String getModuleDirectory();
 
@@ -312,7 +308,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         }
 
         long startTime = System.currentTimeMillis();
-        deleteProject(getProjectName(), afterTest);
+        _containerHelper.deleteProject(getProjectName(), afterTest);
         if(isTextPresent(getProjectName()))
         {
             log("Wait extra long for folder to finish deleting.");
@@ -340,11 +336,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         _containerHelper.createProject(getProjectName(), type);
         _containerHelper.createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, type, null);
-    }
-
-    protected void createProjectAndFolders()
-    {
-        createProjectAndFolders("EHR");
     }
 
     protected void initProject() throws Exception
@@ -417,7 +408,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected void populateInitialData()
     {
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/populateInitialData.view");
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "populateInitialData"));
 
         repopulate("Lookup Sets");
         repopulate("All");
@@ -435,10 +426,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected void primeCaches()
     {
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/primeDataEntryCache.view");
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "primeDataEntryCache"));
         waitAndClickAndWait(Locator.lkButton("OK"));
 
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/cacheLivingAnimals.view");
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "cacheLivingAnimals"));
         waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 4);
     }
 
@@ -469,7 +460,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         //verify delete first
         deleteHardTableRecords();
 
-        Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+        Connection cn = createDefaultConnection(false);
 
         //first ehr.protocol
         InsertRowsCommand insertCmd = new InsertRowsCommand("ehr", "protocol");
@@ -519,7 +510,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
-        Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+        Connection cn = createDefaultConnection(false);
 
         SelectRowsCommand selectCmd = new SelectRowsCommand(schemaName, queryName);
         selectCmd.addFilter(new Filter(pkName, map.get(pkName)));
@@ -917,7 +908,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         }
     }
 
-    public static enum EHRRole
+    public enum EHRRole
     {
         DATA_ADMIN ("EHR Data Admin"),
         REQUESTER ("EHR Requestor"),
@@ -925,14 +916,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         FULL_SUBMITTER ("EHR Full Submitter"),
         FULL_UPDATER ("EHR Full Updater"),
         REQUEST_ADMIN ("EHR Request Admin");
+
         private final String name;
-        private EHRRole (String name)
+
+        EHRRole (String name)
         {this.name = name;}
         public String toString()
         {return name;}
     }
 
-    public static enum EHRQCState
+    public enum EHRQCState
     {
         ABNORMAL("Abnormal", "Value is abnormal", true),
         COMPLETED("Completed", "Data has been approved for public release", true),
