@@ -446,14 +446,10 @@ ehr/resources/queries/study/Cases.js -text
 ehr/resources/queries/study/Cases.query.xml -text
 ehr/resources/queries/study/Chemistry[!!-~]Results.js -text
 ehr/resources/queries/study/Chemistry[!!-~]Results.query.xml -text
-ehr/resources/queries/study/Chemistry[!!-~]Results/.qview.xml -text
-ehr/resources/queries/study/Chemistry[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.js -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.js -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.query.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Observations/.qview.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Observations/PE[!!-~]Observations.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.js -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.query.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs.js -text
@@ -469,8 +465,6 @@ ehr/resources/queries/study/Departure/.qview.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration.js -text
 ehr/resources/queries/study/Hematology[!!-~]Results.js -text
 ehr/resources/queries/study/Hematology[!!-~]Results.query.xml -text
-ehr/resources/queries/study/Hematology[!!-~]Results/.qview.xml -text
-ehr/resources/queries/study/Hematology[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Histology.js -text
 ehr/resources/queries/study/Housing.js -text
 ehr/resources/queries/study/Housing.query.xml -text
@@ -490,14 +484,12 @@ ehr/resources/queries/study/HousingOverlapsDateOnly.query.xml -text
 ehr/resources/queries/study/HousingOverlapsDateOnly.sql -text
 ehr/resources/queries/study/Inbreeding[!!-~]Coefficients.js -text
 ehr/resources/queries/study/Inbreeding[!!-~]Coefficients.query.xml -text
-ehr/resources/queries/study/Inbreeding[!!-~]Coefficients/.qview.xml -text
 ehr/resources/queries/study/Notes.js -text
 ehr/resources/queries/study/Notes.query.xml -text
 ehr/resources/queries/study/Notes/.qview.xml -text
 ehr/resources/queries/study/Notes/Active[!!-~]Notes.qview.xml -text
 ehr/resources/queries/study/Organ[!!-~]Weights.js -text
 ehr/resources/queries/study/Organ[!!-~]Weights.query.xml -text
-ehr/resources/queries/study/Organ[!!-~]Weights/.qview.xml -text
 ehr/resources/queries/study/Parasitology[!!-~]Results.js -text
 ehr/resources/queries/study/Parasitology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Problem[!!-~]List.js -text
@@ -531,6 +523,10 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
+ehr/resources/queries/study/chemistryResults/.qview.xml -text
+ehr/resources/queries/study/chemistryResults/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
+ehr/resources/queries/study/clinical_observations/.qview.xml -text
+ehr/resources/queries/study/clinical_observations/PE[!!-~]Observations.qview.xml -text
 ehr/resources/queries/study/colonyPopulationByAge.query.xml -text
 ehr/resources/queries/study/colonyPopulationByAge.sql -text
 ehr/resources/queries/study/colonyPopulationByAge/.qview.xml -text
@@ -578,6 +574,8 @@ ehr/resources/queries/study/demographicsWeightChange/By[!!-~]Location.qview.xml 
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
 ehr/resources/queries/study/drug.query.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
+ehr/resources/queries/study/hematologyResults/.qview.xml -text
+ehr/resources/queries/study/hematologyResults/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/housing/.qview.xml -text
 ehr/resources/queries/study/housing/Active[!!-~]Housing.qview.xml -text
 ehr/resources/queries/study/housing/Search[!!-~]Panel.qview.xml -text
@@ -593,6 +591,8 @@ ehr/resources/queries/study/housingRoommates/.qview.xml -text
 ehr/resources/queries/study/housingRoommates/Caged[!!-~]Housing[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
+ehr/resources/queries/study/inbreeding/.qview.xml -text
+ehr/resources/queries/study/organ_weights/.qview.xml -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/validateFinalWeights.sql -text
 ehr/resources/queries/study/weightConsecutiveDrops.query.xml -text
