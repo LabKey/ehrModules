@@ -83,12 +83,6 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         return new EHRClientAPIHelper(this, getContainerPath());
     }
 
-    @Override
-    protected void createProjectAndFolders()
-    {
-        _containerHelper.createProject(getProjectName(), "ONPRC EHR");
-    }
-
     protected void importStudy()
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");

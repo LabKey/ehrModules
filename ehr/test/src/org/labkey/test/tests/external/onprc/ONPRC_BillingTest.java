@@ -155,12 +155,6 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Override
-    protected void createProjectAndFolders()
-    {
-        _containerHelper.createProject(PROJECT_NAME, "EHR");
-    }
-
-    @Override
     protected void populateInitialData()
     {
         super.populateInitialData();
