@@ -574,6 +574,8 @@ ehr/resources/queries/study/demographicsWeightChange/By[!!-~]Location.qview.xml 
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
 ehr/resources/queries/study/drug.query.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
+ehr/resources/queries/study/encountersWithSnomedBySet.query.xml -text
+ehr/resources/queries/study/encountersWithSnomedBySet.sql -text
 ehr/resources/queries/study/hematologyResults/.qview.xml -text
 ehr/resources/queries/study/hematologyResults/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/housing/.qview.xml -text
