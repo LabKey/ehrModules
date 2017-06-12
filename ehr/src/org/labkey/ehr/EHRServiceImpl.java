@@ -418,6 +418,9 @@ public class EHRServiceImpl extends EHRService
         ClinicalHistoryManager.get().registerDataSource(source);
     }
 
+    /**Adds a set of resources found to be common for ONPRC and WNPRC and not included by SNPRC.
+     * @param module
+     */
     @Override
     public void registerOptionalClinicalHistoryResources(Module module)
     {
