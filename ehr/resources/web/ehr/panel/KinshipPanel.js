@@ -220,8 +220,8 @@ Ext4.define('EHR.panel.KinshipPanel', {
             this.export.push([]);
             this.export[i].push(id);
             html += '<tr><td>' + id + '</td>';
-            Ext4.Array.forEach(distinct, function(id2){
-                idKin = (idMap[id][id2] === undefined ? ' ' : idMap[id][id2])
+            Ext4.Array.forEach(distinct, function (id2) {
+                idKin = ((!Ext4.isDefined(idMap[id]) || !Ext4.isDefined(idMap[id][id2])) ? ' ' : idMap[id][id2]);
                 this.export[i].push(idKin);
                 html += '<td>' + idKin + '</td>';
             }, this);
