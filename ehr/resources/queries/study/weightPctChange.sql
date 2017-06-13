@@ -13,8 +13,8 @@ SELECT
   w.weight AS CurWeight,
   w2.PrevDate,
   w3.weight AS PrevWeight,
-  Round(((w.weight - w3.weight) * 100 / w.weight), 1) AS PctChange,
-  Abs(Round(((w.weight - w3.weight) * 100 / w.weight), 1)) AS AbsPctChange,
+  Round(((w.weight - w3.weight) * 100 / w3.weight), 1) AS PctChange,
+  Abs(Round(((w.weight - w3.weight) * 100 / w3.weight), 1)) AS AbsPctChange,
   timestampdiff('SQL_TSI_DAY', w3.date, w.date) AS Interval,
   w.qcstate
 
