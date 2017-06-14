@@ -1,6 +1,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Lookup Sets</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <pkColumnName>rowid</pkColumnName>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -32,6 +33,7 @@
     </table>
     <table tableName="tb_eye" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>TB Eye Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -211,6 +213,7 @@
     </table>
     <table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Yes/No</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -224,6 +227,7 @@
     </table>
     <table tableName="restraint_type" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Restraint Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -243,6 +247,7 @@
     </table>
     <table tableName="routes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Routes Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -330,6 +335,7 @@
     </table>
     <table tableName="request_priority" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Request Priorities</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -346,6 +352,7 @@
     </table>
     <table tableName="clinpath_tests" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Clinpath Tests</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -366,6 +373,7 @@
     </table>
     <table tableName="species_codes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Species Codes</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -411,6 +419,7 @@
     </table>
     <table tableName="dosage_units" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Dosage Unit Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -428,6 +437,7 @@
     </table>
     <table tableName="amount_units" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Amount Unit Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -441,6 +451,7 @@
     </table>
     <table tableName="source" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Source Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -468,6 +479,7 @@
     </table>
     <table tableName="lab_test_range" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Lab Test Reference Ranges</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -505,6 +517,7 @@
     </table>
     <table tableName="species" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Species</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -554,6 +567,7 @@
     <!--TODO: move-->
     <table tableName="months" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Months</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -570,6 +584,7 @@
     </table>
     <table tableName="treatment_frequency" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Treatment Frequencies</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -612,6 +627,7 @@
     </table>
     <table tableName="treatment_frequency_times" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Treatment Frequency Times</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -642,6 +658,7 @@
     </table>
     <table tableName="calculated_status_codes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Calculated Status Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -660,6 +677,7 @@
     <table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
         <description>Categories of age, such as infant or adult, by species</description>
         <tableTitle>Age Class</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -700,6 +718,7 @@
     </table>
     <table tableName="charge_items" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Charge Items Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -757,6 +776,7 @@
     </table>
     <table tableName="blood_draw_tube_type" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Blood Draw Tube Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -932,6 +952,7 @@
     </table>
     <table tableName="normal_abnormal" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Normal/Abnormal</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -945,6 +966,7 @@
     </table>
     <table tableName="oor_indicators" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>OOR Indicators</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -958,6 +980,7 @@
     </table>
     <table tableName="weight_ranges" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Weight Allowable Ranges Per Species</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -981,6 +1004,7 @@
     </table>
     <table tableName="qualitative_results" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Qualitative Results</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -994,6 +1018,7 @@
     </table>
     <table tableName="treatment_codes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Treatment Default Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1070,6 +1095,7 @@
     </table>
     <table tableName="blood_tube_volumes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Blood Tube Allowable Volumes</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1085,6 +1111,7 @@
     </table>
     <table tableName="labwork_types" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Labwork Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1102,6 +1129,7 @@
     </table>
     <table tableName="lab_tests" tableDbType="TABLE" useColumnOrder="true" hidden="true">
         <tableTitle>Lab Tests</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1146,6 +1174,7 @@
     </table>
     <table tableName="death_remarks" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Death Remarks Field Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1161,6 +1190,7 @@
     </table>
     <table tableName="usda_codes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>SNOMED Codes Included in USDA Report</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1198,6 +1228,7 @@
     </table>
     <table tableName="full_snomed" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Full SNOMED Table</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1241,6 +1272,7 @@
     </table>
     <table tableName="snomap" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Historic SNOMED Codes</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1451,6 +1483,7 @@
     <table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <tableTitle>Default Flags Per Procedure</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1466,6 +1499,7 @@
     </table>
     <table tableName="disallowed_medications" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Medications That Cannot Be Administered Together</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -1563,6 +1597,7 @@
     </table>
     <table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Project Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="type"/>
             <column columnName="multiplier"/>
@@ -1570,12 +1605,14 @@
     </table>
     <table tableName="usda_levels" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>USDA Levels</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="usda_level"/>
         </columns>
     </table>
     <table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Geographic Origins</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid">
                 <isKeyField>false</isKeyField>
@@ -1588,6 +1625,7 @@
     </table>
     <table tableName="note_types" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Note Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid"/>
             <column columnName="meaning"/>
@@ -1596,6 +1634,7 @@
     </table>
     <table tableName="lookups" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Reference Values</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
@@ -1772,6 +1811,7 @@
     </table>
     <table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Buildings</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="name"/>
             <column columnName="description"/>
@@ -1794,6 +1834,7 @@
     </table>
     <table tableName="billingtypes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Billing Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid"/>
             <column columnName="name"/>
@@ -1859,6 +1900,7 @@
     </table>
     <table tableName="parentageTypes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Parentage Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <columns>
             <column columnName="label">
@@ -1874,6 +1916,7 @@
     </table>
     <table tableName="relationshipTypes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Relationship Types</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <columns>
             <column columnName="label">
@@ -1891,6 +1934,7 @@
     </table>
     <table tableName="cage_positions" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Cage Positions</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <columns>
             <column columnName="cage">
@@ -2091,6 +2135,7 @@
 
     <table tableName="Calendar" tableDbType="TABLE" useColumnOrder="true">
         <description>Table with rows for each day from 1950-2029 to make certain SQL queries easier</description>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="TargetDateTime" />
             <column columnName="TargetDate" />
