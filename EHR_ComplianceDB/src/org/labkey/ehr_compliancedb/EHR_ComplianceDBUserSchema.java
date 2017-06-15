@@ -17,6 +17,7 @@ package org.labkey.ehr_compliancedb;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.ContainerScopedTable;
@@ -54,7 +55,7 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
 
     public static void register(final Module m)
     {
-        final DbSchema dbSchema = DbSchema.get(EHR_ComplianceDBModule.SCHEMA_NAME);
+        final DbSchema dbSchema = DbSchema.get(EHR_ComplianceDBModule.SCHEMA_NAME, DbSchemaType.Module);
 
         DefaultSchema.registerProvider(EHR_ComplianceDBModule.SCHEMA_NAME, new DefaultSchema.SchemaProvider(m)
         {

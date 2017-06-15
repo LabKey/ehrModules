@@ -1007,7 +1007,7 @@ public class EHRManager
 
     private void createEHRLookupIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
     {
-        DbSchema schema = DbSchema.get("ehr_lookups");
+        DbSchema schema = EHRSchema.getInstance().getEHRLookupsSchema();
         TableInfo realTable = schema.getTable("flag_values");
         String indexName = "flag_values_container_category_objectid";
         List<String> cols = Arrays.asList("container", "category", "objectid");

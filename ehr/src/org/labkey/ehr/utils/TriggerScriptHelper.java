@@ -2239,7 +2239,7 @@ public class TriggerScriptHelper
 
         //NOTE: filter on both recordId + container in order to utilize index
         //also, this has been split into 2 steps in order to avoid doing a DELETE unless actually required, and to perform that delete using the table PKs
-        TableInfo ti = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
+        TableInfo ti = EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_SNOMED_TAGS);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("recordid"), objectid);
         filter.addCondition(FieldKey.fromString("container"), getContainer().getId());
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("objectid"), filter, null);
@@ -2269,7 +2269,7 @@ public class TriggerScriptHelper
 
         if (codes != null)
         {
-            TableInfo snomedTags = DbSchema.get(EHRSchema.EHR_SCHEMANAME).getTable(EHRSchema.TABLE_SNOMED_TAGS);
+            TableInfo snomedTags = EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_SNOMED_TAGS);
             String[] codeList = StringUtils.split(codes, ";");
             int sort = 0;
 
@@ -2517,7 +2517,7 @@ public class TriggerScriptHelper
     {
         if (_nextFlagCode == null)
         {
-            SqlSelector ss = new SqlSelector(DbSchema.get("ehr"), "SELECT COALESCE(max(code), 0) as expr FROM ehr_lookups.flag_values");
+            SqlSelector ss = new SqlSelector(EHRSchema.getInstance().getSchema(), "SELECT COALESCE(max(code), 0) as expr FROM ehr_lookups.flag_values");
             List<Integer> ret = ss.getArrayList(Integer.class);
             _nextFlagCode = ret.isEmpty() ? 0 : ret.get(0);
         }

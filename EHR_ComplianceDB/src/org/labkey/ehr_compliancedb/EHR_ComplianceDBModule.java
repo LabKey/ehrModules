@@ -17,6 +17,7 @@ package org.labkey.ehr_compliancedb;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
@@ -84,7 +85,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @NotNull
     public Set<DbSchema> getSchemasToTest()
     {
-        return Collections.singleton(DbSchema.get(SCHEMA_NAME));
+        return Collections.singleton(DbSchema.get(SCHEMA_NAME, DbSchemaType.Module));
     }
 
     @Override
