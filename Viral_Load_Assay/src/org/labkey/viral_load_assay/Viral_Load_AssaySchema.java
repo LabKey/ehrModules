@@ -17,7 +17,7 @@
 package org.labkey.viral_load_assay;
 
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.dialect.SqlDialect;
+import org.labkey.api.data.DbSchemaType;
 
 public class Viral_Load_AssaySchema
 {
@@ -37,11 +37,6 @@ public class Viral_Load_AssaySchema
 
     public DbSchema getSchema()
     {
-        return DbSchema.get(Viral_Load_AssayModule.SCHEMA_NAME);
-    }
-
-    public SqlDialect getSqlDialect()
-    {
-        return getSchema().getSqlDialect();
+        return DbSchema.get(Viral_Load_AssayModule.SCHEMA_NAME, DbSchemaType.Module);
     }
 }

@@ -77,7 +77,7 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
     @Override
     public Set<DbSchema> getSchemasToTest()
     {
-        return PageFlowUtil.set(DbSchema.get(SCHEMA_NAME));
+        return PageFlowUtil.set(Viral_Load_AssaySchema.getInstance().getSchema());
     }
 
     @Override
