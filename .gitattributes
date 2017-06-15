@@ -145,6 +145,10 @@ ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormProvider.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskForm.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/DrugAdministrationFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/TBFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormType.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractListDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/ActiveAssignmentsDemographicsProvider.java -text
