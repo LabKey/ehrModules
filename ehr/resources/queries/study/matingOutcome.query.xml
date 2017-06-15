@@ -1,0 +1,17 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="matingOutcome" tableDbType="TABLE">
+                <tableTitle>Mating Outcomes</tableTitle>
+                <columns>
+                    <column columnName="births">
+                        <columnTitle>Births Within 180 Days</columnTitle>
+                    </column>
+                    <column columnName="confirmations">
+                        <columnTitle>Pregnancy Confirmations Within 180 Days</columnTitle>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

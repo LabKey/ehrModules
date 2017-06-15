@@ -594,6 +594,8 @@ ehr/resources/queries/study/housingRoommates/Caged[!!-~]Housing[!!-~]Only.qview.
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
 ehr/resources/queries/study/inbreeding/.qview.xml -text
+ehr/resources/queries/study/matingOutcome.query.xml -text
+ehr/resources/queries/study/matingSuccessRates.query.xml -text
 ehr/resources/queries/study/organ_weights/.qview.xml -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/validateFinalWeights.sql -text
