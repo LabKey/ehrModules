@@ -140,7 +140,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         beginAt(getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
         _helper.waitForCmp("field[fieldLabel='Notification User']");
         Ext4FieldRef.getForLabel(this, "Notification User").setValue(PasswordUtil.getUsername());
-        Ext4FieldRef.getForLabel(this, "Reply Email").setValue("fakeEmail@fakeDomain.com");
+        Ext4FieldRef.getForLabel(this, "Reply Email").setValue("fakeEmail@fakeDomain.test");
         Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Save']", Ext4CmpRef.class);
         btn.waitForEnabled();
         waitAndClick(Ext4Helper.Locators.ext4Button("Save"));
