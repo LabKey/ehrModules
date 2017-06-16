@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
@@ -75,6 +76,7 @@ import org.labkey.ehr.history.DefaultWeightDataSource;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
+import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
 import org.labkey.ehr.query.buttons.ExcelImportButton;
 import org.labkey.ehr.query.buttons.JumpToHistoryButton;
@@ -286,7 +288,7 @@ public class EHRModule extends ExtendedSimpleModule
         {
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
-                return new EHRUserSchema(schema.getUser(), schema.getContainer(), EHRSchema.getInstance().getEHRLookupsSchema());
+                return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), EHRSchema.getInstance().getEHRLookupsSchema());
             }
         });
     }
