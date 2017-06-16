@@ -16,7 +16,7 @@
 package org.labkey.ehr;
 
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.dialect.SqlDialect;
+import org.labkey.api.data.DbSchemaType;
 
 public class EHRSchema
 {
@@ -61,16 +61,11 @@ public class EHRSchema
 
     public DbSchema getSchema()
     {
-        return DbSchema.get(EHR_SCHEMANAME);
+        return DbSchema.get(EHR_SCHEMANAME, DbSchemaType.Module);
     }
 
     public DbSchema getEHRLookupsSchema()
     {
-        return DbSchema.get(EHR_LOOKUPS);
-    }
-
-    public SqlDialect getSqlDialect()
-    {
-        return getSchema().getSqlDialect();
+        return DbSchema.get(EHR_LOOKUPS, DbSchemaType.Module);
     }
 }
