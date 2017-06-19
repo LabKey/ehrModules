@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.labkey.test.util.DataRegionTable.DataRegion;
+
 public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> extends LabKeyPage<EC>
 {
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
@@ -85,16 +87,12 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public DataRegionTable getActiveReportDataRegion()
     {
-        WebElement el = DataRegionTable.Locators.dataRegion().notHidden().waitForElement(getDriver(), 30000);
-        return new DataRegionTable(el, getDriver());
+        return DataRegion(getDriver()).timeout(30000).find(getActiveReportPanel());
     }
 
     public List<DataRegionTable> getActiveReportDataRegions()
     {
-        final List<WebElement> els = DataRegionTable.Locators.dataRegion().notHidden().waitForElements(getDriver(), 30000);
-        List<DataRegionTable> drts = new ArrayList<>();
-        els.forEach(el -> drts.add(new DataRegionTable(el, getDriver())));
-        return drts;
+        return DataRegion(getDriver()).timeout(30000).findAll(getActiveReportPanel());
     }
 
     public CategoryTab findCategoryTab(String category)
