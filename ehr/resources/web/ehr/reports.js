@@ -9,7 +9,11 @@ Ext4.namespace('EHR.reports');
  * This file contains a series of JS-based reports used in the Animal History page.
  * These should really get refactored into true JS reports; however, the difficultly
  * is that a JS report expects to render into a DIV, and here we are adding ExtComponents
- * to the TabPanel, plus passing in some non-standard context
+ * to the TabPanel, plus passing in some non-standard context.
+ *
+ * The function for a given report will be invoked with two arguments. The first is an instance of
+ * EHR.panel.AnimalHistoryPanel being used to select animals, and the second is the ExtJS tab into which
+ * the UI should be rendered.
  *
  */
 EHR.reports['abstract'] = function(panel, tab){

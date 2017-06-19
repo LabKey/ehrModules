@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Provides a variety of hooks for EHR customization in other modules, and services for external modules to use.
  * User: bimber
  * Date: 9/14/12
  */
@@ -66,6 +67,7 @@ abstract public class EHRService
     /** Registers a module as being an EHR customization, usually specific to an individual NPRC */
     abstract public void registerModule(Module module);
 
+    /** @return the known other modules that provide customized versions of the EHR */
     abstract public Set<Module> getRegisteredModules();
 
     abstract public void registerLabworkType(LabworkType type);
@@ -78,6 +80,7 @@ abstract public class EHRService
 
     abstract public List<Resource> getExtraTriggerScripts(Container c);
 
+    /** Registers a demographics provider, used to cache commonly used info for animals, based on which modules are enabled in a container */
     abstract public void registerDemographicsProvider(DemographicsProvider provider);
 
     /** @return the providers enabled in the container */
@@ -105,10 +108,6 @@ abstract public class EHRService
 
     abstract public Set<ClientDependency> getRegisteredClientDependencies(Container c);
 
-    abstract public void setDateFormat(Container c, String format);
-
-    abstract public String getDateFormat(Container c);
-
     /**
      * @return the user configured via the EHR module property, to be used when running queries to populate the
      * demographics cache and similar utility operations
@@ -119,7 +118,7 @@ abstract public class EHRService
 
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category);
 
-    /** Categories where reports can be offered to the user */
+    /** Categories where pre-configured reports can be offered to the user */
     public enum REPORT_LINK_TYPE
     {
         housing(),
@@ -164,14 +163,6 @@ abstract public class EHRService
     abstract public ActionURL getDataEntryFormActionURL(Container c);
 
     abstract public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys);
-
-    public enum FORM_TYPE
-    {
-        Task(),
-        Encounter(),
-        Run(),
-        Request()
-    }
 
     public enum FORM_SECTION_LOCATION
     {
@@ -218,6 +209,7 @@ abstract public class EHRService
             return result;
         }
     }
+
     abstract public List<FieldKey> getDefaultFieldKeys(TableInfo ti);
 
     /** Attaches top-level buttons in grid views for the specified query */
@@ -267,5 +259,6 @@ abstract public class EHRService
 
     abstract public String getEHRDefaultClinicalProjectName(Container c);
 
-    abstract public void addModuleRequiringLegagyExt3EditUI(Module m);
+    /** Used to register EHR modules that use the ExtJS 3-based data entry UI */
+    abstract public void addModuleRequiringLegacyExt3EditUI(Module m);
 }

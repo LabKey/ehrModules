@@ -22,9 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Convenience implementation class
  * User: bimber
  * Date: 2/17/13
- * Time: 6:29 PM
  */
 public class HistoryRowImpl implements HistoryRow
 {

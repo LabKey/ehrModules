@@ -336,6 +336,7 @@
             <column columnName="reporttype">
                 <columnTitle>Report Type</columnTitle>
                 <nullable>true</nullable>
+                <description>One of: js (a JavaScript function hung from the EHR.reports object), report (R report), or query</description>
             </column>
             <column columnName="reporttitle">
                 <columnTitle>Report Title</columnTitle>
@@ -829,6 +830,7 @@
         </columns>
     </table>
     <table tableName="formtemplaterecords" tableDbType="TABLE" useColumnOrder="true">
+        <description>Dataset rows that are pre-filled (often only partially) within the context of a user-defined data entry template</description>
         <tableTitle>Form Template Records</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -895,6 +897,7 @@
         </columns>
     </table>
     <table tableName="notificationtypes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Types of notifications for automated emails to be run on a scheduled basis</description>
         <tableTitle>Notification Types</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -978,7 +981,6 @@
         </columns>
     </table>
     <table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
-        <description>IACUC protocols</description>
         <tableTitle>IACUC Protocols</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -1251,6 +1253,7 @@
         </columns>
     </table>
     <table tableName="protocol_counts" tableDbType="TABLE" useColumnOrder="true">
+        <description>Limits for the number of animals approved for an IACUC protocol</description>
         <tableTitle>NHPs Allowed Per Protocol</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -1590,6 +1593,7 @@
         </columns>
     </table>
     <table tableName="protocolProcedures" tableDbType="TABLE" useColumnOrder="true">
+        <description>Mapping of allowable procedures to IACUC protocols</description>
         <tableTitle>Allowable Procedures Per Protocol</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -1887,6 +1891,7 @@
         </columns>
     </table>
     <table tableName="protocolexemptions" tableDbType="TABLE" useColumnOrder="true">
+        <description>Exemptions from normal requirements for individual IACUS (described in free text)</description>
         <tableTitle>Protocol Exemptions</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>

@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * Uses separate start and end date columns to determine the difference and render in a requested format.
+ * Uses separate start and end date columns to determine the difference between the dates and renders in a requested format.
  */
 public class DurationColumn extends DataColumn
 {

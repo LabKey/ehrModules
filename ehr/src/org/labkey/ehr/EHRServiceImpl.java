@@ -27,7 +27,6 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.JdbcType;
-import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
@@ -58,7 +57,6 @@ import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
-import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
@@ -104,10 +102,7 @@ public class EHRServiceImpl extends EHRService
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
 
-    private Map<String, String> _dateFormats = new HashMap<>();
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
-
-    private static final String DATE_CATEGORY = "org.labkey.ehr.dateformat";
 
     public EHRServiceImpl()
     {
@@ -279,20 +274,6 @@ public class EHRServiceImpl extends EHRService
         }
 
         return Collections.unmodifiableSet(set);
-    }
-
-    public void setDateFormat(Container c, String format)
-    {
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(c, DATE_CATEGORY, true);
-        props.put("dateFormat", format);
-        props.save();
-        _dateFormats.put(c.getId(), format);
-    }
-
-    @Override
-    public String getDateFormat(Container c)
-    {
-        return LookAndFeelProperties.getInstance(c).getDefaultDateFormat();
     }
 
     public User getEHRUser(Container c)
@@ -746,7 +727,7 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
-    public void addModuleRequiringLegagyExt3EditUI(Module m)
+    public void addModuleRequiringLegacyExt3EditUI(Module m)
     {
         _modulesRequiringLegacyExt3UI.add(m);
     }

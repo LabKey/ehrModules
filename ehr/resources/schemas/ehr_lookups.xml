@@ -1,5 +1,6 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
+        <description>Each lookup set is exposed as a separate virtual table in the ehr_lookups schema, making it easy to add simple value tables without having to create discrete tables in the underlying database</description>
         <tableTitle>Lookup Sets</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <pkColumnName>rowid</pkColumnName>
@@ -246,6 +247,7 @@
         </columns>
     </table>
     <table tableName="routes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Methods by which a drug or other treatment may be administered</description>
         <tableTitle>Routes Field Values</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -262,7 +264,7 @@
         </columns>
     </table>
     <table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
-        <description>The most general categorization for animal housing</description>
+        <description>The most general categorization for animal housing, one level up from rooms</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Areas</tableTitle>
@@ -450,6 +452,7 @@
         </columns>
     </table>
     <table tableName="source" tableDbType="TABLE" useColumnOrder="true">
+        <description>Places from which animals might be acquired</description>
         <tableTitle>Source Field Values</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -566,6 +569,7 @@
     </table>
     <!--TODO: move-->
     <table tableName="months" tableDbType="TABLE" useColumnOrder="true">
+        <description>One-based list of months of the year</description>
         <tableTitle>Months</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -795,6 +799,7 @@
         </columns>
     </table>
     <table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
+        <description>Dictionary of SNOMED codes available for use</description>
         <tableTitle>SNOMED Codes</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -837,6 +842,7 @@
         </columns>
     </table>
     <table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Mapping table to associate SNOMED codes with a particular subset (or category) of codes</description>
         <tableTitle>SNOMED Subset Codes</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
@@ -902,6 +908,7 @@
         </columns>
     </table>
     <table tableName="snomed_subsets" tableDbType="TABLE" useColumnOrder="true">
+        <description>Named categories of SNOMED codes, used to filter the full set for specific purposes</description>
         <tableTitle>SNOMED Subsets</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -965,6 +972,7 @@
         </columns>
     </table>
     <table tableName="oor_indicators" tableDbType="TABLE" useColumnOrder="true">
+        <description>Modifiers to indicate that a value is out-of-range. Typically, below or above limits of detection or quantitation, etc.</description>
         <tableTitle>OOR Indicators</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -1842,6 +1850,7 @@
     </table>
     <table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Rooms</tableTitle>
+        <description>A collection of cages (can also represent outdoor enclosures)</description>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <columns>
