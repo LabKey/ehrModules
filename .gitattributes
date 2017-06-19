@@ -145,7 +145,16 @@ ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormProvider.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskForm.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/ArrivalFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/ArrivalInstructionsFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthInstructionsFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/DocumentArchiveFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/DrugAdministrationFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/LockAnimalsFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/NewAnimalFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/TBFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormType.java -text
@@ -1213,6 +1222,7 @@ ehr/resources/web/ehr/model/sources/BehaviorDefaults.js -text
 ehr/resources/web/ehr/model/sources/BehaviorRounds.js -text
 ehr/resources/web/ehr/model/sources/BillingByAccount.js -text
 ehr/resources/web/ehr/model/sources/Biopsy.js -text
+ehr/resources/web/ehr/model/sources/Birth_Entry.js -text
 ehr/resources/web/ehr/model/sources/BloodDraw.js -text
 ehr/resources/web/ehr/model/sources/ClinicalDefaults.js -text
 ehr/resources/web/ehr/model/sources/ClinicalReport.js -text
@@ -1241,7 +1251,9 @@ ehr/resources/web/ehr/panel/AnimalDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/AnimalSearchPanel.js -text
+ehr/resources/web/ehr/panel/ArrivalInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/BasicAggregationPanel.js -text
+ehr/resources/web/ehr/panel/BirthInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/BloodSummaryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/BulkEditPanel.js -text
@@ -1254,6 +1266,7 @@ ehr/resources/web/ehr/panel/ColonyOverviewPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryErrorPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryFormDetailsPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryPanel.js -text
+ehr/resources/web/ehr/panel/DocumentArchivePanel.js -text
 ehr/resources/web/ehr/panel/EnterDataPanel.js -text
 ehr/resources/web/ehr/panel/EnterRemarkPanel.js -text
 ehr/resources/web/ehr/panel/ExamDataEntryPanel.js -text
@@ -1264,6 +1277,7 @@ ehr/resources/web/ehr/panel/HousingSummaryPanel.js -text
 ehr/resources/web/ehr/panel/KinshipPanel.js -text
 ehr/resources/web/ehr/panel/LabworkSummaryPanel.js -text
 ehr/resources/web/ehr/panel/LocationFilterType.js -text
+ehr/resources/web/ehr/panel/LockAnimalsPanel.js -text
 ehr/resources/web/ehr/panel/ManageCasesPanel.js -text
 ehr/resources/web/ehr/panel/ManageDemographicsPanel.js -text
 ehr/resources/web/ehr/panel/ManageTreatmentsPanel.js -text
