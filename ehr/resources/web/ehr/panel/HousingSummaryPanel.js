@@ -9,6 +9,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
 
     nounSingular: 'Building',
     nounPlural: 'Buildings',
+    headerNames: [],
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -199,6 +200,13 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             }, this);
         }
         var cells = [];
+        Ext4.each(this.headerNames, function(headerName, idx){
+            cells.push({
+                html: '<b>' + headerName + '</b>',
+                border: false,
+                style: 'padding: 2px;padding-right: 5px;'
+            });
+        }, this);
         Ext4.each(results.rows, function(r){
             var row = new LDK.SelectRowsRow(r);
 
