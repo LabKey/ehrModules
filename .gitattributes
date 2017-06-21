@@ -151,11 +151,18 @@ ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthInstructionsFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/DCMNotesFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/DeathFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/DeathInstructionsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/DocumentArchiveFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/DrugAdministrationFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/HousingFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/HousingFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/LockAnimalsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/NewAnimalFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/TBFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/TreatmentOrdersFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/forms/TreatmentsFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormType.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractDemographicsProvider.java -text
@@ -1266,6 +1273,7 @@ ehr/resources/web/ehr/panel/ColonyOverviewPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryErrorPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryFormDetailsPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryPanel.js -text
+ehr/resources/web/ehr/panel/DeathFormInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/DocumentArchivePanel.js -text
 ehr/resources/web/ehr/panel/EnterDataPanel.js -text
 ehr/resources/web/ehr/panel/EnterRemarkPanel.js -text
@@ -1273,6 +1281,7 @@ ehr/resources/web/ehr/panel/ExamDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/ExamInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/GeneticCalculationSettingsPanel.js -text
 ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
+ehr/resources/web/ehr/panel/HousingDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/HousingSummaryPanel.js -text
 ehr/resources/web/ehr/panel/KinshipPanel.js -text
 ehr/resources/web/ehr/panel/LabworkSummaryPanel.js -text
