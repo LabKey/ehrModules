@@ -64,12 +64,12 @@ EHR.Server.Triggers = {};
  * @param {string} event The name of the event, as passed from LabKey.
  * @param {object} errors The errors object, as passed from LabKey.
  */
-EHR.Server.Triggers.init = function(event, errors){
-    var fileParse = (this['javax.script.filename']).split('/');
-    this.extraContext.schemaName = fileParse[1];
-    this.extraContext.queryName = fileParse[2].replace(/\.js$/, '');
+EHR.Server.Triggers.init = function (event, errors) {
 
-    // even though it is cached globally, force code to use local passed reference 
+    this.extraContext.schemaName = this.schemaName;
+    this.extraContext.queryName = this.tableName;
+
+    // even though it is cached globally, force code to use local passed reference
     this.scriptHelper = new EHR.Server.ScriptHelper(this.extraContext, event, EHR);
     var helper = this.scriptHelper;
 
@@ -990,5 +990,5 @@ EHR.Server.initScript = function(scope){
         var prop = props[i];
         scope[prop] = exports[prop];
     }
-}
+};
 exports.initScript = EHR.Server.initScript;

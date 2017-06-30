@@ -298,7 +298,6 @@ ehr/resources/queries/core/PrincipalsWithoutAdmin.query.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.sql -text
 ehr/resources/queries/core/userNames.query.xml -text
 ehr/resources/queries/core/userNames.sql -text
-ehr/resources/queries/default/DefaultTriggerScript.js -text
 ehr/resources/queries/ehr/CageUtilization.query.xml -text
 ehr/resources/queries/ehr/CageUtilization.sql -text
 ehr/resources/queries/ehr/Tasks.js -text
@@ -477,6 +476,7 @@ ehr/resources/queries/study/Clinpath[!!-~]Runs.query.xml -text
 ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
 ehr/resources/queries/study/Deaths.query.xml -text
+ehr/resources/queries/study/DefaultTriggerScript.js -text
 ehr/resources/queries/study/Demographics.js -text
 ehr/resources/queries/study/Demographics.query.xml -text
 ehr/resources/queries/study/Departure.js -text

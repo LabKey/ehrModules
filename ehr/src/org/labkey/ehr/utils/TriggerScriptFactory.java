@@ -38,15 +38,16 @@ public class TriggerScriptFactory extends ScriptTriggerFactory
     @NotNull
     protected Collection<Trigger> createTriggerScript(Container c, TableInfo table) throws ScriptException
     {
+        // Check if other triggers exist
         Collection<Trigger> ret = super.createTriggerScript(c, table);
         if (!ret.isEmpty())
         {
-            return ret;
+            return Collections.EMPTY_LIST;  // Other triggers have already been added so no op.
         }
 
-        // Only if the table lacks other triggers, also look for DefaultTriggerScript.js
+        // Only if the table lacks other triggers look for DefaultTriggerScript.js
         Path path = new Path(QueryService.MODULE_QUERIES_DIRECTORY,
-                FileUtil.makeLegalName("default"),
+                FileUtil.makeLegalName(table.getSchema().getName()),
                 FileUtil.makeLegalName("DefaultTriggerScript.js"));
 
         ScriptService svc = ScriptService.get();
