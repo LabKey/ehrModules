@@ -63,7 +63,6 @@ import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRModule;
 import org.labkey.ehr.EHRSchema;
-import org.labkey.ehr.utils.TriggerScriptFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -443,7 +442,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         hideStudyColumns(ti);
 
         // Ensure the basic EHR triggers are initialized
-        ti.addTriggerFactory(new TriggerScriptFactory());
+//        ti.addTriggerFactory(new TriggerScriptFactory());
 
         ColumnInfo idColumn = ti.getColumn("Id");
         if (idColumn != null && !idColumn.isLocked())
