@@ -55,7 +55,7 @@
                 'GROUP_CONCAT(DISTINCT ShowByDefault) AS ShowByDefault,\n' +
                 'GROUP_CONCAT(DISTINCT Type) AS Type,\n' +
                 'COUNT(DISTINCT PRC) AS CountOfPRCs,\n' +
-                //'GROUP_CONCAT(PRC) AS PRCs\n' +
+                'GROUP_CONCAT(PRC) AS PRCs\n' +
                 'FROM (\n' + innerSql + ') x GROUP BY Name',
                 maxRows: 20,
                 buttonBar: {
@@ -212,7 +212,7 @@
                 'GROUP_CONCAT(DISTINCT RangeURI) AS RangeURI,\n' +
                 //'GROUP_CONCAT(DISTINCT Hidden) AS Hidden,\n' +
                 'COUNT(*) AS CountOfPRCs,\n' +
-                //'GROUP_CONCAT(PRC) AS PRC\n' +
+                'GROUP_CONCAT(PRC) AS PRCs\n' +
                 'FROM (\n' + innerSql + ') x GROUP BY DataSetName, Name',
                 maxRows: 20,
                 buttonBar: {
@@ -251,7 +251,8 @@
                             {name: 'ColumnName'},
                             {name: 'RangeURI'},
                             //{name: 'Hidden'},
-                            {name: 'CountOfPRCs'}
+                            {name: 'CountOfPRCs'},
+                            {name: 'PRCs'}
                         ]
                     });
                     store.loadData(data.rows);
@@ -361,7 +362,7 @@
             var innerSql = '', sep = '';
             Ext4.each(ehrStudyContainers, function(container) {
                 innerSql += sep + 'SELECT \'' + container.path + '\' AS PRC,'
-                        + 'reportname, category, reporttype, reporttitle, visible\n'
+                        + 'reportname, category, reporttype, reporttitle, visible, schemaname, queryname, viewname\n'
                         + 'FROM "' + container.path + '".ehr.Reports\n';
                 sep = 'UNION ';
             });
@@ -376,8 +377,11 @@
                     'GROUP_CONCAT(DISTINCT reporttype) AS Type,\n' +
                     'GROUP_CONCAT(DISTINCT reporttitle) AS Title,\n' +
                     'GROUP_CONCAT(DISTINCT visible) AS Visible,\n' +
+                    'GROUP_CONCAT(DISTINCT schemaname) AS SchemaName,\n' +
+                    'GROUP_CONCAT(DISTINCT queryname) AS QueryName,\n' +
+                    'GROUP_CONCAT(DISTINCT viewname) AS ViewName,\n' +
                     'COUNT(DISTINCT PRC) AS CountOfPRCs,\n' +
-                    //'GROUP_CONCAT(PRC) AS PRCs\n' +
+                    'GROUP_CONCAT(PRC) AS PRCs\n' +
                     'FROM (\n' + innerSql + ') x GROUP BY reportname',
                 maxRows: 20,
                 buttonBar: {
