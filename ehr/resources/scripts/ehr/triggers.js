@@ -66,8 +66,9 @@ EHR.Server.Triggers = {};
  */
 EHR.Server.Triggers.init = function (event, errors) {
 
-    this.extraContext.schemaName = this.schemaName;
-    this.extraContext.queryName = this.tableName;
+    var fileParse = (this['javax.script.filename']).split('/');
+    this.extraContext.schemaName = fileParse[1];
+    this.extraContext.queryName = fileParse[2].replace(/\.js$/, '');
 
     // even though it is cached globally, force code to use local passed reference
     this.scriptHelper = new EHR.Server.ScriptHelper(this.extraContext, event, EHR);
