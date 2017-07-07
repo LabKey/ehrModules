@@ -33,8 +33,7 @@ public class WeightFormType extends TaskForm
     {
         super(ctx, owner, NAME, "Weights", "Clinical", Arrays.asList(
                 new TaskFormSection(),
-                new AnimalDetailsFormSection()
-                ,
+                new AnimalDetailsFormSection(),
                 new WeightFormSection(),
                 new DrugAdministrationFormSection(),
                 new TBFormSection()
