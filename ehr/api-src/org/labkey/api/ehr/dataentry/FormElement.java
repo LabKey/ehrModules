@@ -50,6 +50,7 @@ public class FormElement
         JSONObject json = new JSONObject();
 
         DisplayColumn dc = _boundCol.getDisplayColumnFactory().createRenderer(_boundCol);
+        dc.prepare(c);
         json.putAll(JsonWriter.getMetaData(dc, null, true, true, true));
 
         json.put("schemaName", _boundCol.getParentTable().getPublicSchemaName());
