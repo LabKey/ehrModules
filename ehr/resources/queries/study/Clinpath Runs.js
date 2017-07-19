@@ -17,8 +17,7 @@ function onInit(event, helper){
     });
 }
 
-function onUpsert(helper, scriptErrors, row, oldRow){
-    //lookup test type if not supplied:
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'Clinpath Runs', function(helper, errors, row, oldRow){
     if (row.servicerequested){
         if (!row.type)
             row.type = helper.getJavaHelper().lookupDatasetForService(row.servicerequested);
@@ -26,4 +25,4 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         if (!row.chargetype)
             row.chargetype = helper.getJavaHelper().lookupChargeTypeForService(row.servicerequested);
     }
-}
+});
