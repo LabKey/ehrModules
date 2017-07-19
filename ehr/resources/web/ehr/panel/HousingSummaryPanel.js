@@ -10,6 +10,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     nounSingular: 'Building',
     nounPlural: 'Buildings',
     headerNames: [],
+    cageUsagePanelColumnCount: 4,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -108,7 +109,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             }
         }
 
-        var headerNames = [this.nounSingular, 'Total Cages', 'Empty Cages', '% Used'];
+        var headerNames = this.getCageUsageHeaderNames.call(this);
         var cells = [];
 
         Ext4.each(headerNames, function(headerName, idx){
@@ -146,6 +147,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
 
             cells.push(EHR.Utils.getFormattedRowNumber(row.getDisplayValue('cagesEmpty'),null,false));
 
+            this.addAdditionalCells(cells,row);
             cells.push({
                 html: Ext4.util.Format.round(row.getDisplayValue('pctUsed'), 2).toFixed(2) + '%',
                 border: false,
@@ -166,7 +168,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 style: 'padding-left: 5px;',
                 layout: {
                     type: 'table',
-                    columns: 4
+                    columns: this.cageUsagePanelColumnCount
                 },
                 items: cells
             }]
@@ -182,6 +184,10 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
         };
         urlParams['query.room/' + this.nounSingular.toLowerCase() + '~eq'] = area;
         return urlParams;
+    },
+
+    addAdditionalCells: function(cells, row){
+        return;
     },
 
     appendSection: function(results, cfg){
@@ -266,5 +272,9 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
                 items: cells
             }]
         }
+    },
+
+    getCageUsageHeaderNames: function () {
+        return [this.nounSingular, 'Total Cages', 'Empty Cages', '% Used'];
     }
 });
