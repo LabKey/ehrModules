@@ -363,8 +363,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected void shutoffProfiler()
     {
-        goToAdminConsole();
-        clickAndWait(Locator.linkWithText("profiler"));
+        goToAdminConsole().clickProfiler();
         uncheckCheckbox(Locator.inputById("enabled"));
         clickAndWait(Locator.tagContainingText("Span", "Save"));
         goToProjectHome();
