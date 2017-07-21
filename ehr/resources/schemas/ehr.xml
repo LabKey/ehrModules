@@ -1978,4 +1978,33 @@
             <column columnName="modified"/>
         </columns>
     </table>
+    <table tableDbType="TABLE" tableName="observation_types">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="value">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="category"/>
+            <column columnName="editorconfig"/>
+            <column columnName="schemaName">
+                <description>Schema Name To Be Used In Validation of Allowable Values</description>
+            </column>
+            <column columnName="queryName">
+                <description>Query Name To Be Used In Validation of Allowable Values</description>
+            </column>
+            <column columnName="valueColumn">
+                <description>The column in the target table that provides the list of alowable values</description>
+            </column>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Container"/>
+        </columns>
+    </table>
 </tables>

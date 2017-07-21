@@ -54,7 +54,7 @@ Ext4.define('EHR.panel.ObservationsPanel', {
                     forceSelection: true,
                     store: {
                         type: 'labkey-store',
-                        schemaName: 'onprc_ehr',
+                        schemaName: 'ehr',
                         queryName: 'observation_types',
                         columns: 'value,editorconfig',
                         autoLoad: true
