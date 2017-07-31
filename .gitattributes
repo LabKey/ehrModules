@@ -649,6 +649,7 @@ ehr/resources/schemas/dbscripts/postgresql/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-16.30-17.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.20-17.21.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.20.sql -text
@@ -820,6 +821,7 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.30-17.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.20-17.21.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.10-11.20.sql -text
@@ -1422,7 +1424,10 @@ ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRunnable.java -text
 ehr/src/org/labkey/ehr/query/BloodPlotData.java -text
 ehr/src/org/labkey/ehr/query/DataEntryTable.java -text
+ehr/src/org/labkey/ehr/query/EHRDomainKind.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
+ehr/src/org/labkey/ehr/query/EHRProjectTable.java -text
+ehr/src/org/labkey/ehr/query/EHRProtocolTable.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text

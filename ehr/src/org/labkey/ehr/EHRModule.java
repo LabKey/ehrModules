@@ -41,6 +41,7 @@ import org.labkey.api.ehr.history.DefaultCasesDataSource;
 import org.labkey.api.ehr.history.DefaultTreatmentOrdersDataSource;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
+import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
@@ -76,6 +77,7 @@ import org.labkey.ehr.history.DefaultWeightDataSource;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
+import org.labkey.ehr.query.EHRDomainKind;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
 import org.labkey.ehr.query.buttons.ExcelImportButton;
@@ -120,10 +122,9 @@ public class EHRModule extends ExtendedSimpleModule
     {
         return NAME;
     }
-
     public double getVersion()
     {
-        return 17.21;
+        return 17.22;
     }
 
     public boolean hasScripts()
@@ -186,6 +187,9 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRLocationManagementRole());
         RoleManager.registerRole(new EHRHousingTransferRole());
         RoleManager.registerRole(new EHRSnomedEditorRole());
+
+        PropertyService.get().registerDomainKind(new EHRDomainKind());
+
     }
 
     @Nullable

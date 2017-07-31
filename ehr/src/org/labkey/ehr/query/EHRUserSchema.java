@@ -96,7 +96,7 @@ public class EHRUserSchema extends SimpleUserSchema
 
     private TableInfo getProjectTable(TableInfo schemaTable)
     {
-        ContainerScopedTable ret = new ContainerScopedTable(this, schemaTable, "project");
+        EHRProjectTable ret = new EHRProjectTable(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, EHRProjectEditPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRProjectEditPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRProjectEditPermission.class);
@@ -106,7 +106,7 @@ public class EHRUserSchema extends SimpleUserSchema
 
     private TableInfo getProtocolTable(TableInfo schemaTable)
     {
-        ContainerScopedTable ret = new ContainerScopedTable(this, schemaTable, "protocol");
+        EHRProtocolTable ret = new EHRProtocolTable(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, EHRProtocolEditPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRProtocolEditPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRProtocolEditPermission.class);
