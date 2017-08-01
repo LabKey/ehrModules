@@ -166,7 +166,7 @@
             <column columnName="qcstate">
                 <nullable>true</nullable>
                 <fk>
-                    <fkDbSchema>study</fkDbSchema>
+                    <fkDbSchema>core</fkDbSchema>
                     <fkTable>QCState</fkTable>
                     <fkColumnName>rowid</fkColumnName>
                 </fk>
@@ -267,7 +267,7 @@
             <column columnName="qcstate">
                 <nullable>true</nullable>
                 <fk>
-                    <fkDbSchema>study</fkDbSchema>
+                    <fkDbSchema>core</fkDbSchema>
                     <fkTable>QCState</fkTable>
                     <fkColumnName>rowid</fkColumnName>
                 </fk>
@@ -472,7 +472,7 @@
             <column columnName="qcstate">
                 <nullable>true</nullable>
                 <fk>
-                    <fkDbSchema>study</fkDbSchema>
+                    <fkDbSchema>core</fkDbSchema>
                     <fkTable>QCState</fkTable>
                     <fkColumnName>rowid</fkColumnName>
                 </fk>
@@ -1370,7 +1370,7 @@
         </columns>
     </table>
     <table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
-        <description>Additional EHR-specific information associated with the study.qcstate table</description>
+        <description>Additional EHR-specific information associated with the core.qcstate table</description>
         <tableTitle>QCState Metadata</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>

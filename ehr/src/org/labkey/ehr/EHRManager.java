@@ -272,7 +272,7 @@ public class EHRManager
 
         //NOTE: there is no public API to set a study, so hit the DB directly.
         final TableInfo studyTable = DbSchema.get("study").getTable("study");
-        TableInfo ti = DbSchema.get("study").getTable("qcstate");
+        TableInfo ti = DbSchema.get("core").getTable("qcstate");
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
@@ -1412,7 +1412,7 @@ public class EHRManager
 
     public EHRQCState[] getQCStates(Container c)
     {
-        SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
+        SQLFragment sql = new SQLFragment("SELECT * FROM core.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }

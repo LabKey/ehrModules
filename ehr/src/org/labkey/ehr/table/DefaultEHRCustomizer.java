@@ -24,6 +24,7 @@ import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
@@ -245,7 +246,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 UserSchema study = getEHRStudyUserSchema(ti);
                 if (study != null)
-                    qcstate.setFk(new QueryForeignKey(study, null, "QCState", "rowid", "Label"));
+                    qcstate.setFk(new QueryForeignKey(CoreSchema.getInstance().getTableInfoQCState(), null, "rowid", "Label"));
             }
             //TODO: disabled due to issue with DataIterator
             //qcstate.setUserEditable(false);
@@ -1243,7 +1244,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn(countsAgainstVolume) == null)
         {
             SQLFragment sql = new SQLFragment("CASE " +
-                " WHEN EXISTS (SELECT md.draftdata FROM study.qcstate q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " WHEN EXISTS (SELECT md.draftdata FROM core.qcstate q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                 " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
                 " END", ti.getUserSchema().getContainer().getId());
             ExprColumn col = new ExprColumn(ti, countsAgainstVolume, sql, JdbcType.BOOLEAN, ti.getColumn("qcstate"));

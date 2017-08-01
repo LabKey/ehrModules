@@ -28,7 +28,7 @@ EHR.Security = new function(){
         var ctx = EHR.Utils.getEHRContext();
         LABKEY.Query.selectRows({
             containerPath: ctx ? ctx['EHRStudyContainer'] : null,
-            schemaName: 'study',
+            schemaName: 'core',
             queryName: 'qcState',
             columns: '*',
             scope: this,
