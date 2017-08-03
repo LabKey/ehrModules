@@ -53,6 +53,8 @@ import java.util.Map;
 @BaseWebDriverTest.ClassTimeout(minutes = 75)
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
+    {setIsBootstrapWhitelisted(true);}
+
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
     @Override
