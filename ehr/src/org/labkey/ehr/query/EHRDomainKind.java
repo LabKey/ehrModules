@@ -9,9 +9,6 @@ import org.labkey.api.security.permissions.AdminPermission;
 
 import java.util.Set;
 
-/**
- * Created by rond on 7/26/2017.
- */
 public class EHRDomainKind extends ExtendedTableDomainKind
 {
 
@@ -26,7 +23,6 @@ public class EHRDomainKind extends ExtendedTableDomainKind
         return container.hasPermission("EHRDomainKind.canCreateDefinition", user, AdminPermission.class);
     }
 
-//todo SimpleTableDomainKind has the same method doing similar but private
     public static Container getDomainContainer(Container c)
     {
         if (c != null)

@@ -1,4 +1,5 @@
 package org.labkey.ehr.query;
+
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.Domain;
@@ -9,14 +10,11 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.SimpleQueryUpdateService;
 import org.labkey.api.query.SimpleTableDomainKind;
 
-/**
- * Created by rond on 7/26/2017.
- */
-public class EHRProtocolTable extends ContainerScopedTable
+public class EHRExtensibleContainerScopedTable extends ContainerScopedTable
 {
-    public EHRProtocolTable(EHRUserSchema schema,TableInfo table)
+    public EHRExtensibleContainerScopedTable(EHRUserSchema schema, TableInfo table, String newPk)
     {
-        super(schema, table,"protocol");
+        super(schema, table, newPk);
     }
 
     @Override
@@ -25,7 +23,7 @@ public class EHRProtocolTable extends ContainerScopedTable
         if (getObjectUriColumn() == null)
             return null;
 
-        return (EHRDomainKind)PropertyService.get().getDomainKindByName(EHRDomainKind.KIND_NAME);
+        return (EHRDomainKind) PropertyService.get().getDomainKindByName(EHRDomainKind.KIND_NAME);
     }
 
     @Override

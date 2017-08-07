@@ -1425,9 +1425,8 @@ ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRunnable.java -text
 ehr/src/org/labkey/ehr/query/BloodPlotData.java -text
 ehr/src/org/labkey/ehr/query/DataEntryTable.java -text
 ehr/src/org/labkey/ehr/query/EHRDomainKind.java -text
+ehr/src/org/labkey/ehr/query/EHRExtensibleContainerScopedTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
-ehr/src/org/labkey/ehr/query/EHRProjectTable.java -text
-ehr/src/org/labkey/ehr/query/EHRProtocolTable.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text

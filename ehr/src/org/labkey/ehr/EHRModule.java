@@ -122,6 +122,7 @@ public class EHRModule extends ExtendedSimpleModule
     {
         return NAME;
     }
+
     public double getVersion()
     {
         return 17.22;
@@ -189,7 +190,6 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRSnomedEditorRole());
 
         PropertyService.get().registerDomainKind(new EHRDomainKind());
-
     }
 
     @Nullable
