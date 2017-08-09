@@ -56,10 +56,9 @@ table.ehr-legend td.ehr-legend-value {
 
 a .ehr-tool-icon-lg {
     text-decoration: none !important;
-    font-weight: normal !important;
+    font-weight: bold;
     text-transform: none !important;
     text-align: center;
-    font-family: 'Roboto-Bold', 'Arial-Bold', 'Helvetica-Bold', sans serif;
     color: #999;
     font-size: 18px;
 }
