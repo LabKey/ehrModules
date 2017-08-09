@@ -24,7 +24,6 @@ import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
@@ -238,6 +237,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             runId.setUserEditable(false);
         }
 
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
         ColumnInfo qcstate = ti.getColumn("qcstate");
         if (qcstate != null)
         {
@@ -246,7 +246,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 UserSchema study = getEHRStudyUserSchema(ti);
                 if (study != null)
-                    qcstate.setFk(new QueryForeignKey(CoreSchema.getInstance().getTableInfoQCState(), null, "rowid", "Label"));
+                    qcstate.setFk(new QueryForeignKey(QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "core"), ehrContainer, "QCState","RowId", "Label"));
             }
             //TODO: disabled due to issue with DataIterator
             //qcstate.setUserEditable(false);
@@ -281,7 +281,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             caseId.setLabel("Case Id");
         }
 
-        Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+
         //if not set, default to current container
         if (ehrContainer == null)
             ehrContainer = ti.getUserSchema().getContainer();
