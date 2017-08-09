@@ -82,6 +82,7 @@
                     </column>
                     <column columnName="birth">
                         <columnTitle>Birth</columnTitle>
+                        <formatString>Date</formatString>
                     </column>
                     <column columnName="estimated">
                         <columnTitle>Birth Is Estimated?</columnTitle>
