@@ -537,28 +537,28 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         WebElement demographicWebpart = new EphemeralWebElement(PortalHelper.Locators.webPartWithTitleContaining("Demographics"), getDriver()).withTimeout(1000);
         // Check protocol search results.
-        refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
+        DataRegionTable drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, drt.getDataRowCount());
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
         waitAndClick(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]));
         waitForElementToDisappear(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
-        refreshAnimalHistoryReport();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
+        drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, drt.getDataRowCount());
 
         // Re-add animal.
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Add"));
         waitForElement(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
-        refreshAnimalHistoryReport();
+        drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
         //TODO: Need to check that a button showed up under "ID's not found" section
         //assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
         log("Check subjectField parsing");
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace"));
-        refreshAnimalHistoryReport();
+        drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
         //TODO: Need to check that two buttons showed up under "ID's not found" section
         //assertEquals("Did not find the expected number of Animals", 5, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
@@ -578,9 +578,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
         waitAndClick(Ext4Helper.Locators.ext4Button("Replace"));
         sleep(1000);  // TODO: Since replace now does a query, we should create a helper to click then wait for ID buttons to appear
-        refreshAnimalHistoryReport();
-        waitAndClick(Ext4Helper.Locators.ext4Tab("General"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Snapshot"));
+        refreshAnimalHistoryReport()
+                .clickCategoryTab("General")
+                .clickReportTab("Snapshot");
         waitForText("Location:");
         waitForText("Gender:");
         waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
@@ -661,9 +661,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         sleep(200);
     }
 
-    private void refreshAnimalHistoryReport()
+    private AnimalHistoryPage refreshAnimalHistoryReport()
     {
-        new AnimalHistoryPage(getDriver()).refreshReport();
+        return new AnimalHistoryPage(getDriver()).refreshReport();
     }
 
     private void setDoseConcFields()
