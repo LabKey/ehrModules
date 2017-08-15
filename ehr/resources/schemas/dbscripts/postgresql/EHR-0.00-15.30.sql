@@ -968,11 +968,6 @@ CREATE TABLE ehr.status
   CONSTRAINT pk_status PRIMARY KEY (rowid)
 );
 
-INSERT INTO ehr.status (rowid, label, description, publicdata, draftdata, isdeleted, isrequest, allowfuturedates)
-
-(select q.rowid, q.label, q.description, q.publicdata, m.draftdata, m.isdeleted, m.isrequest, m.allowfuturedates
-from study.qcstate q left join ehr.qcstatemetadata m on q.label = m.QCStateLabel);
-
 --drop table ehr.qcstatemetadata;
 
 /* EHR-12.20-12.30.sql */
