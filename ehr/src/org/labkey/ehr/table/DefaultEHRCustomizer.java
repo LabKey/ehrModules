@@ -394,6 +394,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn(sortName) == null)
         {
             AliasedColumn sortCol = new AliasedColumn(ti, sortName, baseColumn);
+            sortCol.setKeyField(false);
             sortCol.setHidden(true);
             sortCol.setCalculated(true);
             sortCol.setUserEditable(false);
