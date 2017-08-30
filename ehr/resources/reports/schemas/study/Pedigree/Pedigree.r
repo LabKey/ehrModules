@@ -192,7 +192,7 @@ for (i in 1:nrow(ped)) {
         #typeof(ped$Sire);
         #typeof(xt);
         ped$Sire[i] <- paste('xxs',xt)
-        ped$Sire[i] <- paste (ped$Sire[i], "Unknow Sire", sep="\n")
+        ped$Sire[i] <- paste (ped$Sire[i], "Unknown Sire", sep="\n")
         #print(ped$Dam[i])
         #print(ped$Sire[i])
     }
@@ -201,7 +201,7 @@ for (i in 1:nrow(ped)) {
             #typeof(ped$Sire);
             #typeof(xt);
             ped$Dam[i] <- paste ('xxd',xt);
-            ped$Dam[i] <- paste (ped$Dam[i], "Unknow Dam", sep="\n")
+            ped$Dam[i] <- paste (ped$Dam[i], "Unknown Dam", sep="\n")
             #print(ped$Sire);
         }
 };
