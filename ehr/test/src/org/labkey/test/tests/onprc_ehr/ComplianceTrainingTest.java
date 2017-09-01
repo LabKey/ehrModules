@@ -57,6 +57,7 @@ import static org.junit.Assert.assertTrue;
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest, SqlserverOnlyTest
 {
+    {setIsBootstrapWhitelisted(true);}
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
     private LabModuleHelper _helper = new LabModuleHelper(this);
 
