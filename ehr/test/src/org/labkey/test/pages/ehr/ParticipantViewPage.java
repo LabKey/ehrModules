@@ -43,8 +43,10 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
 
     protected static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
-    protected static final Locator.XPathLocator activeReportPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel").notHidden();
-    protected static final Locator.XPathLocator reportTab = activeReportPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
+    protected static final Locator.XPathLocator categoryPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel");
+    protected static final Locator.XPathLocator activeCategoryPanel = categoryPanel.notHidden();
+    protected static final Locator.XPathLocator reportTab = activeCategoryPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
+    protected static final Locator.XPathLocator activeReportPanel = categoryPanel.childTag("div").withClass("x4-panel-body").childTag("div").withClass("x4-tabpanel-child").notHidden();
 
     public ParticipantViewPage(WebDriver driver)
     {
