@@ -27,8 +27,8 @@ import static org.labkey.test.util.Ext4Helper.TextMatchTechnique.LEADING_NBSP;
 
 public class LocationFilterType<A extends AnimalHistoryPage> extends AbstractFilterType<A>
 {
-    private final ComboBox areaCombo = ComboBox(getDriver()).withLabel("Area(s):").findWhenNeeded(this).setMatcher(LEADING_NBSP);
-    private final ComboBox roomCombo = ComboBox(getDriver()).withLabel("Room:").findWhenNeeded(this).setMatcher(LEADING_NBSP);
+    private final ComboBox areaCombo = ComboBox(getDriver()).withIdPrefix("ehr-areafield").findWhenNeeded(this).setMatcher(LEADING_NBSP);
+    private final ComboBox roomCombo = ComboBox(getDriver()).withIdPrefix("ehr-roomfield").findWhenNeeded(this).setMatcher(LEADING_NBSP);
     private final Input cageInput = Input(Locator.input("cageField"), getDriver()).findWhenNeeded(this);
 
     public LocationFilterType(A sourcePage)

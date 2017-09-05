@@ -18,6 +18,7 @@ package org.labkey.test.components.ldk.panel;
 import org.labkey.test.Locator;
 import org.labkey.test.components.WebDriverComponent;
 import org.labkey.test.components.ext4.RadioButton;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -73,5 +74,10 @@ public abstract class AbstractFilterType<A extends AnimalHistoryPage> extends We
     public A refreshReport()
     {
         return (A) _page.refreshReport();
+    }
+
+    public Window refreshReportError()
+    {
+        return _page.refreshReportError();
     }
 }

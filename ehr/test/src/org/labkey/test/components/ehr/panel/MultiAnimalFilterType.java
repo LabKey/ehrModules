@@ -103,7 +103,7 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
         public SearchWindow(String windowTitle)
         {
-            super(windowTitle, MultiAnimalFilterType.this.getDriver());
+            super(windowTitle.substring(1, windowTitle.length() - 1), MultiAnimalFilterType.this.getDriver()); // Trim brackets from link text
         }
 
         public A clickSubmit()
@@ -144,8 +144,8 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
     public class ProjectProtocolSearchWindow extends SearchWindow
     {
-        private final ComboBox projectCombo = ComboBox(getDriver()).withLabel("Center Project:").findWhenNeeded(this).setMatcher(_comboMatcher);
-        private final ComboBox protocolCombo = ComboBox(getDriver()).withLabel("IACUC Protocol:").findWhenNeeded(this).setMatcher(_comboMatcher);
+        private final ComboBox projectCombo = ComboBox(getDriver()).withIdPrefix("ehr-projectfield").findWhenNeeded(this).setMatcher(_comboMatcher);
+        private final ComboBox protocolCombo = ComboBox(getDriver()).withIdPrefix("ehr-protocolfield").findWhenNeeded(this).setMatcher(_comboMatcher);
 
         public ProjectProtocolSearchWindow(String title)
         {

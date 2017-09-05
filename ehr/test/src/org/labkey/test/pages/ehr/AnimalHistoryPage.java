@@ -20,6 +20,7 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ehr.panel.LocationFilterType;
 import org.labkey.test.components.ehr.panel.MultiAnimalFilterType;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.components.ldk.panel.NoFiltersFilterType;
 import org.labkey.test.components.ldk.panel.SingleSubjectFilterType;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import static org.labkey.test.Locator.NBSP;
+import static org.labkey.test.components.ext4.Window.Window;
 import static org.labkey.test.components.ldk.panel.AbstractFilterType.FILTER_SIGNAL;
 import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
 
@@ -65,6 +67,12 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
             () -> elementCache().updateButton.click(),
             REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
         return (A)this;
+    }
+
+    public Window refreshReportError()
+    {
+        elementCache().updateButton.click();
+        return Window(getDriver()).waitFor();
     }
 
     public void searchSingleAnimal(String animalId)

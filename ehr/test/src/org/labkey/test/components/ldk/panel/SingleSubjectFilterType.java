@@ -47,4 +47,9 @@ public class SingleSubjectFilterType<A extends AnimalHistoryPage> extends Abstra
         subjectInput.set(subjectId);
         return refreshReport();
     }
+
+    public String getSubjectId()
+    {
+        return subjectInput.get();
+    }
 }
