@@ -24,16 +24,13 @@ import org.labkey.test.SortDirection;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
-import org.labkey.test.selenium.EphemeralWebElement;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
 import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.PortalHelper;
-import org.labkey.test.util.ext4cmp.Ext4ComboRef;
-import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -476,27 +473,25 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     public void testAnimalHistory()
     {
         goToEHRFolder();
-        waitAndClick(Locator.linkWithText("Animal History"));
+        waitAndClickAndWait(Locator.linkWithText("Animal History"));
+
+        AnimalHistoryPage<AnimalHistoryPage> animalHistoryPage = new AnimalHistoryPage<>(getDriver());
 
         log("Verify Single animal history");
-        String query = "textfield[itemId=subjArea]";
-        _helper.waitForCmp(query);
-        Ext4FieldRef subjField = getAnimalHistorySubjField();
-        subjField.setValue(PROTOCOL_MEMBER_IDS[0]);
+        animalHistoryPage
+                .selectSingleAnimalSearch()
+                .searchFor(PROTOCOL_MEMBER_IDS[0]);
 
-        refreshAnimalHistoryReport();
         waitForElement(Locator.tagContainingText("th", "Overview: " + PROTOCOL_MEMBER_IDS[0]));
         waitForElement(Locator.tagContainingText("div", "There are no active medications"));
         waitForElement(Locator.tagContainingText("div", "5.62 kg")); //loading of the weight section
-        _helper.waitForCmp(query);
-        subjField = _ext4Helper.queryOne("#subjArea", Ext4FieldRef.class);
-        assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], subjField.getValue());
+        assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], animalHistoryPage.selectSingleAnimalSearch().getSubjectId());
 
         //NOTE: rendering the entire colony is slow, so instead of abstract we load a simpler report
         log("Verify entire colony history");
-        waitAndClick(Ext4Helper.Locators.ext4Radio("Entire Database"));
-        sleep(5000);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Demographics"));
+        animalHistoryPage
+                .selectEntireDatabaseSearch().getPage()
+                .clickReportTab("Demographics");
         waitForElement(Locator.tagContainingText("a", "Rhesus")); //a proxy for the loading of the dataRegion
         waitForElement(Locator.tagContainingText("a", "test9195996"));  //the last ID on the page.  possibly a better proxy?
         waitForElement(Locator.tagContainingText("a", "Rhesus"));
@@ -504,38 +499,33 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.tagContainingText("a", "Marmoset"));
 
         log("Verify location based history");
-        waitAndClick(Ext4Helper.Locators.ext4Radio("Current Location"));
-
-        _helper.waitForCmp("#areaField");
-        _ext4Helper.queryOne("#areaField", Ext4FieldRef.class).setValue(AREA_ID);
-        sleep(200); //wait for 2nd field to filter
-        _ext4Helper.queryOne("#roomField", Ext4FieldRef.class).setValue(ROOM_ID);
-        _ext4Helper.queryOne("#cageField", Ext4FieldRef.class).setValue(CAGE_ID);
-        refreshAnimalHistoryReport();
+        animalHistoryPage = animalHistoryPage
+                .selectCurrectLocation()
+                .selectAreas(AREA_ID)
+                .selectRooms(ROOM_ID)
+                .setCage(CAGE_ID)
+                .refreshReport();
         waitForElement(Locator.linkContainingText("9794992"), WAIT_FOR_JAVASCRIPT);   //this is the value of sire field
 
         log("Verify Project search");
-        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
-        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
-        waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
-        Ext4FieldRef.waitForField(this, "Center Project");
-        Ext4ComboRef.getForLabel(this, "Center Project").setComboByDisplayValue(PROJECT_ID);
-        _helper.clickExt4WindowBtn("Search By Project/Protocol", "Submit");
+        animalHistoryPage
+                .selectMultiAnimalSearch()
+                .searchByProjectProtocol()
+                .selectProject(PROJECT_ID)
+                .clickSubmit();
 
         waitForElement(Ext4Helper.Locators.ext4ButtonContainingText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT);
-        refreshAnimalHistoryReport();
+        animalHistoryPage = refreshAnimalHistoryReport();
         waitForElement(Locator.tagContainingText("span", "Demographics - " + PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT * 2);
 
         log("Verify Protocol search");
-        waitAndClick(Ext4Helper.Locators.ext4Radio("Multiple Animals"));
-        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
-        waitForElement(Ext4Helper.Locators.window("Search By Project/Protocol"));
-        Ext4FieldRef.waitForField(this, "IACUC Protocol");
-        Ext4ComboRef.getForLabel(this, "IACUC Protocol").setComboByDisplayValue(PROTOCOL_ID);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
+        animalHistoryPage
+                .selectMultiAnimalSearch()
+                .searchByProjectProtocol()
+                .selectProtocol(PROTOCOL_ID)
+                .clickSubmit();
         waitForElement(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
 
-        WebElement demographicWebpart = new EphemeralWebElement(PortalHelper.Locators.webPartWithTitleContaining("Demographics"), getDriver()).withTimeout(1000);
         // Check protocol search results.
         DataRegionTable drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
         assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, drt.getDataRowCount());
@@ -544,20 +534,22 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         // Check animal count after removing one from search.
         waitAndClick(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]));
         waitForElementToDisappear(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
-        drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, drt.getDataRowCount());
+        animalHistoryPage = refreshAnimalHistoryReport();
+        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length - 1, animalHistoryPage.getActiveReportDataRegion().getDataRowCount());
 
         // Re-add animal.
-        getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[0]);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Add"));
+        animalHistoryPage
+                .selectMultiAnimalSearch()
+                .addSubjects(PROTOCOL_MEMBER_IDS[0]);
         waitForElement(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[0]), WAIT_FOR_JAVASCRIPT);
         drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
         //TODO: Need to check that a button showed up under "ID's not found" section
         //assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
 
         log("Check subjectField parsing");
-        getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Replace"));
+        animalHistoryPage
+                .selectMultiAnimalSearch()
+                .replaceSubjects(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\t" + MORE_ANIMAL_IDS[4]);
         drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
         //TODO: Need to check that two buttons showed up under "ID's not found" section
         //assertEquals("Did not find the expected number of Animals", 5, DataRegionTable.findDataRegionWithin(this, demographicWebpart).getDataRowCount());
@@ -565,20 +557,22 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //waitForElementToDisappear(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[1] + "')]").notHidden(), WAIT_FOR_JAVASCRIPT * 3);
         //assertElementNotPresent(Locator.xpath("//td//a[contains(text(), '" + PROTOCOL_MEMBER_IDS[2] + "')]").notHidden());
 
-        waitAndClick(Ext4Helper.Locators.ext4Button("Clear"));
-        waitAndClick(Ext4Helper.Locators.ext4Button("Update Report"));
-        waitForElement(Ext4Helper.Locators.window("Error"));
+        Window error = animalHistoryPage
+                .selectMultiAnimalSearch()
+                .clearSubjects()
+                .refreshReportError();
         assertElementNotPresent(Ext4Helper.Locators.ext4ButtonContainingText(PROTOCOL_MEMBER_IDS[2]));
-        assertTextPresent("Must enter at least one valid Subject ID");
-        waitAndClick(Ext4Helper.Locators.ext4Button("OK"));
+        assertEquals("Error", error.getTitle());
+        assertEquals("Must enter at least one valid Subject ID", error.getBody());
+        error.clickButton("OK", true);
 
         log("checking specific tabs");
 
         //snapshot
-        getAnimalHistorySubjField().setValue(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1]);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Replace"));
-        sleep(1000);  // TODO: Since replace now does a query, we should create a helper to click then wait for ID buttons to appear
-        refreshAnimalHistoryReport()
+        animalHistoryPage = (AnimalHistoryPage) animalHistoryPage
+                .selectMultiAnimalSearch()
+                .replaceSubjects(MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1])
+                .refreshReport()
                 .clickCategoryTab("General")
                 .clickReportTab("Snapshot");
         waitForText("Location:");
@@ -586,10 +580,9 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
 
         //weight
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
-        sleep(500);
-        scrollIntoView(Ext4Helper.Locators.ext4Tab("Weights"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Weights"));
+        animalHistoryPage
+                .clickCategoryTab("Clinical")
+                .clickReportTab("Weights");
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
         waitForElement(Locator.tagContainingText("div", "Most Recent Weight").notHidden());
         waitForElement(Locator.tagWithText("a", "3.73").notHidden()); //first animal
@@ -604,7 +597,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         //waitForElement(Locator.tagWithText("span", "Percent Change"), WAIT_FOR_PAGE * 3);  //proxy for DR loading
 
         //chronological history
-        AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver()); // TODO: Update test to use this throughout
+        animalHistoryPage = new AnimalHistoryPage(getDriver()); // TODO: Update test to use this throughout
         animalHistoryPage.clickCategoryTab("Clinical");
         animalHistoryPage.clickReportTab("Clinical History");
         waitForElement(Locator.tagContainingText("div", "No records found since:"), 20000);
@@ -655,7 +648,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         final Locator fieldLocator = Locator.tag("input").withAttribute("name", "Id").withClass("x-form-field").notHidden();
 
         waitForElement(fieldLocator, WAIT_FOR_JAVASCRIPT);
-        waitFor(() -> PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator.toBy()).getAttribute("value")),
+        waitFor(() -> PROJECT_MEMBER_ID.equals(getDriver().findElement(fieldLocator).getAttribute("value")),
                 "Id field did not populate", WAIT_FOR_PAGE);
 
         sleep(200);
