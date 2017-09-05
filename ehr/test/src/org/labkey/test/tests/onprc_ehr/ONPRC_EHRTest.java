@@ -937,7 +937,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         click(Locator.id("uniqueButton"));
         waitForElement(Locator.id("uniqueInputTotal").withText("6 total"));
         assertElementPresent(Locator.id("uniqueTargetTotal").withText("4 total"));
-        Assert.assertEquals("Incorrect text", "1\n2\n3\n4", getDriver().findElement(Locator.id("uniqueTarget").toBy()).getAttribute("value"));
+        Assert.assertEquals("Incorrect text", "1\n2\n3\n4", getDriver().findElement(Locator.id("uniqueTarget")).getAttribute("value"));
 
         setFormElement(Locator.id("subtract1"), "1,2,1\n3,3;4");
         setFormElement(Locator.id("subtract2"), "1,4;23 48");
@@ -946,13 +946,13 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         assertElementPresent(Locator.id("subtractList2Total").withText("4 total"));
 
         assertElementPresent(Locator.id("intersectTargetTotal").withText("2 total"));
-        Assert.assertEquals("Incorrect text", "1\n4", getDriver().findElement(Locator.id("intersectTarget").toBy()).getAttribute("value"));
+        Assert.assertEquals("Incorrect text", "1\n4", getDriver().findElement(Locator.id("intersectTarget")).getAttribute("value"));
 
         assertElementPresent(Locator.id("subtractTargetTotal").withText("3 total"));
-        Assert.assertEquals("Incorrect text", "2\n3\n3", getDriver().findElement(Locator.id("subtractTarget").toBy()).getAttribute("value"));
+        Assert.assertEquals("Incorrect text", "2\n3\n3", getDriver().findElement(Locator.id("subtractTarget")).getAttribute("value"));
 
         assertElementPresent(Locator.id("subtractTargetTotal2").withText("2 total"));
-        Assert.assertEquals("Incorrect text", "23\n48", getDriver().findElement(Locator.id("subtractTarget2").toBy()).getAttribute("value"));
+        Assert.assertEquals("Incorrect text", "23\n48", getDriver().findElement(Locator.id("subtractTarget2")).getAttribute("value"));
 
         //animal groups
         String groupName = "A TestGroup";
