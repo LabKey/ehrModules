@@ -69,6 +69,7 @@ import java.util.TreeMap;
 @BaseWebDriverTest.ClassTimeout(minutes = 60)
 public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 {
+    {setIsBootstrapWhitelisted(true);}
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";

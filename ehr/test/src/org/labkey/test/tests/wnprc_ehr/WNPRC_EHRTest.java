@@ -51,6 +51,7 @@ import static org.junit.Assert.assertEquals;
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
+    {setIsBootstrapWhitelisted(true);}
     public static final String PROJECT_NAME = "WNPRC_TestProject";
     private final String ANIMAL_HISTORY_URL = "/ehr/" + PROJECT_NAME + "/EHR/animalHistory.view?";
     protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant
@@ -199,7 +200,6 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         _extHelper.selectComboBoxItem("Assign To:", DATA_ADMIN.getGroup());
         _extHelper.clickExtButton("Submit For Review", "Submit");
         waitForElement(Locator.linkWithText("Enter Blood Draws"));
-        waitForElement(Locator.id("userMenuPopupText"));
 
         sleep(1000); // Weird
         stopImpersonating();
@@ -223,7 +223,6 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         _extHelper.waitForExtDialog("Finalize Form");
         _extHelper.clickExtButton("Finalize Form", "Yes");
         waitForElement(Locator.linkWithText("Enter Blood Draws"));
-        waitForElement(Locator.id("userMenuPopupText"));
 
         sleep(1000); // Weird
         stopImpersonating();
@@ -405,7 +404,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         waitForText(WAIT_FOR_PAGE * 2, "details");
         DataRegionTable dr = new DataRegionTable("query", this);
-        clickAndWait(dr.link(0, 0));
+        dr.clickRowDetails(0);
         //these are the sections we expect
         waitForText("Drug Details");
         waitForText("Clinical Remarks From ");
@@ -432,7 +431,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         waitForText("details");
         dr = new DataRegionTable("query", this);
-        clickAndWait(dr.link(0, 0));
+        dr.clickRowDetails(0);
         waitForText("Labwork Summary");
         waitForText(WAIT_FOR_JAVASCRIPT * 2, "Results");
         waitForText("No results found");
@@ -445,15 +444,14 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForText("details");
         dr = new DataRegionTable("query", this);
         dr.setSort("date", SortDirection.ASC);
-        waitForText("details");
-        clickAndWait(dr.link(0, 0));
+        dr.clickRowDetails(0);
         waitForText("Encounter Details");
         beginAt("/ehr/" + getContainerPath() + "/datasets.view");
         waitForText("Biopsies");
         waitAndClick(LabModuleHelper.getNavPanelItem("Biopsies:", VIEW_TEXT));
         waitForText("volutpat");
         dr = new DataRegionTable("query", this);
-        waitAndClickAndWait(Locator.linkWithText("Details"));
+        dr.clickRowDetails(0);
         //these are the sections we expect
         waitForText("Biopsy Details", "Morphologic Diagnoses", "Histology");
         assertNoErrorText();
@@ -463,7 +461,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitAndClick(LabModuleHelper.getNavPanelItem("Necropsies:", VIEW_TEXT));
         waitForText("details");
         dr = new DataRegionTable("query", getDriver());
-        dr.link(0, 0).click();
+        dr.clickRowDetails(0);
         //these are the sections we expect
         waitForText("Necropsy Details","Morphologic Diagnoses","Histology");
         assertNoErrorText();
@@ -528,7 +526,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         // Check protocol search results.
         DataRegionTable drt = refreshAnimalHistoryReport().getActiveReportDataRegion();
-        assertEquals("Did not find the expected number of Animals", PROTOCOL_MEMBER_IDS.length, drt.getDataRowCount());
+        assertEquals("Did not find the expected number of Animals", Arrays.asList(PROTOCOL_MEMBER_IDS), drt.getColumnDataAsText("Id"));
         assertElementPresent(Locator.linkContainingText(PROTOCOL_MEMBER_IDS[0]));
 
         // Check animal count after removing one from search.
@@ -584,7 +582,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
                 .clickCategoryTab("Clinical")
                 .clickReportTab("Weights");
         waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
-        waitForElement(Locator.tagContainingText("div", "Most Recent Weight").notHidden());
+        waitForElement(Locator.tagContainingText("th", "Most Recent Weight").notHidden());
         waitForElement(Locator.tagWithText("a", "3.73").notHidden()); //first animal
         waitForElement(Locator.tagWithText("a", "3.56").notHidden()); //second animal
 
