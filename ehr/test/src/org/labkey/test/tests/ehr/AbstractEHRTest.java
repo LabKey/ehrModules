@@ -405,7 +405,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    protected void populateInitialData()
+    protected void populateInitialData() throws Exception
     {
         beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "populateInitialData"));
 
