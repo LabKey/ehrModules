@@ -139,18 +139,18 @@ public class LightCyclerImportMethod extends LC480ImportMethod
         {
             ParserErrors errors = context.getErrors();
 
-            List<Map<String, Object>> newRows = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> newRows = new ArrayList<>();
             ListIterator<Map<String, Object>> rowsIter = rows.listIterator();
             int rowIdx = 0;
             while (rowsIter.hasNext())
             {
                 rowIdx++;
                 Map<String, Object> row = rowsIter.next();
-                Map<String, Object> map = new CaseInsensitiveHashMap<Object>(row);
+                Map<String, Object> map = new CaseInsensitiveHashMap<>(row);
 
                 if (row.size() < 6)
                 {
-                    errors.addError("Improperly formatted row on line " + rowIdx + ", excepted 6 cells");
+                    errors.addError("Improperly formatted row on line " + rowIdx + ", expected 6 cells");
                     continue;
                 }
 
