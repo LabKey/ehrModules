@@ -64,26 +64,36 @@ addMissing <- function(ped){
     return(ped)
 }
 
-allPed <- addMissing(allPed)
-gc()
-
 # In order to reduce the max matrix size, calculate famids using makefamid, then analyze each group separately
 # It resizes the biggest matrix from 12000^2 to 8200^2 thus reduces the memory used by half
-fami=makefamid(id=allPed$Id,father.id=allPed$Sire,mother.id=allPed$Dam)
-famid=unique(fami)
-famid=famid[famid!=0]
-gc()
-
 newRecords=NULL
-for (fam.no in famid){
-    familytemp=allPed[fami==fam.no,]
-    temp.kin=kinship(familytemp$Id,familytemp$Sire,familytemp$Dam)
-    rownames(temp.kin) <- colnames(temp.kin) #add rownames to make matrix symmetric, which is required downstream
-    sparse.kin=as(temp.kin,"dsTMatrix") #change kinship matrix to symmetric triplet sparse matrix
+for (species in unique(allPed$Species)){
+    print(paste0('processing species: ', species))
+    recordsForSpecies <- allPed[allPed$Species == species,]
+    print(paste0('total subjects: ', nrow(recordsForSpecies)))
 
-    # convert to a sparse matrix usng S4 object from Matrix library
-    temp.tri=data.frame(Id=colnames(temp.kin)[sparse.kin@i+1],Id2=colnames(temp.kin)[sparse.kin@j+1],coefficient=sparse.kin@x,stringsAsFactors=FALSE)
-    newRecords=rbind(newRecords,temp.tri)
+    recordsForSpecies <- addMissing(recordsForSpecies)
+    gc()
+    print(paste0('total subjects after adding missing: ', nrow(recordsForSpecies)))
+
+    fami=makefamid(id=recordsForSpecies$Id,father.id=recordsForSpecies$Sire,mother.id=recordsForSpecies$Dam)
+    famid=unique(fami)
+    famid=famid[famid!=0]
+    gc()
+
+    print(paste0('total families: ', length(famid)))
+    for (fam.no in famid){
+        familytemp=recordsForSpecies[fami==fam.no,]
+        print(paste0('family size: ', nrow(familytemp)))
+
+        temp.kin=kinship(familytemp$Id,familytemp$Sire,familytemp$Dam)
+        rownames(temp.kin) <- colnames(temp.kin) #add rownames to make matrix symmetric, which is required downstream
+        sparse.kin=as(temp.kin,"dsTMatrix") #change kinship matrix to symmetric triplet sparse matrix
+
+        # convert to a sparse matrix usng S4 object from Matrix library
+        temp.tri=data.frame(Id=colnames(temp.kin)[sparse.kin@i+1],Id2=colnames(temp.kin)[sparse.kin@j+1],coefficient=sparse.kin@x,stringsAsFactors=FALSE)
+        newRecords=rbind(newRecords,temp.tri)
+    }
 }
 
 # write TSV to disk

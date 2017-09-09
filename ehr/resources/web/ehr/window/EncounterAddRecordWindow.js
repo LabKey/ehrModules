@@ -107,8 +107,10 @@ Ext4.define('EHR.window.EncounterAddRecordWindow', {
 
         this.targetGrid.store.add(toAdd);
 
-        if (cellEditing)
-            cellEditing.startEditByPosition({row: 0, column: this.targetGrid.firstEditableColumn || 0});
+        if (cellEditing) {
+            //start editing on the first newly added record
+            cellEditing.startEditByPosition({row: (this.targetGrid.store.getCount() - toAdd.length), column: this.targetGrid.firstEditableColumn || 0});
+        }
 
         this.close();
     }
