@@ -1220,6 +1220,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
+        ColumnInfo col21 = getWrappedIdCol(us, ds, "MhcStatus", "demographicsMhcStatus");
+        col12.setLabel("MHC Status");
+        col12.setDescription("MHC status");
+        ds.addColumn(col21);
+
         ColumnInfo id = ds.getColumn(ID_COL);
         if (id != null)
         {
