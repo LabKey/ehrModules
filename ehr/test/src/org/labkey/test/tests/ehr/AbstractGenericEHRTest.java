@@ -98,7 +98,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitForElement(Locator.linkWithText("Advanced Animal Search"), WAIT_FOR_JAVASCRIPT);
         setFormElement(Locator.name("animal"), MORE_ANIMAL_IDS[0]);
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Show Animal"));
-        waitForElement(Locator.css(".labkey-wp-title-left").withText("Overview: " + MORE_ANIMAL_IDS[0]));
+        waitForElement(Locator.css(".labkey-wp-title-text").withText("Overview: " + MORE_ANIMAL_IDS[0]));
         assertTitleContains("Animal Details: " + MORE_ANIMAL_IDS[0]);
 
         log("Quick Search - Show Project");

@@ -480,7 +480,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
                 .selectSingleAnimalSearch()
                 .searchFor(PROTOCOL_MEMBER_IDS[0]);
 
-        waitForElement(Locator.tagContainingText("th", "Overview: " + PROTOCOL_MEMBER_IDS[0]));
+        waitForElement(Locator.tagContainingText("span", "Overview: " + PROTOCOL_MEMBER_IDS[0]));
         waitForElement(Locator.tagContainingText("div", "There are no active medications"));
         waitForElement(Locator.tagContainingText("div", "5.62 kg")); //loading of the weight section
         assertEquals("Incorrect value in subject ID field", PROTOCOL_MEMBER_IDS[0], animalHistoryPage.selectSingleAnimalSearch().getSubjectId());
@@ -575,13 +575,13 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
                 .clickReportTab("Snapshot");
         waitForText("Location:");
         waitForText("Gender:");
-        waitForElement(Locator.tagContainingText("th", "Weights - " + MORE_ANIMAL_IDS[0]));
+        waitForElement(Locator.tagContainingText("span", "Weights - " + MORE_ANIMAL_IDS[0]));
 
         //weight
         animalHistoryPage
                 .clickCategoryTab("Clinical")
                 .clickReportTab("Weights");
-        waitForElement(Locator.xpath("//th[contains(text(), 'Weights -')]"));
+        waitForElement(Locator.xpath("//span[contains(text(), 'Weight Information -')]"));
         waitForElement(Locator.tagContainingText("th", "Most Recent Weight").notHidden());
         waitForElement(Locator.tagWithText("a", "3.73").notHidden()); //first animal
         waitForElement(Locator.tagWithText("a", "3.56").notHidden()); //second animal
