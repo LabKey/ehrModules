@@ -30,7 +30,9 @@ Ext4.define('EHR.panel.LocationFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Search By Location:<br><i>(Note: when you select an area, the corresponding rooms will be selected in the room field.)</i>'
+            html: 'Search By Location:<br>'
+                + '<div style="width: 175px;"><i>(Note: when you select an area, '
+                + 'the corresponding rooms will be selected in the room field.)</i></div>'
         });
 
         if(this.searchOptions.area) {
