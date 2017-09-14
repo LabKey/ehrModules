@@ -31,7 +31,9 @@ is.na(allPed$Dam)<-which(allPed$Dam=="")
 is.na(allPed$Sire)<-which(allPed$Sire=="")
 is.na(allPed$Gender)<-which(allPed$Gender=="")
 
+allPed$Species <- as.character(allPed$Species)
 allPed$Species[is.na(allPed$Species)] <- c('Unknown')
+allPed$Species <- as.factor(allPed$Species)
 
 ##### commented out after checking data
 # duplicatedId=allPed$Id[duplicated(allPed$Id)]
