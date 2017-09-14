@@ -31,6 +31,8 @@ is.na(allPed$Dam)<-which(allPed$Dam=="")
 is.na(allPed$Sire)<-which(allPed$Sire=="")
 is.na(allPed$Gender)<-which(allPed$Gender=="")
 
+allPed$Species[is.na(allPed$Species)] <- c('Unknown')
+
 ##### commented out after checking data
 # duplicatedId=allPed$Id[duplicated(allPed$Id)]
 # allPed[allPed$Id%in%duplicatedId,]# Check for duplication: passed
@@ -41,7 +43,7 @@ is.na(allPed$Gender)<-which(allPed$Gender=="")
 
 # this function adds missing parents to the pedigree
 # it is similar to add.Inds from kinship; however, we retain gender
-addMissing <- function(ped){
+addMissing <- function(ped, species){
     if(ncol(ped)<4)stop("pedigree should have at least 4 columns")
     head <- names(ped)
 
@@ -49,7 +51,7 @@ addMissing <- function(ped){
     nsires <- as.character(unique(ped[is.na(nsires),3]))
     nsires <- nsires[!is.na(nsires)]
     if(length(nsires)){
-        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Species=rep("Unknown", length(nsires))));
+        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Species=rep(species, length(nsires))));
     }
 
     ndams <- match(ped[,2],ped[,1])# [Quoc] change ped,3 to ped,2
@@ -57,7 +59,7 @@ addMissing <- function(ped){
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
-        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Species=rep("Unknown", length(ndams))));
+        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Species=rep(species, length(ndams))));
     }
 
     names(ped) <- head
@@ -72,7 +74,7 @@ for (species in unique(allPed$Species)){
     recordsForSpecies <- allPed[allPed$Species == species,]
     print(paste0('total subjects: ', nrow(recordsForSpecies)))
 
-    recordsForSpecies <- addMissing(recordsForSpecies)
+    recordsForSpecies <- addMissing(recordsForSpecies, species)
     gc()
     print(paste0('total subjects after adding missing: ', nrow(recordsForSpecies)))
 
