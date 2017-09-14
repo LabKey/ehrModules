@@ -31,6 +31,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions alwaysShowRecordSelectors="true" includeStandardButtons="true">
+                    <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <item insertPosition="end" text="More Actions">
                         <item text="Limit To Animals In Selection">

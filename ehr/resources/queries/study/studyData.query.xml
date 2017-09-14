@@ -243,9 +243,6 @@
                     <item text="Import Bulk Data" suppressWarning="true">
                         <originalText>Import Bulk Data</originalText>
                     </item>
-                    <item text="Paging">
-                        <originalText>Paging</originalText>
-                    </item>
                     <item text="Delete" suppressWarning="true">
                         <originalText>Delete</originalText>
                     </item>

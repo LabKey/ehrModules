@@ -116,8 +116,8 @@
                     <item text="Grid Views">
                         <originalText>Grid Views</originalText>
                     </item>
-                    <item text="Reports">
-                        <originalText>Reports</originalText>
+                    <item text="Charts">
+                        <originalText>Charts</originalText>
                     </item>
                     <item text="Export">
                         <originalText>Export</originalText>
@@ -125,15 +125,6 @@
                     <item text="Print">
                         <originalText>Print</originalText>
                     </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
-                    <!--</item>-->
-                    <item text="Paging">
-                        <originalText>Paging</originalText>
-                    </item>
-                    <!--<item text="Delete">-->
-                        <!--<originalText>Delete</originalText>-->
-                    <!--</item>-->
                 </buttonBarOptions>
             </table>
         </tables>
