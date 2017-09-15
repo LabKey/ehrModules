@@ -1214,7 +1214,7 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
+                <isUnselectable>false</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
