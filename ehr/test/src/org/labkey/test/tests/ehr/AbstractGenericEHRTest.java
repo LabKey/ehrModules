@@ -79,8 +79,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         DataRegionTable dr = new DataRegionTable("query", this);
         clickAndWait(dr.link(1, "Id"));
         log("Inspecting details page");
-        waitForElement(Locator.tagContainingText("th", "Summary: "));
-        waitForElement(Locator.tagContainingText("th", "Weights - "));
+        waitForElement(Locator.tagWithText("b", "Summary:"));
+        waitForElement(Locator.tagContainingText("span", "Weights - "));
         assertNoErrorText();
     }
 
