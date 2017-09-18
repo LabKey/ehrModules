@@ -26,6 +26,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="true">
+                    <includeScript>/clientapi/Ext4.lib.xml</includeScript>
                     <includeScript>/laboratory/assayButtons.js</includeScript>
                     <!--<onRender>Laboratory.onAssayLoad</onRender>-->
                     <item text="More Actions" insertAfter="last">
