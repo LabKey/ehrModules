@@ -29,7 +29,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             schemaName: 'ehr',
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
-            sort: 'category,sort_order,reporttitle',
+            sort: 'category,sort_order,reporttitle,reportstatus',
             autoLoad: true,
             listeners: {
                 scope: this,
@@ -48,6 +48,8 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             var report = {
                 id: rec.get('reportname'),
                 name: rec.get('reportname'),
+                reportStatus: rec.get('reportstatus'),
+                description: rec.get('description'),
                 label: rec.get('reporttitle'),
                 category: rec.get('category'),
                 reportType: rec.get('reporttype'),
