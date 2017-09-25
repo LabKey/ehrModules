@@ -225,7 +225,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
     },
 
     loadRoom: function(btn){
-        var housingWin = btn.up('window');
+        var win = btn.up('window');
         var roomEl = win.down('#room'), cageEl = win.down('#cage');
         var room, cage;
         if(roomEl) {
@@ -237,7 +237,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
             cageEl.reset();
         }
 
-        housingWin.close();
+        win.close();
 
         Ext4.Msg.wait("Loading...");
 

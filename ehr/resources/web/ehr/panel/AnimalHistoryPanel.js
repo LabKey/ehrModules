@@ -18,6 +18,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     alias: 'widget.ehr-animalhistorypanel',
     showDiscvrLink: false,
     autoResize: false,
+    minWidth: 1000,
 
     initComponent: function(){
         Ext4.apply(this, {

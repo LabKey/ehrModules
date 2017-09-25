@@ -39,7 +39,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                 scope: this,
                 render: function(){
                     //defer loading of data
-                    if (this.autoLoadRecords){
+                    if (Ext4.isDefined(store) && this.autoLoadRecords){
                         store.reloadData({
                             subjectIds: [this.subjectId],
                             caseId: this.caseId,
