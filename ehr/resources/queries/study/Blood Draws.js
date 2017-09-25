@@ -13,6 +13,8 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 });
 
 function onInit(event, helper){
+    // Grab all of the blood draws and weights being submitted in this transaction (packaged separately by the ExtJS
+    // client store so that we can use those values too for validation purposes, not just what's in the DB already
     helper.decodeExtraContextProperty('bloodInTransaction');
     helper.decodeExtraContextProperty('weightInTransaction');
 

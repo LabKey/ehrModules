@@ -22,6 +22,9 @@ Ext4.define('EHR.data.BloodDrawClientStore', {
     },
 
     getExtraContext: function(){
+        // Submit all of the draws in this batch as a separate property on the extra context,
+        // so that server-side validation can see them all at once for validation purposes (and not just rely
+        // on the blood draws already saved to the database)
         var bloodDrawMap = {};
         var allRecords = this.getRange();
         for (var idx = 0; idx < allRecords.length; ++idx){

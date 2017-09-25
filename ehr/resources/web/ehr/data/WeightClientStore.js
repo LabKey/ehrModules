@@ -10,6 +10,9 @@ Ext4.define('EHR.data.WeightClientStore', {
     extend: 'EHR.data.DataEntryClientStore',
 
     getExtraContext: function(){
+        // Submit all of the weights in this batch as a separate property on the extra context,
+        // so that server-side validation can see them all at once for validation purposes (and not just rely
+        // on the most recent weight entry that's already been saved to the database)
         var weightMap = {};
         var allRecords = this.getRange();
         for (var idx = 0; idx < allRecords.length; ++idx){
