@@ -209,13 +209,13 @@ EHR.reports.pedigree = function(panel, tab){
     });
 
     tab.add({
-        xtype: 'ldk-querypanel',
+        xtype: 'ldk-querycmp',
         style: 'margin-bottom:20px;',
         queryConfig: configOffspring
     });
 
     tab.add({
-        xtype: 'ldk-querypanel',
+        xtype: 'ldk-querycmp',
         style: 'margin-bottom:20px;',
         queryConfig: configSibling
     });

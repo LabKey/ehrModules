@@ -12,7 +12,6 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
     initComponent: function(){
         Ext4.apply(this, {
-            minHeight: 400,
             border: false,
             style: 'padding: 5px;'
         });
@@ -28,6 +27,8 @@ Ext4.define('EHR.panel.KinshipPanel', {
                 xtype: 'panel',
                 id: 'rawDataPanel',
                 title: 'Raw Data',
+                minHeight: 400,
+                autoScroll: true,
                 items: [{
                     xtype: 'checkbox',
                     fieldLabel: 'Only Show IDs In My Selection',
@@ -47,6 +48,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
                 itemId: 'matrixPanel',
                 title: 'Matrix',
                 style: 'padding: 10px;',
+                minHeight: 400,
                 items: [{
                     xtype: 'panel',
                     border: false,
@@ -236,7 +238,7 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
     getQWPConfig: function(){
         return {
-            xtype: 'ldk-querypanel',
+            xtype: 'ldk-querycmp',
             style: 'margin: 5px;',
             id: 'rawDataGrid',
             queryConfig: {
@@ -244,6 +246,8 @@ Ext4.define('EHR.panel.KinshipPanel', {
                 containerPath: this.containerPath,
                 schemaName: 'ehr',
                 queryName: 'kinship',
+                allowHeaderLock: false,
+                showReports: false,
                 filterArray: this.filterArray,
                 failure: function() {Ext4.getCmp('limitRawDataToSelection').enable();LDK.Utils.getErrorCallback()},
                 success: function() {Ext4.getCmp('limitRawDataToSelection').enable()}
