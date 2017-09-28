@@ -1500,3 +1500,9 @@ ehr/test/src/org/labkey/test/tests/wnprc_ehr/WNPRC_EHRTest.java -text
 ehr/test/src/org/labkey/test/util/ehr/EHRClientAPIHelper.java -text
 ehr/test/src/org/labkey/test/util/ehr/EHRTestHelper.java -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text
+ehr_billing/module.properties -text
+ehr_billing/resources/schemas/ehr_billing.xml -text
+ehr_billing/src/org/labkey/ehr_billing/EHR_BillingContainerListener.java -text
+ehr_billing/src/org/labkey/ehr_billing/EHR_BillingController.java -text
+ehr_billing/src/org/labkey/ehr_billing/EHR_BillingModule.java -text
+ehr_billing/src/org/labkey/ehr_billing/EHR_BillingSchema.java -text
