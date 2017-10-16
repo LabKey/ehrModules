@@ -77,7 +77,7 @@ public class EHRClientAPIHelper
 
     public Connection getConnection()
     {
-        return new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+        return _test.createDefaultConnection(true);
     }
 
     public boolean doesRowExist(String schema, String query, Map<String, Object> row, String pkCol) throws CommandException
@@ -275,10 +275,14 @@ public class EHRClientAPIHelper
             json.put("commands", commands);
             json.put("extraContext", extraContext);
 
-            String requestUrl = WebTestHelper.getBaseURL() + "/query/" + _containerPath + "/saveRows.view";
+            String requestUrl = WebTestHelper.getBaseURL() + "/query/" + _containerPath + "/saveRows.api";
             method = new HttpPost(requestUrl);
             method.addHeader("Content-Type", "application/json");
             method.setEntity(new StringEntity(json.toString(), ContentType.create("application/json", "UTF-8")));
+
+            org.openqa.selenium.Cookie csrf = WebTestHelper.getCookies(email).get("X-LABKEY-CSRF");
+            if (csrf != null)
+                method.setHeader(csrf.getName(), csrf.getValue());
 
             response = client.execute(method, context);
             int status = response.getStatusLine().getStatusCode();
