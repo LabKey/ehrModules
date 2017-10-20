@@ -306,9 +306,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         beginAt(String.format("query/%s/executeQuery.view?schemaName=study&query.queryName=Weight&query.viewName=&query.Id~contains=%s", getContainerPath(), subjectId));
         _customizeViewsHelper.openCustomizeViewPanel();
-        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTime");
-        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTimeYearsRounded");
-        _customizeViewsHelper.addCustomizeViewColumn("ageAtTime/AgeAtTimeMonths");
+        _customizeViewsHelper.addColumn("ageAtTime/AgeAtTime");
+        _customizeViewsHelper.addColumn("ageAtTime/AgeAtTimeYearsRounded");
+        _customizeViewsHelper.addColumn("ageAtTime/AgeAtTimeMonths");
         _customizeViewsHelper.applyCustomView();
 
         DataRegionTable table = new DataRegionTable("query", this);

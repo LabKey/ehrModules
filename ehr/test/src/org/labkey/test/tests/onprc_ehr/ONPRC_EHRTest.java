@@ -965,8 +965,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitAndClickAndWait(Locator.tagContainingText("a", "Animal Groups"));
         waitForElement(Locator.tagContainingText("span", "Active Groups"));
         DataRegionTable dr = new DataRegionTable("query", this);
-        clickAndWait(dr.link(0, dr.getColumn("Name")));
-        DataRegionTable membersTable = DataRegionTable.findDataRegionWithin(this, new BodyWebPart(this, "Group Members"));
+        clickAndWait(dr.link(0, dr.getColumnIndex("Name")));
+        DataRegionTable membersTable = DataRegionTable.DataRegion(getDriver()).find(new BodyWebPart(this.getDriver(), "Group Members", 0));
         Assert.assertEquals(2, membersTable.getDataRowCount());
 
         //more reports
