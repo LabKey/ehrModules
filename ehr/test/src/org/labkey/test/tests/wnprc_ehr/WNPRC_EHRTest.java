@@ -133,7 +133,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.tagWithText("div", PROJECT_MEMBER_ID).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
         click(Locator.extButton("Add Batch"));
         _extHelper.waitForExtDialog("");
-        _extHelper.setExtFormElementByLabel("", "Id(s):", MORE_ANIMAL_IDS[0]+","+MORE_ANIMAL_IDS[1]+";"+MORE_ANIMAL_IDS[2]+" "+MORE_ANIMAL_IDS[3]+"\n"+MORE_ANIMAL_IDS[4]);
+        _extHelper.setExtFormElementByLabel("", "Id(s):", MORE_ANIMAL_IDS[0] + "," + MORE_ANIMAL_IDS[1] + ";" + MORE_ANIMAL_IDS[2] + " " + MORE_ANIMAL_IDS[3] + "\n" + MORE_ANIMAL_IDS[4]);
         _extHelper.clickExtButton("", "Submit", 0);
         waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[0]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.tagWithText("div", MORE_ANIMAL_IDS[1]).withClass("x-grid3-cell-inner"), WAIT_FOR_JAVASCRIPT);
@@ -160,13 +160,13 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         waitForElement(Locator.tagWithText("em", "No data to show."), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("All Tasks");
-        waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'all-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
         _extHelper.clickExtTab("Tasks By Room");
-        waitForElement(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'room-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
         _extHelper.clickExtTab("Tasks By Id");
-        waitForElement(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 3, getElementCount(Locator.xpath("//div[contains(@class, 'id-tasks-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']//a[.='Test weight task']")));
         sleep(1000); //Weird
         stopImpersonating();
@@ -175,7 +175,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         impersonate(BASIC_SUBMITTER.getEmail());
         recallLocation();
         waitAndClickAndWait(Locator.linkWithText("Enter Data"));
-        waitForElement(Locator.xpath("//div[contains(@class, 'my-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'my-tasks-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.linkContainingText(TASK_TITLE));
 
         String href = getAttribute(Locator.linkWithText(TASK_TITLE), "href");
@@ -209,15 +209,15 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         impersonate(DATA_ADMIN.getEmail());
         recallLocation();
         waitAndClickAndWait(Locator.linkWithText("Enter Data"));
-        waitForElement(Locator.xpath("//div[contains(@class, 'my-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'my-tasks-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         _extHelper.clickExtTab("Review Required");
-        waitForElement(Locator.xpath("//div[contains(@class, 'review-requested-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//div[contains(@class, 'review-requested-marker') and " + Locator.NOT_HIDDEN + "]//table"), WAIT_FOR_JAVASCRIPT);
         assertEquals("Incorrect number of task rows.", 1, getElementCount(Locator.xpath("//div[contains(@class, 'review-requested-marker') and " + Locator.NOT_HIDDEN + "]//tr[@class='labkey-alternate-row' or @class='labkey-row']")));
         String href2 = getAttribute(Locator.linkWithText(TASK_TITLE), "href");
         beginAt(href2); // Clicking opens in a new window.
         waitForElement(Locator.xpath("/*//*[contains(@class,'ehr-weight-records-grid')]"), WAIT_FOR_JAVASCRIPT);
         waitAndClick(Locator.extButtonEnabled("Validate"));
-        waitForElement(Locator.xpath("//button[text() = 'Submit Final' and "+Locator.ENABLED+"]"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.xpath("//button[text() = 'Submit Final' and " + Locator.ENABLED + "]"), WAIT_FOR_JAVASCRIPT);
         sleep(1000);
         click(Locator.extButton("Submit Final"));
         _extHelper.waitForExtDialog("Finalize Form");
@@ -228,8 +228,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         stopImpersonating();
         sleep(1000); // Weird
 
-        clickProject(PROJECT_NAME);
-        clickFolder(FOLDER_NAME);
+        navigateToFolder(PROJECT_NAME, FOLDER_NAME);
         waitAndClickAndWait(Locator.linkWithText("Browse All Datasets"));
         waitAndClickAndWait(LabModuleHelper.getNavPanelItem("Weight:", "Browse All"));
 
