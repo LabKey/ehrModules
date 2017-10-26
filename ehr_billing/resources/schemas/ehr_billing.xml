@@ -1,20 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-
- * Copyright (c) 2017 LabKey Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-
- -->
-<tables xsi:schemaLocation="http://labkey.org/data/xml ..\..\..\..\schemas\tableInfo.xsd"
-        xmlns="http://labkey.org/data/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+<tables xmlns="http://labkey.org/data/xml">
+<table tableName="chargeRates" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Charge Rates</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="chargeId"/>
+            <column columnName="unitCost">
+                <columnTitle>Unit Cost</columnTitle>
+            </column>
+            <column columnName="subsidy">
+                <columnTitle>Base Grant Subsidy (%)</columnTitle>
+            </column>
+            <column columnName="startDate">
+                <columnTitle>Start Date</columnTitle>
+            </column>
+            <column columnName="endDate">
+                <columnTitle>End Date</columnTitle>
+                <nullable>false</nullable>
+                <formatString>yyyy-MM-dd</formatString>
+            </column>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="aliases" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Aliases</tableTitle>
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="alias">
+                <columnTitle>Alias</columnTitle>
+            </column>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+            </column>
+            <column columnName="aliasEnabled">
+                <columnTitle>Alias Enabled</columnTitle>
+            </column>
+            <column columnName="projectNumber">
+                <columnTitle>OGA Project Number</columnTitle>
+            </column>
+            <column columnName="grantNumber">
+                <columnTitle>OGA Grant Number</columnTitle>
+            </column>
+            <column columnName="agencyAwardNumber">
+                <columnTitle>Agency Award Number</columnTitle>
+            </column>
+            <column columnName="investigatorId">
+                <columnTitle>Investigator</columnTitle>
+                <shownInInsertView>true</shownInInsertView>
+            </column>
+            <column columnName="investigatorName">
+                <columnTitle>Investigator Name</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+            </column>
+            <column columnName="fiscalAuthority">
+                <columnTitle>Fiscal Authority</columnTitle>
+                <shownInInsertView>true</shownInInsertView>
+            </column>
+            <column columnName="fiscalAuthorityName">
+                <columnTitle>Fiscal Authority Name</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+            </column>
+            <column columnName="budgetStartDate">
+                <columnTitle>Alias Start Date</columnTitle>
+            </column>
+            <column columnName="budgetEndDate">
+                <columnTitle>Alias End Date</columnTitle>
+            </column>
+            <column columnName="faRate">
+                <columnTitle>F&amp;A Rate</columnTitle>
+            </column>
+            <column columnName="faSchedule">
+                <columnTitle>F&amp;A Schedule</columnTitle>
+            </column>
+            <column columnName="projectTitle">
+                <columnTitle>Project Title</columnTitle>
+            </column>
+            <column columnName="projectDescription">
+                <columnTitle>Project Description</columnTitle>
+            </column>
+            <column columnName="projectStatus">
+                <columnTitle>Project Status</columnTitle>
+            </column>
+            <column columnName="aliasType">
+                <columnTitle>Alias Type</columnTitle>
+            </column>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+</tables>

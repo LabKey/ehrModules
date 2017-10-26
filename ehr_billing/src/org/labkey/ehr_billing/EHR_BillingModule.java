@@ -40,13 +40,13 @@ public class EHR_BillingModule extends DefaultModule
     @Override
     public double getVersion()
     {
-        return 17.20;
+        return 17.21;
     }
 
     @Override
     public boolean hasScripts()
     {
-        return false;
+        return true;
     }
 
     @Override
