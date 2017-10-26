@@ -18,12 +18,16 @@ package org.labkey.ehr_billing;
 
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.dialect.SqlDialect;
 
 public class EHR_BillingSchema
 {
     private static final EHR_BillingSchema _instance = new EHR_BillingSchema();
     public static final String NAME = "ehr_billing";
+
+    public static final String ALIASES_TABLE_NAME = "aliases";
+    public static final String CHARGERATES_TABLE_NAME = "chargeRates";
 
     public static EHR_BillingSchema getInstance()
     {
@@ -45,5 +49,15 @@ public class EHR_BillingSchema
     public SqlDialect getSqlDialect()
     {
         return getSchema().getSqlDialect();
+    }
+
+    public TableInfo getAliasesTable()
+    {
+        return getSchema().getTable(ALIASES_TABLE_NAME);
+    }
+
+    public TableInfo getChargeRatesTable()
+    {
+        return getSchema().getTable(CHARGERATES_TABLE_NAME);
     }
 }
