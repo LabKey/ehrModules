@@ -43,4 +43,28 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
 
         public abstract TableInfo createTable(EHR_BillingUserSchema schema);
     }
+
+    @Override
+    @Nullable
+    public TableInfo createTable(String name)
+    {
+        if (name != null)
+        {
+            TableType tableType = null;
+            for (TableType t : TableType.values())
+            {
+                // Make the enum name lookup case insensitive
+                if (t.name().equalsIgnoreCase(name.toLowerCase()))
+                {
+                    tableType = t;
+                    break;
+                }
+            }
+            if (tableType != null)
+            {
+                return tableType.createTable(this);
+            }
+        }
+        return null;
+    }
 }

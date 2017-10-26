@@ -20,6 +20,18 @@
                 <nullable>false</nullable>
                 <formatString>yyyy-MM-dd</formatString>
             </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -90,6 +102,18 @@
             </column>
             <column columnName="aliasType">
                 <columnTitle>Alias Type</columnTitle>
+            </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
             </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
