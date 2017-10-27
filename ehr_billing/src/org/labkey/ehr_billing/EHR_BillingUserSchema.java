@@ -16,7 +16,7 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
 
     public enum TableType
     {
-        Aliases
+        aliases
         {
             @Override
             public TableInfo createTable(EHR_BillingUserSchema schema)
@@ -28,7 +28,7 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                 return table;
             }
         },
-        ChargeRates
+        chargeRates
         {
             @Override
             public TableInfo createTable(EHR_BillingUserSchema schema)
