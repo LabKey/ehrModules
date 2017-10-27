@@ -51,7 +51,6 @@ import static org.junit.Assert.assertEquals;
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
-    {setIsBootstrapWhitelisted(true);}
     public static final String PROJECT_NAME = "WNPRC_TestProject";
     private final String ANIMAL_HISTORY_URL = "/ehr/" + PROJECT_NAME + "/EHR/animalHistory.view?";
     protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant

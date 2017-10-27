@@ -27,7 +27,6 @@ import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
@@ -50,11 +49,8 @@ import java.util.List;
 import java.util.Map;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
-@BaseWebDriverTest.ClassTimeout(minutes = 75)
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
-    {setIsBootstrapWhitelisted(true);}
-
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
     @Override

@@ -35,12 +35,12 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.SqlserverOnlyTest;
-import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.SqlserverOnlyTest;
+import org.labkey.test.util.ehr.EHRClientAPIHelper;
+import org.labkey.test.util.external.labModules.LabModuleHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +57,6 @@ import static org.junit.Assert.assertTrue;
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest, SqlserverOnlyTest
 {
-    {setIsBootstrapWhitelisted(true);}
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
     private LabModuleHelper _helper = new LabModuleHelper(this);
 
