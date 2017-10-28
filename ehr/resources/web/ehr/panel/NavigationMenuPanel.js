@@ -3,7 +3,6 @@ Ext4.define('EHR.panel.NavigationMenuPanel', {
     extend: 'Ext.panel.Panel',
     cls: 'labkey-iconpanel',
     width: 300,
-    autoResize: false,
     border: false,
     itemId: 'menuPanel',
     defaults: {

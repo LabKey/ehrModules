@@ -17,7 +17,6 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     extend: 'LDK.panel.TabbedReportPanel',
     alias: 'widget.ehr-animalhistorypanel',
     showDiscvrLink: false,
-    autoResize: false,
     minTabHeight: 500,
     minTabWidth: 1000,
 
