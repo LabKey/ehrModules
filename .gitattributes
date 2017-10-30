@@ -1505,8 +1505,10 @@ ehr/webapp/WEB-INF/ehr/ehrContext.xml -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/EHR_BillingDomainKind.java -text
 ehr_billing/module.properties -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.20-17.21.sql -text
+ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.20-17.30.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-17.20-17.21.sql -text
+ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-17.20-17.30.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/ehr_billing.xml -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingContainerListener.java -text
