@@ -32,6 +32,7 @@ import org.labkey.remoteapi.query.Sort;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
@@ -1545,7 +1546,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         getArtifactCollector().addArtifactLocation(new File(TestFileUtils.getLabKeyRoot(), getModulePath() + GENETICS_PIPELINE_LOG_PATH),
                 pathname -> pathname.getName().endsWith(".log"));
 
-        waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
+        waitAndClickAndWait(Locators.bodyPanel().append(Locator.tagContainingText("a", "EHR Admin Page")));
         waitAndClickAndWait(Locator.tagContainingText("a", "Genetics Calculations"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Run Now"));
         waitAndClickAndWait(Locator.lkButton("OK"));
@@ -1558,7 +1559,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         setupNotificationService();
 
         goToProjectHome();
-        waitAndClickAndWait(Locator.tagContainingText("a", "EHR Admin Page"));
+        waitAndClickAndWait(Locators.bodyPanel().append(Locator.tagContainingText("a", "EHR Admin Page")));
         waitAndClickAndWait(Locator.tagContainingText("a", "Notification Admin"));
 
         _helper.waitForCmp("field[fieldLabel='Notification User']");
