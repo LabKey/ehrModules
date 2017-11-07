@@ -37,12 +37,12 @@ allPed <- labkey.selectRows(
     folderPath=labkey.url.path,
     schemaName="study",
     queryName="Pedigree",
-    colSelect=c('Id', 'Dam','Sire', 'Gender', 'Status'),
+    colSelect=c('Id', 'Dam','Sire', 'Gender', 'Status', 'Display'),
     showHidden = TRUE,
     colNameOpt = 'fieldname',  #rname
     #showHidden = FALSE
 )
-colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Status')
+colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Status', 'Display')
 
 # Since the dataset is built from different sources, missing value is either NA or blank
 # which create a bug for the following functions.
@@ -69,7 +69,7 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     nsires <- as.character(unique(ped[is.na(nsires),3]));
     nsires <- nsires[!is.na(nsires)];
     if(length(nsires)){
-        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires))));
+        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires)), Display=rep("", length(nsires))));
     };
     #print(nsires);
     ndams <- match(ped[,2],ped[,1]);# [Quoc] change ped,3 to ped,2
@@ -77,7 +77,7 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
-        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Status=rep(1, length(ndams))));
+        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Status=rep(1, length(ndams)), Display=rep("", length(ndams))));
     }
 
     names(ped) <- head
@@ -95,7 +95,7 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     nsires <- as.character(unique(ped[is.na(nsires),3]));
     nsires <- nsires[!is.na(nsires)];
     if(length(nsires)){
-        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires))));
+        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires)), Display=rep("", length(nsires))));
 
     };
     #print(nsires);
@@ -104,7 +104,7 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
-        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Status=rep(1, length(ndams))));
+        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Status=rep(1, length(ndams)), Display=rep("", length(ndams))));
 
     }
 
@@ -120,7 +120,7 @@ allPed <- addMissing(allPed);
 #start the script
 
 #the dataframe labkey.data is supplied by labkey. it will contain one row per initial animal
-ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status);
+ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status, Display=labkey.data$display);
 
 #these will allow you to test the script
 #this will work
@@ -179,14 +179,25 @@ for(i in 1:gens){
 ped$Gender <- as.integer(ped$Gender);
 ped$Status <- as.integer(ped$Status);
 
+#Format the display value by replacing '|' with '\n' and putting in '\n'
+#where lines run too long
+'formatDisplay' <- function(line)
+ {
+    displayNL = gsub('\\|', "\n", line);
+    return (gsub('(.{1,30})(\\s|$)', '\\1\n', displayNL));
+ };
 
 #[Quoc: remove ]
-#the pedigree program expects all individuals to have either 2 parents or 1.
-#sometimes the father is not known.  unfortunately we need to convert these cases to NA for both parents
-#if there were a better solution i would prefer not to loose this information
+#The pedigree program expects all individuals to have either 2 parents or 1.
+#Sometimes the father is not known. For missing parents we give them a unique id and
+#the unknown label.  We are also adding the display value (if defined) to the dam and
+#sire Ids here. This will allow us to match them with the actual Ids and carry through
+#the display value to the plot.
 #[Quoc: This restriction is hard-coded in the kinship package so we can not avoid ]
-
 for (i in 1:nrow(ped)) {
+    damIndex <- which((ped$Id == ped$Dam[i]));
+    sireIndex <- which((ped$Id == ped$Sire[i]));
+
     if((is.na(ped$Sire[i]))& (!is.na(ped$Dam[i]))){
         xt <- sample (1:30,1)
         #typeof(ped$Sire);
@@ -203,7 +214,20 @@ for (i in 1:nrow(ped)) {
             ped$Dam[i] <- paste ('xxd',xt);
             ped$Dam[i] <- paste (ped$Dam[i], "Unknown Dam", sep="\n")
             #print(ped$Sire);
-        }
+    }
+
+    if (length(damIndex) > 0) {
+        ped$Dam[i] <- paste (ped$Dam[i], formatDisplay(ped$Display[damIndex]), sep="\n");
+    }
+
+    if (length(sireIndex) > 0) {
+        ped$Sire[i] <- paste (ped$Sire[i], formatDisplay(ped$Display[sireIndex]), sep="\n");
+    }
+};
+
+#Add the display value to the Id to be displayed in the plot
+for (i in 1:nrow(ped)) {
+    ped$Id[i] <- paste (ped$Id[i], formatDisplay(ped$Display[i]), sep="\n");
 };
 
 #print (nrow(ped));
@@ -234,17 +258,28 @@ for (j in 1:nrow(fixedPed)){
     }
 }
 
-if(nrow(fixedPed)>1){
+rows = nrow(fixedPed)
+
+if(rows>1){
     ptemp = pedigree(id=fixedPed$Id, momid=fixedPed$Dam, dadid=fixedPed$Sire, sex=fixedPed$Gender, status=fixedPed$Status);
 
-    png(filename="${imgout:png_pedigree}", width = 1400, height=900);
+    png(filename="${imgout:png_pedigree}", width = 1500, height=900);
     par(xpd=TRUE);
 
-    #once the program is working reliably, we should also explore the plotting options to see if it can be improved
-    # for example, we might try  different settings or a different canvas size based on the number of animals
-    #[Quoc: the right below line does now work because of a bug in align.pedigree function (subfunction align4)]
-    #plot(ptemp, align=T, packed=T, width=15, symbolsize=0.5, cex=0.8, col=fixedPed$colors)#, mar=c(4.1,1,4.1,1), density=c(100, 50, 70, 190))
-    #[Quoc: it works just not pretty]
-    plot(ptemp, align=T, packed=T, width=15, symbolsize=1, cex=1.2, col=fixedPed$colors)#, mar=c(4.1,1,4.1,1), density=c(100, 50, 70, 190));
+    # attempt to adjust text size based on size of pedigree
+    if (rows < 10) {
+        cexSize = 1.1
+    }
+    else if (rows < 20) {
+        cexSize = 1.0
+    }
+    else if (rows < 30) {
+        cexSize = 0.9
+    }
+    else {
+        cexSize = 0.8
+    }
+
+    plot(ptemp, align=T, width=15, symbolsize=1.5, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8), density=c(-1, 35, 55, 25))
     #dev.off();
 };
