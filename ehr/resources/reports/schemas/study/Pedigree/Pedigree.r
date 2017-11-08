@@ -18,14 +18,8 @@ labkey.setCurlOptions(ssl.verifypeer=FALSE, ssl.verifyhost=FALSE)
 #NOTE: to run directly in R instead of through labkey, uncomment this:
 #labkey.url.base = "http://localhost:8080/labkey/"
 
-if (length(labkey.data$id) == 0){
-    print("*************************************");
-    print ("");
-    print ("");
-    print("No pedigree data found for the supplied animals");
-    print("");
-    print("");
-    print("*************************************");
+if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
+    printBanner("No pedigree data found for the supplied animals")
     stop();
 }
 
@@ -65,15 +59,15 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     if(ncol(ped)<4)stop("pedigree should have at least 4 columns")
     head <- names(ped)
 
-    nsires <- match(ped[,3],ped[,1]);# [Quoc] change ped,2 to ped,3
-    nsires <- as.character(unique(ped[is.na(nsires),3]));
+    nsires <- match(ped[,"Sire"],ped[,"Id"]);# [Quoc] change ped,2 to ped,3
+    nsires <- as.character(unique(ped[is.na(nsires),"Sire"]));
     nsires <- nsires[!is.na(nsires)];
     if(length(nsires)){
         ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires)), Display=rep("", length(nsires))));
     };
     #print(nsires);
-    ndams <- match(ped[,2],ped[,1]);# [Quoc] change ped,3 to ped,2
-    ndams <- as.character(unique(ped[is.na(ndams),2]))
+    ndams <- match(ped[,"Dam"],ped[,"Id"]);# [Quoc] change ped,3 to ped,2
+    ndams <- as.character(unique(ped[is.na(ndams),"Dam"]))
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
@@ -91,16 +85,16 @@ is.na(allPed$Status)<-which(allPed$Status=="")
     if(ncol(ped)<4)stop("pedigree should have at least 4 columns")
     head <- names(ped)
 
-    nsires <- match(ped[,3],ped[,1]);# [Quoc] change ped,2 to ped,3
-    nsires <- as.character(unique(ped[is.na(nsires),3]));
+    nsires <- match(ped[,"Sire"],ped[,"Id"]);
+    nsires <- as.character(unique(ped[is.na(nsires),"Sire"]));
     nsires <- nsires[!is.na(nsires)];
     if(length(nsires)){
         ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Status=rep(1, length(nsires)), Display=rep("", length(nsires))));
 
     };
-    #print(nsires);
-    ndams <- match(ped[,2],ped[,1]);# [Quoc] change ped,3 to ped,2
-    ndams <- as.character(unique(ped[is.na(ndams),2]))
+
+    ndams <- match(ped[,"Dam"],ped[,"Id"]);
+    ndams <- as.character(unique(ped[is.na(ndams),"Dam"]))
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
@@ -135,7 +129,7 @@ origIds = as.character(ped$Id);
 
 
 
-gens = 5;
+gens = 4;
 
 #below are 2 loops that build the pedigree forward and backwards
 #each loop adds 1 generation
@@ -162,7 +156,7 @@ gens = 5;
 queryIds = factor(c(as.character(ped$Sire), as.character(ped$Dam)));
 queryIds <- queryIds[!is.na(queryIds)];
 queryIds <- unique(queryIds);
-queryIds
+
 for(i in 1:gens){
 
     if (length(queryIds) == 0){break};
@@ -183,8 +177,12 @@ ped$Status <- as.integer(ped$Status);
 #where lines run too long
 'formatDisplay' <- function(line)
  {
-    displayNL = gsub('\\|', "\n", line);
-    return (gsub('(.{1,30})(\\s|$)', '\\1\n', displayNL));
+    lines <- strsplit(as.character(line), "\\|")[[1]];
+    lineNL = "";
+    for( l in lines ) {
+        lineNL = paste(lineNL, gsub('(.{1,18})(\\s|$)', '\\1\n', l), sep='')
+    }
+    return (substr(lineNL, 1, nchar(lineNL) - 1));
  };
 
 #[Quoc: remove ]
@@ -195,8 +193,8 @@ ped$Status <- as.integer(ped$Status);
 #the display value to the plot.
 #[Quoc: This restriction is hard-coded in the kinship package so we can not avoid ]
 for (i in 1:nrow(ped)) {
-    damIndex <- which((ped$Id == ped$Dam[i]));
-    sireIndex <- which((ped$Id == ped$Sire[i]));
+    damIndex <- which(as.numeric(allPed$Id) == as.numeric(ped$Dam[i]));
+    sireIndex <- which(as.numeric(allPed$Id) == as.numeric(ped$Sire[i]));
 
     if((is.na(ped$Sire[i]))& (!is.na(ped$Dam[i]))){
         xt <- sample (1:30,1)
@@ -217,11 +215,11 @@ for (i in 1:nrow(ped)) {
     }
 
     if (length(damIndex) > 0) {
-        ped$Dam[i] <- paste (ped$Dam[i], formatDisplay(ped$Display[damIndex]), sep="\n");
+        ped$Dam[i] <- paste (ped$Dam[i], formatDisplay(allPed$Display[damIndex]), sep="\n");
     }
 
     if (length(sireIndex) > 0) {
-        ped$Sire[i] <- paste (ped$Sire[i], formatDisplay(ped$Display[sireIndex]), sep="\n");
+        ped$Sire[i] <- paste (ped$Sire[i], formatDisplay(allPed$Display[sireIndex]), sep="\n");
     }
 };
 
@@ -263,23 +261,34 @@ rows = nrow(fixedPed)
 if(rows>1){
     ptemp = pedigree(id=fixedPed$Id, momid=fixedPed$Dam, dadid=fixedPed$Sire, sex=fixedPed$Gender, status=fixedPed$Status);
 
-    png(filename="${imgout:png_pedigree}", width = 1500, height=900);
-    par(xpd=TRUE);
+    print(paste("Total Rows:", rows, sep=" "))
 
-    # attempt to adjust text size based on size of pedigree
+    # attempt to adjust size based on size of pedigree
+    symSize = 1.2
     if (rows < 10) {
         cexSize = 1.1
+        plotWidth = 1200
     }
     else if (rows < 20) {
         cexSize = 1.0
+        plotWidth = 1300
     }
     else if (rows < 30) {
         cexSize = 0.9
+        plotWidth = 1400
+    }
+    else if (rows < 50) {
+        cexSize = 0.8
+        plotWidth = 1500
     }
     else {
-        cexSize = 0.8
+        cexSize = 0.75
+        plotWidth = 2000
     }
 
-    plot(ptemp, align=T, width=15, symbolsize=1.5, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8), density=c(-1, 35, 55, 25))
+    png(filename="${imgout:png_pedigree}", width = plotWidth, height=1200);
+    par(xpd=TRUE);
+
+    plot(ptemp, align=T, width=15, symbolsize=symSize, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8))
     #dev.off();
 };
