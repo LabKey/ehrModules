@@ -11,6 +11,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     nounPlural: 'Buildings',
     headerNames: [],
     cageUsagePanelColumnCount: 4,
+    usageTitleHTML: '<b>Cage Usage:</b><hr>',
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -162,7 +163,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             },
             style: 'padding: 5px;',
             items: [{
-                html: '<b>Cage Usage:</b><hr>'
+                html: this.usageTitleHTML
             },{
                 border: false,
                 style: 'padding-left: 5px;',
