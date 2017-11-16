@@ -26,6 +26,6 @@ public class EHRRequestPermission extends AbstractEHRPermission
 {
     public EHRRequestPermission()
     {
-        super("EHRRequestPermission", "This is the base permission required in order to submit requests for serivces in the EHR");
+        super("EHRRequestPermission", "This is the base permission required in order to submit requests for services in the EHR");
     }
 }
