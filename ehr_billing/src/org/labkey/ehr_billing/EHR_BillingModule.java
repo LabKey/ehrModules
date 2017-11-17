@@ -27,6 +27,8 @@ import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.security.roles.RoleManager;
+import org.labkey.ehr.security.EHR_BillingRole;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +47,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public double getVersion()
     {
-        return 17.30;
+        return 17.32;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class EHR_BillingModule extends SpringModule
     {
         addController(org.labkey.ehr_billing.EHR_BillingController.NAME, EHR_BillingController.class);
         PropertyService.get().registerDomainKind(new EHR_BillingDomainKind());
+        RoleManager.registerRole(new EHR_BillingRole());
     }
 
     @Override
@@ -80,7 +83,6 @@ public class EHR_BillingModule extends SpringModule
                 return new EHR_BillingUserSchema(EHR_BillingSchema.NAME, null, schema.getUser(), schema.getContainer(), EHR_BillingSchema.getInstance().getSchema());
             }
         });
-
     }
 
     @Override

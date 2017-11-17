@@ -24,10 +24,18 @@ import org.labkey.api.data.dialect.SqlDialect;
 public class EHR_BillingSchema
 {
     private static final EHR_BillingSchema _instance = new EHR_BillingSchema();
+
+    //schema name
     public static final String NAME = "ehr_billing";
 
+    //table names to expose via schema browser
     public static final String ALIASES_TABLE_NAME = "aliases";
     public static final String CHARGERATES_TABLE_NAME = "chargeRates";
+    public static final String TABLE_INVOICE_RUNS = "invoiceRuns";
+    public static final String TABLE_INVOICED_ITEMS = "invoicedItems";
+    public static final String TABLE_MISC_CHARGES = "miscCharges";
+    public static final String TABLE_CHARGEABLE_ITEMS = "chargeableItems";
+
 
     public static EHR_BillingSchema getInstance()
     {
@@ -60,4 +68,25 @@ public class EHR_BillingSchema
     {
         return getSchema().getTable(CHARGERATES_TABLE_NAME);
     }
+
+    public TableInfo getTableInvoiceRuns()
+    {
+        return getSchema().getTable(TABLE_INVOICE_RUNS);
+    }
+
+    public TableInfo getTableInvoiceItems()
+    {
+        return getSchema().getTable(TABLE_INVOICED_ITEMS);
+    }
+
+    public TableInfo getMiscCharges()
+    {
+        return getSchema().getTable(TABLE_MISC_CHARGES);
+    }
+
+    public TableInfo getChargeableItems()
+    {
+        return getSchema().getTable(TABLE_CHARGEABLE_ITEMS);
+    }
+
 }

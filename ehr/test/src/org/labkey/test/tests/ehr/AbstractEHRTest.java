@@ -78,6 +78,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String PROJECT_ID = "640991"; // project with one participant
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
     protected static final String DUMMY_INVES = "dummyinvestigator";
+    protected static final String ACCOUNT_ID_1 = "Acct100";
+    protected static final String ACCOUNT_ID_2 = "Acct101";
 
     protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
@@ -479,12 +481,14 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("project", PROTOCOL_PROJECT_ID);
         rowMap.put("name", PROTOCOL_PROJECT_ID);
         rowMap.put("protocol", PROTOCOL_ID);
+        rowMap.put("account", ACCOUNT_ID_1);
         insertCmd.addRow(rowMap);
 
         rowMap = new HashMap<>();
         rowMap.put("project", PROJECT_ID);
         rowMap.put("name", PROJECT_ID);
         rowMap.put("protocol", DUMMY_PROTOCOL);
+        rowMap.put("account", ACCOUNT_ID_2);
         rowMap.put("research", true);
         insertCmd.addRow(rowMap);
         saveResp = insertCmd.execute(cn, getContainerPath());

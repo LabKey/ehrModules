@@ -19,6 +19,9 @@ package org.labkey.ehr_billing;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager.ContainerListener;
+import org.labkey.api.data.DbScope;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Table;
 import org.labkey.api.security.User;
 import java.util.Collections;
 import java.util.Collection;
@@ -35,6 +38,19 @@ public class EHR_BillingContainerListener implements ContainerListener
     @Override
     public void containerDeleted(Container c, User user)
     {
+        // This will clean up the ehr_billing schema.  For extensible tables, exp module should clean up related exp data.
+        DbScope scope = EHR_BillingSchema.getInstance().getSchema().getScope();
+        SimpleFilter containerFilter = SimpleFilter.createContainerFilter(c);
+        try (DbScope.Transaction transaction = scope.ensureTransaction())
+        {
+            Table.delete(EHR_BillingSchema.getInstance().getAliasesTable(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getChargeRatesTable(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceRuns(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceItems(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getMiscCharges(), containerFilter);
+
+            transaction.commit();
+        }
     }
 
     @Override

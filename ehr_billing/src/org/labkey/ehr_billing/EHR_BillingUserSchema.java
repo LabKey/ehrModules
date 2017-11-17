@@ -54,6 +54,52 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
 
                 return table;
             }
+        },
+        invoiceRuns
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getTableInvoiceRuns()).init();
+                return table;
+            }
+        },
+        invoicedItems
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getTableInvoiceItems()).init();
+                return table;
+            }
+        }
+        ,
+        miscCharges
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getMiscCharges()).init();
+                return table;
+            }
+        }
+        ,
+        chargeableItems
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getChargeableItems()).init();
+                return table;
+            }
         };
 
         public abstract TableInfo createTable(EHR_BillingUserSchema schema);
