@@ -252,6 +252,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             return;
         }
 
+        this.appendDataResults(toSet, results, id);
+        this.getForm().setValues(toSet);
+        this.afterLoad();
+    },
+
+    appendDataResults: function(toSet, results, id) {
         this.appendDemographicsResults(toSet, results, id);
         this.appendWeightResults(toSet, results.getRecentWeights());
 
@@ -278,9 +284,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             this.appendDeathResults(toSet, results.getDeathInfo());
             this.appendParentageResults(toSet, results.getParents());
         }
-
-        this.getForm().setValues(toSet);
-        this.afterLoad();
     },
 
     appendTBResults: function(toSet, results){

@@ -15,7 +15,6 @@
  */
 package org.labkey.api.ehr.demographics;
 
-import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 
@@ -47,6 +46,9 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("cond"));
         keys.add(FieldKey.fromString("reason"));
+
+        //cnprc
+        keys.add(FieldKey.fromString("location"));
 
         return keys;
     }

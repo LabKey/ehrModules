@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ehr.demographics;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -35,8 +36,10 @@ import org.labkey.api.security.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -187,5 +190,30 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     public boolean requiresRecalc(String schema, String query)
     {
         return _schemaName.equalsIgnoreCase(schema) && _queryName.equalsIgnoreCase(query);
+    }
+
+    // Copied from AgeYearsMonthsDaysDisplayColumn
+    protected String getFormattedDuration(Date startDate, Date endDate)
+    {
+        if (startDate == null)
+            return null;
+
+        Calendar birthCal = Calendar.getInstance();
+        birthCal.setTime(startDate);
+
+        Calendar deathCal = Calendar.getInstance();
+        deathCal.setTime(endDate == null ? new Date() : endDate);
+
+        String formattedAge;
+        try
+        {
+            formattedAge = DurationFormatUtils.formatPeriod(birthCal.getTimeInMillis(), deathCal.getTimeInMillis(), "yy:MM:dd");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            return "Error";
+        }
+
+        return formattedAge;
     }
 }

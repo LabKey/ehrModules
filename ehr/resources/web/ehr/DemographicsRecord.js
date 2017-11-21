@@ -169,14 +169,6 @@ EHR.DemographicsRecord = function(data){
             }
         },
 
-        getLastTBDate: function(){
-            if (data['tb'] && data['tb'].length){
-                var date = data['tb'][0]['MostRecentTBDate'];
-                if (date)
-                    return LDK.ConvertUtils.parseDate(date);
-            }
-        },
-
         getRecentWeights: function(){
             return data['weights'];
         },
