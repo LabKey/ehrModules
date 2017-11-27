@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.security.AbstractEHRPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
-import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -37,9 +36,9 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * Date: 8/6/13
  * Time: 7:27 PM
  */
-public class DataEntryTable<SchemaType extends UserSchema> extends SimpleUserSchema.SimpleTable<SchemaType>
+public class EHRDataEntryTable<SchemaType extends UserSchema> extends EHRExtensibleTable<SchemaType>
 {
-    public DataEntryTable(SchemaType schema, TableInfo table)
+    public EHRDataEntryTable(SchemaType schema, TableInfo table)
     {
         super(schema, table);
     }

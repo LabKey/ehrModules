@@ -393,6 +393,18 @@
                 <nullable>true</nullable>
                 <displayWidth>100</displayWidth>
             </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="genus">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="species">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="dateDisabled">
+                <nullable>true</nullable>
+            </column>
         </columns>
     </table>
     <table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
@@ -467,6 +479,9 @@
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
                 <nullable>true</nullable>
             </column>
             <column columnName="SourceCity">
@@ -676,6 +691,9 @@
             <column columnName="meaning">
                 <nullable>true</nullable>
             </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
         </columns>
     </table>
     <table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
@@ -814,6 +832,12 @@
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="meaning">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="dateDisabled">
                 <nullable>true</nullable>
             </column>
             <column columnName="container">
@@ -1557,6 +1581,12 @@
                 <columnTitle>Supports Tunnel?</columnTitle>
             </column>
             <column columnName="abbreviation">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="dateDisabled">
                 <nullable>true</nullable>
             </column>
         </columns>

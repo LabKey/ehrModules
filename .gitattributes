@@ -647,8 +647,10 @@ ehr/resources/schemas/dbscripts/postgresql/ehr-17.20-17.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.22-17.23.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.30-12.10.sql -text
@@ -821,8 +823,10 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr-17.20-17.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.22-17.23.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-12.20-12.30.sql -text
@@ -1418,6 +1422,8 @@ ehr/src/org/labkey/ehr/history/DefaultObservationsDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultPregnanciesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
 ehr/src/org/labkey/ehr/history/LabworkManager.java -text
+ehr/src/org/labkey/ehr/model/EHRDomainKind.java -text
+ehr/src/org/labkey/ehr/model/EHRDomainUpdateHelper.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/DataEntrySummary.java -text
 ehr/src/org/labkey/ehr/notification/DeathNotification.java -text
@@ -1428,9 +1434,10 @@ ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsJob.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/GeneticCalculationsRunnable.java -text
 ehr/src/org/labkey/ehr/query/BloodPlotData.java -text
-ehr/src/org/labkey/ehr/query/DataEntryTable.java -text
-ehr/src/org/labkey/ehr/query/EHRDomainKind.java -text
-ehr/src/org/labkey/ehr/query/EHRExtensibleContainerScopedTable.java -text
+ehr/src/org/labkey/ehr/query/EHRContainerScopedTable.java -text
+ehr/src/org/labkey/ehr/query/EHRCustomPermissionsTable.java -text
+ehr/src/org/labkey/ehr/query/EHRDataEntryTable.java -text
+ehr/src/org/labkey/ehr/query/EHRExtensibleTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text

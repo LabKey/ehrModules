@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.query;
+package org.labkey.ehr.model;
 
 
 import org.labkey.api.data.Container;
@@ -26,11 +26,9 @@ import java.util.Set;
 
 public class EHRDomainKind extends ExtendedTableDomainKind
 {
-
     private final String NAMESPACE_PREFIX = "ehr";
     private final String SCHEMA_NAME = "ehr";
     public static final String KIND_NAME = "EHR";
-
 
     @Override
     public boolean canCreateDefinition(User user, Container container)
@@ -43,7 +41,7 @@ public class EHRDomainKind extends ExtendedTableDomainKind
         if (c != null)
             return c.getProject();
 
-        return c;
+        return null;
     }
 
     @Override

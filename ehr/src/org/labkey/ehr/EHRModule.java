@@ -76,7 +76,7 @@ import org.labkey.ehr.history.DefaultWeightDataSource;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
-import org.labkey.ehr.query.EHRDomainKind;
+import org.labkey.ehr.model.EHRDomainKind;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
 import org.labkey.ehr.query.buttons.ExcelImportButton;
@@ -124,7 +124,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 17.30;
+        return 17.31;
     }
 
     public boolean hasScripts()

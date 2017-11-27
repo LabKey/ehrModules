@@ -23,8 +23,6 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ehr.security.EHRProtocolEditPermission;
-import org.labkey.api.ldk.table.ContainerScopedTable;
-import org.labkey.api.ldk.table.CustomPermissionsTable;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -61,56 +59,53 @@ public class EHRUserSchema extends SimpleUserSchema
             return getDataEntryTable(schemaTable);
         else if (EHRSchema.TABLE_SNOMED_TAGS.equalsIgnoreCase(name))
             return getDataEntryTable(schemaTable);
-        else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name))
-            return getProtocolTable(schemaTable);
         else if (EHRSchema.TABLE_PROTOCOL_COUNTS.equalsIgnoreCase(name))
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROTOCOL_EXEMPTIONS.equalsIgnoreCase(name))
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROTOCOL_PROCEDURES.equalsIgnoreCase(name))
             return getCustomPermissionTable(schemaTable, EHRProtocolEditPermission.class);
-        else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
-            return getProjectTable(schemaTable);
         else if (EHRSchema.TABLE_ANIMAL_GROUPS.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
-        else
-            return super.createWrappedTable(name, schemaTable);
+        else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name))
+            return getProtocolTable(schemaTable);
+        else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
+            return getProjectTable(schemaTable);
+
+        return super.createWrappedTable(name, schemaTable);
     }
 
     private TableInfo getDataEntryTable(TableInfo schemaTable)
     {
-        return new DataEntryTable(this, schemaTable).init();
+        return new EHRDataEntryTable(this, schemaTable).init();
     }
 
     private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
     {
-        CustomPermissionsTable ret = new CustomPermissionsTable(this, schemaTable);
+        EHRCustomPermissionsTable ret = new EHRCustomPermissionsTable(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
-
         return ret.init();
     }
 
     private TableInfo getProjectTable(TableInfo schemaTable)
     {
-        EHRExtensibleContainerScopedTable ret = new EHRExtensibleContainerScopedTable(this, schemaTable, "project");
+        EHRContainerScopedTable ret = new EHRContainerScopedTable(this, schemaTable, "project");
         ret.addPermissionMapping(InsertPermission.class, EHRProjectEditPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRProjectEditPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRProjectEditPermission.class);
-
         return ret.init();
     }
 
     private TableInfo getProtocolTable(TableInfo schemaTable)
     {
-        EHRExtensibleContainerScopedTable ret = new EHRExtensibleContainerScopedTable(this, schemaTable, "protocol");
+        EHRContainerScopedTable ret = new EHRContainerScopedTable(this, schemaTable, "protocol");
         ret.addPermissionMapping(InsertPermission.class, EHRProtocolEditPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRProtocolEditPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRProtocolEditPermission.class);
-
         return ret.init();
     }
 }
