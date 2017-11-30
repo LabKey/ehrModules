@@ -346,5 +346,29 @@
         <ns:datasetPermission datasetName="flags" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="flags" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="flags" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="payor_assignments" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="breedingGroupAssignments" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="serum" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
     </ns:perDatasetPermissions>
 </ns:studySecurityPolicy>
