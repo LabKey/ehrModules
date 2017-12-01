@@ -332,7 +332,7 @@ public class EHRController extends SpringActionController
             List<String> pks = ti.getPkColumnNames();
             String keyField = null;
 
-            String queryName = (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
+            String queryName = ti.getName();
 
             if (pks.size() == 1)
                 keyField = pks.get(0);
