@@ -192,8 +192,8 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         return _schemaName.equalsIgnoreCase(schema) && _queryName.equalsIgnoreCase(query);
     }
 
-    // Copied from AgeYearsMonthsDaysDisplayColumn
-    protected String getFormattedDuration(Date startDate, Date endDate)
+    // modified version from AgeYearsMonthsDaysDisplayColumn
+    protected String getFormattedDuration(Date startDate, Date endDate, boolean leaveEndDateNullsFlag)
     {
         if (startDate == null)
             return null;
@@ -202,6 +202,9 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         birthCal.setTime(startDate);
 
         Calendar deathCal = Calendar.getInstance();
+        if (leaveEndDateNullsFlag && endDate == null)
+            return null;
+
         deathCal.setTime(endDate == null ? new Date() : endDate);
 
         String formattedAge;
