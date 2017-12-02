@@ -332,7 +332,7 @@ public class EHRController extends SpringActionController
             List<String> pks = ti.getPkColumnNames();
             String keyField = null;
 
-            String queryName = ti.getName();
+            String queryName = (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
 
             if (pks.size() == 1)
                 keyField = pks.get(0);
@@ -383,7 +383,9 @@ public class EHRController extends SpringActionController
                 DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
                 updateUrl.setContainerContext(getContainer());
 
-                DetailsURL deleteUrl = DetailsURL.fromString("/query/deleteQueryRows.view?schemaName=" + schemaName + "&query.queryName=" + queryName);
+                String deleteQueryName = ti.getName();
+
+                DetailsURL deleteUrl = DetailsURL.fromString("/query/deleteQueryRows.view?schemaName=" + schemaName + "&query.queryName=" + deleteQueryName);
                 deleteUrl.setContainerContext(getContainer());
 
                 url.addParameter("updateURL", updateUrl.toString());
