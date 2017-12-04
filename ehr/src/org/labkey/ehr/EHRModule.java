@@ -124,7 +124,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 17.31;
+        return 17.32;
     }
 
     public boolean hasScripts()
@@ -245,6 +245,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
 
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol"), "ehr", "protocol");
+        EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol_amendments"), "ehr", "protocol_amendments");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol_counts"), "ehr", "protocol_counts");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolexemptions"), "ehr", "protocolexemptions");
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocolprocedures"), "ehr", "protocolprocedures");

@@ -40,6 +40,7 @@ public class EHRSchema
     public static final String TABLE_SNOMED_TAGS = "snomed_tags";
     public static final String TABLE_SNOMED = "snomed";
     public static final String TABLE_PROTOCOL = "protocol";
+    public static final String TABLE_PROTOCOL_AMENDMENTS = "protocol_amendments";
     public static final String TABLE_PROTOCOL_COUNTS = "protocol_counts";
     public static final String TABLE_PROTOCOL_EXEMPTIONS = "protocolexemptions";
     public static final String TABLE_PROTOCOL_PROCEDURES = "protocolProcedures";
