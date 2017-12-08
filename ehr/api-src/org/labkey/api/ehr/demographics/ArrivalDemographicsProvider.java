@@ -48,6 +48,9 @@ public class ArrivalDemographicsProvider extends AbstractListDemographicsProvide
         keys.add(FieldKey.fromString("acquisitionType"));
         keys.add(FieldKey.fromString("rearingType"));
 
+        //cnprc
+        keys.add(FieldKey.fromString("arrivalId"));
+
         return keys;
     }
 
