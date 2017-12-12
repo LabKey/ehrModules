@@ -17,6 +17,7 @@
 package org.labkey.ehr_billing;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr_billing.EHR_BillingDomainKind;
@@ -26,12 +27,15 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
+import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.ehr.security.EHR_BillingRole;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class EHR_BillingModule extends SpringModule
@@ -97,5 +101,30 @@ public class EHR_BillingModule extends SpringModule
     public Set<String> getSchemaNames()
     {
         return Collections.singleton(EHR_BillingSchema.NAME);
+    }
+
+    @NotNull
+    @Override
+    public JSONObject getPageContextJson(ViewContext ctx)
+    {
+        Map<String, Object> ret = new HashMap<>();
+        Map<String, String> map = getDefaultPageContextJson(ctx.getContainer());
+        ret.putAll(getDefaultPageContextJson(ctx.getContainer()));
+
+        if (map.containsKey(EHR_BillingManager.EHR_BillingContainerPropName) && map.get(EHR_BillingManager.EHR_BillingContainerPropName) != null)
+        {
+            //normalize line endings
+            String newPath = map.get(EHR_BillingManager.EHR_BillingContainerPropName);
+            newPath = "/" + newPath.replaceAll("^/|/$", "");
+            ret.put(EHR_BillingManager.EHR_BillingContainerPropName, newPath);
+
+            Container billingContainer = ContainerManager.getForPath(map.get(EHR_BillingManager.EHR_BillingContainerPropName));
+            if(billingContainer != null)
+            {
+                ret.put("EHR_BillingContainerInfo", billingContainer.toJSON(ctx.getUser()));
+            }
+        }
+
+        return new JSONObject(ret);
     }
 }

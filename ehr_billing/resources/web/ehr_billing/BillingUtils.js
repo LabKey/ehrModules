@@ -1,12 +1,10 @@
 Ext4.ns('EHR_Billing.BillingUtils');
 
-EHR_Billing.BillingUtils = new function(billingPeriodLength){
-    var BILLING_PERIOD_LENGTH = billingPeriodLength;
-
+EHR_Billing.BillingUtils = new function(){
+    var BILLING_PERIOD_LENGTH = 15;
     return {
         /**
          * Returns the estimated billing period start, based on the passed date.
-         * We either use the 1st of the month or the 16th, depending on the date
          */
         getBillingPeriodStart: function(date){
             var dayOfMonth = date.getDate();
@@ -22,7 +20,6 @@ EHR_Billing.BillingUtils = new function(billingPeriodLength){
 
         /**
          * Returns the estimated billing period end, based on the passed date
-         * We either use the 15th of the month or the last day of the month
          */
         getBillingPeriodEnd: function(date){
             var dayOfMonth = date.getDate();
@@ -58,7 +55,13 @@ EHR_Billing.BillingUtils = new function(billingPeriodLength){
         },
 
         isBillingAdmin: function(){
-            return true; //TODO: add logic when permission classes are created.
+
+            return true;
+            var ctx = LABKEY.getModuleContext('ehr_billing');
+            if (!ctx || !ctx.BillingContainerInfo)
+                return false;
+
+            return ctx.BillingContainerInfo.effectivePermissions.indexOf('org.labkey.ehr_billing.security.EHR_BillingAdminPermission') > -1;
         }
     }
 };

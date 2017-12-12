@@ -4,6 +4,15 @@
             <table tableName="invoiceRunMonthlySummary" tableDbType="NOT_IN_DB">
                 <tableTitle>Monthly Summary by Category</tableTitle>
                 <columns>
+                    <column columnName="billingPeriodStart">
+                        <formatString>Date</formatString>
+                    </column>
+                    <column columnName="billingPeriodEnd">
+                        <formatString>Date</formatString>
+                    </column>
+                    <column columnName="Animal Per Diem::total">
+                        <formatString>$###,##0.00</formatString>
+                    </column>
                     <column columnName="Blood Draws::total">
                         <formatString>$###,##0.00</formatString>
                     </column>

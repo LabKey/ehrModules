@@ -115,7 +115,7 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
             for (TableType t : TableType.values())
             {
                 // Make the enum name lookup case insensitive
-                if (t.name().equalsIgnoreCase(name.toLowerCase()))
+                if (t.name().equalsIgnoreCase(name))
                 {
                     tableType = t;
                     break;
@@ -126,6 +126,6 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                 return tableType.createTable(this);
             }
         }
-        return null;
+        return super.createTable(name);
     }
 }

@@ -139,7 +139,7 @@
                     success: function() {
                         Ext4.Msg.alert('Success', 'Run Started!', function(){
                             btn.setDisabled(false);
-                            window.location = LABKEY.ActionURL.buildURL("pipeline-status", "showList.view", null, {'StatusFiles.Status~neqornull': 'COMPLETE'});
+                            window.location = LABKEY.ActionURL.buildURL("pipeline-status", "showList.view");
                         });
                     },
                     failure: LABKEY.Utils.getCallbackWrapper(function(error){
