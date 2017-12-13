@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.security;
+package org.labkey.ehr_billing.security;
 
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.ehr_billing.security.EHR_BillingAdminPermission;
 import org.labkey.api.security.roles.AbstractModuleScopedRole;
 import org.labkey.ehr_billing.EHR_BillingModule;
 

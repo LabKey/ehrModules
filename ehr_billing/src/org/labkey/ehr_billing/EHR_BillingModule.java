@@ -27,10 +27,10 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
+import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
-import org.labkey.api.security.roles.RoleManager;
-import org.labkey.ehr.security.EHR_BillingRole;
+import org.labkey.ehr_billing.security.EHR_BillingRole;
 
 import java.util.Collection;
 import java.util.Collections;
