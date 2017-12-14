@@ -86,7 +86,7 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
                 items: [{
                     html: 'Last Weight:'
                 },{
-                    html: (row.MostRecentWeight.value ? Ext4.util.Format.round(row.MostRecentWeight.value, 2) + ' kg' : 'no record')
+                    html: (this.safeAppendNumberSuffix(row, 'MostRecentWeight', ' kg') ? this.safeAppendNumberSuffix(row, 'MostRecentWeight', ' kg') : 'no record')
                 },{
                     html: 'Date:'
                 },{
@@ -120,61 +120,61 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
                 },{
                     html: this.safeAppendNumber(row, 'numLast30')
                 },{
-                    html: this.safeAppendNumber(row, 'avgLast30', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'avgLast30', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'minLast30', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'minLast30', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxLast30', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'maxLast30', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxChange30', '%')
+                    html: this.safeAppendNumberSuffix(row, 'maxChange30', '%')
                 },{
                     html: 'Previous 90 Days:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast90')
                 },{
-                    html: this.safeAppendNumber(row, 'avgLast90', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'avgLast90', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'minLast90', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'minLast90', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxLast90', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'maxLast90', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxChange90', '%')
+                    html: this.safeAppendNumberSuffix(row, 'maxChange90', '%')
                 },{
                     html: 'Previous 180 Days:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast180')
                 },{
-                    html: this.safeAppendNumber(row, 'avgLast180', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'avgLast180', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'minLast180', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'minLast180', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxLast180', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'maxLast180', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxChange180', '%')
+                    html: this.safeAppendNumberSuffix(row, 'maxChange180', '%')
                 },{
                     html: 'Previous Year:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast365')
                 },{
-                    html: this.safeAppendNumber(row, 'avgLast365', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'avgLast365', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'minLast365', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'minLast365', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxLast365', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'maxLast365', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxChange365', '%')
+                    html: this.safeAppendNumberSuffix(row, 'maxChange365', '%')
                 },{
                     html: 'Previous 2 Years:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast2Years')
                 },{
-                    html: this.safeAppendNumber(row, 'avgLast2Years', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'avgLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'minLast2Years', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'minLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxLast2Years', ' kg')
+                    html: this.safeAppendNumberSuffix(row, 'maxLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumber(row, 'maxChange2Years', '%')
+                    html: this.safeAppendNumberSuffix(row, 'maxChange2Years', '%')
                 }]
             }]);
         }
@@ -185,7 +185,15 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
         }
     },
 
-    safeAppendNumber: function(row, prop, suffix){
+    safeAppendNumber: function (row, prop){
+        if (row[prop] && Ext4.isEmpty(row[prop].value))
+            return '';
+
+        else
+            return Ext4.util.Format.round(row[prop].value, 2);
+    },
+
+    safeAppendNumberSuffix: function(row, prop, suffix){
         if (row[prop] && Ext4.isEmpty(row[prop].value))
             return '';
 
