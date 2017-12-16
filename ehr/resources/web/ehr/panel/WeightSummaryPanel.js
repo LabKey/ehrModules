@@ -86,7 +86,7 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
                 items: [{
                     html: 'Last Weight:'
                 },{
-                    html: (this.safeAppendNumberSuffix(row, 'MostRecentWeight', ' kg') ? this.safeAppendNumberSuffix(row, 'MostRecentWeight', ' kg') : 'no record')
+                    html: (this.safeAppendRoundedNumber(row, 'MostRecentWeight', ' kg') ? this.safeAppendRoundedNumber(row, 'MostRecentWeight', ' kg') : 'no record')
                 },{
                     html: 'Date:'
                 },{
@@ -120,61 +120,61 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
                 },{
                     html: this.safeAppendNumber(row, 'numLast30')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'avgLast30', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'avgLast30', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'minLast30', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'minLast30', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxLast30', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'maxLast30', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxChange30', '%')
+                    html: this.safeAppendRoundedNumber(row, 'maxChange30', '%')
                 },{
                     html: 'Previous 90 Days:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast90')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'avgLast90', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'avgLast90', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'minLast90', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'minLast90', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxLast90', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'maxLast90', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxChange90', '%')
+                    html: this.safeAppendRoundedNumber(row, 'maxChange90', '%')
                 },{
                     html: 'Previous 180 Days:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast180')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'avgLast180', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'avgLast180', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'minLast180', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'minLast180', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxLast180', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'maxLast180', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxChange180', '%')
+                    html: this.safeAppendRoundedNumber(row, 'maxChange180', '%')
                 },{
                     html: 'Previous Year:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast365')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'avgLast365', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'avgLast365', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'minLast365', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'minLast365', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxLast365', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'maxLast365', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxChange365', '%')
+                    html: this.safeAppendRoundedNumber(row, 'maxChange365', '%')
                 },{
                     html: 'Previous 2 Years:'
                 },{
                     html: this.safeAppendNumber(row, 'numLast2Years')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'avgLast2Years', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'avgLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'minLast2Years', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'minLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxLast2Years', ' kg')
+                    html: this.safeAppendRoundedNumber(row, 'maxLast2Years', ' kg')
                 },{
-                    html: this.safeAppendNumberSuffix(row, 'maxChange2Years', '%')
+                    html: this.safeAppendRoundedNumber(row, 'maxChange2Years', '%')
                 }]
             }]);
         }
@@ -185,18 +185,22 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
         }
     },
 
-    safeAppendNumber: function (row, prop){
-        if (row[prop] && Ext4.isEmpty(row[prop].value))
-            return '';
-
-        else
-            return Ext4.util.Format.round(row[prop].value, 2);
+    // Default rounding. Override this function for different rounding.
+    getRoundedNumber: function (value) {
+        return Ext4.util.Format.round(value, 2)
     },
 
-    safeAppendNumberSuffix: function(row, prop, suffix){
+    safeAppendNumber: function (row, prop, suffix) {
         if (row[prop] && Ext4.isEmpty(row[prop].value))
             return '';
 
-        return Ext4.util.Format.round(row[prop].value, 2) + (suffix ? ' ' + suffix : '');
+        return row[prop].value + (suffix ? ' ' + suffix : '');
+    },
+
+    safeAppendRoundedNumber: function(row, prop, suffix){
+        if (row[prop] && Ext4.isEmpty(row[prop].value))
+            return '';
+
+        return this.getRoundedNumber(row[prop].value) + (suffix ? ' ' + suffix : '');
     }
 });
