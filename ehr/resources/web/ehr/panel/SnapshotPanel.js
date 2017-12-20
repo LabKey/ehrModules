@@ -245,7 +245,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         var results = resultMap[id];
         if (!results){
             if (id){
-                toSet['animalId'] = id;
+                toSet['animalId'] = LABKEY.Utils.encodeHtml(id);
                 toSet['calculated_status'] = '<span style="background-color:yellow">Unknown</span>';
             }
 
@@ -295,19 +295,19 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 value = LDK.ConvertUtils.parseDate(row.MostRecentTBDate).format(LABKEY.extDefaultDateFormat);
                 var months = row.MonthsSinceLastTB;
                 if (months)
-                    value += ' (' + months + ' month' + (months == 1 ? '' : 's') + ' ago)';
+                    value += ' (' + LABKEY.Utils.encodeHtml(months) + ' month' + (months == 1 ? '' : 's') + ' ago)';
             }
             else {
                 value = 'Never';
             }
         }
 
-        toSet['lastTB'] = value
+        toSet['lastTB'] = value;
     },
 
     appendSourceResults: function(toSet, results){
         if (results && results.length){
-            toSet['source'] = results[0].type;
+            toSet['source'] = LABKEY.Utils.encodeHtml(results[0].type);
         }
         else {
             toSet['source'] = null;
@@ -322,25 +322,25 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
         var animalId = row.getId() || id;
         if (!Ext4.isEmpty(animalId)){
-            toSet['animalId'] = id;
+            toSet['animalId'] = LABKEY.Utils.encodeHtml(id);
         }
 
         var status = row.getCalculatedStatus() || 'Unknown';
-        toSet['calculated_status'] = '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + status + '</span>';
+        toSet['calculated_status'] = '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + LABKEY.Utils.encodeHtml(status) + '</span>';
 
-        toSet['species'] = row.getSpecies();
-        toSet['geographic_origin'] = row.getGeographicOrigin();
-        toSet['gender'] = row.getGender();
-        toSet['age'] = row.getAgeInYearsAndDays();
+        toSet['species'] = LABKEY.Utils.encodeHtml(row.getSpecies());
+        toSet['geographic_origin'] = LABKEY.Utils.encodeHtml(row.getGeographicOrigin());
+        toSet['gender'] = LABKEY.Utils.encodeHtml(row.getGender());
+        toSet['age'] = LABKEY.Utils.encodeHtml(row.getAgeInYearsAndDays());
 
         var location;
         if (row.getActiveHousing() && row.getActiveHousing().length){
             var housingRow = row.getActiveHousing();
             location = '';
             if (!Ext4.isEmpty(row.getCurrentRoom()))
-                location = row.getCurrentRoom();
+                location = LABKEY.Utils.encodeHtml(row.getCurrentRoom());
             if (!Ext4.isEmpty(row.getCurrentCage()))
-                location += ' / ' + row.getCurrentCage();
+                location += ' / ' + LABKEY.Utils.encodeHtml(row.getCurrentCage());
 
             if (location){
                 if (this.showLocationDuration && housingRow.date){
@@ -362,7 +362,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         var values = [];
         if (results){
             Ext4.each(results, function(row){
-                var text = row.category;
+                var text = LABKEY.Utils.encodeHtml(row.category);
                 if (text){
                     var date = LDK.ConvertUtils.parseDate(row.date);
                     if (date)
@@ -403,7 +403,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             Ext4.each(rows, function(r){
-                text.push('<tr><td nowrap>' + r.weight + ' kg' + '</td><td style="padding-left: 5px;" nowrap>' + r.date.format(LABKEY.extDefaultDateFormat) + '</td><td style="padding-left: 5px;" nowrap>' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
+                text.push('<tr><td nowrap>' + LABKEY.Utils.encodeHtml(r.weight) + ' kg' + '</td><td style="padding-left: 5px;" nowrap>' + r.date.format(LABKEY.extDefaultDateFormat) + '</td><td style="padding-left: 5px;" nowrap>' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
         }
 
@@ -426,8 +426,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             pairingType = row.category;
         }
 
-        toSet['cagemates'] = cagemates;
-        toSet['pairingType'] = pairingType;
+        toSet['cagemates'] = LABKEY.Utils.encodeHtml(cagemates);  // encoding not currently useful, but future-proofing here
+        toSet['pairingType'] = LABKEY.Utils.encodeHtml(pairingType);
 
         if (animals.length > 3){
             toSet['cagemates'] = animals.length + ' animals';
@@ -436,7 +436,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             toSet['cagemates'] = 'None';
         }
         else {
-            toSet['cagemates'] = animals.join(', ');
+            toSet['cagemates'] = LABKEY.Utils.encodeHtml(animals.join(', '));
         }
     },
 
@@ -450,7 +450,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         var values = [];
         if (results){
             Ext4.each(results, function(row){
-                values.push(row['groupId/name']);
+                values.push(LABKEY.Utils.encodeHtml(row['groupId/name']));
             }, this);
         }
 
@@ -474,7 +474,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 val += ' [' + row['project/protocol/displayName'] + ']';
 
                 if (val)
-                    values.push(val);
+                    values.push(LABKEY.Utils.encodeHtml(val));
             }, this);
         }
 
@@ -485,7 +485,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         var values = [];
         if (results){
             Ext4.each(results, function(row){
-                var text = row.category;
+                var text = LABKEY.Utils.encodeHtml(row.category);
                 if (text){
                     //NOTE: this may have been cached in the past, so verify whether this is really still active
                     var date = LDK.ConvertUtils.parseDate(row.date);
@@ -663,10 +663,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (category)
                     category = Ext4.String.trim(category);
 
-                var val = row['flag/value'];
+                var val = LABKEY.Utils.encodeHtml(row['flag/value']);
                 var text = val;
                 if (category)
-                    text = category + ': ' + val;
+                    text = LABKEY.Utils.encodeHtml(category) + ': ' + val;
 
                 if (text && highlight)
                     text = '<span style="background-color:yellow">' + text + '</span>';
@@ -680,7 +680,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }
         }
 
-        toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + this.subjectId + '\', this);">' + values.join('<br>') + '</div>' : null;
+        toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + LABKEY.Utils.encodeHtml(this.subjectId) + '\', this);">' + values.join('<br>') + '</div>' : null;
     },
 
     appendBirthResults: function(toSet, results, birth){
@@ -691,7 +691,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             if (text){
                 var type = row.type;
                 if (type)
-                    text = text + ' (' + type + ')';
+                    text = text + ' (' + LABKEY.Utils.encodeHtml(type) + ')';
 
                 if (text)
                     toSet['birth'] = text;
@@ -716,7 +716,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             if (text){
                 var type = row.cause;
                 if (type)
-                    text = text + ' (' + type + ')';
+                    text = text + ' (' + LABKEY.Utils.encodeHtml(type) + ')';
 
                 if (text){
                     toSet['death'] = text;
@@ -736,14 +736,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 var relationship = row.relationship;
 
                 if (parent && relationship){
-                    var text = relationship + ' - ' + parent;
+                    var text = LABKEY.Utils.encodeHtml(relationship + ' - ' + parent);
 
                     if (!parentMap[text])
                         parentMap[text] = [];
 
                     var method = row.method;
                     if (method){
-                        parentMap[text].push(method);
+                        parentMap[text].push(LABKEY.Utils.encodeHtml(method));
                     }
                 }
             }, this);
@@ -751,7 +751,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             var values = [];
             Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
                 parentMap[text] = Ext4.unique(parentMap[text]);
-                var method = parentMap[text].join(', ');
+                var method = LABKEY.Utils.encodeHtml(parentMap[text].join(', '));
                 values.push('<a href="' + LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'parentage', 'query.Id~eq': this.subjectId, 'query.isActive~eq': true}) + '" target="_blank">' + text + (method ? ' (' + method + ')' : '') + '</a>');
             }, this);
 
@@ -851,7 +851,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 colMap[col.name] = col;
 
                 var obj = {
-                    html: '<i>' + col.label + '</i>'
+                    html: '<i>' + LABKEY.Utils.encodeHtml(col.label) + '</i>'
                 };
 
                 if (colMap[col.name].maxWidth)
@@ -871,7 +871,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                         }
 
                         var obj = {
-                            html: value + '',
+                            html: LABKEY.Utils.encodeHtml(value + ''),
                             resultRowIdx: rowIdx
                         };
 
@@ -897,7 +897,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
         else {
             if (this.emptyText){
                 target.add({
-                    html: this.emptyText
+                    html: LABKEY.Utils.encodeHtml(this.emptyText)
                 });
             }
         }

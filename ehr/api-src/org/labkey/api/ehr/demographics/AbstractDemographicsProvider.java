@@ -214,6 +214,8 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         }
         catch (IllegalArgumentException iae)
         {
+            _log.error("Error formatting duration with startDate '" + startDate + "' and endDate '" + endDate + "'.");
+            iae.printStackTrace(System.err);
             return "Error";
         }
 
