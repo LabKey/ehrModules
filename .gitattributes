@@ -654,6 +654,7 @@ ehr/resources/schemas/dbscripts/postgresql/ehr-17.31-17.32.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-17.31.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.30-12.10.sql -text
@@ -831,6 +832,7 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr-17.31-17.32.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-17.31.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-12.20-12.30.sql -text
@@ -1428,6 +1430,7 @@ ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
 ehr/src/org/labkey/ehr/history/LabworkManager.java -text
 ehr/src/org/labkey/ehr/model/EHRDomainKind.java -text
 ehr/src/org/labkey/ehr/model/EHRDomainUpdateHelper.java -text
+ehr/src/org/labkey/ehr/model/EHR_LookupsDomainKind.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/DataEntrySummary.java -text
 ehr/src/org/labkey/ehr/notification/DeathNotification.java -text
@@ -1444,6 +1447,8 @@ ehr/src/org/labkey/ehr/query/EHRDataEntryTable.java -text
 ehr/src/org/labkey/ehr/query/EHRExtensibleTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text
+ehr/src/org/labkey/ehr/query/EHR_LookupsCustomPermissionsTable.java -text
+ehr/src/org/labkey/ehr/query/EHR_LookupsExtensibleTable.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text
 ehr/src/org/labkey/ehr/query/buttons/ExcelImportButton.java -text

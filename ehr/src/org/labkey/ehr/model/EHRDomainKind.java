@@ -26,8 +26,6 @@ import java.util.Set;
 
 public class EHRDomainKind extends ExtendedTableDomainKind
 {
-    private final String NAMESPACE_PREFIX = "ehr";
-    private final String SCHEMA_NAME = "ehr";
     public static final String KIND_NAME = "EHR";
 
     @Override
@@ -47,13 +45,13 @@ public class EHRDomainKind extends ExtendedTableDomainKind
     @Override
     protected String getSchemaName()
     {
-        return SCHEMA_NAME;
+        return KIND_NAME.toLowerCase();
     }
 
     @Override
     protected String getNamespacePrefix()
     {
-        return NAMESPACE_PREFIX;
+        return KIND_NAME.toLowerCase();
     }
 
     @Override

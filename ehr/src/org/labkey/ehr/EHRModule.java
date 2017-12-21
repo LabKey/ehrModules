@@ -73,6 +73,7 @@ import org.labkey.ehr.history.DefaultBloodDrawDataSource;
 import org.labkey.ehr.history.DefaultHousingDataSource;
 import org.labkey.ehr.history.DefaultLabworkDataSource;
 import org.labkey.ehr.history.DefaultWeightDataSource;
+import org.labkey.ehr.model.EHR_LookupsDomainKind;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -124,7 +125,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 17.32;
+        return 17.33;
     }
 
     public boolean hasScripts()
@@ -189,6 +190,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRSnomedEditorRole());
 
         PropertyService.get().registerDomainKind(new EHRDomainKind());
+        PropertyService.get().registerDomainKind(new EHR_LookupsDomainKind());
     }
 
     @Nullable

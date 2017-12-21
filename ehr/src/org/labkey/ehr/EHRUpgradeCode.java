@@ -15,13 +15,24 @@
  */
 package org.labkey.ehr;
 
+import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.Table;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UpgradeCode;
+import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.ehr.query.EHRLookupsUserSchema;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EHRUpgradeCode implements UpgradeCode
@@ -50,6 +61,39 @@ public class EHRUpgradeCode implements UpgradeCode
             row.put("DayAfter", cal.getTime());
 
             Table.insert(null, EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar"), row);
+        }
+    }
+    /**
+     * called at 17.32-17.33
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void setEhrLookupsContainer(final ModuleContext moduleContext)
+    {
+        if (moduleContext.isNewInstall())
+            return;
+
+        Module module = ModuleLoader.getInstance().getModule(moduleContext.getName());
+        String category = "moduleProperties." + module.getName();
+        String ehrStudyContainerPath = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), category, EHRManager.EHRStudyContainerPropName);
+        if (ehrStudyContainerPath != null)
+        {
+            Container ehrStudyContainer = ContainerManager.getForPath(ehrStudyContainerPath);
+            if (ehrStudyContainer != null)
+            {
+                List<String> tableNames = Arrays.asList(
+                    EHRLookupsUserSchema.TABLE_GEOGRAPHIC_ORIGINS,
+                    EHRLookupsUserSchema.TABLE_ROOMS,
+                    EHRLookupsUserSchema.TABLE_BUILDINGS,
+                    EHRLookupsUserSchema.TABLE_TREATMENT_CODES
+                );
+
+                DbSchema schema = EHRSchema.getInstance().getEHRLookupsSchema();
+                for (String tableName : tableNames)
+                {
+                    TableInfo table = schema.getTable(tableName);
+                    new SqlExecutor(schema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+                }
+            }
         }
     }
 }

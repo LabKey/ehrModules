@@ -31,7 +31,6 @@ import org.labkey.api.ehr.security.EHRHousingTransferPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
-import org.labkey.api.ldk.table.CustomPermissionsTable;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.QueryForeignKey;
@@ -65,6 +64,10 @@ import java.util.Set;
  */
 public class EHRLookupsUserSchema extends SimpleUserSchema
 {
+    public static final String TABLE_BUILDINGS = "buildings";
+    public static final String TABLE_GEOGRAPHIC_ORIGINS = "geographic_origins";
+    public static final String TABLE_ROOMS = "rooms";
+    public static final String TABLE_TREATMENT_CODES = "treatment_codes";
     public static final String TABLE_VETERINARIANS = "veterinarians";
 
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
@@ -166,7 +169,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
         else if ("procedures".equalsIgnoreCase(name) || "procedure_default_flags".equalsIgnoreCase(name) || "procedure_default_treatments".equalsIgnoreCase(name) || "procedure_default_charges".equalsIgnoreCase(name) || "procedure_default_codes".equalsIgnoreCase(name) || "procedure_default_comments".equalsIgnoreCase(name))
         {
-            return createProceduresTable(name);
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
         }
         else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
         {
@@ -176,7 +179,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             return getCustomPermissionTable(createSourceTable(name), EHRHousingTransferPermission.class);
         }
-        else if ("rooms".equalsIgnoreCase(name))
+        else if (TABLE_ROOMS.equalsIgnoreCase(name))
         {
             return getCustomPermissionTable(createSourceTable(name), EHRLocationEditPermission.class);
         }
@@ -191,6 +194,10 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
         {
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        }
+        else if (TABLE_BUILDINGS.equalsIgnoreCase(name) || TABLE_GEOGRAPHIC_ORIGINS.equalsIgnoreCase(name) || TABLE_TREATMENT_CODES.equalsIgnoreCase(name))
+        {
+            return new EHR_LookupsExtensibleTable(this, createSourceTable(name)).init();
         }
         else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
@@ -219,16 +226,6 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         }
 
         return null;
-    }
-
-    private TableInfo createProceduresTable(String name)
-    {
-        CustomPermissionsTable ret = new CustomPermissionsTable(this, super.createSourceTable(name));
-        ret.addPermissionMapping(InsertPermission.class, EHRProcedureManagementPermission.class);
-        ret.addPermissionMapping(UpdatePermission.class, EHRProcedureManagementPermission.class);
-        ret.addPermissionMapping(DeletePermission.class, EHRProcedureManagementPermission.class);
-
-        return ret.init();
     }
 
     private TableInfo createSNOMEDTable(String name)
@@ -293,7 +290,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
     {
-        CustomPermissionsTable ret = new CustomPermissionsTable(this, schemaTable);
+        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
