@@ -6,6 +6,8 @@
 Ext4.define('EHR.panel.EnterDataPanel', {
     extend: 'LDK.panel.QueryTabPanel',
 
+    additionalEnterNewSections:[],
+
     initComponent: function(){
         Ext4.apply(this, {
             items: this.getItems(),
@@ -50,6 +52,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             });
         }, this);
 
+        sections = sections.concat(this.additionalEnterNewSections);
         var tab = this.down('#enterNew');
         tab.removeAll();
         tab.add({
