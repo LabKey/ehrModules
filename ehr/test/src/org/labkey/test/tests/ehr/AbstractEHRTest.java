@@ -461,10 +461,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         //verify delete first
         deleteHardTableRecords();
 
-        Connection cn = createDefaultConnection(false);
+        //then do the inserts
+        populateProtocolRecords();
+        populateProjectRecords();
+        populateRoomRecords();
+    }
 
-        //first ehr.protocol
+    @LogMethod
+    protected void populateProtocolRecords() throws Exception
+    {
         InsertRowsCommand insertCmd = new InsertRowsCommand("ehr", "protocol");
+
         Map<String,Object> rowMap = new HashMap<>();
         rowMap.put("protocol", PROTOCOL_ID);
         rowMap.put("inves", INVES_ID);
@@ -473,11 +480,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("protocol", DUMMY_PROTOCOL);
         rowMap.put("inves", DUMMY_INVES);
         insertCmd.addRow(rowMap);
-        SaveRowsResponse saveResp = insertCmd.execute(cn, getContainerPath());
 
-        //then ehr.project
-        insertCmd = new InsertRowsCommand("ehr", "project");
-        rowMap = new HashMap<>();
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+    }
+
+    @LogMethod
+    protected void populateProjectRecords() throws Exception
+    {
+        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr", "project");
+
+        Map<String,Object> rowMap = new HashMap<>();
         rowMap.put("project", PROTOCOL_PROJECT_ID);
         rowMap.put("name", PROTOCOL_PROJECT_ID);
         rowMap.put("protocol", PROTOCOL_ID);
@@ -491,11 +503,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("account", ACCOUNT_ID_2);
         rowMap.put("research", true);
         insertCmd.addRow(rowMap);
-        saveResp = insertCmd.execute(cn, getContainerPath());
 
-        //then ehr_lookups.rooms
-        insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
-        rowMap = new HashMap<>();
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+    }
+
+    @LogMethod
+    protected void populateRoomRecords() throws Exception
+    {
+        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
+
+        Map<String,Object> rowMap = new HashMap<>();
         rowMap.put("room", ROOM_ID);
         //these fields are required in ONPRC_EHR test.  these will not be valid lookups, but that's not important for the test
         rowMap.put("housingType", 1);
@@ -508,7 +525,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("housingCondition", 1);
         insertCmd.addRow(rowMap);
 
-        saveResp = insertCmd.execute(cn, getContainerPath());
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
     }
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
@@ -531,15 +548,19 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected void deleteHardTableRecords() throws CommandException, IOException
     {
         log("Deleting initial records from EHR hard tables");
+        deleteRoomRecords();
+    }
 
-        //ehr_lookups.room
-        Map<String,Object> rowMap5 = new HashMap<>();
-        rowMap5.put("room", ROOM_ID);
-        deleteIfNeeded("ehr_lookups", "rooms", rowMap5, "room");
+    @LogMethod
+    protected  void deleteRoomRecords() throws CommandException, IOException
+    {
+        Map<String,Object> rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID);
+        deleteIfNeeded("ehr_lookups", "rooms", rowMap, "room");
 
-        Map<String,Object> rowMap6 = new HashMap<>();
-        rowMap6.put("room", ROOM_ID2);
-        deleteIfNeeded("ehr_lookups", "rooms", rowMap6, "room");
+        rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID2);
+        deleteIfNeeded("ehr_lookups", "rooms", rowMap, "room");
     }
 
     protected void assertNoErrorText()
