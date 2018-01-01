@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
 import org.labkey.test.categories.CustomModules;
@@ -31,15 +33,19 @@ import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.ExtHelper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.Maps;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -54,6 +60,8 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     public static final String PROJECT_NAME = "WNPRC_TestProject";
     private final String ANIMAL_HISTORY_URL = "/ehr/" + PROJECT_NAME + "/EHR/animalHistory.view?";
     protected static final String PROJECT_MEMBER_ID = "test2312318"; // PROJECT_ID's single participant
+    protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
+    protected static final String ROOM_ID2 = "2043365";
 
     @Nullable
     @Override
@@ -90,6 +98,34 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
     protected boolean doSetUserPasswords()
     {
         return true;
+    }
+
+    @Override
+    protected void populateRoomRecords() throws Exception
+    {
+        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
+
+        Map<String,Object> rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID);
+        //these fields are required in ONPRC_EHR test.  these will not be valid lookups, but that's not important for the test
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID2);
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
+        insertCmd.addRow(rowMap);
+
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+    }
+
+    @Override
+    protected void deleteRoomRecords() throws CommandException, IOException
+    {
+        deleteIfNeeded("ehr_lookups", "rooms", Maps.of("room", ROOM_ID), "room");
+        deleteIfNeeded("ehr_lookups", "rooms", Maps.of("room", ROOM_ID2), "room");
     }
 
     @Test

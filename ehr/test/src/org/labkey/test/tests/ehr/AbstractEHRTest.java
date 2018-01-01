@@ -81,9 +81,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String ACCOUNT_ID_1 = "Acct100";
     protected static final String ACCOUNT_ID_2 = "Acct101";
 
-    protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
-    protected static final String ROOM_ID2 = "2043365";
 
     protected static final String AREA_ID = "A1/AB190"; // arbitrary area
     protected static final String PROTOCOL_PROJECT_ID = "795644"; // Project with exactly 3 members
@@ -510,22 +508,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected void populateRoomRecords() throws Exception
     {
-        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
-
-        Map<String,Object> rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID);
-        //these fields are required in ONPRC_EHR test.  these will not be valid lookups, but that's not important for the test
-        rowMap.put("housingType", 1);
-        rowMap.put("housingCondition", 1);
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID2);
-        rowMap.put("housingType", 1);
-        rowMap.put("housingCondition", 1);
-        insertCmd.addRow(rowMap);
-
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
     }
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
@@ -554,13 +536,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected  void deleteRoomRecords() throws CommandException, IOException
     {
-        Map<String,Object> rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID);
-        deleteIfNeeded("ehr_lookups", "rooms", rowMap, "room");
-
-        rowMap = new HashMap<>();
-        rowMap.put("room", ROOM_ID2);
-        deleteIfNeeded("ehr_lookups", "rooms", rowMap, "room");
     }
 
     protected void assertNoErrorText()
