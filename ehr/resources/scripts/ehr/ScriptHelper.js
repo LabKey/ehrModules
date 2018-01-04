@@ -47,7 +47,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         verbosity: 0,
         quickValidation: false,
         errorThreshold: null,
-        newIdsAdded: {}
+        newIdsAdded: {},
+        extraBirthFieldMappings: {}
     };
 
     //test to see if GUID persisted across tables
@@ -174,8 +175,21 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return props.extraContext;
         },
 
+        /**
+         * Note: In general it is preferred to create a specific getter for script properties expected in
+         * core EHR code.  This provides better typing of variables and also allows a single implemention
+         * for modifications or checks associated with a property (such as null-handling)
+         *
+         * Center-specific modules may have instances where they use non-core script options,
+         * and accessing from this object directly might make sense.  However, center-specific modules
+         * can consider creating their own extension of ScriptHelper that wraps this code as well.
+         */
         getScriptOptions: function(){
             return scriptOptions;
+        },
+
+        getExtraBirthFieldMappings: function(){
+            return scriptOptions.extraBirthFieldMappings || {};
         },
 
         getSchemaName: function(){

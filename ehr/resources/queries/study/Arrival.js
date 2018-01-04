@@ -18,7 +18,7 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 
     //if not already present, we insert into demographics
     if (!helper.isETL() && !helper.isGeneratedByServer()){
-        var birthErrors = helper.getJavaHelper().onAnimalArrival(row.id, row, helper.getScriptOptions().extraBirthFieldMappings);
+        var birthErrors = helper.getJavaHelper().onAnimalArrival(row.id, row, helper.getExtraBirthFieldMappings());
         if (birthErrors){
             EHR.Server.Utils.addError(scriptErrors, 'birth', birthErrors, 'ERROR');
         }
