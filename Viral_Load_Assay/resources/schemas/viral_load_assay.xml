@@ -1,7 +1,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="vl_technique" tableDbType="TABLE">
         <tableTitle>Viral Load Assay Techniques</tableTitle>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>technique</pkColumnName>
         <columns>
             <column columnName="technique">
@@ -10,7 +10,7 @@
     </table>
     <table tableName="vl_instrument" tableDbType="TABLE">
         <tableTitle>Viral Load Assay Instruments</tableTitle>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>instrument</pkColumnName>
         <columns>
             <column columnName="instrument">
@@ -19,7 +19,7 @@
     </table>
     <table tableName="assays" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Viral Load Assay Types</tableTitle>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>assayname</pkColumnName>
         <columns>
             <column columnName="assayname">
@@ -112,7 +112,7 @@
     </table>
     <table tableName="abi7500_detectors" tableDbType="TABLE">
         <tableTitle>ABI7500 Detectors</tableTitle>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="rowid">
@@ -143,7 +143,7 @@
         </columns>
     </table>
     <table tableName="fluors" tableDbType="TABLE">
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>name</pkColumnName>
         <columns>
             <column columnName="name">

@@ -3,7 +3,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Runs" tableDbType="TABLE">
-                <javaCustomizer>org.labkey.laboratory.query.DefaultAssayCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.laboratory.query.DefaultAssayCustomizer" />
                 <columns>
                     <column columnName="Name">
                         <columnTitle>Run Name</columnTitle>
