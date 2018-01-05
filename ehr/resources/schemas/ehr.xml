@@ -2,7 +2,7 @@
     <!--TODO: should deprecate-->
     <table tableName="module_properties" tableDbType="TABLE" useColumnOrder="true">
         <description>Deprecated. Admin-configurable properties for setting up the EHR.</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="rowid">
@@ -43,7 +43,7 @@
         </columns>
     </table>
     <table tableName="snomed_tags" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <tableTitle>SNOMED Tags</tableTitle>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -143,7 +143,7 @@
     </table>
     <table tableName="tasks" tableDbType="TABLE" useColumnOrder="true">
         <description>Grouping of records across multiple datasets, associated with a particular data entry form</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <tableTitle>Tasks</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <pkColumnName>taskid</pkColumnName>
@@ -218,7 +218,7 @@
     <table tableName="requests" tableDbType="TABLE" useColumnOrder="true">
         <description>Request for service of some sort, such as a blood draw. Parent record for the associated dataset rows.</description>
         <tableTitle>Requests</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <pkColumnName>requestid</pkColumnName>
         <columns>
@@ -324,7 +324,7 @@
     <table tableName="reports" tableDbType="TABLE" useColumnOrder="true">
         <description>Configuration for the Animal History user interface, with each row representing one of the secondary level tabs</description>
         <tableTitle>Reports</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -445,7 +445,7 @@
     <table tableName="cage_observations" tableDbType="TABLE" useColumnOrder="true">
         <description>Observations associated with a whole cage, and not attributable to a single animal, from a specific date/time</description>
         <tableTitle>Cage Observations</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <importUrl></importUrl>
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
@@ -567,7 +567,7 @@
     <!--TODO: should deprecate-->
     <table tableName="extracts" tableDbType="TABLE" useColumnOrder="true">
         <description>Deprecated.</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <pkColumnName>rowid</pkColumnName>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</tableUrl>
         <columns>
@@ -631,7 +631,7 @@
     <table tableName="formtemplates" tableDbType="TABLE" useColumnOrder="true">
         <description>Templates, tied to a specific data entry form, that users can use to pre-populate common sets of rows and values</description>
         <tableTitle>Form Templates</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -701,7 +701,7 @@
     <table tableName="notificationrecipients" tableDbType="TABLE" useColumnOrder="true">
         <description>Subscriptions to specific notification types, to be delivered via email, based on the notification's schedule</description>
         <tableTitle>Notification Recipients</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -765,7 +765,7 @@
     <table tableName="formpanelsections" tableDbType="TABLE" useColumnOrder="true">
         <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
         <tableTitle>Form Panel Sections</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -847,7 +847,7 @@
     <table tableName="formtemplaterecords" tableDbType="TABLE" useColumnOrder="true">
         <description>Dataset rows that are pre-filled (often only partially) within the context of a user-defined data entry template</description>
         <tableTitle>Form Template Records</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -914,7 +914,7 @@
     <table tableName="notificationtypes" tableDbType="TABLE" useColumnOrder="true">
         <description>Types of notifications for automated emails to be run on a scheduled basis</description>
         <tableTitle>Notification Types</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -934,7 +934,7 @@
     <table tableName="formtypes" tableDbType="TABLE" useColumnOrder="true">
         <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
         <tableTitle>Form Types</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -997,7 +997,7 @@
     </table>
     <table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>IACUC Protocols</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1145,7 +1145,7 @@
     </table>
     <table tableName="project" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Projects</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1294,7 +1294,7 @@
     <table tableName="protocol_counts" tableDbType="TABLE" useColumnOrder="true">
         <description>Limits for the number of animals approved for an IACUC protocol</description>
         <tableTitle>NHPs Allowed Per Protocol</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1398,7 +1398,7 @@
     </table>
     <table tableName="protocol_amendments" tableDbType="TABLE" useColumnOrder="true">
         <description>IACUC protocol and project amendments and renewals</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1486,7 +1486,7 @@
     <table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
         <description>Additional EHR-specific information associated with the core.qcstate table</description>
         <tableTitle>QCState Metadata</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1513,7 +1513,7 @@
     </table>
     <table tableName="animal_groups" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Animal Groups</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableUrl>/ehr/animalGroupDetails.view?groupId=${rowid}</tableUrl>
         <importUrl></importUrl>
@@ -1610,7 +1610,7 @@
     </table>
     <table tableName="supplemental_pedigree" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Supplemental Pedigree</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1675,7 +1675,7 @@
     <table tableName="kinship" tableDbType="TABLE" useColumnOrder="true">
         <description>Relatedness of every animal to every other animal in the colony</description>
         <tableTitle>Kinship</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>SUMMARY</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1733,7 +1733,7 @@
     <table tableName="protocolProcedures" tableDbType="TABLE" useColumnOrder="true">
         <description>Mapping of allowable procedures to IACUC protocols</description>
         <tableTitle>Allowable Procedures Per Protocol</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1813,7 +1813,7 @@
     </table>
     <table tableName="status" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Status</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1851,7 +1851,7 @@
     </table>
     <table tableName="encounter_participants" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Encounter Participants</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="Id">
@@ -1909,14 +1909,14 @@
     </table>
     <table tableName="scheduled_task_types" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Scheduled Task Types</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="tasktype"/>
         </columns>
     </table>
     <table tableName="scheduled_tasks" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Scheduled Tasks</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="rowid"/>
             <column columnName="taskid"/>
@@ -1938,7 +1938,7 @@
     </table>
     <table tableName="encounter_flags" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Encounter Flags</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="rowid"/>
             <column columnName="Id">
@@ -1966,7 +1966,7 @@
     </table>
     <table tableName="encounter_summaries" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Encounter Summaries</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="Id">
@@ -2008,7 +2008,7 @@
     </table>
     <table tableName="treatment_times" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Treatment Times</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="rowid"/>
             <column columnName="treatmentid">
@@ -2031,7 +2031,7 @@
     <table tableName="protocolexemptions" tableDbType="TABLE" useColumnOrder="true">
         <description>Exemptions from normal requirements for individual IACUS (described in free text)</description>
         <tableTitle>Protocol Exemptions</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -2096,7 +2096,7 @@
     </table>
     <table tableName="institutions" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Institutions</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="id"/>
             <column columnName="name"/>
@@ -2117,7 +2117,7 @@
         </columns>
     </table>
     <table tableDbType="TABLE" tableName="observation_types">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
         <importUrl></importUrl>

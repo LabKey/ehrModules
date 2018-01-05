@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="HousingOverlapsById" tableDbType="TABLE">
-                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
                 <tableTitle>Housing Overlaps</tableTitle>
                 <description>This query identifies distinct animal IDs that overlapped with given housing records, accounting for date and time</description>
                 <tableUrl />

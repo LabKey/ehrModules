@@ -121,7 +121,7 @@
     </table>
     <table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Cages</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -265,7 +265,7 @@
     </table>
     <table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
         <description>The most general categorization for animal housing, one level up from rooms</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Areas</tableTitle>
         <importUrl></importUrl>
@@ -609,7 +609,7 @@
         <updateUrl></updateUrl>
         <deleteUrl></deleteUrl>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency&amp;rowid=${rowid}</tableUrl>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <pkColumnName>rowid</pkColumnName>
         <titleColumn>meaning</titleColumn>
         <columns>
@@ -819,7 +819,7 @@
     <table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
         <description>Dictionary of SNOMED codes available for use</description>
         <tableTitle>SNOMED Codes</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <pkColumnName>code</pkColumnName>
         <titleColumn>meaning</titleColumn>
@@ -868,7 +868,7 @@
     <table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
         <description>Mapping table to associate SNOMED codes with a particular subset (or category) of codes</description>
         <tableTitle>SNOMED Subset Codes</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -1389,7 +1389,7 @@
         </columns>
     </table>
     <table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Formulary</tableTitle>
         <importUrl></importUrl>
@@ -1487,7 +1487,7 @@
         </columns>
     </table>
     <table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Reference Procedures List</tableTitle>
         <tableUrl>/ehr/procedureDetails.view?procedureId=${rowid}</tableUrl>
@@ -1534,7 +1534,7 @@
         </columns>
     </table>
     <table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <tableTitle>Default Flags Per Procedure</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <importUrl></importUrl>
@@ -1778,7 +1778,7 @@
         </columns>
     </table>
     <table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Default Treatments Per Procedure</tableTitle>
         <titleColumn>rowid</titleColumn>
@@ -1853,7 +1853,7 @@
         </columns>
     </table>
     <table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Default Charges Per Procedure</tableTitle>
         <columns>
@@ -1866,7 +1866,7 @@
         </columns>
     </table>
     <table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Default SNOMED Codes Per Procedure</tableTitle>
         <titleColumn>rowid</titleColumn>
@@ -1919,7 +1919,7 @@
         </columns>
     </table>
     <table tableName="procedure_default_comments" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Default Narratives</tableTitle>
         <titleColumn>rowid</titleColumn>
@@ -1944,7 +1944,7 @@
     <table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Rooms</tableTitle>
         <description>A collection of cages (can also represent outdoor enclosures)</description>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="room">
@@ -2024,7 +2024,7 @@
     <table tableName="parentageTypes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Parentage Types</tableTitle>
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
@@ -2040,7 +2040,7 @@
     <table tableName="relationshipTypes" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Relationship Types</tableTitle>
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
@@ -2058,7 +2058,7 @@
     <table tableName="cage_positions" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Cage Positions</tableTitle>
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="cage">
                 <columnTitle>Cage</columnTitle>
@@ -2075,7 +2075,7 @@
     </table>
     <table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Flag Categories</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="category">
@@ -2195,7 +2195,7 @@
     </table>
     <table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Flag Values</tableTitle>
-        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid">

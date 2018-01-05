@@ -10,22 +10,22 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="employees" tableDbType="NOT_IN_DB">
                 <tableTitle>Employees</tableTitle>
-                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
                 <columns>
 
                 </columns>
             </table>
             <table tableName="completionDates" tableDbType="NOT_IN_DB">
-                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
             </table>
             <table tableName="requirements" tableDbType="NOT_IN_DB">
-                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
             </table>
             <table tableName="ComplianceRecentTests" tableDbType="NOT_IN_DB">
-                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
             </table>
             <table tableName="employeerequirementexemptions" tableDbType="NOT_IN_DB">
-                <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
             </table>
         </tables>
     </metadata>

@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="my_requests" tableDbType="TABLE">
-                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+                <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
                 <updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
                 <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->
                 <titleColumn>RowId</titleColumn>

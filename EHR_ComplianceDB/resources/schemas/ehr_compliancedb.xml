@@ -1,7 +1,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="employeecategory" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <pkColumnName>categoryname</pkColumnName>
         <tableTitle>Employee Categories</tableTitle>
         <columns>
@@ -13,7 +13,7 @@
     </table>
     <table tableName="employeelocations" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Employee Locations</tableTitle>
         <pkColumnName>location</pkColumnName>
         <columns>
@@ -25,7 +25,7 @@
     </table>
     <table tableName="unit_names" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Unit Names</tableTitle>
         <pkColumnName>unit</pkColumnName>
         <columns>
@@ -47,7 +47,7 @@
     </table>
     <table tableName="requirementtype" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Requirement Types</tableTitle>
         <pkColumnName>type</pkColumnName>
         <columns>
@@ -59,7 +59,7 @@
     </table>
     <table tableName="employeetypes" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Employee Types</tableTitle>
         <pkColumnName>type</pkColumnName>
         <columns>
@@ -71,7 +71,7 @@
     </table>
     <table tableName="employeetitles" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Employee Titles</tableTitle>
         <pkColumnName>title</pkColumnName>
         <columns>
@@ -83,7 +83,7 @@
     </table>
     <table tableName="employees" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
         <tableTitle>Employees</tableTitle>
         <pkColumnName>employeeid</pkColumnName>
         <columns>
@@ -278,7 +278,7 @@
     </table>
     <table tableName="requirements" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ehr_compliancedb.query.EHRComplianceTableCustomizer" />
         <tableTitle>Requirements</tableTitle>
         <pkColumnName>requirementname</pkColumnName>
         <columns>
@@ -359,7 +359,7 @@
     </table>
     <table tableName="requirementspercategory" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Requirements Per Employee Category</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -425,7 +425,7 @@
     </table>
     <table tableName="requirementsperemployee" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Requirements Per Employee</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -483,7 +483,7 @@
     </table>
     <table tableName="completiondates" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Dates Employees Completed Requirements</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -566,7 +566,7 @@
     </table>
     <table tableName="employeerequirementexemptions" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Employee Exemptions to Requirements</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -628,7 +628,7 @@
     </table>
     <table tableName="sops" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>SOPs</tableTitle>
         <pkColumnName>sopid</pkColumnName>
         <columns>
@@ -681,7 +681,7 @@
     </table>
     <table tableName="sopdates" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>SOP Completion Dates</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
@@ -743,7 +743,7 @@
     </table>
     <table tableName="sopbycategory" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>SOPs Per Employee Category</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
