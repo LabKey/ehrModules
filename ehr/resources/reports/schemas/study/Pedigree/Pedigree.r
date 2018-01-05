@@ -19,10 +19,10 @@ labkey.setCurlOptions(ssl.verifypeer=FALSE, ssl.verifyhost=FALSE)
 #labkey.url.base = "http://localhost:8080/labkey/"
 
 if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
-    #print(labkey.url.path)
-    png(filename="${imgout:myscatterplot}", width = 650, height = 480);
-    plot(0, 0, type='n', xaxt='n', yaxt='n', bty='n', ann=FALSE)
-    text(-0.5, 1, "No pedigree data found for selected animal(s).")
+    png(filename="${imgout:myscatterplot}", width = 650, height = 150);
+    plot(0, 0, type='n', xaxt='n', yaxt='n', bty='n', ann=FALSE  )
+    title(main = "No pedigree data found for selected animal(s).", sub = NULL, xlab = NULL, ylab = NULL,
+          line = NA, outer = FALSE)
 } else
 {
     #this section queries labkey to obtain the pedigree data
