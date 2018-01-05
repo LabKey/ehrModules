@@ -543,7 +543,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         animalHistoryPage
                 .selectMultiAnimalSearch()
                 .searchByProjectProtocol()
-                .selectProject(PROJECT_ID)
+                .selectProject(PROJECT_ID + " : Acct101")
                 .clickSubmit();
 
         waitForElement(Ext4Helper.Locators.ext4ButtonContainingText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT);

@@ -99,7 +99,7 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
     private abstract class SearchWindow extends Window
     {
-        protected final ComboBox.ComboListMatcher _comboMatcher = (loc, text) -> loc.withText(text + " " + NBSP);
+        protected final ComboBox.ComboListMatcher _comboMatcher = (loc, text) -> loc.withText(text + NBSP);
 
         public SearchWindow(String windowTitle)
         {
