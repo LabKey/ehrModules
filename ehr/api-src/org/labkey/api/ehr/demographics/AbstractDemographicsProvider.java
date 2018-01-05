@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
@@ -34,6 +35,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -132,7 +134,13 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     {
         for  (FieldKey key : cols.keySet())
         {
-            map.put(key.toString(), rs.getObject(key));
+            Object val = rs.getObject(key);
+            if (val instanceof Clob)
+            {
+                val = ConvertHelper.convertClobToString((Clob)val);
+            }
+
+            map.put(key.toString(), val);
         }
     }
 
