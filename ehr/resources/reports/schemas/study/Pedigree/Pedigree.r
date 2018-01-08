@@ -267,6 +267,7 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
 
         # attempt to adjust size based on size of pedigree
         symSize = 1.2
+        plotHeight = 1200
 
         if (rows < 10) {
             cexSize = 1.1
@@ -289,10 +290,14 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
             plotWidth = 2000
         }
 
-        png(filename="${imgout:png_pedigree}", width = plotWidth, height=1200);
+        png(filename="${imgout:png_pedigree}", width = plotWidth, height=plotHeight);
         par(xpd=TRUE);
 
         plot(ptemp, align=T, width=15, symbolsize=symSize, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8))
+        mtext("Unknown animals are marked with xxs ## or xxd ## where ## is a randomly generated unique number. This identifier is used only in this plot and is re-generated each time the plot is rendered.",
+            side = 1, font = 3, cex = 0.95)
+        leg.txt <- c("Male", "Female", "Deceased")
+        legend(x = "bottomright", legend=leg.txt, pch=c(0, 1, 47), col=c('blue', 'red', 'black'), inset = 0.1, cex=1, pt.cex = 1.8)
         #dev.off();
     }
 };
