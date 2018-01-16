@@ -15,8 +15,6 @@
  */
 package org.labkey.api.ehr.security;
 
-import org.labkey.api.security.permissions.AbstractPermission;
-
 /**
  * User: bimber
  * Date: 1/17/13

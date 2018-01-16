@@ -21,9 +21,9 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr.EHRQCState;
 
 /**
+ * Bean class for the EHR's additional metadata associated with QC states. Persisted in ehr.qcstatemetadata
  * User: bimber
  * Date: 9/17/12
- * Time: 2:02 PM
  */
 public class EHRQCStateImpl implements EHRQCState
 {
