@@ -45,6 +45,7 @@ public class ArrivalDemographicsProvider extends AbstractListDemographicsProvide
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("enddate"));
         keys.add(FieldKey.fromString("source"));
+        keys.add(FieldKey.fromString("source/description"));
         keys.add(FieldKey.fromString("acquisitionType"));
         keys.add(FieldKey.fromString("rearingType"));
 

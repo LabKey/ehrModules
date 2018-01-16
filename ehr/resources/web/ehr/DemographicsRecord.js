@@ -95,6 +95,10 @@ EHR.DemographicsRecord = function(data){
             return data['calculated_status'];
         },
 
+        getCalculatedStatusMeaning: function(){
+            return data['calculated_status/meaning'];
+        },
+
         getDam: function(){
             return data['dam'];
         },
@@ -145,6 +149,10 @@ EHR.DemographicsRecord = function(data){
             return data['species'];
         },
 
+        getSpeciesCommonName: function(){
+            return data['species/common_name'];
+        },
+
         getTBRecord: function(){
             return data['tb'];
         },
@@ -155,6 +163,12 @@ EHR.DemographicsRecord = function(data){
                 if (date)
                     return LDK.ConvertUtils.parseDate(date);
             }
+        },
+
+        getMostRecentTBDate: function(){
+                var date = data['MostRecentTBDate'];
+                if (date)
+                    return LDK.ConvertUtils.parseDate(date);
         },
 
         getMonthsUntilTBDue: function(){
@@ -175,6 +189,12 @@ EHR.DemographicsRecord = function(data){
 
         getSourceRecord: function(){
             return data.source;
-        }
+        },
+
+        getArrivalInfo: function(){
+            return data['arrivalInfo'];
+        },
+
+
     }
 }

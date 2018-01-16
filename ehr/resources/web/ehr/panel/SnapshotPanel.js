@@ -427,7 +427,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         toSet['cagemates'] = LABKEY.Utils.encodeHtml(cagemates);  // encoding not currently useful, but future-proofing here
-        toSet['pairingType'] = LABKEY.Utils.encodeHtml(pairingType);
+        toSet['pairingType'] = pairingType ? LABKEY.Utils.encodeHtml(pairingType): 'None';
 
         if (animals.length > 3){
             toSet['cagemates'] = animals.length + ' animals';
