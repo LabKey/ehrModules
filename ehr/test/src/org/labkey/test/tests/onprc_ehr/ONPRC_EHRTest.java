@@ -17,13 +17,14 @@ package org.labkey.test.tests.onprc_ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
@@ -176,9 +177,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                 {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()}
         };
 
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "QCStateLabel", "objectid"}, bloodData);
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "QCStateLabel", "objectid"}, bloodData);
         getApiHelper().deleteAllRecords("study", "blood", new Filter("Id", animalId, Filter.Operator.EQUAL));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Arrays.asList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         log("Creating weight records");
         Object[][] weightData = new Object[][]{
@@ -193,9 +194,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         weightByDay.put(prepareDate(startCal.getTime(), 5, 1), 3.0);
         weightByDay.put(prepareDate(startCal.getTime(), 10, 1), 6.0);
 
-        JSONObject insertCommand2 = getApiHelper().prepareInsertCommand("study", "weight", "lsid", new String[]{"Id", "date", "weight", "QCStateLabel"}, weightData);
+        PostCommand insertCommand2 = getApiHelper().prepareInsertCommand("study", "weight", "lsid", new String[]{"Id", "date", "weight", "QCStateLabel"}, weightData);
         getApiHelper().deleteAllRecords("study", "weight", new Filter("Id", animalId, Filter.Operator.EQUAL));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Arrays.asList(insertCommand2), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand2, getExtraContext());
 
         //validate results
         //build map of daws by day:
@@ -636,7 +637,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         // add assignmentsInTransaction, should fail
         Map<String, Object> additionalExtraContext = new HashMap<>();
         JSONArray assignmentsInTransaction = new JSONArray();
-        assignmentsInTransaction.put(Maps.of(
+        assignmentsInTransaction.add(Maps.of(
                 "Id", SUBJECTS[4],
                 "objectid", generateGUID(),
                 "date", _df.format(new Date()),
@@ -785,21 +786,21 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         log("Creating Ids");
         Date birth = new Date();
         Date arrivalDate = prepareDate(new Date(), -3, 0);
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
                 new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel"},
                 new Object[][]{
                         {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, birth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
                 }
-        )), getExtraContext(), true);
+        ), getExtraContext());
 
         //expect to fail because of birth date
         Date incorrectBirth = DateUtils.addDays(birth, -4);
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
+        getApiHelper().doSaveRowsExpectingError(DATA_ADMIN.getEmail(), getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
                 new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel"},
                 new Object[][]{
                         {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, incorrectBirth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
                 }
-        )), getExtraContext(), false);
+        ), getExtraContext());
 
         //expect to find demographics record.
         Assert.assertTrue("demographics row was not created for arrival", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", arrivalId1, Filter.Operator.EQUAL)));
@@ -1317,7 +1318,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         int i = 1;
         for (Map<String, Object> row : srr.getRows())
         {
-            JSONObject json = new JSONObject((String)row.get("json"));
+            org.json.JSONObject json = new org.json.JSONObject((String)row.get("json"));
             Assert.assertEquals(json.getString("category"), observationsGrid.getFieldValue(i, "category"));
             i++;
         }

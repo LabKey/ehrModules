@@ -16,11 +16,11 @@
 package org.labkey.test.tests.onprc_ehr;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -106,12 +106,12 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //insert into birth
         log("Creating Dam");
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(getApiHelper().prepareInsertCommand("study", "birth", "lsid",
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), getApiHelper().prepareInsertCommand("study", "birth", "lsid",
                 new String[]{"Id", "Date", "gender", "QCStateLabel"},
                 new Object[][]{
                         {damId1, dam1Birth, "f", "In Progress"},
                 }
-        )), getExtraContext(), true);
+        ), getExtraContext());
 
         //record is draft, so we shouldnt have a demographics record
         org.junit.Assert.assertFalse("demographics row was created for dam1", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
@@ -649,10 +649,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //create records
         log("Creating test subjects");
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
                 {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"}
         });
-        getApiHelper().doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(PasswordUtil.getUsername(), insertCommand, getExtraContext());
 
         goToProjectHome();
         waitAndClickAndWait(Locator.linkWithText("Animal History"));
@@ -763,10 +763,10 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //create records
         log("Creating test subjects");
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
                 {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"}
         });
-        getApiHelper().doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(PasswordUtil.getUsername(), insertCommand, getExtraContext());
 
         waitAndClickAndWait(Locator.linkWithText("Animal History"));
 

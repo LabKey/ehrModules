@@ -15,10 +15,11 @@
  */
 package org.labkey.test.tests.ehr;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
@@ -120,13 +121,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         //initialize wieght of subject 0
         String[] fields;
         Object[][] data;
-        JSONObject insertCommand;
+        PostCommand insertCommand;
         fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
         data = new Object[][]{
                 {SUBJECTS[3], new Date(), 12, EHRQCState.COMPLETED.label},
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", "lsid", fields, data);
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         //expect weight out of range
         data = new Object[][]{
@@ -229,7 +230,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         extraContext.put("errorThreshold", "ERROR");
         extraContext.put("skipIdFormatCheck", true);
         extraContext.put("allowAnyId", true);
-        String response;
+        CommandResponse response;
 
         //maintain list of insert/update times for interest
         _saveRowsTimes = new ArrayList<>();
@@ -238,14 +239,17 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Object[][] insertData = {weightData1};
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = null;
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = null;
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
 
         for (EHRQCState qc : EHRQCState.values())
         {
             extraContext.put("targetQC", qc.label);
             boolean successExpected = successExpected(user.getRole(), qc, "insert");
             log("Testing role: " + user.getRole().name() + " with insert of QCState: " + qc.label);
-            getApiHelper().doSaveRows(user.getEmail(), Collections.singletonList(insertCommand), extraContext, successExpected);
+            if (successExpected)
+                getApiHelper().doSaveRows(user.getEmail(), insertCommand, extraContext);
+            else
+                getApiHelper().doSaveRowsExpectingError(user.getEmail(), insertCommand, extraContext);
         }
         calculateAverage();
 
@@ -259,9 +263,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
             extraContext.put("targetQC", originalQc.label);
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = objectId.toString();
-            JSONObject initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
+            PostCommand initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
             log("Inserting initial record for update test, with initial QCState of: " + originalQc.label);
-            response = getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(initialInsertCommand), extraContext, true);
+            response = getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), initialInsertCommand, extraContext);
 
             String lsid = getLsidFromResponse(response);
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = lsid;
@@ -272,17 +276,18 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 boolean successExpected = originalQc.equals(qc) ? successExpected(user.getRole(), originalQc, "update") : successExpected(user.getRole(), originalQc, "update") && successExpected(user.getRole(), qc, "insert");
                 log("Testing role: " + user.getRole().name() + " with update from QCState " + originalQc.label + " to: " + qc.label);
                 originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = qc.label;
-                JSONObject updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
+                PostCommand updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
                 extraContext.put("targetQC", qc.label);
-                getApiHelper().doSaveRows(user.getEmail(), Collections.singletonList(updateCommand), extraContext, successExpected);
-
-                if (successExpected)
+                if (!successExpected)
+                    getApiHelper().doSaveRowsExpectingError(user.getEmail(), updateCommand, extraContext);
+                else
                 {
+                    getApiHelper().doSaveRows(user.getEmail(), updateCommand, extraContext);
                     log("Resetting QCState of record to: " + originalQc.label);
                     originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
                     extraContext.put("targetQC", originalQc.label);
                     updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
-                    getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(updateCommand), extraContext, true);
+                    getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), updateCommand, extraContext);
                 }
             }
         }
@@ -336,26 +341,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         return allowedActions.contains(new Permission(role, qcState, permission));
     }
 
-    private String getLsidFromResponse(String response)
+    private String getLsidFromResponse(CommandResponse response)
     {
-        try
+        if (response.getProperty("exception") != null)
         {
-            JSONObject o = new JSONObject(response);
-            if (o.has("exception"))
-            {
-                //TODO
-                throw new RuntimeException(o.get("exception").toString());
-            }
-            else if (o.has("result"))
-            {
-                return o.getJSONArray("result").getJSONObject(0).getJSONArray("rows").getJSONObject(0).getJSONObject("values").getString(FIELD_LSID);
-            }
-            return null;
+            throw new RuntimeException(response.getProperty("exception").toString());
         }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return response.getProperty("result[0].rows[0].values." + FIELD_LSID);
     }
 
     protected void openClinicalHistoryForAnimal(String animalId)

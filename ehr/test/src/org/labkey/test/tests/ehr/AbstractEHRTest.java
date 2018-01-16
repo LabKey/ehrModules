@@ -16,16 +16,16 @@
 package org.labkey.test.tests.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.labkey.api.reader.TabLoader;
 import org.labkey.api.util.GUID;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
@@ -55,7 +55,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -204,7 +203,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         String[] fields;
         Object[][] data;
-        JSONObject insertCommand;
+        PostCommand insertCommand;
 
         //insert into demographics
         log("Creating test subjects");
@@ -218,7 +217,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         //for simplicity, also create the animals from MORE_ANIMAL_IDS right now
         data = new Object[][]{
@@ -230,7 +229,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "demographics", new Filter("Id", StringUtils.join(MORE_ANIMAL_IDS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         //used as initial dates
         Date pastDate1 = TIME_FORMAT.parse("2012-01-03 09:30");
@@ -247,7 +246,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "Housing", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Housing", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         //set a base weight
         log("Setting initial weights");
@@ -260,7 +259,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Weight", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
         //set assignment
         log("Setting initial assignments");
@@ -272,9 +271,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         };
         insertCommand = getApiHelper().prepareInsertCommand("study", "Assignment", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Assignment", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
-
-
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
     }
 
     @Override

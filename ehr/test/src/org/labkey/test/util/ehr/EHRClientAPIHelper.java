@@ -16,20 +16,13 @@
 package org.labkey.test.util.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -41,6 +34,7 @@ import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.TestLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,18 +47,26 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class EHRClientAPIHelper
 {
     private BaseWebDriverTest _test;
     private String _containerPath;
     public static final String DATE_SUBSTITUTION = "@@CURDATE@@";
+    private static Class _currentTestClass;
+    private static final Map<String, Connection> _connections = new HashMap<>();
 
     public EHRClientAPIHelper(BaseWebDriverTest test, String containerPath)
     {
         _test = test;
         _containerPath = containerPath;
+
+        if (!_test.getClass().equals(_currentTestClass))
+        {
+            // Don't remember connections between test classes
+            _currentTestClass = _test.getClass();
+            _connections.clear();
+        }
     }
 
     public void createdIfNeeded(String schema, String query, Map<String, Object> row, String pkCol) throws Exception
@@ -196,123 +198,140 @@ public class EHRClientAPIHelper
         }
     }
 
-    public JSONObject prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
+    public PostCommand prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
     {
         return prepareCommand("insertWithKeys", schema, queryName, pkName, fieldNames, rows, null);
     }
 
-    public JSONObject prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    public PostCommand prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
     {
         return prepareCommand("updateChangingKeys", schema, queryName, pkName, fieldNames, rows, oldKeys);
     }
 
-    private JSONObject prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    private PostCommand prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    {
+        PostCommand postCommand = new PostCommand("query", "saveRows");
+
+        JSONObject commandJson = new JSONObject();
+        commandJson.put("schemaName", schema);
+        commandJson.put("queryName", queryName);
+        commandJson.put("command", command);
+        org.json.simple.JSONArray jsonRows = new org.json.simple.JSONArray();
+        int idx = 0;
+        for (Object[] row : rows)
+        {
+            JSONObject oldKeyMap = new JSONObject();
+            JSONObject values = new JSONObject();
+
+            int position = 0;
+            for (String name : fieldNames)
+            {
+                Object v = row[position];
+
+                //allow mechanism to use current time,
+                if (DATE_SUBSTITUTION.equals(v))
+                    v = (new Date()).toString();
+
+                if (v != null && v instanceof Date)
+                    v = v.toString();
+
+                values.put(name, v);
+                if (pkName.equals(name))
+                    oldKeyMap.put(name, v);
+
+                position++;
+            }
+
+            if (oldKeys != null && oldKeys.length > idx)
+            {
+                JSONObject obj = new JSONObject();
+                int j = 0;
+                for (String field : fieldNames)
+                {
+                    obj.put(field, oldKeys[idx][j]);
+                    j++;
+                }
+                oldKeyMap = obj;
+            }
+
+            JSONObject ro = new JSONObject();
+            ro.put("oldKeys", oldKeyMap);
+            ro.put("values", values);
+            jsonRows.add(ro);
+        }
+        commandJson.put("rows", jsonRows);
+
+        JSONObject commands = new JSONObject();
+        commands.put("commands", Collections.singletonList(commandJson));
+        postCommand.setJsonObject(commands);
+        return postCommand;
+    }
+
+    public CommandException doSaveRowsExpectingError(String email, PostCommand command, JSONObject extraContext)
     {
         try
         {
-            JSONObject resp = new JSONObject();
-            resp.put("schemaName", schema);
-            resp.put("queryName", queryName);
-            resp.put("command", command);
-            JSONArray jsonRows = new JSONArray();
-            int idx = 0;
-            for (Object[] row : rows)
-            {
-                JSONObject oldKeyMap = new JSONObject();
-                JSONObject values = new JSONObject();
+            CommandResponse response = doSaveRows(email, command, extraContext, false);
 
-                int position = 0;
-                for (String name : fieldNames)
-                {
-                    Object v = row[position];
+            logResponse(response.getParsedData());
+            assertEquals("SaveRows request succeeded unexpectedly", HttpStatus.SC_BAD_REQUEST, response.getStatusCode());
 
-                    //allow mechanism to use current time,
-                    if (DATE_SUBSTITUTION.equals(v))
-                        v = (new Date()).toString();
+            return null; // Unreachable
 
-                    values.put(name, v);
-                    if (pkName.equals(name))
-                        oldKeyMap.put(name, v);
-
-                    position++;
-                }
-
-                if (oldKeys != null && oldKeys.length > idx)
-                {
-                    JSONObject obj = new JSONObject();
-                    int j = 0;
-                    for (String field : fieldNames)
-                    {
-                        obj.put(field, oldKeys[idx][j]);
-                        j++;
-                    }
-                    oldKeyMap = obj;
-                }
-
-                JSONObject ro = new JSONObject();
-                ro.put("oldKeys", oldKeyMap);
-                ro.put("values", values);
-                jsonRows.put(ro);
-            }
-            resp.put("rows", jsonRows);
-
-            return resp;
         }
-        catch (JSONException e)
+        catch (CommandException e)
         {
+            if (HttpStatus.SC_BAD_REQUEST != e.getStatusCode())
+            {
+                logResponse(e.getProperties());
+                assertEquals("SaveRows request failed unexpectedly", HttpStatus.SC_BAD_REQUEST, e.getStatusCode());
+            }
+            return e;
+        }
+    }
+
+    public CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext)
+    {
+        try
+        {
+            CommandResponse response = doSaveRows(email, command, extraContext, true);
+
+            if (HttpStatus.SC_OK != response.getStatusCode())
+            {
+                logResponse(response.getParsedData());
+                assertEquals("SaveRows request succeeded unexpectedly", HttpStatus.SC_OK, response.getStatusCode());
+            }
+
+            return response;
+        }
+        catch (CommandException e)
+        {
+            logResponse(e.getProperties());
+            assertEquals("SaveRows request failed unexpectedly", HttpStatus.SC_OK, e.getStatusCode());
             throw new RuntimeException(e);
         }
     }
 
-    public String doSaveRows(String email, List<JSONObject> commands, JSONObject extraContext, boolean expectSuccess)
+    private CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
-        HttpContext context = WebTestHelper.getBasicHttpContext();
-        HttpPost method;
-        HttpResponse response = null;
-        try (CloseableHttpClient client = (CloseableHttpClient)WebTestHelper.getHttpClient(email, PasswordUtil.getPassword()))
+        command = command.copy();
+        command.getJsonObject().put("extraContext", extraContext);
+        Connection connection = new Connection(WebTestHelper.getBaseURL(), email, PasswordUtil.getPassword());
+
+        try
         {
-            JSONObject json = new JSONObject();
-            json.put("commands", commands);
-            json.put("extraContext", extraContext);
-
-            String requestUrl = WebTestHelper.getBaseURL() + "/query/" + _containerPath + "/saveRows.api";
-            method = new HttpPost(requestUrl);
-            method.addHeader("Content-Type", "application/json");
-            method.setEntity(new StringEntity(json.toString(), ContentType.create("application/json", "UTF-8")));
-
-            org.openqa.selenium.Cookie csrf = WebTestHelper.getCookies(email).get("X-LABKEY-CSRF");
-            if (csrf != null)
-                method.setHeader(csrf.getName(), csrf.getValue());
-
-            response = client.execute(method, context);
-            int status = response.getStatusLine().getStatusCode();
-
-            _test.log("Expect success: " + expectSuccess + ", actual: " + (HttpStatus.SC_OK == status));
-
-            if (expectSuccess && HttpStatus.SC_OK != status)
-            {
-                logResponse(response);
-                assertEquals("SaveRows request failed unexpectedly with code: " + status, HttpStatus.SC_OK, status);
-            }
-            else if (!expectSuccess && HttpStatus.SC_BAD_REQUEST != status)
-            {
-                logResponse(response);
-                assertEquals("SaveRows request failed unexpectedly with code: " + status, HttpStatus.SC_BAD_REQUEST, status);
-            }
-
-            String responseBody = WebTestHelper.getHttpResponseBody(response);
-            EntityUtils.consume(response.getEntity()); // close connection
-
-            return responseBody;
+            CommandResponse response = command.execute(connection, _containerPath);
+            _test.log("Expect success: " + expectSuccess + ", actual: " + (HttpStatus.SC_OK == response.getStatusCode()));
+            return response;
         }
-        catch (IOException | JSONException e)
+        catch (CommandException e)
+        {
+            _test.log("Expect success: " + expectSuccess + ", actual: " + (HttpStatus.SC_OK == e.getStatusCode()));
+            throw e;
+        }
+        catch (IOException e)
         {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (response != null)
-                EntityUtils.consumeQuietly(response.getEntity());
         }
     }
 
@@ -336,82 +355,42 @@ public class EHRClientAPIHelper
         return values;
     }
 
-    private void logResponse(HttpResponse response)
+    private void logResponse(Map<String, Object> responseJson)
     {
-        String responseBody = WebTestHelper.getHttpResponseBody(response);
-        try
-        {
-            JSONObject o = new JSONObject(responseBody);
-            if (o.has("exception"))
-                _test.log("Expection: " + o.getString("exception"));
+        Object exception = responseJson.get("exception");
+        if (exception != null)
+            TestLogger.log("Expection: " + exception);
 
-            Map<String, List<String>> ret = processResponse(responseBody);
-            for (String field : ret.keySet())
-            {
-                _test.log("Error in field: " + field);
-                for (String err : ret.get(field))
-                {
-                    _test.log(err);
-                }
-            }
-        }
-        catch (JSONException e)
+        Map<String, List<String>> ret = extractErrors(responseJson);
+        for (String field : ret.keySet())
         {
-            _test.log("Response was not JSON");
-            _test.log(responseBody);
+            TestLogger.log("Error in field: " + field);
+            for (String err : ret.get(field))
+            {
+                TestLogger.log(err);
+            }
         }
     }
 
-    public Map<String, List<String>> processResponse(String response)
+    public Map<String, List<String>> extractErrors(Map<String, Object> responseJson)
     {
-        try
+        Map<String, List<String>> ret = new HashMap<>();
+        if (responseJson.containsKey("errors"))
         {
-            Map<String, List<String>> ret = new HashMap<>();
-            JSONObject o = new JSONObject(response);
-            if (o.has("errors"))
+            List<Map<String, Object>> errors = (List<Map<String, Object>>) responseJson.get("errors");
+            for (Map<String, Object> error : errors)
             {
-                JSONArray errors = o.getJSONArray("errors");
-                for (int i = 0; i < errors.length(); i++)
+                List<Map<String, Object>> subErrors = (List<Map<String, Object>>) error.get("errors");
+                if (subErrors != null)
                 {
-                    JSONObject error = errors.getJSONObject(i);
-                    JSONArray subErrors = error.getJSONArray("errors");
-                    if (subErrors != null)
+                    for (Map<String, Object> subError : subErrors)
                     {
-                        for (int j = 0; j < subErrors.length(); j++)
-                        {
-                            JSONObject subError = subErrors.getJSONObject(j);
-                            String msg = subError.getString("message");
-                            if (!subError.has("field"))
-                                throw new RuntimeException(msg);
+                        String msg = (String) subError.get("message");
+                        if (!subError.containsKey("field"))
+                            throw new RuntimeException(msg);
 
-                            String field = subError.getString("field");
-                            String severity = subError.optString("severity");
-
-                            List<String> list = ret.get(field);
-                            if (list == null)
-                                list = new ArrayList<>();
-
-                            list.add((StringUtils.trimToNull(severity) == null ? "" : severity + ": ") + msg);
-                            ret.put(field, list);
-                        }
-                    }
-                }
-            }
-
-            //append errors from extraContext
-            if (o.has("extraContext") && o.getJSONObject("extraContext").has("skippedErrors"))
-            {
-                JSONObject errors = o.getJSONObject("extraContext").getJSONObject("skippedErrors");
-
-                for (String key : errors.keySet())
-                {
-                    JSONArray errorArray = errors.getJSONArray(key);
-                    for (int i=0;i<errorArray.length();i++)
-                    {
-                        JSONObject subError = errorArray.getJSONObject(i);
-                        String msg = subError.getString("message");
-                        String field = subError.getString("field");
-                        String severity = subError.optString("severity");
+                        String field = (String) subError.get("field");
+                        String severity = (String) subError.get("severity");
 
                         List<String> list = ret.get(field);
                         if (list == null)
@@ -422,13 +401,32 @@ public class EHRClientAPIHelper
                     }
                 }
             }
+        }
 
-            return ret;
-        }
-        catch (JSONException e)
+        //append errors from extraContext
+        if (responseJson.containsKey("extraContext") && ((Map)responseJson.get("extraContext")).containsKey("skippedErrors"))
         {
-            throw new RuntimeException(e);
+            Map<String, List<Map<String, Object>>> errors = (Map<String, List<Map<String, Object>>>) ((Map) responseJson.get("extraContext")).get("skippedErrors");
+
+            for (List<Map<String, Object>> errorArray : errors.values())
+            {
+                for (Map<String, Object> subError : errorArray)
+                {
+                    String msg = (String) subError.get("message");
+                    String field = (String) subError.get("field");
+                    String severity = (String) subError.get("severity");
+
+                    List<String> list = ret.get(field);
+                    if (list == null)
+                        list = new ArrayList<>();
+
+                    list.add((StringUtils.trimToNull(severity) == null ? "" : severity + ": ") + msg);
+                    ret.put(field, list);
+                }
+            }
         }
+
+        return ret;
     }
 
     public int deleteAllRecords(String schemaName, String queryName, Filter filter) throws Exception
@@ -455,29 +453,22 @@ public class EHRClientAPIHelper
         return 0;
     }
 
-    public String insertData(String email, String schemaName, String queryName, String[] fields, Object[][] data, Map<String, Object> additionalExtraContext)
+    public CommandResponse insertData(String email, String schemaName, String queryName, String[] fields, Object[][] data, Map<String, Object> additionalExtraContext)
     {
         _test.log("Inserting data into " + schemaName + "." + queryName);
-        try
+        JSONObject extraContext = getExtraContext();
+        extraContext.put("errorThreshold", "INFO");
+        extraContext.put("targetQC", "In Progress");
+        if (additionalExtraContext != null)
         {
-            JSONObject extraContext = getExtraContext();
-            extraContext.put("errorThreshold", "INFO");
-            extraContext.put("targetQC", "In Progress");
-            if (additionalExtraContext != null)
+            for (String key : additionalExtraContext.keySet())
             {
-                for (String key : additionalExtraContext.keySet())
-                {
-                    extraContext.put(key, additionalExtraContext.get(key));
-                }
+                extraContext.put(key, additionalExtraContext.get(key));
             }
+        }
 
-            JSONObject insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
-            return doSaveRows(email, Collections.singletonList(insertCommand), extraContext, true);
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
+        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        return doSaveRows(email, insertCommand, extraContext);
     }
 
     public void testValidationMessage(String email, String schemaName, String queryName, String[] fields, Object[][] data, Map<String, List<String>> expectedErrors)
@@ -489,68 +480,39 @@ public class EHRClientAPIHelper
     {
         expectedErrors = new HashMap<>(expectedErrors);
         expectedErrors.put("_validateOnly", Collections.singletonList("ERROR: Ignore this error"));
-        try
+        _test.log("Testing validation for table: " + schemaName + "." + queryName);
+
+        JSONObject extraContext = getExtraContext();
+        extraContext.put("errorThreshold", "INFO");
+        extraContext.put("validateOnly", true); //a flag to force failure
+        extraContext.put("targetQC", "In Progress");
+        if (additionalExtraContext != null)
+            extraContext.putAll(additionalExtraContext);
+
+        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        CommandException response = doSaveRowsExpectingError(email, insertCommand, extraContext);
+        Map<String, List<String>> errors = extractErrors(response.getProperties());
+
+        //JSONHelper.compareMap()
+        assertEquals("Incorrect fields have errors.", expectedErrors.keySet(), errors.keySet());
+        for (String field : expectedErrors.keySet())
         {
-            _test.log("Testing validation for table: " + schemaName + "." + queryName);
+            Set<String> expectedErrs = new HashSet<>(expectedErrors.get(field));
+            Set<String> errs = new HashSet<>(errors.get(field));
 
-            JSONObject extraContext = getExtraContext();
-            extraContext.put("errorThreshold", "INFO");
-            extraContext.put("validateOnly", true); //a flag to force failure
-            extraContext.put("targetQC", "In Progress");
-            if (additionalExtraContext != null)
-            {
-                for (String key : additionalExtraContext.keySet())
-                {
-                    extraContext.put(key, additionalExtraContext.get(key));
-                }
-            }
-
-            JSONObject insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
-            String response = doSaveRows(email, Collections.singletonList(insertCommand), extraContext, false);
-            Map<String, List<String>> errors = processResponse(response);
-
-
-
-            //JSONHelper.compareMap()
-            assertEquals("Incorrect number of fields have errors.  Fields with errors were: " + errors.keySet().toString(), expectedErrors.keySet().size(), errors.keySet().size());
-            for (String field : expectedErrors.keySet())
-            {
-                assertEquals("No errors found for field: " + field, true, errors.containsKey(field));
-                List<String> expectedErrs = expectedErrors.get(field);
-                Set<String> errs = new HashSet<>(errors.get(field));
-
-                _test.log("Expected " + expectedErrs.size() + " errors for field " + field);
-                assertEquals("Wrong number of errors found for field: " + field + "; " + StringUtils.join(errs, "; "), expectedErrs.size(), errs.size());
-                for (String e : expectedErrs)
-                {
-                    boolean success = errs.remove(e);
-                    assertTrue("Error not found for field: " + field + ".  Missing error is: " + e + ".  The errors found were: [" + StringUtils.join(errs, "];[") + "]", success);
-                }
-                assertEquals("Unexpected error found for field: " + field + ".  They are: " + StringUtils.join(errs, "; "), 0, errs.size());
-            }
-
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
+            _test.log("Expected " + expectedErrs.size() + " errors for field " + field);
+            assertEquals("Wrong errors found for field: " + field, expectedErrs, errs);
         }
     }
 
     public JSONObject getExtraContext()
     {
-        try
-        {
-            JSONObject extraContext = new JSONObject();
-            extraContext.put("errorThreshold", "ERROR");
-            extraContext.put("skipIdFormatCheck", true);
-            extraContext.put("allowAnyId", true);
-            extraContext.put("targetQC", "Completed");
-            extraContext.put("isLegacyFormat", true);
-            return extraContext;
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
+        JSONObject extraContext = new JSONObject();
+        extraContext.put("errorThreshold", "ERROR");
+        extraContext.put("skipIdFormatCheck", true);
+        extraContext.put("allowAnyId", true);
+        extraContext.put("targetQC", "Completed");
+        extraContext.put("isLegacyFormat", true);
+        return extraContext;
     }
 }

@@ -15,12 +15,13 @@
  */
 package org.labkey.test.tests.onprc_ehr;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
@@ -45,7 +46,6 @@ import org.labkey.test.util.external.labModules.LabModuleHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,8 +158,8 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         ), false);
 
         //this should cascade update the row in requirements
-        JSONObject cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirementtype", "type", new String[]{"type"}, new Object[][]{{requirementType2}}, new Object[][]{{requirementType1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        PostCommand cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirementtype", "type", new String[]{"type"}, new Object[][]{{requirementType2}}, new Object[][]{{requirementType1}});
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         SelectRowsCommand src = new SelectRowsCommand("ehr_compliancedb", "requirements");
         src.addFilter(new Filter("requirementname", requirementName1));
@@ -211,16 +211,16 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
 
         //this should cascade update the row in requirements
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employeelocations", "location", new String[]{"location"}, new Object[][]{{employeeLocation3}}, new Object[][]{{employeeLocation1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employeecategory", "categoryname", new String[]{"categoryname"}, new Object[][]{{employeeCategory2}}, new Object[][]{{employeeCategory1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employeetitles", "title", new String[]{"title"}, new Object[][]{{employeeTitle2}}, new Object[][]{{employeeTitle1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employeetypes", "type", new String[]{"type"}, new Object[][]{{employeeType2}}, new Object[][]{{employeeType1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         src = new SelectRowsCommand("ehr_compliancedb", "employees");
         src.addFilter(new Filter("employeeid", employee1));
@@ -306,7 +306,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         _apiHelper.insertRow("ehr_compliancedb", "employees", map3, false);
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employees", "employeeid", new String[]{"employeeid"}, new Object[][]{{employee2}}, new Object[][]{{employee1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee1), "employeeid"));
         assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee1), "employeeid"));
@@ -315,7 +315,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee2), "employeeid"));
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirements", "requirementname", new String[]{"requirementname"}, new Object[][]{{requirementName2}}, new Object[][]{{requirementName1}});
-        _apiHelper.doSaveRows(PasswordUtil.getUsername(), Collections.singletonList(cmd), new JSONObject(), true);
+        _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
         assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName1), "requirementname"));
         assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName2), "requirementname"));
     }

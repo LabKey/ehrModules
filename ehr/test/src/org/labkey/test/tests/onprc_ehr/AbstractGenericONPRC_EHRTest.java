@@ -16,7 +16,8 @@
 package org.labkey.test.tests.onprc_ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
@@ -38,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -186,9 +186,9 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
                 {SUBJECTS[1], pastDate1, "Clinical"},
                 {SUBJECTS[1], pastDate1, "Surgery"}
         };
-        JSONObject insertCommand = getApiHelper().prepareInsertCommand("study", "cases", "lsid", fields, data);
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "cases", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "cases", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
-        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), Collections.singletonList(insertCommand), getExtraContext(), true);
+        getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
     }
 
     protected String generateGUID()
@@ -293,8 +293,8 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected void ensureGroupMember(final int groupId, final String animalId) throws Exception
     {
         SelectRowsCommand select1 = new SelectRowsCommand("study", "animal_group_members");
-        select1.addFilter(new Filter("groupId", groupId, Filter.Operator.EQUAL));
         select1.addFilter(new Filter("Id", animalId, Filter.Operator.EQUAL));
+        select1.addFilter(new Filter("isActive", true, Filter.Operator.EQUAL));
 
         SelectRowsResponse resp = select1.execute(getApiHelper().getConnection(), getContainerPath());
         if (resp.getRowCount().intValue() == 0)
@@ -303,7 +303,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
             insertRowsCommand.addRow(new HashMap<String, Object>(){
                 {
                     put("Id", animalId);
-                    put("date", new Date());
+                    put("date", prepareDate(new Date(), -2, 0));
                     put("groupId", groupId);
                 }
             });
