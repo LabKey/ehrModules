@@ -16,6 +16,7 @@
 package org.labkey.ehr.table;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
@@ -67,6 +68,7 @@ import org.labkey.ehr.EHRSchema;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -870,6 +872,15 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         Object id = ctx.get(ID_COL);
 
                         out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
+                    }
+
+                    @Override
+                    public @NotNull Set<ClientDependency> getClientDependencies()
+                    {
+                        return new LinkedHashSet<>(Arrays.asList(
+                                ClientDependency.fromPath("ehr/ehr_api.lib.xml"),
+                                ClientDependency.fromPath("Ext3")
+                        ));
                     }
 
                     @Override

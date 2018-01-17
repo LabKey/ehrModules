@@ -147,11 +147,10 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider(this));
-        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));//todo why twice?
 
         EHRService.get().registerDemographicsProvider(new ActiveProblemsDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider(this));
-        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));//todo why twice?
+        EHRService.get().registerDemographicsProvider(new ArrivalDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider(this));
