@@ -10,6 +10,11 @@ EHR.DemographicsRecord = function(data){
     data = data || {};
 
     return {
+
+        getData: function(){
+            return data;
+        },
+
         getId: function(){
             return data.Id;
         },
