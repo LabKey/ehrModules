@@ -878,8 +878,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     public @NotNull Set<ClientDependency> getClientDependencies()
                     {
                         return new LinkedHashSet<>(Arrays.asList(
-                                ClientDependency.fromPath("ehr/ehr_api.lib.xml"),
-                                ClientDependency.fromPath("Ext3")
+                                ClientDependency.fromPath("ehr/ehr_api.lib.xml")
                         ));
                     }
 

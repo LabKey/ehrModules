@@ -73,7 +73,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
 
         Ext4.each(results.results, function(row){
             row.date = new Date(row.date);
-            row.group = row.date.format(LABKEY.extDefaultDateFormat) + '_' + row.id;
+            row.group = Ext4.util.Format.date(row.date,LABKEY.extDefaultDateFormat) + '_' + row.id;
             row.html = row.html ? row.html.replace(/\n/g, '<br>') : null;
             toAdd.push(this.createModel(row));
         }, this);

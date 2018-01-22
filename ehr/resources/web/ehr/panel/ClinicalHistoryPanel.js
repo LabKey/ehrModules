@@ -99,7 +99,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             hideHeaders: true,
             deferEmptyText: true,
             viewConfig : {
-                emptyText: this.minDate ? 'No records found since: ' + this.minDate.format(LABKEY.extDefaultDateFormat) : 'There are no records to display',
+                emptyText: this.minDate ? 'No records found since: ' + Ext4.util.Format.date(this.minDate, LABKEY.extDefaultDateTimeFormat): 'There are no records to display',
                 deferEmptyText: true,
                 enableTextSelection: true,
                 border: false,
@@ -194,9 +194,9 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         if (this.caseId)
                             params.caseId = this.caseId;
                         if (this.minDate)
-                            params.minDate = this.minDate.format(LABKEY.extDefaultDateFormat);
+                            params.minDate = Ext4.util.Format.date(this.minDate, LABKEY.extDefaultDateFormat);
                         if (this.maxDate)
-                            params.maxDate = this.maxDate.format(LABKEY.extDefaultDateFormat);
+                            params.maxDate = Ext4.util.Format.date(this.maxDate, LABKEY.extDefaultDateFormat);
                         if (this.sortMode)
                             params.sortMode = this.sortMode;
                         if (this.checkedItems && this.checkedItems.length)
@@ -321,7 +321,8 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         name = name.split('_');
                         var id = name.shift();
                         var date = name[0].split("-");
-                        return id + ' (' + new Date(date[0], date[1]-1, date[2], 0, 0, 0).format(LABKEY.extDefaultDateFormat) + ')';
+                        var date2 = new Date(date[0], date[1]-1, date[2], 0, 0, 0);
+                        return id + ' (' +  Ext4.util.Format.date(date2, LABKEY.extDefaultDateTimeFormat)  + ')';
                     }
                 }
             ],

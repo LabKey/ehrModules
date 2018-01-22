@@ -836,7 +836,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                             if (dateString === '') {
                                                 dateString = new Date();
                                             }
-                                            return (new Date(dateString)).format('M d, Y');
+                                            return  (Ext4.util.Format.date(new Date(dateString)),'M d, Y');
                                         };
 
                                         if (!VM.selectedAssignmentItem.stuck()) {
@@ -1023,7 +1023,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                             if (dateString === '') {
                                                 dateString = new Date();
                                             }
-                                            return (new Date(dateString)).format('M d, Y');
+                                            return  (Ext4.util.Format.date(new Date(dateString)),'M d, Y');
                                         };
 
                                         if (!VM.selectedHousingItem.stuck()) {

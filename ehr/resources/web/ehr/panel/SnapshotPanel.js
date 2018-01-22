@@ -403,7 +403,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             Ext4.each(rows, function(r){
-                text.push('<tr><td nowrap>' + LABKEY.Utils.encodeHtml(r.weight) + ' kg' + '</td><td style="padding-left: 5px;" nowrap>' + r.date.format(LABKEY.extDefaultDateFormat) + '</td><td style="padding-left: 5px;" nowrap>' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
+                text.push('<tr><td nowrap>' + LABKEY.Utils.encodeHtml(r.weight) + ' kg' +
+                        '</td><td style="padding-left: 5px;" nowrap>' +
+                        Ext4.util.Format.date(r.date,LABKEY.extDefaultDateFormat) +
+                        '</td><td style="padding-left: 5px;" nowrap>' +
+                        (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
         }
 
