@@ -427,8 +427,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         JSONObject weightInTransaction = new JSONObject();
         Double newWeight = 2.0;
         Double newAllowableBlood = newWeight * bloodPerKg * maxDrawPct;
-        weightInTransaction.put(animalId, Arrays.asList(Maps.<String, Object>of("objectid", generateGUID(), "date", prepareDate(startCal.getTime(), bloodDrawInterval, 2), "weight", newWeight)));
-        additionalExtraContext.put("weightInTransaction", weightInTransaction.toString());
+        weightInTransaction.put(animalId, Arrays.asList(Maps.<String, Object>of("objectid", generateGUID(), "date", _df.format(prepareDate(startCal.getTime(), bloodDrawInterval, 2)), "weight", newWeight)));
+        additionalExtraContext.put("weightInTransaction", weightInTransaction);
         additionalExtraContext.put("targetQC", null);
 
         List<String> expectedErrors2 = new ArrayList<>();
@@ -644,7 +644,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                 "enddate", null,
                 "project", projectId
         ));
-        additionalExtraContext.put("assignmentsInTransaction", assignmentsInTransaction.toString());
+        additionalExtraContext.put("assignmentsInTransaction", assignmentsInTransaction);
 
         getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "assignment", new String[]{"Id", "date", "enddate", "project", "_recordId"}, new Object[][]{
                 {SUBJECTS[3], prepareDate(new Date(), 10, 0), null, projectId, "recordID"}
