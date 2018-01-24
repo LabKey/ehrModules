@@ -524,6 +524,9 @@ EHR.reports.snapshot = function(panel, tab, showActionsBtn){
 
 };
 
+// this allows for PRC specific overrides of which snapshot panel xtype to use
+EHR.reports.clinicalHistoryPanelXtype = 'ehr-smallformsnapshotpanel';
+
 EHR.reports.fullClinicalHistory = function(panel, tab, showActionsBtn){
     EHR.reports.clinicalHistory(panel, tab, showActionsBtn, true);
 }
@@ -571,6 +574,8 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
             return;
         }
 
+        tab.addCls('ehr-snapshotsubpanel');
+
         var minDate = includeAll ? null : Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2);
         var toAdd = [];
         Ext4.each(subjects, function(s){
@@ -581,7 +586,7 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
             });
 
             toAdd.push({
-                xtype: 'ehr-smallformsnapshotpanel',
+                xtype: EHR.reports.clinicalHistoryPanelXtype,
                 showActionsButton: !!showActionsBtn,
                 hrefTarget: '_blank',
                 border: false,

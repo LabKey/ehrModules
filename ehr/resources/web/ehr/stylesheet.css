@@ -10,7 +10,9 @@
 }
 
 /* EHR snapshot panel */
-.ehr-snapshotpanel hr, .ehr-weightsummarypanel hr {
+.ehr-snapshotpanel hr,
+.ehr-snapshotsubpanel hr,
+.ehr-weightsummarypanel hr {
     margin-top: 5px;
 }
 /* End: EHR snapshot panel */
