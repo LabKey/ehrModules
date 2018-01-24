@@ -9,6 +9,12 @@
     color: #000000;
 }
 
+/* EHR snapshot panel */
+.ehr-snapshotpanel hr, .ehr-weightsummarypanel hr {
+    margin-top: 5px;
+}
+/* End: EHR snapshot panel */
+
 /*this is used to wrap the DIV surrounding icons on frontPage.html*/
 .ehr-tool-icon-wrapper-lg {
     width: 300px;

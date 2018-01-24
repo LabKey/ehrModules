@@ -63,6 +63,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.add(FieldKey.fromString("birth"));
         keys.add(FieldKey.fromString("death"));
         keys.add(FieldKey.fromString("geographic_origin"));
+        keys.add(FieldKey.fromString("geographic_origin/description"));
         keys.add(FieldKey.fromString("origin"));
 
         keys.add(FieldKey.fromString("dam"));

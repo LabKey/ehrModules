@@ -11,6 +11,7 @@
 Ext4.define('EHR.panel.WeightSummaryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-weightsummarypanel',
+    cls: 'ehr-weightsummarypanel',
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -19,9 +20,7 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
                 border: false
             },
             items: [{
-                html: '<b>Weight Summary:</b>'
-            },{
-                html: '<hr>'
+                html: '<b>Weight Summary:</b><hr>'
             },{
                 itemId: 'summaryArea',
                 border: false,

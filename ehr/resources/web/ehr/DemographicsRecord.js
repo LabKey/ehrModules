@@ -81,7 +81,7 @@ EHR.DemographicsRecord = function(data){
 
         getBirth: function(){
             if (data['birth'])
-            return LDK.ConvertUtils.parseDate(data['birth']);
+                return LDK.ConvertUtils.parseDate(data['birth']);
         },
 
         getBirthInfo: function(){

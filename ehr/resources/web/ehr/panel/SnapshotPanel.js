@@ -14,6 +14,7 @@
 Ext4.define('EHR.panel.SnapshotPanel', {
     extend: 'Ext.form.Panel',
     alias: 'widget.ehr-snapshotpanel',
+    cls: 'ehr-snapshotpanel',
 
     showLocationDuration: true,
     showActionsButton: true,
@@ -49,7 +50,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 xtype: 'container',
                 html: '<b>Summary:</b><hr>'
             },{
-                bodyStyle: 'padding: 5px;',
+                bodyStyle: 'padding-bottom: 20px;',
                 layout: 'column',
                 defaults: {
                     border: false
@@ -142,14 +143,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         return [{
             xtype: 'container',
             name: 'additionalInformation',
-            style: 'padding-bottom: 10px;',
+            style: 'padding-bottom: 20px;',
             border: false,
             defaults: {
                 border: false
             },
             items: [{
                 xtype: 'container',
-                html: '<b>Additional Information</b><hr>'
+                html: '<b>Additional Information:</b><hr>'
             },{
                 layout: 'column',
                 defaults: {
@@ -281,7 +282,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
         if (this.showExtendedInformation){
             this.appendBirthResults(toSet, results.getBirthInfo(), results.getBirth());
-            this.appendDeathResults(toSet, results.getDeathInfo());
+            this.appendDeathResults(toSet, results.getDeathInfo(), results.getDeath());
             this.appendParentageResults(toSet, results.getParents());
         }
     },
@@ -667,7 +668,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (category)
                     category = Ext4.String.trim(category);
 
-                var val = LABKEY.Utils.encodeHtml(row['flag/value']);
+                var val = LABKEY.Utils.encodeHtml(this.getFlagDisplayValue(row));
                 var text = val;
                 if (category)
                     text = LABKEY.Utils.encodeHtml(category) + ': ' + val;
@@ -685,6 +686,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + LABKEY.Utils.encodeHtml(this.subjectId) + '\', this);">' + values.join('<br>') + '</div>' : null;
+    },
+
+    getFlagDisplayValue: function(row) {
+        return row['flag/value'];
     },
 
     appendBirthResults: function(toSet, results, birth){
@@ -792,7 +797,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
             },
             items: [{
                 xtype: 'container',
-                html: '<b>' + this.headerLabel + ':</b>',
+                html: '<b>' + this.headerLabel + ':</b><hr>',
                 itemId: 'headerItem',
                 overCls: 'ldk-clickable',
                 listeners: {
@@ -805,7 +810,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 border: false,
                 xtype: 'container',
                 itemId: 'childPanel',
-                style: 'padding-bottom: 10px;',
+                style: 'padding-bottom: 20px;',
                 hidden: this.renderCollapsed,
                 defaults: {
                     border: false
