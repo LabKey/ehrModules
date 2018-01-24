@@ -210,12 +210,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             items[0].items = items[0].items.concat(this.getExtendedItems());
         }
 
-        items[0].items = items[0].items.concat([{
-            name: 'treatments',
-            xtype: 'ehr-snapshotchildpanel',
-            headerLabel: 'Current Medications / Prescribed Diets',
-            emptyText: 'There are no active medications'
-        }]);
+        var currentMedicationsPanel = this.getCurrentMedicationsPanel();
+        if (currentMedicationsPanel) {
+            items[0].items = items[0].items.concat([currentMedicationsPanel]);
+        }
 
         if (this.showActionsButton){
             items.push({
@@ -225,6 +223,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         return items;
+    },
+
+    getCurrentMedicationsPanel: function() {
+        return {
+            name: 'treatments',
+            xtype: 'ehr-snapshotchildpanel',
+            headerLabel: 'Current Medications / Prescribed Diets',
+            emptyText: 'There are no active medications'
+        };
     },
 
     loadData: function(){

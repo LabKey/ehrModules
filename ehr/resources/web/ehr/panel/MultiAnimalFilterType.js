@@ -72,13 +72,14 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                     }
 
                     Ext4.create('Ext.window.Window', {
+                        border: false,
                         modal: true,
-                        width: 330,
                         closeAction: 'destroy',
                         title: roomCageTitle,
                         items: [{
                             xtype: 'form',
-                            bodyStyle: 'padding:5px',
+                            border: false,
+                            padding: 5,
                             items: items
                         }],
                         buttons: [{
@@ -116,7 +117,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                         items.push({
                             xtype: 'ehr-projectfield',
                             itemId: 'project',
-                            style: 'margin-top: 5px',
+                            style: 'margin: 5px 5px 0 5px',
                             onlyIncludeProjectsWithAssignments: true
                         });
                     }
@@ -125,14 +126,14 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                         items.push({
                             xtype: 'ehr-protocolfield',
                             itemId: 'protocol',
-                            style: 'margin-top: 5px',
+                            style: 'margin: 5px',
                             onlyIncludeProtocolsWithAssignments: true
                         });
                     }
 
                     Ext4.create('Ext.window.Window', {
+                        border: false,
                         modal: true,
-                        width: 330,
                         closeAction: 'destroy',
                         title: projectProtocolTitle,
                         items: items,
