@@ -28,8 +28,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import static org.labkey.test.Locator.NBSP;
 import static org.labkey.test.components.ext4.Window.Window;
@@ -77,7 +79,15 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
 
     public void searchSingleAnimal(String animalId)
     {
+        searchSingleAnimal(animalId, null);
+    }
+
+    public void searchSingleAnimal(String animalId, String valueToWaitFor)
+    {
         selectSingleAnimalSearch().searchFor(animalId);
+
+        if (valueToWaitFor != null)
+            waitForElement(Locator.tagWithClass("div", "x4-form-display-field").withText(valueToWaitFor));
     }
 
     public void appendMultipleAnimals(String... animalIds)
@@ -143,6 +153,32 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
             iterator.set(iterator.next().replaceAll(NBSP, " ").trim());
         }
         return texts;
+    }
+
+    public boolean hasExpectedColumnValues(Map<String,String> expectedColValues)
+    {
+        WebElement activeReportPanel = getActiveReportPanel();
+
+        List<String> labels = getTexts(Locator.byClass("x4-field-label-cell").findElements(activeReportPanel));
+        List<String> values = getTexts(Locator.byClass("x4-field-label-cell").followingSibling("td").findElements(activeReportPanel));
+        Iterator<String> ilabels = labels.iterator();
+        Iterator<String> ivalues = values.iterator();
+        while (ilabels.hasNext() && ivalues.hasNext())
+        {
+            String label = ilabels.next();
+            String value = ivalues.next();
+
+            if (expectedColValues.containsKey(label))
+            {
+                String expected = expectedColValues.get(label);
+                log(label + ": expected=" + expected + ", actual=" + value);
+
+                if (value != null && !value.equals(expected))
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
