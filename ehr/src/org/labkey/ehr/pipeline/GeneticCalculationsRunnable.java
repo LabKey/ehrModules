@@ -40,6 +40,8 @@ import org.labkey.ehr.EHRManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
@@ -119,7 +121,14 @@ public class GeneticCalculationsRunnable
 
             AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters, null);
             PipelineService.get().queueJob(job);
-            job.setLogFile(new File(job.getLogFile().getParent() + "/kinship_" + DateUtil.formatDateTime(new Date(), LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat()) + ".txt.log"));
+
+            String dateFormat = "yyyy_MM_dd_hh_mm_ss";
+            SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+            Calendar cal = Calendar.getInstance();
+            Date now = cal.getTime();
+            String timestamp = formatter.format(now);
+
+            job.setLogFile(new File(job.getLogFile().getParent() + "/kinship_" + timestamp + ".txt.log"));
         }
         catch (ClassNotFoundException e)
         {
