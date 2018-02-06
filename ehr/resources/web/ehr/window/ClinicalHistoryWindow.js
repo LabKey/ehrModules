@@ -10,6 +10,7 @@
 Ext4.define('EHR.window.ClinicalHistoryWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.ehr-clinicalhistorywindow',
+    border: false,
 
     statics: {
         showClinicalHistory: function(objectId, Id, date, el){
@@ -75,7 +76,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
 
     getItems: function(){
         return [{
-            xtype: 'ehr-smallformsnapshotpanel',
+            xtype: EHR.reports.clinicalHistoryPanelXtype || 'ehr-smallformsnapshotpanel',
             showActionsButton: false,
             subjectId: this.subjectId,
             hideHeader: true,
