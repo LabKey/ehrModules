@@ -39,7 +39,9 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
+import org.labkey.api.study.StudyService;
 import org.labkey.api.util.CPUTimer;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
@@ -295,7 +297,36 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             {
                 for (Pair<String, String> pair : changed)
                 {
-                    if (p.requiresRecalc(pair.first, pair.second))
+                    String schema = pair.first;
+
+                    // Backwards compatibility - datasets can be resolved by either name or label. They originally
+                    // reported their table's name as being the dataset's label, but it's now flipped to be the dataset's
+                    // name. Thus, code may be checking for either name or label, so ask based on both variants
+                    String query = pair.second;
+                    String query2 = pair.second;
+
+                    if ("study".equalsIgnoreCase(schema))
+                    {
+                        Study study = StudyService.get().getStudy(c);
+                        if (study != null)
+                        {
+                            Dataset dataset = study.getDatasetByName(query);
+                            if (dataset != null)
+                            {
+                                query2 = dataset.getLabel();
+                            }
+                            else
+                            {
+                                dataset = study.getDatasetByLabel(query);
+                                if (dataset != null)
+                                {
+                                    query2 = dataset.getName();
+                                }
+                            }
+                        }
+                    }
+
+                    if (p.requiresRecalc(schema, query) || p.requiresRecalc(schema, query2))
                     {
                         needsUpdate.add(p);
                         providerNames.add(p.getName());
