@@ -198,6 +198,10 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
         damIndex <- which(as.numeric(allPed$Id) == as.numeric(ped$Dam[i]));
         sireIndex <- which(as.numeric(allPed$Id) == as.numeric(ped$Sire[i]));
 
+        # if we didn't find a numeric ID match, check for non-numeric
+        if (length(damIndex) == 0) damIndex <- which(allPed$Id == ped$Dam[i]);
+        if (length(sireIndex) == 0) sireIndex <- which(allPed$Id == ped$Sire[i]);
+
         if((is.na(ped$Sire[i]))& (!is.na(ped$Dam[i]))){
             xt <- sample (1:30,1)
             #typeof(ped$Sire);
