@@ -18,7 +18,13 @@ if (length(labkey.data$category) > 0){
         );
     #print(str(labkey.data));
 
-    data <- table(labkey.data$category, labkey.data$id_dataset_demographics_species);
+    # determine which species column to use for display
+    labkey.data$species = labkey.data$id_dataset_demographics_species;
+    if ("id_dataset_demographics_species_common_name" %in% colnames(labkey.data)) {
+        labkey.data$species = labkey.data$id_dataset_demographics_species_common_name;
+    }
+
+    data <- table(labkey.data$category, labkey.data$species);
     barplot(data,
         main="Population Change By Species",
         xlab="Category",
@@ -29,7 +35,7 @@ if (length(labkey.data$category) > 0){
 
     dev.off();
 
-    theTable <- table(factor(labkey.data$id_dataset_demographics_species), labkey.data$category)
+    theTable <- table(factor(labkey.data$species), labkey.data$category)
     theTable
 
     write.table(theTable, file = "${tsvout:tsvfile}", sep = "\t", qmethod = "double", col.names=NA)
