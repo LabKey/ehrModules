@@ -199,7 +199,8 @@ Ext4.define('EHR.grid.Panel', {
             if (colCfg){
                 if (cfg.jsonType == 'date' && cfg.extFormat){
                     if (Ext4.Date.formatContainsHourInfo(cfg.extFormat)){
-                        colCfg.editor.xtype = 'xdatetime';
+                        if(colCfg.editor)
+                            colCfg.editor.xtype = 'xdatetime';
                     }
                 }
 
