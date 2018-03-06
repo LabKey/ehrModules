@@ -332,7 +332,7 @@ public class EHRController extends SpringActionController
             List<String> pks = ti.getPkColumnNames();
             String keyField = null;
 
-            String queryName = (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
+            String queryName = ti.getName();
 
             if (pks.size() == 1)
                 keyField = pks.get(0);
@@ -345,7 +345,12 @@ public class EHRController extends SpringActionController
                 String importStr;
                 if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()))
                 {
-                    detailsStr = "/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + queryName;
+                    // Because the Ext3-based UI can rely on loading JS-based metadata that is keyed
+                    // off table name, and because when this was originally written LK preferentially used label over title for
+                    // datasets, we need to continue to use dataset label here too.
+                    String ext3QueryName = (ti instanceof DatasetTable) ? ti.getTitle() : ti.getName();
+
+                    detailsStr = "/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + ext3QueryName;
                     importStr = "";
                     for (String pkCol : ti.getPkColumnNames())
                     {
@@ -355,7 +360,7 @@ public class EHRController extends SpringActionController
 
                     if (form.isShowImport())
                     {
-                        DetailsURL importUrl = DetailsURL.fromString("/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/manageRecord.view?schemaName=" + schemaName + "&queryName=" + ext3QueryName + importStr);
                         importUrl.setContainerContext(getContainer());
 
                         url.addParameter("importURL", importUrl.toString());
