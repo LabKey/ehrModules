@@ -47,7 +47,7 @@
                     <includeScript>/clientapi/Ext4.lib.xml</includeScript>
                     <includeScript>/laboratory/assayButtons.js</includeScript>
                     <!--<onRender>Laboratory.onAssayLoad</onRender>-->
-                    <item text="More Actions" insertAfter="last">
+                    <item text="More Actions" insertAfter="last" iconCls="ellipsis-h">
                         <item text="View Batches">
                             <onClick>Laboratory.Assay.viewBatchesBtn(dataRegion, 'Runs')</onClick>
                         </item>
