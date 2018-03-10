@@ -168,7 +168,7 @@ EHR.Server.Validation = {
             scope: this,
             callback: function(data){
                 if (data){
-                    if (data['gender/origGender'] && data['gender/origGender'] != 'f')
+                    if (data['gender/origGender'] && data['gender/origGender'].toLowerCase() != 'f')
                         EHR.Server.Utils.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
                 }
             }
