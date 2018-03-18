@@ -13,6 +13,7 @@
                 <columns>
                     <column columnName="rowid">
                         <columnTitle>Task Id</columnTitle>
+                        <description>Value for this field is auto-generated</description>
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
                         <shownInInsertView>true</shownInInsertView>
@@ -31,6 +32,7 @@
                     </column>
                     <column columnName="assignedto">
                         <columnTitle>Assigned To</columnTitle>
+                        <description>Appropriate approval authority or user</description>
                         <nullable>true</nullable>
                         <fk>
                             <fkDbSchema>core</fkDbSchema>
@@ -42,6 +44,7 @@
                         <columnTitle>Due Date</columnTitle>
                         <nullable>true</nullable>
                         <formatString>DateTime</formatString>
+                        <description>Task verification due date</description>
                     </column>
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
@@ -124,6 +127,7 @@
                         </conditionalFormats>
                     </column>
                     <column columnName="title">
+                        <description>Task title or brief description</description>
                         <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="updateTitle" wrappedColumnName="title">
