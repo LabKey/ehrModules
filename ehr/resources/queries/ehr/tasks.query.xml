@@ -66,6 +66,7 @@
                     <column columnName="qcstate">
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>
+                        <description>Task Status</description>
                         <columnTitle>Status</columnTitle>
                         <displayWidth>50</displayWidth>
                         <!--<url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>-->
