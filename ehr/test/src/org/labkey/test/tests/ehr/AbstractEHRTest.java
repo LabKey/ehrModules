@@ -98,6 +98,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             getExpectedAnimalIDCasing("TEST4564246")};
     protected final String DEAD_ANIMAL_ID = getExpectedAnimalIDCasing("TEST9118022");
     protected static final String TASK_TITLE = "Test weight task";
+    protected static final String TASK_TITLE_BRD_REG = "Test breeding registration task";
+    protected static final String TASK_TITLE_BRD_OBS = "Test breeding observation task";
     protected static final String MPR_TASK_TITLE = "Test MPR task";
     protected static final String VIEW_TEXT = "Browse All";
 
