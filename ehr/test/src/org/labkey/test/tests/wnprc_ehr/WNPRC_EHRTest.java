@@ -144,7 +144,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         setFormElement(Locator.name("title"), TASK_TITLE);
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)
-        assertFormElementEquals(Locator.name("title"), TASK_TITLE);
+        assertEquals(TASK_TITLE, getFormElement(Locator.name("title")));
 
         log("Add blank weight entries");
         waitAndClick(Locator.extButtonEnabled("Add Record"));
@@ -158,7 +158,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         waitForElement(Locator.linkWithText(DEAD_ANIMAL_ID), WAIT_FOR_JAVASCRIPT);
 
         //these fields seem to be forgetting their values, so verify they show the correct value
-        assertFormElementEquals(Locator.name("title"), TASK_TITLE);
+        assertEquals(TASK_TITLE, getFormElement(Locator.name("title")));
 
         waitForElement(Locator.button("Add Batch"), WAIT_FOR_JAVASCRIPT);
         click(Locator.extButton("Add Batch"));
@@ -532,8 +532,7 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
 
         log("Verify location based history");
         animalHistoryPage = animalHistoryPage
-                .selectCurrectLocation()
-                .selectAreas(AREA_ID)
+                .selectCurrectLocation().selectAreas(AREA_ID)
                 .selectRooms(ROOM_ID)
                 .setCage(CAGE_ID)
                 .refreshReport();
