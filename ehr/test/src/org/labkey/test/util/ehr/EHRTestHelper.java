@@ -17,6 +17,7 @@ package org.labkey.test.util.ehr;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.labkey.api.util.Pair;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
@@ -308,7 +309,7 @@ public class EHRTestHelper
         }
         if (categoryTabs.isEmpty())
             categoryTabs = participantView.findCategoryTabs().values();
-        List<String> firstBadReport = null;
+        List<Pair<ParticipantViewPage.CategoryTab, ParticipantViewPage.ReportTab>> badReports = new ArrayList<>();
         for (ParticipantViewPage.CategoryTab categoryTab : categoryTabs)
         {
             log("Category: " + categoryTab.getLabel());
@@ -344,9 +345,12 @@ public class EHRTestHelper
                     {
                         errors.add("Error in: " + categoryTab + " - " + reportTab);
                         for (String errorText : errorTexts)
+                        {
                             if (!errorText.trim().isEmpty())
                                 errors.add("\t" + errorText.trim());
-                        firstBadReport = Arrays.asList(categoryTab.getLabel(), reportTab.getLabel());
+                        }
+
+                        badReports.add(new Pair<>(categoryTab, reportTab));
                     }
                 }
             }
@@ -357,8 +361,8 @@ public class EHRTestHelper
         {
             try
             {
-                participantView.clickCategoryTab(firstBadReport.get(0));
-                participantView.clickReportTab(firstBadReport.get(1));
+                badReports.get(0).first.select(); // select category tab
+                badReports.get(0).second.select(); // select report tab
             }
             finally
             {
