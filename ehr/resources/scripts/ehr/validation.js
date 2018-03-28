@@ -175,6 +175,20 @@ EHR.Server.Validation = {
         });
     },
 
+    verifyIdIsFemale: function(id, errors, helper, targetField){
+        EHR.Server.Utils.findDemographics({
+            participant: id,
+            helper: helper,
+            scope: this,
+            callback: function(data){
+                if (data){
+                    if (data['gender/origGender'] && data['gender/origGender'].toLowerCase() != 'f')
+                        EHR.Server.Utils.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
+                }
+            }
+        });
+    },
+
     validateAnimal: function(helper, scriptErrors, row, idProp){
         if (!row[idProp])
             return;
