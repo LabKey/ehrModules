@@ -162,17 +162,7 @@ EHR.Server.Validation = {
      * @param targetField The field containing the ID string to verify.
      */
     verifyIsFemale: function(row, errors, helper, targetField){
-        EHR.Server.Utils.findDemographics({
-            participant: row.Id,
-            helper: helper,
-            scope: this,
-            callback: function(data){
-                if (data){
-                    if (data['gender/origGender'] && data['gender/origGender'].toLowerCase() != 'f')
-                        EHR.Server.Utils.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
-                }
-            }
-        });
+        verifyIdIsFemale(row.Id, errors, helper, targetField);
     },
 
     verifyIdIsFemale: function(id, errors, helper, targetField){
