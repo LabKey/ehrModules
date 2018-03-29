@@ -11,7 +11,7 @@ Ext4.onReady(function () {
             LABKEY.Query.selectRows({
                 schemaName: 'study',
                 queryName: 'DataSets',
-                columns: 'categoryId/label,label,ShowByDefault',
+                columns: 'categoryId/label,name,label,ShowByDefault',
                 success: function(results){
                     onSuccess(results)
                 },
@@ -32,8 +32,9 @@ Ext4.onReady(function () {
             renderer: function(record){
                 var item = {
                     schemaName: 'study',
-                    queryName: record.data.Label
-                }
+                    queryName: record.data.Name,
+                    label: record.data.Label
+                };
 
                 var cfg = {
                     layout: 'hbox',
