@@ -118,7 +118,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
         //this applies the standard property descriptors, creates indexes, etc.
         // NOTE: this currently will log an error from DatasetDefinition whenever we create a new column.  This really isnt a bug, so ignore
-        checkLeaksAndErrors();
+        checkErrors();
         beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/ensureDatasetProperties.view");
         waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), 120000);
         resetErrors();
