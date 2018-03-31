@@ -162,7 +162,7 @@ EHR.Server.Validation = {
      * @param targetField The field containing the ID string to verify.
      */
     verifyIsFemale: function(row, errors, helper, targetField){
-        verifyIdIsFemale(row.Id, errors, helper, targetField);
+        this.verifyIdIsFemale(row.Id, errors, helper, targetField);
     },
 
     verifyIdIsFemale: function(id, errors, helper, targetField){
