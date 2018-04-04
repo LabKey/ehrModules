@@ -74,7 +74,7 @@ public class EHRUpgradeCode implements UpgradeCode
 
         Module module = ModuleLoader.getInstance().getModule(moduleContext.getName());
         String category = "moduleProperties." + module.getName();
-        String ehrStudyContainerPath = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), category, EHRManager.EHRStudyContainerPropName);
+        String ehrStudyContainerPath = PropertyManager.getCoalescedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), category, EHRManager.EHRStudyContainerPropName);
         if (ehrStudyContainerPath != null)
         {
             Container ehrStudyContainer = ContainerManager.getForPath(ehrStudyContainerPath);
