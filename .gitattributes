@@ -1180,6 +1180,7 @@ ehr/resources/web/ehr/form/field/AnimalField.js -text
 ehr/resources/web/ehr/form/field/AnimalGroupField.js -text
 ehr/resources/web/ehr/form/field/AnimalIdGeneratorField.js -text
 ehr/resources/web/ehr/form/field/AreaField.js -text
+ehr/resources/web/ehr/form/field/BooleanField.js -text
 ehr/resources/web/ehr/form/field/CageField.js -text
 ehr/resources/web/ehr/form/field/DrugDoseField.js -text
 ehr/resources/web/ehr/form/field/DrugVolumeField.js -text
