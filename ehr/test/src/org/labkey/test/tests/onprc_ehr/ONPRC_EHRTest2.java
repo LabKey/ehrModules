@@ -47,6 +47,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
@@ -594,6 +596,25 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         grid.completeEdit();
 
         _helper.discardForm();
+
+        if (getServerErrorCount() == 1)
+        {
+            String serverErrors = getServerErrors();
+            if (serverErrors.contains("Long running request:"))
+            {
+                Pattern errorPattern = Pattern.compile("^Duration: (?<duration>\\d+\\.?\\d*)", Pattern.MULTILINE);
+                Matcher errorMatcher = errorPattern.matcher(serverErrors);
+                if (errorMatcher.find())
+                {
+                    double duration = Double.parseDouble(errorMatcher.group("duration"));
+                    if (duration < 50)
+                    {
+                        log("Ignoring long running request: " + errorMatcher.group());
+                        resetErrors();
+                    }
+                }
+            }
+        }
     }
 
     @Test
