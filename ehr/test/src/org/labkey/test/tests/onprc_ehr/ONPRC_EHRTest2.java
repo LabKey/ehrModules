@@ -28,6 +28,7 @@ import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
+import org.labkey.test.TestProperties;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
@@ -597,11 +598,28 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         _helper.discardForm();
 
-        if (getServerErrorCount() == 1)
+        if (TestProperties.isTestRunningOnTeamCity() && getServerErrorCount() == 1)
         {
             String serverErrors = getServerErrors();
             if (serverErrors.contains("Long running request:"))
             {
+                /* This test fails intermittently on TeamCity with something like:
+                 ERROR dminController$LogAction 2018-04-11 10:36:11,464     http-nio-8111-exec-7 : Long running request:
+                 Duration: 25.069
+                 Form Type: arrival
+                 TaskId: 90D60DA0-1FA1-1036-9988-033051EFCC79
+                 Status: 200
+                 Error Count: 3
+                 Total Commands: 3
+                 Validate Only: true
+                 Total Rows: 3 (8.356333333333334 sec/row)
+                 User: teamcity@labkey.test
+                 ReferrerURL: http://localhost:8111/labkey/ONPRC_EHR_TestProject2/ehr-dataEntryForm.view?formType=arrival
+                 *
+                 * The error threshold is 25s and test test hovers around that mark on TeamCity
+                 * Since the real-world performance of this form is nowhere near that slow, we increase the threshold
+                 * for long-running requests when running on TeamCity
+                 */
                 Pattern errorPattern = Pattern.compile("^Duration: (?<duration>\\d+\\.?\\d*)", Pattern.MULTILINE);
                 Matcher errorMatcher = errorPattern.matcher(serverErrors);
                 if (errorMatcher.find())
@@ -612,6 +630,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
                         log("Ignoring long running request: " + errorMatcher.group());
                         resetErrors();
                     }
+                    // Leave errors for standard error handling if the duration exceeds the increased threshold
                 }
             }
         }
