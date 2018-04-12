@@ -370,5 +370,17 @@
         <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="colony_assignments" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="breedingRoster" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
+        <ns:datasetPermission datasetName="breeding" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
     </ns:perDatasetPermissions>
 </ns:studySecurityPolicy>
