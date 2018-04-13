@@ -20,9 +20,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.TruncateTableCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
@@ -54,7 +57,7 @@ import static org.junit.Assert.assertEquals;
  * NOTE: EHRApiTest may be a better location for tests designed to test server-side trigger scripts
  * or similar business logic.
  */
-@Category({CustomModules.class, EHR.class, ONPRC.class})
+@Category({CustomModules.class, EHR.class})
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
     public static final String PROJECT_NAME = "WNPRC_TestProject";
@@ -85,6 +88,60 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         initTest.createTestSubjects();
         initTest.clickFolder("EHR");
         initTest._containerHelper.enableModule("WNPRC_EHR");
+
+        initTest.truncateAndInsertAreaRecords();
+    }
+
+    //added to keep the test happy, since this test also runs on a SQL Server where other center's "areas" exists in ehr_lookups.areas,
+    //and these tests run in a different order coexisting within the same database instance so which ever center's area got populated
+    //before running this test will be used.
+    //Note: EHR suite runs on SQL Server and this test is set to run on EHR suite (in addition to CustomModules Suite).
+    private void truncateAndInsertAreaRecords() throws Exception
+    {
+        //truncate
+        Connection conn = createDefaultConnection(false);
+        TruncateTableCommand command = new TruncateTableCommand("ehr_lookups", "areas");
+        command.execute(conn, getProjectName());
+
+        //insert
+        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "areas");
+        Map<String,Object> rowMap = new HashMap<>();
+        rowMap.put("area", 	"A1/AB190");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "A2");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "AB-New");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "AB-Old");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "C3");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "C4");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "CB");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "Charmany");
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("area", "WIMR");
+        insertCmd.addRow(rowMap);
+
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
     }
 
     public void importStudy()
