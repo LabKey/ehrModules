@@ -963,15 +963,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     public List<Map<String, Object>> loadTsv(File tsv)
     {
-        try
-        {
-            TabLoader loader = new TabLoader(tsv, true);
-            loader.setInferTypes(false);
-            return loader.load();
-        }
-        catch (IOException fail)
-        {
-            throw new RuntimeException(fail);
-        }
+        TabLoader loader = new TabLoader(tsv, true);
+        loader.setInferTypes(false);
+        return loader.load();
     }
 }
