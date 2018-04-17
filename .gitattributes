@@ -285,6 +285,7 @@ ehr/api-src/org/labkey/api/ehr/table/DurationColumn.java -text
 ehr/build.gradle -text
 ehr/module.properties -text
 ehr/resources/credits/scripts.txt -text
+ehr/resources/data/areas.tsv -text
 ehr/resources/data/lookup_sets.tsv -text
 ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text

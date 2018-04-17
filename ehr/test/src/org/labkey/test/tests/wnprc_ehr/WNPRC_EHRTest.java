@@ -88,60 +88,6 @@ public class WNPRC_EHRTest extends AbstractGenericEHRTest
         initTest.createTestSubjects();
         initTest.clickFolder("EHR");
         initTest._containerHelper.enableModule("WNPRC_EHR");
-
-        initTest.truncateAndInsertAreaRecords();
-    }
-
-    //added to keep the test happy, since this test also runs on a SQL Server where other center's "areas" exists in ehr_lookups.areas,
-    //and these tests run in a different order coexisting within the same database instance so which ever center's area got populated
-    //before running this test will be used.
-    //Note: EHR suite runs on SQL Server and this test is set to run on EHR suite (in addition to CustomModules Suite).
-    private void truncateAndInsertAreaRecords() throws Exception
-    {
-        //truncate
-        Connection conn = createDefaultConnection(false);
-        TruncateTableCommand command = new TruncateTableCommand("ehr_lookups", "areas");
-        command.execute(conn, getProjectName());
-
-        //insert
-        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "areas");
-        Map<String,Object> rowMap = new HashMap<>();
-        rowMap.put("area", 	"A1/AB190");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "A2");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "AB-New");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "AB-Old");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "C3");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "C4");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "CB");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "Charmany");
-        insertCmd.addRow(rowMap);
-
-        rowMap = new HashMap<>();
-        rowMap.put("area", "WIMR");
-        insertCmd.addRow(rowMap);
-
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
     }
 
     public void importStudy()
