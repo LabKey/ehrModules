@@ -19,6 +19,10 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
     intervals: {},
     plotHeight: 400,
 
+    bloodPerKgCol: 'species/blood_per_kg',
+    bloodMaxDrawPctCol: 'species/max_draw_pct',
+    bloodDrawIntervalCol: 'species/blood_draw_interval',
+
     initComponent: function(){
         Ext4.apply(this, {
             border: false,
@@ -39,12 +43,14 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
     },
 
     loadData: function(){
+        var demoCols = 'id,species,id/MostRecentWeight/mostRecentWeight,id/MostRecentWeight/mostRecentWeightDate,Id/demographics/calculated_status'
+            + ',' + this.bloodPerKgCol + ',' + this.bloodMaxDrawPctCol + ',' + this.bloodDrawIntervalCol;
 
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'demographics',
             filterArray: [LABKEY.Filter.create('id', this.subjects.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
-            columns: 'id,species,species/blood_per_kg,species/max_draw_pct,species/blood_draw_interval,id/MostRecentWeight/mostRecentWeight,id/MostRecentWeight/mostRecentWeightDate,Id/demographics/calculated_status',
+            columns: demoCols,
             requiredVersion: 9.1,
             sort: 'id',
             scope: this,
@@ -55,7 +61,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
 
                 Ext4.each(results.rows, function(row){
                     var map = new LDK.SelectRowsRow(row);
-                    var interval = row["species/blood_draw_interval"].value;
+                    var interval = row[this.bloodDrawIntervalCol].value;
                     this.demographicsMap[map.getValue('id')] = map;
 
                     if(!interval) {
@@ -207,7 +213,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                     });
                 }
                 else if (!bds || bds.length == 1) {
-                    var maxDraw = dd.getValue('species/blood_per_kg') * dd.getValue('species/max_draw_pct') * dd.getValue('id/MostRecentWeight/mostRecentWeight');
+                    var maxDraw = dd.getValue(this.bloodPerKgCol) * dd.getValue(this.bloodMaxDrawPctCol) * dd.getValue('id/MostRecentWeight/mostRecentWeight');
                     cfg.items.push({
                         html: 'There are no previous blood draws within the relevant time frame.  A maximum amount of ' + Ext4.util.Format.round(maxDraw, 2) + ' mL can be drawn.',
                         border: false
