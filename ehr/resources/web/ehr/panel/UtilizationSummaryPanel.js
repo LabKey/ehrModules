@@ -9,6 +9,9 @@
 Ext4.define('EHR.panel.UtilizationSummaryPanel', {
     extend: 'EHR.panel.BasicAggregationPanel',
     alias: 'widget.ehr-utilizationsummarypanel',
+
+    aggregateData: {},
+
     initComponent: function(){
         Ext4.apply(this, {
             style: 'padding: 5px',
@@ -36,8 +39,16 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
         this.loadData();
     },
 
+    getCategories: function() {
+        return [
+            {label: 'By Category', column: 'Id/utilization/usageCategories'},
+            {label: 'By Funding Source', column: 'Id/utilization/fundingCategories'}
+        ];
+    },
+
     loadData: function(){
         var multi = new LABKEY.MultiRequest();
+        var colNames = Ext4.Array.pluck(this.getCategories(), 'column');
 
         //find animal count
         multi.add(LABKEY.Query.selectRows, {
@@ -45,13 +56,14 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
             schemaName: 'study',
             queryName: 'Demographics',
             filterArray: this.filterArray,
-            columns: ['Id', 'Id/utilization/usageCategories', 'Id/utilization/fundingCategories', 'species', 'Id/age/ageInYears', 'Id/ageclass/label'].join(','),
+            columns: ['Id', 'species', 'Id/age/ageInYears', 'Id/ageclass/label'].concat(colNames).join(','),
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
                 this.demographicsData = results;
-                this.usageCategoryData = this.aggregateResults(results, 'Id/utilization/usageCategories');
-                this.fundingCategoryData = this.aggregateResults(results, 'Id/utilization/fundingCategories');
+                Ext4.each(colNames, function(colName) {
+                    this.aggregateData[colName] = this.aggregateResults(results, colName);
+                }, this);
             }
         });
 
@@ -69,13 +81,12 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
             items: []
         };
 
-        var item = this.appendSection('By Category', this.usageCategoryData, 'Id/utilization/usageCategories', 'eq');
-        if (item)
-            cfg.items.push(item);
-
-        var item2 = this.appendSection('By Funding Source', this.fundingCategoryData, 'Id/utilization/fundingCategories', 'eq');
-        if (item2)
-            cfg.items.push(item2);
+        Ext4.each(this.getCategories(), function(category) {
+            var item = this.appendSection(category.label, this.aggregateData[category.column], category.column, 'eq');
+            if (item) {
+                cfg.items.push(item);
+            }
+        }, this);
 
         if (!cfg.items.length){
             cfg.items.push({
