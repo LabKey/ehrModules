@@ -194,6 +194,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         //now append the data rows
         var colKeys = this.generateColKeys();
         var rowNames = this.valueMap[this.rowField];
+        var rowFilterField = this.rowFilterField || this.rowField;
         rowNames.sort();
         Ext4.each(rowNames, function(rowName){
             rowName = Ext4.isEmpty(rowName) ? 'Blank' : rowName;
@@ -208,7 +209,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 'query.queryName': 'Demographics',
                 'query.viewName': 'By Location'
             };
-            params['query.' + this.rowField + '~eq'] = rowName;
+            params['query.' + rowFilterField + '~eq'] = rowName;
             this.appendFilterParams(params);
 
             var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
@@ -229,7 +230,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 };
                 var tokens = key.split('<>');
 
-                params['query.' + this.rowField + '~eq'] = rowName;
+                params['query.' + rowFilterField + '~eq'] = rowName;
                 Ext4.each(this.colFields, function(colField, idx){
                     var meta = this.getMetadata(colField);
                     var fk = meta.displayField || meta.fieldKeyPath;

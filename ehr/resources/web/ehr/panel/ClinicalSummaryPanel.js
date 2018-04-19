@@ -57,7 +57,7 @@ Ext4.define('EHR.panel.ClinicalSummaryPanel', {
         multi.add(LABKEY.Query.selectRows, {
             requiredVersion: 9.1,
             schemaName: 'study',
-            queryName: 'Problem List',
+            queryName: 'Problem List', // TODO should change this to dataset name instead of label
             viewName: 'Unresolved Problems',
             filterArray: this.filterArray,
             columns: ['Id', 'date', 'category'].join(','),
