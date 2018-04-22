@@ -55,8 +55,8 @@ import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.ContextListener;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.StartupListener;
-import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.api.writer.ContainerUser;
 import org.labkey.ehr.buttons.CageBulkEditButton;
 import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.buttons.LocationEditButton;
@@ -305,9 +305,8 @@ public class EHRModule extends ExtendedSimpleModule
         return Arrays.asList(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
     }
 
-    @NotNull
     @Override
-    public JSONObject getPageContextJson(ViewContext context)
+    public JSONObject getPageContextJson(ContainerUser context)
     {
         Map<String, Object> ret = new HashMap<>();
         Container c = context.getContainer();
