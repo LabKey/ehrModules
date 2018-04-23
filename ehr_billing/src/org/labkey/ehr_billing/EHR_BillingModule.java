@@ -30,6 +30,7 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.writer.ContainerUser;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
 import java.util.Collection;
@@ -105,7 +106,7 @@ public class EHR_BillingModule extends SpringModule
 
     @NotNull
     @Override
-    public JSONObject getPageContextJson(ViewContext ctx)
+    public JSONObject getPageContextJson(ContainerUser ctx)
     {
         Map<String, Object> ret = new HashMap<>();
         Map<String, String> map = getDefaultPageContextJson(ctx.getContainer());
