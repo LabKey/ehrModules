@@ -212,7 +212,7 @@ EHR.DataEntryUtils.registerGridButton('ADDTREATMENTS', function(config){
         handler: function(btn){
             var grid = btn.up('gridpanel');
             if(!grid.store || !grid.store.hasLoaded()){
-                console.log('no store or store hasnt loaded');
+                console.log('no store or store has not loaded');
                 return;
             }
 

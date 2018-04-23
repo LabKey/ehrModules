@@ -1,4 +1,3 @@
-package org.labkey.api.ehr.dataentry.forms;
 /*
  * Copyright (c) 2017 LabKey Corporation
  *
@@ -14,12 +13,19 @@ package org.labkey.api.ehr.dataentry.forms;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.labkey.api.ehr.dataentry;
 
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.SimpleFormSection;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.List;
+
+/**
+ * User: bimber
+ * Date: 7/7/13
+ * Time: 10:36 AM
+ */
 public class DrugAdministrationFormSection extends SimpleFormSection
 {
     protected boolean _showAddTreatments = true;
@@ -27,26 +33,46 @@ public class DrugAdministrationFormSection extends SimpleFormSection
 
     public DrugAdministrationFormSection()
     {
-        this(EHRService.FORM_SECTION_LOCATION.Body, LABEL);
+        this(EHRService.FORM_SECTION_LOCATION.Body, LABEL, false);
     }
 
     public DrugAdministrationFormSection(String label)
     {
-        this(EHRService.FORM_SECTION_LOCATION.Body, label);
+        this(EHRService.FORM_SECTION_LOCATION.Body, label, false);
     }
 
     public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location)
     {
-        this(location, LABEL);
+        this(location, LABEL, false);
     }
 
-    public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label)
+    public DrugAdministrationFormSection(boolean includeAddScheduledTreatmentButton)
+    {
+        this(EHRService.FORM_SECTION_LOCATION.Body, LABEL, includeAddScheduledTreatmentButton);
+    }
+
+    public DrugAdministrationFormSection(ClientDependency addScheduledTreatmentWindowClientDependency)
+    {
+        this(EHRService.FORM_SECTION_LOCATION.Body, LABEL, addScheduledTreatmentWindowClientDependency);
+    }
+
+    public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label, boolean includeAddScheduledTreatmentButton)
+    {
+        this(location, label, includeAddScheduledTreatmentButton ? ClientDependency.fromPath("ehr/window/AddScheduledTreatmentWindow.js") : null);
+    }
+
+    public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label, ClientDependency addScheduledTreatmentWindowClientDependency)
     {
         super("study", "Drug Administration", label, "ehr-gridpanel");
         setClientStoreClass("EHR.data.DrugAdministrationRunsClientStore");
         addClientDependency(ClientDependency.fromPath("ehr/data/DrugAdministrationRunsClientStore.js"));
         addClientDependency(ClientDependency.fromPath("ehr/window/SedationWindow.js"));
         addClientDependency(ClientDependency.fromPath("ehr/window/RepeatSelectedWindow.js"));
+        if (addScheduledTreatmentWindowClientDependency != null)
+        {
+            addClientDependency(addScheduledTreatmentWindowClientDependency);
+            addClientDependency(ClientDependency.fromPath("ehr/form/field/SnomedTreatmentCombo.js"));
+        }
 
         setLocation(location);
         setTabName("Medications");
