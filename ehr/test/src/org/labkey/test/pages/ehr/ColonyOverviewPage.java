@@ -15,6 +15,7 @@
  */
 package org.labkey.test.pages.ehr;
 
+import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.html.Table;
@@ -79,8 +80,11 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         protected BaboonColonyTab(WebElement el)
         {
             super(el);
+            waitForElementToDisappear(Locator.byClass("labkey-data-region-loading-mask-panel"), WAIT_FOR_JAVASCRIPT);
         }
 
+        // Tab has four data regions. Make sure they've all loaded by waiting for the last one first
+        protected final DataRegionTable ageClassDataRegion = DataRegionTable.DataRegion(getDriver()).index(3).waitFor(this);
         protected final DataRegionTable assignedFundedDataRegion = DataRegionTable.DataRegion(getDriver()).find(this);
 
         public DataRegionTable getAssignedFundedDataRegion()
