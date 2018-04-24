@@ -25,6 +25,7 @@ import org.labkey.api.module.Module;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class WeightFormType extends TaskForm
 {
@@ -32,13 +33,18 @@ public class WeightFormType extends TaskForm
 
     public WeightFormType(DataEntryFormContext ctx, Module owner)
     {
-        super(ctx, owner, NAME, "Weights", "Clinical", Arrays.asList(
-                new TaskFormSection(),
-                new AnimalDetailsFormSection(),
-                new WeightFormSection(),
-                new DrugAdministrationFormSection(),
-                new TBFormSection()
+        this(ctx, owner, Arrays.asList(
+            new TaskFormSection(),
+            new AnimalDetailsFormSection(),
+            new WeightFormSection(),
+            new DrugAdministrationFormSection(),
+            new TBFormSection()
         ));
+    }
+
+    public WeightFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
+    {
+        super(ctx, owner, NAME, "Weights", "Clinical", sections);
 
         addClientDependency(ClientDependency.fromPath("ehr/model/sources/Weight.js"));
 

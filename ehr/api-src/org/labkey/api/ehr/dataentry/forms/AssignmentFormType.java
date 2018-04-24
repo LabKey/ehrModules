@@ -21,9 +21,9 @@ import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.api.ehr.dataentry.TaskFormSection;
 import org.labkey.api.module.Module;
-import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class AssignmentFormType extends TaskForm
 {
@@ -31,11 +31,16 @@ public class AssignmentFormType extends TaskForm
 
     public AssignmentFormType(DataEntryFormContext ctx, Module owner)
     {
-        super(ctx, owner, NAME, "Project Assignment", "Colony Management", Arrays.asList(
-                new TaskFormSection(),
-                new AnimalDetailsFormSection(),
-                new AssignmentFormSection()
+        this(ctx, owner, Arrays.asList(
+            new TaskFormSection(),
+            new AnimalDetailsFormSection(),
+            new AssignmentFormSection()
         ));
+    }
+
+    public AssignmentFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
+    {
+        super(ctx, owner, NAME, "Project Assignment", "Colony Management", sections);
 
         for (FormSection s : this.getFormSections())
         {

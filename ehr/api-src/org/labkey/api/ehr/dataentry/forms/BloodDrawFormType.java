@@ -28,6 +28,7 @@ import org.labkey.api.module.Module;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: bimber
@@ -40,13 +41,18 @@ public class BloodDrawFormType extends TaskForm
 
     public BloodDrawFormType(DataEntryFormContext ctx, Module owner)
     {
-        super(ctx, owner, NAME, NAME, "Clinical", Arrays.asList(
+        this(ctx, owner, Arrays.asList(
             new TaskFormSection(),
             new AnimalDetailsFormSection(),
             new BloodDrawFormSection(false),
             new WeightFormSection(),
-            new DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION.Body, DrugAdministrationFormSection.LABEL, null))
-        );
+            new DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION.Body, DrugAdministrationFormSection.LABEL, null)
+        ));
+    }
+
+    public BloodDrawFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
+    {
+        super(ctx, owner, NAME, NAME, "Clinical", sections);
 
         addClientDependency(getAddScheduledTreatmentWindowDependency());
         addClientDependency(ClientDependency.fromPath("ehr/form/field/SnomedTreatmentCombo.js"));
