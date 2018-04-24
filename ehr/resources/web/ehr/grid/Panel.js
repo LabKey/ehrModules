@@ -281,7 +281,8 @@ Ext4.define('EHR.grid.Panel', {
         if (this.rowEditorPlugin)
             return this.rowEditorPlugin;
 
-        this.rowEditorPlugin = Ext4.create('EHR.plugin.RowEditor', {
+        var rowEditorPluginCls = EHR.Utils.rowEditorPlugin || 'EHR.plugin.RowEditor';
+        this.rowEditorPlugin = Ext4.create(rowEditorPluginCls, {
             cmp: this
         });
 

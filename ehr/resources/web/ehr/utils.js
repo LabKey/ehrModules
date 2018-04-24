@@ -14,6 +14,11 @@ EHR.Utils = new function(){
     return {
 
         /**
+         * Name of the row editor plugin to use for the EHR.grid.Panel. This allows for submodule specific overrides.
+         */
+        rowEditorPlugin: 'EHR.plugin.RowEditor',
+
+        /**
          * Helper to test whether the current user is a member of at least one of the provided groups
          * @param {array} groups A list of groups to test.
          * @param {function} success The success callback function

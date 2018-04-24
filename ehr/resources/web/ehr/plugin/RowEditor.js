@@ -89,6 +89,7 @@ Ext4.define('EHR.plugin.RowEditor', {
         return {
             modal: true,
             width: 800,
+            border: false,
             items: [{
                 items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()]
             }],

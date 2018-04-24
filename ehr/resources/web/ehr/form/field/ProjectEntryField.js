@@ -20,6 +20,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     disabled: false,
     matchFieldWidth: false,
     includeDefaultProjects: true,
+    invesLastNameCol: 'lastName',
 
     initComponent: function(){
         this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -81,7 +82,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                         protocol: rec.get('protocol'),
                                         title: rec.get('title'),
                                         shortname: rec.get('shortname'),
-                                        investigator: rec.get('investigatorId/lastName')
+                                        investigator: rec.get('investigatorId/' + this.invesLastNameCol)
                                     });
 
                                     win.close();
@@ -208,7 +209,10 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
         if (id){
             //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
-            sql += "SELECT p.project as project, p.displayName as displayName, p.account as account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, CASE WHEN (a.project = p.project AND p.use_category = 'Research') THEN 0 WHEN (a.project = p.project) THEN 1 ELSE 2 END as sort_order, CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
+            sql += "SELECT p.project as project, p.displayName as displayName, p.account as account, p.protocol.displayName as protocolDisplayName, " +
+            " p.protocol as protocol, p.title, p.shortname, p.investigatorId." + this.invesLastNameCol + " as investigator, " +
+            " CASE WHEN (a.project = p.project AND p.use_category = 'Research') THEN 0 WHEN (a.project = p.project) THEN 1 ELSE 2 END as sort_order, " +
+            " CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
             " FROM ehr.project p JOIN study.assignment a ON (a.project.protocol = p.protocol) " +
             " WHERE a.id='"+id+"' AND (a.project = p.project) "; //TODO: restore this OR p.enddate IS NULL OR p.enddate >= curdate()
 
@@ -229,7 +233,9 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             if (id)
                 sql += ' UNION ALL ';
 
-            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.shortname, p.investigatorId.lastName as investigator, 3 as sort_order, 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true"; //TODO: restore this: and p.enddateCoalesced >= curdate()
+            sql += " SELECT p.project, p.displayName, p.account, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, " +
+                    " p.title, p.shortname, p.investigatorId." + this.invesLastNameCol + " as investigator, 3 as sort_order, " +
+                    " 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true"; //TODO: restore this: and p.enddateCoalesced >= curdate()
         }
 
         sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
@@ -319,7 +325,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                 protocolDisplayName: rec.data['protocol/displayName'],
                 protocol: rec.data.protocol,
                 title: rec.data.title,
-                investigator: rec.data['investigatorId/lastName'],
+                investigator: rec.data['investigatorId/' + this.invesLastNameCol],
                 isAssigned: 0,
                 fromClient: true
             });

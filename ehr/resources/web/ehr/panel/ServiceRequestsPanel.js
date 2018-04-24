@@ -68,24 +68,18 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
         }
     },
 
+    getPendingRequestsTables : function() {
+        return [
+            {title: 'Blood', queryName: 'blood', viewName: 'Requests'},
+            {title: 'Treatment', queryName: 'drug', viewName: 'Requests'},
+            {title: 'Labwork', queryName: 'Clinpath Runs', viewName: 'Requests'},
+            {title: 'Procedure', queryName: 'encounters', viewName: 'Requests'},
+            {title: 'Transfer', queryName: 'housing_transfer_requests'}
+        ];
+    },
+
     getItems: function(){
-        return [{
-//            xtype: 'ldk-querypanel',
-//            title: 'My Requests',
-//            style: 'padding: 5px;',
-//            queryConfig:  {
-//                schemaName: 'ehr',
-//                queryName: 'my_requests'
-//            }
-//        },{
-//            xtype: 'ldk-querypanel',
-//            title: 'All Requests',
-//            style: 'padding: 5px;',
-//            queryConfig:  {
-//                schemaName: 'ehr',
-//                queryName: 'requests'
-//            }
-//        },{
+        var items = [{
             xtype: 'panel',
             style: 'padding: 5px;',
             title: 'New Request',
@@ -96,67 +90,25 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             items: [{
                 html: 'Loading...'
             }]
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'My Pending Blood Requests',
-            style: 'padding: 5px;',
-            queryConfig:  {
-                schemaName: 'study',
-                queryName: 'blood',
-                viewName: 'Requests',
-                removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                ]
-            }
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'My Pending Treatment Requests',
-            queryConfig:  {
-                schemaName: 'study',
-                queryName: 'drug',
-                viewName: 'Requests',
-                removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                ]
-            }
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'My Pending Labwork Requests',
-            queryConfig:  {
-                schemaName: 'study',
-                queryName: 'Clinpath Runs',
-                viewName: 'Requests',
-                removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                ]
-            }
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'My Pending Procedure Requests',
-            queryConfig:  {
-                schemaName: 'study',
-                queryName: 'encounters',
-                viewName: 'Requests',
-                removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                ]
-            }
-        },{
-            xtype: 'ldk-querypanel',
-            title: 'My Pending Transfer Requests',
-            queryConfig:  {
-                schemaName: 'onprc_ehr',
-                queryName: 'housing_transfer_requests',
-                //viewName: 'Requests',
-                removeableFilters: [
-                    LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                ]
-            }
-        }]
+        }];
+
+        Ext4.each(this.getPendingRequestsTables(), function(requestTable) {
+            items.push({
+                xtype: 'ldk-querypanel',
+                title: 'My Pending ' + requestTable.title + ' Requests',
+                style: 'padding: 5px;',
+                queryConfig:  {
+                    schemaName: 'study',
+                    queryName: requestTable.queryName,
+                    viewName: requestTable.viewName,
+                    removeableFilters: [
+                        LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                        LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                    ]
+                }
+            });
+        }, this);
+
+        return items;
     }
 });

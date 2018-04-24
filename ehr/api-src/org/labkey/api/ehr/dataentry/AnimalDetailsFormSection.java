@@ -24,6 +24,11 @@ public class AnimalDetailsFormSection extends NonStoreFormSection
 {
     public AnimalDetailsFormSection()
     {
-        super("AnimalDetails", "Animal Details", "ehr-animaldetailspanel");
+        this("ehr-animaldetailspanel");
+    }
+
+    public AnimalDetailsFormSection(String xtype)
+    {
+        super("AnimalDetails", "Animal Details", xtype);
     }
 }
