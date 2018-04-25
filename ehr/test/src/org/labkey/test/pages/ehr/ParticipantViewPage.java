@@ -89,12 +89,19 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public DataRegionTable getActiveReportDataRegion()
     {
-        return DataRegion(getDriver()).timeout(30000).find(getActiveReportPanel());
+        DataRegionTable dataRegionTable = DataRegion(getDriver()).timeout(30000).find(getActiveReportPanel());
+        dataRegionTable.setAsync(true);
+        return dataRegionTable;
     }
 
     public List<DataRegionTable> getActiveReportDataRegions()
     {
-        return DataRegion(getDriver()).timeout(30000).findAll(getActiveReportPanel());
+        List<DataRegionTable> dataRegions = DataRegion(getDriver()).timeout(30000).findAll(getActiveReportPanel());
+        for (DataRegionTable dataRegion : dataRegions)
+        {
+            dataRegion.setAsync(true);
+        }
+        return dataRegions;
     }
 
     public CategoryTab findCategoryTab(String category)
