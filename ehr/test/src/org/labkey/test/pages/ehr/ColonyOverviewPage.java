@@ -18,6 +18,7 @@ package org.labkey.test.pages.ehr;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.components.WebPartPanel;
 import org.labkey.test.components.html.Table;
 import org.labkey.test.util.DataRegionTable;
 import org.openqa.selenium.WebDriver;
@@ -83,9 +84,16 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
             waitForElementToDisappear(Locator.byClass("labkey-data-region-loading-mask-panel"), WAIT_FOR_JAVASCRIPT);
         }
 
-        // Tab has four data regions. Make sure they've all loaded by waiting for the last one first
-        protected final DataRegionTable ageClassDataRegion = DataRegionTable.DataRegion(getDriver()).index(3).waitFor(this);
-        protected final DataRegionTable assignedFundedDataRegion = DataRegionTable.DataRegion(getDriver()).find(this);
+        protected final DataRegionTable assignedFundedDataRegion = colonyDataRegion("Assigned (funded)");
+        protected final DataRegionTable colonyUseDataRegion = colonyDataRegion("Breeding/Colony Use");
+        protected final DataRegionTable unassignedDataRegion = colonyDataRegion("Unassigned");
+        protected final DataRegionTable ageClassDataRegion = colonyDataRegion("Age Classes (in years)");
+
+        private DataRegionTable colonyDataRegion(String webPartTitle)
+        {
+            WebPartPanel panel = WebPartPanel.WebPart(getDriver()).withTitle(webPartTitle).findWhenNeeded();
+            return DataRegionTable.DataRegion(getDriver()).findWhenNeeded(panel);
+        }
 
         public DataRegionTable getAssignedFundedDataRegion()
         {
