@@ -1339,6 +1339,7 @@ ehr/resources/web/ehr/panel/SnapshotPanel.js -text
 ehr/resources/web/ehr/panel/SurgeryDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/SurgeryInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/TaskDataEntryPanel.js -text
+ehr/resources/web/ehr/panel/UpdateableQueryPanel.js -text
 ehr/resources/web/ehr/panel/UtilizationSummaryPanel.js -text
 ehr/resources/web/ehr/panel/WeightGraphPanel.js -text
 ehr/resources/web/ehr/panel/WeightSummaryPanel.js -text
