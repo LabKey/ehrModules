@@ -303,6 +303,7 @@ ehr/resources/queries/auditLog/audit/EHR[!!-~]Client[!!-~]Errors.qview.xml -text
 ehr/resources/queries/core/Principals/Without[!!-~]Administrator.qview.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.query.xml -text
 ehr/resources/queries/core/PrincipalsWithoutAdmin.sql -text
+ehr/resources/queries/core/QCState.query.xml -text
 ehr/resources/queries/core/userNames.query.xml -text
 ehr/resources/queries/core/userNames.sql -text
 ehr/resources/queries/ehr/CageUtilization.query.xml -text
@@ -521,7 +522,6 @@ ehr/resources/queries/study/Parasitology[!!-~]Results.js -text
 ehr/resources/queries/study/Parasitology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Problem[!!-~]List.js -text
 ehr/resources/queries/study/Problem[!!-~]List.query.xml -text
-ehr/resources/queries/study/QCState.query.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Review[!!-~]Required.qview.xml -text
