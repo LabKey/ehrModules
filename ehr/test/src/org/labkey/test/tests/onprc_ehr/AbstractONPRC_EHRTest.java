@@ -27,22 +27,28 @@ public abstract class AbstractONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     public void testWeightValidation(){}
 
     @Override
-    public void testSecurityDataAdmin() throws Exception{}
+    public void testSecurityDataAdmin()
+    {}
 
     @Override
-    public void testSecurityRequester() throws Exception{}
+    public void testSecurityRequester()
+    {}
 
     @Override
-    public void testSecurityBasicSubmitter() throws Exception{}
+    public void testSecurityBasicSubmitter()
+    {}
 
     @Override
-    public void testSecurityFullSubmitter() throws Exception{}
+    public void testSecurityFullSubmitter()
+    {}
 
     @Override
-    public void testSecurityFullUpdater() throws Exception{}
+    public void testSecurityFullUpdater()
+    {}
 
     @Override
-    public void testSecurityRequestAdmin() throws Exception{}
+    public void testSecurityRequestAdmin()
+    {}
 
     @Override
     public void testCustomButtons(){}

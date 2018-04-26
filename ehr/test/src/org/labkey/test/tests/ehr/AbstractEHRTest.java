@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.labkey.test.WebTestHelper.buildURL;
@@ -292,19 +293,19 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             log(FULL_UPDATER.getEmail() + ": " + _helper.deleteUserAPI(FULL_UPDATER.getEmail()));
             log(FULL_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(FULL_SUBMITTER.getEmail()));
         }
-        catch (CommandException | IOException ignored)
+        catch (CommandException | IOException e)
         {
-            log("unable to delete users: " + ignored.getMessage());
+            log("unable to delete users: " + e.getMessage());
         }
 
         try
         {
             deleteHardTableRecords();
         }
-        catch (CommandException | IOException ignored)
+        catch (CommandException | IOException e)
         {
             log("there was an error deleting records from EHR hard tables");
-            log(ignored.getMessage());
+            log(e.getMessage());
         }
 
         long startTime = System.currentTimeMillis();
@@ -542,7 +543,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         String[] texts = new String[]{"error", "Error", "ERROR", "failed", "Failed", "Invalid", "invalid"};
         String visibleText = findVisibleText(texts);
-        assertTrue("Error text found: " + visibleText, visibleText == null);
+        assertNull("Error text found: " + visibleText, visibleText);
     }
 
     /**
@@ -578,7 +579,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod
-    protected void createUsersandPermissions() throws Exception
+    protected void createUsersandPermissions()
     {
         enableEmailRecorder();
 
@@ -625,7 +626,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         beginAt(buildURL("project", getContainerPath(), "begin"));
     }
 
-    protected void setupStudyPermissions() throws Exception
+    protected void setupStudyPermissions()
     {
         goToEHRFolder();
         goToManageStudy();

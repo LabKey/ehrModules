@@ -179,12 +179,12 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(CacheLivingAnimalsForm form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(CacheLivingAnimalsForm form, BindException errors)
         {
             return new HtmlView("This action will force the EHR to cache demographics data on all " + (form.isIncludeAll() ? "" : "living") + " animals, and log errors if there is an existing record that does not match the current record.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
         }
 
-        public boolean handlePost(CacheLivingAnimalsForm form, BindException errors) throws Exception
+        public boolean handlePost(CacheLivingAnimalsForm form, BindException errors)
         {
             EHRDemographicsServiceImpl.get().cacheAnimals(getContainer(), getUser(), true, !form.isIncludeAll());
             return true;
@@ -204,12 +204,12 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This action will cause the EHR to populate several cached items used in data entry, such as reference tables.  Do you want to do this?<br><br>");
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(Object form, BindException errors)
         {
             DataEntryManager.get().primeCachesForContainer(getContainer(), getUser());
             return true;
@@ -319,7 +319,7 @@ public class EHRController extends SpringActionController
     {
         private EHRQueryForm _form;
 
-        public ModelAndView getView(EHRQueryForm form, BindException errors) throws Exception
+        public ModelAndView getView(EHRQueryForm form, BindException errors)
         {
             ensureQueryExists(form);
 
@@ -484,7 +484,7 @@ public class EHRController extends SpringActionController
     @CSRF
     public class GetDemographicsAction extends ApiAction<GetDemographicsForm>
     {
-        public ApiResponse execute(GetDemographicsForm form, BindException errors) throws Exception
+        public ApiResponse execute(GetDemographicsForm form, BindException errors)
         {
             Map<String, Object> props = new HashMap<>();
 
@@ -966,7 +966,7 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(EnsureDatasetPropertiesForm form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
             msg.append("The EHR expects certain columns to be present on all datasets.  The following changes will be made:<br><br>");
@@ -985,7 +985,7 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
+        public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors)
         {
             List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(), getUser(), true, form.isRebuildIndexes());
             return true;
@@ -1005,7 +1005,7 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(Object form, BindException errors)
         {
             if (!getUser().isSiteAdmin())
             {
@@ -1015,7 +1015,7 @@ public class EHRController extends SpringActionController
             return new HtmlView("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(Object form, BindException errors)
         {
             EHRManager.get().compressEHRSchemaIndexes();
             return true;
@@ -1035,7 +1035,7 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(Object form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
             msg.append("The EHR expects certain QCStates to exist in the study.  The following QCStates will be added:<br><br>");
@@ -1054,7 +1054,7 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(Object form, BindException errors)
         {
             List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(), getUser(), true);
             return true;
@@ -1074,7 +1074,7 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getView(Object form, BindException errors) throws Exception
+        public ModelAndView getView(Object form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
             msg.append("For each dataset, we expect to find a trigger script and .query.xml file.  The following datasets lack one or more of these:<br><br>");
@@ -1111,7 +1111,7 @@ public class EHRController extends SpringActionController
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
         }
@@ -1135,12 +1135,12 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
-        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(Object form, BindException errors)
         {
             new RecordDeleteRunner().run(getContainer());
 
@@ -1326,7 +1326,7 @@ public class EHRController extends SpringActionController
         private DataEntryForm _def;
 
         @Override
-        public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
+        public ModelAndView getView(EnterDataForm form, BindException errors)
         {
             if (form.getFormType() == null)
             {
@@ -1360,7 +1360,7 @@ public class EHRController extends SpringActionController
         private String _title = null;
 
         @Override
-        public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
+        public ModelAndView getView(EnterDataForm form, BindException errors)
         {
             if (form.getQueryName() == null || form.getSchemaName() == null)
             {
@@ -1522,7 +1522,7 @@ public class EHRController extends SpringActionController
     @CSRF
     public class ManageFlagsAction extends ApiAction<ManageFlagsForm>
     {
-        public ApiResponse execute(ManageFlagsForm form, BindException errors) throws Exception
+        public ApiResponse execute(ManageFlagsForm form, BindException errors)
         {
             Map<String, Object> resp = new HashMap<>();
 
@@ -1635,7 +1635,7 @@ public class EHRController extends SpringActionController
     {
 
         @Override
-        public ApiResponse execute(IdForm idForm, BindException errors) throws Exception
+        public ApiResponse execute(IdForm idForm, BindException errors)
         {
             ApiSimpleResponse response = new ApiSimpleResponse();
 
@@ -1730,7 +1730,7 @@ public class EHRController extends SpringActionController
             return new HtmlView("This action will compare the columns in the study datasets against those expected in the reference XML file.  " + (msgs.isEmpty() ? "No problems were found." : "The following discrepancies were found:<br><br> " + StringUtils.join(msgs, "<br>")));
         }
 
-        public boolean handlePost(Object form, BindException errors) throws Exception
+        public boolean handlePost(Object form, BindException errors)
         {
             //TODO: consider automatically fixing?
 

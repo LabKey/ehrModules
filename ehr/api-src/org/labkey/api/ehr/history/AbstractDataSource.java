@@ -217,7 +217,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         return _categoryText;
     }
 
-    protected String getCategoryColor(Results rs) throws SQLException
+    protected String getCategoryColor(Results rs)
     {
         return null;
     }

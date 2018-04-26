@@ -67,7 +67,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     }
 
     @BeforeClass
-    public static void doSetup() throws Exception
+    public static void doSetup()
     {
         ComplianceTrainingTest initTest = (ComplianceTrainingTest)getCurrentTest();
         initTest.setUpTest();
@@ -321,7 +321,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     }
 
     @Test
-    public void testCustomActions() throws Exception
+    public void testCustomActions()
     {
         goToProjectHome();
         waitAndClickAndWait(Locator.linkContainingText("Employee List"));
@@ -344,7 +344,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
     }
 
     @Test
-    public void testSopSubmission() throws Exception
+    public void testSopSubmission()
     {
         beginAt("/ehr_compliancedb/" + getProjectName() + "/SOP_submission.view");
         reloadPage();
@@ -388,7 +388,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         waitForText("Mark Reread");
     }
 
-    protected void setUpTest() throws Exception
+    protected void setUpTest()
     {
         _containerHelper.createProject(getProjectName(), "Compliance and Training");
         goToProjectHome();

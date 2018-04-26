@@ -1400,7 +1400,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     }
 
     @Test
-    public void testWeightEntry() throws Exception
+    public void testWeightEntry()
     {
         _helper.goToTaskForm("Weights");
         _helper.getExt4FieldForFormSection("Task", "Title").setValue("Test Weight 1");

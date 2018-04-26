@@ -882,7 +882,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     //TODO: @Test
-    public void vetReviewTest() throws Exception
+    public void vetReviewTest()
     {
         // mark vet review
 

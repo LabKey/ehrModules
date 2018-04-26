@@ -34,7 +34,7 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
         _form = form;
     }
 
-    public static File createAnalysisDir(PipeRoot pipeRoot, String name) throws PipelineValidationException
+    public static File createAnalysisDir(PipeRoot pipeRoot, String name)
     {
         String trialName = FileUtil.makeLegalName(name);
         File analysisDir = new File(pipeRoot.getRootPath(), trialName);

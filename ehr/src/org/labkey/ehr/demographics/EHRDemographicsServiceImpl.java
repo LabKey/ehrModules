@@ -620,7 +620,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         }
 
-        public void execute(JobExecutionContext context) throws JobExecutionException
+        public void execute(JobExecutionContext context)
         {
             EHRDemographicsServiceImpl.get().cacheLivingAnimalsForAllContainers(true);
         }

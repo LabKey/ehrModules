@@ -79,7 +79,7 @@ public class EHR_BillingController extends SpringActionController
     @CSRF
     public class RunBillingPipelineAction extends ApiAction<BillingPipelineForm>
     {
-        public ApiResponse execute(BillingPipelineForm form, BindException errors) throws PipelineJobException
+        public ApiResponse execute(BillingPipelineForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
 
@@ -199,7 +199,7 @@ public class EHR_BillingController extends SpringActionController
         }
 
         @Override
-        public ModelAndView getConfirmView(QueryForm form, BindException errors) throws Exception
+        public ModelAndView getConfirmView(QueryForm form, BindException errors)
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
 
@@ -214,7 +214,7 @@ public class EHR_BillingController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public boolean handlePost(QueryForm form, BindException errors) throws Exception
+        public boolean handlePost(QueryForm form, BindException errors)
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
             EHR_BillingManager.get().deleteBillingRuns(getUser(), ids, false);
@@ -234,7 +234,7 @@ public class EHR_BillingController extends SpringActionController
     {
         private QueryForm _form;
 
-        public ModelAndView getView(QueryForm form, BindException errors) throws Exception
+        public ModelAndView getView(QueryForm form, BindException errors)
         {
             ensureQueryExists(form);
 

@@ -266,7 +266,7 @@ public class TriggerScriptHelper
         return EHRSecurityManager.get().hasPermission(getContainer(), getUser(), schemaName, queryName, EHRSecurityManager.EVENT_TYPE.valueOf(eventName), originalQCState, targetQCState);
     }
 
-    public String getQCStateJson() throws Exception
+    public String getQCStateJson()
     {
         try
         {
@@ -356,7 +356,7 @@ public class TriggerScriptHelper
         return EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
     }
 
-    public String validateAssignment(String id, Integer projectId, Date date) throws SQLException
+    public String validateAssignment(String id, Integer projectId, Date date)
     {
         if (id == null || projectId == null || date == null)
             return null;
@@ -814,7 +814,7 @@ public class TriggerScriptHelper
         EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
     }
 
-    public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
         updatedRows = new ArrayList<>(updatedRows);
         if (updatedRows == null || updatedRows.isEmpty())
@@ -1404,7 +1404,7 @@ public class TriggerScriptHelper
         });
     }
 
-    public void processCompletedRequests(final List<String> requestIds) throws Exception
+    public void processCompletedRequests(final List<String> requestIds)
     {
         JobRunner.getDefault().execute(new Runnable(){
             public void run()
@@ -1614,7 +1614,7 @@ public class TriggerScriptHelper
         return ret;
     }
 
-    public void updateStatusField(List<String> ids, Map<String, List<Date>> liveBirths, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    public void updateStatusField(List<String> ids, Map<String, List<Date>> liveBirths, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
         List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
@@ -2232,7 +2232,7 @@ public class TriggerScriptHelper
         return toCreate;
     }
 
-    public void deleteSnomedTags(String objectid) throws Exception
+    public void deleteSnomedTags(String objectid)
     {
         objectid = StringUtils.trimToNull(objectid);
         if (objectid == null)
@@ -2257,7 +2257,7 @@ public class TriggerScriptHelper
         }
     }
 
-    public void updateSNOMEDTags(String id, String objectid, String codes) throws Exception
+    public void updateSNOMEDTags(String id, String objectid, String codes)
     {
         codes = StringUtils.trimToNull(codes);
         objectid = StringUtils.trimToNull(objectid);

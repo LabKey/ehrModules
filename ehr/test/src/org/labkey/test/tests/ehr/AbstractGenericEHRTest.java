@@ -116,7 +116,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     }
 
     @Test
-    public void testWeightValidation() throws Exception
+    public void testWeightValidation()
     {
         //initialize wieght of subject 0
         String[] fields;
@@ -160,38 +160,38 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     }
 
     @Test
-    public void testSecurityDataAdmin() throws Exception
+    public void testSecurityDataAdmin()
     {
         testUserAgainstAllStates(DATA_ADMIN);
     }
 
     @Test
-    public void testSecurityRequester() throws Exception
+    public void testSecurityRequester()
     {
         testUserAgainstAllStates(REQUESTER);
     }
 
     @Test
-    public void testSecurityBasicSubmitter() throws Exception
+    public void testSecurityBasicSubmitter()
     {
         testUserAgainstAllStates(BASIC_SUBMITTER);
     }
 
     @Test
-    public void testSecurityFullSubmitter() throws Exception
+    public void testSecurityFullSubmitter()
     {
         testUserAgainstAllStates(FULL_SUBMITTER);
     }
 
     @Test
-    public void testSecurityFullUpdater() throws Exception
+    public void testSecurityFullUpdater()
     {
         testUserAgainstAllStates(FULL_UPDATER);
     }
 
 
     @Test
-    public void testSecurityRequestAdmin() throws Exception
+    public void testSecurityRequestAdmin()
     {
         testUserAgainstAllStates(REQUEST_ADMIN);
     }
@@ -224,7 +224,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
     }
 
-    private void testUserAgainstAllStates(@LoggedParam EHRUser user) throws Exception
+    private void testUserAgainstAllStates(@LoggedParam EHRUser user)
     {
         JSONObject extraContext = new JSONObject();
         extraContext.put("errorThreshold", "ERROR");

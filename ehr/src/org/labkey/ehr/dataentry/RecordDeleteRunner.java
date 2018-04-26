@@ -85,7 +85,7 @@ public class RecordDeleteRunner implements Job
         return false;
     }
 
-    public void execute(JobExecutionContext context) throws JobExecutionException
+    public void execute(JobExecutionContext context)
     {
         User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);
         if (rootUser == null)

@@ -171,7 +171,7 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
                 it.addColumn(aliasColInfo, new Callable()
                 {
                     @Override
-                    public Object call() throws Exception
+                    public Object call()
                     {
                         Object val = it.getInputColumnValue(inputIdx);
                         if (val != null && val instanceof String)

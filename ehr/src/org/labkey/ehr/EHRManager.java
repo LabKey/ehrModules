@@ -1286,7 +1286,7 @@ public class EHRManager
             ts.forEachMap(new Selector.ForEachBlock<Map<String, Object>>()
             {
                 @Override
-                public void exec(Map<String, Object> map) throws SQLException
+                public void exec(Map<String, Object> map)
                 {
                     Map<String, Object> row = new CaseInsensitiveHashMap<>();
                     row.putAll(map);
