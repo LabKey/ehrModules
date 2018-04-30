@@ -88,7 +88,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 border: false
             },
             items: [{
-                html: 'Loading...'
+                html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
             }]
         }];
 

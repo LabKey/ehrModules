@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="Service Requests" frame="portal">
+<view xmlns="http://labkey.org/data/xml/view" title="Service Requests" frame="none">
     <dependencies>
         <dependency path="ehr.context" />
         <dependency path="ehr/panel/ServiceRequestsPanel.js"/>

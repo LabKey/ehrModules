@@ -10,17 +10,25 @@
 Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     extend: 'Ext.panel.Panel',
 
+    border: false,
+    bodyStyle: 'background-color: transparent;',
+    defaults: {
+        border: false,
+        bodyStyle: 'background-color: transparent;'
+    },
+
     initComponent: function(){
-        Ext4.apply(this, {
-            border: false,
-            defaults: {
-                border: false
-            },
+        this.items = [{
+            html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+        }];
+
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer',
+            style: 'background-color: transparent;',
+            padding: '20px 0 0 0',
             items: [{
-                html: 'Loading...'
-            }],
-            buttonAlign: 'left',
-            buttons: [{
                 text: 'Edit',
                 disabled: true,
                 hidden: true,
@@ -32,7 +40,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                     window.location = url;
                 }
             }]
-        });
+        }];
 
         this.callParent();
 
@@ -87,30 +95,28 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
 
         LDK.Assert.assertTrue('No filter array applied in DataEntryFormDetailsPanel', filterArray.length > 0);
 
+        var navTitle = this.taskId ? 'Task Details' : 'Request Details';
+        LABKEY.NavTrail.setTrail(navTitle, null, navTitle, true, false);
+
         var toAdd = [];
         Ext4.Array.forEach(queries, function(q){
             toAdd.push({
-                xtype: 'panel',
-                title: q.label,
-                border: true,
-                bodyStyle: 'padding: 5px;',
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    xtype: 'ldk-querypanel',
-                    style: 'margin-bottom: 20px;',
-                    queryConfig: {
-                        schemaName: q.schemaName,
-                        queryName: q.queryName,
-                        filters: filterArray,
-                        //note: changed to removeableSort so it will take priority over any view-based sorts
-                        removeableSort: q.serverStoreSort,
-                        scope: this,
-                        success: this.onDataRegionLoad
-                    }
-                }]
-            })
+                html: '<h4>' + LABKEY.Utils.encodeHtml(q.label) + '</h4>'
+            });
+
+            toAdd.push({
+                xtype: 'ldk-querycmp',
+                style: 'margin-bottom: 20px;',
+                queryConfig: {
+                    schemaName: q.schemaName,
+                    queryName: q.queryName,
+                    filters: filterArray,
+                    //note: changed to removeableSort so it will take priority over any view-based sorts
+                    removeableSort: q.serverStoreSort,
+                    success: this.onDataRegionLoad,
+                    scope: this
+                }
+            });
         }, this);
 
         var hasPermission = EHR.DataEntryUtils.hasPermission('Completed', 'update', results.form.permissions, null);
@@ -127,9 +133,11 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     onDataRegionLoad: function(dr){
         var drEl = Ext4.get(dr.domId);
         LDK.Assert.assertNotEmpty('Unable to find dataRegion element in DataEntryFormDetailsPanel', drEl);
-        var itemWidth = drEl.getSize().width + 150;
-        if (itemWidth > this.getWidth()){
-            this.setWidth(itemWidth + 20);
+        if (drEl) {
+            var itemWidth = drEl.getSize().width + 100;
+            if (itemWidth > this.getWidth()){
+                this.setWidth(itemWidth + 20);
+            }
         }
     }
 });

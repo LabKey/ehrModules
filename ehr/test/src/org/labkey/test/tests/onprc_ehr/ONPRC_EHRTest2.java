@@ -573,7 +573,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(Ext4Helper.Locators.window("Finalize Birth/Arrival Form"));
         waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.Locators.window("Finalize Birth/Arrival Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
 
-        waitForElement(Locator.tagWithText("span", "Enter Data"));
+        waitForElement(Locator.tagWithText("span", "Enter New Data"));
 
         _helper.goToTaskForm("Arrival", "Submit Final", false);
         waitAndClick(Ext4Helper.Locators.ext4Button("Lock Entry"));

@@ -72,7 +72,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     border: false
                 },
                 items: [{
-                    html: 'Loading...'
+                    html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
                 }]
             },
             {
@@ -98,249 +98,229 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             bodyStyle: 'margin: 5px;',
             items: [{
                 xtype: 'ldk-navpanel',
-                sections: [{
-                    header: 'Reports',
-                    renderer: function (item) {
-                        return item;
-                    },
-                    items: [{
-                        xtype: 'ldk-linkbutton',
-                        text: 'Service Request Summary',
-                        linkCls: 'labkey-text-link',
-                        href: LABKEY.ActionURL.buildURL('ldk', 'runNotification', null, {key: 'org.labkey.onprc_ehr.notification.RequestAdminNotification'})
-                    }]
-                },{
-                    header: 'Blood Draw Requests',
-                    renderer: function(item){
-                        return {
-                            layout: 'hbox',
-                            bodyStyle: 'padding: 2px;background-color: transparent;',
-                            defaults: {
-                                border: false
-                            },
-                            items: [{
-                                html: item.name + ':',
-                                width: 200
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Unapproved Requests',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Approved Requests',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Scheduled Today',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
-                            }]
-                        }
-                    },
-                    items: [{
-                        name: 'ASB Services',
-                        chargeType: 'DCM: ASB Services'
-//                    },{
-//                        name: 'Clinical Services',
-//                        chargeType: 'DCM: Clinical Services'
-                    },{
-                        name: 'Colony Services',
-                        chargeType: 'DCM: Colony Services'
-//                    },{
-//                        name: 'Surgery Services',
-//                        chargeType: 'DCM: Surgery'
-                    }]
-                },{
-                    header: 'Treatment Requests',
-                    renderer: function(item){
-                        return {
-                            layout: 'hbox',
-                            bodyStyle: 'padding: 2px;background-color: transparent;',
-                            defaults: {
-                                border: false
-                            },
-                            items: [{
-                                html: item.name + ':',
-                                width: 200
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Unapproved Requests',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Approved Requests',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Scheduled Today',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
-                            }]
-                        }
-                    },
-                    items: [{
-                        name: 'ASB Services',
-                        chargeType: 'DCM: ASB Services'
-//                    },{
-//                        name: 'Clinical Services',
-//                        chargeType: 'DCM: Clinical Services'
-                    },{
-                        name: 'Colony Services',
-                        chargeType: 'DCM: Colony Services'
-//                    },{
-//                        name: 'Surgery Services',
-//                        chargeType: 'DCM: Surgery'
-                    }]
-                },{
-                    header: 'Procedure Requests',
-                    renderer: function(item){
-                        return {
-                            layout: 'hbox',
-                            bodyStyle: 'padding: 2px;background-color: transparent;',
-                            defaults: {
-                                border: false
-                            },
-                            items: [{
-                                html: item.name + ':',
-                                width: 200
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Unapproved Requests',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Approved Requests',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Scheduled Today',
-                                linkCls: 'labkey-text-link',
-                                style: 'padding-left: 5px;',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
-                            }]
-                        }
-                    },
-                    items: [{
-                        name: 'ASB Services',
-                        chargeType: 'DCM: ASB Services'
-//                    },{
-//                        name: 'Clinical Services',
-//                        chargeType: 'DCM: Clinical Services'
-                    },{
-                        name: 'Colony Services',
-                        chargeType: 'DCM: Colony Services'
-//                    },{
-//                        name: 'Surgery Services',
-//                        chargeType: 'DCM: Surgery'
-                    }]
-                },{
-                    header: 'Lab Tests',
-                    renderer: function(item){
-                        return item;
-                    },
-                    items: [{
-                        layout: 'hbox',
-                        bodyStyle: 'padding: 2px;background-color: transparent;',
-                        defaults: {
-                            border: false
-                        },
-                        items: [{
-                            html: 'Clinpath:',
-                            width: 200
-                        },{
-                            xtype: 'ldk-linkbutton',
-                            text: 'Requests With Manual Results',
-                            linkCls: 'labkey-text-link',
-                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': false})
-                        },{
-                            xtype: 'ldk-linkbutton',
-                            text: 'Requests With Automatic Results',
-                            linkCls: 'labkey-text-link',
-                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': true})
-                        }]
-                    },{
-                        layout: 'hbox',
-                        bodyStyle: 'padding: 2px;background-color: transparent;',
-                        defaults: {
-                            border: false
-                        },
-                        items: [{
-                            html: 'SPF Surveillance:',
-                            width: 200
-                        },{
-                            xtype: 'ldk-linkbutton',
-                            text: 'All Requests',
-                            linkCls: 'labkey-text-link',
-                            href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance Lab'})
-                        }]
-                    }]
-//                },{
-//                    header: 'Procedure Requests',
-//                    items: [{
-//                        name: 'Surgery Services',
-//                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.QCState/Label~startswith': 'Request:', 'query.type~eq': 'Surgery'})
-//                    }]
-                },{
-                    header: 'Transfer Requests',
-                    renderer: function(item){
-                        return {
-                            layout: 'hbox',
-                            bodyStyle: 'padding: 2px;background-color: transparent;',
-                            defaults: {
-                                border: false
-                            },
-                            items: [{
-                                html: item.name + ':',
-                                width: 200
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Unapproved Requests',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Unapproved Requests'}, item.areaFilter))
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Approved Requests',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests'}, item.areaFilter))
-                            },{
-                                xtype: 'ldk-linkbutton',
-                                text: 'Transfers Today',
-                                linkCls: 'labkey-text-link',
-                                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': (new Date()).format('Y-m-d')}, item.areaFilter))
-                            }]
-                        }
-                    },
-                    items: [{
-                        name: 'Corral',
-                        chargeType: 'DCM: Colony Services',
-                        areaFilter: {
-                            'query.room/area~eq': 'Corral'
-                        }
-                    },{
-                        name: 'PENS/Shelters',
-                        chargeType: 'DCM: ASB Services',
-                        areaFilter: {
-                            'query.room/area~in': 'PENS;Shelters'
-                        }
-                    },{
-                        name: 'All Other',
-                        areaFilter: {
-                            'query.room/area~notin': 'Corral;PENS;Shelters'
-                        }
-                    }]
-                }]
+                sections: this.getQueueSections()
             }]
         }]
+    },
+
+    getQueueSections: function() {
+        return [{
+            header: 'Reports',
+            renderer: function (item) {
+                return item;
+            },
+            items: [{
+                xtype: 'ldk-linkbutton',
+                text: 'Service Request Summary',
+                linkCls: 'labkey-text-link',
+                href: LABKEY.ActionURL.buildURL('ldk', 'runNotification', null, {key: 'org.labkey.onprc_ehr.notification.RequestAdminNotification'})
+            }]
+        },{
+            header: 'Blood Draw Requests',
+            renderer: function(item){
+                return {
+                    layout: 'hbox',
+                    bodyStyle: 'padding: 2px;background-color: transparent;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: item.name + ':',
+                        width: 200
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Unapproved Requests',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Approved Requests',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Scheduled Today',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                    }]
+                }
+            },
+            items: [{
+                name: 'ASB Services',
+                chargeType: 'DCM: ASB Services'
+            },{
+                name: 'Colony Services',
+                chargeType: 'DCM: Colony Services'
+            }]
+        },{
+            header: 'Treatment Requests',
+            renderer: function(item){
+                return {
+                    layout: 'hbox',
+                    bodyStyle: 'padding: 2px;background-color: transparent;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: item.name + ':',
+                        width: 200
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Unapproved Requests',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Approved Requests',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Scheduled Today',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                    }]
+                }
+            },
+            items: [{
+                name: 'ASB Services',
+                chargeType: 'DCM: ASB Services'
+            },{
+                name: 'Colony Services',
+                chargeType: 'DCM: Colony Services'
+            }]
+        },{
+            header: 'Procedure Requests',
+            renderer: function(item){
+                return {
+                    layout: 'hbox',
+                    bodyStyle: 'padding: 2px;background-color: transparent;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: item.name + ':',
+                        width: 200
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Unapproved Requests',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Pending', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Approved Requests',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Scheduled Today',
+                        linkCls: 'labkey-text-link',
+                        style: 'padding-left: 5px;',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                    }]
+                }
+            },
+            items: [{
+                name: 'ASB Services',
+                chargeType: 'DCM: ASB Services'
+            },{
+                name: 'Colony Services',
+                chargeType: 'DCM: Colony Services'
+            }]
+        },{
+            header: 'Lab Tests',
+            renderer: function(item){
+                return item;
+            },
+            items: [{
+                layout: 'hbox',
+                bodyStyle: 'padding: 2px;background-color: transparent;',
+                defaults: {
+                    border: false
+                },
+                items: [{
+                    html: 'Clinpath:',
+                    width: 200
+                },{
+                    xtype: 'ldk-linkbutton',
+                    text: 'Requests With Manual Results',
+                    linkCls: 'labkey-text-link',
+                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': false})
+                },{
+                    xtype: 'ldk-linkbutton',
+                    text: 'Requests With Automatic Results',
+                    linkCls: 'labkey-text-link',
+                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': true})
+                }]
+            },{
+                layout: 'hbox',
+                bodyStyle: 'padding: 2px;background-color: transparent;',
+                defaults: {
+                    border: false
+                },
+                items: [{
+                    html: 'SPF Surveillance:',
+                    width: 200
+                },{
+                    xtype: 'ldk-linkbutton',
+                    text: 'All Requests',
+                    linkCls: 'labkey-text-link',
+                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance Lab'})
+                }]
+            }]
+        },{
+            header: 'Transfer Requests',
+            renderer: function(item){
+                return {
+                    layout: 'hbox',
+                    bodyStyle: 'padding: 2px;background-color: transparent;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: item.name + ':',
+                        width: 200
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Unapproved Requests',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Unapproved Requests'}, item.areaFilter))
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Approved Requests',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests'}, item.areaFilter))
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Transfers Today',
+                        linkCls: 'labkey-text-link',
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': (new Date()).format('Y-m-d')}, item.areaFilter))
+                    }]
+                }
+            },
+            items: [{
+                name: 'Corral',
+                chargeType: 'DCM: Colony Services',
+                areaFilter: {
+                    'query.room/area~eq': 'Corral'
+                }
+            },{
+                name: 'PENS/Shelters',
+                chargeType: 'DCM: ASB Services',
+                areaFilter: {
+                    'query.room/area~in': 'PENS;Shelters'
+                }
+            },{
+                name: 'All Other',
+                areaFilter: {
+                    'query.room/area~notin': 'Corral;PENS;Shelters'
+                }
+            }]
+        }];
     }
 });

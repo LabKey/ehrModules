@@ -283,7 +283,7 @@ public class EHRTestHelper
         _test._ext4Helper.clickExt4MenuButton(false, dataEntryButton, false, "Discard");
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
-        _test.waitForElement(Locator.tagWithText("span", "Enter Data"));
+        _test.waitForElement(Locator.tagWithText("span", "Enter New Data"));
     }
 
     public void verifyAllReportTabs(ParticipantViewPage participantView)

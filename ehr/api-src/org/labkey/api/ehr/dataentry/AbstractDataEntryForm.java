@@ -241,8 +241,7 @@ public class AbstractDataEntryForm implements DataEntryForm
     {
         JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", this);
         view.setTitle(getLabel());
-        view.setHidePageTitle(true);
-        view.setFrame(WebPartView.FrameType.PORTAL);
+        view.setFrame(WebPartView.FrameType.NONE);
 
         view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
         view.addClientDependencies(getClientDependencies());

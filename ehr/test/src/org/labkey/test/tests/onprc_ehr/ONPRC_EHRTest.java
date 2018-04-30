@@ -1396,7 +1396,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertEquals(bloodGrid.getFieldValue(4, "remark"), remark);
 
         waitAndClickAndWait(_helper.getDataEntryButton("Save & Close"));
-        waitForElement(Locator.tagWithText("span", "Enter Data"));
+        waitForElement(Locator.tagWithText("span", "Enter New Data"));
     }
 
     @Test

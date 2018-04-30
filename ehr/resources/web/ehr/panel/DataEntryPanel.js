@@ -13,6 +13,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     hideErrorPanel: false,
     useSectionBorder: true,
 
+    layout: 'anchor',
+    border: false,
+    bodyStyle: 'background-color: transparent;',
+    defaults: {
+        border: false,
+        bodyStyle: 'background-color: transparent;'
+    },
+
     initComponent: function(){
         Ext4.QuickTips.init();
 
@@ -35,16 +43,9 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         //NOTE: this is done to instantiate the clientStores.  this isnt the best way to do this and should get reworked eventually
         this._cachedItems = this.getItemConfig();
 
-        Ext4.apply(this, {
-            border: false,
-            layout: 'anchor',
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: 'Loading...'
-            }]
-        });
+        this.items = [{
+            html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+        }];
 
         this.callParent();
         this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged', 'animalchange');
@@ -274,8 +275,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 border: false
             },
             items: this.getItemConfig(),
-            buttonAlign: 'left',
-            buttons: this.getButtons()
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                style: 'background-color: transparent;',
+                padding: '20px 0 0 0',
+                items: this.getButtons()
+            }]
         });
 
         if (!this.hideErrorPanel){
