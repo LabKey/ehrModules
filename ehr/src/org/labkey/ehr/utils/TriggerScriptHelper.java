@@ -107,7 +107,7 @@ import java.util.TreeSet;
  * Java class that provides services for trigger script actions that are more easily implemented or more performant
  * when written in Java. Primarily focused on supporting study dataset operations, but other tables can leverage it
  * as well.
- * Intantiated in the EHR's ScriptHelper.js
+ * Instantiated in the EHR's ScriptHelper.js
  * User: bbimber
  * Date: 3/1/12
  */
