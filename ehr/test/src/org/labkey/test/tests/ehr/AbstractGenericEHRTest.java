@@ -208,8 +208,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         waitAndClick(LabModuleHelper.getNavPanelItem("Weight:", VIEW_TEXT));
         DataRegionTable dr = new DataRegionTable("query", this);
         saveLocation();
-        checkCheckbox(Locator.checkboxByName(".select").index(0));
-        checkCheckbox(Locator.checkboxByName(".select").index(1));
+        dr.checkCheckbox(0);
+        dr.checkCheckbox(1);
         String animal1 = dr.getDataAsText(0,"Id");
         String animal2 = dr.getDataAsText(0, "Id");
         dr.clickHeaderMenu("More Actions", false, "Compare Weights");
