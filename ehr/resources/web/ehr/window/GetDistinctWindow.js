@@ -105,9 +105,9 @@ Ext4.define('EHR.window.GetDistinctWindow', {
     getDataRegionFilterArray: function(dataRegion){
         var filters = dataRegion.getUserFilterArray() || [];
 
-        //NOTE: need to account for non-removeable filters in a QWP
-        if (dataRegion.qwp && dataRegion.qwp.filters && dataRegion.qwp.filters.length){
-            filters = filters.concat(dataRegion.qwp.filters);
+        //NOTE: need to account for non-removeable filters
+        if (dataRegion.getBaseFilters().length){
+            filters = filters.concat(dataRegion.getBaseFilters());
         }
 
         return filters;
