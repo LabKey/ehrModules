@@ -100,14 +100,17 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
 
         var toAdd = [];
         Ext4.Array.forEach(queries, function(q){
-            toAdd.push({
-                html: '<h4>' + LABKEY.Utils.encodeHtml(q.label) + '</h4>'
-            });
+            var id = LABKEY.Utils.id();
+            var isPrimaryCmp = q.schemaName === 'ehr' && (q.queryName === 'requests' || q.queryName === 'tasks');
 
             toAdd.push({
                 xtype: 'ldk-querycmp',
+                id: 'ldk-querycmp-' + id,
                 style: 'margin-bottom: 20px;',
                 queryConfig: {
+                    id: id,
+                    title: LABKEY.Utils.encodeHtml(q.label),
+                    frame: isPrimaryCmp ? 'portal' : 'dialog',
                     schemaName: q.schemaName,
                     queryName: q.queryName,
                     filters: filterArray,
@@ -133,10 +136,16 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     onDataRegionLoad: function(dr){
         var drEl = Ext4.get(dr.domId);
         LDK.Assert.assertNotEmpty('Unable to find dataRegion element in DataEntryFormDetailsPanel', drEl);
+
         if (drEl) {
-            var itemWidth = drEl.getSize().width + 100;
-            if (itemWidth > this.getWidth()){
-                this.setWidth(itemWidth + 20);
+            if (dr.totalRows > 0) {
+                var itemWidth = drEl.getSize().width + 100;
+                if (itemWidth > this.getWidth()){
+                    this.setWidth(itemWidth + 20);
+                }
+            }
+            else {
+                Ext4.getCmp('ldk-querycmp-' + dr.id).hide();
             }
         }
     }
