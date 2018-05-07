@@ -1349,7 +1349,10 @@ public class EHRController extends SpringActionController
         @Override
         public NavTree appendNavTrail(NavTree root)
         {
-            root = _def.appendNavTrail(root, _title);
+            if (_def != null)
+            {
+                root = _def.appendNavTrail(root, _title);
+            }
             return root;
         }
     }
