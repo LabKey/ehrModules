@@ -879,10 +879,11 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         EHRClientAPIHelper apiHelper = new EHRClientAPIHelper(this, getProjectName());
         boolean hasDemographics = apiHelper.getRowCount("study", "demographics") > 0;
         boolean hasCases = apiHelper.getRowCount("study", "cases") > 0;
+        int aggregatePanelCount = 0;
 
         if (hasDemographics)
         {
-            waitForElement(Locators.webpartTitle.withText("Current Population"), WAIT_FOR_JAVASCRIPT);
+            waitForElement(Locators.panelWebpartTitle.withText("Current Population"), WAIT_FOR_JAVASCRIPT);
             waitForElement(Locator.tagWithClass("div", "ehr-populationpanel-table"), WAIT_FOR_JAVASCRIPT * 3);
         }
         else
@@ -891,7 +892,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         }
 
         waitAndClick(Locator.tagContainingText("a", "SPF Colony"));
-        waitForElement(Locators.webpartTitle.withText("SPF 9 (ESPF)"), WAIT_FOR_JAVASCRIPT * 2);
+        waitForElement(Locators.panelWebpartTitle.withText("SPF 9 (ESPF)"), WAIT_FOR_JAVASCRIPT * 2);
 
         waitAndClick(Locator.tagContainingText("a", "Housing Summary"));
         waitForElement(Locator.tagContainingText("div", "No buildings were found"), WAIT_FOR_JAVASCRIPT * 2);
@@ -899,8 +900,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitAndClick(Locator.tagContainingText("a", "Utilization Summary"));
         if (hasDemographics)
         {
-            waitForElement(Locators.webpartTitle.withText("Colony Utilization"), WAIT_FOR_JAVASCRIPT);
-            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), 2, WAIT_FOR_JAVASCRIPT);
+            waitForElement(Locators.panelWebpartTitle.withText("Colony Utilization"), WAIT_FOR_JAVASCRIPT);
+            aggregatePanelCount += 2;
+            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), aggregatePanelCount, WAIT_FOR_JAVASCRIPT);
         }
         else
         {
@@ -911,7 +913,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         if (hasCases)
         {
             waitForElement(Locator.tagContainingText("h4", "Open Cases:"), WAIT_FOR_JAVASCRIPT * 2);
-            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), 1, WAIT_FOR_JAVASCRIPT);
+            aggregatePanelCount += 1;
+            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), aggregatePanelCount, WAIT_FOR_JAVASCRIPT);
         }
         else
         {
