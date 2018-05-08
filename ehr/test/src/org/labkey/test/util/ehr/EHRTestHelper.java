@@ -182,7 +182,7 @@ public class EHRTestHelper
     {
         _test.goToProjectHome();
         _test.waitAndClickAndWait(Locator.tagContainingText("a", "Enter Data"));
-        _test.waitAndClick(Locator.tagContainingText("span", "Enter New Data"));  //click tab
+        _test.waitAndClick(Locator.tagContainingText("a", "Enter New Data"));  //click tab
         _test.waitForElement(Locator.tagContainingText("span", "Colony Management:"));  //proxy for list loading
         _test.waitAndClick(WAIT_FOR_PAGE, Locator.tagContainingText("a", name).withClass("labkey-text-link"), WAIT_FOR_PAGE);
 
@@ -283,7 +283,7 @@ public class EHRTestHelper
         _test._ext4Helper.clickExt4MenuButton(false, dataEntryButton, false, "Discard");
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
-        _test.waitForElement(Locator.tagWithText("span", "Enter New Data"));
+        _test.waitForElement(Locator.tagWithText("a", "Enter New Data"));
     }
 
     public void verifyAllReportTabs(ParticipantViewPage participantView)

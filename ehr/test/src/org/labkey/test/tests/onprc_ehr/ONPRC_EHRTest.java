@@ -877,39 +877,41 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         //NOTE: depending on the test order and whether demographics records were created, so we test this
         EHRClientAPIHelper apiHelper = new EHRClientAPIHelper(this, getProjectName());
-        if (apiHelper.getRowCount("study", "demographics") > 0)
+        boolean hasDemographics = apiHelper.getRowCount("study", "demographics") > 0;
+        boolean hasCases = apiHelper.getRowCount("study", "cases") > 0;
+
+        if (hasDemographics)
         {
-            waitForElement(Locator.tagContainingText("b", "Current Population:"), WAIT_FOR_JAVASCRIPT * 3);
+            waitForElement(Locators.webpartTitle.withText("Current Population"), WAIT_FOR_JAVASCRIPT);
+            waitForElement(Locator.tagWithClass("div", "ehr-populationpanel-table"), WAIT_FOR_JAVASCRIPT * 3);
         }
         else
         {
             waitForElement(Locator.tagContainingText("div", "No animals were found"), WAIT_FOR_JAVASCRIPT);
         }
 
-        waitAndClick(Locator.tagContainingText("span", "SPF Colony"));
-        waitForElement(Locator.tagContainingText("b", "SPF 9 (ESPF)"), WAIT_FOR_JAVASCRIPT * 2);
+        waitAndClick(Locator.tagContainingText("a", "SPF Colony"));
+        waitForElement(Locators.webpartTitle.withText("SPF 9 (ESPF)"), WAIT_FOR_JAVASCRIPT * 2);
 
-        waitAndClick(Locator.tagContainingText("span", "Utilization Summary"));
-        waitForElement(Locator.tagContainingText("b", "Colony Utilization"), WAIT_FOR_JAVASCRIPT * 2);
-
-        waitAndClick(Locator.tagContainingText("span", "Housing Summary"));
-        //NOTE: depending on test order, there may or may not be housing records created
+        waitAndClick(Locator.tagContainingText("a", "Housing Summary"));
         waitForElement(Locator.tagContainingText("div", "No buildings were found"), WAIT_FOR_JAVASCRIPT * 2);
 
-        waitAndClick(Locator.tagContainingText("span", "Utilization Summary"));
-        if (apiHelper.getRowCount("study", "demographics") > 0)
+        waitAndClick(Locator.tagContainingText("a", "Utilization Summary"));
+        if (hasDemographics)
         {
-            waitForElement(Locator.tagContainingText("b", "Colony Utilization:"), WAIT_FOR_JAVASCRIPT * 2);
+            waitForElement(Locators.webpartTitle.withText("Colony Utilization"), WAIT_FOR_JAVASCRIPT);
+            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), 2, WAIT_FOR_JAVASCRIPT);
         }
         else
         {
             waitForElement(Locator.tagContainingText("div", "No records found"), WAIT_FOR_JAVASCRIPT * 2);
         }
 
-        waitAndClick(Locator.tagContainingText("span", "Clinical Case Summary"));
-        if (apiHelper.getRowCount("study", "cases") > 0)
+        waitAndClick(Locator.tagContainingText("a", "Clinical Case Summary"));
+        if (hasCases)
         {
-            waitForElement(Locator.tagContainingText("i", "Open Cases:"), WAIT_FOR_JAVASCRIPT * 2);
+            waitForElement(Locator.tagContainingText("h4", "Open Cases:"), WAIT_FOR_JAVASCRIPT * 2);
+            waitForElements(Locator.tagWithClass("div", "ehr-aggregationpanel-table"), 1, WAIT_FOR_JAVASCRIPT);
         }
         else
         {
@@ -1396,7 +1398,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertEquals(bloodGrid.getFieldValue(4, "remark"), remark);
 
         waitAndClickAndWait(_helper.getDataEntryButton("Save & Close"));
-        waitForElement(Locator.tagWithText("span", "Enter New Data"));
+        waitForElement(Locator.tagWithText("a", "Enter New Data"));
     }
 
     @Test

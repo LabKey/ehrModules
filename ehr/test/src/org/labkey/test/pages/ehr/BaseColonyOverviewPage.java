@@ -30,12 +30,13 @@ public abstract class BaseColonyOverviewPage extends LabKeyPage
 
     protected void clickTab(String tab)
     {
-        _ext4Helper.clickExt4Tab(tab);
+        Locator loc = Locator.tagWithClass("ul", "nav-tabs").append(Locator.tagWithText("a", tab));
+        click(loc);
     }
 
     protected WebElement getActiveTabPanel()
     {
-        return Locator.tagWithClass("div", "x4-tabpanel-child").notHidden().findElement(getDriver());
+        return Locator.tag("div").withClasses("tab-pane", "active").notHidden().findElement(getDriver());
     }
 
     protected abstract class OverviewTab extends Component
