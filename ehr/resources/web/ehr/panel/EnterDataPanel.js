@@ -4,26 +4,23 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 Ext4.define('EHR.panel.EnterDataPanel', {
-    extend: 'LDK.panel.QueryTabPanel',
+    extend: 'LABKEY.ext4.BootstrapTabPanel',
 
     additionalEnterNewSections:[],
 
     initComponent: function(){
-        Ext4.apply(this, {
-            items: this.getItems(),
-            minHeight: 200
-        });
-
-        this.loadData();
+        this.items = this.getItems();
 
         this.callParent();
+
+        this.loadData();
     },
 
     loadData: function(){
         EHR.Utils.getDataEntryItems({
             includeFormElements: false,
-            scope: this,
-            success: this.onLoad
+            success: this.onLoad,
+            scope: this
         });
     },
 
@@ -53,49 +50,65 @@ Ext4.define('EHR.panel.EnterDataPanel', {
         }, this);
 
         sections = sections.concat(this.additionalEnterNewSections);
-        var tab = this.down('#enterNew');
-        tab.removeAll();
-        tab.add({
+
+        this.getEnterNewPanel().removeAll();
+        this.getEnterNewPanel().add({
             xtype: 'ldk-navpanel',
             sections: sections
         });
     },
 
+    getEnterNewPanel: function() {
+        if (!this.enterNewPanel) {
+            this.enterNewPanel = Ext4.create('Ext.panel.Panel', {
+                border: false,
+                items: [this.getLoadingConfig()]
+            });
+        }
+
+        return this.enterNewPanel;
+    },
+
+    getLoadingConfig: function() {
+        return {
+            border: false,
+            bodyStyle: 'background-color: transparent;',
+            html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+        };
+    },
+
     getItems: function(){
-        return [
-            {
-                xtype: 'panel',
-                bodyStyle: 'margin: 5px;',
-                title: 'Enter New Data',
-                itemId: 'enterNew',
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
-                }]
-            },
-            {
-            xtype: 'ldk-querypanel',
-            bodyStyle: 'margin: 5px;',
-            title: 'My Tasks',
-            queryConfig:  {
-                schemaName: 'ehr',
-                queryName: 'my_tasks',
-                viewName: 'Active Tasks'
-            }
+        return [{
+            title: 'Enter New Data',
+            itemId: 'enterNew',
+            items: [
+                this.getEnterNewPanel()
+            ]
         },{
-            xtype: 'ldk-querypanel',
-            bodyStyle: 'margin: 5px;',
+            title: 'My Tasks',
+            itemId: 'myTasks',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr',
+                    queryName: 'my_tasks',
+                    viewName: 'Active Tasks'
+                }
+            }]
+        },{
             title: 'All Tasks',
-            queryConfig:  {
-                schemaName: 'ehr',
-                queryName: 'tasks',
-                viewName: 'Active Tasks'
-            }
+            itemId: 'allTasks',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr',
+                    queryName: 'tasks',
+                    viewName: 'Active Tasks'
+                }
+            }]
         },{
             title: 'Queues',
-            bodyStyle: 'margin: 5px;',
+            itemId: 'queues',
             items: [{
                 xtype: 'ldk-navpanel',
                 sections: this.getQueueSections()
@@ -122,7 +135,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     layout: 'hbox',
                     bodyStyle: 'padding: 2px;background-color: transparent;',
                     defaults: {
-                        border: false
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
                         html: item.name + ':',
@@ -161,7 +175,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     layout: 'hbox',
                     bodyStyle: 'padding: 2px;background-color: transparent;',
                     defaults: {
-                        border: false
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
                         html: item.name + ':',
@@ -200,7 +215,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     layout: 'hbox',
                     bodyStyle: 'padding: 2px;background-color: transparent;',
                     defaults: {
-                        border: false
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
                         html: item.name + ':',
@@ -241,7 +257,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 layout: 'hbox',
                 bodyStyle: 'padding: 2px;background-color: transparent;',
                 defaults: {
-                    border: false
+                    border: false,
+                    bodyStyle: 'background-color: transparent;'
                 },
                 items: [{
                     html: 'Clinpath:',
@@ -261,7 +278,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 layout: 'hbox',
                 bodyStyle: 'padding: 2px;background-color: transparent;',
                 defaults: {
-                    border: false
+                    border: false,
+                    bodyStyle: 'background-color: transparent;'
                 },
                 items: [{
                     html: 'SPF Surveillance:',
@@ -280,7 +298,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     layout: 'hbox',
                     bodyStyle: 'padding: 2px;background-color: transparent;',
                     defaults: {
-                        border: false
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
                         html: item.name + ':',

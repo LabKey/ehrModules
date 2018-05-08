@@ -12,27 +12,31 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
 
     aggregateData: {},
 
+    border: false,
+    defaults: {
+        border: false,
+        bodyStyle: 'background-color: transparent;'
+    },
+
     initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: '<b>Colony Utilization:</b>'
-            },{
-                html: '<hr>'
-            },{
-                itemId: 'childPanel',
-                defaults: {
-                    border: false
-                },
+
+        this.items = [
+            Ext4.create('LDK.panel.WebpartPanel', {
+                title: 'Colony Utilization',
+                useDefaultPanel: true,
                 items: [{
-                    html: 'Loading...'
+                    itemId: 'childPanel',
+                    border: false,
+                    defaults: {
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
+                    },
+                    items: [{
+                        html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+                    }]
                 }]
-            }]
-        });
+            })
+        ];
 
         this.callParent();
 
@@ -76,7 +80,8 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
 
         var cfg = {
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             items: []
         };

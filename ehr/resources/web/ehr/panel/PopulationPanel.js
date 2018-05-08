@@ -26,28 +26,26 @@ Ext4.define('EHR.panel.PopulationPanel', {
             style: 'padding: 5px',
             border: false,
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
-            items: [{
-                border: false,
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    html: '<b>' + this.titleText + ':</b>'
-                },{
-                    html: '<hr>'
-                }]
-            },{
-                itemId: 'populationPanel',
-                border: false,
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    html: 'Loading...'
-                }]
-            }]
+            items: [
+                Ext4.create('LDK.panel.WebpartPanel', {
+                    title: LABKEY.Utils.encodeHtml(this.titleText),
+                    useDefaultPanel: true,
+                    items: [{
+                        itemId: 'populationPanel',
+                        border: false,
+                        defaults: {
+                            border: false,
+                            bodyStyle: 'background-color: transparent;'
+                        },
+                        items: [{
+                            html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+                        }]
+                    }]
+                })
+            ]
         });
 
         this.callParent();
@@ -244,6 +242,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         }, this);
 
         toAdd.push({
+            cls: 'ehr-populationpanel-table',
             layout: {
                 type: 'table',
                 columns: this.getTotalColumns(),

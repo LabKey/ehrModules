@@ -88,14 +88,14 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
 
         return {
             border: false,
-            style: 'padding-left: 10px;',
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             items: [{
-                html: '<i>' + label + ':</i>',
-                style: 'padding-bottom: 5px;'
+                html: '<h4>' + label + ':</h4>'
             },{
+                cls: 'ehr-aggregationpanel-table',
                 style: 'padding-left: 10px;padding-bottom: 10px;',
                 layout: {
                     type: 'table',
@@ -103,7 +103,8 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
                 },
                 border: false,
                 defaults: {
-                    border: false
+                    border: false,
+                    bodyStyle: 'background-color: transparent;'
                 },
                 items: [{
                     html: 'Category',

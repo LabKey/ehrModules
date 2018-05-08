@@ -11,27 +11,30 @@ Ext4.define('EHR.panel.ClinicalSummaryPanel', {
     extend: 'EHR.panel.BasicAggregationPanel',
     alias: 'widget.ehr-clinicalsummarypanel',
 
+    border: false,
+    defaults: {
+        border: false
+    },
+
     initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: '<b>Clinical Summary:</b>'
-            },{
-                html: '<hr>'
-            },{
-                itemId: 'childPanel',
-                defaults: {
-                    border: false
-                },
+
+        this.items = [
+            Ext4.create('LDK.panel.WebpartPanel', {
+                title: 'Clinical Summary',
+                useDefaultPanel: true,
                 items: [{
-                    html: 'Loading...'
+                    itemId: 'childPanel',
+                    border: false,
+                    defaults: {
+                        border: false,
+                        bodyStyle: 'background-color: transparent;'
+                    },
+                    items: [{
+                        html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+                    }]
                 }]
-            }]
-        });
+            })
+        ];
 
         this.callParent(arguments);
 

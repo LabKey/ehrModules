@@ -4,18 +4,14 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 Ext4.define('EHR.panel.ServiceRequestsPanel', {
-    extend: 'Ext.tab.Panel',
-
-    minHeight: 300,
+    extend: 'LABKEY.ext4.BootstrapTabPanel',
 
     initComponent: function(){
-        Ext4.apply(this, {
-            items: this.getItems()
-        });
-
-        this.loadData();
+        this.items = this.getItems();
 
         this.callParent();
+
+        this.loadData();
     },
 
     loadData: function(){
@@ -45,23 +41,21 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
 
             if (items.length){
                 sections.push({
-                    header: i,
+                    //header: i,
                     items: items
                 });
             }
         }
 
-        var tab = this.down('#enterNew');
-        tab.removeAll();
-
+        this.getNewRequestPanel().removeAll();
         if (sections.length){
-            tab.add({
+            this.getNewRequestPanel().add({
                 xtype: 'ldk-navpanel',
                 sections: sections
             });
         }
         else {
-            tab.add({
+            this.getNewRequestPanel().add({
                 html: 'You do not have permission to submit any types of requests.  Please contact your administrator if you believe this is an error.',
                 border: false
             });
@@ -78,36 +72,77 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
         ];
     },
 
+    getNewRequestPanel: function() {
+        if (!this.newRequestPanel) {
+            this.newRequestPanel = Ext4.create('Ext.panel.Panel', {
+                border: false,
+                items: [{
+                    border: false,
+                    bodyStyle: 'background-color: transparent;',
+                    html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
+                }]
+            });
+        }
+
+        return this.newRequestPanel;
+    },
+
+    getPendingRequestsPanel: function() {
+        if (!this.pendingRequestsPanel) {
+            var items = [];
+            Ext4.each(this.getPendingRequestsTables(), function(requestTable) {
+                items.push({
+                    title: LABKEY.Utils.encodeHtml(requestTable.title),
+                    items: [{
+                        xtype: 'ldk-querycmp',
+                        queryConfig:  {
+                            schemaName: 'study',
+                            queryName: requestTable.queryName,
+                            viewName: requestTable.viewName,
+                            removeableFilters: [
+                                LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                                LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                            ]
+                        }
+                    }]
+                });
+            }, this);
+
+            this.pendingRequestsPanel = Ext4.create('LABKEY.ext4.BootstrapTabPanel', {
+                usePills: true,
+                items: items
+            });
+        }
+
+        return this.pendingRequestsPanel;
+    },
+
+    getQueueSections: function(){
+        return [];
+    },
+
     getItems: function(){
         var items = [{
-            xtype: 'panel',
-            style: 'padding: 5px;',
             title: 'New Request',
-            itemId: 'enterNew',
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
-            }]
+            itemId: 'newRequest',
+            items: [this.getNewRequestPanel()]
+        },{
+            title: 'My Pending Requests',
+            itemId: 'myPendingRequests',
+            items: [this.getPendingRequestsPanel()]
         }];
 
-        Ext4.each(this.getPendingRequestsTables(), function(requestTable) {
+        var queueSections = this.getQueueSections();
+        if (queueSections != null && Ext4.isArray(queueSections) && queueSections.length > 0) {
             items.push({
-                xtype: 'ldk-querypanel',
-                title: 'My Pending ' + requestTable.title + ' Requests',
-                style: 'padding: 5px;',
-                queryConfig:  {
-                    schemaName: 'study',
-                    queryName: requestTable.queryName,
-                    viewName: requestTable.viewName,
-                    removeableFilters: [
-                        LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                        LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                    ]
-                }
+                title: 'Queues',
+                itemId: 'queues',
+                items: [{
+                    xtype: 'ldk-navpanel',
+                    sections: queueSections
+                }]
             });
-        }, this);
+        }
 
         return items;
     }

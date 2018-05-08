@@ -11,17 +11,19 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     nounPlural: 'Buildings',
     headerNames: [],
     cageUsagePanelColumnCount: 4,
-    usageTitleHTML: '<b>Cage Usage:</b><hr>',
+    usageTitle: 'Cage Usage',
+    usageDescriptionHTML: null,
 
     initComponent: function(){
         Ext4.apply(this, {
             style: 'padding: 5px',
             border: false,
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             items: [{
-                html: 'Loading...'
+                html: '<i class="fa fa-spinner fa-pulse"></i> loading...'
             }]
         });
 
@@ -73,7 +75,8 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
     onLoad: function(){
         var cfg = {
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             items: []
         };
@@ -104,10 +107,7 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
 
     appendUtilizationSection: function(results){
         if (!results || !results.rows || !results.rows.length){
-            return {
-                html: 'No ' + this.nounPlural.toLowerCase() + ' were found',
-                style: 'padding-bottom: 10px;'
-            }
+            return this.getNoRecordsFoundPanel(this.usageTitle, this.nounPlural);
         }
 
         var headerNames = this.getCageUsageHeaderNames.call(this);
@@ -156,24 +156,27 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             });
         }, this);
 
-        return {
-            border: false,
-            defaults: {
-                border: false
-            },
-            style: 'padding: 5px;',
-            items: [{
-                html: this.usageTitleHTML
-            },{
+        var items = [];
+        if (this.usageDescriptionHTML) {
+            items.push({
                 border: false,
-                style: 'padding-left: 5px;',
-                layout: {
-                    type: 'table',
-                    columns: this.cageUsagePanelColumnCount
-                },
-                items: cells
-            }]
+                html: this.usageDescriptionHTML
+            });
         }
+        items.push({
+            border: false,
+            layout: {
+                type: 'table',
+                columns: this.cageUsagePanelColumnCount
+            },
+            items: cells
+        });
+
+        return Ext4.create('LDK.panel.WebpartPanel', {
+            title: LABKEY.Utils.encodeHtml(this.usageTitle),
+            useDefaultPanel: true,
+            items: items
+        });
     },
 
     getAvailableCagesUrlParams: function (area) {
@@ -191,12 +194,20 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
         return;
     },
 
+    getNoRecordsFoundPanel: function(title, nounPlural) {
+        return Ext4.create('LDK.panel.WebpartPanel', {
+            title: LABKEY.Utils.encodeHtml(title),
+            useDefaultPanel: true,
+            items: [{
+                border: false,
+                html: 'No ' + nounPlural.toLowerCase() + ' were found'
+            }]
+        });
+    },
+
     appendSection: function(results, cfg){
         if (!results || !results.rows || !results.rows.length){
-            return {
-                html: 'No records were found',
-                style: 'padding-bottom: 10px;'
-            }
+            return this.getNoRecordsFoundPanel(cfg.header, 'records');
         }
 
         var total = 0;
@@ -255,24 +266,18 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
             }
         }, this);
 
-        return {
-            border: false,
-            defaults: {
-                border: false
-            },
-            style: 'padding: 5px;',
+        return Ext4.create('LDK.panel.WebpartPanel', {
+            title: LABKEY.Utils.encodeHtml(cfg.header),
+            useDefaultPanel: true,
             items: [{
-                html: '<b>' + cfg.header + ':</b><hr>'
-            },{
                 border: false,
-                style: 'padding-left: 5px;',
                 layout: {
                     type: 'table',
                     columns: cfg.columns.length + (cfg.sumField ? 1 : 0)
                 },
                 items: cells
             }]
-        }
+        });
     },
 
     getCageUsageHeaderNames: function () {
