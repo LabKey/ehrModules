@@ -85,6 +85,7 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         }
 
         protected final DataRegionTable assignedFundedDataRegion = colonyDataRegion("Assigned (funded)");
+        protected final DataRegionTable activeIacucDataRegion = colonyDataRegion("Active IACUC Assignments");
         protected final DataRegionTable colonyUseDataRegion = colonyDataRegion("Breeding/Colony Use");
         protected final DataRegionTable unassignedDataRegion = colonyDataRegion("Unassigned");
         protected final DataRegionTable ageClassDataRegion = colonyDataRegion("Age Classes (in years)");
@@ -98,6 +99,11 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         public DataRegionTable getAssignedFundedDataRegion()
         {
             return assignedFundedDataRegion;
+        }
+
+        public DataRegionTable getActiveIacucDataRegion()
+        {
+            return activeIacucDataRegion;
         }
     }
 
