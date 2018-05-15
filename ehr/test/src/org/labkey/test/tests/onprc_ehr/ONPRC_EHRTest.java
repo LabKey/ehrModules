@@ -1420,7 +1420,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         weightGrid.clickTbarButton("Add Batch");
         waitForElement(Ext4Helper.Locators.window("Choose Animals"));
         Ext4FieldRef.getForLabel(this, "Id(s)").setValue(StringUtils.join(MORE_ANIMAL_IDS, ";"));
-        Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
+        Ext4FieldRef.getForLabel(this, "Bulk Edit Before Applying").setChecked(true);
         waitAndClick(Ext4Helper.Locators.window("Choose Animals").append(Ext4Helper.Locators.ext4Button("Submit")));
         waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
         _helper.toggleBulkEditField("Weight (kg)");
@@ -1522,7 +1522,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //deselect the first row
         _ext4Helper.queryOne("field[fieldName='exclude']", Ext4FieldRef.class).setChecked(false);
 
-        Ext4FieldRef.getForLabel(this, "Bulk Edit Values").setChecked(true);
+        Ext4FieldRef.getForLabel(this, "Bulk Edit Before Applying").setChecked(true);
         waitAndClick(Ext4Helper.Locators.window("Copy From Medications/Treatments Given").append(Ext4Helper.Locators.ext4Button("Submit")));
         waitForElement(Ext4Helper.Locators.window("Bulk Edit"));
         _helper.toggleBulkEditField("Performed By");
