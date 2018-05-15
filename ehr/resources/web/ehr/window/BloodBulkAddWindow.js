@@ -9,54 +9,55 @@
 Ext4.define('EHR.window.BloodAddBulkWindow', {
     extend: 'Ext.window.Window',
 
+    modal: true,
+    closeAction: 'destroy',
+    title: 'Bulk Add Blood Draws',
+    bodyStyle: 'padding: 5px;',
+    width: 800,
+    defaults: {
+        border: false
+    },
+
+    fieldNames: ['Id', 'Date', 'Project', 'Tube Type', 'Quantity'],
+    fields: ['Id', 'date', 'project', 'tube_type', 'quantity'],
+    requiredFields: ['Id', 'date', 'project', 'tube_type', 'quantity'],
+
     initComponent: function(){
-        Ext4.apply(this, {
-            modal: true,
-            closeAction: 'destroy',
-            title: 'Bulk Add Blood Draws',
-            bodyStyle: 'padding: 5px;',
-            width: 800,
-            fieldNames: ['Id', 'Date', 'Project', 'Tube Type', 'Quantity'],
-            fields: ['Id', 'date', 'project', 'tube_type', 'quantity'],
-            requiredFields: ['Id', 'date', 'project', 'tube_type', 'quantity'],
-            defaults: {
-                border: false
-            },
-            items: [{
-                html : 'This allows you to import blood draw using a simple excel file.  To import, cut/paste the contents of the excel file (Ctl + A is a good way to select all) into the box below and hit submit.',
-                style: 'padding-bottom: 10px;'
-            },{
-                xtype: 'ldk-linkbutton',
-                text: '[Download Template]',
-                scope: this,
-                handler: function(){
-                    LABKEY.Utils.convertToExcel({
-                        fileName: 'Blood Request.xlsx',
-                        sheets: [{
-                            name: 'Requests',
-                            data: [
-                                this.fieldNames
-                            ]
-                        }]
-                    });
-                }
-            },{
-                xtype: 'textarea',
-                width: 770,
-                height: 400,
-                itemId: 'textField'
-            }],
-            buttons: [{
-                text: 'Submit',
-                scope: this,
-                handler: this.onSubmit
-            },{
-                text: 'Cancel',
-                handler: function(btn){
-                    btn.up('window').close();
-                }
-            }]
-        });
+        this.items = [{
+            html : 'This allows you to import blood draw using a simple excel file.  To import, cut/paste the contents of the excel file (Ctl + A is a good way to select all) into the box below and hit submit.',
+            style: 'padding-bottom: 10px;'
+        },{
+            xtype: 'ldk-linkbutton',
+            text: '[Download Template]',
+            scope: this,
+            handler: function(){
+                LABKEY.Utils.convertToExcel({
+                    fileName: 'Blood Request.xlsx',
+                    sheets: [{
+                        name: 'Requests',
+                        data: [
+                            this.fieldNames
+                        ]
+                    }]
+                });
+            }
+        },{
+            xtype: 'textarea',
+            width: 770,
+            height: 400,
+            itemId: 'textField'
+        }];
+
+        this.buttons = [{
+            text: 'Submit',
+            scope: this,
+            handler: this.onSubmit
+        },{
+            text: 'Cancel',
+            handler: function(btn){
+                btn.up('window').close();
+            }
+        }];
 
         this.projectStore = EHR.DataEntryUtils.getProjectStore();
 
@@ -98,7 +99,7 @@ Ext4.define('EHR.window.BloodAddBulkWindow', {
                 continue;
             }
 
-            var newRow = this.processRow(row, errors, i);
+            var newRow = this.processRow(parsed[0], row, errors, i);
             if (newRow){
                 records.push(this.targetStore.createModel(newRow));
             }
@@ -119,14 +120,18 @@ Ext4.define('EHR.window.BloodAddBulkWindow', {
         this.close();
     },
 
-    processRow: function(row, errors, rowIdx){
+    processRow: function(headers, row, errors, rowIdx){
         var obj = {
-            Id: row[0],
-            date: LDK.ConvertUtils.parseDate(row[1]),
-            project: this.resolveProjectByName(row[2], errors, rowIdx),
-            tube_type: row[3],
-            quantity: row[4]
+            Id: row[headers.indexOf('Id')],
+            date: LDK.ConvertUtils.parseDate(row[headers.indexOf('date')]),
+            project: this.resolveProjectByName(row[headers.indexOf('project')], errors, rowIdx)
         };
+
+        Ext4.each(this.fields, function(field) {
+            if (!obj[field]) {
+                obj[field] = row[headers.indexOf(field)];
+            }
+        });
 
         if (!this.checkRequired(this.requiredFields, obj, errors, rowIdx)){
             return obj;
@@ -134,12 +139,12 @@ Ext4.define('EHR.window.BloodAddBulkWindow', {
     },
 
     checkRequired: function(fields, row, errors, rowIdx){
-        var hasErrors = false,
-                fieldName;
+        var hasErrors = false, fieldName;
+
         for (var i=0;i<fields.length;i++){
             fieldName = fields[i];
             if (Ext4.isEmpty(row[fieldName])){
-                errors.push('Row ' + rowIdx + ': missing field ' + fieldName);
+                errors.push('Row ' + rowIdx + ': missing required field ' + fieldName);
                 hasErrors = true;
             }
         }

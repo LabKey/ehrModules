@@ -61,14 +61,6 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                     change: this.onTypeChange
                 }
             },{
-                xtype: 'checkbox',
-                fieldLabel: 'Bulk Edit Values',
-                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
-                itemId: 'chooseValues'
-            },{
-                html: '<hr>',
-                style: 'padding-top: 5px;padding-bottom: 5px;'
-            },{
                 xtype: 'form',
                 itemId: 'theForm',
                 defaults: {
@@ -76,6 +68,19 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                     labelWidth: 140,
                     border: false
                 }
+            },{
+                html: '<hr>',
+                style: 'padding-top: 5px;padding-bottom: 5px;'
+            },{
+                xtype: 'xdatetime',
+                fieldLabel: 'Date (optional)',
+                itemId: 'dateField',
+                value: null
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Bulk Edit Before Applying',
+                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
+                itemId: 'chooseValues'
             }],
             buttons: [{
                 text: 'Submit',
@@ -136,6 +141,9 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
     addSubjects: function(subjectList){
         if (subjectList.length && this.targetStore){
+            var date = this.down('#dateField').getValue();
+            var choose = this.down('#chooseValues').getValue();
+
             subjectList = Ext4.Array.unique(subjectList);
             if (subjectList.length > this.MAX_ANIMALS){
                 Ext4.Msg.alert('Error', 'Too many animals were returned: ' + subjectList.length);
@@ -144,10 +152,14 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
             var records = [];
             Ext4.Array.forEach(subjectList, function(s){
-                records.push(this.targetStore.createModel(Ext4.isObject(s) ? s : {Id: s}));
+                var model = Ext4.isObject(s) ? s : {Id: s};
+                if (date) {
+                    model.date = date;
+                }
+
+                records.push(this.targetStore.createModel(model));
             }, this);
 
-            var choose = this.down('#chooseValues').getValue();
             if (choose){
                 Ext4.create('EHR.window.BulkEditWindow', {
                     suppressConfirmMsg: true,

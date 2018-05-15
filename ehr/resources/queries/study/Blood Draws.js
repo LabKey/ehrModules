@@ -92,8 +92,8 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 
         if (row.quantity && row.tube_vol){
             if (row.quantity != (row.num_tubes * row.tube_vol)){
-                EHR.Server.Utils.addError(scriptErrors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
-                EHR.Server.Utils.addError(scriptErrors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
+                EHR.Server.Utils.addError(scriptErrors, 'quantity', 'Quantity does not match Tube Volume X # Tubes', 'INFO');
+                EHR.Server.Utils.addError(scriptErrors, 'num_tubes', '# Tubes does not match Quantity / Tube Volume', 'INFO');
             }
         }
 

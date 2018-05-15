@@ -28,8 +28,8 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
                 style: 'margin-bottom: 10px;'
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Bulk Edit Values',
-                labelWidth: 150,
+                fieldLabel: 'Bulk Edit Before Applying',
+                labelWidth: 175,
                 helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
                 itemId: 'chooseValues',
                 style: 'margin-bottom: 10px;'
