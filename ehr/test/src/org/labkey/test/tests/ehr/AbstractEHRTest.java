@@ -102,6 +102,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String TASK_TITLE_BRD_REG = "Test breeding registration task";
     protected static final String TASK_TITLE_BRD_OBS = "Test breeding observation task";
     protected static final String TASK_TITLE_PRG_DET = "Test Pregnancy Determinations task";
+    protected static final String TASK_TITLE_NEW_BRD_REQ = "Test new breeding request task";
     protected static final String MPR_TASK_TITLE = "Test MPR task";
     protected static final String VIEW_TEXT = "Browse All";
 
