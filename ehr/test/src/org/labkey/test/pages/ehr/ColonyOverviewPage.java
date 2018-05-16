@@ -81,7 +81,7 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
         protected BaboonColonyTab(WebElement el)
         {
             super(el);
-            waitForElementToDisappear(Locator.byClass("labkey-data-region-loading-mask-panel"), WAIT_FOR_JAVASCRIPT);
+            waitForElementToDisappear(Locator.byClass("labkey-data-region-loading-mask-panel"), 2 * WAIT_FOR_JAVASCRIPT);
         }
 
         protected final DataRegionTable assignedFundedDataRegion = colonyDataRegion("Assigned (funded)");
