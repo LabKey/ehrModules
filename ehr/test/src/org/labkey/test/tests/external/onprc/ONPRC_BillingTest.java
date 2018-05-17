@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.categories.EHR;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Category({External.class, EHR.class, ONPRC.class})
+@BaseWebDriverTest.ClassTimeout(minutes = 10)
 public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
 {
     protected String PROJECT_NAME = "ONPRC_Billing_TestProject";

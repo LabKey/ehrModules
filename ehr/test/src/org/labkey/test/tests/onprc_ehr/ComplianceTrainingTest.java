@@ -55,6 +55,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
+@BaseWebDriverTest.ClassTimeout(minutes = 5)
 public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest, SqlserverOnlyTest
 {
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/customModules/EHR_ComplianceDB/tools/SOP_Lists.zip";

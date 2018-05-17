@@ -23,6 +23,7 @@ import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.TruncateTableCommand;
+import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.SortDirection;
 import org.labkey.test.WebTestHelper;
@@ -58,6 +59,7 @@ import static org.junit.Assert.assertEquals;
  * or similar business logic.
  */
 @Category({CustomModules.class, EHR.class})
+@BaseWebDriverTest.ClassTimeout(minutes = 35)
 public class WNPRC_EHRTest extends AbstractGenericEHRTest
 {
     public static final String PROJECT_NAME = "WNPRC_TestProject";
