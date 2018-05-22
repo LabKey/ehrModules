@@ -183,22 +183,39 @@ EHR.Server.Validation = {
         if (!row[idProp])
             return;
 
+        var STATUS = {
+            ALIVE: 'alive',
+            DEAD: 'dead',
+            SHIPPED: 'shipped',
+            TRANSFERRED: 'transferred',
+            UNKNOWN: 'unknown'
+        };
+
         EHR.Server.Utils.findDemographics({
             participant: row[idProp],
             helper: helper,
             scope: this,
             callback: function(data){
                 if (data){
-                    if (data.calculated_status != 'Alive' && !helper.isAllowAnyId()){
-                        if (data.calculated_status == 'Dead'){
+                    var display_status = data['calculated_status/meaning'] || data.calculated_status;
+                    var calc_status = data.calculated_status != null ? data.calculated_status.toLowerCase() : '';
+                    var calc_status_meaning = data['calculated_status/meaning'] != null ? data['calculated_status/meaning'].toLowerCase() : '';
+                    var isAlive = calc_status === STATUS.ALIVE || calc_status_meaning === STATUS.ALIVE;
+                    var isDead = calc_status === STATUS.DEAD || calc_status_meaning === STATUS.DEAD;
+                    var isShipped = calc_status === STATUS.SHIPPED || calc_status_meaning === STATUS.SHIPPED;
+                    var isTransferred = calc_status === STATUS.TRANSFERRED || calc_status_meaning === STATUS.TRANSFERRED;
+                    var isUnknown = calc_status === STATUS.UNKNOWN || calc_status_meaning === STATUS.UNKNOWN;
+
+                    if (!isAlive && !helper.isAllowAnyId()){
+                        if (isDead){
                             if (!helper.isAllowDeadIds())
-                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + data.calculated_status, 'INFO');
+                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + display_status, 'INFO');
                         }
-                        else if (data.calculated_status == 'Shipped'){
+                        else if (isShipped || isTransferred){
                             if (!helper.isAllowShippedIds())
-                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + data.calculated_status, 'INFO');
+                                EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + display_status, 'INFO');
                         }
-                        else if (data.calculated_status == 'Unknown' || data.calculated_status == null){
+                        else if (isUnknown || display_status == null){
                             if (!helper.isAllowAnyId()){
                                 if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest) {
                                     EHR.Server.Utils.addError(scriptErrors, idProp, 'Id not found in demographics table: ' + row[idProp], 'ERROR');
@@ -214,7 +231,7 @@ EHR.Server.Validation = {
                             }
                         }
                         else {
-                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + (data.calculated_status || 'Unknown'), 'INFO');
+                            EHR.Server.Utils.addError(scriptErrors, idProp, 'Status of this Id is: ' + (display_status || STATUS.UNKNOWN), 'INFO');
                         }
                     }
                 }

@@ -460,15 +460,18 @@ EHR.Server.Utils = new function(){
                     dam: null,
                     gender: ar.getGender(),
                     'gender/origGender': ar.getOrigGender(),
+                    'gender/meaning': ar.getGenderMeaning(),
                     geographic_origin: ar.getGeographicOrigin(),
+                    'geographic_origin/description': ar.getGeographicOriginDescription(),
                     calculated_status: ar.getCalculatedStatus(),
+                    'calculated_status/meaning': ar.getCalculatedStatusMeaning(),
                     departure: ar.getMostRecentDeparture() ? new Date(ar.getMostRecentDeparture().getTime()) : null,
                     sire: null,
                     'id/curlocation/room': ar.getCurrentRoom(),
                     'id/curlocation/cage': ar.getCurrentCage(),
                     mostRecentWeight: ar.getMostRecentWeight(),
                     mostRecentWeightDate: ar.getMostRecentWeightDate() ? new Date(ar.getMostRecentWeightDate().getTime()) : null
-                }
+                };
 
                 //cache results
                 helper.cacheDemographics(row.Id, row);

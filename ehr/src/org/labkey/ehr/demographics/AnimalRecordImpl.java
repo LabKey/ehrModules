@@ -131,6 +131,11 @@ public class AnimalRecordImpl implements AnimalRecord
         return (String)_props.get("calculated_status");
     }
 
+    public String getCalculatedStatusMeaning()
+    {
+        return (String)_props.get("calculated_status/meaning");
+    }
+
     public Date getBirth()
     {
         return (Date)_props.get("birth");
@@ -154,6 +159,11 @@ public class AnimalRecordImpl implements AnimalRecord
     public String getGeographicOrigin()
     {
         return (String)_props.get("geographic_origin");
+    }
+
+    public String getGeographicOriginDescription()
+    {
+        return (String)_props.get("geographic_origin/description");
     }
 
     //used to determine whether this row exists in the demographics table
