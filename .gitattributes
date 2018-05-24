@@ -1336,6 +1336,7 @@ ehr/resources/web/ehr/panel/ServiceRequestsPanel.js -text
 ehr/resources/web/ehr/panel/SimpleDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/SmallFormSnapshotPanel.js -text
 ehr/resources/web/ehr/panel/SnapshotPanel.js -text
+ehr/resources/web/ehr/panel/StudyDatasetsPanel.js -text
 ehr/resources/web/ehr/panel/SurgeryDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/SurgeryInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/TaskDataEntryPanel.js -text

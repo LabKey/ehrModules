@@ -160,7 +160,7 @@ Ext4.define('EHR.window.BloodAddBulkWindow', {
         projectName = Ext4.String.leftPad(projectName, 4, '0');
 
         var recIdx = this.projectStore.find('name', projectName);
-        if (recIdx == -1){
+        if (recIdx === -1){
             errors.push('Row ' + rowIdx + ': unknown project ' + projectName);
             return null;
         }

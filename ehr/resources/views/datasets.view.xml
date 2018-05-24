@@ -1,5 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view" title="EHR Datasets">
     <dependencies>
         <dependency path="ehr.context" />
+        <dependency path="ehr/panel/StudyDatasetsPanel.js" />
     </dependencies>
 </view>
