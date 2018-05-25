@@ -1508,23 +1508,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col2.setIsUnselectable(true);
                 col2.setFk(new QueryForeignKey(us, null, "projectTotalActivelyAssignedBySpecies", "project", "project"));
             }
-
-            String name = "displayName";
-            if (table.getColumn(name) == null)
-            {
-                SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".name, CAST(" + ExprColumn.STR_TABLE_ALIAS + ".project AS varchar))");
-                ExprColumn displayCol = new ExprColumn(table, name, sql, JdbcType.VARCHAR, table.getColumn("name"), table.getColumn("project"));
-                displayCol.setLabel("Display Name");
-                table.addColumn(displayCol);
-
-                table.setTitleColumn(name);
-            }
         }
 
         String name = "displayName";
         if (table.getColumn(name) == null)
         {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".name, " + "CAST(" + ExprColumn.STR_TABLE_ALIAS + ".project AS varchar))");
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".name, CAST(" + ExprColumn.STR_TABLE_ALIAS + ".project AS varchar))");
             ExprColumn displayCol = new ExprColumn(table, name, sql, JdbcType.VARCHAR, table.getColumn("name"), table.getColumn("project"));
             displayCol.setLabel("Display Name");
             table.addColumn(displayCol);
