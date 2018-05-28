@@ -173,7 +173,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
                 String expected = expectedColValues.get(label);
                 log(label + ": expected=" + expected + ", actual=" + value);
 
-                if (value != null && !value.equals(expected))
+                if (value != null && !value.contains(expected))
                     return false;
             }
         }

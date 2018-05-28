@@ -87,15 +87,20 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
         }, this);
 
         var filterArray = [];
+        var viewName =  undefined;
+        var navTitle = 'Details';
 
-        if (this.taskId)
+        if (this.taskId) {
             filterArray.push(LABKEY.Filter.create('taskid', this.taskId, LABKEY.Filter.Types.EQUAL));
-        if (this.requestId)
+            navTitle = 'Task Details';
+        }
+        if (this.requestId) {
             filterArray.push(LABKEY.Filter.create('requestid', this.requestId, LABKEY.Filter.Types.EQUAL));
+            viewName = 'Requests';
+            navTitle = 'Request Details';
+        }
 
         LDK.Assert.assertTrue('No filter array applied in DataEntryFormDetailsPanel', filterArray.length > 0);
-
-        var navTitle = this.taskId ? 'Task Details' : 'Request Details';
         LABKEY.NavTrail.setTrail(navTitle, null, navTitle, true, false);
 
         var toAdd = [];
@@ -113,9 +118,10 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                     frame: isPrimaryCmp ? 'portal' : 'dialog',
                     schemaName: q.schemaName,
                     queryName: q.queryName,
+                    viewName: viewName,
                     filters: filterArray,
                     //note: changed to removeableSort so it will take priority over any view-based sorts
-                    removeableSort: q.serverStoreSort,
+                    removeableSort: viewName === undefined ? q.serverStoreSort : undefined,
                     success: this.onDataRegionLoad,
                     scope: this
                 }
