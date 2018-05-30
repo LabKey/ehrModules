@@ -60,6 +60,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             queryName: 'demographics',
             filterArray: this.filterArray,
             columns: ['Id', EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender, EHR.panel.PopulationPanel.FIELDS.species].join(','),
+            sort: 'Id/ageClass/ageclass',
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: this.doAggregation
