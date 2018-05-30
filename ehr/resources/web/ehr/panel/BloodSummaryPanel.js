@@ -43,7 +43,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
     },
 
     loadData: function(){
-        var demoCols = 'id,species,id/MostRecentWeight/mostRecentWeight,id/MostRecentWeight/mostRecentWeightDate,Id/demographics/calculated_status'
+        var demoCols = 'id,species,id/MostRecentWeight/mostRecentWeight,id/MostRecentWeight/mostRecentWeightDate,Id/demographics/calculated_status,Id/demographics/calculated_status/meaning'
             + ',' + this.bloodPerKgCol + ',' + this.bloodMaxDrawPctCol + ',' + this.bloodDrawIntervalCol;
 
         LABKEY.Query.selectRows({
@@ -197,7 +197,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                 });
             }
             else {
-                var status = dd.getValue('Id/demographics/calculated_status');
+                var status = dd.getValue('Id/demographics/calculated_status/meaning') || dd.getValue('Id/demographics/calculated_status');
                 cfg.items.push({
                     html: '<b>Id: ' + dd.getValue('Id') + (status ? ' (' + status + ')' : '') + '</b>'
                 });
@@ -206,13 +206,13 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                     html: '<hr>'
                 });
 
-                if(dd.getValue('Id/demographics/calculated_status') == "Dead") {
+                if(status != null && status.toLowerCase() === "dead") {
                     cfg.items.push({
                         html: 'No current blood draw information for dead animal.',
                         border: false
                     });
                 }
-                else if (!bds || bds.length == 1) {
+                else if (!bds || bds.length === 1) {
                     var maxDraw = dd.getValue(this.bloodPerKgCol) * dd.getValue(this.bloodMaxDrawPctCol) * dd.getValue('id/MostRecentWeight/mostRecentWeight');
                     cfg.items.push({
                         html: 'There are no previous blood draws within the relevant time frame.  A maximum amount of ' + Ext4.util.Format.round(maxDraw, 2) + ' mL can be drawn.',
@@ -382,7 +382,10 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
 
         if (currentRow){
             toAdd.push({
-                html: 'The amount of blood available if drawn today is: ' + Ext4.util.Format.round(currentRow.allowableDisplay.value, 1) + ' mL.  The graph below shows how the amount of blood available will change over time, including when previous draws will drop off.<br>',
+                html: '<p>Total volume of blood collected in the past ' + currentRow.blood_draw_interval.value + ' days: <b>'
+                    + Ext4.util.Format.round(currentRow.bloodPrevious.value, 1) + ' mL</b>. '
+                    + 'The amount of blood available if drawn today is: <b>' + Ext4.util.Format.round(currentRow.allowableDisplay.value, 1) + ' mL</b>.</p>'
+                    + '<p>The graph below shows how the amount of blood available will change over time, including when previous draws will drop off.</p>',
                 border: false,
                 style: 'margin-bottom: 20px'
             });
