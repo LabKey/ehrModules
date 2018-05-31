@@ -91,18 +91,21 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
         if (!this.pendingRequestsPanel) {
             var items = [];
             Ext4.each(this.getPendingRequestsTables(), function(requestTable) {
+                var filters = [];
+                if (!requestTable.excludeUserFilter) {
+                    filters.push(LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL));
+                }
+                filters.push(LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH));
+
                 items.push({
                     title: LABKEY.Utils.encodeHtml(requestTable.title),
                     items: [{
                         xtype: 'ldk-querycmp',
                         queryConfig:  {
-                            schemaName: 'study',
+                            schemaName: requestTable.schemaName || 'study',
                             queryName: requestTable.queryName,
                             viewName: requestTable.viewName,
-                            removeableFilters: [
-                                LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
-                                LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                            ]
+                            removeableFilters: filters
                         }
                     }]
                 });
