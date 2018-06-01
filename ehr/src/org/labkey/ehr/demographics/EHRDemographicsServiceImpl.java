@@ -570,10 +570,20 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                         continue;
                     }
 
-                    _log.info("Recaching EHR demographics for all living animals in " + s.getContainer().getPath());
+                    try
+                    {
+                        QueryService.get().setEnvironment(QueryService.Environment.USER, u);
+                        QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, s.getContainer());
 
-                    EHRDemographicsServiceImpl.get().cacheAnimals(s.getContainer(), u, validateOnCreate, true);
-                    totalCached++;
+                        _log.info("Recaching EHR demographics for all living animals in " + s.getContainer().getPath());
+
+                        EHRDemographicsServiceImpl.get().cacheAnimals(s.getContainer(), u, validateOnCreate, true);
+                        totalCached++;
+                    }
+                    finally
+                    {
+                        QueryService.get().clearEnvironment();
+                    }
                 }
             }
         }
