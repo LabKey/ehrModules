@@ -1,0 +1,32 @@
+servicename	dataset
+CBC	Hematology
+Chlamydia trachomatis Detection by NAA	Bacteriology
+Chol/HDL Ratio	Chemistry
+Culture, Bacterial/Smear	Bacteriology
+Culture, Enteric	Bacteriology
+Culture, Fungus, Dermal/Smear	Bacteriology
+Culture, Other	Bacteriology
+Culture, Sterile Fluid/Tissue/Smear	Bacteriology
+Culture, Urine	Bacteriology
+Culture, Wound/Smear	Bacteriology
+Direct Smear for Protozoa	Parasitology
+ELISA - HBV	Virology
+ELISA - Measles	Virology
+ELISA - SIV	Virology
+ELISA - SRV	Virology
+ELISA - STLV-1	Virology
+GIFN for TB detection	Bacteriology
+Glycosylated Hemoglobin	Hematology
+Isolation - HBV	Virology
+Lipid Panel	Chemistry
+Mycobacteria Smear and Culture	Bacteriology
+Occult Blood	Parasitology
+Osmolarity	Chemistry
+Ova and Parasite Antigen Panel (EIA)	Parasitology
+Ova and Parasite Concentration (Fecal Float)	Parasitology
+Ova and Parasite Wet Prep	Parasitology
+PCR - Individual Bacterium	Bacteriology
+PCR - SRV 1,2,3,4,5	Virology
+PCR - STLV-1	Virology
+Prothrombin Time (PT) and Activated Partial Thromboplastin Time (APTT)	Chemistry
+Vet-19 Chem Panel	Chemistry

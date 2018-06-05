@@ -1,0 +1,4 @@
+service	automaticrequestfromblooddraw	requiredtubetype	minvolume	labwork_service	formtype
+CBC	true	EDTA		CBC	Clinpath Request
+Vet-19	true	SST			Clinpath Request
+Viral Load	false				Clinpath Request

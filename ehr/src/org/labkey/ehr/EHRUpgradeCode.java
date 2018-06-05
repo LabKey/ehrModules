@@ -64,7 +64,7 @@ public class EHRUpgradeCode implements UpgradeCode
         }
     }
     /**
-     * called at 17.32-17.33
+     * called at 17.32-17.33 and 18.10-18.11
      */
     @SuppressWarnings({"UnusedDeclaration"})
     public void setEhrLookupsContainer(final ModuleContext moduleContext)
@@ -80,18 +80,81 @@ public class EHRUpgradeCode implements UpgradeCode
             Container ehrStudyContainer = ContainerManager.getForPath(ehrStudyContainerPath);
             if (ehrStudyContainer != null)
             {
-                List<String> tableNames = Arrays.asList(
+                List<String> ehrTableNames = Arrays.asList(
+                        "protocolProcedures",
+                        "scheduled_task_types"
+                );
+
+                List<String> ehrLookupsTableNames = Arrays.asList(
                     EHRLookupsUserSchema.TABLE_GEOGRAPHIC_ORIGINS,
                     EHRLookupsUserSchema.TABLE_ROOMS,
                     EHRLookupsUserSchema.TABLE_BUILDINGS,
-                    EHRLookupsUserSchema.TABLE_TREATMENT_CODES
+                    EHRLookupsUserSchema.TABLE_TREATMENT_CODES,
+                        "ageclass",
+                        "amount_units",
+                        "areas",
+                        "billingtypes",
+                        "blood_draw_services",
+                        "blood_draw_tube_type",
+                        "blood_tube_volumes",
+                        "cage",
+                        "cage_positions",
+                        "cage_type",
+                        "cageclass",
+                        "calculated_status_codes",
+                        "clinpath_status",
+                        "clinpath_tests",
+                        "conc_units",
+                        "death_remarks",
+                        "disallowed_medications",
+                        "divider_types",
+                        "dosage_units",
+                        "drug_defaults",
+                        "flag_categories",
+                        "full_snomed",
+                        "gender_codes",
+                        "lab_test_range",
+                        "lab_tests",
+                        "labwork_panels",
+                        "labwork_services",
+                        "labwork_types",
+                        "note_types",
+                        "parentageTypes",
+                        "procedure_default_charges",
+                        "procedure_default_codes",
+                        "procedure_default_comments",
+                        "procedure_default_flags",
+                        "procedure_default_treatments",
+                        "procedures",
+                        "project_types",
+                        "relationshipTypes",
+                        "request_priority",
+                        "restraint_type",
+                        "routes",
+                        "snomap",
+                        "source",
+                        "species",
+                        "species_codes",
+                        "treatment_frequency",
+                        "treatment_frequency_times",
+                        "usda_codes",
+                        "usda_levels",
+                        "volume_units",
+                        "weight_ranges"
                 );
 
-                DbSchema schema = EHRSchema.getInstance().getEHRLookupsSchema();
-                for (String tableName : tableNames)
+                DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
+                for (String tableName : ehrTableNames)
                 {
-                    TableInfo table = schema.getTable(tableName);
-                    new SqlExecutor(schema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+                    TableInfo table = ehrSchema.getTable(tableName);
+                    new SqlExecutor(ehrSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+                }
+
+                DbSchema ehrLookupsSchema = EHRSchema.getInstance().getEHRLookupsSchema();
+                for (String tableName : ehrLookupsTableNames)
+                {
+                    TableInfo table = ehrLookupsSchema.getTable(tableName);
+                    new SqlExecutor(ehrLookupsSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
                 }
             }
         }

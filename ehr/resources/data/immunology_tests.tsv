@@ -1,0 +1,5 @@
+testid	name	units	aliases	alertOnAbnormal	alertOnAny	includeInPanel	sort_order
+CD20	CD20			true	false	true	2
+CD3	CD3			true	false	true	1
+CD4	CD4			true	false	true	3
+CD8	CD8			true	false	true	4

@@ -1809,6 +1809,15 @@
                 <isUserEditable>true</isUserEditable>
                 <isHidden>false</isHidden>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="status" tableDbType="TABLE" useColumnOrder="true">
@@ -1912,6 +1921,7 @@
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
             <column columnName="tasktype"/>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="scheduled_tasks" tableDbType="TABLE" useColumnOrder="true">

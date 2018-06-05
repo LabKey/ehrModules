@@ -1,0 +1,15 @@
+category	description	enforceUnique	omitFromOverview	doHighlight
+ABG		false		false
+Alert		false		true
+Assign Alias		true	false	true
+ATG		false		false
+BSU		false		false
+Cage Exemptions		true	false	false
+Candidate		false		false
+Condition		true		false
+Flag		false		false
+Genetics		false	true	false
+PTG		false		false
+SPF		true		false
+TB		false		false
+TMB		false		false

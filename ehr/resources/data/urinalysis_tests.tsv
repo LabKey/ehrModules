@@ -1,0 +1,15 @@
+testid	name	units	aliases	alertOnAbnormal	alertOnAny	includeInPanel	sort_order
+APPEARANCE	Appearance			true	false	true	10
+BILIRUBIN	Bilirubin	no units		true	false	true	1
+BLOOD	Blood	no units		true	false	true	4
+COLOR	Color			true	false	false	
+GLUC	Glucose	mg/dL		true	false	false	
+KETONE	Ketone	mg/dL		true	false	true	2
+LEUKOCYTES	Leukocytes	no units		true	false	true	9
+MICROSCOPIC	Microscopic			true	false	true	11
+NITRITE	Nitrite	no units		true	false	true	8
+PH	pH	no units		true	false	true	5
+PROTEIN	Protein	mg/dL		true	false	true	6
+SP_GRAVITY	Specific Gravity	no units		true	false	true	3
+TURBIDITY	Turbidity			true	false	false	
+UROBILINOGEN	Urobilinogen	E.U./dL		true	false	true	7

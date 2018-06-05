@@ -412,6 +412,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "populateInitialData"));
 
         repopulate("Lookup Sets");
+        repopulate("Labwork Types");
         repopulate("All");
     }
 

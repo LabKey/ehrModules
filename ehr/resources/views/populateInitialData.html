@@ -24,18 +24,232 @@
 
     Ext4.onReady(function(){
 
-        pendingInserts = 0;
-        pendingDeletes = 0;
+        var pendingInserts = 0;
+        var pendingDeletes = 0;
 
-        var tables = [
-            {
-                label: 'Areas',
-                populateFn: 'populateFromFile',
-                schemaName: 'ehr_lookups',
-                queryName: 'areas',
-                pk: 'area'
-            }
-        ];
+        var tables = [{
+            label: 'Ageclass',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'ageclass',
+            pk: 'rowid'
+        },{
+            label: 'Amount Units',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'amount_units',
+            pk: 'rowid'
+        },{
+            label: 'Areas',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'areas',
+            pk: 'rowid'
+        },{
+            label: 'Billing Types',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'billingtypes',
+            pk: 'rowid'
+        },{
+            label: 'Blood Draw Services',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'blood_draw_services',
+            pk: 'rowid'
+        },{
+            label: 'Blood Draw Tube Type',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'blood_draw_tube_type',
+            pk: 'rowid'
+        },{
+            label: 'Blood Tube Volumes',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'blood_tube_volumes',
+            pk: 'rowid'
+        },{
+            label: 'Cage Positions',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'cage_positions',
+            pk: 'rowid'
+        },{
+            label: 'Cageclass',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'cageclass',
+            pk: 'rowid'
+        },{
+            label: 'Calculated Status Code',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'calculated_status_codes',
+            pk: 'rowid'
+        },{
+            label: 'Chemistry Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'chemistry_tests',
+            pk: 'testid'
+        },{
+            label: 'Clinpath Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'clinpath_tests',
+            pk: 'rowid'
+        },{
+            label: 'Conc Units',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'conc_units',
+            pk: 'rowid'
+        },{
+            label: 'Cytology Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'cytology_tests',
+            pk: 'testid'
+        },{
+            label: 'Death Remarks',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'death_remarks',
+            pk: 'rowid'
+        },{
+            label: 'Disallowed Medications',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'disallowed_medications',
+            pk: 'rowid'
+        },{
+            label: 'Dosage Units',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'dosage_units',
+            pk: 'rowid'
+        },{
+            label: 'Flag Categories',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'flag_categories',
+            pk: 'rowid'
+        },{
+            label: 'Gender Codes',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'gender_codes',
+            pk: 'rowid'
+        },{
+            label: 'Hematology Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'hematology_tests',
+            pk: 'testid'
+        },{
+            label: 'Immunology Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'immunology_tests',
+            pk: 'testid'
+        },{
+            label: 'Lab Test Range',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'lab_test_range',
+            pk: 'rowid'
+        },{
+            label: 'Labwork Services',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'labwork_services',
+            pk: 'rowid'
+        },{
+            label: 'Note Types',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'note_types',
+            pk: 'rowid'
+        },{
+            label: 'Parentage Types',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'parentageTypes',
+            pk: 'rowid'
+        },{
+            label: 'Request Priority',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'request_priority',
+            pk: 'rowid'
+        },{
+            label: 'Restraint Type',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'restraint_type',
+            pk: 'rowid'
+        },{
+            label: 'Routes',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'routes',
+            pk: 'rowid'
+        },{
+            label: 'Source',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'source',
+            pk: 'rowid'
+        },{
+            label: 'Treatment Frequency',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'treatment_frequency',
+            pk: 'rowid'
+        },{
+            label: 'Treatment Frequency Times',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'treatment_frequency_times',
+            pk: 'rowid'
+        },{
+            label: 'Urinalysis Tests',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'urinalysis_tests',
+            pk: 'testid'
+        },{
+            label: 'USDA Levels',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'usda_levels',
+            pk: 'rowid'
+        },{
+            label: 'Volume Units',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'volume_units',
+            pk: 'rowid'
+        },{
+            label: 'Species',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'species',
+            pk: 'rowid'
+        },{
+            label: 'Species Codes',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'species_codes',
+            pk: 'rowid'
+        },{
+            label: 'Weight Ranges',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'weight_ranges',
+            pk: 'rowid'
+        }];
 
         tables.sort(function(a, b) {
             return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
@@ -66,7 +280,7 @@
                             success: function(data){
                                 console.log('success deleting rows: '+queryName);
                                 pendingDeletes--;
-                                if(pendingDeletes==0){
+                                if(pendingDeletes === 0){
                                     document.getElementById('msgbox').innerHTML = '<div>Delete Complete</div>';
                                 }
                             },
@@ -74,9 +288,9 @@
                         });
                     }
                     else {
-                        console.log('nothing to delete: '+queryName)
+                        console.log('nothing to delete: '+queryName);
                         pendingDeletes--;
-                        if(pendingDeletes==0){
+                        if(pendingDeletes === 0){
                             document.getElementById('msgbox').innerHTML = '<div>Delete Complete</div>';
                         }
                     }
@@ -96,7 +310,7 @@
 
         function populateFromFile (schemaName, queryName) {
             console.log("Populating " + schemaName + "." + queryName + "...");
-            this.pendingInserts++;
+            pendingInserts++;
             //records for task forms:
             var config = {
                 schemaName: schemaName,
@@ -115,19 +329,19 @@
                 // NOTE: importFile uses query/import.view which returns statusCode=200 for errors
                 this.onError.call(this, result, xhr, config);
             } else {
-                this.pendingInserts--;
+                pendingInserts--;
 
                 var queryName = result.queryName || config.queryName || config.jsonData.queryName;
                 console.log('Success ' + (result.rowCount !== undefined ? result.rowCount + ' rows: ' : ': ') + queryName);
 
-                if (this.pendingInserts == 0) {
+                if (pendingInserts == 0) {
                     document.getElementById('msgbox').innerHTML += '<div>Populate Complete</div>';
                 }
             }
         }
 
         function onPopulateFromFileError (result, xhr, config) {
-            this.pendingInserts--;
+            pendingInserts--;
 
             var queryName = result.queryName || config.queryName || config.jsonData.queryName;
             console.log('Error Loading Data: '+ queryName);
@@ -135,7 +349,7 @@
 
             document.getElementById('msgbox').innerHTML += '<div class="labkey-error">ERROR: ' + queryName + ': ' + result.exception + '</div>';
 
-            if (this.pendingInserts==0){
+            if (pendingInserts==0){
                 document.getElementById('msgbox').innerHTML += '<div>Populate Complete</div>';
             }
         }
@@ -7849,13 +8063,11 @@
             document.getElementById('msgbox').innerHTML = '';
             Ext4.each(tables, function(table){
                 if (!table.doSkip) {
-//                    document.getElementById('msgbox').innerHTML += '<div>Deleting ' + table.label + '...</div>';
                     deleteHandler(table);
                 } else {
                     document.getElementById('msgbox').innerHTML += '<div>Skipping ' + table.label + '</div>';
                     console.log('skipping: ' + table.label);
                 }
-                pendingDeletes++;
             }, this);
         }
 
@@ -7873,9 +8085,14 @@
         function onSuccess(result){
             pendingInserts--;
 
-            console.log('Success: '+result.queryName);
+            if (result.success || (result.rowsAffected && result.rowsAffected > 0)) {
+                console.log('Success: ' + (result.queryName || result.rowCount));
+            }
+            else {
+                console.log('Error: ' + result.exception);
+            }
 
-            if(pendingInserts==0){
+            if(pendingInserts === 0){
                 document.getElementById('msgbox').innerHTML = '<div>Populate Complete</div>';
             }
         }
@@ -7886,7 +8103,7 @@
 
                 console.log('Error: ' + result.errorMsg);
 
-                if(pendingInserts==0){
+                if(pendingInserts === 0){
                     document.getElementById('msgbox').innerHTML = '<div>Populate Complete</div>';
                 }
             }
@@ -7904,12 +8121,8 @@
 
             initComponent: function(){
                 Ext4.apply(this, {
-//                    renderTo: '_init_ehr',
                     items: this.getItems()
                 });
-
-                this.pendingInserts = 0;
-                this.pendingDeletes = 0;
 
                 this.callParent();
             },
@@ -7986,6 +8199,77 @@
                     handler: function(){
                         pendingDeletes++;
                         deleteAll('ehr_lookups', 'lookup_sets', 'setname');
+                    }
+                });
+
+                allItems.push({
+                    xtype: 'button',
+                    text: 'Populate Labwork Types',
+                    scope: this,
+                    handler: function(){
+
+                        document.getElementById('msgbox').innerHTML = '<div>Populating labwork_types</div>';
+
+                        pendingInserts++;
+
+                        var config = {
+                            schemaName: 'ehr_lookups',
+                            queryName: 'labwork_types',
+                            moduleResource: '/data/labwork_types.tsv',
+                            success: onSuccess,
+                            failure: onError,
+                            scope: this
+                        };
+
+                        var origSuccess = config.success;
+                        config.success = function(results, xhr, c) {
+                            console.log('labwork types records inserted');
+
+                            LABKEY.Ajax.request({
+                                url: LABKEY.ActionURL.buildURL('admin', 'caches', '/'),
+                                method:  'post',
+                                params: {
+                                    clearCaches: 1
+                                },
+                                scope: this,
+                                success: function(){
+                                    console.log('cleared caches');
+                                    results.queryName = 'labwork_types';
+                                    origSuccess.call(config.scope, results, xhr, c);
+                                },
+                                failure: function(){
+                                    console.error(arguments);
+                                }
+                            });
+                        };
+
+                        LABKEY.Ajax.request({
+                            url: LABKEY.ActionURL.buildURL("query", "import", config.containerPath, {
+                                module: 'ehr',
+                                moduleResource: config.moduleResource
+                            }),
+                            method: 'POST',
+                            timeout: 100000,
+                            success: LABKEY.Utils.getCallbackWrapper(config.success, config.scope),
+                            failure: LABKEY.Utils.getCallbackWrapper(config.failure, config.scope, true),
+                            jsonData: {
+                                schemaName: config.schemaName,
+                                queryName: config.queryName
+                            },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                    }
+                });
+
+                allItems.push({
+                    xtype: 'button',
+                    text: 'Delete Data From Labwork Types',
+                    scope: this,
+                    handler: function(){
+                        pendingDeletes++;
+                        deleteAll('ehr_lookups', 'labwork_types', 'rowid');
                     }
                 });
 
@@ -8169,13 +8453,13 @@
                         populateAnimalGroups();
                     }
                 });
-                
+
                 allItems.push({
                     xtype: 'button',
                     text: 'Delete All',
                     scope: this,
                     handler: function(){
-                        pendingDeletes = 6 + tables.length;
+                        pendingDeletes = 7 + tables.length;
                         deleteAll('ehr', 'formtypes', 'rowid'); //note: formpanelsections will be deleted by trigger script
                         deleteAll('ehr', 'reports', 'rowid');
                         deleteAll('ehr_lookups', 'snomed_subsets', 'rowid');

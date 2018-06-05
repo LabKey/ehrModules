@@ -1,0 +1,27 @@
+testid	name	units	aliases	alertOnAbnormal	alertOnAny	includeInPanel	sort_order
+A/P	Albumin/Protein Ratio	ratio		true	false	false	
+ALB	Albumin	g/dL		true	false	true	14
+ALKP	Alkaline Phosphatase	IU/L	ALP	true	false	true	15
+B/C	BUN/Creatinine Ratio	ratio		true	false	false	
+BUN	Blood urea nitrogen	mg/dL		true	false	true	2
+CA	Calcium	mg/dL		true	false	true	16
+CHOL	Cholesterol	mg/dl	CHO	true	false	true	5
+CL	Chloride	mEq/L		true	false	false	
+CPK	Creatine phosphokinase	U/L		true	false	true	4
+CREAT	Creatinine	mg/dL	CR	true	false	true	3
+FE	Iron	?g/dL		true	false	true	18
+FIBR	Fibrinogen	mg/dL		true	false	false	
+GGT	Gamma-glutamyltransferase	IU/L		true	false	true	11
+GLUC	Glucose	mg/dL	GLU	true	false	true	1
+HDL	High-Density Lipoprotein	mg/dL		true	false	false	
+HGB	Hemoglobin	g/dL		true	false	false	
+K	Potassium	mmol/L		true	false	true	20
+LDH	Lactate dehydrogenase	IU/L		true	false	true	9
+LDL	Low-Density Lipoprotein	mg/dL		true	false	true	8
+PHOS	Phosphorus	mg/dL	PHO	true	false	true	17
+SGOT	Serum glutamic oxaloacetic transaminase	IU/L	AST	true	false	true	7
+SGPT	Serum glutamic pyruvic transaminase	IU/L	ALT	true	false	true	12
+TB	Total Bilirubin	mg/dL	BIL	true	false	true	10
+TP	Total Protein	g/dL		true	false	true	13
+TRIG	Triglyceride	mg/dL	TRG	true	false	true	6
+UA	Uric Acid	mg/dL		true	false	true	22

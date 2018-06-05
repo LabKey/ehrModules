@@ -155,6 +155,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
         repopulate("Lookup Sets");
         repopulate("Procedures");
+        repopulate("Labwork Types");
         repopulate("All");
         repopulate("SNOMED Codes");
 

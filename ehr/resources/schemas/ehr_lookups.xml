@@ -85,6 +85,15 @@
                 <nullable>true</nullable>
                 <columnTitle>Required Height (in)</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="conc_units" tableDbType="TABLE" useColumnOrder="true">
@@ -96,12 +105,29 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>unit</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="denominator">
             </column>
             <column columnName="numerator">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -114,8 +140,25 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>unit</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -210,6 +253,15 @@
                     <fkDisplayColumnName>cage</fkDisplayColumnName>
                 </fk>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
@@ -237,12 +289,29 @@
         <pkColumnName>type</pkColumnName>
         <titleColumn>type</titleColumn>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="type">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="code">
             </column>
             <column columnName="include">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -256,10 +325,27 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>route</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="route">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="meaning">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -274,11 +360,28 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>area</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="area">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="description"/>
             <column columnName="dateDisabled"/>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="clinpath_status" tableDbType="TABLE" useColumnOrder="true">
@@ -293,6 +396,15 @@
             <column columnName="status">
                 <isKeyField>true</isKeyField>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
@@ -305,6 +417,14 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>service</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="service">
                 <isKeyField>true</isKeyField>
             </column>
@@ -333,6 +453,15 @@
             <column columnName="formtype">
                 <columnTitle>Form Type</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="request_priority" tableDbType="TABLE" useColumnOrder="true">
@@ -344,11 +473,28 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>priority</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="priority">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="immediatenotification">
                 <columnTitle>Immediate Notification</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -362,6 +508,14 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</tableUrl>
         <pkColumnName>testname</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="testname">
                 <isKeyField>true</isKeyField>
             </column>
@@ -370,6 +524,15 @@
             <column columnName="dataset">
             </column>
             <column columnName="alertOnComplete">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -383,6 +546,14 @@
         <pkColumnName>code</pkColumnName>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</tableUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
             </column>
@@ -405,6 +576,15 @@
             <column columnName="dateDisabled">
                 <nullable>true</nullable>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
@@ -418,6 +598,14 @@
         <titleColumn>meaning</titleColumn>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</tableUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="code">
                 <displayWidth>20</displayWidth>
                 <isKeyField>true</isKeyField>
@@ -428,6 +616,15 @@
             </column>
             <column columnName="origGender">
                 <columnTitle>Original Gender</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -440,12 +637,29 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>unit</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="numerator">
             </column>
             <column columnName="denominator">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -458,8 +672,25 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>unit</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -475,6 +706,14 @@
         <titleColumn>meaning</titleColumn>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=source&amp;code=${code}</tableUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
             </column>
@@ -492,6 +731,15 @@
             </column>
             <column columnName="SourceCountry">
                 <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -531,6 +779,15 @@
                 <shownInUpdateView>false</shownInUpdateView>
                 <shownInInsertView>false</shownInInsertView>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="species" tableDbType="TABLE" useColumnOrder="true">
@@ -543,8 +800,17 @@
         <pkColumnName>common</pkColumnName>
         <titleColumn>common</titleColumn>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="common">
                 <displayWidth>100</displayWidth>
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="scientific_name">
                 <nullable>true</nullable>
@@ -579,6 +845,15 @@
             </column>
             <column columnName="Gestation">
                 <description>Gestation period, in days</description>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -642,6 +917,15 @@
             <column columnName="active">
                 <columnTitle>Active?</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="treatment_frequency_times" tableDbType="TABLE" useColumnOrder="true">
@@ -673,6 +957,15 @@
             <column columnName="timedescription">
                 <columnTitle>Time Description</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="calculated_status_codes" tableDbType="TABLE" useColumnOrder="true">
@@ -685,6 +978,14 @@
         <pkColumnName>code</pkColumnName>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</tableUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
             </column>
@@ -693,6 +994,15 @@
             </column>
             <column columnName="description">
                 <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -735,6 +1045,15 @@
                 <isKeyField>true</isKeyField>
                 <shownInInsertView>false</shownInInsertView>
                 <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -806,6 +1125,14 @@
         <pkColumnName>type</pkColumnName>
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</tableUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
                 <isKeyField>true</isKeyField>
@@ -813,6 +1140,15 @@
             <column columnName="color">
                 <columnTitle>Color</columnTitle>
                 <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1019,6 +1355,14 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>species</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="species">
                 <isKeyField>true</isKeyField>
                 <fk>
@@ -1031,6 +1375,15 @@
             </column>
             <column columnName="max_weight">
                 <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1155,10 +1508,27 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>volume</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="tube_types">
             </column>
             <column columnName="volume">
                 <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1170,13 +1540,31 @@
         <updateUrl></updateUrl>
         <deleteUrl></deleteUrl>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
                 <nullable>false</nullable>
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="tableName">
                 <columnTitle>Table Name</columnTitle>
                 <nullable>false</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1223,6 +1611,15 @@
             <column columnName="sort_order">
                 <nullable>true</nullable>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="death_remarks" tableDbType="TABLE" useColumnOrder="true">
@@ -1234,10 +1631,27 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>title</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="title">
                 <isKeyField>true</isKeyField>
             </column>
             <column columnName="remark">
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1276,6 +1690,15 @@
             </column>
             <column columnName="include_previous">
                 <columnTitle>Include Previous Dates?</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1320,6 +1743,15 @@
                 <isUserEditable>false</isUserEditable>
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1385,6 +1817,15 @@
                 <isUserEditable>false</isUserEditable>
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -1484,6 +1925,15 @@
                 <columnTitle>Age Class</columnTitle>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
@@ -1531,6 +1981,15 @@
             <column columnName="remark">
                 <columnTitle>Default Remark (Non-Surgical Procedures Only)</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
@@ -1548,6 +2007,15 @@
             <column columnName="procedureid"/>
             <column columnName="flag"/>
             <column columnName="value"/>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="disallowed_medications" tableDbType="TABLE" useColumnOrder="true">
@@ -1561,6 +2029,7 @@
             <column columnName="rowid"/>
             <column columnName="code1"/>
             <column columnName="code2"/>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="cage_type" tableDbType="TABLE" useColumnOrder="true">
@@ -1610,6 +2079,15 @@
             <column columnName="dateDisabled">
                 <nullable>true</nullable>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
@@ -1652,6 +2130,15 @@
             <column columnName="datedisabled">
                 <columnTitle>Date Disabled</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
@@ -1660,13 +2147,20 @@
         <columns>
             <column columnName="type"/>
             <column columnName="multiplier"/>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="usda_levels" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>USDA Levels</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
-            <column columnName="usda_level"/>
+            <column columnName="rowid">
+                <isKeyField>false</isKeyField>
+            </column>
+            <column columnName="usda_level">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
@@ -1710,6 +2204,7 @@
             <column columnName="rowid"/>
             <column columnName="meaning"/>
             <column columnName="description"/>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="lookups" tableDbType="TABLE" useColumnOrder="true">
@@ -1850,6 +2345,15 @@
                     <fkDisplayColumnName useRawValue="true"/>
                 </fk>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
@@ -1863,6 +2367,15 @@
             <column columnName="procedureid"/>
             <column columnName="chargeid"/>
             <column columnName="quantity"/>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
@@ -1887,6 +2400,15 @@
             </column>
             <column columnName="qualifier"/>
             <column columnName="sort_order"/>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
@@ -1931,6 +2453,15 @@
             <column columnName="comment">
                 <columnTitle>Default Narrative</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="billingtypes" tableDbType="TABLE" useColumnOrder="true">
@@ -1939,6 +2470,7 @@
         <columns>
             <column columnName="rowid"/>
             <column columnName="name"/>
+            <column columnName="container"/>
         </columns>
     </table>
     <table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
@@ -2026,14 +2558,32 @@
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="priority">
                 <columnTitle>Priority</columnTitle>
             </column>
             <column columnName="abbreviation">
                 <columnTitle>Abbreviation</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
             </column>
         </columns>
     </table>
@@ -2053,6 +2603,15 @@
                     <fkColumnName>gender</fkColumnName>
                 </fk>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="cage_positions" tableDbType="TABLE" useColumnOrder="true">
@@ -2060,8 +2619,17 @@
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="cage">
                 <columnTitle>Cage</columnTitle>
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="row">
             </column>
@@ -2071,6 +2639,15 @@
             <column columnName="sort_order">
                 <columnTitle>Sort Order</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
@@ -2078,8 +2655,17 @@
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="category">
                 <columnTitle>Category</columnTitle>
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="description">
                 <columnTitle>Description</columnTitle>
@@ -2097,6 +2683,15 @@
                 <columnTitle>Highlight Flags of This Category?</columnTitle>
                 <defaultValue>false</defaultValue>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
@@ -2109,6 +2704,14 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>servicename</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="servicename">
                 <columnTitle>Service Name</columnTitle>
                 <isKeyField>true</isKeyField>
@@ -2156,6 +2759,15 @@
             <column columnName="datedisabled">
                 <columnTitle>Date Disabled</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
@@ -2191,6 +2803,15 @@
             <column columnName="testfieldname">
                 <columnTitle>Test Field Name</columnTitle>
             </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
@@ -2203,7 +2824,7 @@
                 <shownInUpdateView>false</shownInUpdateView>
                 <shownInInsertView>false</shownInInsertView>
             </column>
-            <column columnName="category">
+            <column columnName="category">                               `
                 <columnTitle>Category</columnTitle>
                 <fk>
                     <fkDbSchema>ehr_lookups</fkDbSchema>

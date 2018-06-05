@@ -1,0 +1,8 @@
+tube_types	volume
+EDTA	0.5
+EDTA	2.0
+EDTA	3.0
+SST	3.5
+Heparin	4.0
+SST	5.0
+EDTA,Heparin	6.0

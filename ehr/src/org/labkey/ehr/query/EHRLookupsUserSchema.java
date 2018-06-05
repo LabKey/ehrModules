@@ -19,6 +19,7 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
@@ -138,7 +139,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
         nameMap = new CaseInsensitiveHashMap<>();
 
-        TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES));
+        TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES), SimpleFilter.createContainerFilter(getContainer()), null);
         Map<String, Object>[] rows = ts.getMapArray();
         if (rows.length > 0)
         {
