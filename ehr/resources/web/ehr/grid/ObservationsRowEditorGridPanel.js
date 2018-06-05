@@ -65,9 +65,9 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
             return;
         }
 
-        LDK.Assert.assertNotEmpty('No animal ID in ObservationsRowEditorGridPanel', br.get('Id'));
+        LDK.Assert.assertNotEmpty('No animal Id in ObservationsRowEditorGridPanel', br.get('Id'));
         if (!br.get('Id')){
-            Ext4.Msg.alert('Error', 'No Animal ID Provided');
+            Ext4.Msg.alert('Error', 'No animal Id provided');
             return;
         }
 

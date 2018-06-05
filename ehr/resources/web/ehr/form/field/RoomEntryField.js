@@ -63,7 +63,7 @@ Ext4.define('EHR.form.field.RoomEntryField', {
 
         var id = boundRecord.get(this.idFieldIndex);
         if (!id){
-            Ext4.Msg.alert('Error', 'No Animal Id Provided');
+            Ext4.Msg.alert('Error', 'No animal Id provided');
             return;
         }
 

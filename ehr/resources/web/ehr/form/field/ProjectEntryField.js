@@ -161,10 +161,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         this.callParent(arguments);
 
         this.on('render', function(){
-            Ext4.QuickTips.register({
-                target: this.triggerEl.elements[0],
-                text: 'Click to recalculate allowable projects'
-            });
+            this.triggerEl.set({'data-qtip': 'Click to recalculate allowable projects'});
         }, this);
     },
 
@@ -183,7 +180,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
         var id = boundRecord.get('Id');
         if (!id){
-            Ext4.Msg.alert('Error', 'No Animal Id Provided');
+            Ext4.Msg.alert('Error', 'No animal Id provided');
             return;
         }
 

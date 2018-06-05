@@ -17,10 +17,7 @@ Ext4.define('EHR.form.field.TriggerNumberField', {
 
         if (this.triggerToolTip){
             this.on('render', function(){
-                Ext4.QuickTips.register({
-                    target: this.triggerEl,
-                    text: this.triggerToolTip
-                });
+                this.triggerEl.set({'data-qtip': Ext4.htmlEncode(this.triggerToolTip)});
             }, this);
         }
     },
