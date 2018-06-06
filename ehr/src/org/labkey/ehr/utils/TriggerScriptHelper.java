@@ -378,7 +378,7 @@ public class TriggerScriptHelper
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
         if (!ts.exists())
         {
-            return "Not assigned to the project on this date";
+            return "Not assigned to the project or protocol on this date";
         }
 
         return null;

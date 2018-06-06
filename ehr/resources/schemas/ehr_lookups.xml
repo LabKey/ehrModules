@@ -173,6 +173,14 @@
         <tableUrl>/ehr/cageDetails.view?room=${room}</tableUrl>
         <pkColumnName>location</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="location">
                 <isKeyField>true</isKeyField>
                 <isUserEditable>false</isUserEditable>
@@ -233,12 +241,6 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
-            </column>
-            <column columnName="rowid">
-                <isHidden>true</isHidden>
-                <isAutoInc>true</isAutoInc>
                 <shownInInsertView>false</shownInInsertView>
                 <shownInUpdateView>false</shownInUpdateView>
             </column>
@@ -1412,6 +1414,14 @@
         <pkColumnName>meaning</pkColumnName>
         <titleColumn>meaning</titleColumn>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="meaning">
                 <isKeyField>true</isKeyField>
             </column>
@@ -2041,6 +2051,14 @@
         <deleteUrl></deleteUrl>
         <pkColumnName>cagetype</pkColumnName>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="cagetype">
                 <isKeyField>true</isKeyField>
                 <columnTitle>Cage Type</columnTitle>
@@ -2415,7 +2433,17 @@
         <tableTitle>Buildings</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
-            <column columnName="name"/>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
+            <column columnName="name">
+                <isKeyField>true</isKeyField>
+            </column>
             <column columnName="description"/>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>
@@ -2479,8 +2507,16 @@
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField>
+            </column>
             <column columnName="room">
-
+                <isKeyField>true</isKeyField>
             </column>
             <column columnName="building">
                 <columnTitle>Building</columnTitle>

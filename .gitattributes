@@ -698,6 +698,7 @@ ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.10-18.11.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.30-12.10.sql -text
@@ -879,6 +880,7 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.10-18.11.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-12.20-12.30.sql -text
