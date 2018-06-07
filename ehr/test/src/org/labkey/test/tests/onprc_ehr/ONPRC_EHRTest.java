@@ -35,6 +35,7 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
@@ -108,16 +109,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     @Test
     public void testBloodVolumeApi() throws Exception
     {
-        goToProjectHome();
-
-        UpdateRowsCommand updateRowsCommand = new UpdateRowsCommand("ehr_lookups", "species");
-        updateRowsCommand.addRow(Maps.of("common", "Rhesus", "blood_draw_interval", 21));
-        updateRowsCommand.addRow(Maps.of("common", "Cynomolgus", "blood_draw_interval", 21));
-        updateRowsCommand.addRow(Maps.of("common", "Marmoset", "blood_draw_interval", 21));
-        updateRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
-
         //refresh caches to match new blood volumes.  this really should be automatic on the server
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/primeDataEntryCache.view");
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "primeDataEntryCache"));
         waitAndClickAndWait(Locator.lkButton("OK"));
 
         testBloodDrawForAnimal(SUBJECTS[0]);
@@ -148,7 +141,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Double maxDrawPct = (Double) resp2.getRows().get(0).get("max_draw_pct");
         Assert.assertTrue("Bad 'max_draw_pct': " + maxDrawPct, maxDrawPct > 0);
         Integer bloodDrawInterval = ((Double) resp2.getRows().get(0).get("blood_draw_interval")).intValue();
-        Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 21, bloodDrawInterval.intValue());  //NOTE: this is hard coded in some queries right now
+        Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 30, bloodDrawInterval.intValue());
 
         log("Creating blood draws");
         Calendar startCal = Calendar.getInstance();
