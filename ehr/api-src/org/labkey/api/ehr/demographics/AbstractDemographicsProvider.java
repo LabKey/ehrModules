@@ -124,7 +124,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     protected SimpleFilter getFilter(Collection<String> ids)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), ids, CompareType.IN);
-        if (this._supportsQCState)
+        if (_supportsQCState)
             filter.addCondition(FieldKey.fromString("QCState/publicdata"), true, CompareType.EQUAL);
 
         return filter;
