@@ -97,12 +97,15 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 }
                 filters.push(LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH));
 
+                var schemaName = requestTable.schemaName || 'study';
+
                 items.push({
                     title: LABKEY.Utils.encodeHtml(requestTable.title),
                     items: [{
                         xtype: 'ldk-querycmp',
                         queryConfig:  {
-                            schemaName: requestTable.schemaName || 'study',
+                            dataRegionName: schemaName + '|' + requestTable.queryName,
+                            schemaName: schemaName,
                             queryName: requestTable.queryName,
                             viewName: requestTable.viewName,
                             removeableFilters: filters
