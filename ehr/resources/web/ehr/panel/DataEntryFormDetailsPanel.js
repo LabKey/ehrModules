@@ -128,6 +128,7 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
             });
         }, this);
 
+        // TODO shouldn't this get the qcState from the request instead of hardcoding to Completed?
         var hasPermission = EHR.DataEntryUtils.hasPermission('Completed', 'update', results.form.permissions, null);
         if (hasPermission){
             var btn = this.down('#editBtn');

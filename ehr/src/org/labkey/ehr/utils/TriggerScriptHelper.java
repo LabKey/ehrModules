@@ -1329,153 +1329,86 @@ public class TriggerScriptHelper
 
     public void processDeniedRequests(final List<String> requestIds)
     {
-        JobRunner.getDefault().execute(new Runnable(){
-            public void run()
-            {
-                _log.info("processing cancelled/denied request email for " + requestIds.size() + " records");
-
-                final TableInfo requestTable = getTableInfo("ehr", "requests");
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(requestTable, filter, null);
-
-                ts.forEach(new Selector.ForEachBlock<ResultSet>()
-                {
-                    @Override
-                    public void exec(ResultSet rs) throws SQLException
-                    {
-                        String requestid = rs.getString("requestid");
-                        Integer notify1 = rs.getInt("notify1");
-                        Integer notify2 = rs.getInt("notify2");
-                        Integer notify3 = rs.getInt("notify3");
-                        boolean sendemail = rs.getObject("sendemail") == null ? false : rs.getBoolean("sendemail");
-                        String title = rs.getString("title");
-                        String formtype = rs.getString("formtype");
-
-                        if (sendemail)
-                        {
-                            String subject = "EHR " + formtype + " Cancelled/Denied";
-                            Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
-                            if (recipients.size() == 0)
-                            {
-                                _log.warn("No recipients, unable to send EHR trigger script email");
-                                return;
-                            }
-
-                            StringBuilder html = new StringBuilder();
-
-                            html.append("One or more records from the request titled " + title + " have been cancelled or denied.  ");
-                            appendLinkToRequest(requestid, formtype, html, requestTable);
-
-
-                            sendMessage(subject, html.toString(), recipients);
-                        }
-
-                        DataEntryForm def = DataEntryManager.get().getFormByName(formtype, getContainer(), getUser());
-                        if (def != null)
-                        {
-                            boolean hasRecords = false;
-                            for (TableInfo ti : def.getTables())
-                            {
-                                if (ti.getName().equalsIgnoreCase("requests"))
-                                    continue;
-
-                                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestId"), requestid, CompareType.EQUAL);
-                                filter.addCondition(FieldKey.fromString("qcstate/label"), PageFlowUtil.set(EHRService.QCSTATES.RequestDenied.getLabel(), EHRService.QCSTATES.RequestCancelled.getLabel()), CompareType.NOT_IN);
-                                TableSelector ts = new TableSelector(ti, Collections.singleton("requestId"), filter, null);
-                                if (ts.exists())
-                                {
-                                    hasRecords = true;
-                                    break;
-                                }
-                            }
-
-                            if (!hasRecords)
-                            {
-                                _log.info("cancelling request since all children are cancelled");
-                                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-                                toUpdate.put("qcstate", EHRService.QCSTATES.RequestCancelled.getQCState(getContainer()).getRowId());
-                                toUpdate.put("requestid", requestid);
-                                Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestid);
-                            }
-                        }
-                    }
-                });
-            }
-        });
+        sendRequestStateEmail("Cancelled/Denied", requestIds);
     }
 
     public void processCompletedRequests(final List<String> requestIds)
     {
-        JobRunner.getDefault().execute(new Runnable(){
-            public void run()
-            {
-                _log.info("processing completed request email for " + requestIds.size() + " records");
+        sendRequestStateEmail("Completed", requestIds);
+    }
 
-                final TableInfo requestTable = getTableInfo("ehr", "requests");
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
-                TableSelector ts = new TableSelector(requestTable, filter, null);
+    private void sendRequestStateEmail(final String label, final List<String> requestIds)
+    {
+        JobRunner.getDefault().execute(() -> {
+            _log.info("processing " + label.toLowerCase() + " request email for " + requestIds.size() + " records");
 
-                ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            final TableInfo requestTable = getTableInfo("ehr", "requests");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
+            TableSelector ts = new TableSelector(requestTable, filter, null);
+
+            ts.forEach(rs -> {
+                String requestid = rs.getString("requestid");
+                Integer notify1 = rs.getInt("notify1");
+                Integer notify2 = rs.getInt("notify2");
+                Integer notify3 = rs.getInt("notify3");
+                boolean sendemail = rs.getObject("sendemail") == null ? false : rs.getBoolean("sendemail");
+                String title = rs.getString("title");
+                String formtype = rs.getString("formtype");
+
+                if (sendemail)
                 {
-                    @Override
-                    public void exec(ResultSet rs) throws SQLException
+                    String subject = "EHR " + formtype + " " + label;
+                    Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
+                    if (recipients.size() == 0)
                     {
-                        String requestid = rs.getString("requestid");
-                        Integer notify1 = rs.getInt("notify1");
-                        Integer notify2 = rs.getInt("notify2");
-                        Integer notify3 = rs.getInt("notify3");
-                        boolean sendemail = rs.getObject("sendemail") == null ? false : rs.getBoolean("sendemail");
-                        String title = rs.getString("title");
-                        String formtype = rs.getString("formtype");
-
-                        if (sendemail)
-                        {
-                            String subject = "EHR " + formtype + " Completed";
-                            Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
-                            if (recipients.size() == 0)
-                            {
-                                _log.warn("No recipients, unable to send EHR trigger script email");
-                                return;
-                            }
-
-                            StringBuilder html = new StringBuilder();
-
-                            html.append("One or more records from the request titled " + title + " have been marked completed.  ");
-                            appendLinkToRequest(requestid, formtype, html, requestTable);
-
-                            sendMessage(subject, html.toString(), recipients);
-                        }
-
-                        DataEntryForm def = DataEntryManager.get().getFormByName(formtype, getContainer(), getUser());
-                        if (def != null)
-                        {
-                            boolean hasRecords = false;
-                            for (TableInfo ti : def.getTables())
-                            {
-                                if (ti.getName().equalsIgnoreCase("requests"))
-                                    continue;
-
-                                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestId"), requestid, CompareType.EQUAL);
-                                filter.addCondition(FieldKey.fromString("qcstate/label"), EHRService.QCSTATES.Completed.getLabel(), CompareType.EQUAL);
-                                TableSelector ts = new TableSelector(ti, Collections.singleton("requestId"), filter, null);
-                                if (ts.exists())
-                                {
-                                    hasRecords = true;
-                                    break;
-                                }
-                            }
-
-                            if (!hasRecords)
-                            {
-                                _log.info("completed request since all children are completed");
-                                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-                                toUpdate.put("qcstate", EHRService.QCSTATES.Completed.getQCState(getContainer()).getRowId());
-                                toUpdate.put("requestid", requestid);
-                                Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestid);
-                            }
-                        }
+                        _log.warn("No recipients, unable to send EHR trigger script email");
+                        return;
                     }
-                });
+
+                    StringBuilder html = new StringBuilder();
+
+                    html.append("One or more records from the request titled " + title + " have been marked " + label.toLowerCase() + ".  ");
+                    appendLinkToRequest(requestid, formtype, html, requestTable);
+
+                    sendMessage(subject, html.toString(), recipients);
+                }
+            });
+        });
+    }
+
+    public void processModifiedRequests(final List<String> requestIds)
+    {
+        JobRunner.getDefault().execute(() -> {
+            _log.info("processing request status for " + requestIds.size() + " records");
+            for (String requestId : requestIds)
+            {
+                TableInfo studyDataTable = getTableInfo("study", "StudyData");
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
+                TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
+
+                // set the parent ehr.requests record to a specific QC State if all rows for that request match
+                Integer requestState = null;
+                for (Integer rowQcState : selector.getArrayList(Integer.class))
+                {
+                    if (requestState == null)
+                    {
+                        requestState = rowQcState;
+                    }
+                    else if (!requestState.equals(rowQcState))
+                    {
+                        requestState = null;
+                        break;
+                    }
+                }
+
+                if (requestState != null)
+                {
+                    _log.info("Updating request status since all children agree");
+                    Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                    toUpdate.put("qcstate", requestState);
+                    toUpdate.put("requestid", requestId);
+                    Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestId);
+                }
             }
         });
     }
@@ -2378,6 +2311,7 @@ public class TriggerScriptHelper
         for (Map<String, Object> row : records)
         {
             Date date = _dateTimeFormat.parse(row.get("date").toString());
+            // TODO how do we override this a center specific module can opt out of this check?
             if (date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();

@@ -37,17 +37,16 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         Ext4.apply(this, {
             modal: true,
             closeAction: 'destroy',
-            width: 400,
             autoHeight: true,
+            border: false,
             items: [{
                 xtype: 'panel',
                 bodyStyle: 'padding: 5px;',
-                defaults: {
-                    border: false
-                },
+                border: false,
                 items: [{
                     xtype: 'form',
                     itemId: 'theForm',
+                    border: false,
                     items: this.getFormItems()
                 }]
             }],
@@ -148,9 +147,9 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         }
 
         this.down('#theForm').insert(0, {
-            html: 'Total Selected: ' + this.records.length + '<br><br>',
-            border: false,
-            tag: 'div'
+            xtype: 'displayfield',
+            fieldLabel: 'Total Selected',
+            value: this.records.length
         });
 
     },

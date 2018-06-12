@@ -116,7 +116,7 @@ function onComplete(event, errors, helper){
         var idsToClose = [];
         if (housingRows){
             for (var i=0;i<housingRows.length;i++){
-                if (housingRows[i].row.date){
+                if (EHR.Server.Security.getQCStateByLabel(housingRows[i].row.QCStateLabel).PublicData && housingRows[i].row.date){
                     idsToClose.push({
                         Id: housingRows[i].row.Id,
                         date: EHR.Server.Utils.datetimeToString(housingRows[i].row.date),  //stringify to serialize properly

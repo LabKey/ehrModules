@@ -12,6 +12,8 @@ Ext4.define('EHR.panel.SimpleDataEntryFormPanel', {
     extend: 'EHR.form.Panel',
     alias: 'widget.ehr-simpledataentryformpanel',
 
+    bodyStyle: 'padding: 5px; background-color: transparent;',
+
     initComponent: function(){
         this.callParent(arguments);
     },

@@ -1381,9 +1381,7 @@ public class EHRController extends SpringActionController
             _title = def.getLabel();
 
             JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", def);
-            view.setTitle(def.getLabel());
-            view.setHidePageTitle(true);
-            view.setFrame(WebPartView.FrameType.PORTAL);
+            view.setFrame(WebPartView.FrameType.NONE);
 
             view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(def.getClientDependencies());
@@ -1394,7 +1392,7 @@ public class EHRController extends SpringActionController
         @Override
         public NavTree appendNavTrail(NavTree root)
         {
-            return root.addChild(_title == null ? "Enter Data" : _title);
+            return root.addChild("Enter Data" + (_title == null ? "" : ": " + _title));
         }
     }
 

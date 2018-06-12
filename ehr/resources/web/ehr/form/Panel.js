@@ -14,17 +14,18 @@ Ext4.define('EHR.form.Panel', {
 
     textareaFieldWidth: 600,
     maxFieldWidth: null,
+    bodyStyle: 'padding: 5px;',
 
     initComponent: function(){
         Ext4.QuickTips.init();
 
         Ext4.apply(this, {
             items: this.items || this.getItemsConfig(),
-            bodyStyle: 'padding: 5px;',
             //TODO: is this necessary??
             pollForChanges: true,
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             buttonAlign: 'left'
         });
@@ -209,7 +210,8 @@ Ext4.define('EHR.form.Panel', {
             itemId: 'columnPanel',
             layout: 'column',
             defaults: {
-                border: false
+                border: false,
+                bodyStyle: 'background-color: transparent;'
             },
             items: finalItems
         }];

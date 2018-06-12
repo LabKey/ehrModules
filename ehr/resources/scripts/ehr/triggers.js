@@ -475,9 +475,12 @@ EHR.Server.Triggers.complete = function(event, errors) {
 
     //only do this if we're not in the ehr.requests script
     if ((helper.getQueryName() && !helper.getQueryName().match(/requests/i))){
-        if (helper.getRequestsModified() && helper.getRequestsModified().length){
+        var requestsModified = helper.getRequestsModified();
+        if (!LABKEY.ExtAdapter.isEmpty(requestsModified)){
             helper.logDebugMsg('requests modified:');
             helper.logDebugMsg(helper.getRequestsModified());
+
+            helper.getJavaHelper().processModifiedRequests(requestsModified);
         }
 
         var requestsDenied = helper.getRequestDeniedArray();
@@ -490,8 +493,9 @@ EHR.Server.Triggers.complete = function(event, errors) {
 
         var requestsCompleted = helper.getRequestCompletedArray();
         if (!LABKEY.ExtAdapter.isEmpty(requestsCompleted)){
-            //console.log('The following requests were completed in this batch:');
-            //console.log(requestsCompleted);
+            helper.logDebugMsg('requests completed:');
+            helper.logDebugMsg(requestsCompleted);
+
             helper.getJavaHelper().processCompletedRequests(requestsCompleted);
         }
     }
