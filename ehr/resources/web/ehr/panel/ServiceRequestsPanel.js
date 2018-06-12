@@ -95,7 +95,13 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
                 if (!requestTable.excludeUserFilter) {
                     filters.push(LABKEY.Filter.create('requestid/createdby/DisplayName', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL));
                 }
-                filters.push(LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH));
+
+                if (requestTable.explicitQCStateFilter) {
+                    filters.push(LABKEY.Filter.create('QCState/Label', requestTable.explicitQCStateFilter, LABKEY.Filter.Types.EQUAL));
+                }
+                else {
+                    filters.push(LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH));
+                }
 
                 var schemaName = requestTable.schemaName || 'study';
 

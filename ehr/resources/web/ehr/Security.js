@@ -341,7 +341,8 @@ EHR.Security = new function(){
             HOUSING_EDITOR: classPrefix + '.EHRHousingTransferPermission',
             PROJECT_EDITOR: classPrefix + '.EHRProjectEditPermission',
             PROTOCOL_EDITOR: classPrefix + '.EHRProtocolEditPermission',
-            TEMPLATE_CREATOR: classPrefix + '.EHRTemplateCreatorPermission'
+            TEMPLATE_CREATOR: classPrefix + '.EHRTemplateCreatorPermission',
+            REQUEST_ADMIN: classPrefix + '.EHRRequestAdminPermission'
         },
 
         hasVetPermission: function(){
@@ -438,6 +439,14 @@ EHR.Security = new function(){
                 return false;
 
             return LABKEY.Security.currentUser.isAdmin || ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.TEMPLATE_CREATOR) > -1;
+        },
+
+        isRequestAdmin: function(){
+            var ctx = EHR.Utils.getEHRContext();
+            if (!ctx || !ctx.EHRStudyContainerInfo)
+                return false;
+
+            return LABKEY.Security.currentUser.isAdmin || ctx.EHRStudyContainerInfo.effectivePermissions.indexOf(EHR.Security.Permissions.REQUEST_ADMIN) > -1;
         }
     }
-}
+};
