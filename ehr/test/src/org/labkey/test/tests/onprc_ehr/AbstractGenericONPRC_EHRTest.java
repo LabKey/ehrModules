@@ -17,6 +17,8 @@ package org.labkey.test.tests.onprc_ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -42,6 +44,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTest implements SqlserverOnlyTest
 {
@@ -119,8 +123,11 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         //this applies the standard property descriptors, creates indexes, etc.
         // NOTE: this currently will log an error from DatasetDefinition whenever we create a new column.  This really isnt a bug, so ignore
         checkErrors();
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/ensureDatasetProperties.view");
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), 120000);
+        Connection connection = createDefaultConnection(true);
+        PostCommand command = new PostCommand("ehr", "ensureDatasetProperties");
+        command.setTimeout(120000);
+        CommandResponse response = command.execute(connection, getContainerPath());
+        assertTrue("Problem with ehr-ensureDatasetProperties: [" +response.getStatusCode() + "] " + response.getText(), response.getStatusCode() < 400);
         resetErrors();
 
         cacheIds(Arrays.asList(MORE_ANIMAL_IDS));
