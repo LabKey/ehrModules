@@ -611,6 +611,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _permissionsHelper.setPermissions(FULL_UPDATER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
 
+        _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Requestor");
+        _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Request Admin");
+
         //this is slow, so dont set passwords unless subclasses need it
         if (doSetUserPasswords())
         {
