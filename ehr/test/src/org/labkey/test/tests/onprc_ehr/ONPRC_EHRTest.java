@@ -43,6 +43,7 @@ import org.labkey.test.components.BodyWebPart;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
@@ -118,7 +119,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         testBloodDrawForAnimal(SUBJECTS[2]);
     }
 
-    private void testBloodDrawForAnimal(String animalId) throws Exception
+    @LogMethod
+    private void testBloodDrawForAnimal(@LoggedParam String animalId) throws Exception
     {
         log("processing blood draws for: " + animalId);
 
