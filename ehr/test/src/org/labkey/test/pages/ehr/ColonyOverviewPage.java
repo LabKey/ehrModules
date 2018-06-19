@@ -18,7 +18,6 @@ package org.labkey.test.pages.ehr;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
-import org.labkey.test.components.WebPartPanel;
 import org.labkey.test.components.html.Table;
 import org.labkey.test.util.DataRegionTable;
 import org.openqa.selenium.WebDriver;
@@ -92,7 +91,8 @@ public class ColonyOverviewPage extends BaseColonyOverviewPage
 
         private DataRegionTable colonyDataRegion(String webPartTitle)
         {
-            WebPartPanel panel = WebPartPanel.WebPart(getDriver()).withTitle(webPartTitle).findWhenNeeded();
+            WebElement panel = Locator.byClass("ldk-wp").withDescendant(Locator.tag("span")
+                    .withAttribute("title", webPartTitle)).findWhenNeeded(this);
             return DataRegionTable.DataRegion(getDriver()).findWhenNeeded(panel);
         }
 
