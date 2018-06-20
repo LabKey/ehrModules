@@ -17,6 +17,7 @@ package org.labkey.test.tests.onprc_ehr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
@@ -119,7 +120,24 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         testBloodDrawForAnimal(SUBJECTS[2]);
     }
 
-    @LogMethod
+    @Test
+    public void testOverriddenActions() throws Exception
+    {
+            Pair<String, Integer> ids = generateProtocolAndProject();
+            String protocolId = ids.getLeft();
+            Integer projectId = ids.getRight();
+
+                    //this QWP is in the onprc_ehr projectDetails, but not the core EHR version.  because ONPRC_EHR modules
+                            // overrides this view, EHR should serve the ONPRC_EHR HTML file through EHR controller
+                                    beginAt("/ehr/" + getContainerPath() + "/projectDetails.view?project=" + projectId);
+            waitForElement(Locator.tagContainingText("span", "Housing Summary"));
+
+                    // same idea as above
+                            beginAt("/ehr/" + getContainerPath() + "/protocolDetails.view?protocol=" + protocolId);
+            waitForElement(Locator.tagContainingText("a", "View Active Animal Assignments"));
+    }
+
+
     private void testBloodDrawForAnimal(@LoggedParam String animalId) throws Exception
     {
         log("processing blood draws for: " + animalId);
@@ -495,6 +513,31 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                 )
         ), Maps.of("targetQC", null));
     }
+
+    private Pair<String, Integer> generateProtocolAndProject() throws Exception
+    {
+            //create project
+                    String protocolTitle = generateGUID();
+            InsertRowsCommand protocolCommand = new InsertRowsCommand("ehr", "protocol");
+            protocolCommand.addRow(Maps.of("protocol", null, "title", protocolTitle));
+            protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
+
+            SelectRowsCommand protocolSelect = new SelectRowsCommand("ehr", "protocol");
+            protocolSelect.addFilter(new Filter("title", protocolTitle));
+            final String protocolId = (String)protocolSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("protocol");
+            Assert.assertNotNull(StringUtils.trimToNull(protocolId));
+
+            InsertRowsCommand projectCommand = new InsertRowsCommand("ehr", "project");
+            String projectName = generateGUID();
+            projectCommand.addRow(Maps.of("project", null, "name", projectName, "protocol", protocolId));
+            projectCommand.execute(getApiHelper().getConnection(), getContainerPath());
+
+            SelectRowsCommand projectSelect = new SelectRowsCommand("ehr", "project");
+            projectSelect.addFilter(new Filter("protocol", protocolId));
+            Integer projectId = (Integer)projectSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("project");
+
+            return Pair.of(protocolId, projectId);
+}
 
     @Test
     public void testAssignmentApi() throws Exception
@@ -1802,7 +1845,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         causeField.setValue("EUTHANASIA, EXPERIMENTAL");
         Assert.assertEquals(caseNo, _ext4Helper.queryOne("window field[name=necropsy]", Ext4FieldRef.class).getValue());
         waitAndClick(deathWindow.append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-        waitForElementToDisappear(deathWindow);
+        waitForElementToDisappear(deathWindow, 20000); //saving can take longer than default 10 seconds
         waitForElementToDisappear(Locator.tagContainingText("div", "Saving Changes...").notHidden());
 
         waitAndClickAndWait(_helper.getDataEntryButton("Save & Close"));
