@@ -98,6 +98,11 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
             filterArray.push(LABKEY.Filter.create('requestid', this.requestId, LABKEY.Filter.Types.EQUAL));
             viewName = 'Requests';
             navTitle = 'Request Details';
+
+            // for a request, show the edit button based on the QC status of the parent ehr.request record
+            this.getParentRequestStatus(function(qcStateId, qcStateLabel) {
+                this.showEditBtn(qcStateLabel, results.form.permissions);
+            });
         }
 
         LDK.Assert.assertTrue('No filter array applied in DataEntryFormDetailsPanel', filterArray.length > 0);
@@ -128,16 +133,34 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
             });
         }, this);
 
-        // TODO shouldn't this get the qcState from the request instead of hardcoding to Completed?
-        var hasPermission = EHR.DataEntryUtils.hasPermission('Completed', 'update', results.form.permissions, null);
-        if (hasPermission){
+        this.showEditBtn('Completed', results.form.permissions);
+
+        this.removeAll();
+        this.add(toAdd);
+    },
+
+    getParentRequestStatus: function(callback) {
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'requests',
+            columns: 'qcstate,qcstate/label',
+            filterArray: [LABKEY.Filter.create('requestid', this.requestId)],
+            scope: this,
+            success: function(data) {
+                if (data.rows && data.rows.length === 1 && callback) {
+                    callback.call(this, data.rows[0]['qcstate'], data.rows[0]['qcstate/label'])
+                }
+            }
+        });
+    },
+
+    showEditBtn: function(qcStateLabelToCheck, permissions) {
+        var hasPermissions = EHR.DataEntryUtils.hasPermission(qcStateLabelToCheck, 'update', permissions, null);
+        if (hasPermissions){
             var btn = this.down('#editBtn');
             btn.setVisible(true);
             btn.setDisabled(false);
         }
-
-        this.removeAll();
-        this.add(toAdd);
     },
 
     onDataRegionLoad: function(dr){
