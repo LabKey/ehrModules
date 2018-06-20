@@ -23,6 +23,20 @@ EHR.Server.TriggerManager = new function(){
 
     };
 
+    // Build a map of study dataset labels to names, in case callers are still using the old approach of registering by label
+    var labelsToNames = {};
+    var triggerHelper = org.labkey.ehr.utils.TriggerScriptHelper.create(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id);
+    var study = triggerHelper.getEHRStudy();
+    if (study) {
+        var datasets = study.getDatasets();
+        for (var i = 0; i < datasets.length; i++) {
+            var label = datasets[i].getLabel();
+            if (label) {
+                labelsToNames[label.toLowerCase()] = datasets[i].getName().toLowerCase();
+            }
+        }
+    }
+
     return {
         /**
          * Constants representing the hooks available for triggers
@@ -57,12 +71,29 @@ EHR.Server.TriggerManager = new function(){
             events[event].push(handler);
         },
 
+        toLower: function(s) {
+            if (s && s.toLowerCase)
+                return s.toLowerCase();
+            return s;
+        },
+
         /**
          * Can be used to register a handler that will be included on a specific query
          * @param event One of the events in EHR.Server.TriggerManager.Events
          * @param handler A function that will be called.  The arguments vary by event
          */
         registerHandlerForQuery: function(event, schemaName, queryName, handler){
+            schemaName = this.toLower(schemaName);
+            queryName = this.toLower(queryName);
+
+            if (schemaName === 'study') {
+                var realName = labelsToNames[queryName];
+                if (realName && realName !== queryName) {
+                    console.log('Study dataset registered by label "' + queryName + '" instead of name "' + realName + '". The reference should be updated.')
+                    queryName = realName;
+                }
+            }
+
             if (!queryEvents[schemaName]){
                 queryEvents[schemaName] = {};
             }
@@ -84,6 +115,9 @@ EHR.Server.TriggerManager = new function(){
          * @param event
          */
         unregisterAllHandlersForQueryNameAndEvent: function (schemaName, queryName, event) {
+            schemaName = this.toLower(schemaName);
+            queryName = this.toLower(queryName);
+
             if (queryEvents[schemaName] && queryEvents[schemaName][queryName] && queryEvents[schemaName][queryName][event]) {
                 queryEvents[schemaName][queryName][event] = [];
             }
@@ -104,6 +138,9 @@ EHR.Server.TriggerManager = new function(){
          * @return {Array}
          */
         getHandlersForQuery: function(event, schemaName, queryName, includeAll){
+            schemaName = this.toLower(schemaName);
+            queryName = this.toLower(queryName);
+
             var handlers = [];
 
             //optionally append handlers for all tables

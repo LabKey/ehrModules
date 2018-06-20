@@ -42,7 +42,7 @@ public class TriggerScriptFactory extends ScriptTriggerFactory
         Collection<Trigger> ret = super.createTriggerScript(c, table);
         if (!ret.isEmpty())
         {
-            return Collections.EMPTY_LIST;  // Other triggers have already been added so no op.
+            return Collections.emptyList();  // Other triggers have already been added so no op.
         }
 
         // Only if the table lacks other triggers look for DefaultTriggerScript.js
@@ -54,6 +54,6 @@ public class TriggerScriptFactory extends ScriptTriggerFactory
         if (svc == null)
             return Collections.emptyList();
 
-        return super.checkPaths(c, table, svc, Collections.singleton(path));
+        return super.checkPaths(c, table, svc, path);
     }
 }

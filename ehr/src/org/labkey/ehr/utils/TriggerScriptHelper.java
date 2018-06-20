@@ -150,7 +150,7 @@ public class TriggerScriptHelper
         return _container;
     }
 
-    private Study getEHRStudy()
+    public Study getEHRStudy()
     {
         Container target = EHRService.get().getEHRStudyContainer(_container);
         return StudyService.get().getStudy(target == null ? getContainer() : target);
