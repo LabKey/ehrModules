@@ -102,7 +102,10 @@ Ext4.define('EHR.plugin.RowEditor', {
                 beforerender: function(win){
                     var cols = win.down('#formPanel').items.get(0).items.getCount();
                     if (cols > 1){
-                        win.setWidth(cols * (EHR.form.Panel.defaultFieldWidth + 20));
+                        var newWidth = cols * (EHR.form.Panel.defaultFieldWidth + 20);
+                        if (newWidth > win.width) {
+                            win.setWidth();
+                        }
                     }
                 },
                 afterrender: function(editorWin){

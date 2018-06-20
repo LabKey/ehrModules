@@ -155,11 +155,13 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     },
 
     showEditBtn: function(qcStateLabelToCheck, permissions) {
-        var hasPermissions = EHR.DataEntryUtils.hasPermission(qcStateLabelToCheck, 'update', permissions, null);
-        if (hasPermissions){
-            var btn = this.down('#editBtn');
-            btn.setVisible(true);
-            btn.setDisabled(false);
+        if (qcStateLabelToCheck && permissions) {
+            var hasPermissions = EHR.DataEntryUtils.hasPermission(qcStateLabelToCheck, 'update', permissions, null);
+            if (hasPermissions){
+                var btn = this.down('#editBtn');
+                btn.setVisible(true);
+                btn.setDisabled(false);
+            }
         }
     },
 
