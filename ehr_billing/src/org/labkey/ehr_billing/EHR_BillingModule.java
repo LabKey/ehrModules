@@ -28,7 +28,6 @@ import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.security.User;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.writer.ContainerUser;
@@ -93,7 +92,7 @@ public class EHR_BillingModule extends SpringModule
 
     @Override
     @NotNull
-    public Collection<String> getSummary(Container c, User user)
+    public Collection<String> getSummary(Container c)
     {
         return Collections.emptyList();
     }
