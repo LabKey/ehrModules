@@ -147,7 +147,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
 
         List<HistoryRow> rows = processRows(c, ts, redacted, cols);
 
-        Long duration = ((new Date()).getTime() - start.getTime()) / 1000;
+        long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 5)
         {
             String msg = "Loaded history on table " + _query + " in " + duration + " seconds";
