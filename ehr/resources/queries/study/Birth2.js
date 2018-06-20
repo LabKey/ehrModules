@@ -38,7 +38,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 }
 
-EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'Birth', function(scriptErrors, helper, row, oldRow) {
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'birth', function(scriptErrors, helper, row, oldRow) {
     var isLiving = EHR.Server.Utils.isLiveBirth(row.birth_condition);
     if (isLiving){
         helper.registerLiveBirth(row.Id, row.date);
