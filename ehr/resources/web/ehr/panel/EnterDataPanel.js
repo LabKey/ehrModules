@@ -139,7 +139,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
-                        html: item.name + ':',
+                        html: LABKEY.Utils.encodeHtml(item.name) + ':',
                         width: 200
                     },{
                         xtype: 'ldk-linkbutton',
@@ -179,7 +179,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
-                        html: item.name + ':',
+                        html: LABKEY.Utils.encodeHtml(item.name) + ':',
                         width: 200
                     },{
                         xtype: 'ldk-linkbutton',
@@ -219,7 +219,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
-                        html: item.name + ':',
+                        html: LABKEY.Utils.encodeHtml(item.name) + ':',
                         width: 200
                     },{
                         xtype: 'ldk-linkbutton',
@@ -302,7 +302,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         bodyStyle: 'background-color: transparent;'
                     },
                     items: [{
-                        html: item.name + ':',
+                        html: LABKEY.Utils.encodeHtml(item.name) + ':',
                         width: 200
                     },{
                         xtype: 'ldk-linkbutton',

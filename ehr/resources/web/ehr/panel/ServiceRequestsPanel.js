@@ -41,7 +41,6 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
 
             if (items.length){
                 sections.push({
-                    //header: i,
                     items: items
                 });
             }
