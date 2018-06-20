@@ -496,20 +496,12 @@ ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes/.qview.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subsets/.qview.xml -text
 ehr/resources/queries/ehr_lookups/yearMonth.sql -text
-ehr/resources/queries/study/Arrival2.js -text
-ehr/resources/queries/study/Arrival2.query.xml -text
-ehr/resources/queries/study/Assignment2.js -text
-ehr/resources/queries/study/Assignment2.query.xml -text
 ehr/resources/queries/study/AssignmentOverlaps.query.xml -text
 ehr/resources/queries/study/AssignmentOverlaps.sql -text
 ehr/resources/queries/study/Birth/Births[!!-~]In[!!-~]Last[!!-~]Month.qview.xml -text
-ehr/resources/queries/study/Birth2.js -text
-ehr/resources/queries/study/Birth2.query.xml -text
 ehr/resources/queries/study/Cases.js -text
 ehr/resources/queries/study/Cases.query.xml -text
 ehr/resources/queries/study/Datasets.query.xml -text
-ehr/resources/queries/study/Deaths2.js -text
-ehr/resources/queries/study/Deaths2.query.xml -text
 ehr/resources/queries/study/DefaultTriggerScript.js -text
 ehr/resources/queries/study/Demographics.js -text
 ehr/resources/queries/study/Demographics.query.xml -text
@@ -517,8 +509,6 @@ ehr/resources/queries/study/Departure.js -text
 ehr/resources/queries/study/Departure.query.xml -text
 ehr/resources/queries/study/Departure/.qview.xml -text
 ehr/resources/queries/study/Histology.js -text
-ehr/resources/queries/study/Housing2.js -text
-ehr/resources/queries/study/Housing2.query.xml -text
 ehr/resources/queries/study/HousingCheck.query.xml -text
 ehr/resources/queries/study/HousingCheck.sql -text
 ehr/resources/queries/study/HousingCheck/.qview.xml -text
@@ -552,6 +542,10 @@ ehr/resources/queries/study/Weight/Plus[!!-~]Housing.qview.xml -text
 ehr/resources/queries/study/_scriptTemplate.js -text
 ehr/resources/queries/study/animal.query.xml -text
 ehr/resources/queries/study/animal/.qview.xml -text
+ehr/resources/queries/study/arrival.js -text
+ehr/resources/queries/study/arrival.query.xml -text
+ehr/resources/queries/study/assignment.js -text
+ehr/resources/queries/study/assignment.query.xml -text
 ehr/resources/queries/study/assignment/Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/study/assignmentCoAssignedAnimals.query.xml -text
 ehr/resources/queries/study/assignmentCoAssignedAnimals.sql -text
@@ -562,6 +556,8 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
+ehr/resources/queries/study/birth.js -text
+ehr/resources/queries/study/birth.query.xml -text
 ehr/resources/queries/study/blood.js -text
 ehr/resources/queries/study/blood.query.xml -text
 ehr/resources/queries/study/chemistryResults.js -text
@@ -587,6 +583,8 @@ ehr/resources/queries/study/colonyPopulationChange/.qview.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.query.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.sql -text
 ehr/resources/queries/study/colonyPopulationSummary/.qview.xml -text
+ehr/resources/queries/study/deaths.js -text
+ehr/resources/queries/study/deaths.query.xml -text
 ehr/resources/queries/study/demographics/.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]Center.qview.xml -text
 ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
@@ -632,6 +630,8 @@ ehr/resources/queries/study/hematologyResults.js -text
 ehr/resources/queries/study/hematologyResults.query.xml -text
 ehr/resources/queries/study/hematologyResults/.qview.xml -text
 ehr/resources/queries/study/hematologyResults/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
+ehr/resources/queries/study/housing.js -text
+ehr/resources/queries/study/housing.query.xml -text
 ehr/resources/queries/study/housing/.qview.xml -text
 ehr/resources/queries/study/housing/Active[!!-~]Housing.qview.xml -text
 ehr/resources/queries/study/housing/Search[!!-~]Panel.qview.xml -text
