@@ -14,6 +14,7 @@ requirejs(["module", "pageapp"], function(module) {
         Ext4.create('EHR.panel.AnimalHistoryPanel', {
             defaultReport: ctx.DefaultAnimalHistoryReport,
             defaultTab: 'General',
+            showFilterOptionsTitle: true,
             renderTo: webpart.wrapperDivId
         });
     });

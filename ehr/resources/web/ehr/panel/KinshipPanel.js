@@ -153,22 +153,24 @@ Ext4.define('EHR.panel.KinshipPanel', {
 
     refreshMatrix: function(){
         var target = this.down('#matrixPanel');
-        var cr = target.down('ldk-contentresizingpanel');
-        if (cr){
-            target.remove(cr);
-        }
-
-        target.add({
-            xtype: 'ldk-contentresizingpanel',
-            itemId: 'matrixArea',
-            overflowX: 'auto',
-            listeners: {
-                scope: this,
-                afterrender: function(panel){
-                    Ext4.fly(panel.renderTarget).update(this.getMatrixHtml());
-                }
+        if (target) {
+            var cr = target.down('ldk-contentresizingpanel');
+            if (cr) {
+                target.remove(cr);
             }
-        });
+
+            target.add({
+                xtype: 'ldk-contentresizingpanel',
+                itemId: 'matrixArea',
+                overflowX: 'auto',
+                listeners: {
+                    scope: this,
+                    afterrender: function (panel) {
+                        Ext4.fly(panel.renderTarget).update(this.getMatrixHtml());
+                    }
+                }
+            });
+        }
     },
 
     getMatrixHtml: function(){

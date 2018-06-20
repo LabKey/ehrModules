@@ -17,13 +17,13 @@ package org.labkey.test.pages.ehr;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualTreeBidiMap;
-import org.apache.commons.lang3.StringUtils;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
+import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,11 +42,12 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
 
-    protected static final Locator.XPathLocator categoryTab = Locator.tagWithClass("div", "category-tab-bar").append(Locator.tagWithClass("a", "x4-tab"));
-    protected static final Locator.XPathLocator categoryPanel = Locator.tagWithClass("div", "x4-tabpanel-child").withAttributeContaining("id", "tabpanel");
-    protected static final Locator.XPathLocator activeCategoryPanel = categoryPanel.notHidden();
-    protected static final Locator.XPathLocator reportTab = activeCategoryPanel.append(Locator.tagWithClass("div", "report-tab-bar")).append(Locator.tagWithClass("a", "x4-tab"));
-    protected static final Locator.XPathLocator activeReportPanel = categoryPanel.childTag("div").withClass("x4-panel-body").childTag("div").withClass("x4-tabpanel-child").notHidden();
+    protected static final Locator.XPathLocator categoryPanel = Locator.tagWithId("div", "bs-category-tabs-list");
+    protected static final Locator.XPathLocator categoryPanelTabs = categoryPanel.childTag("ul").withClass("nav").childTag("li").childTag("a");
+    protected static final Locator.XPathLocator activeCategoryPanel = categoryPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active");
+    protected static final Locator.XPathLocator reportPanel = activeCategoryPanel.descendant(Locator.tagWithId("div", "bs-report-tabs-list"));
+    protected static final Locator.XPathLocator reportPanelTabs = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").childTag("a");
+    protected static final Locator.XPathLocator activeReportPanel = reportPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active").childTag("div");
 
     public ParticipantViewPage(WebDriver driver)
     {
@@ -138,11 +139,22 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         protected final Map<String, Map<Integer, ReportTab>> reportTabs = new TreeMap<>();
         protected CategoryTab selectedCategory;
 
+        // Ensure we're getting tab in active category
+        private WebElement getReportTabElByName(String name)
+        {
+            return Locator.tagWithClass("div", "active").descendant(Locator.tagWithId("a", name.replace(" ", "") + "Tab")).findElement(this);
+        }
+
+        private WebElement getCategoryTabElByName(String name)
+        {
+            return Locator.tagWithId("a", name.replace(" ", "") + "Tab").findElement(this);
+        }
+
         public CategoryTab findCategoryTab(String category)
         {
             if (!categoryLabels.containsKey(category))
             {
-                WebElement tabEl = categoryTab.withText(category).findElement(this);
+                WebElement tabEl = getCategoryTabElByName(category);
                 CategoryTab tab = new CategoryTab(tabEl, category);
                 categoryLabels.put(category, tab.getIndex());
                 categoryTabs.put(tab.getIndex(), tab);
@@ -159,7 +171,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             {
                 reportTabs.put(selectedCategory, new TreeMap<>());
 
-                WebElement tabEl = reportTab.withText(reportLabel).findElement(this);
+                WebElement tabEl = getReportTabElByName(reportLabel);
                 ReportTab tab = new ReportTab(tabEl, reportLabel);
                 reportLabels.get(selectedCategory).put(reportLabel, tab.getIndex());
                 reportTabs.get(selectedCategory).put(tab.getIndex(), tab);
@@ -174,7 +186,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             if (!foundAllTabs.contains(null))
             {
                 foundAllTabs.add(null);
-                List<WebElement> tabs = categoryTab.findElements(this);
+                List<WebElement> tabs = categoryPanelTabs.findElements(this);
                 for (int i = 0; i < tabs.size(); i++)
                 {
                     categoryTabs.putIfAbsent(i, new CategoryTab(tabs.get(i), i));
@@ -192,7 +204,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 foundAllTabs.add(selectedCategory);
                 reportTabs.putIfAbsent(selectedCategory, new TreeMap<>());
                 reportLabels.putIfAbsent(selectedCategory, new DualTreeBidiMap<>());
-                List<WebElement> tabs = reportTab.findElements(this);
+                List<WebElement> tabs = reportPanelTabs.findElements(this);
 
                 for (int i = 0; i < tabs.size(); i++)
                 {
@@ -252,13 +264,13 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         public Integer getIndex()
         {
             if (_index == null)
-                _index = Locator.xpath("preceding-sibling::a").findElements(_el).size();
+                _index = Locator.xpath("../preceding-sibling::a").findElements(_el).size();
             return _index;
         }
 
         public boolean isActive()
         {
-            return _el.getAttribute("class").contains("x4-tab-active");
+            return _el.findElement(By.xpath("..")).getAttribute("class").contains("active");
         }
 
         @Override
@@ -290,7 +302,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         @Override
         public void select()
         {
-            if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
+            if (!isActive())
             {
                 log("Selecting Category: " + getLabel());
                 WebElement activeReportPanelEl = activeReportPanel.findElement(getDriver());
@@ -327,7 +339,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         @Override
         public void select()
         {
-            if (!StringUtils.trimToEmpty(_el.getAttribute("class")).contains("active"))
+            if (!isActive())
             {
                 log("Selecting Report: " + getLabel());
                 scrollIntoView(_el);

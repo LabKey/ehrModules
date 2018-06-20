@@ -20,10 +20,6 @@ EHR.reports['abstract'] = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
 
-    var tb = tab.getDockedItems('toolbar[dock="top"]');
-    if(tb)
-        tab.remove(tb);
-
     tab.add({
         xtype: 'ldk-multirecorddetailspanel',
         bodyStyle: 'padding-bottom: 20px',

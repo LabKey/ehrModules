@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="Animal History">
+<view xmlns="http://labkey.org/data/xml/view" title="Animal History" frame="none">
     <dependencies>
         <dependency path="ehr.context" />
 
