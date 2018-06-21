@@ -45,7 +45,6 @@ import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
@@ -1376,6 +1375,18 @@ public class TriggerScriptHelper
         });
     }
 
+    public void updateParentRequestQcState(String requestId, Integer qcStateId)
+    {
+        if (requestId != null && qcStateId != null)
+        {
+            _log.info("Updating request status for " + requestId);
+            Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+            toUpdate.put("qcstate", qcStateId);
+            toUpdate.put("requestid", requestId);
+            Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestId);
+        }
+    }
+
     public void processModifiedRequests(final List<String> requestIds)
     {
         JobRunner.getDefault().execute(() -> {
@@ -1761,8 +1772,15 @@ public class TriggerScriptHelper
     {
         try
         {
+            Address from = NotificationService.get().getReturnEmail(getContainer());
+            if (from == null)
+            {
+                _log.warn("No return email set for EHR NotificationService.");
+                return;
+            }
+
             MailHelper.MultipartMessage msg = MailHelper.createMultipartMessage();
-            msg.setFrom(NotificationService.get().getReturnEmail(getContainer()));
+            msg.setFrom(from);
             msg.setSubject(subject);
 
             List<String> emails = new ArrayList<>();
