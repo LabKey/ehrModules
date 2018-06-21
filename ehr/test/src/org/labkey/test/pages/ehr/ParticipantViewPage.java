@@ -48,6 +48,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     protected static final Locator.XPathLocator reportPanel = activeCategoryPanel.descendant(Locator.tagWithId("div", "bs-report-tabs-list"));
     protected static final Locator.XPathLocator reportPanelTabs = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").childTag("a");
     protected static final Locator.XPathLocator activeReportPanel = reportPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active").childTag("div");
+    protected static final Locator.XPathLocator activeReportPanelContainer = activeReportPanel.descendant(Locator.tagWithAttributeContaining("div", "id", "innerCt"));
 
     public ParticipantViewPage(WebDriver driver)
     {
@@ -310,7 +311,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
-                activeReportPanel.waitForElement(getDriver(), 1000);
+                activeReportPanelContainer.waitForElement(getDriver(), 1000);
             }
             else
             {
