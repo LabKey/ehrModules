@@ -428,7 +428,8 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Request: Pending',
             requiredQC: 'Request: Pending',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL')
+                || (LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view') + '#tab=myPendingRequests'),
             disabled: true,
             itemId: 'requestBtn',
             handler: function(btn){
@@ -446,7 +447,8 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Request: Approved',
             requiredQC: 'Request: Approved',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL')
+                || (LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view') + '#tab=queues'),
             disabled: true,
             itemId: 'approveBtn',
             handler: function(btn){
