@@ -311,7 +311,6 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
-                activeReportPanelContainer.waitForElement(getDriver(), 1000);
             }
             else
             {
@@ -353,6 +352,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                     _el.isDisplayed(); // Make sure it was actually the signal that was stale
                 }
                 _ext4Helper.waitForMaskToDisappear(30000);
+                activeReportPanelContainer.waitForElement(getDriver(), 2000);
             }
             else
             {

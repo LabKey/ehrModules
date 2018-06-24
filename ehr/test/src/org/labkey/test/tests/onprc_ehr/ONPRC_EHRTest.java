@@ -41,6 +41,7 @@ import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.BodyWebPart;
+import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -1035,12 +1036,14 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     {
         createBirthRecords();
         goToProjectHome();
-        waitAndClickAndWait(Locator.tagContainingText("a", "Animal History"));
-        _helper.waitForCmp("textfield[itemId=subjArea]");
+        beginAtAnimalHistoryTab();
+
         String id = ID_PREFIX + 1;
-        getAnimalHistorySubjField().setValue(id);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Genetics"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Pedigree Plot"));
+        AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver());
+
+        animalHistoryPage.searchSingleAnimal(id);
+        animalHistoryPage.clickCategoryTab("Genetics");
+        animalHistoryPage.clickReportTab("Pedigree Plot");
 
         waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
