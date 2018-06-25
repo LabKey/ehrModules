@@ -41,6 +41,7 @@ import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.BodyWebPart;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
@@ -1227,7 +1228,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         Map<String, String> queryResults = new HashMap<>();
         SelectRowsCommand cmd = new SelectRowsCommand("ehr_lookups", queryName);
-        SelectRowsResponse srr = cmd.execute(new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+        SelectRowsResponse srr = cmd.execute(new Connection(WebTestHelper.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
         for (Map<String, Object> row : srr.getRows())
         {
             if (row.get("units") != null)
@@ -1349,7 +1350,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         SelectRowsCommand cmd = new SelectRowsCommand("ehr", "formtemplaterecords");
         cmd.addFilter(new Filter("templateid", obsTemplate));
         cmd.addSort(new Sort("rowid"));
-        SelectRowsResponse srr = cmd.execute(new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+        SelectRowsResponse srr = cmd.execute(new Connection(WebTestHelper.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
 
         int expectedObsRows = srr.getRowCount().intValue();
         observationsGrid.waitForRowCount(expectedObsRows);
@@ -1647,10 +1648,10 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         log("running all notifications");
         List<String> skippedNotifications = Arrays.asList("ETL Validation Notification");
 
-        int count = getElementCount(Locator.tagContainingText("a", "Run Report In Browser"));
+        int count = Locator.tagContainingText("a", "Run Report In Browser").findElements(getDriver()).size();
         for (int i = 0; i < count; i++)
         {
-            beginAt(getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
+            beginAt(WebTestHelper.getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
             Locator link = Locator.tagContainingText("a", "Run Report In Browser").index(i);
             Locator label = Locator.tag("div").withClass("ldk-notificationlabel").index(i);
             waitForElement(label);
