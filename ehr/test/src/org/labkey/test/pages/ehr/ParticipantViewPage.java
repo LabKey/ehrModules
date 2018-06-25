@@ -311,6 +311,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
+                reportPanelTabs.waitForElement(getDriver(), 2000);
             }
             else
             {
@@ -336,6 +337,16 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             super(el, index);
         }
 
+        private boolean isJsReport()
+        {
+            return isElementPresent(Locator.tagWithId("div", "reporttype-js"));
+        }
+
+        private boolean isOtherReport()
+        {
+            return isElementPresent(Locator.tagWithId("div", "reporttype-report"));
+        }
+
         @Override
         public void select()
         {
@@ -353,6 +364,11 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 }
                 _ext4Helper.waitForMaskToDisappear(30000);
                 activeReportPanelContainer.waitForElement(getDriver(), 2000);
+
+                if (isJsReport() || isOtherReport())
+                {
+                    sleep(2000);
+                }
             }
             else
             {
