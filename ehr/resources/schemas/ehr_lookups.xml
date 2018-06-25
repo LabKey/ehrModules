@@ -108,10 +108,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -143,10 +144,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -176,10 +178,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="location">
                 <isKeyField>true</isKeyField>
@@ -294,10 +297,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="type">
                 <isKeyField>true</isKeyField>
@@ -330,10 +334,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="route">
                 <isKeyField>true</isKeyField>
@@ -365,10 +370,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="area">
                 <isKeyField>true</isKeyField>
@@ -422,10 +428,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="service">
                 <isKeyField>true</isKeyField>
@@ -478,10 +485,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="priority">
                 <isKeyField>true</isKeyField>
@@ -551,10 +559,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -603,10 +612,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="code">
                 <displayWidth>20</displayWidth>
@@ -642,10 +652,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -677,10 +688,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -711,10 +723,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -805,10 +818,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="common">
                 <displayWidth>100</displayWidth>
@@ -983,10 +997,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -1130,10 +1145,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
@@ -1360,10 +1376,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="species">
                 <isKeyField>true</isKeyField>
@@ -1417,10 +1434,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="meaning">
                 <isKeyField>true</isKeyField>
@@ -1521,10 +1539,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="tube_types">
             </column>
@@ -1553,10 +1572,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
@@ -1644,10 +1664,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="title">
                 <isKeyField>true</isKeyField>
@@ -2054,10 +2075,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="cagetype">
                 <isKeyField>true</isKeyField>
@@ -2436,10 +2458,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="name">
                 <isKeyField>true</isKeyField>
@@ -2510,10 +2533,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="room">
                 <isKeyField>true</isKeyField>
@@ -2597,10 +2621,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
@@ -2658,10 +2683,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="cage">
                 <columnTitle>Cage</columnTitle>
@@ -2694,10 +2720,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="category">
                 <columnTitle>Category</columnTitle>
@@ -2743,10 +2770,11 @@
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
-                <shownInInsertView>false</shownInInsertView>
-                <shownInUpdateView>false</shownInUpdateView>
                 <isHidden>true</isHidden>
+                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
                 <isKeyField>false</isKeyField>
+                <shownInUpdateView>true</shownInUpdateView>
+                <isUserEditable>true</isUserEditable>
             </column>
             <column columnName="servicename">
                 <columnTitle>Service Name</columnTitle>
