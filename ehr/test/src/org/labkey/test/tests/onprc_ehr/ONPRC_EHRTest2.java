@@ -32,6 +32,7 @@ import org.labkey.test.TestProperties;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
@@ -699,10 +700,15 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         String query = "textfield[itemId=subjArea]";
         _helper.waitForCmp(query);
-        Ext4FieldRef subjField = getAnimalHistorySubjField();
-        subjField.setValue(SUBJECTS[0]);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical Snapshot"));
+
+        AnimalHistoryPage historyPage = new AnimalHistoryPage(getDriver());
+        historyPage.searchSingleAnimal(SUBJECTS[0]);
+        waitForText("Overview: " + SUBJECTS[0]);
+        waitForTextToDisappear("Loading...");
+
+        historyPage.clickCategoryTab("Clinical");
+        historyPage.clickReportTab("Clinical Snapshot");
+
         waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
         waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
@@ -812,10 +818,15 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         String query = "textfield[itemId=subjArea]";
         _helper.waitForCmp(query);
-        Ext4FieldRef subjField = getAnimalHistorySubjField();
-        subjField.setValue(SUBJECTS[0]);
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical"));
-        waitAndClick(Ext4Helper.Locators.ext4Tab("Clinical Snapshot"));
+
+        AnimalHistoryPage historyPage = new AnimalHistoryPage(getDriver());
+        historyPage.searchSingleAnimal(SUBJECTS[0]);
+        waitForText("Overview: " + SUBJECTS[0]);
+        waitForTextToDisappear("Loading...");
+
+        historyPage.clickCategoryTab("Clinical");
+        historyPage.clickReportTab("Clinical Snapshot");
+
         waitForElement(Locator.tagContainingText("div", "Previous 2 Years:")); //proxy for weight load
         waitForElement(Locator.tagContainingText("b", "Current Medications / Prescribed Diets:"));
 
