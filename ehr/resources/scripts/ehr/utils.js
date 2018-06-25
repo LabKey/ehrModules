@@ -226,9 +226,9 @@ EHR.Server.Utils = new function(){
         processErrors: function(row, globalErrors, scriptErrors, errorThreshold, helper){
             var error;
             var totalErrors = 0;
+            var skippedErrors = 0;
 
             //extraContext will be roundtripped  back to the client, so we cache skipped errors in it
-            //NOTE: this method is not longer used in 13.2 and beyond
             for (var i in scriptErrors){
                 for (var j=0;j<scriptErrors[i].length;j++){
                     error = scriptErrors[i][j];
@@ -239,7 +239,7 @@ EHR.Server.Utils = new function(){
                             helper.addSkippedError(row._recordid, error);
                         }
                         else if (!helper.isETL()){
-                            console.log('No _recordId provided, cannot serialize skipped error');
+                            skippedErrors++;
                         }
                         continue;
                     }
@@ -251,6 +251,9 @@ EHR.Server.Utils = new function(){
                     totalErrors++;
                 }
             }
+
+            if (skippedErrors > 0)
+                console.log('No _recordId provided, cannot serialize ' + skippedErrors + ' skipped error(s) for ' + helper.getSchemaName() + '.' + helper.getQueryName());
 
             return totalErrors;
         },
