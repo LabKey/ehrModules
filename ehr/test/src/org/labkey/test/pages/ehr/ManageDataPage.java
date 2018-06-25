@@ -25,7 +25,7 @@ public class ManageDataPage extends BaseColonyOverviewPage
 
     public WebElement clickMyPendingRequestTab()
     {
-        clickTab("My Pending Request");
+        clickTab("My Pending Requests");
         return getActiveTabPanel();
     }
 
