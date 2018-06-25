@@ -113,6 +113,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static EHRUser REQUEST_ADMIN = new EHRUser("request_admin@ehrstudy.test", "EHR Request Admins", EHRRole.REQUEST_ADMIN);
     protected static EHRUser FULL_UPDATER = new EHRUser("full_updater@ehrstudy.test", "EHR Full Updaters", EHRRole.FULL_UPDATER);
 
+    protected static String REQUESTER_USER = "requester@ehrstudy.test";
     protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
