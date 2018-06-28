@@ -25,9 +25,11 @@ import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,14 +93,14 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public DataRegionTable getActiveReportDataRegion()
     {
-        DataRegionTable dataRegionTable = DataRegion(getDriver()).timeout(30000).find(getActiveReportPanel());
+        DataRegionTable dataRegionTable = DataRegion(getDriver()).timeout(60000).find(getActiveReportPanel());
         dataRegionTable.setAsync(true);
         return dataRegionTable;
     }
 
     public List<DataRegionTable> getActiveReportDataRegions()
     {
-        List<DataRegionTable> dataRegions = DataRegion(getDriver()).timeout(30000).findAll(getActiveReportPanel());
+        List<DataRegionTable> dataRegions = DataRegion(getDriver()).timeout(60000).findAll(getActiveReportPanel());
         for (DataRegionTable dataRegion : dataRegions)
         {
             dataRegion.setAsync(true);
@@ -356,18 +358,18 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 scrollIntoView(_el);
                 try
                 {
-                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL, longWait());
+                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
                 }
-                catch (StaleElementReferenceException ignore) // Tab signal might fire more than once
+                catch (StaleElementReferenceException | TimeoutException ignore) // Tab signal might fire more than once
                 {
                     _el.isDisplayed(); // Make sure it was actually the signal that was stale
                 }
                 _ext4Helper.waitForMaskToDisappear(30000);
-                activeReportPanelContainer.waitForElement(getDriver(), 2000);
+                activeReportPanelContainer.waitForElement(getDriver(), 10000);
 
                 if (isJsReport() || isOtherReport())
                 {
-                    sleep(2000);
+                    sleep(5000);
                 }
             }
             else
