@@ -113,8 +113,10 @@ Ext4.define('EHR.panel.KinshipPanel', {
         }
 
         var panel = Ext4.getCmp('rawDataPanel');
-        panel.remove(Ext4.getCmp('rawDataGrid'));
-        panel.insert(this.getQWPConfig());
+        if (panel) {
+            panel.remove(Ext4.getCmp('rawDataGrid'));
+            panel.insert(this.getQWPConfig());
+        }
     },
 
     onDataLoad: function(results){
@@ -251,8 +253,17 @@ Ext4.define('EHR.panel.KinshipPanel', {
                 allowHeaderLock: false,
                 showReports: false,
                 filterArray: this.filterArray,
-                failure: function() {Ext4.getCmp('limitRawDataToSelection').enable();LDK.Utils.getErrorCallback()},
-                success: function() {Ext4.getCmp('limitRawDataToSelection').enable()}
+                failure: function() {
+                    var cmp = Ext4.getCmp('limitRawDataToSelection');
+                    if (cmp)
+                        cmp.enable();
+
+                    LDK.Utils.getErrorCallback()
+                },
+                success: function() {
+                    var cmp = Ext4.getCmp('limitRawDataToSelection');
+                    if (cmp)
+                        cmp.enable()}
             }
         }
     }

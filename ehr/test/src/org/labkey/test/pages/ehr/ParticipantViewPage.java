@@ -342,7 +342,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
-                reportPanelTabs.waitForElement(getDriver(), 5000);
+                reportPanelTabs.waitForElement(getDriver(), 10000);
             }
             else
             {
