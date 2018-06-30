@@ -68,6 +68,9 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
         doAndWaitForPageSignal(
             () -> elementCache().updateButton.click(),
             REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
+
+        ensureWaitForReports();
+
         return (A)this;
     }
 
@@ -85,6 +88,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
     public void searchSingleAnimal(String animalId, String valueToWaitFor)
     {
         selectSingleAnimalSearch().searchFor(animalId);
+        ensureWaitForReports();
 
         if (valueToWaitFor != null)
             waitForElement(Locator.tagWithClass("div", "x4-form-display-field").withText(valueToWaitFor));

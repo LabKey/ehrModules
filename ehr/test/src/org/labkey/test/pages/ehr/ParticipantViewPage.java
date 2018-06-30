@@ -32,6 +32,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,18 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
 
+    public static final int LONG_REPORT_WAIT = 3000;
+
     protected static final Locator.XPathLocator categoryPanel = Locator.tagWithId("div", "bs-category-tabs-list");
     protected static final Locator.XPathLocator categoryPanelTabs = categoryPanel.childTag("ul").withClass("nav").childTag("li").childTag("a");
     protected static final Locator.XPathLocator activeCategoryPanel = categoryPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active");
     protected static final Locator.XPathLocator reportPanel = activeCategoryPanel.descendant(Locator.tagWithId("div", "bs-report-tabs-list"));
     protected static final Locator.XPathLocator reportPanelTabs = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").childTag("a");
+    protected static final Locator.XPathLocator activeReportTab = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").withClass("active").childTag("a");
     protected static final Locator.XPathLocator activeReportPanel = reportPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active").childTag("div");
     protected static final Locator.XPathLocator activeReportPanelContainer = activeReportPanel.descendant(Locator.tagWithAttributeContaining("div", "id", "innerCt"));
+
+    private List longReports;
 
     public ParticipantViewPage(WebDriver driver)
     {
@@ -65,7 +71,30 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static ParticipantViewPage beginAt(WebDriverWrapper driver, String containerPath, String participantId)
     {
         driver.beginAt(WebTestHelper.buildURL("ehr", containerPath, "participantView", Maps.of("participantId", participantId)));
-        return new ParticipantViewPage(driver.getDriver());
+        ParticipantViewPage page = new ParticipantViewPage(driver.getDriver());
+        page.ensureWaitForReports();
+        return page;
+    }
+
+    // Add to this list (or override) to add additional wait for long running reports
+    private List longRunningReports()
+    {
+        if (longReports == null)
+        {
+            longReports = Arrays.asList("Snapshot");
+        }
+
+        return longReports;
+    }
+
+    protected void ensureWaitForReports()
+    {
+        String active = getDriver().findElement(activeReportTab).getText();
+
+        if (longRunningReports().contains(active))
+        {
+            sleep(LONG_REPORT_WAIT);
+        }
     }
 
     @Override
@@ -313,7 +342,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _el.click();
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
-                reportPanelTabs.waitForElement(getDriver(), 2000);
+                reportPanelTabs.waitForElement(getDriver(), 5000);
             }
             else
             {
@@ -367,10 +396,6 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 _ext4Helper.waitForMaskToDisappear(30000);
                 activeReportPanelContainer.waitForElement(getDriver(), 10000);
 
-                if (isJsReport() || isOtherReport())
-                {
-                    sleep(5000);
-                }
             }
             else
             {
