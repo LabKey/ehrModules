@@ -42,20 +42,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                     xtype: 'radio',
                     name: 'type'
                 },
-                items: [{
-                    inputValue: 'animal',
-                    boxLabel: 'List of Animals',
-                    checked: true
-                },{
-                    inputValue: 'location',
-                    boxLabel: 'Location'
-                },{
-                    inputValue: 'animalGroup',
-                    boxLabel: 'Animal Group'
-                },{
-                    inputValue: 'project',
-                    boxLabel: 'Project/Protocol'
-                }],
+                items: this.getItems(),
                 listeners: {
                     scope: this,
                     change: this.onTypeChange
@@ -101,6 +88,35 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         this.animalHandler();
     },
 
+    getItems: function() {
+        return [{
+            inputValue: 'animal',
+            boxLabel: 'List of Animals',
+            checked: true
+        },{
+            inputValue: 'location',
+            boxLabel: 'Location'
+        },{
+            inputValue: 'animalGroup',
+            boxLabel: 'Animal Group'
+        },{
+            inputValue: 'project',
+            boxLabel: 'Project/Protocol'
+        }];
+    },
+
+    resetFormFields: function(showFooterFields) {
+        var form = this.down('#theForm');
+        form.removeAll();
+        this.toggleFooterFields(showFooterFields);
+        return form;
+    },
+
+    toggleFooterFields: function(show) {
+        this.down('#dateField').setVisible(show);
+        this.down('#chooseValues').setVisible(show);
+    },
+
     onTypeChange: function(field, val, oldVal){
         if (!val || !val.type)
             return;
@@ -115,8 +131,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     },
 
     animalHandler: function(){
-        var form = this.down('#theForm');
-        form.removeAll();
+        var form = this.resetFormFields(true);
         form.add({
             html: 'Either type of cut/paste a list of Animal IDs into the box below.  They can be separated by either commas, spaces, or line breaks.',
             style: 'padding-bottom: 10px;'
@@ -181,8 +196,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     },
 
     locationHandler: function(){
-        var form = this.down('#theForm');
-        form.removeAll();
+        var form = this.resetFormFields(true);
         form.add([{
             html: 'This will return any animals currently housed in the selected location.  You can leave any of the fields blank.',
             style: 'padding-bottom: 10px;'
@@ -259,8 +273,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     },
 
     animalGroupHandler: function(){
-        var form = this.down('#theForm');
-        form.removeAll();
+        var form = this.resetFormFields(true);
         form.add([{
             html: 'This will return any animals currently assigned to the selected group.',
             style: 'padding-bottom: 10px;'
@@ -291,8 +304,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     },
 
     projectHandler: function(){
-        var form = this.down('#theForm');
-        form.removeAll();
+        var form = this.resetFormFields(true);
         form.add([{
             html: 'This will return any animals currently assigned to the selected project or protocol.  Choose one or the other.',
             style: 'padding-bottom: 10px;'
