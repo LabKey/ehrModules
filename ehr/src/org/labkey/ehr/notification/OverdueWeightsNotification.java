@@ -25,6 +25,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.notification.AbstractEHRNotification;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.QueryService;

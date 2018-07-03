@@ -219,6 +219,7 @@ ehr/api-src/org/labkey/api/ehr/history/ParasitologyLabworkType.java -text
 ehr/api-src/org/labkey/api/ehr/history/SerologyLabworkType.java -text
 ehr/api-src/org/labkey/api/ehr/history/SortingLabworkType.java -text
 ehr/api-src/org/labkey/api/ehr/history/iStatLabworkType.java -text
+ehr/api-src/org/labkey/api/ehr/notification/AbstractEHRNotification.java -text
 ehr/api-src/org/labkey/api/ehr/security/AbstractEHRPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRAbnormalAdminPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRAbnormalDeletePermission.java -text
@@ -1489,7 +1490,6 @@ ehr/src/org/labkey/ehr/history/LabworkManager.java -text
 ehr/src/org/labkey/ehr/model/EHRDomainKind.java -text
 ehr/src/org/labkey/ehr/model/EHRDomainUpdateHelper.java -text
 ehr/src/org/labkey/ehr/model/EHR_LookupsDomainKind.java -text
-ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/DataEntrySummary.java -text
 ehr/src/org/labkey/ehr/notification/DeathNotification.java -text
 ehr/src/org/labkey/ehr/notification/OverdueWeightsNotification.java -text
