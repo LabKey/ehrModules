@@ -286,6 +286,8 @@ ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSurgeryEntryPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRTemplateCreatorPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRVeternarianPermission.java -text
+ehr/api-src/org/labkey/api/ehr/table/AssignedAtTimeForeignKey.java -text
+ehr/api-src/org/labkey/api/ehr/table/AssignmentAtTimeForeignKey.java -text
 ehr/api-src/org/labkey/api/ehr/table/DurationColumn.java -text
 ehr/build.gradle -text
 ehr/module.properties -text
