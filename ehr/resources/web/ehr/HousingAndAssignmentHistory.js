@@ -550,7 +550,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
     });
 
     ko.components.register('d3-graph', {
-        template: {require: 'text!/ehr/d3-graph-template.html'},
+        template: {require: 'text!' + LABKEY.contextPath + '/ehr/d3-graph-template.html'},
         viewModel: {
             createViewModel: function (params, componentInfo) {
                 return params.graph;
@@ -572,7 +572,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
     };
 
     ko.components.register("animal-housing", {
-        template: {require: 'text!/ehr/HousingAndAssignmentHistoryTemplate.html'},
+        template: {require: 'text!' + LABKEY.contextPath + '/ehr/HousingAndAssignmentHistoryTemplate.html'},
         viewModel: {
             createViewModel: function (params, componentInfo) {
                 var animalid = params.animalid;
