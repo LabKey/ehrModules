@@ -104,7 +104,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         nounSingular: 'Animal',
         aliasTable: {
             schemaName: 'study',
-            queryName: 'demographics',
+            queryName: 'Animal',
             idColumn: 'Id'
         }
     },{
@@ -113,7 +113,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         label: EHR.panel.MultiAnimalFilterType.label,
         aliasTable: {
             schemaName: 'study',
-            queryName: 'demographics',
+            queryName: 'Animal',
             idColumn: 'Id'
         }
     },{
