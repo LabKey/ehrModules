@@ -269,7 +269,7 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                 var chain = this.selectAll();
 
                 var dataset = this.d3view.dataset();
-                if (('key' in dataset[0]) && (typeof dataset[0].key === 'function')) {
+                if (dataset && dataset[0] && ('key' in dataset[0]) && (typeof dataset[0].key === 'function')) {
                     var keyFn = function (d, i) {
                         return d.key();
                     };
@@ -643,98 +643,114 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                 var dataset = [];
 
                                 var animalInfo = self.datasets.demographics.rows()[0];
-                                var dob = new Date(animalInfo.birth());
+                                if (animalInfo.birth && {}.toString.call(animalInfo.birth) === '[object Function]') {
+                                    var dob = new Date(animalInfo.birth());
 
-                                var rows = [];
-                                var stripData = function(data) {
-                                    return {
-                                        start: data.startAge(),
-                                        end:   data.endAge()
+                                    var rows = [];
+                                    var stripData = function (data) {
+                                        return {
+                                            start: data.startAge(),
+                                            end: data.endAge()
+                                        };
                                     };
-                                };
-                                var getRow = function( data ) {
-                                    var newBlock = stripData(data);
+                                    var getRow = function (data) {
+                                        var newBlock = stripData(data);
 
-                                    // The first row will always be placed in the bottom row.
-                                    if ( rows.length === 0 ) {
-                                        rows.push([newBlock]);
-                                        return 0;
-                                    }
+                                        // The first row will always be placed in the bottom row.
+                                        if (rows.length === 0) {
+                                            rows.push([newBlock]);
+                                            return 0;
+                                        }
 
-                                    var hasConflict = function(blockInRow) {
-                                        if ( (newBlock.start > blockInRow.end) || (newBlock.end < blockInRow.start) ) {
-                                            // There is no conflict.
-                                            return false;
+                                        var hasConflict = function (blockInRow) {
+                                            if ((newBlock.start > blockInRow.end) || (newBlock.end < blockInRow.start)) {
+                                                // There is no conflict.
+                                                return false;
+                                            }
+                                            else {
+                                                return true;
+                                            }
+                                        };
+
+                                        var rowToAddTo = _.findIndex(rows, function (innerRow) {
+                                            // Look for a conflict
+                                            if (_.findIndex(innerRow, hasConflict) === -1) {
+                                                //No conflict
+                                                return true;
+                                            }
+                                            else {
+                                                return false;
+                                            }
+                                        });
+
+                                        if (rowToAddTo === -1) {
+                                            rows.push([newBlock]);
+                                            self.getd3View(name).settings.numRows = rows.length;
+                                            return rows.length - 1;
                                         }
                                         else {
-                                            return true;
+                                            rows[rowToAddTo].push(newBlock);
+                                            return rowToAddTo;
                                         }
                                     };
 
-                                    var rowToAddTo = _.findIndex(rows, function(innerRow) {
-                                        // Look for a conflict
-                                        if ( _.findIndex(innerRow, hasConflict) === -1 ) {
-                                            //No conflict
-                                            return true;
-                                        }
-                                        else {
-                                            return false;
-                                        }
+                                    self.datasets.assignments.each(function (row) {
+                                        var data = {};
+
+                                        data.key = ko.pureComputed(function () {
+                                            return row._originalData.lsid;
+                                        });
+                                        data.id = ko.pureComputed(function () {
+                                            return row.getColumn('id');
+                                        });
+                                        data.project = ko.pureComputed(function () {
+                                            return row.getColumn("project");
+                                        });
+                                        data.avail = ko.pureComputed(function () {
+                                            return row.getColumn('project/avail');
+                                        });
+                                        data.availDesc = ko.pureComputed(function () {
+                                            return row.getColumn('project/avail/description');
+                                        });
+                                        data.projectTitle = ko.pureComputed(function () {
+                                            return row.getColumn('project/Title');
+                                        });
+                                        data.row = ko.pureComputed(function () {
+                                            return row;
+                                        });
+
+                                        data.startAge = ko.pureComputed(function () {
+                                            var startDate = row.getColumn('date');
+                                            return Utils.yearsOfDifference(startDate, dob);
+                                        });
+
+                                        data.endAge = ko.pureComputed(function () {
+                                            var endDate = row.getColumn('enddate') || new Date();
+                                            return Utils.yearsOfDifference(endDate, dob);
+                                        });
+
+                                        data.duration = ko.pureComputed(function () {
+                                            var endDate = row.getColumn('enddate') || new Date();
+                                            var startDate = row.getColumn('date');
+                                            var duration = Utils.yearsOfDifference(endDate, startDate);
+
+                                            if (duration === 0) {
+                                                duration = (1 / 365.25);
+                                            }
+
+                                            return duration;
+                                        });
+                                        dataset.push(data);
                                     });
 
-                                    if ( rowToAddTo === -1 ) {
-                                        rows.push([newBlock]);
-                                        self.getd3View(name).settings.numRows = rows.length;
-                                        return rows.length - 1;
-                                    }
-                                    else {
-                                        rows[rowToAddTo].push(newBlock);
-                                        return rowToAddTo;
-                                    }
-                                };
-
-                                self.datasets.assignments.each(function (row) {
-                                    var data = {};
-
-                                    data.key          = ko.pureComputed(function () { return row._originalData.lsid;                     });
-                                    data.id           = ko.pureComputed(function () { return row.getColumn('id');                        });
-                                    data.project      = ko.pureComputed(function () { return row.getColumn("project");                   });
-                                    data.avail        = ko.pureComputed(function () { return row.getColumn('project/avail');             });
-                                    data.availDesc    = ko.pureComputed(function () { return row.getColumn('project/avail/description'); });
-                                    data.projectTitle = ko.pureComputed(function () { return row.getColumn('project/Title');             });
-                                    data.row          = ko.pureComputed(function () { return row;                                        });
-
-                                    data.startAge = ko.pureComputed(function () {
-                                        var startDate = row.getColumn('date');
-                                        return Utils.yearsOfDifference(startDate, dob);
+                                    dataset = _.sortBy(dataset, function (d) {
+                                        return (0 - d.duration())
                                     });
 
-                                    data.endAge = ko.pureComputed(function() {
-                                        var endDate = row.getColumn('enddate') || new Date();
-                                        return Utils.yearsOfDifference(endDate, dob);
+                                    jQuery.each(dataset, function (index, data) {
+                                        data.displayRow = getRow(data);
                                     });
-
-                                    data.duration = ko.pureComputed(function () {
-                                        var endDate = row.getColumn('enddate') || new Date();
-                                        var startDate = row.getColumn('date');
-                                        var duration = Utils.yearsOfDifference(endDate, startDate);
-
-                                        if (duration === 0) {
-                                            duration = (1 / 365.25);
-                                        }
-
-                                        return duration;
-                                    });
-                                    dataset.push(data);
-                                });
-
-                                dataset = _.sortBy(dataset, function (d) {
-                                    return (0 - d.duration())
-                                });
-
-                                jQuery.each(dataset, function(index, data) {
-                                    data.displayRow = getRow(data);
-                                });
+                                }
 
                                 return dataset;
                             },
@@ -744,147 +760,150 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                 var barHeight = self.height() * .8;
 
                                 var animalInfo = self.d3view.datasets.demographics.rows()[0];
-                                var dob = new Date(animalInfo.birth());
-                                var curAge = Utils.yearsOfDifference(new Date(), dob);
-                                var endOfXScaleDomain = curAge;
-                                if (animalInfo.death() !== "") {
-                                    endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
-                                }
-                                else if (animalInfo.departdate() !== "") {
-                                    endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
-                                }
+                                if (animalInfo.birth && {}.toString.call(animalInfo.birth) === '[object Function]') {
+                                    var dob = new Date(animalInfo.birth());
+                                    var curAge = Utils.yearsOfDifference(new Date(), dob);
+                                    var endOfXScaleDomain = curAge;
+                                    if (animalInfo.death() !== "") {
+                                        endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
+                                    }
+                                    else if (animalInfo.departdate() !== "") {
+                                        endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
+                                    }
 
-                                if (this.chartRegion.xScale === null || _.isUndefined(this.chartRegion.xScale) ) {
-                                    this.chartRegion.xScale = d3.scale.linear()
-                                            .domain([0, endOfXScaleDomain])
-                                            .range([0, self.width()])
-                                            //.clamp(true)
-                                            .nice();
-                                }
+                                    if (this.chartRegion.xScale === null || _.isUndefined(this.chartRegion.xScale)) {
+                                        this.chartRegion.xScale = d3.scale.linear()
+                                                .domain([0, endOfXScaleDomain])
+                                                .range([0, self.width()])
+                                                //.clamp(true)
+                                                .nice();
+                                    }
 
-                                selection = selection
-                                        .attr("x", function (d, i) {
-                                            return self.chartRegion.xScale(d.startAge());
-                                        })
-                                        .attr('width', function (d, i) {
-                                            var width =  self.chartRegion.xScale(d.startAge() + d.duration()) - self.chartRegion.xScale(d.startAge());
-                                            var minWidth = 5;
+                                    selection = selection
+                                            .attr("x", function (d, i) {
+                                                return self.chartRegion.xScale(d.startAge());
+                                            })
+                                            .attr('width', function (d, i) {
+                                                var width = self.chartRegion.xScale(d.startAge() + d.duration()) - self.chartRegion.xScale(d.startAge());
+                                                var minWidth = 5;
 
-                                            if (width < minWidth) {
-                                                width = minWidth;
-                                            }
-                                            return width;
-                                        });
+                                                if (width < minWidth) {
+                                                    width = minWidth;
+                                                }
+                                                return width;
+                                            });
 
-                                if (config.xOnly) {
-                                    return selection;
-                                }
+                                    if (config.xOnly) {
+                                        return selection;
+                                    }
 
-                                var yScale = d3.scale.ordinal()
-                                        .domain(d3.range(self.d3view.settings.numRows))
-                                        .rangeBands([self.height(), 0], .1, .2);
+                                    var yScale = d3.scale.ordinal()
+                                            .domain(d3.range(self.d3view.settings.numRows))
+                                            .rangeBands([self.height(), 0], .1, .2);
 
-                                var heightFunction = (function () {
-                                    var returnVal = barHeight;
-                                    //if (self.d3view.settings.separateBars()) {
+                                    var heightFunction = (function () {
+                                        var returnVal = barHeight;
+                                        //if (self.d3view.settings.separateBars()) {
                                         returnVal = yScale.rangeBand();
-                                    //}
+                                        //}
 
-                                    return returnVal;
-                                })();
+                                        return returnVal;
+                                    })();
 
-                                var yValueFunction = (function () {
-                                    var returnVal = (self.height() / 2) - (barHeight / 2);
-                                    //if (self.d3view.settings.separateBars()) {
+                                    var yValueFunction = (function () {
+                                        var returnVal = (self.height() / 2) - (barHeight / 2);
+                                        //if (self.d3view.settings.separateBars()) {
                                         returnVal = function (d, i) {
                                             return yScale(d.displayRow);
                                         };
-                                    //}
+                                        //}
 
-                                    return returnVal;
-                                })();
+                                        return returnVal;
+                                    })();
 
-                                selection = selection
-                                        .attr('y', yValueFunction)
-                                        .attr('height', heightFunction)
-                                        .style('fill', function (d, i) {
-                                            var colormap = {
-                                                r: "red",
-                                                q: "orange",
-                                                u: "green",
-                                                t: "blue",
-                                                b: "pink",
-                                                v: "url(#exemptionPattern)",
-                                                p: "url(#pendingPattern)"
+                                    selection = selection
+                                            .attr('y', yValueFunction)
+                                            .attr('height', heightFunction)
+                                            .style('fill', function (d, i) {
+                                                var colormap = {
+                                                    r: "red",
+                                                    q: "orange",
+                                                    u: "green",
+                                                    t: "blue",
+                                                    b: "pink",
+                                                    v: "url(#exemptionPattern)",
+                                                    p: "url(#pendingPattern)"
+                                                };
+                                                if (d.avail() in colormap) {
+                                                    return colormap[d.avail()];
+                                                }
+                                                return "black";
+                                            })
+                                            .style('stroke-width', '1')
+                                            .style('stroke', 'black')
+                                            .attr('opacity', '0.8');
+
+                                    // If this an update, and transition has already been called,
+                                    // there is no "on" method.
+                                    if ('on' in selection) {
+                                        selection = selection.on('mouseover', function (d, i) {
+                                            d3.select(this).style('stroke', 'red').style('stroke-width', 2);
+
+                                            var formatDate = function (dateString) {
+                                                if (dateString === '') {
+                                                    dateString = new Date();
+                                                }
+                                                return (Ext4.util.Format.date(new Date(dateString)), 'M d, Y');
                                             };
-                                            if (d.avail() in colormap) {
-                                                return colormap[d.avail()];
+
+                                            if (!VM.selectedAssignmentItem.stuck()) {
+                                                var rawRow = d.row();
+                                                VM.selectedAssignmentItem.startDate(formatDate(rawRow.date()));
+                                                VM.selectedAssignmentItem.endDate(formatDate(rawRow.enddate()));
+                                                VM.selectedAssignmentItem.code(rawRow['project/avail']());
+                                                VM.selectedAssignmentItem.description(d.availDesc());
+                                                VM.selectedAssignmentItem.project(d.project());
+                                                VM.selectedAssignmentItem.projectTitle(d.projectTitle());
+
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
+
+                                                var $this = $(this);
+                                                var thisPosition = $this.position();
+                                                var top = thisPosition.top - $tooltip.height() - 5;
+                                                var left = thisPosition.left + ($this.attr('width') / 2) - ($tooltip.width() / 2);
+
+                                                //Make sure the tooltip doesn't go off the left side of the graph:
+                                                if (left < 0) {
+                                                    left = 0;
+                                                }
+
+                                                var d3$tooltip = d3.select($tooltip[0])
+                                                        .style("left", left + "px")
+                                                        .style("top", top + "px");
+
+                                                showTooltip(d3$tooltip);
                                             }
-                                            return "black";
-                                        })
-                                        .style('stroke-width', '1')
-                                        .style('stroke', 'black')
-                                        .attr('opacity', '0.8');
+                                        }).on('mouseout', function (d, i) {
+                                            d3.select(this).style('stroke-width', '1').style('stroke', 'black');
 
-                                // If this an update, and transition has already been called,
-                                // there is no "on" method.
-                                if ('on' in selection) {
-                                    selection = selection.on('mouseover', function (d, i) {
-                                        d3.select(this).style('stroke', 'red').style('stroke-width', 2);
+                                            if (!VM.selectedAssignmentItem.stuck()) {
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
+                                                var d3$tooltip = d3.select($tooltip[0]);
 
-                                        var formatDate = function (dateString) {
-                                            if (dateString === '') {
-                                                dateString = new Date();
+                                                hideTooltip(d3$tooltip);
                                             }
-                                            return  (Ext4.util.Format.date(new Date(dateString)),'M d, Y');
-                                        };
+                                        }).on('click', function (d, i) {
+                                            if (VM.selectedAssignmentItem.stuck()) {
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
+                                                var d3$tooltip = d3.select($tooltip[0]);
 
-                                        if (!VM.selectedAssignmentItem.stuck()) {
-                                            var rawRow = d.row();
-                                            VM.selectedAssignmentItem.startDate(formatDate(rawRow.date()));
-                                            VM.selectedAssignmentItem.endDate(formatDate(rawRow.enddate()));
-                                            VM.selectedAssignmentItem.code(rawRow['project/avail']());
-                                            VM.selectedAssignmentItem.description(d.availDesc());
-                                            VM.selectedAssignmentItem.project(d.project());
-                                            VM.selectedAssignmentItem.projectTitle(d.projectTitle());
-
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
-
-                                            var $this = $(this);
-                                            var thisPosition = $this.position();
-                                            var top = thisPosition.top - $tooltip.height() - 5;
-                                            var left = thisPosition.left + ($this.attr('width') / 2) - ($tooltip.width() / 2);
-
-                                            //Make sure the tooltip doesn't go off the left side of the graph:
-                                            if (left < 0) { left = 0; }
-
-                                            var d3$tooltip = d3.select($tooltip[0])
-                                                    .style("left", left + "px")
-                                                    .style("top", top + "px");
-
-                                            showTooltip(d3$tooltip);
-                                        }
-                                    }).on('mouseout', function (d, i) {
-                                        d3.select(this).style('stroke-width', '1').style('stroke', 'black');
-
-                                        if (!VM.selectedAssignmentItem.stuck()) {
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
-                                            var d3$tooltip = d3.select($tooltip[0]);
-
-                                            hideTooltip(d3$tooltip);
-                                        }
-                                    }).on('click', function (d, i) {
-                                        if (VM.selectedAssignmentItem.stuck()) {
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-assignments-tooltip');
-                                            var d3$tooltip = d3.select($tooltip[0]);
-
-                                            hideTooltip(d3$tooltip);
-                                        }
-                                        VM.selectedAssignmentItem.stuck(!VM.selectedAssignmentItem.stuck());
-                                        d3.event.stopPropagation();
-                                    });
+                                                hideTooltip(d3$tooltip);
+                                            }
+                                            VM.selectedAssignmentItem.stuck(!VM.selectedAssignmentItem.stuck());
+                                            d3.event.stopPropagation();
+                                        });
+                                    }
                                 }
-
                                 return selection;
                             },
                             baseType: 'rect',
@@ -898,37 +917,56 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                 var dataset = [];
 
                                 var animalInfo = self.datasets.demographics.rows()[0];
-                                var dob = new Date(animalInfo.birth());
 
-                                self.datasets.housing.each(function (row) {
-                                    var data = {};
+                                if (animalInfo.birth && {}.toString.call(animalInfo.birth) === '[object Function]') {
+                                    var dob = new Date(animalInfo.birth());
 
-                                    data.startAge = ko.pureComputed(function () {
-                                        var startDate = row.getColumn('date');
-                                        return Utils.yearsOfDifference(startDate, dob);
+                                    self.datasets.housing.each(function (row) {
+                                        var data = {};
+
+                                        data.startAge = ko.pureComputed(function () {
+                                            var startDate = row.getColumn('date');
+                                            return Utils.yearsOfDifference(startDate, dob);
+                                        });
+
+                                        data.duration = ko.pureComputed(function () {
+                                            var startDate = row.getColumn('date');
+                                            var endDate = row.getColumn('enddate') || new Date();
+
+                                            var duration = Utils.yearsOfDifference(endDate, startDate);
+
+                                            return duration;
+                                        });
+
+                                        // Add a bunch of aliases
+                                        data.housingCode = ko.pureComputed(function () {
+                                            return row.getColumn('cond')
+                                        });
+                                        data.housingDesc = ko.pureComputed(function () {
+                                            return row.getColumn('cond/title')
+                                        });
+                                        data.housingReason = ko.pureComputed(function () {
+                                            return row.getColumn('reason')
+                                        });
+                                        data.room = ko.pureComputed(function () {
+                                            return row.getColumn('room')
+                                        });
+                                        data.cage = ko.pureComputed(function () {
+                                            return row.getColumn('cage')
+                                        });
+                                        data.id = ko.pureComputed(function () {
+                                            return row.getColumn('Id')
+                                        });
+                                        data.key = ko.pureComputed(function () {
+                                            return row.getColumn('date')
+                                        });
+                                        data.row = ko.pureComputed(function () {
+                                            return row;
+                                        });
+
+                                        dataset.push(data);
                                     });
-
-                                    data.duration = ko.pureComputed(function () {
-                                        var startDate = row.getColumn('date');
-                                        var endDate = row.getColumn('enddate') || new Date();
-
-                                        var duration = Utils.yearsOfDifference(endDate, startDate);
-
-                                        return duration;
-                                    });
-
-                                    // Add a bunch of aliases
-                                    data.housingCode   = ko.pureComputed(function () { return row.getColumn('cond')       });
-                                    data.housingDesc   = ko.pureComputed(function () { return row.getColumn('cond/title') });
-                                    data.housingReason = ko.pureComputed(function () { return row.getColumn('reason')     });
-                                    data.room          = ko.pureComputed(function () { return row.getColumn('room')       });
-                                    data.cage          = ko.pureComputed(function () { return row.getColumn('cage')       });
-                                    data.id            = ko.pureComputed(function () { return row.getColumn('Id')         });
-                                    data.key           = ko.pureComputed(function () { return row.getColumn('date')       });
-                                    data.row           = ko.pureComputed(function () { return row;                        });
-
-                                    dataset.push(data);
-                                });
+                                }
 
                                 return dataset;
                             },
@@ -939,141 +977,144 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                                 var barHeight = this.height() * .8;
 
                                 var animalInfo = self.d3view.datasets.demographics.rows()[0];
-                                var dob = new Date(animalInfo.birth());
-                                var curAge = Utils.yearsOfDifference(new Date(), dob);
-                                var endOfXScaleDomain = curAge;
-                                if (animalInfo.death() !== "") {
-                                    endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
-                                }
-                                else if (animalInfo.departdate() !== "") {
-                                    endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
-                                }
+                                if (animalInfo.birth && {}.toString.call(animalInfo.birth) === '[object Function]') {
+                                    var dob = new Date(animalInfo.birth());
+                                    var curAge = Utils.yearsOfDifference(new Date(), dob);
+                                    var endOfXScaleDomain = curAge;
+                                    if (animalInfo.death() !== "") {
+                                        endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
+                                    }
+                                    else if (animalInfo.departdate() !== "") {
+                                        endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
+                                    }
 
-                                if (this.chartRegion.xScale === null || _.isUndefined(this.chartRegion.xScale) ) {
-                                    this.chartRegion.xScale = d3.scale.linear()
-                                            .domain([0, endOfXScaleDomain])
-                                            .range([0, self.width()])
-                                            //.clamp(true)
-                                            .nice();
-                                }
-                                this.chartRegion.maxXaxisVal = endOfXScaleDomain;
+                                    if (this.chartRegion.xScale === null || _.isUndefined(this.chartRegion.xScale)) {
+                                        this.chartRegion.xScale = d3.scale.linear()
+                                                .domain([0, endOfXScaleDomain])
+                                                .range([0, self.width()])
+                                                //.clamp(true)
+                                                .nice();
+                                    }
+                                    this.chartRegion.maxXaxisVal = endOfXScaleDomain;
 
-                                selection = selection
-                                        .attr("x", function (d, i) {
-                                            return self.chartRegion.xScale(d.startAge());
-                                        })
-                                        .attr('width', function (d, i) {
-                                            var width =  self.chartRegion.xScale(d.startAge() + d.duration()) - self.chartRegion.xScale(d.startAge());
-                                            var minWidth = 5;
+                                    selection = selection
+                                            .attr("x", function (d, i) {
+                                                return self.chartRegion.xScale(d.startAge());
+                                            })
+                                            .attr('width', function (d, i) {
+                                                var width = self.chartRegion.xScale(d.startAge() + d.duration()) - self.chartRegion.xScale(d.startAge());
+                                                var minWidth = 5;
 
-                                            if (width < minWidth) {
-                                                width = minWidth;
+                                                if (width < minWidth) {
+                                                    width = minWidth;
+                                                }
+                                                return width;
+                                            });
+
+                                    if (config.xOnly) {
+                                        return selection;
+                                    }
+
+
+                                    var yScale = d3.scale.ordinal()
+                                            .domain(d3.range(self.d3view.datasets.housing.rows().length))
+                                            .rangeBands([0, self.height()], .2);
+
+                                    var yValFn = function (d, i) {
+                                        if (self.d3view.settings.separateBars()) {
+                                            return yScale(i);
+                                        }
+                                        else {
+                                            return (self.height() / 2) - (barHeight / 2);
+                                        }
+                                    };
+
+                                    selection = selection
+                                            .attr('y', yValFn)
+                                            .attr('height', function (d, i) {
+                                                if (self.d3view.settings.separateBars()) {
+                                                    return yScale.rangeBand();
+                                                }
+                                                else {
+                                                    return barHeight;
+                                                }
+                                            })
+                                            .style('fill', function (d, i) {
+                                                var colormap = {
+                                                    s: "red"
+                                                };
+                                                if (d.housingCode() in colormap) {
+                                                    return colormap[d.housingCode()];
+                                                }
+                                                return "green";
+                                            })
+                                            .style('stroke-width', '1')
+                                            .style('stroke', 'black')
+                                            .attr('opacity', '0.8');
+
+                                    // If this an update, and transition has already been called,
+                                    // there is no "on" method.
+                                    if ('on' in selection) {
+                                        selection = selection.on('mouseover', function (d, i) {
+                                            d3.select(this).style('stroke', 'red').style('stroke-width', 2);
+
+                                            var formatDate = function (dateString) {
+                                                if (dateString === '') {
+                                                    dateString = new Date();
+                                                }
+                                                return (Ext4.util.Format.date(new Date(dateString)), 'M d, Y');
+                                            };
+
+                                            if (!VM.selectedHousingItem.stuck()) {
+                                                var rawRow = d.row();
+                                                VM.selectedHousingItem.cage(d.cage());
+                                                VM.selectedHousingItem.room(d.room());
+                                                VM.selectedHousingItem.startDate(formatDate(rawRow.date()));
+                                                VM.selectedHousingItem.endDate(formatDate(rawRow.enddate()));
+                                                VM.selectedHousingItem.description(d.housingDesc());
+                                                VM.selectedHousingItem.reason(d.housingReason());
+
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
+
+                                                var $this = $(this);
+                                                var thisPosition = $this.position();
+                                                var top = thisPosition.top - $tooltip.height() - 5;
+                                                var left = thisPosition.left + ($this.attr('width') / 2) - ($tooltip.width() / 2);
+
+                                                //Make sure the tooltip doesn't go off the left side of the graph:
+                                                if (left < 0) {
+                                                    left = 0;
+                                                }
+
+                                                var d3$tooltip = d3.select($tooltip[0])
+                                                        .style("left", left + "px")
+                                                        .style("top", top + "px");
+
+                                                showTooltip(d3$tooltip);
                                             }
-                                            return width;
+                                        }).on('mouseout', function (d, i) {
+                                            d3.select(this).style('stroke-width', '1').style('stroke', 'black');
+
+                                            if (!VM.selectedHousingItem.stuck()) {
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
+                                                var d3$tooltip = d3.select($tooltip[0]);
+
+                                                hideTooltip(d3$tooltip);
+                                            }
+                                        }).on('click', function (d, i) {
+                                            if (VM.selectedHousingItem.stuck()) {
+                                                var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
+                                                var d3$tooltip = d3.select($tooltip[0]);
+
+                                                hideTooltip(d3$tooltip);
+                                            }
+                                            VM.selectedHousingItem.stuck(!VM.selectedHousingItem.stuck());
+
+                                            d3.event.stopPropagation();
                                         });
 
-                                if (config.xOnly) {
-                                    return selection;
-                                }
-
-
-                                var yScale = d3.scale.ordinal()
-                                        .domain(d3.range(self.d3view.datasets.housing.rows().length))
-                                        .rangeBands([0, self.height()], .2);
-
-                                var yValFn = function (d, i) {
-                                    if (self.d3view.settings.separateBars()) {
-                                        return yScale(i);
                                     }
-                                    else {
-                                        return (self.height() / 2) - (barHeight / 2);
-                                    }
-                                };
-
-                                selection = selection
-                                        .attr('y', yValFn)
-                                        .attr('height', function (d, i) {
-                                            if (self.d3view.settings.separateBars()) {
-                                                return yScale.rangeBand();
-                                            }
-                                            else {
-                                                return barHeight;
-                                            }
-                                        })
-                                        .style('fill', function (d, i) {
-                                            var colormap = {
-                                                s: "red"
-                                            };
-                                            if (d.housingCode() in colormap) {
-                                                return colormap[d.housingCode()];
-                                            }
-                                            return "green";
-                                        })
-                                        .style('stroke-width', '1')
-                                        .style('stroke', 'black')
-                                        .attr('opacity', '0.8');
-
-                                // If this an update, and transition has already been called,
-                                // there is no "on" method.
-                                if ('on' in selection) {
-                                    selection = selection.on('mouseover', function (d, i) {
-                                        d3.select(this).style('stroke', 'red').style('stroke-width', 2);
-
-                                        var formatDate = function (dateString) {
-                                            if (dateString === '') {
-                                                dateString = new Date();
-                                            }
-                                            return  (Ext4.util.Format.date(new Date(dateString)),'M d, Y');
-                                        };
-
-                                        if (!VM.selectedHousingItem.stuck()) {
-                                            var rawRow = d.row();
-                                            VM.selectedHousingItem.cage(d.cage());
-                                            VM.selectedHousingItem.room(d.room());
-                                            VM.selectedHousingItem.startDate(formatDate(rawRow.date()));
-                                            VM.selectedHousingItem.endDate(formatDate(rawRow.enddate()));
-                                            VM.selectedHousingItem.description(d.housingDesc());
-                                            VM.selectedHousingItem.reason(d.housingReason());
-
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
-
-                                            var $this = $(this);
-                                            var thisPosition = $this.position();
-                                            var top = thisPosition.top - $tooltip.height() - 5;
-                                            var left = thisPosition.left + ($this.attr('width') / 2) - ($tooltip.width() / 2);
-
-                                            //Make sure the tooltip doesn't go off the left side of the graph:
-                                            if (left < 0) { left = 0; }
-
-                                            var d3$tooltip = d3.select($tooltip[0])
-                                                    .style("left", left + "px")
-                                                    .style("top", top + "px");
-
-                                            showTooltip(d3$tooltip);
-                                        }
-                                    }).on('mouseout', function (d, i) {
-                                        d3.select(this).style('stroke-width', '1').style('stroke', 'black');
-
-                                        if (!VM.selectedHousingItem.stuck()) {
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
-                                            var d3$tooltip = d3.select($tooltip[0]);
-
-                                            hideTooltip(d3$tooltip);
-                                        }
-                                    }).on('click', function (d, i) {
-                                        if (VM.selectedHousingItem.stuck()) {
-                                            var $tooltip = $(this).closest('d3-graph').parent().find('.animal-housing-tooltip');
-                                            var d3$tooltip = d3.select($tooltip[0]);
-
-                                            hideTooltip(d3$tooltip);
-                                        }
-                                        VM.selectedHousingItem.stuck(!VM.selectedHousingItem.stuck());
-
-                                        d3.event.stopPropagation();
-                                    });
-
                                 }
-
 
                                 return selection;
                             },
@@ -1138,124 +1179,126 @@ require(['classify', 'supersqlstore'], function(Classify, SuperSQLStore) {
                         var xAxis = d3$node.append('g').classed("x-axis", true);
 
                         var animalInfo = graph.store.datasets.demographics.rows()[0];
-                        var dob = new Date(animalInfo.birth());
-                        var curAge = Utils.yearsOfDifference(new Date(), dob);
 
-                        var endOfXScaleDomain = curAge;
-                        if (animalInfo.death() !== "") {
-                            endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
-                        }
-                        else if (animalInfo.departdate() !== "") {
-                            endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
-                        }
+                        if (animalInfo.birth && {}.toString.call(animalInfo.birth) === '[object Function]') {
+                            var dob = new Date(animalInfo.birth());
+                            var curAge = Utils.yearsOfDifference(new Date(), dob);
 
-                        if (graph.regions.chart.xScale === null || _.isUndefined(graph.regions.chart.xScale) ) {
-                            graph.regions.chart.xScale = d3.scale.linear()
-                                    .domain([0, endOfXScaleDomain])
-                                    .range([0, self.width()])
-                                    //.clamp(true)
-                                    .nice();
+                            var endOfXScaleDomain = curAge;
+                            if (animalInfo.death() !== "") {
+                                endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.death(), dob);
+                            }
+                            else if (animalInfo.departdate() !== "") {
+                                endOfXScaleDomain = Utils.yearsOfDifference(animalInfo.departdate(), dob);
+                            }
 
-                        }
+                            if (graph.regions.chart.xScale === null || _.isUndefined(graph.regions.chart.xScale)) {
+                                graph.regions.chart.xScale = d3.scale.linear()
+                                        .domain([0, endOfXScaleDomain])
+                                        .range([0, self.width()])
+                                        //.clamp(true)
+                                        .nice();
 
-                        graph.regions.chart.xAxis = xAxis;
-                        graph.regions.chart.xAxis.call(d3.svg.axis().scale(graph.regions.chart.xScale).orient('bottom'));
+                            }
 
-                        d3$node.append("text")
-                                .attr("class", "x-label")
-                                .attr("text-anchor", "middle")
-                                .attr("x", bottomRegion.width() / 2)
-                                .attr("y", bottomRegion.height() / 2 + 10)
-                                .text("Age of Animal (in years)");
+                            graph.regions.chart.xAxis = xAxis;
+                            graph.regions.chart.xAxis.call(d3.svg.axis().scale(graph.regions.chart.xScale).orient('bottom'));
 
-
-                        var leftRegion = graph.regions.left;
-                        var $leftNode = graph.$svg.find('.' + leftRegion.classname());
-                        var d3$leftNode = d3.select($leftNode[0]);
-
-                        var x = leftRegion.width() / 2;
-                        var y = leftRegion.height() / 4;
-
-                        var addlabel = function (text, x, y) {
-                            d3$leftNode.append("text")
+                            d3$node.append("text")
                                     .attr("class", "x-label")
-                                    .attr('text-anchor', "middle")
-                                    .attr('x', x)
-                                    .attr('y', y)
-                                    .attr('transform', 'rotate(270, ' + x + ', ' + y + ')')
-                                    .text(text);
-                        };
-                        addlabel("Housing", x, y);
-                        addlabel("Assignments", x, 3 * y);
+                                    .attr("text-anchor", "middle")
+                                    .attr("x", bottomRegion.width() / 2)
+                                    .attr("y", bottomRegion.height() / 2 + 10)
+                                    .text("Age of Animal (in years)");
 
-                        d3.select($(graph.$svg)[0]).on('click', function (d, i) {
-                            var $tooltip = $(this).parent().find('.animal-housing-tooltip, .animal-assignments-tooltip');
 
-                            $tooltip.each(function () {
-                                var d3$tooltip = d3.select(this);
-                                hideTooltip(d3$tooltip);
+                            var leftRegion = graph.regions.left;
+                            var $leftNode = graph.$svg.find('.' + leftRegion.classname());
+                            var d3$leftNode = d3.select($leftNode[0]);
+
+                            var x = leftRegion.width() / 2;
+                            var y = leftRegion.height() / 4;
+
+                            var addlabel = function (text, x, y) {
+                                d3$leftNode.append("text")
+                                        .attr("class", "x-label")
+                                        .attr('text-anchor', "middle")
+                                        .attr('x', x)
+                                        .attr('y', y)
+                                        .attr('transform', 'rotate(270, ' + x + ', ' + y + ')')
+                                        .text(text);
+                            };
+                            addlabel("Housing", x, y);
+                            addlabel("Assignments", x, 3 * y);
+
+                            d3.select($(graph.$svg)[0]).on('click', function (d, i) {
+                                var $tooltip = $(this).parent().find('.animal-housing-tooltip, .animal-assignments-tooltip');
+
+                                $tooltip.each(function () {
+                                    var d3$tooltip = d3.select(this);
+                                    hideTooltip(d3$tooltip);
+                                });
+                                VM.selectedHousingItem.stuck(false);
+                                VM.selectedAssignmentItem.stuck(false);
                             });
-                            VM.selectedHousingItem.stuck(false);
-                            VM.selectedAssignmentItem.stuck(false);
-                        });
 
 
-                        var rightRegion = graph.regions.right;
-                        var $rightRegion = graph.$svg.find('.' + rightRegion.classname());
-                        var d3$rightRegion = d3.select($rightRegion[0]);
+                            var rightRegion = graph.regions.right;
+                            var $rightRegion = graph.$svg.find('.' + rightRegion.classname());
+                            var d3$rightRegion = d3.select($rightRegion[0]);
 
-                        var assignmentlegendGroup = d3$rightRegion.append('g').attr('transform', 'translate(10,10)');
-                        var housinglegendGroup = d3$rightRegion.append('g');
+                            var assignmentlegendGroup = d3$rightRegion.append('g').attr('transform', 'translate(10,10)');
+                            var housinglegendGroup = d3$rightRegion.append('g');
 
 
-                        var applyColorMap = function (legendGroup, colorMap) {
-                            jQuery.each(_.keys(colorMap), function (index, value) {
-                                var entry = legendGroup.append('g').attr('transform', 'translate(0,' + (12 * index).toString() + ')');
+                            var applyColorMap = function (legendGroup, colorMap) {
+                                jQuery.each(_.keys(colorMap), function (index, value) {
+                                    var entry = legendGroup.append('g').attr('transform', 'translate(0,' + (12 * index).toString() + ')');
 
-                                entry.append('rect').attr('fill', colorMap[value])
-                                        .attr('height', 10)
-                                        .attr('width', 10)
-                                        .attr('y', -10);
+                                    entry.append('rect').attr('fill', colorMap[value])
+                                            .attr('height', 10)
+                                            .attr('width', 10)
+                                            .attr('y', -10);
 
-                                entry.append('text').text(value)
-                                        .attr('x', 12);
+                                    entry.append('text').text(value)
+                                            .attr('x', 12);
+                                });
+                            };
+
+                            applyColorMap(assignmentlegendGroup, {
+                                "Research Project": "red",
+                                "Quarantine": "orange",
+                                "Unassigned": "green",
+                                "Training": "blue",
+                                "Breeding": "pink",
+                                "Vet Exempt": "url(#exemptionPattern)",
+                                "Assignment Pending": "url(#pendingPattern)",
+                                "Other": "black"
                             });
-                        };
 
-                        applyColorMap(assignmentlegendGroup, {
-                            "Research Project": "red",
-                            "Quarantine": "orange",
-                            "Unassigned": "green",
-                            "Training": "blue",
-                            "Breeding": "pink",
-                            "Vet Exempt": "url(#exemptionPattern)",
-                            "Assignment Pending": "url(#pendingPattern)",
-                            "Other": "black"
-                        });
-
-                        applyColorMap(housinglegendGroup, {
-                            'Single': 'red',
-                            'Pair/Group': 'green'
-                        });
+                            applyColorMap(housinglegendGroup, {
+                                'Single': 'red',
+                                'Pair/Group': 'green'
+                            });
 
 
-                        jQuery.each([housinglegendGroup, assignmentlegendGroup], function(index, group) {
-                            var rawGroup = group[0][0];
-                            var groupHeight = 0;
+                            jQuery.each([housinglegendGroup, assignmentlegendGroup], function (index, group) {
+                                var rawGroup = group[0][0];
+                                var groupHeight = 0;
 
-                            if ( (typeof rawGroup !== 'undefined') && (rawGroup !== null) && ('getBBox' in rawGroup) ) {
-                                var bbox = rawGroup.getBBox();
-                                groupHeight = bbox.height;
-                            }
-                            else {
-                                console.warn("Raw legend group doesn't seem to have getBBox method: ", group, rawGroup);
-                                groupHeight = 30;  // Magic number that should make the graph not totally break
-                            }
+                                if ((typeof rawGroup !== 'undefined') && (rawGroup !== null) && ('getBBox' in rawGroup)) {
+                                    var bbox = rawGroup.getBBox();
+                                    groupHeight = bbox.height;
+                                }
+                                else {
+                                    console.warn("Raw legend group doesn't seem to have getBBox method: ", group, rawGroup);
+                                    groupHeight = 30;  // Magic number that should make the graph not totally break
+                                }
 
-                            var offset = (((index * 2) + 1) * rightRegion.height() / 4) - (groupHeight / 2);
-                            group.attr('transform', 'translate(10,' + offset + ')');
-                        });
-
+                                var offset = (((index * 2) + 1) * rightRegion.height() / 4) - (groupHeight / 2);
+                                group.attr('transform', 'translate(10,' + offset + ')');
+                            });
+                        }
                     }
                 };
                 Graph = new d3Graph(config);
