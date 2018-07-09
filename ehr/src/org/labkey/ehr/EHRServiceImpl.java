@@ -36,6 +36,7 @@ import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
+import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ehr.history.*;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
@@ -101,6 +102,7 @@ public class EHRServiceImpl extends EHRService
     private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
+    private List<ProjectValidator> _projectValidators = new ArrayList<>();
 
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
 
@@ -164,6 +166,23 @@ public class EHRServiceImpl extends EHRService
         }
 
         return Collections.unmodifiableCollection(providers.values());
+    }
+
+    public void registerProjectValidator(ProjectValidator projectValidator)
+    {
+        _projectValidators.add(projectValidator);
+    }
+
+    public Collection<ProjectValidator> getProjectValidators(Container c, User u)
+    {
+        List<ProjectValidator> validators = new ArrayList<>();
+        for (ProjectValidator p : _projectValidators)
+        {
+            if (p.isAvailable(c,u))
+                validators.add(p);
+        }
+
+        return Collections.unmodifiableCollection(validators);
     }
 
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass)

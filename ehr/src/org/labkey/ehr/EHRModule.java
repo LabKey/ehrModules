@@ -32,6 +32,7 @@ import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
 import org.labkey.api.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.api.ehr.demographics.DeathsDemographicsProvider;
 import org.labkey.api.ehr.demographics.DepartureDemographicsProvider;
+import org.labkey.ehr.demographics.EHRProjectValidator;
 import org.labkey.api.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.api.ehr.demographics.MostRecentWeightDemographicsProvider;
 import org.labkey.api.ehr.demographics.WeightsDemographicsProvider;
@@ -157,6 +158,8 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
+
+        EHRService.get().registerProjectValidator(new EHRProjectValidator(this));
 
         EHRService.get().registerHistoryDataSource(new DefaultBloodDrawDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentDataSource(this));

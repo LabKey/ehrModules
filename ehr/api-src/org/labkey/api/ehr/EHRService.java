@@ -25,6 +25,7 @@ import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
+import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ehr.history.HistoryDataSource;
 import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
@@ -117,6 +118,12 @@ abstract public class EHRService
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category);
 
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category);
+
+    /** Registers a project, used to cache commonly used project info for animals, based on which modules are enabled in a container */
+    abstract public void registerProjectValidator(ProjectValidator projectValidator);
+
+    /** @return the project validators enabled in the container */
+    abstract public Collection<ProjectValidator> getProjectValidators(Container c, User u);
 
     /** Categories where pre-configured reports can be offered to the user */
     public enum REPORT_LINK_TYPE

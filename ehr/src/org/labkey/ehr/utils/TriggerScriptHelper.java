@@ -46,6 +46,8 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
+import org.labkey.api.ehr.demographics.DemographicsProvider;
+import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -76,6 +78,7 @@ import org.labkey.api.util.Pair;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
+import org.labkey.ehr.EHRServiceImpl;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.notification.DeathNotification;
@@ -366,21 +369,14 @@ public class TriggerScriptHelper
             return "This project is not associated with a valid protocol";
         }
 
-        TableInfo ti = getTableInfo("study", "Assignment");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        Collection<ProjectValidator> projectValidators = EHRServiceImpl.get().getProjectValidators(getContainer(), EHRService.get().getEHRUser(getContainer()));
 
-        filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
-        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("project"), CompareType.EQUAL, projectId), new CompareType.CompareClause(FieldKey.fromString("project/protocol"), CompareType.EQUAL, protocol)));
-        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("enddate"), CompareType.DATE_GTE, date), new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)));
-        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+        if(projectValidators.
+                stream().
+                anyMatch(pv -> ((ProjectValidator) pv).validateAssignment(id, projectId, date, _user, getContainer(), protocol)))
+            return null;
 
-        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
-        if (!ts.exists())
-        {
-            return "Not assigned to the project or protocol on this date";
-        }
-
-        return null;
+        return "Not assigned to the project or protocol on this date";
     }
 
     public String getAccountForProject(int projectId)

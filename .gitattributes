@@ -173,6 +173,7 @@ ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormType.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractListDemographicsProvider.java -text
+ehr/api-src/org/labkey/api/ehr/demographics/AbstractProjectValidator.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/ActiveAssignmentsDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/ActiveFlagsDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/ActiveProblemsDemographicsProvider.java -text
@@ -185,6 +186,7 @@ ehr/api-src/org/labkey/api/ehr/demographics/DemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/DepartureDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/HousingDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/MostRecentWeightDemographicsProvider.java -text
+ehr/api-src/org/labkey/api/ehr/demographics/ProjectValidator.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/TBDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/WeightsDemographicsProvider.java -text
 ehr/api-src/org/labkey/api/ehr/history/AbstractDataSource.java -text
@@ -1478,6 +1480,7 @@ ehr/src/org/labkey/ehr/dataentry/SingleQueryForm.java -text
 ehr/src/org/labkey/ehr/demographics/AnimalRecordImpl.java -text
 ehr/src/org/labkey/ehr/demographics/BasicDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/EHRDemographicsServiceImpl.java -text
+ehr/src/org/labkey/ehr/demographics/EHRProjectValidator.java -text
 ehr/src/org/labkey/ehr/history/ClinicalHistoryManager.java -text
 ehr/src/org/labkey/ehr/history/DefaultAssignmentDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBloodDrawDataSource.java -text
