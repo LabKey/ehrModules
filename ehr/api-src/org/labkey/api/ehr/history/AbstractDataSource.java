@@ -30,6 +30,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHROwnable;
 import org.labkey.api.module.Module;
+import org.labkey.api.query.AliasedColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -275,6 +276,25 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         }
 
         map = qs.getColumns(ti, fieldKeys);
+
+        // HACK: Fix map entries to get rid of extraneous container lookups (happening currently due to ehr_lookups container filters).
+        // These lookups have display names attached that are not needed here, and those are the only fields selected here from core.containers.
+        // It would be better to fix this at the source, but for various reasons (in this class and other places), this is hard.
+        // The hack removes many LEFT JOINs from the query in TableSelector (each container lookup does one) and will hopefully mitigate the perf issues with this query.
+        // See issue #34781.
+
+        for (Map.Entry<FieldKey, ColumnInfo> entry : map.entrySet())
+        {
+            ColumnInfo ci = entry.getValue();
+
+            if (ci.getName().endsWith("/container"))  // overwrite any columns ending with an FK lookup into container
+            {
+                // nothing special about AliasedColumn, just makes it easy to copy ColumnInfo here (to avoid mutating existing ColumnInfo)
+                AliasedColumn ac = new AliasedColumn(ti, ci.getName(), ci);
+                ac.setFk(null);  // null out foreign key lookup to prevent lots of LEFT JOINs
+                map.replace(entry.getKey(), ac);
+            }
+        }
 
         return map.values();
     }
