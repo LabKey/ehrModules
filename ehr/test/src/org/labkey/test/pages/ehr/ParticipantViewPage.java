@@ -45,7 +45,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     public static final String REPORT_TAB_SIGNAL = "LDK_reportTabLoaded";
     public static final String REPORT_PANEL_SIGNAL = "LDK_reportPanelLoaded";
 
-    public static final int LONG_REPORT_WAIT = 5000;
+    public static final int LONG_REPORT_WAIT = 10000;
 
     protected static final Locator.XPathLocator categoryPanel = Locator.tagWithId("div", "bs-category-tabs-list");
     protected static final Locator.XPathLocator categoryPanelTabs = categoryPanel.childTag("ul").withClass("nav").childTag("li").childTag("a");
