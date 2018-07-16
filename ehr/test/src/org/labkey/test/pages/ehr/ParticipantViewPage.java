@@ -343,6 +343,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 shortWait().until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(activeReportPanelEl)));
                 elementCache().selectedCategory = this;
                 reportPanelTabs.waitForElement(getDriver(), 10000);
+                sleep(5000);
             }
             else
             {
@@ -395,6 +396,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 }
                 _ext4Helper.waitForMaskToDisappear(30000);
                 activeReportPanelContainer.waitForElement(getDriver(), 10000);
+                sleep(5000);
 
             }
             else
