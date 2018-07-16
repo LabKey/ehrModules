@@ -5,7 +5,7 @@
  */
 
 SELECT
-(c.room || '-' || c.cage) AS location,
+CASE WHEN c.cage IS NULL THEN c.room ELSE (c.room || '-' || c.cage) END AS location,
 c.room,
 c.cage,
 max(c.joinToCage) as joinToCage
