@@ -334,7 +334,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
 
         var status = row.getCalculatedStatus() || 'Unknown';
-        toSet['calculated_status'] = '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + LABKEY.Utils.encodeHtml(status) + '</span>';
+        toSet['calculated_status'] = '<span ' + (status.toLowerCase() !== 'alive' ? 'style="background-color:yellow"' : '') + '>'
+                + LABKEY.Utils.encodeHtml(status) + '</span>';
 
         toSet['species'] = LABKEY.Utils.encodeHtml(row.getSpecies());
         toSet['geographic_origin'] = LABKEY.Utils.encodeHtml(row.getGeographicOrigin());

@@ -21,7 +21,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             title: 'Choose Animals',
             modal: true,
             closeAction: 'destroy',
-            border: true,
+            border: false,
             bodyStyle: 'padding:5px',
             width: 450,
             defaults: {

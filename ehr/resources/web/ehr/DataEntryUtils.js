@@ -103,6 +103,7 @@ EHR.DataEntryUtils = new function(){
                         Ext4.create('Ext.window.Window', {
                             title: 'Distinct IDs',
                             modal: true,
+                            border: false,
                             items: [{
                                 xtype: 'textarea',
                                 height: 200,
