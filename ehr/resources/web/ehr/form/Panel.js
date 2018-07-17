@@ -39,6 +39,14 @@ Ext4.define('EHR.form.Panel', {
         this.plugins = this.plugins || [];
         this.plugins.push(Ext4.create('EHR.plugin.Databind'));
 
+        // Issue 34844
+        this.on('boxready', function(panel) {
+            var parent = panel.up('ehr-simpledataentrypanel');
+            if (parent && panel.getWidth() > parent.getWidth()) {
+                parent.setWidth(panel.getWidth());
+            }
+        });
+
         this.callParent();
     },
 
@@ -181,6 +189,7 @@ Ext4.define('EHR.form.Panel', {
                 if (!finalItems[currentColIdx]){
                     finalItems[currentColIdx] = {
                         border: false,
+                        width: EHR.form.Panel.defaultFieldWidth,
                         defaults: {
                             border: false
                         },
@@ -189,6 +198,9 @@ Ext4.define('EHR.form.Panel', {
                 }
 
                 finalItems[currentColIdx].items.push(item);
+
+                // update the column width to be based on the widest item (plus a padding)
+                finalItems[currentColIdx].width = Ext4.max([finalItems[currentColIdx].width, (item.width + 20)]);
 
                 currentIdx++;
 
@@ -201,14 +213,17 @@ Ext4.define('EHR.form.Panel', {
             }
         }, this);
 
+        var columnPanelWidth = 0;
         Ext4.Array.forEach(finalItems, function(col){
-            col.columnWidth = (1 / finalItems.length);
+            columnPanelWidth += col.width;
         }, this);
+        this.setWidth(columnPanelWidth);
 
         items = [{
             xtype: 'panel',
             itemId: 'columnPanel',
             layout: 'column',
+            width: columnPanelWidth,
             defaults: {
                 border: false,
                 bodyStyle: 'background-color: transparent;'
