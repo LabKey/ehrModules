@@ -120,7 +120,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             }
 
             if (row.objectid) {
-                var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
+                var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity, helper.isAllowBloodDrawsWithoutWeight());
                 if (msg != null) {
                     //TODO: change all future bloods draws to review required, if submitted for medical purpose.
                     EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
