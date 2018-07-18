@@ -217,7 +217,9 @@ Ext4.define('EHR.form.Panel', {
         Ext4.Array.forEach(finalItems, function(col){
             columnPanelWidth += col.width;
         }, this);
-        this.setWidth(columnPanelWidth);
+        if (columnPanelWidth > Ext4.getBody().getWidth()) {
+            this.setWidth(columnPanelWidth);
+        }
 
         items = [{
             xtype: 'panel',

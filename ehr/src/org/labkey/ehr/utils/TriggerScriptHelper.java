@@ -106,7 +106,7 @@ import java.util.TreeSet;
 
 
 /**
- * Java class that provides services for trigger script actions that are more easily implemented or more performant
+ * Java class that provides services for trigger script actions that are more easily implemented or more performent
  * when written in Java. Primarily focused on supporting study dataset operations, but other tables can leverage it
  * as well.
  * Instantiated in the EHR's ScriptHelper.js
@@ -1884,11 +1884,11 @@ public class TriggerScriptHelper
                             public void exec(ResultSet object) throws SQLException
                             {
                                 Results rs = new ResultsImpl(object, assignmentCols);
-                                if (rs.getString(FieldKey.fromString("project/displayName")) != null)
+                                if (rs.hasColumn(FieldKey.fromString("project/displayName")))
                                 {
                                     html.append(rs.getString(FieldKey.fromString("project/displayName")));
 
-                                    if (rs.getString(FieldKey.fromString("project/investigatorId/lastName")) != null)
+                                    if (rs.hasColumn(FieldKey.fromString("project/investigatorId/lastName")))
                                     {
                                         html.append(" (").append(rs.getString(FieldKey.fromString("project/investigatorId/lastName"))).append(")");
                                     }

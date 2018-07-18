@@ -150,11 +150,11 @@ ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormProvider.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/SingleQueryFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskForm.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/TaskFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/UnsaveableTask.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/WeightFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/ArrivalFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/ArrivalInstructionsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormSection.java -text
-ehr/api-src/org/labkey/api/ehr/dataentry/forms/AssignmentFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/BirthInstructionsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/BloodDrawFormType.java -text
