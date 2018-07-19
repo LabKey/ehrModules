@@ -219,6 +219,12 @@ public class EHRTestHelper
         addRecordToGrid(grid, "Add");
     }
 
+    public void addBatchToGrid(Ext4GridRef grid)
+    {
+        String btnLable = "Add Batch";
+        grid.clickTbarButton(btnLable);
+    }
+
     public void addRecordToGrid(Ext4GridRef grid, String btnLabel)
     {
         Integer count = grid.getRowCount();

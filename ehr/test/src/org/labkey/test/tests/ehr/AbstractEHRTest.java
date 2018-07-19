@@ -75,10 +75,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final int POPULATE_TIMEOUT_MS = 300000;
 
     protected static final String PROJECT_ID = "640991"; // project with one participant
+    protected static final String PROJECT_ID_2 = "123456";
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
     protected static final String DUMMY_INVES = "dummyinvestigator";
     protected static final String ACCOUNT_ID_1 = "Acct100";
     protected static final String ACCOUNT_ID_2 = "Acct101";
+    protected static final String ACCOUNT_ID_3 = "Acct102";
 
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
 
