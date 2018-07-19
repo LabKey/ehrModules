@@ -62,7 +62,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.labkey.test.WebTestHelper.buildURL;
 
@@ -419,7 +418,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     private void setFormatStrings()
     {
-        clickFolder(getFolderName());
+        navigateToFolder(getProjectName(), getFolderName());
         goToProjectSettings();
         setFormElement(Locator.name("defaultDateFormat"), DATE_FORMAT_STRING);
         setFormElement(Locator.name("defaultDateTimeFormat"), DATE_TIME_FORMAT_STRING);
