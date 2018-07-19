@@ -79,7 +79,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      * @param {Boolean} announceAllModifiedParticipants Announce when modified to listeners such as demographics providers
      *                  to update cached records.
      * @param {Boolean} doStandardProtocolCountValidation Validate animals in protocol using ehr.protocolTotalAnimalsBySpecies
-     * @param {Boolean} allowBloodDrawsWithoutWeight Allow users to succeed with blood draw requests for animals without weight
+     * @param {Boolean} errorSeveritiyForBloodDrawsWithoutWeight Error level for blood draw requests for animals without weight
      */
 
     var scriptOptions = {
@@ -102,7 +102,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         cacheAccount: true,
         announceAllModifiedParticipants: false,
         doStandardProtocolCountValidation: true,
-        allowBloodDrawsWithoutWeight: false
+        errorSeveritiyForBloodDrawsWithoutWeight: 'ERROR'
     };
 
     var cachedValues = {
@@ -605,8 +605,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.cacheAccount;
         },
 
-        isAllowBloodDrawsWithoutWeight: function(){
-            return scriptOptions.allowBloodDrawsWithoutWeight;
+        getErrorSeveritiyForBloodDrawsWithoutWeight: function(){
+            return scriptOptions.errorSeveritiyForBloodDrawsWithoutWeight;
         }
     }
 };

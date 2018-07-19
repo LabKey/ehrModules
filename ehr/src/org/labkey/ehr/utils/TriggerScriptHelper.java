@@ -1266,7 +1266,7 @@ public class TriggerScriptHelper
         return weight;
     }
 
-    public String verifyBloodVolume(String id, Date date, List<Map<String, Object>> recordsInTransaction, List<Map<String, Object>> weightsInTransaction, String objectId, Double quantity, boolean allowBloodDrawsWithoutWeight)
+    public String verifyBloodVolume(String id, Date date, List<Map<String, Object>> recordsInTransaction, List<Map<String, Object>> weightsInTransaction, String objectId, Double quantity)
     {
         if (id == null || date == null || quantity == null)
             return null;
@@ -1283,7 +1283,7 @@ public class TriggerScriptHelper
         if (weight == null)
             weight = ar.getMostRecentWeight();
 
-        if (weight == null && !allowBloodDrawsWithoutWeight)
+        if (weight == null)
             return "Unknown weight, unable to calculate allowable blood volume";
 
         Map<String, Object> bloodBySpecies = getBloodForSpecies(species);

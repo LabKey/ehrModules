@@ -101,11 +101,11 @@ function onUpsert(helper, scriptErrors, row, oldRow){
 
         if (row.Id && row.date && row.quantity){
             // volume is handled differently for requests vs actual draws
-            var errorQC;
+            var volumeErrorSeverify;
             if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['isRequest'] && !row.taskid)
-                errorQC = 'ERROR';
+                volumeErrorSeverify = helper.getErrorSeveritiyForBloodDrawsWithoutWeight();
             else
-                errorQC = 'INFO';
+                volumeErrorSeverify = 'INFO';
 
             var map = helper.getProperty('bloodInTransaction');
             var draws = [];
@@ -120,11 +120,11 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             }
 
             if (row.objectid) {
-                var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity, helper.isAllowBloodDrawsWithoutWeight());
+                var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
                 if (msg != null) {
                     //TODO: change all future bloods draws to review required, if submitted for medical purpose.
-                    EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
-                    EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, errorQC);
+                    EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, volumeErrorSeverify);
+                    EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, volumeErrorSeverify);
                 }
             }
             else {
