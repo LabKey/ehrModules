@@ -47,7 +47,7 @@ Ext4.onReady(function (){
                 deleteURL: deleteURL,
                 scope: this,
                 timeout: 0,
-                linkTarget: '_blank',
+                linkTarget: LABKEY.ActionURL.getParameter('linkTarget') || '_blank',
                 failure: LDK.Utils.getErrorCallback()
             };
 
