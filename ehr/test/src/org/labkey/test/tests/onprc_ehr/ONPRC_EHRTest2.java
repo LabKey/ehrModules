@@ -749,6 +749,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         treatmentField.getEval("expand()");
         treatmentField.waitForStoreLoad();
         treatmentField.setValue("E-YY035");
+        treatmentField.getEval("collapse()");
         sleep(200);
         Ext4ComboRef combo = getFieldInWindow("Frequency", Ext4ComboRef.class);
         Assert.assertEquals("BID - AM/Night", combo.getDisplayValue());
