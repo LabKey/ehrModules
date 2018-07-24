@@ -1568,8 +1568,10 @@ ehr/test/src/org/labkey/test/components/ldk/panel/SingleSubjectFilterType.java -
 ehr/test/src/org/labkey/test/pages/ehr/AnimalHistoryPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/BaseColonyOverviewPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/ColonyOverviewPage.java -text
+ehr/test/src/org/labkey/test/pages/ehr/EHRAdminPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/EnterDataPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/ManageDataPage.java -text
+ehr/test/src/org/labkey/test/pages/ehr/NotificationAdminPage.java -text
 ehr/test/src/org/labkey/test/pages/ehr/ParticipantViewPage.java -text
 ehr/test/src/org/labkey/test/tests/ehr/AbstractEHRTest.java -text
 ehr/test/src/org/labkey/test/tests/ehr/AbstractGenericEHRTest.java -text
