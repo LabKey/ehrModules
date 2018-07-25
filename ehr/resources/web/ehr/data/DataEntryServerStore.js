@@ -383,6 +383,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     record = records[rowError.rowNumber - 1];
                 }
 
+                // Issue 34960: if there is exactly one record in the store and the rowNumber is 1, use that record
+                if (!record && rowError.rowNumber === 1 && records.length === 1) {
+                    record = records[0];
+                }
+
                 if (!record){
                     //NOTE: disabled since I believe this is a legitmate condition.  if the record is deleted client-side prior to validation returning, this could occur.
                     //LDK.Utils.logToServer({
