@@ -121,6 +121,7 @@ ehr/api-src/org/labkey/api/ehr/EHRService.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/ChangeQCStateButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/CreateTaskFromIdsButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/CreateTaskFromRecordsButton.java -text
+ehr/api-src/org/labkey/api/ehr/buttons/DiscardTaskButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/EHRShowEditUIButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/GoToTaskButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/MarkCompletedButton.java -text
@@ -1464,7 +1465,6 @@ ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
 ehr/src/org/labkey/ehr/EHRUpgradeCode.java -text
 ehr/src/org/labkey/ehr/buttons/CageBulkEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/CompareWeightsButton.java -text
-ehr/src/org/labkey/ehr/buttons/DiscardTaskButton.java -text
 ehr/src/org/labkey/ehr/buttons/LocationEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/ProcedureEditButton.java -text
 ehr/src/org/labkey/ehr/buttons/ProjectEditButton.java -text

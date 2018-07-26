@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.ehr.buttons;
+package org.labkey.api.ehr.buttons;
 
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.permissions.DeletePermission;
-import org.labkey.api.view.template.ClientDependency;
 
 /**
  * User: bimber
