@@ -63,7 +63,7 @@
                 <shownInDetailsView>false</shownInDetailsView>
                 <shownInInsertView>false</shownInInsertView>
                 <isHidden>true</isHidden>
-                <isKeyField>true</isKeyField>
+                <isKeyField>false</isKeyField>
             </column>
             <column columnName="requirementset">
                 <nullable>true</nullable>
@@ -130,10 +130,10 @@
     <table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Volume Units Field Values</tableTitle>
         <auditLogging>DETAILED</auditLogging>
-        <importUrl></importUrl>
-        <insertUrl></insertUrl>
-        <updateUrl></updateUrl>
-        <deleteUrl></deleteUrl>
+        <!--<importUrl></importUrl>-->
+        <!--<insertUrl></insertUrl>-->
+        <!--<updateUrl></updateUrl>-->
+        <!--<deleteUrl></deleteUrl>-->
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
@@ -958,7 +958,6 @@
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
         <deleteUrl></deleteUrl>
-        <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
@@ -986,7 +985,7 @@
             </column>
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
-                <isKeyField>true</isKeyField>
+                <isKeyField>false</isKeyField>
                 <shownInInsertView>false</shownInInsertView>
                 <shownInUpdateView>false</shownInUpdateView>
             </column>
@@ -1218,7 +1217,7 @@
         <columns>
             <column columnName="rowid">
                 <columnTitle>Row Id</columnTitle>
-                <isKeyField>true</isKeyField>
+                <isKeyField>false</isKeyField>
             </column>
             <column columnName="subset">
 

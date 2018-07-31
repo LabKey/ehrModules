@@ -195,60 +195,14 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             return getContainerScopedTable(name, "code", EHRSnomedEditPermission.class);
         else if (TABLE_AREAS.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "area", EHRLocationEditPermission.class);
-        else if (TABLE_BLOOD_DRAW_SERVICES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "service", EHRDataAdminPermission.class);
         else if (TABLE_CAGE.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "location", EHRLocationEditPermission.class);
         else if (TABLE_CAGE_TYPE.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "cagetype", EHRLocationEditPermission.class);
         else if (TABLE_CAGE_POSITIONS.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "cage", EHRLocationEditPermission.class);
-        else if (TABLE_AMOUNT_UNITS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
-        else if (TABLE_CONC_UNITS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
-        else if (TABLE_VOLUME_UNITS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
-        else if (TABLE_DOSAGE_UNITS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
-        else if (TABLE_REQUEST_PRIORITY.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "priority", EHRDataAdminPermission.class);
-        else if (TABLE_RESTRAINT_TYPE.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
-        else if (TABLE_BLOOD_DRAW_TUBE_TYPES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
-        else if (TABLE_LABWORK_TYPES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
         else if (TABLE_ROOMS.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "room", EHRLocationEditPermission.class);
-        else if (TABLE_ROUTES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "route", EHRDataAdminPermission.class);
-        else if (TABLE_SPECIES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "common", EHRDataAdminPermission.class);
-        else if (TABLE_WEIGHT_RANGES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "species", EHRDataAdminPermission.class);
-        else if (TABLE_TREATMENT_CODES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "meaning", EHRDataAdminPermission.class);
-        else if (TABLE_BLOOD_TUBE_VOLUMES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "volume", EHRDataAdminPermission.class);
-        else if (TABLE_DEATH_REMARKS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "title", EHRDataAdminPermission.class);
-        else if (TABLE_BUILDINGS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "name", EHRDataAdminPermission.class);
-        else if (TABLE_PARENTAGETYPES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "label", EHRDataAdminPermission.class);
-        else if (TABLE_FLAG_CATEGORIES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "category", EHRDataAdminPermission.class);
-        else if (TABLE_LABWORK_SERVICES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "servicename", EHRDataAdminPermission.class);
-        else if (TABLE_GENDER_CODES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
-        else if (TABLE_SPECIES_CODES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
-        else if (TABLE_SOURCE.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
-        else if (TABLE_CALCULATED_STATUS_CODES.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
         else if ("procedures".equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
         else if ("procedure_default_flags".equalsIgnoreCase(name))
@@ -263,12 +217,6 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
         else if (TABLE_SNOMED_SUBSET_CODES.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
-        else if (TABLE_GEOGRAPHIC_ORIGINS.equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
-        else if (TABLE_DRUG_DEFAULTS.equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
-        else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
             return createVeterinariansTable(name);
         else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
@@ -280,8 +228,22 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             return ret.init();
         }
 
+        TableInfo ti;
         if (available.contains(name))
-            return super.createTable(name);
+        {
+            ti = super.createTable(name);
+            if (ti != null)
+            {
+                if (!ti.getPkColumnNames().isEmpty())
+                {
+                    return getContainerScopedTable(name, ti.getPkColumnNames().get(0), EHRDataAdminPermission.class);
+                }
+                else
+                {
+                    return ti;
+                }
+            }
+        }
 
         //try to find it in propertySets
         Map<String, Map<String, Object>> nameMap = getPropertySetNames();
