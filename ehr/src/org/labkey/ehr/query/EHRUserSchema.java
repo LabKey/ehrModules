@@ -75,6 +75,8 @@ public class EHRUserSchema extends SimpleUserSchema
             return getProtocolTable(schemaTable);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
             return getProjectTable(schemaTable);
+        else if (EHRSchema.TABLE_REPORTS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
 
         return super.createWrappedTable(name, schemaTable);
     }
