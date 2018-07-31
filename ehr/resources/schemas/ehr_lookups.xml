@@ -106,13 +106,8 @@
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -142,13 +137,8 @@
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -179,10 +169,7 @@
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="location">
                 <isKeyField>true</isKeyField>
@@ -295,13 +282,8 @@
         <titleColumn>type</titleColumn>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="type">
                 <isKeyField>true</isKeyField>
@@ -332,13 +314,8 @@
         <pkColumnName>route</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="route">
                 <isKeyField>true</isKeyField>
@@ -368,13 +345,8 @@
         <pkColumnName>area</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="area">
                 <isKeyField>true</isKeyField>
@@ -426,13 +398,8 @@
         <pkColumnName>service</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="service">
                 <isKeyField>true</isKeyField>
@@ -483,13 +450,8 @@
         <pkColumnName>priority</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="priority">
                 <isKeyField>true</isKeyField>
@@ -557,13 +519,8 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</tableUrl>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -610,13 +567,8 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</tableUrl>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="code">
                 <displayWidth>20</displayWidth>
@@ -650,13 +602,8 @@
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -686,13 +633,8 @@
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="unit">
                 <isKeyField>true</isKeyField>
@@ -721,13 +663,8 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=source&amp;code=${code}</tableUrl>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -816,13 +753,8 @@
         <titleColumn>common</titleColumn>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="common">
                 <displayWidth>100</displayWidth>
@@ -995,13 +927,8 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</tableUrl>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -1143,13 +1070,8 @@
         <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</tableUrl>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
@@ -1179,8 +1101,8 @@
         <titleColumn>meaning</titleColumn>
         <columns>
             <column columnName="rowid">
-                <isKeyField>false</isKeyField>
                 <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="code">
                 <isKeyField>true</isKeyField>
@@ -1374,13 +1296,8 @@
         <pkColumnName>species</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="species">
                 <isKeyField>true</isKeyField>
@@ -1432,13 +1349,8 @@
         <titleColumn>meaning</titleColumn>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="meaning">
                 <isKeyField>true</isKeyField>
@@ -1537,13 +1449,8 @@
         <pkColumnName>volume</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="tube_types">
             </column>
@@ -1568,15 +1475,11 @@
         <insertUrl></insertUrl>
         <updateUrl></updateUrl>
         <deleteUrl></deleteUrl>
+        <pkColumnName>type</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="type">
                 <columnTitle>Type</columnTitle>
@@ -1662,13 +1565,8 @@
         <pkColumnName>title</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="title">
                 <isKeyField>true</isKeyField>
@@ -2073,13 +1971,8 @@
         <pkColumnName>cagetype</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="cagetype">
                 <isKeyField>true</isKeyField>
@@ -2454,15 +2347,11 @@
     <table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Buildings</tableTitle>
         <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>name</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="name">
                 <isKeyField>true</isKeyField>
@@ -2529,15 +2418,13 @@
         <description>A collection of cages (can also represent outdoor enclosures)</description>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>room</pkColumnName>
         <columns>
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
                 <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="room">
                 <isKeyField>true</isKeyField>
@@ -2617,15 +2504,11 @@
         <tableTitle>Parentage Types</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <pkColumnName>label</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="label">
                 <columnTitle>Label</columnTitle>
@@ -2679,15 +2562,11 @@
         <tableTitle>Cage Positions</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <pkColumnName>cage</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="cage">
                 <columnTitle>Cage</columnTitle>
@@ -2716,15 +2595,11 @@
         <tableTitle>Flag Categories</tableTitle>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>category</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="category">
                 <columnTitle>Category</columnTitle>
@@ -2768,13 +2643,8 @@
         <pkColumnName>servicename</pkColumnName>
         <columns>
             <column columnName="rowid">
-                <isAutoInc>true</isAutoInc>
-                <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
-                <!-- this combination of isKeyField, shownInUpdateView, and isUserEditable allows for updating rows in this table via UI -->
-                <isKeyField>false</isKeyField>
-                <shownInUpdateView>true</shownInUpdateView>
-                <isUserEditable>true</isUserEditable>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
             </column>
             <column columnName="servicename">
                 <columnTitle>Service Name</columnTitle>

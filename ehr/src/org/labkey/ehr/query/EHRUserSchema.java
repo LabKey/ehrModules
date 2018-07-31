@@ -71,45 +71,36 @@ public class EHRUserSchema extends SimpleUserSchema
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
-        else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name))
-            return getProtocolTable(schemaTable);
-        else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
-            return getProjectTable(schemaTable);
         else if (EHRSchema.TABLE_REPORTS.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name))
+            return getContainerScopedTable(schemaTable, "protocol", EHRProtocolEditPermission.class);
+        else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
+            return getContainerScopedTable(schemaTable, "project", EHRProjectEditPermission.class);
 
         return super.createWrappedTable(name, schemaTable);
     }
 
     private TableInfo getDataEntryTable(TableInfo schemaTable)
     {
-        return new EHRDataEntryTable(this, schemaTable).init();
+        return new EHRDataEntryTable<>(this, schemaTable).init();
     }
 
     private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
     {
-        EHRCustomPermissionsTable ret = new EHRCustomPermissionsTable(this, schemaTable);
+        EHRCustomPermissionsTable ret = new EHRCustomPermissionsTable<>(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
         return ret.init();
     }
 
-    private TableInfo getProjectTable(TableInfo schemaTable)
+    private TableInfo getContainerScopedTable(TableInfo schemaTable, String psuedoPk, Class<? extends Permission> perm)
     {
-        EHRContainerScopedTable ret = new EHRContainerScopedTable(this, schemaTable, "project");
-        ret.addPermissionMapping(InsertPermission.class, EHRProjectEditPermission.class);
-        ret.addPermissionMapping(UpdatePermission.class, EHRProjectEditPermission.class);
-        ret.addPermissionMapping(DeletePermission.class, EHRProjectEditPermission.class);
-        return ret.init();
-    }
-
-    private TableInfo getProtocolTable(TableInfo schemaTable)
-    {
-        EHRContainerScopedTable ret = new EHRContainerScopedTable(this, schemaTable, "protocol");
-        ret.addPermissionMapping(InsertPermission.class, EHRProtocolEditPermission.class);
-        ret.addPermissionMapping(UpdatePermission.class, EHRProtocolEditPermission.class);
-        ret.addPermissionMapping(DeletePermission.class, EHRProtocolEditPermission.class);
+        EHRContainerScopedTable ret = new EHRContainerScopedTable<>(this, schemaTable, psuedoPk);
+        ret.addPermissionMapping(InsertPermission.class, perm);
+        ret.addPermissionMapping(UpdatePermission.class, perm);
+        ret.addPermissionMapping(DeletePermission.class, perm);
         return ret.init();
     }
 }

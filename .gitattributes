@@ -1510,8 +1510,8 @@ ehr/src/org/labkey/ehr/query/EHRDataEntryTable.java -text
 ehr/src/org/labkey/ehr/query/EHRExtensibleTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
 ehr/src/org/labkey/ehr/query/EHRUserSchema.java -text
+ehr/src/org/labkey/ehr/query/EHR_LookupsContainerScopedTable.java -text
 ehr/src/org/labkey/ehr/query/EHR_LookupsCustomPermissionsTable.java -text
-ehr/src/org/labkey/ehr/query/EHR_LookupsExtensibleTable.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text
 ehr/src/org/labkey/ehr/query/buttons/ExcelImportButton.java -text

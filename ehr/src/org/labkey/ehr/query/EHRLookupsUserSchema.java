@@ -15,11 +15,11 @@
  */
 package org.labkey.ehr.query;
 
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
@@ -65,11 +65,39 @@ import java.util.Set;
  */
 public class EHRLookupsUserSchema extends SimpleUserSchema
 {
+    public static final String TABLE_AMOUNT_UNITS = "amount_units";
+    public static final String TABLE_AREAS = "areas";
+    public static final String TABLE_BLOOD_DRAW_SERVICES = "blood_draw_services";
+    public static final String TABLE_BLOOD_DRAW_TUBE_TYPES = "blood_draw_tube_type";
+    public static final String TABLE_BLOOD_TUBE_VOLUMES = "blood_tube_volumes";
     public static final String TABLE_BUILDINGS = "buildings";
+    public static final String TABLE_CAGE = "cage";
+    public static final String TABLE_CAGE_POSITIONS = "cage_positions";
+    public static final String TABLE_CAGE_TYPE = "cage_type";
+    public static final String TABLE_CALCULATED_STATUS_CODES = "calculated_status_codes";
+    public static final String TABLE_CONC_UNITS = "conc_units";
+    public static final String TABLE_DEATH_REMARKS = "death_remarks";
+    public static final String TABLE_DOSAGE_UNITS = "dosage_units";
+    public static final String TABLE_DRUG_DEFAULTS = "drug_defaults";
+    public static final String TABLE_FLAG_CATEGORIES = "flag_categories";
+    public static final String TABLE_GENDER_CODES = "gender_codes";
     public static final String TABLE_GEOGRAPHIC_ORIGINS = "geographic_origins";
+    public static final String TABLE_LABWORK_SERVICES = "labwork_services";
+    public static final String TABLE_LABWORK_TYPES = "labwork_types";
+    public static final String TABLE_PARENTAGETYPES = "parentageTypes";
+    public static final String TABLE_REQUEST_PRIORITY = "request_priority";
+    public static final String TABLE_RESTRAINT_TYPE = "restraint_type";
     public static final String TABLE_ROOMS = "rooms";
+    public static final String TABLE_ROUTES = "routes";
+    public static final String TABLE_SNOMED = "snomed";
+    public static final String TABLE_SNOMED_SUBSET_CODES = "snomed_subset_codes";
+    public static final String TABLE_SOURCE = "source";
+    public static final String TABLE_SPECIES = "species";
+    public static final String TABLE_SPECIES_CODES = "species_codes";
     public static final String TABLE_TREATMENT_CODES = "treatment_codes";
     public static final String TABLE_VETERINARIANS = "veterinarians";
+    public static final String TABLE_VOLUME_UNITS = "volume_units";
+    public static final String TABLE_WEIGHT_RANGES = "weight_ranges";
 
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
     {
@@ -163,50 +191,92 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     {
         Set<String> available = super.getTableNames();
 
-        //special cases
-        if ("snomed".equalsIgnoreCase(name))
-        {
-            return createSNOMEDTable(name);
-        }
-        else if ("procedures".equalsIgnoreCase(name) || "procedure_default_flags".equalsIgnoreCase(name) || "procedure_default_treatments".equalsIgnoreCase(name) || "procedure_default_charges".equalsIgnoreCase(name) || "procedure_default_codes".equalsIgnoreCase(name) || "procedure_default_comments".equalsIgnoreCase(name))
-        {
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
-        }
-        else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
-        {
-            return createVeterinariansTable(name);
-        }
-        else if ("cage".equalsIgnoreCase(name))
-        {
-            return getCustomPermissionTable(createSourceTable(name), EHRHousingTransferPermission.class);
-        }
+        if (TABLE_SNOMED.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "code", EHRSnomedEditPermission.class);
+        else if (TABLE_AREAS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "area", EHRLocationEditPermission.class);
+        else if (TABLE_BLOOD_DRAW_SERVICES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "service", EHRDataAdminPermission.class);
+        else if (TABLE_CAGE.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "location", EHRLocationEditPermission.class);
+        else if (TABLE_CAGE_TYPE.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "cagetype", EHRLocationEditPermission.class);
+        else if (TABLE_CAGE_POSITIONS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "cage", EHRLocationEditPermission.class);
+        else if (TABLE_AMOUNT_UNITS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
+        else if (TABLE_CONC_UNITS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
+        else if (TABLE_VOLUME_UNITS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
+        else if (TABLE_DOSAGE_UNITS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "unit", EHRDataAdminPermission.class);
+        else if (TABLE_REQUEST_PRIORITY.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "priority", EHRDataAdminPermission.class);
+        else if (TABLE_RESTRAINT_TYPE.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
+        else if (TABLE_BLOOD_DRAW_TUBE_TYPES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
+        else if (TABLE_LABWORK_TYPES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "type", EHRDataAdminPermission.class);
         else if (TABLE_ROOMS.equalsIgnoreCase(name))
-        {
-            return getCustomPermissionTable(createSourceTable(name), EHRLocationEditPermission.class);
-        }
-        else if ("drug_defaults".equalsIgnoreCase(name))
-        {
+            return getContainerScopedTable(name, "room", EHRLocationEditPermission.class);
+        else if (TABLE_ROUTES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "route", EHRDataAdminPermission.class);
+        else if (TABLE_SPECIES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "common", EHRDataAdminPermission.class);
+        else if (TABLE_WEIGHT_RANGES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "species", EHRDataAdminPermission.class);
+        else if (TABLE_TREATMENT_CODES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "meaning", EHRDataAdminPermission.class);
+        else if (TABLE_BLOOD_TUBE_VOLUMES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "volume", EHRDataAdminPermission.class);
+        else if (TABLE_DEATH_REMARKS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "title", EHRDataAdminPermission.class);
+        else if (TABLE_BUILDINGS.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "name", EHRDataAdminPermission.class);
+        else if (TABLE_PARENTAGETYPES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "label", EHRDataAdminPermission.class);
+        else if (TABLE_FLAG_CATEGORIES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "category", EHRDataAdminPermission.class);
+        else if (TABLE_LABWORK_SERVICES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "servicename", EHRDataAdminPermission.class);
+        else if (TABLE_GENDER_CODES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
+        else if (TABLE_SPECIES_CODES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
+        else if (TABLE_SOURCE.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
+        else if (TABLE_CALCULATED_STATUS_CODES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, "code", EHRDataAdminPermission.class);
+        else if ("procedures".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if ("procedure_default_flags".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if ("procedure_default_treatments".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if ("procedure_default_charges".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if ("procedure_default_codes".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if ("procedure_default_comments".equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+        else if (TABLE_SNOMED_SUBSET_CODES.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
-        }
-        else if ("snomed_subset_codes".equalsIgnoreCase(name))
-        {
-            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
-        }
-        else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
-        {
+        else if (TABLE_GEOGRAPHIC_ORIGINS.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
-        }
-        else if (TABLE_BUILDINGS.equalsIgnoreCase(name) || TABLE_GEOGRAPHIC_ORIGINS.equalsIgnoreCase(name) || TABLE_TREATMENT_CODES.equalsIgnoreCase(name))
-        {
-            return new EHR_LookupsExtensibleTable(this, createSourceTable(name)).init();
-        }
+        else if (TABLE_DRUG_DEFAULTS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        else if (EHRSchema.TABLE_FLAG_VALUES.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
+            return createVeterinariansTable(name);
         else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
-            ContainerScopedTable ret = new ContainerScopedTable(this, createSourceTable(name), "setname");
+            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), "setname");
             ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
-
             return ret.init();
         }
 
@@ -216,32 +286,18 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         //try to find it in propertySets
         Map<String, Map<String, Object>> nameMap = getPropertySetNames();
         if (nameMap.containsKey(name))
-        {
             return createForPropertySet(this, name, nameMap.get(name));
-        }
 
         Map<String, String> labworkMap = getLabworkTypeNames();
         if (labworkMap.containsKey(name))
-        {
             return createForLabwork(this, name, labworkMap.get(name));
-        }
 
         return null;
     }
 
-    private TableInfo createSNOMEDTable(String name)
-    {
-        ContainerScopedTable ret = new ContainerScopedTable(this, this.createSourceTable(name), "code");
-        ret.addPermissionMapping(InsertPermission.class, EHRSnomedEditPermission.class);
-        ret.addPermissionMapping(UpdatePermission.class, EHRSnomedEditPermission.class);
-        ret.addPermissionMapping(DeletePermission.class, EHRSnomedEditPermission.class);
-
-        return ret.init();
-    }
-
     private TableInfo createVeterinariansTable(String name)
     {
-        FilteredTable ti = new FilteredTable(CoreSchema.getInstance().getTableInfoUsersData(), this);
+        FilteredTable ti = new FilteredTable<>(CoreSchema.getInstance().getTableInfoUsersData(), this);
         ti.setPublicSchemaName(EHRSchema.EHR_LOOKUPS);
 
         Set<Integer> userIds = new HashSet<>();
@@ -289,13 +345,24 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return ti;
     }
 
+    private TableInfo getContainerScopedTable(String name, String psuedoPk, @Nullable Class<? extends Permission> perm)
+    {
+        EHR_LookupsContainerScopedTable ret = new EHR_LookupsContainerScopedTable<>(this, this.createSourceTable(name), psuedoPk);
+        if (perm != null)
+        {
+            ret.addPermissionMapping(InsertPermission.class, perm);
+            ret.addPermissionMapping(UpdatePermission.class, perm);
+            ret.addPermissionMapping(DeletePermission.class, perm);
+        }
+        return ret.init();
+    }
+
     private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
     {
-        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable(this, schemaTable);
+        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable<>(this, schemaTable);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
-
         return ret.init();
     }
 
