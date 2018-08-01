@@ -130,10 +130,10 @@
     <table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Volume Units Field Values</tableTitle>
         <auditLogging>DETAILED</auditLogging>
-        <!--<importUrl></importUrl>-->
-        <!--<insertUrl></insertUrl>-->
-        <!--<updateUrl></updateUrl>-->
-        <!--<deleteUrl></deleteUrl>-->
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
         <pkColumnName>unit</pkColumnName>
         <columns>
             <column columnName="rowid">
