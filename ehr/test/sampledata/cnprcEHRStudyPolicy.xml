@@ -8,6 +8,8 @@
         <ns:groupPermission groupName="EHR Full Updaters" securityType="PER_DATASET"/>
         <ns:groupPermission groupName="EHR Request Admins" securityType="PER_DATASET"/>
         <ns:groupPermission groupName="EHR Requestors" securityType="PER_DATASET"/>
+        <ns:groupPermission groupName="EHR Non Pathology" securityType="PER_DATASET"/>
+        <ns:groupPermission groupName="EHR Pathology" securityType="PER_DATASET"/>
     </ns:groupPermissions>
     <ns:perDatasetPermissions>
         <!-- Alopecia --> <ns:datasetPermission datasetName="alopecia" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
