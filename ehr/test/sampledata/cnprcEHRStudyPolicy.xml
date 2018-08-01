@@ -58,6 +58,8 @@
         <ns:datasetPermission datasetName="biopsy" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="biopsy" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="biopsy" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="biopsy" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="biopsy" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Birth --> <ns:datasetPermission datasetName="birth" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="birth" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="birth" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
@@ -214,6 +216,8 @@
         <ns:datasetPermission datasetName="grossFindings" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="grossFindings" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="grossFindings" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="grossFindings" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="grossFindings" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Hematology Results --> <ns:datasetPermission datasetName="hematologyResults" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="hematologyResults" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="hematologyResults" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
@@ -280,12 +284,16 @@
         <ns:datasetPermission datasetName="morphologicDiagnosis" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="morphologicDiagnosis" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="morphologicDiagnosis" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="morphologicDiagnosis" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="morphologicDiagnosis" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Necropsies --> <ns:datasetPermission datasetName="necropsy" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="necropsy" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="necropsy" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
         <ns:datasetPermission datasetName="necropsy" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="necropsy" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="necropsy" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="necropsy" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="necropsy" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Notes --> <ns:datasetPermission datasetName="notes" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="notes" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="notes" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
@@ -304,6 +312,8 @@
         <ns:datasetPermission datasetName="organ_measurements" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="organ_measurements" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="organ_measurements" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="organ_measurements" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="organ_measurements" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Pairing Observations --> <ns:datasetPermission datasetName="pairings" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="pairings" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="pairings" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>
@@ -328,6 +338,8 @@
         <ns:datasetPermission datasetName="pathologyHistory" groupName="EHR Full Updaters" role="org.labkey.ehr.security.EHRFullUpdaterRole"/>
         <ns:datasetPermission datasetName="pathologyHistory" groupName="EHR Request Admins" role="org.labkey.ehr.security.EHRRequestAdminRole"/>
         <ns:datasetPermission datasetName="pathologyHistory" groupName="EHR Requestors" role="org.labkey.ehr.security.EHRRequestorRole"/>
+        <ns:datasetPermission datasetName="pathologyHistory" groupName="EHR Pathology" role="org.labkey.api.security.roles.ReaderRole"/>
+        <ns:datasetPermission datasetName="pathologyHistory" groupName="EHR Non Pathology" role="org.labkey.api.security.roles.NoPermissionsRole"/>
         <!-- Pathology Inventory --> <ns:datasetPermission datasetName="pathology_inventory" groupName="EHR Administrators" role="org.labkey.ehr.security.EHRDataAdminRole"/>
         <ns:datasetPermission datasetName="pathology_inventory" groupName="EHR Basic Submitters" role="org.labkey.ehr.security.EHRBasicSubmitterRole"/>
         <ns:datasetPermission datasetName="pathology_inventory" groupName="EHR Full Submitters" role="org.labkey.ehr.security.EHRFullSubmitterRole"/>

@@ -113,10 +113,14 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static EHRUser FULL_SUBMITTER = new EHRUser("fullsubmitter@ehrstudy.test", "EHR Full Submitters", EHRRole.FULL_SUBMITTER);
     protected static EHRUser REQUEST_ADMIN = new EHRUser("request_admin@ehrstudy.test", "EHR Request Admins", EHRRole.REQUEST_ADMIN);
     protected static EHRUser FULL_UPDATER = new EHRUser("full_updater@ehrstudy.test", "EHR Full Updaters", EHRRole.FULL_UPDATER);
+    protected static EHRUser PATHOLOGY_REPORT = new EHRUser("pathology_report_user@ehrstudy.test", "EHR Pathology", EHRRole.FULL_UPDATER);
+    protected static EHRUser NON_PATHOLOGY_REPORT = new EHRUser("non_pathology_report_user@ehrstudy.test","EHR Non Pathology", EHRRole.FULL_UPDATER);
 
     protected static String REQUESTER_USER = "requester@ehrstudy.test";
     protected static String REQUEST_ADMIN_USER ="request_admin@ehrstudy.test";
     protected static String  DATA_ADMIN_USER ="admin@ehrstudy.test";
+    protected static String PATHOLOGY_REPORT_USER="pathology_report_user@ehrstudy.test";
+    protected static String NON_PATHOLOGY_REPORT_USER="non_pathology_report_user@ehrstudy.test";
     protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
@@ -382,11 +386,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Populate Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton("Populate " + tableLabel, 0);
+        confirmPopulate();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
+    }
+
+    protected void confirmPopulate()
+    {
+        // Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
@@ -396,11 +406,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Delete Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
+        confirmDelete();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
+    }
+
+    protected void confirmDelete()
+    {
+        //Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
@@ -595,7 +611,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _userHelper.createUser(FULL_SUBMITTER.getEmail(), true, true);
         _userHelper.createUser(FULL_UPDATER.getEmail(), true, true);
         _userHelper.createUser(REQUEST_ADMIN.getEmail(), true, true);
-
+        _userHelper.createUser(PATHOLOGY_REPORT.getEmail(), true, true);
+        _userHelper.createUser(NON_PATHOLOGY_REPORT.getEmail(), true, true);
         goToEHRFolder();
 
         _permissionsHelper.createPermissionsGroup(DATA_ADMIN.getGroup(), DATA_ADMIN.getEmail());
@@ -604,6 +621,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _permissionsHelper.createPermissionsGroup(FULL_SUBMITTER.getGroup(), FULL_SUBMITTER.getEmail());
         _permissionsHelper.createPermissionsGroup(FULL_UPDATER.getGroup(), FULL_UPDATER.getEmail());
         _permissionsHelper.createPermissionsGroup(REQUEST_ADMIN.getGroup(), REQUEST_ADMIN.getEmail());
+        _permissionsHelper.createPermissionsGroup(PATHOLOGY_REPORT.getGroup(), PATHOLOGY_REPORT.getEmail());
+        _permissionsHelper.createPermissionsGroup(NON_PATHOLOGY_REPORT.getGroup(), NON_PATHOLOGY_REPORT.getEmail());
 
         if (!getContainerPath().equals(getProjectName()))
             _permissionsHelper.uncheckInheritedPermissions();
@@ -617,6 +636,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Requestor");
         _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Request Admin");
+        _permissionsHelper.setPermissions(PATHOLOGY_REPORT.getGroup(), "Reader");
+        _permissionsHelper.setPermissions(NON_PATHOLOGY_REPORT.getGroup(), "Reader");
 
         //this is slow, so dont set passwords unless subclasses need it
         if (doSetUserPasswords())
