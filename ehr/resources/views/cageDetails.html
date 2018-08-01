@@ -48,10 +48,11 @@ Ext4.onReady(function (){
     }
     else {
         LDK.Utils.getReadOnlyQWP({
-            title: 'Cage Details:',
+            title: 'Cage Details',
             schemaName: 'ehr_lookups',
             queryName: 'cage',
-            filterArray: filterArray
+            filterArray: filterArray,
+            sort: 'cage'
          }).render('cageDetails_' + webpart.wrapperDivId);
     }
 
