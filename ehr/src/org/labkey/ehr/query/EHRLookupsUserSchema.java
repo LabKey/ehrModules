@@ -309,11 +309,11 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LOOKUPS);
-        LookupSetTable ret = new LookupSetTable(us, table, setName, map).init();
+        LookupSetTable ret = new LookupSetTable(us, table, setName, map);
         ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
-        return new LookupSetTable(us, table, setName, map).init();
+        return ret.init();
     }
 
     private LabworkTypeTable createForLabwork(UserSchema us, String tableName, String typeName)
