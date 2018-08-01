@@ -65,39 +65,17 @@ import java.util.Set;
  */
 public class EHRLookupsUserSchema extends SimpleUserSchema
 {
-    public static final String TABLE_AMOUNT_UNITS = "amount_units";
     public static final String TABLE_AREAS = "areas";
-    public static final String TABLE_BLOOD_DRAW_SERVICES = "blood_draw_services";
-    public static final String TABLE_BLOOD_DRAW_TUBE_TYPES = "blood_draw_tube_type";
-    public static final String TABLE_BLOOD_TUBE_VOLUMES = "blood_tube_volumes";
     public static final String TABLE_BUILDINGS = "buildings";
     public static final String TABLE_CAGE = "cage";
     public static final String TABLE_CAGE_POSITIONS = "cage_positions";
     public static final String TABLE_CAGE_TYPE = "cage_type";
-    public static final String TABLE_CALCULATED_STATUS_CODES = "calculated_status_codes";
-    public static final String TABLE_CONC_UNITS = "conc_units";
-    public static final String TABLE_DEATH_REMARKS = "death_remarks";
-    public static final String TABLE_DOSAGE_UNITS = "dosage_units";
-    public static final String TABLE_DRUG_DEFAULTS = "drug_defaults";
-    public static final String TABLE_FLAG_CATEGORIES = "flag_categories";
-    public static final String TABLE_GENDER_CODES = "gender_codes";
     public static final String TABLE_GEOGRAPHIC_ORIGINS = "geographic_origins";
-    public static final String TABLE_LABWORK_SERVICES = "labwork_services";
-    public static final String TABLE_LABWORK_TYPES = "labwork_types";
-    public static final String TABLE_PARENTAGETYPES = "parentageTypes";
-    public static final String TABLE_REQUEST_PRIORITY = "request_priority";
-    public static final String TABLE_RESTRAINT_TYPE = "restraint_type";
     public static final String TABLE_ROOMS = "rooms";
-    public static final String TABLE_ROUTES = "routes";
     public static final String TABLE_SNOMED = "snomed";
     public static final String TABLE_SNOMED_SUBSET_CODES = "snomed_subset_codes";
-    public static final String TABLE_SOURCE = "source";
-    public static final String TABLE_SPECIES = "species";
-    public static final String TABLE_SPECIES_CODES = "species_codes";
     public static final String TABLE_TREATMENT_CODES = "treatment_codes";
     public static final String TABLE_VETERINARIANS = "veterinarians";
-    public static final String TABLE_VOLUME_UNITS = "volume_units";
-    public static final String TABLE_WEIGHT_RANGES = "weight_ranges";
 
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
     {
@@ -331,6 +309,10 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LOOKUPS);
+        LookupSetTable ret = new LookupSetTable(us, table, setName, map).init();
+        ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
+        ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
+        ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
         return new LookupSetTable(us, table, setName, map).init();
     }
 

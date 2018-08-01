@@ -24,6 +24,7 @@ import org.labkey.api.dataiterator.DataIterator;
 import org.labkey.api.dataiterator.DataIteratorBuilder;
 import org.labkey.api.dataiterator.DataIteratorContext;
 import org.labkey.api.dataiterator.SimpleTranslator;
+import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
 import org.labkey.api.query.DuplicateKeyException;
@@ -34,6 +35,9 @@ import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.security.permissions.UpdatePermission;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -54,6 +58,9 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
     public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, String tableName, String filterValue)
     {
         super(schema, table, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
+        addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
+        addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
+        addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
         setTitleColumn("testid");
     }
 
