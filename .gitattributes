@@ -1168,8 +1168,6 @@ ehr/resources/views/taskDetails.html -text
 ehr/resources/views/taskDetails.view.xml -text
 ehr/resources/views/treatmentDetails.html -text
 ehr/resources/views/treatmentDetails.view.xml -text
-ehr/resources/views/updateQuery.html -text
-ehr/resources/views/updateQuery.view.xml -text
 ehr/resources/views/updateTable.html -text
 ehr/resources/views/updateTable.view.xml -text
 ehr/resources/views/utilities.html -text
