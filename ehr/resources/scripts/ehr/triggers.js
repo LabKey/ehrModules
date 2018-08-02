@@ -801,7 +801,7 @@ EHR.Server.Triggers.rowEnd = function(helper, globalErrors, scriptErrors, row, o
     for (var fieldName in row){
         var msg = helper.getValidationHelper().validateRequiredField(fieldName, LABKEY.ExtAdapter.isEmpty(row[fieldName]) ? null : row[fieldName]);
         if (msg){
-            EHR.Server.Utils.addError(scriptErrors, fieldName, msg, helper.isEHRDataEntry() ? 'WARN' : 'ERROR');
+            EHR.Server.Utils.addError(scriptErrors, fieldName, msg, 'ERROR');
         }
     }
 

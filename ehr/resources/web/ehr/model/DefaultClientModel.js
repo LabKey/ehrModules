@@ -132,7 +132,7 @@ Ext4.define('EHR.model.DefaultClientModel', {
                     errors.add({
                         id: LABKEY.Utils.generateUUID(),
                         field: field.name,
-                        message: (field.nullable === false ? 'ERROR' : 'WARN') + ': This field is required',
+                        message: (field.nullable === false ? 'ERROR' : 'WARN') + ': The field: ' + field.label + ' is required',
                         severity: (field.nullable === false ? 'ERROR' : 'WARN'),
                         fromServer: false
                     });
