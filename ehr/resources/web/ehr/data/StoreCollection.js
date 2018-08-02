@@ -385,6 +385,7 @@ Ext4.define('EHR.data.StoreCollection', {
         var store = Ext4.create(clazz, {
             storeId: this.collectionId + '-' + section.name,
             model: modelName,
+            sectionCfg: section,
             loaded: false
         });
 
