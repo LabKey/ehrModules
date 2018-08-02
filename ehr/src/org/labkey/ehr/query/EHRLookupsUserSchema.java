@@ -27,6 +27,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.ehr.security.EHRHousingTransferPermission;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
@@ -174,7 +175,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         else if (TABLE_AREAS.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "area", EHRLocationEditPermission.class);
         else if (TABLE_CAGE.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "location", EHRLocationEditPermission.class);
+            return getContainerScopedTable(name, "location", EHRHousingTransferPermission.class);
         else if (TABLE_CAGE_TYPE.equalsIgnoreCase(name))
             return getContainerScopedTable(name, "cagetype", EHRLocationEditPermission.class);
         else if (TABLE_CAGE_POSITIONS.equalsIgnoreCase(name))
@@ -194,6 +195,8 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         else if ("procedure_default_comments".equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
         else if (TABLE_SNOMED_SUBSET_CODES.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
+        else if ("drug_defaults".equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
         else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
             return createVeterinariansTable(name);
