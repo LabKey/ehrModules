@@ -28,7 +28,6 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
-import org.labkey.api.ehr.security.EHRHousingTransferPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
@@ -55,6 +54,7 @@ import org.labkey.ehr.security.EHRVeternarianRole;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -206,21 +206,15 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             return ret.init();
         }
 
-        TableInfo ti;
         if (available.contains(name))
         {
-            ti = super.createTable(name);
-            if (ti != null)
-            {
-                if (!ti.getPkColumnNames().isEmpty())
-                {
-                    return getContainerScopedTable(name, ti.getPkColumnNames().get(0), EHRDataAdminPermission.class);
-                }
-                else
-                {
-                    return ti;
-                }
-            }
+            TableInfo ti = super.createTable(name);
+
+            String pkColName = getPkColName(ti);
+            if (pkColName != null && !"rowid".equalsIgnoreCase(pkColName) && ti.getColumn("container") != null)
+                return getContainerScopedTable(name, pkColName, EHRDataAdminPermission.class);
+            else
+                return ti;
         }
 
         //try to find it in propertySets
@@ -231,6 +225,18 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         Map<String, String> labworkMap = getLabworkTypeNames();
         if (labworkMap.containsKey(name))
             return createForLabwork(this, name, labworkMap.get(name));
+
+        return null;
+    }
+
+    private String getPkColName(TableInfo ti)
+    {
+        if (ti != null)
+        {
+            List<String> pkCols = ti.getPkColumnNames();
+            if (pkCols.size() == 1)
+                return pkCols.get(0);
+        }
 
         return null;
     }
