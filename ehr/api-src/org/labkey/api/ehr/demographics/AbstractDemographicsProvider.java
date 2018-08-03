@@ -38,6 +38,8 @@ import org.labkey.api.security.User;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,19 +71,35 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 
     public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)
     {
+        // if in debug, consider enabling debug logging on EHRDemographicsServiceImpl as well
+        _log.debug("Running DemographicsProvider named: " + this.getName());
+
         if (ids.size() > DemographicsProvider.MAXIMUM_BATCH_SIZE)
         {
             _log.error("unexpected amount of IDs in demographics provider: " + getName() + ".  was: " + ids.size(), new Exception());
         }
 
         final Map<String, Map<String, Object>> ret = new HashMap<>();
+        LocalDateTime startTableInfo = null;
+        LocalDateTime startRowProcessing = null;
+
+        if (_log.isDebugEnabled())
+            startTableInfo = LocalDateTime.now();
+
         final TableInfo ti = getTableInfo(c, u);
+
+        if (_log.isDebugEnabled() && (startTableInfo != null))
+        {
+            _log.debug("TableInfo creation time (seconds): " + Duration.between(startTableInfo, LocalDateTime.now()).getNano() / 1000000000.0000d);
+        }
 
         SimpleFilter filter = getFilter(ids);
         final Map<FieldKey, ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols.values(), filter, getSort());
         ts.setForDisplay(true);
 
+        if (_log.isDebugEnabled())
+            startRowProcessing = LocalDateTime.now();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -100,6 +118,8 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
                 ret.put(id, map);
             }
         });
+        if (_log.isDebugEnabled() && (startRowProcessing != null))
+            _log.debug("Row processing time (seconds): " + Duration.between(startRowProcessing, LocalDateTime.now()).getNano() / 1000000000.0000d);
 
         return ret;
     }
