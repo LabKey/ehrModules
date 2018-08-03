@@ -103,7 +103,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             // volume is handled differently for requests vs actual draws
             var volumeErrorSeverify;
             if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['isRequest'] && !row.taskid)
-                volumeErrorSeverify = helper.getErrorSeveritiyForBloodDrawsWithoutWeight();
+                volumeErrorSeverify = 'ERROR';
             else
                 volumeErrorSeverify = 'INFO';
 
@@ -122,6 +122,10 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             if (row.objectid) {
                 var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
                 if (msg != null) {
+                    if (msg.toLowerCase().indexOf('unknown weight') > -1) {
+                        volumeErrorSeverify = helper.getErrorSeveritiyForBloodDrawsWithoutWeight();
+                    }
+
                     //TODO: change all future bloods draws to review required, if submitted for medical purpose.
                     EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, volumeErrorSeverify);
                     EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, volumeErrorSeverify);
