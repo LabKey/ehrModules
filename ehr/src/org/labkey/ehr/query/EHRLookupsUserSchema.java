@@ -213,11 +213,15 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             TableInfo ti = super.createTable(name);
 
+            // By default, any hard tables in the ehr_lookups schema not accounted for above will fall into one of the
+            // two categories below. Both of these will add a check that makes sure the user has EHRDataAdminPermission
+            // in order to insert/update/delete on the table. The ContainerScopedTable case is for those tables that
+            // have a true DB PK or rowid but a User psedoPK that should be accounted for at the container level.
             String pkColName = getPkColName(ti);
             if (pkColName != null && !"rowid".equalsIgnoreCase(pkColName) && ti.getColumn("container") != null)
                 return getContainerScopedTable(name, pkColName, EHRDataAdminPermission.class);
             else
-                return ti;
+                return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         }
 
         //try to find it in propertySets
