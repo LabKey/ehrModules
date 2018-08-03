@@ -445,7 +445,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 ids_string.append(id);
                 ids_string.append(",");
             }
-            _log.debug("DEATHS_DEBUG: Demographics records being created for animal(s): " + ids_string);
+            _log.debug("DEMOGRAPHICS_DEBUG: Demographics records being created for animal(s): " + ids_string);
         }
 
         User u = EHRService.get().getEHRUser(c);
