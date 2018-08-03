@@ -118,6 +118,7 @@ ehr/api-src/org/labkey/api/ehr/EHRDemographicsService.java -text
 ehr/api-src/org/labkey/api/ehr/EHROwnable.java -text
 ehr/api-src/org/labkey/api/ehr/EHRQCState.java -text
 ehr/api-src/org/labkey/api/ehr/EHRService.java -text
+ehr/api-src/org/labkey/api/ehr/buttons/BulkEditButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/ChangeQCStateButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/CreateTaskFromIdsButton.java -text
 ehr/api-src/org/labkey/api/ehr/buttons/CreateTaskFromRecordsButton.java -text

@@ -217,6 +217,29 @@ EHR.DatasetButtons = new function () {
             }
         },
 
+        addBulkEditHandler: function (dataRegionName) {
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                Ext4.Msg.alert('Error', 'No records selected');
+            } else {
+                var url = LABKEY.ActionURL.buildURL('query', 'updateQueryRows.view', null, {
+                    schemaName: dataRegion.schemaName,
+                    'query.queryName': dataRegion.queryName,
+                    dataRegionSelectionKey: dataRegion.selectionKey,
+                    returnUrl: LABKEY.ActionURL.buildURL('ldk','updateQuery', null, {
+                        schemaName: dataRegion.schemaName,
+                        'query.queryName': dataRegion.queryName
+                    })
+                });
+                var form = dataRegion.form;
+                if (form && verifySelected.call(this, form, url, 'POST', 'rows')) {
+                    submitForm(form);
+                }
+            }
+
+        },
+
         discardTasks: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();  //TODO: update to getSelected with callback
