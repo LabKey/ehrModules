@@ -29,10 +29,11 @@ import org.labkey.api.pipeline.RecordedActionSet;
 import org.labkey.api.pipeline.WorkDirectoryTask;
 import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
 import org.labkey.api.reports.ExternalScriptEngineDefinition;
-import org.labkey.api.reports.LabKeyScriptEngineManager;
+import org.labkey.api.reports.LabkeyScriptEngineManager;
 import org.labkey.api.reports.RScriptEngineFactory;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.FileType;
 import org.labkey.ehr.EHRModule;
 
@@ -148,7 +149,8 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         //preferentially use R config setup in scripting props.  only works if running locally.
         if (PipelineJobService.get().getLocationType() == PipelineJobService.LocationType.WebServer)
         {
-            for (ExternalScriptEngineDefinition def : LabKeyScriptEngineManager.getEngineDefinitions())
+            LabkeyScriptEngineManager svc = ServiceRegistry.get().getService(LabkeyScriptEngineManager.class);
+            for (ExternalScriptEngineDefinition def : svc.getEngineDefinitions())
             {
                 if (RScriptEngineFactory.isRScriptEngine(def.getExtensions()))
                 {
