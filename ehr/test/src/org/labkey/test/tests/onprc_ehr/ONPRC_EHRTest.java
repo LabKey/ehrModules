@@ -125,18 +125,18 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     @Test
     public void testOverriddenActions() throws Exception
     {
-            Pair<String, Integer> ids = generateProtocolAndProject();
-            String protocolId = ids.getLeft();
-            Integer projectId = ids.getRight();
+        Pair<String, Integer> ids = generateProtocolAndProject();
+        String protocolId = ids.getLeft();
+        Integer projectId = ids.getRight();
 
-                    //this QWP is in the onprc_ehr projectDetails, but not the core EHR version.  because ONPRC_EHR modules
-                            // overrides this view, EHR should serve the ONPRC_EHR HTML file through EHR controller
-                                    beginAt("/ehr/" + getContainerPath() + "/projectDetails.view?project=" + projectId);
-            waitForElement(Locator.tagContainingText("span", "Housing Summary"));
+        //this QWP is in the onprc_ehr projectDetails, but not the core EHR version.  because ONPRC_EHR modules
+        // overrides this view, EHR should serve the ONPRC_EHR HTML file through EHR controller
+        beginAt("/ehr/" + getContainerPath() + "/projectDetails.view?project=" + projectId);
+        waitForElement(Locator.tagContainingText("span", "Housing Summary"));
 
-                    // same idea as above
-                            beginAt("/ehr/" + getContainerPath() + "/protocolDetails.view?protocol=" + protocolId);
-            waitForElement(Locator.tagContainingText("a", "View Active Animal Assignments"));
+        // same idea as above
+        beginAt("/ehr/" + getContainerPath() + "/protocolDetails.view?protocol=" + protocolId);
+        waitForElement(Locator.tagContainingText("a", "View Active Animal Assignments"));
     }
 
 
