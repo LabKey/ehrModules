@@ -437,7 +437,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     private List<AnimalRecord> createRecords(Container c, Collection<String> ids, boolean validateOnCreate)
     {
         // if in debug, consider enabling debug logging on AbstractDemographicsProvider as well
-        if (_log.isDebugEnabled())
+        boolean debugEnabled = _log.isDebugEnabled();
+        if (debugEnabled)
         {
             StringBuilder ids_string = new StringBuilder();
             for (String id : ids)

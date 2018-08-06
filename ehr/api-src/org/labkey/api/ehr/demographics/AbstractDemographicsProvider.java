@@ -73,6 +73,8 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     {
         // if in debug, consider enabling debug logging on EHRDemographicsServiceImpl as well
         _log.debug("Running DemographicsProvider named: " + this.getName());
+        boolean debugEnabled = _log.isDebugEnabled();
+        String debugTimeFormat = "m 'min' s 'sec' S 'ms'";
 
         if (ids.size() > DemographicsProvider.MAXIMUM_BATCH_SIZE)
         {
@@ -83,14 +85,15 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         LocalDateTime startTableInfo = null;
         LocalDateTime startRowProcessing = null;
 
-        if (_log.isDebugEnabled())
+        if (debugEnabled)
             startTableInfo = LocalDateTime.now();
 
         final TableInfo ti = getTableInfo(c, u);
 
-        if (_log.isDebugEnabled() && (startTableInfo != null))
+        if (debugEnabled && (startTableInfo != null))
         {
-            _log.debug("TableInfo creation time (seconds): " + Duration.between(startTableInfo, LocalDateTime.now()).getNano() / 1000000000.0000d);
+            Duration tableInfoDuration = Duration.between(startTableInfo, LocalDateTime.now());
+            _log.debug("TableInfo creation time: " + DurationFormatUtils.formatDuration(tableInfoDuration.toMillis(), debugTimeFormat, true));
         }
 
         SimpleFilter filter = getFilter(ids);
@@ -98,7 +101,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         TableSelector ts = new TableSelector(ti, cols.values(), filter, getSort());
         ts.setForDisplay(true);
 
-        if (_log.isDebugEnabled())
+        if (debugEnabled)
             startRowProcessing = LocalDateTime.now();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -118,8 +121,11 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
                 ret.put(id, map);
             }
         });
-        if (_log.isDebugEnabled() && (startRowProcessing != null))
-            _log.debug("Row processing time (seconds): " + Duration.between(startRowProcessing, LocalDateTime.now()).getNano() / 1000000000.0000d);
+        if (debugEnabled && (startRowProcessing != null))
+        {
+            Duration rowProcessingDuration = Duration.between(startRowProcessing, LocalDateTime.now());
+            _log.debug("Row processing time: " + DurationFormatUtils.formatDuration(rowProcessingDuration.toMillis(), debugTimeFormat, true));
+        }
 
         return ret;
     }
