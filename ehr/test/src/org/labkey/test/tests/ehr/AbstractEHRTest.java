@@ -362,21 +362,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         createUsersandPermissions();  //note: we create the users prior to study import, b/c that user is used by TableCustomizers
         populateInitialData();
         importStudy();
-        shutoffProfiler();
+        disableMiniProfiler();
         //note: these expect the study to exist
         setupStudyPermissions();
         defineQCStates();
 
         populateHardTableRecords();
         primeCaches();
-    }
-
-    protected void shutoffProfiler()
-    {
-        goToAdminConsole().clickProfiler();
-        uncheckCheckbox(Locator.inputById("enabled"));
-        clickAndWait(Locator.tagContainingText("Span", "Save"));
-        goToProjectHome();
     }
 
     @LogMethod(quiet = true)
