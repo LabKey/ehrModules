@@ -371,16 +371,12 @@ public class TriggerScriptHelper
 
         Collection<ProjectValidator> projectValidators = EHRServiceImpl.get().getProjectValidators(getContainer(), EHRService.get().getEHRUser(getContainer()));
 
-        // Iterate through validators, return first error found or null if no errors
-        String error = null;
-        for (ProjectValidator pv : projectValidators)
-        {
-            error = pv.validateAssignment(id, projectId, date, _user, getContainer(), protocol);
-            if (error != null)
-                break;
-        }
+        if(projectValidators.
+                stream().
+                anyMatch(pv -> ((ProjectValidator) pv).validateAssignment(id, projectId, date, _user, getContainer(), protocol)))
+            return null;
 
-        return error;
+        return "Not assigned to the project or protocol on this date";
     }
 
     public String getAccountForProject(int projectId)
