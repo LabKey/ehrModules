@@ -1,6 +1,7 @@
 package org.labkey.ehr.demographics;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
@@ -35,7 +36,8 @@ public class EHRProjectValidator extends AbstractProjectValidator implements Pro
 
 
     @Override
-    public boolean validateAssignment(String id, Integer projectId, Date date, User user, Container container, String protocol)
+    @Nullable
+    public String validateAssignment(String id, Integer projectId, Date date, User user, Container container, String protocol)
     {
         TableInfo ti = getTableInfo(container, user,"study", "Assignment");
 
@@ -48,6 +50,11 @@ public class EHRProjectValidator extends AbstractProjectValidator implements Pro
 
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
 
-        return ts.exists();
+        if (!ts.exists())
+        {
+            return "Not assigned to the project or protocol on this date";
+        }
+
+        return null;
     }
 }
