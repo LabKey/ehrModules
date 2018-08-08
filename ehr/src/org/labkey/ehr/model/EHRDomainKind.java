@@ -36,10 +36,7 @@ public class EHRDomainKind extends ExtendedTableDomainKind
 
     public static Container getDomainContainer(Container c)
     {
-        if (c != null)
-            return c.getProject();
-
-        return null;
+        return c;
     }
 
     @Override
