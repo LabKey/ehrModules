@@ -119,11 +119,11 @@ abstract public class EHRService
 
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category);
 
-    /** Registers a project, used to cache commonly used project info for animals, based on which modules are enabled in a container */
-    abstract public void registerProjectValidator(ProjectValidator projectValidator);
+    /** Set a project validator to be used by the validateAssignment check */
+    abstract public void setProjectValidator(ProjectValidator projectValidator);
 
-    /** @return the project validators enabled in the container */
-    abstract public Collection<ProjectValidator> getProjectValidators(Container c, User u);
+    /** @return the project validator set by the EHR module, note a center specific module may have overridden the default */
+    abstract public ProjectValidator getProjectValidator();
 
     /** Categories where pre-configured reports can be offered to the user */
     public enum REPORT_LINK_TYPE

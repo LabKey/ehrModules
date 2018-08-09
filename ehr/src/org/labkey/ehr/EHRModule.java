@@ -159,7 +159,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
 
-        EHRService.get().registerProjectValidator(new EHRProjectValidator(this));
+        EHRService.get().setProjectValidator(new EHRProjectValidator());
 
         EHRService.get().registerHistoryDataSource(new DefaultBloodDrawDataSource(this));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentDataSource(this));

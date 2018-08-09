@@ -2,18 +2,14 @@ package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr.EHROwnable;
-import org.labkey.api.module.Module;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 
-abstract public class AbstractProjectValidator extends EHROwnable implements ProjectValidator
+abstract public class AbstractProjectValidator implements ProjectValidator
 {
-    public AbstractProjectValidator(Module owner)
-    {
-        super(owner);
-    }
+    public AbstractProjectValidator()
+    {}
 
     public TableInfo getTableInfo(Container c, User u, String schemaName, String queryName)
     {

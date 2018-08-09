@@ -365,22 +365,10 @@ public class TriggerScriptHelper
 
         String protocol = getProtocolForProject(projectId);
         if (protocol == null)
-        {
             return "This project is not associated with a valid protocol";
-        }
 
-        Collection<ProjectValidator> projectValidators = EHRServiceImpl.get().getProjectValidators(getContainer(), EHRService.get().getEHRUser(getContainer()));
-
-        // Iterate through validators, return first error found or null if no errors
-        String error = null;
-        for (ProjectValidator pv : projectValidators)
-        {
-            error = pv.validateAssignment(id, projectId, date, _user, getContainer(), protocol);
-            if (error != null)
-                break;
-        }
-
-        return error;
+        ProjectValidator validator = EHRService.get().getProjectValidator();
+        return validator != null ? validator.validateAssignment(id, projectId, date, _user, getContainer(), protocol) : null;
     }
 
     public String getAccountForProject(int projectId)

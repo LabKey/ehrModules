@@ -102,7 +102,7 @@ public class EHRServiceImpl extends EHRService
     private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
-    private List<ProjectValidator> _projectValidators = new ArrayList<>();
+    private ProjectValidator _projectValidator = null;
 
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
 
@@ -168,21 +168,15 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableCollection(providers.values());
     }
 
-    public void registerProjectValidator(ProjectValidator projectValidator)
+    public void setProjectValidator(ProjectValidator projectValidator)
     {
-        _projectValidators.add(projectValidator);
+        if (projectValidator != null)
+            _projectValidator = projectValidator;
     }
 
-    public Collection<ProjectValidator> getProjectValidators(Container c, User u)
+    public ProjectValidator getProjectValidator()
     {
-        List<ProjectValidator> validators = new ArrayList<>();
-        for (ProjectValidator p : _projectValidators)
-        {
-            if (p.isAvailable(c,u))
-                validators.add(p);
-        }
-
-        return Collections.unmodifiableCollection(validators);
+        return _projectValidator;
     }
 
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass)

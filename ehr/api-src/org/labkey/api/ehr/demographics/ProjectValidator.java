@@ -14,9 +14,7 @@ import java.util.Date;
 * */
 public interface ProjectValidator
 {
-/** Returns error string if a project is not valid other*/
+    /** Returns an error string if the project is not a valid assignment for an animal */
     @Nullable
     String validateAssignment(String id, Integer projectId, Date date, User user, Container container, String protocol);
-
-    boolean isAvailable(Container c, User u);
 }
