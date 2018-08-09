@@ -53,7 +53,6 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
@@ -262,10 +261,17 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 _cache.remove(getCacheKey(c, id));
             }
 
-            JobRunner.getDefault().execute(new Runnable(){
-                public void run()
+            JobRunner.getDefault().execute(() -> {
+                try
                 {
+                    // Issue 35101 - set up environment so auditing in compliance code works
+                    QueryService.get().setEnvironment(QueryService.Environment.USER, u);
+                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
                     doUpdateRecords(c, u, changed, ids);
+                }
+                finally
+                {
+                    QueryService.get().clearEnvironment();
                 }
             });
         }
@@ -416,17 +422,25 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         _log.info("Perform async cache for " + ids.size() + " animals");
 
-        JobRunner.getDefault().execute(new Runnable(){
-            public void run()
+        JobRunner.getDefault().execute(() -> {
+            try
             {
                 try
                 {
+                    // Issue 35101 - set up environment so auditing in compliance code works
+                    QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
                     EHRDemographicsServiceImpl.get().createRecords(c, ids, false);
                 }
-                catch (DeadlockLoserDataAccessException e)
+                finally
                 {
-                    _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
+                    QueryService.get().clearEnvironment();
                 }
+
+            }
+            catch (DeadlockLoserDataAccessException e)
+            {
+                _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
             }
         });
     }
