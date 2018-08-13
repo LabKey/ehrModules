@@ -285,7 +285,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         },
 
         isQuickValidation: function(){
-            return props.quickValidation;
+            return props.extraContext.quickValidation;
         },
 
         getDemographicsMap: function(){
@@ -554,7 +554,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
          */
         onDeathDeparture: function(id, date){
             //close housing, assignments, treatments
-            console.log('on death departure: ' + id);
+            // console.log('on death departure: ' + id);
             var changedTables = this.getJavaHelper().closeActiveDatasetRecords(scriptOptions.datasetsToClose, id, date);
             if (changedTables){
                 changedTables = changedTables.split(';');

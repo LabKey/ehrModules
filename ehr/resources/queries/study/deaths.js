@@ -8,6 +8,7 @@ require("ehr/triggers").initScript(this);
 EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
 var demographicsUpdates = [];
+var validIds = [];
 
 function onInit(event, helper){
     helper.setScriptOptions({
@@ -15,6 +16,26 @@ function onInit(event, helper){
     });
 
     helper.decodeExtraContextProperty('deathsInTransaction');
+
+    // Cache valid Ids for check on each row
+    LABKEY.Query.selectRows({
+        requiredVersion: 9.1,
+        schemaName: 'study',
+        queryName: 'demographics',
+        columns: ['Id'],
+        scope: this,
+        success: function (results) {
+            if (!results || !results.rows || results.rows.length < 1)
+                return;
+
+            for(var i=0; i<results.rows.length; i++) {
+                validIds.push(results.rows[i]["Id"]["value"])
+            }
+        },
+        failure: function (error) {
+            console.log(error);
+        }
+    });
 }
 
 function onUpsert(helper, scriptErrors, row, oldRow){
@@ -29,25 +50,21 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     }
 
     // update demographics death date if finalized and not changed from existing value
-    if (!helper.isValidateOnly() && row.Id && row.date && row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
-        EHR.Server.Utils.findDemographics({
-            participant: row.Id,
-            helper: helper,
-            scope: this,
-            callback: function (data) {
-                if (!data)
-                    return;
+    if (!helper.isValidateOnly() && row.Id && row.date && row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData) {
 
-                var death = EHR.Server.Utils.normalizeDate(row.death);
-                if (!death || death.getTime() != row.date.getTime()) {
-                    console.log('queuing demographics death date');
-                    demographicsUpdates.push({
-                        Id: row.Id,
-                        death: row.date
-                    });
-                }
+        if (validIds.indexOf(row.id) !== -1) {
+
+            var death = EHR.Server.Utils.normalizeDate(row.death);
+            if (!death || death.getTime() != row.date.getTime()) {
+                demographicsUpdates.push({
+                    Id: row.Id,
+                    death: row.date
+                });
             }
-        });
+        }
+        else {
+            console.log(row.id + " is not a valid id");
+        }
     }
 }
 
