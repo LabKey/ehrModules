@@ -210,6 +210,9 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
             if (!fields.length)
                 return;
 
+            if (!(fields instanceof Array))  // single elements aren't wrapped in an array
+                fields = [fields];
+
             if (selections == 'none')
                 return;
 
