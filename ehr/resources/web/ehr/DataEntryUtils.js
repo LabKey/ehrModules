@@ -547,6 +547,21 @@ EHR.DataEntryUtils = new function(){
                 return [val];
         },
 
+        // Gets a sibling value in the selected grid row. Does not work for form yet.
+        getSiblingValue: function(cmp, siblingName){
+            var grid = cmp.up("grid");
+            if (grid) {
+                var model = grid.getSelectionModel();
+                if (model) {
+                    var selection = model.getSelection();
+                    if (selection && selection.length > 0) {
+                        return selection[0].get(siblingName);
+                    }
+                }
+            }
+            return null;
+        },
+
         setSiblingFields: function(cmp, vals){
             var boundRecord;
             var form = cmp.up('form');
