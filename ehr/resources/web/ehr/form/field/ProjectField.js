@@ -20,6 +20,7 @@ Ext4.define('EHR.form.field.ProjectField', {
     matchFieldWidth: false,
 
     onlyIncludeProjectsWithAssignments: false,
+    additionalFilter: null,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -62,6 +63,10 @@ Ext4.define('EHR.form.field.ProjectField', {
 
         if (this.onlyIncludeProjectsWithAssignments){
             storeCfg.filterArray.push(LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT));
+        }
+
+        if (this.additionalFilter) {
+            storeCfg.filterArray.push(this.additionalFilter);
         }
 
         if (this.storeConfig){
