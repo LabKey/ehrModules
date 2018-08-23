@@ -89,11 +89,15 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
             startTableInfo = LocalDateTime.now();
 
         final TableInfo ti = getTableInfo(c, u);
+        String tiName = null;
 
-        if (debugEnabled && (startTableInfo != null))
+        if (debugEnabled)
         {
             Duration tableInfoDuration = Duration.between(startTableInfo, LocalDateTime.now());
-            _log.debug("TableInfo creation time: " + DurationFormatUtils.formatDuration(tableInfoDuration.toMillis(), debugTimeFormat, true));
+            tiName = ti.getName();
+            if (tiName == null)
+                tiName = "";
+            _log.debug("TableInfo (for table '" + tiName + "') creation time: " + DurationFormatUtils.formatDuration(tableInfoDuration.toMillis(), debugTimeFormat, true));
         }
 
         SimpleFilter filter = getFilter(ids);
@@ -121,10 +125,10 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
                 ret.put(id, map);
             }
         });
-        if (debugEnabled && (startRowProcessing != null))
+        if (debugEnabled)
         {
             Duration rowProcessingDuration = Duration.between(startRowProcessing, LocalDateTime.now());
-            _log.debug("Row processing time: " + DurationFormatUtils.formatDuration(rowProcessingDuration.toMillis(), debugTimeFormat, true));
+            _log.debug("Row processing time (for table '" + tiName + "'): " + DurationFormatUtils.formatDuration(rowProcessingDuration.toMillis(), debugTimeFormat, true));
         }
 
         return ret;
