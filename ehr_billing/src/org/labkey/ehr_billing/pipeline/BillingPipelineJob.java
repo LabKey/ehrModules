@@ -15,7 +15,6 @@ import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
-import org.labkey.ehr_billing.EHR_BillingController;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,9 +22,9 @@ import java.util.Date;
 public class BillingPipelineJob extends PipelineJob implements BillingPipelineJobSupport
 {
     private File _analysisDir;
-    private EHR_BillingController.BillingPipelineForm _form;
+    private BillingPipelineForm _form;
 
-    public BillingPipelineJob(Container c, User user, ActionURL url, PipeRoot pipeRoot, File analysisDir, EHR_BillingController.BillingPipelineForm form)
+    public BillingPipelineJob(Container c, User user, ActionURL url, PipeRoot pipeRoot, File analysisDir, BillingPipelineForm form)
     {
         super(null, new ViewBackgroundInfo(c, user, url), pipeRoot);
 

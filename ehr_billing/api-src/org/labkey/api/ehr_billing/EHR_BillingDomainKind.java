@@ -16,14 +16,19 @@
 package org.labkey.api.ehr_billing;
 
 import org.labkey.api.data.Container;
-import org.labkey.api.exp.property.Domain;
+import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.query.ExtendedTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.data.xml.domainTemplate.DomainTemplateType;
+import org.labkey.data.xml.domainTemplate.EHRBillingTemplateType;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
+/**
+ *  Defines a DomainKind to allow tables in ehr_billing schema to be extensible.
+ *  Ensure that tables to be extended has a LSID column - this is a requirement to make tables extensible.
+ */
 public class EHR_BillingDomainKind extends ExtendedTableDomainKind
 {
     private final String NAMESPACE_PREFIX = "ehr_billing";
@@ -55,15 +60,8 @@ public class EHR_BillingDomainKind extends ExtendedTableDomainKind
     }
 
     @Override
-    public Set<String> getReservedPropertyNames(Domain domain)
+    public boolean matchesTemplateXML(String templateName, DomainTemplateType template, List<GWTPropertyDescriptor> properties)
     {
-        Set<String> result = new HashSet<>();
-
-        result.add("Container");
-        result.add("CreatedBy");
-        result.add("Created");
-        result.add("ModifiedBy");
-        result.add("Modified");
-        return result;
+        return template instanceof EHRBillingTemplateType; //EHRBillingTemplateType is a bean generated from domainTemplate.xsd
     }
 }

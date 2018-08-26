@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr_billing.EHR_BillingDomainKind;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.module.Module;
@@ -30,6 +31,7 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.ContainerUser;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
@@ -79,6 +81,9 @@ public class EHR_BillingModule extends SpringModule
     @Override
     protected void startupAfterSpringConfig(ModuleContext moduleContext)
     {
+
+        EHRService.get().registerClientDependency(ClientDependency.fromPath("ehr_billing/data/sources/EHR_BillingDefault.js"), this);
+
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHR_BillingContainerListener());
         DefaultSchema.registerProvider(EHR_BillingSchema.NAME, new DefaultSchema.SchemaProvider(this)

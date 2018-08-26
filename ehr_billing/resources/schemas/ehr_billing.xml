@@ -2,7 +2,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="chargeRates" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Charge Rates</tableTitle>
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
@@ -42,7 +42,7 @@
     </table>
     <table tableName="aliases" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Aliases</tableTitle>
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid"/>
@@ -113,14 +113,13 @@
         </columns>
     </table>
     <table tableName="invoiceRuns" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Billing Periods</tableTitle>
         <!--TODO: <tableUrl>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</tableUrl>-->
         <columns>
             <column columnName="rowId">
-                <columnTitle>Invoice Id</columnTitle>
-                <isHidden>true</isHidden>
+                <columnTitle>Invoice Run Id</columnTitle>
             </column>
             <column columnName="runDate">
                 <columnTitle>Run Date</columnTitle>
@@ -133,10 +132,6 @@
             <column columnName="billingPeriodEnd">
                 <columnTitle>Billing Period End</columnTitle>
                 <nullable>false</nullable>
-            </column>
-            <column columnName="invoiceNumber">
-                <columnTitle>Invoice #</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="dataSources">
                 <columnTitle>Data Sources</columnTitle>
@@ -179,7 +174,7 @@
         <!--</buttonBarOptions>-->
     </table>
     <table tableName="invoicedItems" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <tableTitle>Invoiced Items</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
@@ -188,7 +183,7 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="invoiceId">
-                <columnTitle>Invoice</columnTitle>
+                <columnTitle>Invoice Run Id</columnTitle>
                 <fk>
                     <fkDbSchema>ehr_billing</fkDbSchema>
                     <fkTable>invoiceRuns</fkTable>
@@ -338,7 +333,7 @@
         <!--<buttonBarOptions includeStandardButtons="true">-->
             <!--<includeScript>ehr.context</includeScript>-->
             <!--&lt;!&ndash;TODO: <includeScript>/ehr_billing/window/ReverseChargeWindow.js</includeScript>&ndash;&gt;-->
-            <!--<item insertPosition="end" text="More Actions" permissionClass="org.labkey.ehr_billing.security.EHR_BillingAdminPermission">-->
+            <!--<item insertPosition="end" text="More Actions" permissionClass="org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission">-->
                 <!--<item text="Reverse/Adjust Selected Charges">-->
                     <!--<onClick>ehr_Billing.window.ReverseChargeWindow.buttonHandler(dataRegionName);</onClick>-->
                 <!--</item>-->
@@ -347,7 +342,7 @@
     </table>
     <table tableName="miscCharges" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
-        <tableTitle>Other Charges</tableTitle>
+        <tableTitle>Misc Charges</tableTitle>
         <columns>
             <column columnName="Id">
                 <columnTitle>Id</columnTitle>
@@ -360,30 +355,7 @@
                 <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="project"/>
-            <column columnName="debitedaccount">
-                <columnTitle>Debit Alias</columnTitle>
-                <isHidden>true</isHidden>
-                <fk>
-                    <fkDbSchema>ehr_billing</fkDbSchema>
-                    <fkTable>aliases</fkTable>
-                    <fkColumnName>alias</fkColumnName>
-                    <fkDisplayColumnName useRawValue="true"/>
-                </fk>
-            </column>
-            <column columnName="chargeType">
-                <columnTitle>Charge Type</columnTitle>
-                <isHidden>true</isHidden>
-            </column>
-            <column columnName="creditedaccount">
-                <columnTitle>Credit Alias</columnTitle>
-                <isHidden>true</isHidden>
-                <fk>
-                    <fkDbSchema>ehr_billing</fkDbSchema>
-                    <fkTable>aliases</fkTable>
-                    <fkColumnName>alias</fkColumnName>
-                    <fkDisplayColumnName useRawValue="true"/>
-                </fk>
-            </column>
+            <column columnName="chargeType"/>
             <column columnName="chargeId"/>
             <column columnName="item">
                 <columnTitle>Item</columnTitle>
@@ -396,8 +368,27 @@
                 <columnTitle>Unit Cost</columnTitle>
                 <formatString>$###,##0.00</formatString>
             </column>
-            <column columnName="comment">
-                <columnTitle>Comment</columnTitle>
+            <column columnName="debitedaccount">
+                <columnTitle>Debit Account</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_billing</fkDbSchema>
+                    <fkTable>aliases</fkTable>
+                    <fkColumnName>alias</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="creditedaccount">
+                <columnTitle>Credit Account</columnTitle>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>ehr_billing</fkDbSchema>
+                    <fkTable>aliases</fkTable>
+                    <fkColumnName>alias</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="chargeCategory">
+                <columnTitle>Charge Category</columnTitle>
             </column>
             <column columnName="billingDate">
                 <columnTitle>Date Charge Entered</columnTitle>
@@ -409,7 +400,7 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="invoiceId">
-                <columnTitle>Invoice</columnTitle>
+                <columnTitle>Invoice Run Id</columnTitle>
                 <isHidden>true</isHidden>
                 <fk>
                     <fkDbSchema>ehr_billing</fkDbSchema>
@@ -428,9 +419,8 @@
                     <fkDisplayColumnName>rowid</fkDisplayColumnName>
                 </fk>
             </column>
-            <column columnName="chargeCategory">
-                <columnTitle>Charge Category</columnTitle>
-                <isHidden>true</isHidden>
+            <column columnName="comment">
+                <columnTitle>Comment</columnTitle>
             </column>
             <column columnName="issueId">
                 <columnTitle>Issue #</columnTitle>
@@ -531,7 +521,7 @@
         </columns>
     </table>
     <table tableName="chargeableItems" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Chargeable Items</tableTitle>
         <columns>
@@ -566,10 +556,22 @@
                 <columnTitle>Allow Blank Animal Id?</columnTitle>
             </column>
             <column columnName="canRaiseFA">
-                <columnTitle>Can Raise F&amp;A?</columnTitle>
+                <columnTitle>Can Raise FA?</columnTitle>
             </column>
             <column columnName="active">
                 <columnTitle>Is Active?</columnTitle>
+            </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
             </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
@@ -584,6 +586,95 @@
                 <nullable>false</nullable>
                 <formatString>yyyy-MM-dd</formatString>
             </column>
+        </columns>
+    </table>
+    <table tableName="chargeRateExemptions" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Exemptions to Default Rates</tableTitle>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="project">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="chargeId">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="unitCost">
+                <columnTitle>Unit Cost</columnTitle>
+            </column>
+            <column columnName="remark">
+                <columnTitle>Remark</columnTitle>
+            </column>
+            <column columnName="startDate">
+                <columnTitle>Start Date</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="endDate">
+                <columnTitle>End Date</columnTitle>
+                <nullable>false</nullable>
+                <formatString>yyyy-MM-dd</formatString>
+            </column>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="chargeUnits" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Charge Units</tableTitle>
+        <columns>
+            <column columnName="chargetype">
+                <columnTitle>Name</columnTitle>
+            </column>
+            <column columnName="servicecenter">
+                <columnTitle>Service Center</columnTitle>
+            </column>
+            <column columnName="shownInBlood">
+                <columnTitle>Shown In Blood Form?</columnTitle>
+            </column>
+            <column columnName="shownInLabwork">
+                <columnTitle>Shown In Labwork Form?</columnTitle>
+            </column>
+            <column columnName="shownInMedications">
+                <columnTitle>Shown In Medications Form?</columnTitle>
+            </column>
+            <column columnName="shownInProcedures">
+                <columnTitle>Shown In Procedures Form?</columnTitle>
+            </column>
+            <column columnName="active">
+                <columnTitle>Is Active?</columnTitle>
+                <defaultValue>true</defaultValue>
+            </column>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="invoice" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Invoice</tableTitle>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="invoiceNumber"/>
+            <column columnName="invoiceRunId"/>
+            <column columnName="accountNumber"/>
+            <column columnName="invoiceSentOn"/>
+            <column columnName="invoiceAmount"/>
+            <column columnName="invoiceSentComment"/>
+            <column columnName="paymentAmountReceived"/>
+            <column columnName="fullPaymentReceived"/>
+            <column columnName="paymentReceivedOn"/>
+            <column columnName="paymentReceivedComment"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
         </columns>
     </table>
 </tables>

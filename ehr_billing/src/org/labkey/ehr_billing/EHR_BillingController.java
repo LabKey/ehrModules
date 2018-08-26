@@ -26,6 +26,7 @@ import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
@@ -46,20 +47,18 @@ import org.labkey.api.util.GUID;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
-import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
+import org.labkey.ehr_billing.pipeline.BillingPipelineForm;
 import org.labkey.ehr_billing.pipeline.BillingPipelineJob;
-import org.labkey.ehr_billing.security.EHR_BillingAdminPermission;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,91 +97,6 @@ public class EHR_BillingController extends SpringActionController
             }
 
             return new ApiSimpleResponse(resultProperties);
-        }
-    }
-
-    public static class BillingPipelineForm
-    {
-        private String _protocolName;
-        private Date _startDate;
-        private Date _endDate;
-        private String _comment;
-
-        public String getProtocolName()
-        {
-            return _protocolName;
-        }
-
-        public void setProtocolName(String protocolName)
-        {
-            _protocolName = protocolName;
-        }
-
-        public Date getStartDate()
-        {
-            return _startDate;
-        }
-
-        public void setStartDate(Date startDate)
-        {
-            _startDate = startDate;
-        }
-
-        public Date getEndDate()
-        {
-            return _endDate;
-        }
-
-        public void setEndDate(Date endDate)
-        {
-            _endDate = endDate;
-        }
-
-        public String getComment()
-        {
-            return _comment;
-        }
-
-        public void setComment(String comment)
-        {
-            _comment = comment;
-        }
-    }
-
-    public static class BillingValidationForm
-    {
-        private String _key;
-        private Date _start;
-        private Date _end;
-
-        public String getKey()
-        {
-            return _key;
-        }
-
-        public void setKey(String key)
-        {
-            _key = key;
-        }
-
-        public Date getStart()
-        {
-            return _start;
-        }
-
-        public void setStart(Date start)
-        {
-            _start = start;
-        }
-
-        public Date getEnd()
-        {
-            return _end;
-        }
-
-        public void setEnd(Date end)
-        {
-            _end = end;
         }
     }
 

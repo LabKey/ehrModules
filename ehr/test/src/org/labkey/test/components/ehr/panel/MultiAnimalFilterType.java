@@ -158,9 +158,21 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
             return this;
         }
 
+        public ProjectProtocolSearchWindow selectProject(ComboBox.ComboListMatcher matchTechnique, String project)
+        {
+            projectCombo.selectItemFromOpenComboList(project, true, matchTechnique);
+            return this;
+        }
+
         public ProjectProtocolSearchWindow selectProtocol(String protocol)
         {
             protocolCombo.selectComboBoxItem(protocol);
+            return this;
+        }
+
+        public ProjectProtocolSearchWindow selectProtocol(ComboBox.ComboListMatcher matchTechnique, String protocol)
+        {
+            protocolCombo.selectItemFromOpenComboList(protocol, true, matchTechnique);
             return this;
         }
     }

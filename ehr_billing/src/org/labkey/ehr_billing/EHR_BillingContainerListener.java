@@ -48,6 +48,9 @@ public class EHR_BillingContainerListener implements ContainerListener
             Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceRuns(), containerFilter);
             Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceItems(), containerFilter);
             Table.delete(EHR_BillingSchema.getInstance().getMiscCharges(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getChargeUnits(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getChargeRateExemptions(), containerFilter);
+            Table.delete(EHR_BillingSchema.getInstance().getInvoice(), containerFilter);
 
             transaction.commit();
         }

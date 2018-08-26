@@ -1,4 +1,4 @@
-package org.labkey.ehr_billing.security;
+package org.labkey.api.ehr_billing.security;
 
 import org.labkey.api.security.permissions.AbstractPermission;
 

@@ -1,8 +1,14 @@
 package org.labkey.ehr.model;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.data.xml.domainTemplate.DomainTemplateType;
+import org.labkey.data.xml.domainTemplate.EHRBillingTemplateType;
+import org.labkey.data.xml.domainTemplate.EHRLookupsTemplateType;
+
+import java.util.List;
 
 public class EHR_LookupsDomainKind extends EHRDomainKind
 {
@@ -30,5 +36,11 @@ public class EHR_LookupsDomainKind extends EHRDomainKind
     public String getKindName()
     {
         return KIND_NAME;
+    }
+
+    @Override
+    public boolean matchesTemplateXML(String templateName, DomainTemplateType template, List<GWTPropertyDescriptor> properties)
+    {
+        return template instanceof EHRLookupsTemplateType;
     }
 }

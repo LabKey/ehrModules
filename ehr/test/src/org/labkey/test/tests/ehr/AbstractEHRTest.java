@@ -78,12 +78,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static final String PROJECT_ID_2 = "123456";
     protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
     protected static final String DUMMY_INVES = "dummyinvestigator";
-    protected static final String ACCOUNT_ID_1 = "Acct100";
-    protected static final String ACCOUNT_ID_2 = "Acct101";
+    protected static final String ACCOUNT_ID_1 = "acct100";
+    protected static final String ACCOUNT_ID_2 = "acct101";
     protected static final String ACCOUNT_ID_3 = "Acct102";
 
+    protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
-
+    protected static final String ROOM_ID2 = "2043365";
     protected static final String AREA_ID = "A1/AB190"; // arbitrary area
     protected static final String PROTOCOL_PROJECT_ID = "795644"; // Project with exactly 3 members
     protected static final String PROTOCOL_ID = "protocol101";

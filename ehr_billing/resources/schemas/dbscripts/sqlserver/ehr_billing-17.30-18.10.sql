@@ -136,3 +136,133 @@ CREATE TABLE ehr_billing.chargeableItems (
 
   CONSTRAINT PK_chargeableItems PRIMARY KEY (rowId)
 );
+/* ehr_billing-17.32-17.33.sql */
+
+ALTER TABLE ehr_billing.chargeableItems ADD LSID LSIDtype;
+
+/* ehr_billing-17.33-17.34.sql */
+
+CREATE TABLE ehr_billing.chargeRateExemptions (
+
+  rowId INT IDENTITY(1,1) NOT NULL,
+  project int,
+  chargeId int,
+  unitcost double precision,
+  startDate datetime,
+  endDate datetime,
+  remark nvarchar(4000),
+
+  container ENTITYID NOT NULL,
+  createdBy USERID,
+  created datetime,
+  modifiedBy USERID,
+  modified datetime,
+
+  CONSTRAINT PK_chargeRateExemptions PRIMARY KEY (rowId)
+);
+
+CREATE TABLE ehr_billing.chargeUnits (
+
+  chargetype nvarchar(100) NOT NULL,
+  shownInBlood bit default 0,
+  shownInLabwork bit default 0,
+  shownInMedications bit default 0,
+  shownInProcedures bit default 0,
+  servicecenter nvarchar(100),
+
+  active bit default 1,
+  container entityid,
+  createdBy int,
+  created datetime,
+  modifiedBy int,
+  modified datetime,
+
+  CONSTRAINT PK_chargeUnits PRIMARY KEY (chargetype)
+);
+
+/* ehr_billing-17.34-17.35.sql */
+
+ALTER TABLE ehr_billing.chargeRateExemptions ALTER COLUMN remark nvarchar(max);
+
+ALTER TABLE ehr_billing.chargeRateExemptions ADD CONSTRAINT FK_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX EHR_BILLING_CHARGE_RATE_EXEMPTIONS_CONTAINER_INDEX ON ehr_billing.chargeRateExemptions (Container);
+GO
+
+ALTER TABLE ehr_billing.chargeUnits ADD CONSTRAINT FK_EHR_BILLING_CHARGE_UNITS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX EHR_BILLING_CHARGE_UNITS_CONTAINER_INDEX ON ehr_billing.chargeUnits (Container);
+GO
+
+ALTER TABLE ehr_billing.invoiceRuns ADD CONSTRAINT FK_EHR_BILLING_INVOICE_RUNS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX EHR_BILLING_INVOICE_RUNS_CONTAINER_INDEX ON ehr_billing.invoiceRuns (Container);
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_EHR_BILLING_INVOICED_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX ON ehr_billing.invoicedItems (Container);
+GO
+
+ALTER TABLE ehr_billing.miscCharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX ON ehr_billing.miscCharges (Container);
+GO
+
+/* ehr_billing-17.35-17.36.sql */
+
+CREATE TABLE ehr_billing.invoice (
+
+  rowid INT IDENTITY(1,1) NOT NULL,
+  invoiceNumber int,
+  invoiceRunId ENTITYID,
+  accountNumber nvarchar(10),
+  invoiceSentOn datetime,
+  invoiceAmount double precision,
+  invoiceSentComment nvarchar(10),
+  paymentAmountReceived double precision,
+  fullPaymentReceived bit default 0,
+  paymentReceivedOn datetime,
+  paymentReceivedComment nvarchar(10),
+
+  container ENTITYID NOT NULL,
+  createdBy USERID,
+  created datetime,
+  modifiedBy USERID,
+  modified datetime,
+
+  CONSTRAINT PK_EHR_BILLING_INVOICE PRIMARY KEY (rowId),
+  CONSTRAINT FK_EHR_BILLING_INVOICE_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+);
+
+CREATE INDEX EHR_BILLING_INVOICE_CONTAINER_INDEX ON ehr_billing.invoice (Container);
+GO
+
+ALTER TABLE ehr_billing.invoiceRuns DROP COLUMN invoiceNumber;
+GO
+
+/* ehr_billing-17.36-17.37.sql */
+
+ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber nvarchar(20);
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber nvarchar(20);
+GO
+
+/* ehr_billing-17.37-17.38.sql */
+
+ALTER TABLE ehr_billing.invoice DROP CONSTRAINT PK_EHR_BILLING_INVOICE;
+GO
+
+ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber nvarchar(20) NOT NULL;
+GO
+
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT PK_EHR_BILLING_INVOICE_INVNUM PRIMARY KEY (invoiceNumber);
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber nvarchar(20) NOT NULL;
+GO
+
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UNIQUE_INVOICE_NUM UNIQUE (invoiceNumber);
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_INVOICEDITEMS_INVOICENUM FOREIGN KEY (invoiceNumber) REFERENCES ehr_billing.invoice (invoiceNumber);
+GO
+
+CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
+GO

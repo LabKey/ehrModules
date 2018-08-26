@@ -22,6 +22,9 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
 
+/**
+ * Exposes tables to be viewed from a schema browser (including extended tables).
+ */
 public class EHR_BillingUserSchema extends SimpleUserSchema
 {
     public EHR_BillingUserSchema(String name, @Nullable String description, User user, Container container, DbSchema dbschema)
@@ -76,8 +79,7 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                                 schema, EHR_BillingSchema.getInstance().getTableInvoiceItems()).init();
                 return table;
             }
-        }
-        ,
+        },
         miscCharges
         {
             @Override
@@ -88,8 +90,7 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                                 schema, EHR_BillingSchema.getInstance().getMiscCharges()).init();
                 return table;
             }
-        }
-        ,
+        },
         chargeableItems
         {
             @Override
@@ -98,6 +99,17 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
                                 schema, EHR_BillingSchema.getInstance().getChargeableItems()).init();
+                return table;
+            }
+        },
+        invoice
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getInvoice()).init();
                 return table;
             }
         };
