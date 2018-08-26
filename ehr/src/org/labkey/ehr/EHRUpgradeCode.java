@@ -147,14 +147,32 @@ public class EHRUpgradeCode implements UpgradeCode
                 for (String tableName : ehrTableNames)
                 {
                     TableInfo table = ehrSchema.getTable(tableName);
-                    new SqlExecutor(ehrSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+
+                    //checks for when ehr clients do not upgrade regularly
+                    //1. Null Check:
+                    // this code gets called from ehr_lookups-17.30-18.10 line 36 during server startup,
+                    // and throws an error on ehr.protocolProcedures not having a container column; but container column
+                    // for protocolProcedures is added in ehr_lookups-18.10-18.11
+                    // Adding a null check will ignore setting the value for container column if the column doesn't exist just yet.
+                    //2. Only set container value for "real"/non-virtual container column
+                    // It also err'd when it tried setting a container value for virtual container column and a real container column is not added just yet.
+                    // Adding a check if the column is a rawValueColumn should ensure adding of a value for a "real" non-virtual column.
+                    if (null != table.getColumn("Container") && table.getColumn("Container").isRawValueColumn())
+                    {
+                        new SqlExecutor(ehrSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+
+                    }
                 }
 
                 DbSchema ehrLookupsSchema = EHRSchema.getInstance().getEHRLookupsSchema();
                 for (String tableName : ehrLookupsTableNames)
                 {
                     TableInfo table = ehrLookupsSchema.getTable(tableName);
-                    new SqlExecutor(ehrLookupsSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+
+                    if (null != table.getColumn("Container") && table.getColumn("Container").isRawValueColumn())
+                    {
+                        new SqlExecutor(ehrLookupsSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+                    }
                 }
             }
         }
