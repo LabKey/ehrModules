@@ -19,9 +19,11 @@ package org.labkey.ehr_billing;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager.ContainerListener;
+import org.labkey.api.data.DatabaseTableType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.security.User;
 import java.util.Collections;
 import java.util.Collection;
@@ -43,14 +45,33 @@ public class EHR_BillingContainerListener implements ContainerListener
         SimpleFilter containerFilter = SimpleFilter.createContainerFilter(c);
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
-            Table.delete(EHR_BillingSchema.getInstance().getAliasesTable(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getChargeRatesTable(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceRuns(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getTableInvoiceItems(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getMiscCharges(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getChargeUnits(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getChargeRateExemptions(), containerFilter);
-            Table.delete(EHR_BillingSchema.getInstance().getInvoice(), containerFilter);
+            TableInfo chargeRatesTable = EHR_BillingSchema.getInstance().getChargeRatesTable();
+            if (chargeRatesTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(chargeRatesTable, containerFilter);
+
+            TableInfo invoiceRunsTable = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
+            if (invoiceRunsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(invoiceRunsTable, containerFilter);
+
+            TableInfo invoiceItemsTable = EHR_BillingSchema.getInstance().getTableInvoiceItems();
+            if (invoiceItemsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(invoiceItemsTable, containerFilter);
+
+            TableInfo miscChargesTable = EHR_BillingSchema.getInstance().getMiscCharges();
+            if (miscChargesTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(miscChargesTable, containerFilter);
+
+            TableInfo chargeUnitsTable = EHR_BillingSchema.getInstance().getChargeUnits();
+            if (chargeUnitsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(chargeUnitsTable, containerFilter);
+
+            TableInfo chargeRateExemptionsTable = EHR_BillingSchema.getInstance().getChargeRateExemptions();
+            if (chargeRateExemptionsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(chargeRateExemptionsTable, containerFilter);
+
+            TableInfo invoiceTable = EHR_BillingSchema.getInstance().getInvoice();
+            if (invoiceTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(invoiceTable, containerFilter);
 
             transaction.commit();
         }
