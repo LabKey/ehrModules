@@ -160,6 +160,7 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
         public ProjectProtocolSearchWindow selectProject(ComboBox.ComboListMatcher matchTechnique, String project)
         {
+            projectCombo.openComboList();
             projectCombo.selectItemFromOpenComboList(project, true, matchTechnique);
             return this;
         }
@@ -172,6 +173,7 @@ public class MultiAnimalFilterType<A extends AnimalHistoryPage> extends Abstract
 
         public ProjectProtocolSearchWindow selectProtocol(ComboBox.ComboListMatcher matchTechnique, String protocol)
         {
+            protocolCombo.openComboList();
             protocolCombo.selectItemFromOpenComboList(protocol, true, matchTechnique);
             return this;
         }

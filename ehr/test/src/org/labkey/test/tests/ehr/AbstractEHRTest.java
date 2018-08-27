@@ -524,6 +524,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected void populateRoomRecords() throws Exception
     {
+        InsertRowsCommand insertCmd = new InsertRowsCommand("ehr_lookups", "rooms");
+        Map<String,Object> rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID);
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
+        insertCmd.addRow(rowMap);
+
+        rowMap = new HashMap<>();
+        rowMap.put("room", ROOM_ID2);
+        rowMap.put("housingType", 1);
+        rowMap.put("housingCondition", 1);
+        insertCmd.addRow(rowMap);
+
+        insertCmd.execute(createDefaultConnection(false), getContainerPath());
     }
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
