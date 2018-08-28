@@ -5,7 +5,6 @@ import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.data.xml.domainTemplate.DomainTemplateType;
-import org.labkey.data.xml.domainTemplate.EHRBillingTemplateType;
 import org.labkey.data.xml.domainTemplate.EHRLookupsTemplateType;
 
 import java.util.List;
