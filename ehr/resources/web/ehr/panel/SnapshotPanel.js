@@ -449,7 +449,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             toSet['cagemates'] = 'None';
         }
         else {
-            toSet['cagemates'] = LABKEY.Utils.encodeHtml(animals.join(', '));
+            var html = '';
+            Ext4.each(animals, function(id) {
+                html += '<a href="' + LABKEY.ActionURL.buildURL('ehr', 'participantView', null, {participantId: id}) + '">'
+                        + LABKEY.Utils.encodeHtml(id) + '</a>';
+            });
+            toSet['cagemates'] = html;
         }
     },
 
