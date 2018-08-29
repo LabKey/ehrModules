@@ -18,8 +18,6 @@
             </column>
             <column columnName="endDate">
                 <columnTitle>End Date</columnTitle>
-                <nullable>false</nullable>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="Lsid">
                 <datatype>lsidtype</datatype>
@@ -583,8 +581,6 @@
             </column>
             <column columnName="endDate">
                 <columnTitle>End Date</columnTitle>
-                <nullable>false</nullable>
-                <formatString>yyyy-MM-dd</formatString>
             </column>
         </columns>
     </table>
