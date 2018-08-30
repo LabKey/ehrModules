@@ -28,7 +28,7 @@ if (length(labkey.data$category) > 0){
     barplot(data,
         main="Population Change By Species",
         xlab="Category",
-        col=colors,
+        col=colors[1:l],
         legend = rownames(data),
         beside=TRUE
         );
