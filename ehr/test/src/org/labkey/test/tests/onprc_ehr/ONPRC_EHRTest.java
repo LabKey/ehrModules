@@ -440,8 +440,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         }
 
         getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "blood", bloodFields, new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 1), amount, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 1), amount, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID2"}
+                {animalId, _tf.format(prepareDate(startCal.getTime(), bloodDrawInterval, 1)), amount, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID"},
+                {animalId,_tf.format(prepareDate(startCal.getTime(), bloodDrawInterval, 1)), amount, EHRQCState.REQUEST_PENDING.label, generateGUID(), "recordID2"}
         }, Maps.of(
                 "quantity", expectedErrors,
                 "num_tubes", expectedErrors
@@ -452,8 +452,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         JSONObject weightInTransaction = new JSONObject();
         Double newWeight = 2.0;
         Double newAllowableBlood = newWeight * bloodPerKg * maxDrawPct;
-        weightInTransaction.put(animalId, Arrays.asList(Maps.<String, Object>of("objectid", generateGUID(), "date", _df.format(prepareDate(startCal.getTime(), bloodDrawInterval, 2)), "weight", newWeight)));
-        additionalExtraContext.put("weightInTransaction", weightInTransaction);
+        weightInTransaction.put(animalId, Arrays.asList(Maps.<String, Object>of("objectid", generateGUID(), "date", _tf.format(prepareDate(startCal.getTime(), bloodDrawInterval, 2)), "weight", newWeight)));
+        additionalExtraContext.put("weightInTransaction", weightInTransaction.toString());
         additionalExtraContext.put("targetQC", null);
 
         List<String> expectedErrors2 = new ArrayList<>();
@@ -694,7 +694,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                 "enddate", null,
                 "project", projectId
         ));
-        additionalExtraContext.put("assignmentsInTransaction", assignmentsInTransaction);
+        additionalExtraContext.put("assignmentsInTransaction", assignmentsInTransaction.toString());
 
         getApiHelper().testValidationMessage(PasswordUtil.getUsername(), "study", "assignment", new String[]{"Id", "date", "enddate", "project", "_recordId"}, new Object[][]{
                 {SUBJECTS[3], prepareDate(new Date(), 10, 0), null, projectId, "recordID"}
