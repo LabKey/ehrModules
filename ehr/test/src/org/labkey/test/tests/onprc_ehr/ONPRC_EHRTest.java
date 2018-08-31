@@ -28,6 +28,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
@@ -72,6 +73,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static org.junit.Assert.assertEquals;
+
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 60)
 public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
@@ -113,6 +116,13 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     @Test
     public void testBloodVolumeApi() throws Exception
     {
+        UpdateRowsCommand updateRowsCommand = new UpdateRowsCommand("ehr_lookups", "species");
+        updateRowsCommand.addRow(Maps.of("common", "Rhesus", "blood_draw_interval", 21));
+        updateRowsCommand.addRow(Maps.of("common", "Cynomolgus", "blood_draw_interval", 21));
+        updateRowsCommand.addRow(Maps.of("common", "Marmoset", "blood_draw_interval", 21));
+        SaveRowsResponse saveResponse = updateRowsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+        assertEquals(3, saveResponse.getRowsAffected().intValue());
+
         //refresh caches to match new blood volumes.  this really should be automatic on the server
         beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "primeDataEntryCache"));
         waitAndClickAndWait(Locator.lkButton("OK"));
@@ -163,7 +173,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Double maxDrawPct = (Double) resp2.getRows().get(0).get("max_draw_pct");
         Assert.assertTrue("Bad 'max_draw_pct': " + maxDrawPct, maxDrawPct > 0);
         Integer bloodDrawInterval = ((Double) resp2.getRows().get(0).get("blood_draw_interval")).intValue();
-        Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 30, bloodDrawInterval.intValue());
+        Assert.assertEquals("Bad 'blood_draw_interval': " + bloodDrawInterval, 21, bloodDrawInterval.intValue());
 
         log("Creating blood draws");
         Calendar startCal = Calendar.getInstance();
