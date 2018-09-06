@@ -18,7 +18,6 @@ package org.labkey.test.tests.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
-import org.labkey.api.reader.TabLoader;
 import org.labkey.api.util.GUID;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
@@ -74,20 +73,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected static final int POPULATE_TIMEOUT_MS = 300000;
 
-    protected static final String PROJECT_ID = "640991"; // project with one participant
-    protected static final String PROJECT_ID_2 = "123456";
-    protected static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
-    protected static final String DUMMY_INVES = "dummyinvestigator";
-    protected static final String ACCOUNT_ID_1 = "acct100";
-    protected static final String ACCOUNT_ID_2 = "acct101";
-    protected static final String ACCOUNT_ID_3 = "Acct102";
+    public static final String PROJECT_ID = "640991"; // project with one participant
+    public static final String PROJECT_ID_2 = "123456";
+    public static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
+    public static final String ACCOUNT_ID_1 = "acct100";
+    public static final String ACCOUNT_ID_2 = "acct101";
+    public static final String ACCOUNT_ID_3 = "Acct102";
+    public static final String PROTOCOL_PROJECT_ID = "795644"; // Project with exactly 3 members
+    public static final String PROTOCOL_ID = "protocol101";
 
+    protected static final String DUMMY_INVES = "dummyinvestigator";
     protected static final String ROOM_ID = "6824778"; // room of PROJECT_MEMBER_ID
     protected static final String CAGE_ID = "4434662"; // cage of PROJECT_MEMBER_ID
     protected static final String ROOM_ID2 = "2043365";
     protected static final String AREA_ID = "A1/AB190"; // arbitrary area
-    protected static final String PROTOCOL_PROJECT_ID = "795644"; // Project with exactly 3 members
-    protected static final String PROTOCOL_ID = "protocol101";
     protected static final String INVES_ID = "investigator101";
     protected final String[] PROTOCOL_MEMBER_IDS = { // Protocol members, sorted ASC alphabetically
             getExpectedAnimalIDCasing("TEST3997535"),
@@ -413,7 +412,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     @LogMethod(quiet = true)
-    protected void repopulate(@LoggedParam String tableLabel)
+    public void repopulate(@LoggedParam String tableLabel)
     {
         deleteDataFrom(tableLabel);
         populate(tableLabel);
@@ -997,12 +996,5 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         Ext4CmpRef.waitForComponent(this, "#subjArea");
         return _ext4Helper.queryOne("#subjArea", Ext4FieldRef.class);
-    }
-
-    public List<Map<String, Object>> loadTsv(File tsv)
-    {
-        TabLoader loader = new TabLoader(tsv, true);
-        loader.setInferTypes(false);
-        return loader.load();
     }
 }

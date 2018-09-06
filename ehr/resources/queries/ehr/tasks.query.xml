@@ -68,7 +68,9 @@
                         <shownInDetailsView>true</shownInDetailsView>
                         <description>Task Status</description>
                         <columnTitle>Status</columnTitle>
-                        <displayWidth>50</displayWidth>
+                        <displayColumnFactory>
+                            <className>NOWRAP</className>
+                        </displayColumnFactory>
                         <!--<url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>-->
                         <conditionalFormats>
                             <conditionalFormat>
