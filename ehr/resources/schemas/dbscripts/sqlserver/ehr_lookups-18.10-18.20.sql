@@ -1,8 +1,17 @@
 /* ehr_lookups-18.10-18.11.sql */
 
--- add Container column to the erh/ehr_lookups tables (values to be populated in Java upgrade script)
+-- add Container column to the ehr/ehr_lookups tables (values to be populated in Java upgrade script)
 ALTER TABLE ehr.protocolProcedures ADD Container ENTITYID;
 ALTER TABLE ehr.scheduled_task_types ADD Container ENTITYID;
+GO
+
+ALTER TABLE ehr.protocolProcedures ADD CONSTRAINT FK_ehr_protocolProcedures_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT FK_ehr_scheduled_task_types_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+GO
+
+EXEC core.executeJavaUpgradeCode 'setEhrContainerFirstSet';
+GO
+
 ALTER TABLE ehr_lookups.ageclass ADD Container ENTITYID;
 ALTER TABLE ehr_lookups.amount_units ADD Container ENTITYID;
 ALTER TABLE ehr_lookups.areas ADD Container ENTITYID;
@@ -57,8 +66,6 @@ ALTER TABLE ehr_lookups.weight_ranges ADD Container ENTITYID;
 GO
 
 -- add the FK for those Container columns
-ALTER TABLE ehr.protocolProcedures ADD CONSTRAINT FK_ehr_protocolProcedures_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
-ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT FK_ehr_scheduled_task_types_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.ageclass ADD CONSTRAINT FK_ehr_lookups_ageclass_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.amount_units ADD CONSTRAINT FK_ehr_lookups_amount_units_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.areas ADD CONSTRAINT FK_ehr_lookups_areas_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
@@ -113,7 +120,7 @@ ALTER TABLE ehr_lookups.weight_ranges ADD CONSTRAINT FK_ehr_lookups_weight_range
 GO
 
 -- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-EXEC core.executeJavaUpgradeCode 'setEhrLookupsContainer';
+EXEC core.executeJavaUpgradeCode 'setEhrLookupsContainerSecondSet';
 GO
 
 -- remove any NULL rows for Container

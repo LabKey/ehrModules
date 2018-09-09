@@ -63,11 +63,8 @@ public class EHRUpgradeCode implements UpgradeCode
             Table.insert(null, EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar"), row);
         }
     }
-    /**
-     * called at 17.32-17.33 and 18.10-18.11
-     */
-    @SuppressWarnings({"UnusedDeclaration"})
-    public void setEhrLookupsContainer(final ModuleContext moduleContext)
+
+    private void setContainerColumn(ModuleContext moduleContext, List<String> tableNames, DbSchema schema)
     {
         if (moduleContext.isNewInstall())
             return;
@@ -75,21 +72,42 @@ public class EHRUpgradeCode implements UpgradeCode
         Module module = ModuleLoader.getInstance().getModule(moduleContext.getName());
         String category = "moduleProperties." + module.getName();
         String ehrStudyContainerPath = PropertyManager.getCoalescedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), category, EHRManager.EHRStudyContainerPropName);
+
         if (ehrStudyContainerPath != null)
         {
             Container ehrStudyContainer = ContainerManager.getForPath(ehrStudyContainerPath);
-            if (ehrStudyContainer != null)
+            for (String tableName : tableNames)
             {
-                List<String> ehrTableNames = Arrays.asList(
-                        "protocolProcedures",
-                        "scheduled_task_types"
-                );
+                TableInfo table = schema.getTable(tableName);
+                new SqlExecutor(schema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
+            }
+        }
+    }
 
-                List<String> ehrLookupsTableNames = Arrays.asList(
-                    EHRLookupsUserSchema.TABLE_GEOGRAPHIC_ORIGINS,
-                    EHRLookupsUserSchema.TABLE_ROOMS,
-                    EHRLookupsUserSchema.TABLE_BUILDINGS,
-                    EHRLookupsUserSchema.TABLE_TREATMENT_CODES,
+    /**
+     * called at ehr_lookups-17.30-18.10
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void setEhrLookupsContainerFirstSet(final ModuleContext moduleContext)
+    {
+        List<String> ehrLookupsTableNames = Arrays.asList(
+                EHRLookupsUserSchema.TABLE_GEOGRAPHIC_ORIGINS,
+                EHRLookupsUserSchema.TABLE_ROOMS,
+                EHRLookupsUserSchema.TABLE_BUILDINGS,
+                EHRLookupsUserSchema.TABLE_TREATMENT_CODES);
+
+        DbSchema ehrLookupsSchema = EHRSchema.getInstance().getEHRLookupsSchema();
+        setContainerColumn(moduleContext, ehrLookupsTableNames, ehrLookupsSchema);
+    }
+
+
+    /**
+     * called at ehr_lookups-18.10-18.20
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void setEhrLookupsContainerSecondSet(final ModuleContext moduleContext)
+    {
+        List<String> ehrLookupsTableNames = Arrays.asList(
                         "ageclass",
                         "amount_units",
                         "areas",
@@ -143,38 +161,23 @@ public class EHRUpgradeCode implements UpgradeCode
                         "weight_ranges"
                 );
 
-                DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
-                for (String tableName : ehrTableNames)
-                {
-                    TableInfo table = ehrSchema.getTable(tableName);
-
-                    //checks for when ehr clients do not upgrade regularly
-                    //1. Null Check:
-                    // this code gets called from ehr_lookups-17.30-18.10 line 36 during server startup,
-                    // and throws an error on ehr.protocolProcedures not having a container column; but container column
-                    // for protocolProcedures is added in ehr_lookups-18.10-18.11
-                    // Adding a null check will ignore setting the value for container column if the column doesn't exist just yet.
-                    //2. Only set container value for "real"/non-virtual container column
-                    // It also err'd when it tried setting a container value for virtual container column and a real container column is not added just yet.
-                    // Adding a check if the column is a rawValueColumn should ensure adding of a value for a "real" non-virtual column.
-                    if (null != table.getColumn("Container") && table.getColumn("Container").isRawValueColumn())
-                    {
-                        new SqlExecutor(ehrSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
-
-                    }
-                }
-
                 DbSchema ehrLookupsSchema = EHRSchema.getInstance().getEHRLookupsSchema();
-                for (String tableName : ehrLookupsTableNames)
-                {
-                    TableInfo table = ehrLookupsSchema.getTable(tableName);
-
-                    if (null != table.getColumn("Container") && table.getColumn("Container").isRawValueColumn())
-                    {
-                        new SqlExecutor(ehrLookupsSchema).execute("UPDATE " + table + " SET Container = ? WHERE Container IS NULL", ehrStudyContainer);
-                    }
-                }
-            }
-        }
+                setContainerColumn(moduleContext, ehrLookupsTableNames, ehrLookupsSchema);
     }
+
+    /**
+     * called at ehr_lookups-18.10-18.20
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void setEhrContainerFirstSet(final ModuleContext moduleContext)
+    {
+        List<String> ehrTableNames = Arrays.asList(
+                "protocolProcedures",
+                "scheduled_task_types"
+        );
+
+        DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
+        setContainerColumn(moduleContext, ehrTableNames, ehrSchema);
+    }
+
 }
