@@ -45,6 +45,10 @@ public class EHR_BillingContainerListener implements ContainerListener
         SimpleFilter containerFilter = SimpleFilter.createContainerFilter(c);
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
+            TableInfo aliasesTable = EHR_BillingSchema.getInstance().getAliasesTable();
+            if (aliasesTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(aliasesTable, containerFilter);
+
             TableInfo chargeRatesTable = EHR_BillingSchema.getInstance().getChargeRatesTable();
             if (chargeRatesTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(chargeRatesTable, containerFilter);
