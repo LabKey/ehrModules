@@ -1,7 +1,13 @@
-
--- add Container column to the erh/ehr_lookups tables (values to be populated in Java upgrade script)
+-- add Container column to the ehr/ehr_lookups tables (values to be populated in Java upgrade script)
 ALTER TABLE ehr.protocolProcedures ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr.scheduled_task_types ADD COLUMN Container ENTITYID;
+
+ALTER TABLE ehr.protocolProcedures ADD CONSTRAINT FK_ehr_protocolProcedures_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT FK_ehr_scheduled_task_types_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+
+-- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
+SELECT core.executeJavaUpgradeCode('setEhrContainerFirstSet');
+
 ALTER TABLE ehr_lookups.ageclass ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr_lookups.amount_units ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr_lookups.areas ADD COLUMN Container ENTITYID;
@@ -55,8 +61,6 @@ ALTER TABLE ehr_lookups.volume_units ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr_lookups.weight_ranges ADD COLUMN Container ENTITYID;
 
 -- add the FK for those Container columns
-ALTER TABLE ehr.protocolProcedures ADD CONSTRAINT FK_ehr_protocolProcedures_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
-ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT FK_ehr_scheduled_task_types_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.ageclass ADD CONSTRAINT FK_ehr_lookups_ageclass_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.amount_units ADD CONSTRAINT FK_ehr_lookups_amount_units_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.areas ADD CONSTRAINT FK_ehr_lookups_areas_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
@@ -110,7 +114,7 @@ ALTER TABLE ehr_lookups.volume_units ADD CONSTRAINT FK_ehr_lookups_volume_units_
 ALTER TABLE ehr_lookups.weight_ranges ADD CONSTRAINT FK_ehr_lookups_weight_ranges_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 
 -- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-SELECT core.executeJavaUpgradeCode('setEhrLookupsContainer');
+SELECT core.executeJavaUpgradeCode('setEhrLookupsContainerSecondSet');
 
 -- remove any NULL rows for Container
 DELETE FROM ehr.protocolProcedures WHERE Container IS NULL;

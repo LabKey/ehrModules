@@ -21,7 +21,7 @@ ALTER TABLE ehr_lookups.treatment_codes ADD CONSTRAINT FK_treatment_codes_Contai
 GO
 
 -- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-EXEC core.executeJavaUpgradeCode 'setEhrLookupsContainer';
+EXEC core.executeJavaUpgradeCode 'setEhrLookupsContainerFirstSet';
 GO
 
 -- remove any NULL rows for Container
