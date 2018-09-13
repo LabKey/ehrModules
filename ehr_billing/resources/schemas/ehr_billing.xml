@@ -149,6 +149,18 @@
                 <shownInDetailsView>false</shownInDetailsView>
                 <shownInInsertView>false</shownInInsertView>
             </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -319,6 +331,18 @@
             <column columnName="invoiceNumber">
                 <columnTitle>Invoice Number</columnTitle>
                 <isHidden>true</isHidden>
+            </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
             </column>
             <column columnName="container">
                 <isHidden>true</isHidden>
@@ -511,6 +535,18 @@
             <column columnName="formSort">
                 <columnTitle>Form Sort Order</columnTitle>
                 <isHidden>true</isHidden>
+            </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
             </column>
             <column columnName="createdBy"/>
             <column columnName="created"/>

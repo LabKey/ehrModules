@@ -1600,6 +1600,7 @@ ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory.sql -te
 ehr_billing/resources/queries/ehr_billing/miscCharges.js -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.20-17.30.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.30-18.10.sql -text
+ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.20-18.21.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.30-17.31.sql -text
@@ -1612,6 +1613,7 @@ ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.36-17
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.37-17.38.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-17.20-17.30.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-17.30-18.10.sql -text
+ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.20-18.21.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.30-17.31.sql -text
