@@ -24,6 +24,9 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
     private File _analysisDir;
     private BillingPipelineForm _form;
 
+    // For serialization
+    protected BillingPipelineJob() {}
+
     public BillingPipelineJob(Container c, User user, ActionURL url, PipeRoot pipeRoot, File analysisDir, BillingPipelineForm form)
     {
         super(null, new ViewBackgroundInfo(c, user, url), pipeRoot);
@@ -48,6 +51,12 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
         analysisDir.mkdirs();
 
         return analysisDir;
+    }
+
+    @Override
+    public boolean hasJacksonSerialization()
+    {
+        return true;
     }
 
     @Override
