@@ -1383,6 +1383,7 @@ ehr/resources/web/ehr/panel/PopulationPanel.js -text
 ehr/resources/web/ehr/panel/PopulationTrendsPanel.js -text
 ehr/resources/web/ehr/panel/RecordDeleteSettingsPanel.js -text
 ehr/resources/web/ehr/panel/RequestDataEntryPanel.js -text
+ehr/resources/web/ehr/panel/SearchWithQWPPanel.js -text
 ehr/resources/web/ehr/panel/ServiceRequestsPanel.js -text
 ehr/resources/web/ehr/panel/SimpleDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/SmallFormSnapshotPanel.js -text
