@@ -1828,6 +1828,16 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    " ROUND(CONVERT(timestampdiff('SQL_TSI_DAY', d.birth, d.lastDayAtCenter), DOUBLE) / 365.25, 2)\n" +
+                    "ELSE\n" +
+                    "  ROUND(CONVERT(timestampdiff('SQL_TSI_DAY', d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 365.25, 2)\n" +
+                    "END AS float) as AgeAtTimeYears,\n" +
+                    "\n" +
+                    "CAST(\n" +
+                    "CASE\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
+                    "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
                     " floor(age(d.birth, d.lastDayAtCenter))\n" +
                     "ELSE\n" +
                     "  floor(age(d.birth, CAST(c." + dateColName + " as DATE)))\n" +
