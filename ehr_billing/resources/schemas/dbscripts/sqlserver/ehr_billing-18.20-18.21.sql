@@ -145,13 +145,13 @@ ALTER TABLE ehr_billing.miscCharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_C
 CREATE INDEX EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX ON ehr_billing.miscCharges (Container);
 GO
 
-EXEC core.fn_dropifexists 'ehr_billing', 'invoiceRuns', 'COLUMN', 'invoiceNumber';
-GO
-
-EXEC core.fn_dropifexists 'ehr_billing', 'invoicedItems', 'COLUMN', 'invoiceNumber';
+EXEC core.fn_dropifexists 'invoiceRuns', 'ehr_billing', 'COLUMN', 'invoiceNumber';
 GO
 
 EXEC core.fn_dropifexists 'invoicedItems', 'ehr_billing', 'COLUMN', 'invoiceNumber';
+GO
+
+TRUNCATE TABLE ehr_billing.invoicedItems;
 GO
 
 ALTER TABLE ehr_billing.invoicedItems ADD invoiceNumber varchar(20) NOT NULL;

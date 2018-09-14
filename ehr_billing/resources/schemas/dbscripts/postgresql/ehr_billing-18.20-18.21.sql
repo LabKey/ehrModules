@@ -124,10 +124,10 @@ CREATE INDEX EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX ON ehr_billing.invoicedI
 ALTER TABLE ehr_billing.miscCharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
 CREATE INDEX EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX ON ehr_billing.miscCharges (Container);
 
-SELECT core.fn_dropifexists('ehr_billing', 'invoiceRuns', 'COLUMN', 'invoiceNumber');
-SELECT core.fn_dropifexists('ehr_billing', 'invoicedItems', 'COLUMN', 'invoiceNumber');
-
+SELECT core.fn_dropifexists('invoiceRuns', 'ehr_billing', 'COLUMN', 'invoiceNumber');
 SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'COLUMN', 'invoiceNumber');
+
+TRUNCATE TABLE ehr_billing.invoicedItems;
 ALTER TABLE ehr_billing.invoicedItems ADD COLUMN invoiceNumber varchar(20) NOT NULL;
 
 ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UNIQUE_INVOICE_NUM UNIQUE (invoiceNumber);
