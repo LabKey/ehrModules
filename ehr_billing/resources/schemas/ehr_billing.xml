@@ -4,6 +4,7 @@
         <tableTitle>Charge Rates</tableTitle>
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
+        <insertUrl></insertUrl>
         <columns>
             <column columnName="rowId"/>
             <column columnName="chargeId"/>
@@ -558,6 +559,8 @@
         <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Chargeable Items</tableTitle>
+        <insertUrl/>
+        <importUrl/>
         <columns>
             <column columnName="rowid">
                 <columnTitle>Charge Id</columnTitle>

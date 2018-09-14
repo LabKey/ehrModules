@@ -46,7 +46,6 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
-import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
@@ -67,9 +66,11 @@ import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.GUID;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.MailHelper;
@@ -78,7 +79,6 @@ import org.labkey.api.util.Pair;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
-import org.labkey.ehr.EHRServiceImpl;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.notification.DeathNotification;
@@ -2526,5 +2526,48 @@ public class TriggerScriptHelper
         String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices";
         DataEntryManager.get().getCache().remove(cacheKey);
 
+    }
+
+    public String formatDate(String value, @Nullable String format, boolean dateTime) throws ParseException
+    {
+        Container c = getContainer();
+        String result = "Undefined Date";
+        Date date;
+
+        if (format == null)
+        {
+            format = "E MMM dd HH:mm:ssz yyyy";
+        }
+
+        date = DateUtil.parseDateTime(value, format);
+
+        if (date != null)
+        {
+            if (dateTime)
+            {
+                result = DateUtil.formatDateTime(date, LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
+            }
+            else
+            {
+                result = DateUtil.formatDateTime(date, LookAndFeelProperties.getInstance(c).getDefaultDateFormat());
+            }
+        }
+
+        return result;
+    }
+
+    public int dateCompare(String dateString1, String dateString2, @Nullable String format) throws ParseException
+    {
+        Date date1, date2;
+
+        if (format == null)
+        {
+            format = "E MMM dd HH:mm:ssz yyyy";
+        }
+
+        date1 = DateUtil.parseDateTime(dateString1, format);
+        date2 = DateUtil.parseDateTime(dateString2, format);
+
+        return date1.compareTo(date2);
     }
 }
