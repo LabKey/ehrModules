@@ -650,6 +650,18 @@
                 <nullable>false</nullable>
                 <formatString>yyyy-MM-dd</formatString>
             </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -684,6 +696,18 @@
                 <columnTitle>Is Active?</columnTitle>
                 <defaultValue>true</defaultValue>
             </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -705,6 +729,18 @@
             <column columnName="fullPaymentReceived"/>
             <column columnName="paymentReceivedOn"/>
             <column columnName="paymentReceivedComment"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
