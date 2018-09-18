@@ -53,6 +53,10 @@ public class EHR_BillingContainerListener implements ContainerListener
             if (chargeRatesTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(chargeRatesTable, containerFilter);
 
+            TableInfo chargeableItemsTable = EHR_BillingSchema.getInstance().getChargeableItems();
+            if (chargeableItemsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(chargeableItemsTable, containerFilter);
+
             TableInfo invoiceRunsTable = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
             if (invoiceRunsTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(invoiceRunsTable, containerFilter);
