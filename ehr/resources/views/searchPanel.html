@@ -1,8 +1,6 @@
 <script type="text/javascript">
 
 Ext4.onReady(function(){
-    var metadata;
-
     var config = {
         schemaName: LABKEY.ActionURL.getParameter('schemaName')
         ,queryName: LABKEY.ActionURL.getParameter('queryName')
@@ -44,7 +42,7 @@ Ext4.onReady(function(){
         }
     };
 
-    metadata = {
+    var metadata = {
         Housing: {
             defaultView: 'Active Housing'
             ,metadata: {
@@ -61,10 +59,9 @@ Ext4.onReady(function(){
                 qualifier: {hidden: true}
             }
         }
-    }
-var  au = metadata[LABKEY.ActionURL.getParameter('queryName')];
+    };
 
-    if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
+    if (metadata[LABKEY.ActionURL.getParameter('queryName')]){
         EHR.Utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
     }
 
