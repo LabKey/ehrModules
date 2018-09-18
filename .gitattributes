@@ -1638,6 +1638,7 @@ ehr_billing/resources/web/ehr_billing/form/field/EHRBillingProjectField.js -text
 ehr_billing/resources/web/ehr_billing/form/field/EHRBillingRowObserverEntryField.js -text
 ehr_billing/resources/web/ehr_billing/model/sources/Charges.js -text
 ehr_billing/resources/web/ehr_billing/panel/ChargesInstructionPanel.js -text
+ehr_billing/resources/web/ehr_billing/panel/DomainSettingsPanel.js -text
 ehr_billing/resources/web/ehr_billing/panel/EHR_BillingAnimalDetailsPanel.js -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingContainerListener.java -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingController.java -text
