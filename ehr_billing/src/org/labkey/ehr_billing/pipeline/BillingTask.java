@@ -285,7 +285,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     }
 
     private void
-    writeToInvoicedItems(List<Map<String, Object>> rows, String category, String[] colNames, String queryName, boolean allowNullProject, Date endDate) throws PipelineJobException
+    writeToInvoicedItems(List<Map<String, Object>> rows, String category, String[] colNames, String queryName, boolean allowNullProject, Date endDate, boolean isMiscCharge) throws PipelineJobException
     {
         String[] invoicedItemsCols = processingService.getInvoicedItemsColumnNames();
         assert colNames.length >= invoicedItemsCols.length;
@@ -335,13 +335,44 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 Table.insert(getJob().getUser(), invoicedItems, toInsert);
             }
 
-            //TODO: update records in miscCharges to show proper invoiceId
-//            processMiscChargesRecords(rows, queryName);
+            //update records in miscCharges to show proper invoiceId
+            if (isMiscCharge)
+                updateProcessedMiscChargesRecords(rows);
         }
         catch (RuntimeSQLException e)
         {
             throw new PipelineJobException(e);
         }
+    }
+
+    private void updateProcessedMiscChargesRecords(List<Map<String, Object>> rows) throws PipelineJobException
+    {
+        try
+        {
+            getJob().getLogger().info("Updating " + rows.size() + " records in misc charges table");
+            TableInfo ti = EHR_BillingSchema.getInstance().getMiscCharges();
+            String invoiceId = getOrCreateInvoiceRunRecord();
+
+            int updates = 0;
+            for (Map<String, Object> row : rows)
+            {
+                String objectId = (String)row.get("sourceRecord");
+                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                toUpdate.put("invoiceId", invoiceId);
+//                toUpdate.put("objectId", objectId);
+
+                updates++;
+                Table.update(getJob().getUser(), ti, toUpdate, objectId);
+            }
+
+            getJob().getLogger().info("Finished updating " + updates + " records in misc charges table.");
+        }
+        catch (RuntimeSQLException e)
+        {
+            throw new PipelineJobException(e);
+        }
+
+        getJob().getLogger().info("Finished updating ehr_billing.miscCharges for Invoice Run Id " + _invoiceId);
     }
 
     private String getString(Object val)
@@ -429,7 +460,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Per Diems", colNames, queryName, true, getSupport().getEndDate());
+            writeToInvoicedItems(rows, "Per Diems", colNames, queryName, true, getSupport().getEndDate(), false);
             getJob().getLogger().info("Finished Caching Per Diem Fees");
         }
     }
@@ -450,7 +481,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Procedure Fees", colNames, queryName, true, getSupport().getEndDate());
+            writeToInvoicedItems(rows, "Procedure Fees", colNames, queryName, true, getSupport().getEndDate(), false);
             getJob().getLogger().info("Finished Caching Procedure Fees");
         }
     }
@@ -471,7 +502,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             List<Map<String, Object>> rows = getRowList(ehrContainer, processingService.getSchemaName(), miscChargesQueryName, colNames, params);
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Misc Charges", colNames, miscChargesQueryName, true, getSupport().getEndDate());
+            writeToInvoicedItems(rows, "Misc Charges", colNames, miscChargesQueryName, true, getSupport().getEndDate(), true);
 
             getJob().getLogger().info("Finished Caching Misc Charges");
         }
@@ -494,7 +525,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Lease Fees", colNames, queryName, false, getSupport().getEndDate());
+            writeToInvoicedItems(rows, "Lease Fees", colNames, queryName, false, getSupport().getEndDate(), false);
             getJob().getLogger().info("Finished Caching Lease Fees");
         }
     }
@@ -515,7 +546,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Labwork Fees", colNames, queryName, false, getSupport().getEndDate());
+            writeToInvoicedItems(rows, "Labwork Fees", colNames, queryName, false, getSupport().getEndDate(), false);
             getJob().getLogger().info("Finished Caching Labwork Fees");
         }
     }
@@ -546,6 +577,15 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             }
 
             Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
+        }
+        try
+        {
+            invoiceTotalCost.close();
+        }
+        catch (SQLException e)
+        {
+            getJob().getLogger().info("Something went wrong while attempting to close a result set for Invoice Total Cost.", e);
+            return;
         }
 
         getJob().getLogger().info("Finished updating rows in ehr_billing.invoice table");
