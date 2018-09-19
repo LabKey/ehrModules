@@ -2,9 +2,8 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="chargeRates" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Charge Rates</tableTitle>
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
-        <insertUrl></insertUrl>
+        <insertUrl/>
         <columns>
             <column columnName="rowId"/>
             <column columnName="chargeId"/>
@@ -41,7 +40,6 @@
     </table>
     <table tableName="aliases" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Aliases</tableTitle>
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid"/>
@@ -112,7 +110,6 @@
         </columns>
     </table>
     <table tableName="invoiceRuns" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Billing Periods</tableTitle>
         <!--TODO: <tableUrl>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</tableUrl>-->
@@ -185,7 +182,6 @@
         <!--</buttonBarOptions>-->
     </table>
     <table tableName="invoicedItems" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <tableTitle>Invoiced Items</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
@@ -556,7 +552,6 @@
         </columns>
     </table>
     <table tableName="chargeableItems" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Chargeable Items</tableTitle>
         <insertUrl/>
@@ -624,7 +619,6 @@
         </columns>
     </table>
     <table tableName="chargeRateExemptions" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Exemptions to Default Rates</tableTitle>
         <columns>
@@ -670,7 +664,6 @@
         </columns>
     </table>
     <table tableName="chargeUnits" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Charge Units</tableTitle>
         <columns>
