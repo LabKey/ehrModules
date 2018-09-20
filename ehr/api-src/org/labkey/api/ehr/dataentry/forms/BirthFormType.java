@@ -34,13 +34,19 @@ public class BirthFormType  extends TaskForm
 
     public BirthFormType(DataEntryFormContext ctx, Module owner)
     {
-        super(ctx, owner, NAME, "Birth", "Colony Management", Arrays.asList(
+        this(ctx, owner, Arrays.asList(
                 new LockAnimalsFormSection(),
                 new BirthInstructionsFormSection(),
                 new TaskFormSection(),
                 new AnimalDetailsFormSection(),
                 new NewAnimalFormSection("study", "birth", "Births", false)
         ));
+    }
+
+    public BirthFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
+    {
+        super(ctx, owner, NAME, "Birth", "Colony Management", sections);
+
         //Added 2-23-2016:
         for (FormSection s : this.getFormSections())
         {
@@ -49,7 +55,6 @@ public class BirthFormType  extends TaskForm
         addClientDependency(ClientDependency.fromPath("ehr/model/sources/Birth_Entry.js"));
 
         setDisplayReviewRequired(true);
-
     }
 
 

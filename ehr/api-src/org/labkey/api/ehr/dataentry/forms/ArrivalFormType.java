@@ -17,11 +17,13 @@ package org.labkey.api.ehr.dataentry.forms;
 
 import org.labkey.api.ehr.dataentry.AnimalDetailsFormSection;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
+import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.api.ehr.dataentry.TaskFormSection;
 import org.labkey.api.module.Module;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ArrivalFormType extends TaskForm
 {
@@ -29,7 +31,7 @@ public class ArrivalFormType extends TaskForm
 
     public ArrivalFormType(DataEntryFormContext ctx, Module owner)
     {
-        super(ctx, owner, NAME, "Arrival", "Colony Management", Arrays.asList(
+        this(ctx, owner, Arrays.asList(
                 new ArrivalInstructionsFormSection(),
                 new TaskFormSection(),
                 new DocumentArchiveFormSection(),
@@ -37,6 +39,10 @@ public class ArrivalFormType extends TaskForm
                 new NewAnimalFormSection("study", "arrival", "Arrivals", false),
                 new WeightFormSection()
         ));
+    }
 
+    public ArrivalFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
+    {
+        super(ctx, owner, NAME, "Arrival", "Colony Management", sections);
     }
 }
