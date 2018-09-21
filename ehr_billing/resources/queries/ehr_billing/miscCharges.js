@@ -9,16 +9,17 @@ require("ehr/triggers").initScript(this);
 var LABKEY = require("labkey");
 var billingHelper = new org.labkey.ehr_billing.query.EHRBillingTriggerHelper(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id);
 
-var CHARGEABLE_ITEMS_ROWID_OLDPK_MAP = {};
+var CHARGEABLE_ITEMS_ROWID_NAME_MAP = {};
 var chargeableItems = LABKEY.Query.selectRows({
     schemaName: 'ehr_billing_public',
     queryName: 'chargeableItems',
-    columns: 'rowid, oldpk',
+    columns: 'rowid, name, active',
+    filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
     scope: this,
     success: function(results){
         var rows = results.rows;
         for(var index = 0; index < rows.length; index++) {
-            CHARGEABLE_ITEMS_ROWID_OLDPK_MAP[rows[index].oldPk] = rows[index].rowid;
+            CHARGEABLE_ITEMS_ROWID_NAME_MAP[rows[index].name] = rows[index].rowid;
         }
     },
     failure: function(results){
@@ -28,17 +29,20 @@ var chargeableItems = LABKEY.Query.selectRows({
 
 function onInit(event, helper){
     helper.setScriptOptions({
-        allowAnyId: true,
+        allowAnyId: false,
         allowDeadIds: true,
         allowDatesInDistantPast: true
     });
 }
 
-function onInsert(helper, scriptErrors, row){
+function onUpsert(helper, scriptErrors, row){
     row.objectid = row.objectid || LABKEY.Utils.generateUUID().toUpperCase();
 
-    if(CHARGEABLE_ITEMS_ROWID_OLDPK_MAP[row.chargeId]) {
-        row.chargeId = CHARGEABLE_ITEMS_ROWID_OLDPK_MAP[row.chargeId];
+    if(row.chargeId == undefined || row.chargeId == null) {
+
+        if (CHARGEABLE_ITEMS_ROWID_NAME_MAP[row.name]) {
+            row.chargeId = CHARGEABLE_ITEMS_ROWID_NAME_MAP[row.name];
+        }
     }
 }
 
