@@ -71,6 +71,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
 import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
@@ -92,6 +93,8 @@ import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1631,6 +1634,53 @@ public class EHRManager
                     ret.add("columns missing from dataset " + ds.getName() + ": " + StringUtils.join(diff2, ", "));
                 }
             }
+        }
+
+        return ret;
+    }
+
+    private String LOCK_PROP_KEY = getClass().getName() + "||animalLock";
+
+    public void lockAnimalCreation(Container c, User u, Boolean lock, Integer startingId, Integer idCount)
+    {
+        PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(c, LOCK_PROP_KEY, true);
+        map.put("lockedBy", u.getDisplayName(u));
+        map.put("locked", lock.toString());
+        map.put("lockDate", new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat()).format(new Date()));
+        map.put("startingId", (startingId == null ? null : startingId.toString()));
+        map.put("idCount", (idCount == null ? null : idCount.toString()));
+        map.save();
+    }
+
+    public Map<String, Object> getAnimalLockProperties(Container c)
+    {
+        Map<String, String> props = PropertyManager.getProperties(c, LOCK_PROP_KEY);
+        Map<String, Object> ret = new HashMap<>();
+        if (props != null && !props.isEmpty())
+        {
+            if (props.containsKey("lockedBy"))
+                ret.put("lockedBy", props.get("lockedBy"));
+
+            if (props.containsKey("locked"))
+                ret.put("locked", Boolean.parseBoolean(props.get("locked")));
+
+            if (props.containsKey("lockDate"))
+            {
+                try
+                {
+                    ret.put("lockDate", new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat()).parse(props.get("lockDate")));
+                }
+                catch (ParseException e)
+                {
+                    //ignore
+                }
+            }
+
+            if (props.containsKey("startingId"))
+                ret.put("startingId", Integer.parseInt(props.get("startingId")));
+
+            if (props.containsKey("idCount"))
+                ret.put("idCount", Integer.parseInt(props.get("idCount")));
         }
 
         return ret;

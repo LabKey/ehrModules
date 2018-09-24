@@ -1738,4 +1738,72 @@ public class EHRController extends SpringActionController
             return true;
         }
     }
+
+
+
+    @RequiresPermission(ReadPermission.class)
+    @CSRF
+    public class GetAnimalLockAction extends ApiAction<Object>
+    {
+        public ApiResponse execute(Object form, BindException errors)
+        {
+            return new ApiSimpleResponse(EHRManager.get().getAnimalLockProperties(getContainer()));
+        }
+    }
+
+    @RequiresPermission(EHRDataEntryPermission.class)
+    @CSRF
+    public class SetAnimalLockAction extends ApiAction<LockAnimalForm>
+    {
+        public ApiResponse execute(LockAnimalForm form, BindException errors)
+        {
+            ///Added by Lakshmi on 02/26/2015: This is server side validation code to check if the Birth/Arrival screens are locked or not.
+            //If already locked: show the lock results
+            //If not locked: Check if its locked and display the lock results instead of locking the screen again.
+            Map<String, Object> props = EHRManager.get().getAnimalLockProperties(getContainer());
+            if (!Boolean.TRUE.equals(props.get("locked") ) || (!form.isLock()) )
+            {
+                EHRManager.get().lockAnimalCreation(getContainer(), getUser(), form.isLock(), form.getStartingId(), form.getIdCount());
+            }
+
+            return new ApiSimpleResponse(EHRManager.get().getAnimalLockProperties(getContainer()));
+        }
+    }
+
+    public static class LockAnimalForm
+    {
+        private boolean _lock;
+        private Integer _startingId;
+        private Integer _idCount;
+
+        public boolean isLock()
+        {
+            return _lock;
+        }
+
+        public void setLock(boolean lock)
+        {
+            _lock = lock;
+        }
+
+        public Integer getIdCount()
+        {
+            return _idCount;
+        }
+
+        public void setIdCount(Integer idCount)
+        {
+            _idCount = idCount;
+        }
+
+        public Integer getStartingId()
+        {
+            return _startingId;
+        }
+
+        public void setStartingId(Integer startingId)
+        {
+            _startingId = startingId;
+        }
+    }
 }

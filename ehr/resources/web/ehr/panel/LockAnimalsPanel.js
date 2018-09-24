@@ -5,11 +5,7 @@
  */
 Ext4.define('EHR.panel.LockAnimalsPanel', {
     extend: 'Ext.panel.Panel',
-
-    controllerName:null,
     alias: 'widget.ehr-lockanimalspanel',
-
-
 
     initComponent: function() {
         Ext4.apply(this, {
@@ -18,15 +14,7 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
                 border: false
             },
             items: [{
-                //html: 'The creation of new animals can be locked, in order to prevent the creation of new animals during processing. <br> The Birth/Arrival data entry screen is disabled by default. Please click the "CLICK HERE TO ENABLE THE SCREEN FOR DATA ENTRY" button to enable the screen for data entry. <br> Please click on "CLICK HERE TO UNLOCK THE SCREEN" to disable the screen. Therefore, the screen becomes available for other users to do Birth/Arrival data entries!' ,
-                html: 'The birth/arrival screen will be disabled as a default.  You must enable the form in order to: <br> <ul><li>Get an Animal ID(s)</li><li>Secure the numbers for processing</li><li>Finish entering data on acquired numbers</li></ul><br><b>When you enable the form for data entry all others will automatically be blocked from using the form.</b> ' +
-                '<ul><li>Once you "Submit for Review" or "Save and Close", the birth/arrival form will be automatically be available for all other users. ' +
-                '<li>If you do not submit/save <i>please click the button below to exit data entry before leaving</i>, otherwise all other users will be permanently locked out. ' +
-                '<li>If the birth/arrival form is unavailable and you believe it has been kept locked by mistake please first contact the person who locked the form. ' +
-                '<li>If they cannot be reached and it is a weekday please e-mail technical support with the subject "Priority 1 Work Stoppage: birth/arrival Form Locked". ' +
-                '<li>If it is a weekend please contact a lead tech. ' +
-                '<li>Please take care not to request the birth/arrival form be unlocked unless you are confident the lock is in error, otherwise you will kick a user out of the birth/arrival form and prevent data entry.' +
-                '</ul>' ,
+                html: this.getInstructionsText(),
                 style: 'padding-bottom: 10px;'
             },{
                 itemId: 'infoArea',
@@ -40,6 +28,7 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
                     xtype: 'button',
                     itemId: 'lockBtn',
                     text: 'Lock Entry',
+                    disabled: true, // start disabled until we know it is OK to enable it
                     scope: this,
                     locked: true,
                     handler: this.lockRecords
@@ -56,16 +45,26 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
             this.dataEntryPanel = query[0];
         }
 
-        if(this.controllerName != null) {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'getAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(this.onSuccess, this)
-            });
-        }
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'getAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(this.onSuccess, this)
+        });
+    },
 
-    },  //end of initcomponent
+    getInstructionsText: function() {
+        return 'The birth/arrival screen is initially disabled by default. You must enable the form in order to: <br> '
+            + '<ul><li>Get an Animal ID(s)</li><li>Secure the numbers for processing</li><li>Finish entering data on acquired numbers</li></ul><br>'
+            + '<b>When you enable the form for data entry all others will automatically be blocked from using the form.</b><br>'
+            + 'Once you "Submit for Review" or "Save and Close", the birth/arrival form will be automatically be available for all other users. '
+            + 'If you do not submit/save <i>please click the button below to exit data entry before leaving</i>, otherwise all other users will be '
+            + 'permanently locked out. <br><br>'
+            + 'If the birth/arrival form is unavailable and you believe it has been kept locked by mistake, please '
+            + 'first contact the person who locked the form. If they cannot be reached, please contact the LabKey server administrator. '
+            + 'Please take care not to request the birth/arrival form be unlocked unless you are confident the lock is in error, otherwise you will '
+            + 'kick a user out of the birth/arrival form and prevent data entry.';
+    },
 
     onSuccess: function(results){
         var target = this.down('#infoArea');
@@ -97,7 +96,6 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
             this.locked_person = results.lockedBy;
             target.add({
                 html: ['Locked By: ' + results.lockedBy, 'Locked On: ' + results.lockDate ].join('<br>'),
-                // html: ['Locked By: ' + results.lockedBy, 'Locked On: ' + results.lockDate , 'Current user Displayname: '+ LABKEY.Security.currentUser.displayName ].join('<br>'),
                 style: 'padding-bottom: 10px;',
                 border: false
             });
@@ -112,24 +110,20 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
 
     lockRecords: function(btn){
 
-        if(this.controllerName == null) {
-            Ext4.Msg.alert('Optional', 'Client implementation is required for this feature.');
-        }
-        else {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'setAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(this.onSuccess, this),
-                jsonData: {
-                    lock: !!btn.locked
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'setAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(this.onSuccess, this),
+            jsonData: {
+                lock: !!btn.locked
 
-                }
-            });
-        }
+            }
+        });
+
     },
 
-    togglePanel: function(locked){
+    togglePanel: function(locked) {
         var btn = this.down('#lockBtn');
 
         btn.locked = !locked;
@@ -148,7 +142,7 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
                     item.setDisabled(!locked);
                     btn.setDisabled(locked);
                 }
-                // If the locked person is not the person who is logged in, then lock the entire screen
+                // Changed by Lakshmi: If the locked person is not the person who is logged in, then lock the entire screen
                 //If the locked person is same as the loggedin person, enable the entire screen
                 else if (this.locked_person != LABKEY.Security.currentUser.displayName )
                 {
@@ -172,7 +166,7 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
 
         }, this);
 
-        //Don't disable the submit and save draft ... button bar ever.
+        //Changed by Lakshmi: Don't disable the submit and save draft ... button bar ever.
         var bbar = up.getDockedItems('toolbar[dock="bottom"]')[0];
         bbar.setDisabled(!locked);
 
@@ -189,27 +183,18 @@ EHR.DataEntryUtils.registerDataEntryFormButton('BIRTHARRIVALCLOSE', {
     disabled: true,
     itemId: 'closeBtn1',
     handler: function(btn){
-        if (this.controllerName == null) {
-            var panel = btn.up('ehr-dataentrypanel');
-            Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize and reload this form.  Do you want to proceed?', function (v) {
-                if (v == 'yes')
-                    this.onSubmit(btn);
-            }, this);
-        }
-        else {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'setAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(function () {
-                    var panel = btn.up('ehr-dataentrypanel');
-                    panel.onSubmit(btn);
-                }, this),
-                jsonData: {
-                    lock: false
-                }
-            });
-        }
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'setAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(function() {
+                var panel = btn.up('ehr-dataentrypanel');
+                panel.onSubmit(btn);
+            }, this),
+            jsonData: {
+                lock: false
+            }
+        });
     },
     disableOn: 'ERROR'
 });
@@ -220,36 +205,25 @@ EHR.DataEntryUtils.registerDataEntryFormButton('BIRTHARRIVALFINAL', {
     requiredQC: 'Completed',
     targetQC: 'Completed',
     errorThreshold: 'WARN',
-    //successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
     successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
     disabled: true,
     itemId: 'submitBtn',
-    handler: function(btn) {
-        if (this.controllerName == null) {
-            var panel = btn.up('ehr-dataentrypanel');
-            Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function (v) {
-                if (v == 'yes')
-                    this.onSubmit(btn);
-            }, this);
-        }
-        else {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'setAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(function () {
-                    var panel = btn.up('ehr-dataentrypanel');
-                    //panel.onSubmit(btn);
-                    Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize this form.  Do you want to proceed?', function (v) {
-                        if (v == 'yes')
-                            panel.onSubmit(btn);
-                    });
-                }, this),
-                jsonData: {
-                    lock: false
-                }
-            });
-        }
+    handler: function(btn){
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'setAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(function() {
+                var panel = btn.up('ehr-dataentrypanel');
+                Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize this form.  Do you want to proceed?', function(v){
+                    if(v == 'yes')
+                        panel.onSubmit(btn);
+                });
+            }, this),
+            jsonData: {
+                lock: false
+            }
+        });
     },
     disableOn: 'ERROR'
 });
@@ -263,32 +237,22 @@ EHR.DataEntryUtils.registerDataEntryFormButton('BIRTHARRIVALRELOAD', {
     successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
     disabled: true,
     itemId: 'reloadBtn1',
-    handler: function(btn) {
-        if (this.controllerName == null) {
-            var panel = btn.up('ehr-dataentrypanel');
-            Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize and reload this form.  Do you want to proceed?', function (v) {
-                if (v == 'yes')
-                    this.onSubmit(btn);
-            }, this);
-        }
-        else {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'setAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(function () {
-                    var panel = btn.up('ehr-dataentrypanel');
-                    //panel.onSubmit(btn);
-                    Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize and reload this form.  Do you want to proceed?', function (v) {
-                        if (v == 'yes')
-                            panel.onSubmit(btn);
-                    });
-                }, this),
-                jsonData: {
-                    lock: false
-                }
-            });
-        }
+    handler: function(btn){
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'setAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(function() {
+                var panel = btn.up('ehr-dataentrypanel');
+                Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize and reload this form.  Do you want to proceed?', function(v){
+                    if(v == 'yes')
+                        panel.onSubmit(btn);
+                });
+            }, this),
+            jsonData: {
+                lock: false
+            }
+        });
     },
     disableOn: 'ERROR'
 });
@@ -304,31 +268,23 @@ EHR.DataEntryUtils.registerDataEntryFormButton('BIRTHARRIVALREVIEW', {
     disabled: true,
     itemId: 'reviewBtn1',
     handler: function(btn){
-        if (this.controllerName == null) {
-            var panel = btn.up('ehr-dataentrypanel');
-            Ext4.Msg.confirm('Finalize Birth/Arrival Form', 'You are about to finalize and reload this form.  Do you want to proceed?', function (v) {
-                if (v == 'yes')
-                    this.onSubmit(btn);
-            }, this);
-        }
-        else {
-            LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL(this.controllerName, 'setAnimalLock'),
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: LABKEY.Utils.getCallbackWrapper(function () {
-                    var panel = btn.up('ehr-dataentrypanel');
-                    Ext4.create('EHR.window.SubmitForReviewWindow', {
-                        dataEntryPanel: panel,
-                        dataEntryBtn: btn,
-                        reviewRequiredRecipient: panel.formConfig.defaultReviewRequiredPrincipal
-                    }).show();
-                }, this),
-                jsonData: {
-                    lock: false
-                }
-            });
-        }
+
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ehr', 'setAnimalLock'),
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(function() {
+                var panel = btn.up('ehr-dataentrypanel');
+                Ext4.create('EHR.window.SubmitForReviewWindow', {
+                    dataEntryPanel: panel,
+                    dataEntryBtn: btn,
+                    reviewRequiredRecipient: panel.formConfig.defaultReviewRequiredPrincipal
+                }).show();
+            }, this),
+            jsonData: {
+                lock: false
+            }
+        });
     },
     disableOn: 'ERROR'
 });
