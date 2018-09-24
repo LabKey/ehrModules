@@ -19,18 +19,19 @@ Ext4.define('EHR.panel.DocumentArchivePanel', {
     },
 
     getItems: function(){
-        var ctx = LABKEY.getModuleContext('ehr');
         var items = [{
             html: 'When animals arrive or are shipped from the center, associated documents can be archived.  Use the link below to open this folder and deposit these documents.',
             style: 'padding: 5px;'
         }];
-        if (ctx && ctx.DocumentArchiveContainer){
+
+        var docArchiveContainer = this.getDocumentArchiveContainer();
+        if (docArchiveContainer){
              items.push({
                 xtype: 'ldk-linkbutton',
                 text: 'Open Document Archive',
                 linkTarget: '_blank',
                 linkCls: 'labkey-text-link',
-                href: LABKEY.ActionURL.buildURL('project', 'start', ctx.DocumentArchiveContainer),
+                href: LABKEY.ActionURL.buildURL('project', 'start', docArchiveContainer),
                 style: 'margin: 5px;'
             });
         }
@@ -41,5 +42,10 @@ Ext4.define('EHR.panel.DocumentArchivePanel', {
             });
         }
         return items
+    },
+
+    getDocumentArchiveContainer: function() {
+        var ctx = LABKEY.getModuleContext('ehr');
+        return ctx ? ctx.EHRDocumentArchiveContainer : null;
     }
 });

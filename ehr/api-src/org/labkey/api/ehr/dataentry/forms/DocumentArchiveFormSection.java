@@ -1,4 +1,3 @@
-package org.labkey.api.ehr.dataentry.forms;
 /*
  * Copyright (c) 2017 LabKey Corporation
  *
@@ -14,6 +13,7 @@ package org.labkey.api.ehr.dataentry.forms;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.labkey.api.ehr.dataentry.forms;
 
 import org.labkey.api.ehr.dataentry.AbstractFormSection;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
@@ -22,6 +22,7 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Collections;
 import java.util.List;
+
 public class DocumentArchiveFormSection extends AbstractFormSection
 {
     public DocumentArchiveFormSection()

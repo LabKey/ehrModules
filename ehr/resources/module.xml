@@ -70,6 +70,13 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRDocumentArchiveContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>This is the container path to the folder that will store documents related to arrivals and departures from the center.</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
     </properties>
     <requiredModuleContext>
         <requiredModule name="LDK"/>
