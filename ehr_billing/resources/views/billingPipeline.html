@@ -12,22 +12,29 @@
             initComponent: function(){
                 Ext4.apply(this, {
                     border: false,
-                    width: 460,
-                    bodyStyle: 'padding: 5px;',
+                    width: 485,
+                    bodyStyle: 'background-color: transparent;',
                     defaults: {
                         border: false,
-                        width: 450,
-                        labelWidth: 180
+                        width: 475,
+                        bodyStyle: 'background-color: transparent;',
+                        labelWidth: 100
                     },
                     items: [{
                         html: 'Loading...'
                     }],
-                    buttons: [{
-                        text: 'Submit',
-                        itemId: 'submitBtn',
-                        handler: this.startAnalysis,
-                        disabled: true,
-                        scope: this
+                    dockedItems: [{
+                        xtype: 'toolbar',
+                        dock: 'bottom',
+                        ui: 'footer',
+                        style: 'background-color: transparent;',
+                        items: ['->', {
+                            text: 'Submit',
+                            itemId: 'submitBtn',
+                            handler: this.startAnalysis,
+                            disabled: true,
+                            scope: this
+                        }]
                     }]
                 });
 
@@ -77,8 +84,11 @@
                 ctx = ctx || {};
 
                 return  [{
-                    html: 'This will kick off a pipeline job to calculate the charges for a billing period.'  +
-                    '<p>NOTE: In addition to caching the list of charges for this period, the billing run will mark any manually entered charges as associated with this billing period.  Therefore this action should only be performed when you want to create the official record, and should not be performed as a test.',
+                    html: '<p>This will kick off a pipeline job to calculate the charges for a billing period.</p>'  +
+                        '<p>NOTE: In addition to caching the list of charges for this period, the billing run will ' +
+                        'mark any manually entered charges as associated with this billing period.  Therefore this ' +
+                        'action should only be performed when you want to create the official record, and should not ' +
+                        'be performed as a test.',
                     style: 'padding-bottom: 20px;'
                 },{
                     xtype: 'textfield',
