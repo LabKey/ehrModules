@@ -46,7 +46,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         //check whether container path matches
         if (store.containerPath && store.containerPath != this.containerPath)
-            console.log('possible problem: container doesnt match');
+            console.log('possible problem: container doesn\'t match');
 
         EHR.ext.StoreCollection.superclass.add.call(this, store.storeId, store);
 

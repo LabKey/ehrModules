@@ -235,7 +235,7 @@ EHR.Security = new function(){
                 if (!sm){
                     LDK.Utils.logToServer({
                         level: 'ERROR',
-                        message: "EHR.Security.hasPermission() has been called for a query that doesnt exist: " + query.queryName
+                        message: "EHR.Security.hasPermission() has been called for a query that doesn't exist: " + query.queryName
                     });
                 }
 
