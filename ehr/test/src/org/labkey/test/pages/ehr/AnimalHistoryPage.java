@@ -27,12 +27,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import static org.junit.Assert.assertTrue;
 import static org.labkey.test.Locator.NBSP;
 import static org.labkey.test.components.ext4.Window.Window;
 import static org.labkey.test.components.ldk.panel.AbstractFilterType.FILTER_SIGNAL;
@@ -159,6 +161,40 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
         return texts;
     }
 
+    public void assertExpectedColumnValues(String message, Map<String,String> expectedColValues)
+    {
+        WebElement activeReportPanel = getActiveReportPanel();
+        List<String> labels = getTexts(Locator.byClass("x4-field-label-cell").findElements(activeReportPanel));
+        List<String> values = getTexts(Locator.byClass("x4-field-label-cell").followingSibling("td").findElements(activeReportPanel));
+        Iterator<String> ilabels = labels.iterator();
+        Iterator<String> ivalues = values.iterator();
+        List<String> errors = new ArrayList<>();
+        while (ilabels.hasNext() && ivalues.hasNext())
+        {
+            String label = ilabels.next();
+            String value = ivalues.next();
+            if (expectedColValues.containsKey(label))
+            {
+                String expected = expectedColValues.get(label);
+                String msg = label + ": expected=" + expected + ", actual=" + value;
+                log(msg);
+                if (expected.isEmpty() && !value.trim().isEmpty() || !value.contains(expected))
+                    errors.add(msg);
+            }
+        }
+        for (String label : expectedColValues.keySet())
+        {
+            if (!labels.contains(label))
+                errors.add("Column '" + label + "' not present. Expected: " + expectedColValues.get(label));
+        }
+        assertTrue(message + ": " + String.join("\n", errors), errors.isEmpty());
+    }
+
+    /**
+     * Replaced by assertExpectedColumnValues. Leaving in place for current feature branches.
+     * TODO: Remove in 18.2.4
+     */
+    @Deprecated
     public boolean hasExpectedColumnValues(Map<String,String> expectedColValues)
     {
         WebElement activeReportPanel = getActiveReportPanel();
