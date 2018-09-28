@@ -29,6 +29,7 @@ import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -54,6 +55,7 @@ abstract public class AbstractFormSection implements FormSection
     private boolean _allowBulkAdd = true;
     private boolean _supportFormSort = true;
     private Boolean _showSaveTemplateForAll = null;
+    private Map<String, String> _extraProperties = new HashMap<>();
 
     private List<String> _configSources = new ArrayList<>();
 
@@ -287,6 +289,7 @@ abstract public class AbstractFormSection implements FormSection
         json.put("tbarButtons", getTbarButtons());
         json.put("tbarMoreActionButtons", getTbarMoreActionButtons());
         json.put("serverStoreSort", getServerSort());
+        json.put("extraProperties", _extraProperties);
 
         if (_tabName != null)
             json.put("tabName", _tabName);
@@ -373,5 +376,15 @@ abstract public class AbstractFormSection implements FormSection
     public void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll)
     {
         _showSaveTemplateForAll = showSaveTemplateForAll;
+    }
+
+    public void addExtraProperty(String key, String value)
+    {
+        _extraProperties.put(key, value);
+    }
+
+    public String getExtraProperty(String key)
+    {
+        return _extraProperties.get(key);
     }
 }
