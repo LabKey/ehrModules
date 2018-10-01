@@ -11,6 +11,7 @@ Ext4.define('EHR.form.field.RoomFieldSingle', {
     anyMatch: true,
     displayField: 'room',
     forceSelection: true,
+    columns: 'room,area',
 
     initComponent: function(){
         var ctx = EHR.Utils.getEHRContext();
@@ -23,7 +24,7 @@ Ext4.define('EHR.form.field.RoomFieldSingle', {
                 containerPath: ctx ? ctx['EHRStudyContainer'] : null,
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
-                columns: 'room,area',
+                columns: this.columns,
                 sort: 'room_sortValue',
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
