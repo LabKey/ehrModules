@@ -35,6 +35,7 @@ import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -105,8 +106,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
         if (skipStudyImportQueryValidation())
         {
-            Locator cb = Locator.checkboxByName("validateQueries");
-            waitForElement(cb);
+            WebElement cb = waitForElement(Locator.checkboxByName("validateQueries"));
             uncheckCheckbox(cb);
         }
 
