@@ -170,7 +170,6 @@ ehr/api-src/org/labkey/api/ehr/dataentry/forms/LockAnimalsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/NewAnimalFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/TBFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/TreatmentOrdersFormSection.java -text
-ehr/api-src/org/labkey/api/ehr/dataentry/forms/TreatmentsFormType.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/forms/WeightFormType.java -text
 ehr/api-src/org/labkey/api/ehr/demographics/AbstractDemographicsProvider.java -text
