@@ -450,9 +450,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
         else {
             var html = '';
+            var sep = '';
             Ext4.each(animals, function(id) {
-                html += '<a href="' + LABKEY.ActionURL.buildURL('ehr', 'participantView', null, {participantId: id}) + '">'
-                        + LABKEY.Utils.encodeHtml(id) + '</a>';
+                html += sep + '<a href="' + LABKEY.ActionURL.buildURL('ehr', 'participantView', null, {participantId: id}) + '">' + LABKEY.Utils.encodeHtml(id) + '</a>';
+                sep = ', ';
             });
             toSet['cagemates'] = html;
         }
