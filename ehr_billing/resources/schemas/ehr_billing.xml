@@ -564,11 +564,11 @@
                 <columnTitle>Name</columnTitle>
                 <nullable>false</nullable>
             </column>
+            <column columnName="chargeCategoryId">
+                <columnTitle>Charge Category Id</columnTitle>
+            </column>
             <column columnName="shortName">
                 <columnTitle>Short Name</columnTitle>
-            </column>
-            <column columnName="category">
-                <columnTitle>Category</columnTitle>
             </column>
             <column columnName="comment">
                 <columnTitle>Comment</columnTitle>
@@ -733,6 +733,28 @@
                     <fkTable>Object</fkTable>
                     <fkDbSchema>exp</fkDbSchema>
                 </fk>
+            </column>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="chargeableItemCategories" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Chargeable Item Categories</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId">
+                <columnTitle>Row Id</columnTitle>
+            </column>
+            <column columnName="name">
+                <columnTitle>Name</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="dateDisabled">
+                <columnTitle>Date Disabled</columnTitle>
+                <nullable>true</nullable>
             </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
