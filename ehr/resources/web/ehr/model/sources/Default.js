@@ -2044,7 +2044,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                         }
                     }
                     else {
-                        console.log('upable to find lookup store for rearing type');
+                        console.log('unable to find lookup store for rearing type');
                     }
                 }
             }
