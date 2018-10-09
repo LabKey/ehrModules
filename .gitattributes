@@ -700,6 +700,7 @@ ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.10-18.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.11-18.12.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.20-18.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.20-11.30.sql -text
@@ -884,6 +885,7 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.10-18.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.11-18.12.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.20-18.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.30-12.10.sql -text
@@ -1357,6 +1359,7 @@ ehr/resources/web/ehr/panel/DataEntryFormDetailsPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryPanel.js -text
 ehr/resources/web/ehr/panel/DeathFormInstructionsPanel.js -text
 ehr/resources/web/ehr/panel/DocumentArchivePanel.js -text
+ehr/resources/web/ehr/panel/EHRSettingsPanel.js -text
 ehr/resources/web/ehr/panel/EnterDataPanel.js -text
 ehr/resources/web/ehr/panel/EnterRemarkPanel.js -text
 ehr/resources/web/ehr/panel/ExamDataEntryPanel.js -text

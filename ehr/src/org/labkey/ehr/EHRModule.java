@@ -126,7 +126,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 18.20;
+        return 18.21;
     }
 
     public boolean hasScripts()
