@@ -20,10 +20,10 @@ package org.labkey.api.ehr.security;
  * Date: 1/17/13
  * Time: 7:49 PM
  */
-public class EHRVeternarianPermission extends AbstractEHRPermission
+public class EHRVeterinarianPermission extends AbstractEHRPermission
 {
-    public EHRVeternarianPermission()
+    public EHRVeterinarianPermission()
     {
-        super("EHRVeternarianPermission", "This is the base permission used to grant vets additional privileges, such as case review");
+        super("EHRVeterinarianPermission", "This is the base permission used to grant vets additional privileges, such as case review");
     }
 }

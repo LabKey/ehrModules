@@ -25,7 +25,7 @@ Ext4.define('EHR.window.VetReviewWindow', {
 
     initComponent: function(){
         Ext4.apply(this, {
-            title: 'Mark Veternarian Review',
+            title: 'Mark Veterinarian Review',
             modal: true,
             closeAction: 'destroy',
             width: 400,

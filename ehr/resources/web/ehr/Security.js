@@ -333,7 +333,7 @@ EHR.Security = new function(){
         Permissions: {
             DATA_ENTRY: classPrefix + '.EHRDataEntryPermission',
             DATA_ADMIN: classPrefix + '.EHRDataAdminPermission',
-            VET: classPrefix + '.EHRVeternarianPermission',
+            VET: classPrefix + '.EHRVeterinarianPermission',
             PROCEDURE_MANAGEMENT: classPrefix + '.EHRProcedureManagementPermission',
             SURGERY_ENTRY: classPrefix + '.EHRSurgeryEntryPermission',
             CLINICAL_ENTRY: classPrefix + '.EHRClinicalEntryPermission',

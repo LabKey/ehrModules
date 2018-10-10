@@ -288,7 +288,7 @@ ehr/api-src/org/labkey/api/ehr/security/EHRScheduledUpdatePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSurgeryEntryPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRTemplateCreatorPermission.java -text
-ehr/api-src/org/labkey/api/ehr/security/EHRVeternarianPermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRVeterinarianPermission.java -text
 ehr/api-src/org/labkey/api/ehr/table/AssignedAtTimeForeignKey.java -text
 ehr/api-src/org/labkey/api/ehr/table/AssignmentAtTimeForeignKey.java -text
 ehr/api-src/org/labkey/api/ehr/table/DurationColumn.java -text
@@ -1543,7 +1543,7 @@ ehr/src/org/labkey/ehr/security/EHRSecurityManager.java -text
 ehr/src/org/labkey/ehr/security/EHRSnomedEditorRole.java -text
 ehr/src/org/labkey/ehr/security/EHRSurgeryEntryRole.java -text
 ehr/src/org/labkey/ehr/security/EHRTemplateCreatorRole.java -text
-ehr/src/org/labkey/ehr/security/EHRVeternarianRole.java -text
+ehr/src/org/labkey/ehr/security/EHRVeterinarianRole.java -text
 ehr/src/org/labkey/ehr/table/AgeDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/AgeMonthsDisplayColumn.java -text
 ehr/src/org/labkey/ehr/table/AgeYearMonthsDisplayColumn.java -text

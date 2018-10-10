@@ -16,7 +16,7 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
-import org.labkey.api.ehr.security.EHRVeternarianPermission;
+import org.labkey.api.ehr.security.EHRVeterinarianPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -27,17 +27,17 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * Date: 1/17/13
  * Time: 7:42 PM
  */
-public class EHRVeternarianRole extends AbstractEHRRole
+public class EHRVeterinarianRole extends AbstractEHRRole
 {
-    public EHRVeternarianRole()
+    public EHRVeterinarianRole()
     {
-        super("EHR Veternarian", "This role is used to track vets, which grants those users additional editing permissions and is used to populate the table ehr_lookups.veternarians.",
+        super("EHR Veterinarian", "This role is used to track vets, which grants those users additional editing permissions and is used to populate the table ehr_lookups.veterinarians.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,
             DeletePermission.class,
             EHRDataEntryPermission.class,
-            EHRVeternarianPermission.class
+            EHRVeterinarianPermission.class
         );
     }
 }

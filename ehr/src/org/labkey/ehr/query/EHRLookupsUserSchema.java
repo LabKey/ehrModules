@@ -51,7 +51,7 @@ import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
-import org.labkey.ehr.security.EHRVeternarianRole;
+import org.labkey.ehr.security.EHRVeterinarianRole;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -259,7 +259,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         SecurityPolicy policy = getContainer().getPolicy();
         for (RoleAssignment r : policy.getAssignments())
         {
-            if (r.getRole().getClass() == EHRVeternarianRole.class)
+            if (r.getRole().getClass() == EHRVeterinarianRole.class)
             {
                 User user = UserManager.getUser(r.getUserId());
                 if (user != null)
@@ -293,7 +293,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         ti.addWrapColumn(ti.getRealTable().getColumn("DisplayName"));
         ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
         ti.setName(name);
-        ti.setTitle("Veternarians");
+        ti.setTitle("Veterinarians");
 
         return ti;
     }

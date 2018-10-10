@@ -103,7 +103,7 @@ import org.labkey.ehr.security.EHRRequestorRole;
 import org.labkey.ehr.security.EHRSnomedEditorRole;
 import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRTemplateCreatorRole;
-import org.labkey.ehr.security.EHRVeternarianRole;
+import org.labkey.ehr.security.EHRVeterinarianRole;
 
 import javax.servlet.ServletContext;
 import java.util.Arrays;
@@ -178,7 +178,7 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRRequestAdminRole());
         RoleManager.registerRole(new EHRTemplateCreatorRole());
 
-        RoleManager.registerRole(new EHRVeternarianRole());
+        RoleManager.registerRole(new EHRVeterinarianRole());
         RoleManager.registerRole(new EHRDataEntryRole());
         RoleManager.registerRole(new EHRClinicalEntryRole());
         RoleManager.registerRole(new EHRSurgeryEntryRole());
