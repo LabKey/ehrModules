@@ -1595,6 +1595,7 @@ ehr_billing/api-src/org/labkey/api/ehr_billing/security/EHR_BillingAdminPermissi
 ehr_billing/build.gradle -text
 ehr_billing/module.properties -text
 ehr_billing/resources/module.xml -text
+ehr_billing/resources/queries/ehr_billing/chargeableItems.js -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.sql -text
 ehr_billing/resources/queries/ehr_billing/invoiceRuns.query.xml -text
