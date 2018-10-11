@@ -44,6 +44,7 @@ import org.labkey.api.pipeline.PipelineJob;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.RecordedAction;
 import org.labkey.api.pipeline.RecordedActionSet;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -294,7 +295,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             String invoiceId = getOrCreateInvoiceRunRecord();
 
-            TableInfo invoicedItems = EHR_BillingSchema.getInstance().getTableInvoiceItems();
+            TableInfo invoicedItems = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(),
+                    EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
             {
                 CaseInsensitiveHashMap toInsert = new CaseInsensitiveHashMap();
@@ -332,14 +334,15 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     }
                 }
 
-                Table.insert(getJob().getUser(), invoicedItems, toInsert);
+                BatchValidationException errors = new BatchValidationException();
+                invoicedItems.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), Collections.singletonList(toInsert), errors, null, null);
             }
 
             //update records in miscCharges to show proper invoiceId
             if (isMiscCharge)
                 updateProcessedMiscChargesRecords(rows);
         }
-        catch (RuntimeSQLException e)
+        catch (Exception e)
         {
             throw new PipelineJobException(e);
         }
