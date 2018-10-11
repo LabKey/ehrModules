@@ -26,8 +26,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 observerLookupField: 'departmentCode'
             },
             lookup: {
-                columns: 'rowId, name, category, departmentCode',
-                sort: 'category,name'
+                columns: 'rowId, name, chargeCategoryId, departmentCode',
+                sort: 'name, chargeCategoryId'
             }
         },
         project: {
