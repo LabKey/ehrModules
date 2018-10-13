@@ -28,7 +28,6 @@ import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
 import org.labkey.api.pipeline.PipeRoot;
-import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.pipeline.PipelineValidationException;
 import org.labkey.api.query.DetailsURL;
@@ -166,9 +165,8 @@ public class EHR_BillingController extends SpringActionController
                 keyField = pks.get(0);
 
             ColumnInfo objectid = ti.getColumn("objectid");
-            String defaultValue = objectid.getDefaultValue();
 
-            if(null == defaultValue)
+            if (null == objectid.getDefaultValue())
                 objectid.setDefaultValue(GUID.makeGUID());
 
             ActionURL url = getViewContext().getActionURL().clone();
