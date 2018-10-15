@@ -7,7 +7,6 @@ import org.labkey.api.files.FileUrls;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineJob;
 import org.labkey.api.pipeline.PipelineJobService;
-import org.labkey.api.pipeline.PipelineValidationException;
 import org.labkey.api.pipeline.TaskId;
 import org.labkey.api.pipeline.TaskPipeline;
 import org.labkey.api.security.User;
@@ -15,6 +14,7 @@ import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,12 +51,6 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
         analysisDir.mkdirs();
 
         return analysisDir;
-    }
-
-    @Override
-    public boolean hasJacksonSerialization()
-    {
-        return true;
     }
 
     @Override
