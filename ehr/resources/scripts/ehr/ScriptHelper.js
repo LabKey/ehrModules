@@ -48,7 +48,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         quickValidation: false,
         errorThreshold: null,
         newIdsAdded: {},
-        extraBirthFieldMappings: {}
+        extraBirthFieldMappings: {},
+        extraDemographicsFieldMappings: {}
     };
 
     //test to see if GUID persisted across tables
@@ -192,6 +193,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getExtraBirthFieldMappings: function(){
             return scriptOptions.extraBirthFieldMappings || {};
+        },
+
+        getExtraDemographicsFieldMappings: function(){
+            return scriptOptions.extraDemographicsFieldMappings || {};
         },
 
         getSchemaName: function(){
