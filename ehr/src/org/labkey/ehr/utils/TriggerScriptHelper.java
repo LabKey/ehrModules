@@ -1461,7 +1461,8 @@ public class TriggerScriptHelper
         return recipients;
     }
 
-    public String onAnimalArrival(String id, Map<String, Object> row, @Nullable Map<String, Object> extraBirthFieldMappings) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    public String onAnimalArrival(String id, Map<String, Object> row, @Nullable Map<String, Object> extraBirthFieldMappings,
+                                  @Nullable Map<String, Object> extraDemographicsFieldMappings) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
         List<String> errorMsgs = new ArrayList<>();
 
@@ -1477,6 +1478,13 @@ public class TriggerScriptHelper
         //allow the potential for entry without birth date
         demographicsProps.put("date", row.get("birth") != null ? row.get("birth") : row.get("date"));
         demographicsProps.put("calculated_status", "Alive");
+        if (extraDemographicsFieldMappings != null)
+        {
+            for (String fieldName : extraDemographicsFieldMappings.keySet())
+            {
+                demographicsProps.put(fieldName, row.get(extraDemographicsFieldMappings.get(fieldName)));
+            }
+        }
         createDemographicsRecord(id, demographicsProps);
 
         if (row.get("birth") != null)
@@ -1490,7 +1498,7 @@ public class TriggerScriptHelper
                 }
             }
             birthProps.put("date", row.get("birth"));
-            birthProps.put("gender", row.get("gender"));
+            birthProps.put("gender", row.get("gender"));  // FIXME: why are gender, species, and geographic_origin treated differently here than up above with demographics?
             birthProps.put("species", row.get("species"));
             birthProps.put("geographic_origin", row.get("geographic_origin"));
 
