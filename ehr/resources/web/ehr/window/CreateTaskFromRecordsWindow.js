@@ -12,6 +12,8 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
     selectField: 'lsid',
     title: 'Create Task',
+    allowAddToExistingTask: true,
+    showTotalSelectedCount: true,
 
     statics: {
         /**
@@ -40,22 +42,26 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
 
         Ext4.apply(this, {
             modal: true,
+            border: false,
             closeAction: 'destroy',
             width: 400,
             items: [{
                 xtype: 'form',
                 itemId: 'theForm',
                 bodyStyle: 'padding: 5px;',
+                border: false,
                 defaults: {
                     border: false,
                     width: 360
                 },
                 items: [{
                     html: 'Total Selected: ' + '<br><br>',
-                    border: false
+                    border: false,
+                    hidden: !this.showTotalSelectedCount
                 },{
                     xtype: 'radiogroup',
                     itemId: 'type',
+                    hidden: !this.allowAddToExistingTask,
                     defaults: {
                         name: 'type',
                         xtype: 'radio'
@@ -191,12 +197,16 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             schemaName: dataRegion.schemaName,
             queryName: dataRegion.queryName,
             sort: 'Id,date',
-            columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
+            columns: this.getLoadDataColumns(),
             filterArray: [LABKEY.Filter.create('lsid', this.checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
             scope: this,
             success: this.onDataLoad,
             failure: LDK.Utils.getErrorCallback()
         });
+    },
+
+    getLoadDataColumns: function() {
+        return 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest';
     },
 
     onDataLoad: function(data){
@@ -243,13 +253,19 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             Ext4.Msg.alert('Error', errors.join('<br>'));
         }
 
-        var form = this.down('#theForm');
-        form.remove(0);
-        form.insert(0, {
-            html: 'Total Selected: ' + this.records.length + '<br><br>',
-            border: false
-        });
+        if (this.showTotalSelectedCount) {
+            var form = this.down('#theForm');
+            form.remove(0);
+            form.insert(0, {
+                html: 'Total Selected: ' + this.records.length + '<br><br>',
+                border: false
+            });
+        }
 
+        this.afterDataLoad();
+    },
+
+    afterDataLoad: function() {
         this.down('#submitBtn').setDisabled(false);
         this.setLoading(false);
     },

@@ -34,7 +34,12 @@ public class CreateTaskFromRecordsButton extends SimpleButtonConfigFactory
 {
     public CreateTaskFromRecordsButton(Module owner, String btnLabel, String taskLabel, String formType)
     {
-        super(owner, btnLabel, "EHR.window.CreateTaskFromRecordsWindow.createTaskFromRecordHandler(dataRegionName, '" + formType + "', '" + taskLabel + "')");
+        this(owner, btnLabel, "EHR.window.CreateTaskFromRecordsWindow.createTaskFromRecordHandler(dataRegionName, '" + formType + "', '" + taskLabel + "')");
+    }
+
+    public CreateTaskFromRecordsButton(Module owner, String btnLabel, String handler)
+    {
+        super(owner, btnLabel, handler);
         setClientDependencies(ClientDependency.fromPath("ehr/window/CreateTaskFromRecordsWindow.js"));
     }
 
