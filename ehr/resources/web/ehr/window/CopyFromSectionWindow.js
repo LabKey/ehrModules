@@ -101,7 +101,7 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             html: '<b>Date</b>'
         },{
             html: '<b>Project</b>'
-        }]
+        }];
 
         if (this.targetGrid.store.getFields().get('chargetype'))
         {
@@ -145,9 +145,9 @@ Ext4.define('EHR.window.CopyFromSectionWindow', {
             };
 
             keys[key].total++;
-            if (record.get('performedby'))
+            if (record.fields.get('performedby') && record.get('performedby'))
                 keys[key].performedby.push(record.get('performedby'));
-            if (record.get('project'))
+            if (record.fields.get('project') && record.get('project'))
                 keys[key].projects.push(record.get('project'));
             if (record.fields.get('chargetype') && record.get('chargetype'))
                 keys[key].chargeUnits.push(record.get('chargetype'));
