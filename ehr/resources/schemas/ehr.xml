@@ -2155,4 +2155,30 @@
             <column columnName="Container"/>
         </columns>
     </table>
+    <table tableDbType="TABLE" tableName="investigators">
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="firstName"/>
+            <column columnName="lastName"/>
+            <column columnName="position"/>
+            <column columnName="address"/>
+            <column columnName="city"/>
+            <column columnName="state"/>
+            <column columnName="country"/>
+            <column columnName="zip"/>
+            <column columnName="phoneNumber"/>
+            <column columnName="investigatorType"/>
+            <column columnName="emailAddress"/>
+            <column columnName="dateCreated"/>
+            <column columnName="dateDisabled"/>
+            <column columnName="division"/>
+            <column columnName="userid"/>
+            <column columnName="Lsid"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Container"/>
+        </columns>
+    </table>
 </tables>

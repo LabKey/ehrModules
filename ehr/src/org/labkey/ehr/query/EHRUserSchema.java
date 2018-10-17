@@ -73,6 +73,8 @@ public class EHRUserSchema extends SimpleUserSchema
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         else if (EHRSchema.TABLE_REPORTS.equalsIgnoreCase(name))
             return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+        else if (EHRSchema.TABLE_INVESTIGATORS.equalsIgnoreCase(name))
+            return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
         else if (EHRSchema.TABLE_PROTOCOL.equalsIgnoreCase(name))
             return getContainerScopedTable(schemaTable, "protocol", EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
