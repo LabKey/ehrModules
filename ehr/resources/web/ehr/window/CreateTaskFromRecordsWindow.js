@@ -317,16 +317,19 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         var date = this.down('#date').getValue();
         if(!date){
             Ext4.Msg.alert('Error', 'Must enter a date');
+            return;
         }
 
         var assignedTo = this.down('#assignedTo').getValue();
         if(!assignedTo){
             Ext4.Msg.alert('Error', 'Must assign to someone');
+            return;
         }
 
         var title = this.down('#titleField').getValue();
         if(!title){
             Ext4.Msg.alert('Error', 'Must enter a title');
+            return;
         }
 
         Ext4.Msg.wait('Saving...');
@@ -345,21 +348,23 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             existingRecords: existingRecords,
             taskRecord: {date: date, assignedTo: assignedTo, category: 'task', title: title, formType: this.formType},
             scope: this,
-            success: function(response, options, config){
-                Ext4.Msg.hide();
-
-                var viewAfterCreate = this.down('#viewAfterCreate').getValue();
-                this.close();
-
-                if (viewAfterCreate){
-                    window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
-                }
-                else {
-                    LABKEY.DataRegions[this.dataRegionName].refresh();
-                }
-            },
+            success: this.createTaskSuccess,
             failure: LDK.Utils.getErrorCallback()
         });
+    },
+
+    createTaskSuccess: function(response, options, config){
+        Ext4.Msg.hide();
+
+        var viewAfterCreate = this.down('#viewAfterCreate').getValue();
+        this.close();
+
+        if (viewAfterCreate){
+            window.location = LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {taskid: config.taskId, formType: this.formType});
+        }
+        else {
+            LABKEY.DataRegions[this.dataRegionName].refresh();
+        }
     },
 
     getRecords: function(){
