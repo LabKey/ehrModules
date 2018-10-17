@@ -612,6 +612,27 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getErrorSeveritiyForBloodDrawsWithoutWeight: function(){
             return scriptOptions.errorSeveritiyForBloodDrawsWithoutWeight;
+        },
+
+        // itemName is that item's name in the db row, itemLabel is the human-readable name, and itemValue is the actual value of the item
+        checkForDuplicateDataEntryItem: function(itemName, itemLabel, itemValue, errors){
+            // on actual save draft / submit final, getRows() returns all previous rows we are trying to submit as part of this data entry
+            var previousRows = this.getRows();
+
+            console.log('hello start: ' + itemName);
+
+            if (previousRows && itemValue) {
+                previousRows.forEach(function (wrappedPreviousRow) {
+                    var previousRow = wrappedPreviousRow.row;
+
+                    console.log('hello: ' + JSON.stringify(previousRow));
+
+                    if (itemValue && previousRow[itemName]) {
+                        if (itemValue === previousRow[itemName])
+                            EHR.Server.Utils.addError(errors, itemName, itemLabel + ' ' + itemValue + ' appears more than once', 'ERROR');
+                    }
+                });
+            }
         }
     }
 };
