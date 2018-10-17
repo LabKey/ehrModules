@@ -619,13 +619,9 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             // on actual save draft / submit final, getRows() returns all previous rows we are trying to submit as part of this data entry
             var previousRows = this.getRows();
 
-            console.log('hello start: ' + itemName);
-
             if (previousRows && itemValue) {
                 previousRows.forEach(function (wrappedPreviousRow) {
                     var previousRow = wrappedPreviousRow.row;
-
-                    console.log('hello: ' + JSON.stringify(previousRow));
 
                     if (itemValue && previousRow[itemName]) {
                         if (itemValue === previousRow[itemName])
