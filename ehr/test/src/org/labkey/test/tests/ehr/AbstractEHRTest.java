@@ -139,6 +139,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected List<Long> _saveRowsTimes;
 
     protected abstract String getModuleDirectory();
+    private EHRSetupHelper _setupHelper = new EHRSetupHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath());
 
     //xpath fragment
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
@@ -359,14 +360,15 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         createProjectAndFolders(type);
         setFormatStrings();
         setEHRModuleProperties();
-        createUsersandPermissions();  //note: we create the users prior to study import, b/c that user is used by TableCustomizers
+        createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
+        if(type.equals("CNPRC EHR") || type.equals("TNPRC EHR"))
+            _setupHelper.loadEHRTableDefinitions();
         populateInitialData();
         importStudy();
         disableMiniProfiler();
         //note: these expect the study to exist
         setupStudyPermissions();
         defineQCStates();
-
         populateHardTableRecords();
         primeCaches();
     }
