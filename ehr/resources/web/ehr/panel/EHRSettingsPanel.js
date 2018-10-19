@@ -3,13 +3,12 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext4.define('ehr.panel.EHRSettingsPanel', {
+Ext4.define('EHR.panel.EHRSettingsPanel', {
     extend: 'Ext.panel.Panel',
     moduleName: '',
 
     initComponent: function () {
         this.moduleName = LABKEY.ActionURL.getController();
-        console.log(this.moduleName);
 
         if (!this.moduleName) {
             Ext4.apply(this, {
