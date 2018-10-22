@@ -38,6 +38,7 @@ public class EHR_BillingSchema
     public static final String TABLE_CHARGE_UNITS = "chargeUnits";
     public static final String TABLE_CHARGE_RATE_EXEMPTIONS = "chargeRateExemptions";
     public static final String TABLE_INVOICE = "invoice";
+    public static final String TABLE_DATA_ACCESS = "dataAccess";
 
     public static EHR_BillingSchema getInstance()
     {
@@ -104,5 +105,10 @@ public class EHR_BillingSchema
     public TableInfo getInvoice()
     {
         return getSchema().getTable(TABLE_INVOICE);
+    }
+
+    public TableInfo getDataAccessTable()
+    {
+        return getSchema().getTable(TABLE_DATA_ACCESS);
     }
 }
