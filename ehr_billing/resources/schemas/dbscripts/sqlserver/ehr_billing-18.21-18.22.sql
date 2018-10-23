@@ -14,6 +14,8 @@ CREATE TABLE ehr_billing.chargeableItemCategories (
 );
 GO
 
+TRUNCATE TABLE ehr_billing.chargeableItems;
+
 ALTER TABLE ehr_billing.chargeableItems DROP COLUMN category;
 GO
 ALTER TABLE ehr_billing.chargeableItems ADD chargeCategoryId INT NOT NULL;
