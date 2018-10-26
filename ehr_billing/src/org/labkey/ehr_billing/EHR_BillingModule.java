@@ -29,7 +29,6 @@ import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.ContainerUser;
@@ -54,7 +53,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public double getVersion()
     {
-        return 18.24;
+        return 18.30;
     }
 
     @Override
@@ -113,9 +112,8 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public JSONObject getPageContextJson(ContainerUser ctx)
     {
-        Map<String, Object> ret = new HashMap<>();
         Map<String, String> map = getDefaultPageContextJson(ctx.getContainer());
-        ret.putAll(getDefaultPageContextJson(ctx.getContainer()));
+        Map<String, Object> ret = new HashMap<>(getDefaultPageContextJson(ctx.getContainer()));
 
         if (map.containsKey(EHR_BillingManager.EHR_BillingContainerPropName) && map.get(EHR_BillingManager.EHR_BillingContainerPropName) != null)
         {
