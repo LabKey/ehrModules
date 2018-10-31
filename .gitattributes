@@ -286,6 +286,10 @@ ehr/api-src/org/labkey/api/ehr/security/EHRScheduledDeletePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledInsertPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledUpdatePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRStartedAdminPermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRStartedDeletePermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRStartedInsertPermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRStartedUpdatePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSurgeryEntryPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRTemplateCreatorPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRVeterinarianPermission.java -text
