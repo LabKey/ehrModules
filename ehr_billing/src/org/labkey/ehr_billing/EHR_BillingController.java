@@ -38,7 +38,6 @@ import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
-import org.labkey.api.security.CSRF;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
@@ -74,7 +73,6 @@ public class EHR_BillingController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    @CSRF
     public class RunBillingPipelineAction extends ApiAction<BillingPipelineForm>
     {
         public ApiResponse execute(BillingPipelineForm form, BindException errors)
