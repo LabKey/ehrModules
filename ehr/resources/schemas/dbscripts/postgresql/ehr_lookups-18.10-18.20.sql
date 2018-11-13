@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2018 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /* ehr_lookups-18.10-18.11.sql */
 
 -- add Container column to the ehr/ehr_lookups tables (values to be populated in Java upgrade script)

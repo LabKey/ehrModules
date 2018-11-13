@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2017-2018 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /* ehr_lookups-17.30-17.31.sql */
 
 -- add some base table columns (i.e. description, dateDisabled, etc.)

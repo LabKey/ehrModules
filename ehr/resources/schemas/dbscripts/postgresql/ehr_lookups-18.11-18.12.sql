@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2018 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 
 -- add new RowId PK column and per-container unique constraints
 ALTER TABLE ehr_lookups.treatment_codes
