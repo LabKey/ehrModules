@@ -53,6 +53,11 @@ Ext4.define('EHR.grid.Panel', {
             if (models.length != 1)
                 return;
 
+            //checks the extra property for a non dataset that does not have Id column
+            var byPassId = models[0].store.sectionCfg.extraProperties.BY_PASS_ANIMAL_ID;
+            if (byPassId || byPassId === 'true')
+                return;
+
             var id = models[0].get('Id');
             this.fireEvent('animalchange', id);
         }, this);

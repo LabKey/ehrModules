@@ -57,6 +57,12 @@ abstract public class AbstractFormSection implements FormSection
     private Boolean _showSaveTemplateForAll = null;
     private Map<String, String> _extraProperties = new HashMap<>();
 
+    /**
+    * Use this string as a key to addExtraProperty in FormSection backed by non datasets not having animal id column.
+    * This will by pass the getId in Panel.js(line 58) to update the animal details section.
+    * */
+    protected static final String BY_PASS_ANIMAL_ID = "BY_PASS_ANIMAL_ID";
+
     private List<String> _configSources = new ArrayList<>();
 
     private LinkedHashSet<ClientDependency> _clientDependencies = new LinkedHashSet<>();
