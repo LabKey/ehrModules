@@ -27,7 +27,6 @@ import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
-import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
@@ -35,6 +34,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableResultSet;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr_billing.pipeline.BillingPipelineJobProcess;
 import org.labkey.api.ehr_billing.pipeline.BillingPipelineJobSupport;
 import org.labkey.api.ehr_billing.pipeline.InvoicedItemsProcessingService;
 import org.labkey.api.exp.api.ExperimentService;
@@ -53,18 +53,19 @@ import org.labkey.api.util.GUID;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A pipeline job task to generate Invoiced Items and Invoice Run for a given billing period.
@@ -125,8 +126,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         if (ehrContainer == null)
             throw new PipelineJobException("EHRStudyContainer has not been set");
 
-        Container billingRunContainer = EHR_BillingManager.get().getBillingContainer(getJob().getContainer());
-        if (billingRunContainer == null)
+        Container billingContainer = EHR_BillingManager.get().getBillingContainer(getJob().getContainer());
+        if (billingContainer == null)
             throw new PipelineJobException("Billing Container not found.");
 
         getJob().getLogger().info("Beginning process to save monthly billing data");
@@ -134,14 +135,13 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             getOrCreateInvoiceRunRecord();
-
             loadTransactionNumber();
-            leaseFeeProcessing(billingRunContainer);
-            perDiemProcessing(billingRunContainer);
-            proceduresProcessing(billingRunContainer);
-            labworkProcessing(billingRunContainer);
-            miscChargesProcessing(ehrContainer);
-            updateInvoiceTable(billingRunContainer);
+            for (BillingPipelineJobProcess process : processingService.getProcessList())
+            {
+                Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
+                runProcessing(process, billingRunContainer);
+            }
+            updateInvoiceTable(billingContainer);
 
             transaction.commit();
         }
@@ -257,9 +257,9 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
-    private String getOrCreateInvoiceRecord(String debitedAccount, Date endDate) throws PipelineJobException
+    private String getOrCreateInvoiceRecord(Map<String, Object> row, Date endDate) throws PipelineJobException
     {
-        String invoiceNumber = processingService.getInvoiceNum(debitedAccount, endDate);
+        String invoiceNumber = processingService.getInvoiceNum(row, endDate);
         try
         {
             TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
@@ -271,7 +271,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
                 Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
                 toCreate.put("invoiceNumber", invoiceNumber);
-                toCreate.put("accountNumber", debitedAccount);
+                toCreate.put("accountNumber", row.get("debitedAccount"));
                 toCreate.put("container", getJob().getContainer().getId());
                 toCreate.put("invoiceRunId", _invoiceId);
 
@@ -285,16 +285,13 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
-    private void
-    writeToInvoicedItems(List<Map<String, Object>> rows, String category, String[] colNames, String queryName, boolean allowNullProject, Date endDate, boolean isMiscCharge) throws PipelineJobException
+    private void writeToInvoicedItems(BillingPipelineJobProcess process, Collection<Map<String, Object>> rows, BillingPipelineJobSupport support) throws PipelineJobException
     {
-        String[] invoicedItemsCols = processingService.getInvoicedItemsColumnNames();
-        assert colNames.length >= invoicedItemsCols.length;
+        Set<String> queryColNames = process.getQueryToInvoiceItemColMap().keySet();
+        String invoiceId = getOrCreateInvoiceRunRecord();
 
         try
         {
-            String invoiceId = getOrCreateInvoiceRunRecord();
-
             TableInfo invoicedItems = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(),
                     EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
@@ -304,29 +301,19 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 toInsert.put("objectId", new GUID());
                 toInsert.put("invoiceId", invoiceId);
                 toInsert.put("transactionNumber", getNextTransactionNumber());
-                toInsert.put("invoiceNumber", getOrCreateInvoiceRecord((String)row.get("debitedAccount"), endDate));
+                toInsert.put("invoiceNumber", getOrCreateInvoiceRecord(row, support.getEndDate()));
+                toInsert.put("category", process.getLabel());
 
-                int idx = 0;
-                for (String field : invoicedItemsCols)
+                for (String field : queryColNames)
                 {
-                    String translatedKey = colNames[idx];
-                    idx++;
-                    if (translatedKey == null)
-                        continue;
-
-                    if (row.containsKey(translatedKey))
+                    String invoicedItemColName = process.getQueryToInvoiceItemColMap().get(field);
+                    if (invoicedItemColName != null)
                     {
-                        toInsert.put(field, row.get(translatedKey));
+                        toInsert.put(invoicedItemColName, row.get(field));
                     }
                 }
 
-                List<String> required = new ArrayList<>(Arrays.asList("date", "unitCost", "totalcost"));
-                if (!allowNullProject)
-                {
-                    required.add("project");
-                }
-
-                for (String field : required)
+                for (String field : process.getRequiredFields())
                 {
                     if (toInsert.get(field) == null)
                     {
@@ -339,7 +326,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             }
 
             //update records in miscCharges to show proper invoiceId
-            if (isMiscCharge)
+            if (process.isMiscCharges())
                 updateProcessedMiscChargesRecords(rows);
         }
         catch (Exception e)
@@ -348,7 +335,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
-    private void updateProcessedMiscChargesRecords(List<Map<String, Object>> rows) throws PipelineJobException
+    private void updateProcessedMiscChargesRecords(Collection<Map<String, Object>> rows) throws PipelineJobException
     {
         try
         {
@@ -362,7 +349,6 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 String objectId = (String)row.get("sourceRecord");
                 Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
                 toUpdate.put("invoiceId", invoiceId);
-//                toUpdate.put("objectId", objectId);
 
                 updates++;
                 Table.update(getJob().getUser(), ti, toUpdate, objectId);
@@ -378,36 +364,25 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         getJob().getLogger().info("Finished updating ehr_billing.miscCharges for Invoice Run Id " + _invoiceId);
     }
 
-    private String getString(Object val)
+    private Collection<Map<String, Object>> getRowList(BillingPipelineJobProcess process, Container container)
     {
-        if (val == null)
-        {
-            return "";
-        }
-        else if (val instanceof Date)
-        {
-            return _dateFormat.format(val);
-        }
-        else if (val instanceof Number)
-        {
-            return val.toString();
-        }
-
-        return val.toString();
-    }
-
-    private List<Map<String, Object>> getRowList(Container c, String schemaName, String queryName, String[] colNames, Map<String, Object> params)
-    {
-        UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), c, schemaName);
+        String schemaName = process.getSchemaName();
+        String queryName = process.getQueryName();
+        UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), container, schemaName);
         TableInfo ti = us.getTable(queryName);
+
+        Set<String> queryColNames = process.getQueryToInvoiceItemColMap().keySet();
         List<FieldKey> columns = new ArrayList<>();
-        for (String col : colNames)
+        for (String col : queryColNames)
         {
             columns.add(FieldKey.fromString(col));
         }
 
-        //also include isMiscCharge
-        columns.add(FieldKey.fromString("isMiscCharge"));
+        //also include isMiscCharge if appropriate
+        if (process.isMiscCharges())
+        {
+            columns.add(FieldKey.fromString("isMiscCharge"));
+        }
 
         final Map<FieldKey, ColumnInfo> colKeys = QueryService.get().getColumns(ti, columns);
         for (FieldKey col : columns)
@@ -422,135 +397,21 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
 
         TableSelector ts = new TableSelector(ti, colKeys.values(), null, null);
-        ts.setNamedParameters(params);
-
-        final List<Map<String, Object>> rows = new ArrayList<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
-        {
-            @Override
-            public void exec(ResultSet object) throws SQLException
-            {
-                Results rs = new ResultsImpl(object, colKeys);
-                Map<String, Object> ret = new HashMap<>();
-                for (FieldKey fk : colKeys.keySet())
-                {
-                    ret.put(fk.toString(), rs.getObject(fk));
-                }
-                rows.add(ret);
-            }
-        });
-
-        return rows;
+        ts.setNamedParameters(process.getQueryParams(getSupport()));
+        return ts.getMapCollection();
     }
 
-    private void perDiemProcessing(Container billingRunContainer) throws PipelineJobException
+    private void runProcessing(BillingPipelineJobProcess process, Container billingRunContainer) throws PipelineJobException
     {
-        String[] colNames = processingService.getPerDiemProcessingColumnNames();
-
-        if(colNames != null)
+        if (process != null && process.getQueryName() != null && !process.getQueryToInvoiceItemColMap().isEmpty())
         {
-            getJob().getLogger().info("Caching Per Diem Fees");
-            String queryName = processingService.getPerDiemProcessingQueryName();
+            getJob().getLogger().info("Caching " + process.getLabel());
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("StartDate", getSupport().getStartDate());
-            params.put("EndDate", getSupport().getEndDate());
-            Long numDays = Math.round(((Long) (getSupport().getEndDate().getTime() - getSupport().getStartDate().getTime())).doubleValue() / DateUtils.MILLIS_PER_DAY);
-            numDays++;
-            params.put("NumDays", numDays.intValue());
-            getJob().getLogger().info("Using start date: " + _dateFormat.format(getSupport().getStartDate()) + ", end date: " + _dateFormat.format(getSupport().getEndDate()) + ", with number of days: " + numDays.intValue());
-
-            List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
+            Collection<Map<String, Object>> rows = getRowList(process, billingRunContainer);
             getJob().getLogger().info(rows.size() + " rows found");
 
-            writeToInvoicedItems(rows, "Per Diems", colNames, queryName, true, getSupport().getEndDate(), false);
-            getJob().getLogger().info("Finished Caching Per Diem Fees");
-        }
-    }
-
-    private void proceduresProcessing(Container billingRunContainer) throws PipelineJobException
-    {
-        String[] colNames = processingService.getProceduresProcessingColumnNames();
-
-        if(colNames != null)
-        {
-            getJob().getLogger().info("Caching Procedure Fees");
-            String queryName = processingService.getProceduresProcessingQueryName();
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("StartDate", getSupport().getStartDate());
-            params.put("EndDate", getSupport().getEndDate());
-
-            List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
-            getJob().getLogger().info(rows.size() + " rows found");
-
-            writeToInvoicedItems(rows, "Procedure Fees", colNames, queryName, true, getSupport().getEndDate(), false);
-            getJob().getLogger().info("Finished Caching Procedure Fees");
-        }
-    }
-
-    private void miscChargesProcessing(Container ehrContainer) throws PipelineJobException
-    {
-        String[] colNames = processingService.getMiscChargesProcessingColumnNames();
-
-        if(colNames != null)
-        {
-            getJob().getLogger().info("Caching Other Charges");
-            String miscChargesQueryName = processingService.getMiscChargesProcessingQueryName();
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("StartDate", getSupport().getStartDate());
-            params.put("EndDate", getSupport().getEndDate());
-
-            List<Map<String, Object>> rows = getRowList(ehrContainer, processingService.getSchemaName(), miscChargesQueryName, colNames, params);
-            getJob().getLogger().info(rows.size() + " rows found");
-
-            writeToInvoicedItems(rows, "Misc Charges", colNames, miscChargesQueryName, true, getSupport().getEndDate(), true);
-
-            getJob().getLogger().info("Finished Caching Misc Charges");
-        }
-    }
-
-    private void leaseFeeProcessing(Container billingRunContainer) throws PipelineJobException
-    {
-        String[] colNames = processingService.getLeaseFeeProcessingColumnNames();
-
-        if (colNames != null)
-        {
-            getJob().getLogger().info("Caching Lease Fees");
-            String queryName = processingService.getLeaseFeeProcessingQueryName();
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("StartDate", getSupport().getStartDate());
-            params.put("EndDate", getSupport().getEndDate());
-
-            List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
-
-            getJob().getLogger().info(rows.size() + " rows found");
-
-            writeToInvoicedItems(rows, "Lease Fees", colNames, queryName, false, getSupport().getEndDate(), false);
-            getJob().getLogger().info("Finished Caching Lease Fees");
-        }
-    }
-
-    private void labworkProcessing(Container billingRunContainer) throws PipelineJobException
-    {
-        String[] colNames = processingService.getLabworkProcessingColumnNames();
-
-        if(colNames != null)
-        {
-            getJob().getLogger().info("Caching Labwork Fees");
-            String queryName = processingService.getLabworkProcessingQueryName();
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("StartDate", getSupport().getStartDate());
-            params.put("EndDate", getSupport().getEndDate());
-
-            List<Map<String, Object>> rows = getRowList(billingRunContainer, processingService.getSchemaName(), queryName, colNames, params);
-            getJob().getLogger().info(rows.size() + " rows found");
-
-            writeToInvoicedItems(rows, "Labwork Fees", colNames, queryName, false, getSupport().getEndDate(), false);
-            getJob().getLogger().info("Finished Caching Labwork Fees");
+            writeToInvoicedItems(process, rows, getSupport());
+            getJob().getLogger().info("Finished Caching " + process.getLabel());
         }
     }
 

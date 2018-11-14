@@ -1600,6 +1600,7 @@ ehr/test/src/org/labkey/test/util/ehr/EHRClientAPIHelper.java -text
 ehr/test/src/org/labkey/test/util/ehr/EHRTestHelper.java -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/EHR_BillingDomainKind.java -text
+ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/BillingPipelineJobProcess.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/BillingPipelineJobSupport.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/InvoicedItemsProcessingService.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/security/EHR_BillingAdminPermission.java -text
