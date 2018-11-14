@@ -10,19 +10,7 @@
                     <column columnName="billingPeriodEnd">
                         <formatString>Date</formatString>
                     </column>
-                    <column columnName="Animal Per Diem::total">
-                        <formatString>$###,##0.00</formatString>
-                    </column>
-                    <column columnName="Blood Draws::total">
-                        <formatString>$###,##0.00</formatString>
-                    </column>
-                    <column columnName="Misc. Fees::total">
-                        <formatString>$###,##0.00</formatString>
-                    </column>
-                    <column columnName="Animal Replacement::total">
-                        <formatString>$###,##0.00</formatString>
-                    </column>
-                    <column columnName="Clinical Lab Test::total">
+                    <column columnName="total">
                         <formatString>$###,##0.00</formatString>
                     </column>
                 </columns>

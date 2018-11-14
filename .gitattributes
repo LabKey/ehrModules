@@ -1611,7 +1611,17 @@ ehr_billing/resources/queries/ehr_billing/chargeableItems.js -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.sql -text
 ehr_billing/resources/queries/ehr_billing/invoiceRuns.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoice.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoice.sql -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory.sql -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory/.qview.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceItem.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceItem.sql -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceItem/.qview.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceProject.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceProject.sql -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceProject/.qview.xml -text
 ehr_billing/resources/queries/ehr_billing/miscCharges.js -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.20-17.30.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-17.30-18.10.sql -text
@@ -1650,6 +1660,8 @@ ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.37-17.
 ehr_billing/resources/schemas/ehr_billing.xml -text
 ehr_billing/resources/views/billingPipeline.html -text
 ehr_billing/resources/views/billingPipeline.view.xml -text
+ehr_billing/resources/views/invoiceRunDetails.html -text
+ehr_billing/resources/views/invoiceRunDetails.view.xml -text
 ehr_billing/resources/web/ehr_billing/BillingUtils.js -text
 ehr_billing/resources/web/ehr_billing/DataEntryUtils.js -text
 ehr_billing/resources/web/ehr_billing/buttons/financeButtons.js -text

@@ -1,0 +1,20 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="invoicedItemsByInvoice" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="numItems">
+                        <columnTitle># Charges</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=ehr_billing&amp;
+                            queryName=invoicedItems&amp;
+                            query.invoiceId/rowid~eq=${invoiceId/rowid}
+                        </url>
+                    </column>
+                    <column columnName="total">
+                        <formatString>$###,##0.00</formatString>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

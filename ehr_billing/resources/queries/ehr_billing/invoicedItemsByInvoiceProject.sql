@@ -15,8 +15,8 @@
  */
 SELECT
   i.invoiceId,
-  i.category,
+  i.project,
   COUNT(i.invoiceId) as numItems,
   SUM(i.totalCost) as total
 FROM ehr_billing.invoicedItems i
-GROUP BY i.invoiceId, i.category
+GROUP BY i.invoiceId, i.project

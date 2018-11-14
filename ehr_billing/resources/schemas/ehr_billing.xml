@@ -112,10 +112,11 @@
     <table tableName="invoiceRuns" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Billing Periods</tableTitle>
-        <!--TODO: <tableUrl>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</tableUrl>-->
+        <tableUrl>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</tableUrl>
         <columns>
             <column columnName="rowId">
-                <columnTitle>Invoice Run Id</columnTitle>
+                <columnTitle>Invoice</columnTitle>
+                <url>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</url>
             </column>
             <column columnName="runDate">
                 <columnTitle>Run Date</columnTitle>
