@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Service to get query names and column names to be processed during a Billing Run.
+ * Service to get a list of queries to be processed during a Billing Run. The listing is a collection of
+ * BillingPipelineJobProcess objects that define what schema.query to execute and the mapping from that query's
+ * columns to the ehr_billing.invoicedItem table's columns.
  * Additionally, get center specific generated invoice number.
  */
 public interface InvoicedItemsProcessingService
@@ -41,8 +43,8 @@ public interface InvoicedItemsProcessingService
     }
 
     /**
-     * Generate invoice number for unique account number and billing period pair.
-     * @param debitAcct account number
+     * Generate invoice number for a billing task processed row and billing period date.
+     * @param row the billing task processed row to get values from
      * @param billingPeriodDate a date within a billing period
      * @return generated invoice num
      */
