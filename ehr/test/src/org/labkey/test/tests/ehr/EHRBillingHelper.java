@@ -60,7 +60,7 @@ public class EHRBillingHelper
         _test.waitForPipelineJobsToComplete(finishedJobsExpected, "Billing Run", false);
     }
 
-    private void checkMessageWindow(String title, @Nullable String bodyText, String buttonText)
+    public void checkMessageWindow(String title, @Nullable String bodyText, String buttonText)
     {
         Window msgWindow = new Window.WindowFinder(_test.getDriver()).withTitle(title).waitFor();
         assertEquals("Message window Title mismatch", title, msgWindow.getTitle());
