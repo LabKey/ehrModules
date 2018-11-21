@@ -9,7 +9,9 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.SummaryStatisticsHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -84,19 +86,33 @@ public class EHRBillingHelper
         results.clearFilter("Id");
     }
 
-    public void verifyBillingInvoicedItemsByCategory(String invoiceId, List<InvoicedItemCategory> categories)
+    public void verifyBillingInvoicedItems(String invoiceId, List<InvoicedItem> items)
     {
         DataRegionTable results = goToInvoiceItemsForId(invoiceId);
 
-        for (InvoicedItemCategory category : categories)
+        for (InvoicedItem item : items)
         {
-            _test.log("Verifying invoice items data for category " + category.getCategory());
-            results.setFilter("category", "Equals", category.getCategory());
-            int expectedRowCount = category.getRowCount();
-            assertEquals("Wrong row count for " + category.getCategory(), expectedRowCount, results.getDataRowCount());
-            if (category.getTotalCost() != null)
-                results.verifySummaryStatisticValue("totalcost", SummaryStatisticsHelper.BASE_STAT_SUM, category.getTotalCost());
-            results.clearFilter("category");
+            if (item.getAnimalId() != null)
+                results.setFilter("Id", "Equals", item.getAnimalId());
+            if (item.getCategory() != null)
+                results.setFilter("category", "Equals", item.getCategory());
+
+            assertEquals("Wrong row count for " + item.getCategory(), item.getRowCount(), results.getDataRowCount());
+            if (item.getTotalQuantity() != null)
+                results.verifySummaryStatisticValue("quantity", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalQuantity());
+            if (item.getTotalCost() != null)
+                results.verifySummaryStatisticValue("totalcost", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalCost());
+
+            if (!item.getColumnTextCheckMap().isEmpty())
+            {
+                for (Map.Entry<String, List<String>> entry : item.getColumnTextCheckMap().entrySet())
+                    assertEquals("Wrong values for column: " + entry.getKey(), entry.getValue(), results.getColumnDataAsText(entry.getKey()));
+            }
+
+            if (item.getAnimalId() != null)
+                results.clearFilter("Id");
+            if (item.getCategory() != null)
+                results.clearFilter("category");
         }
 
         results.clearFilter("invoiceId");
@@ -112,16 +128,21 @@ public class EHRBillingHelper
         return results;
     }
 
-    public static class InvoicedItemCategory
+    public static class InvoicedItem
     {
+        private String _animalId;
         private String _category;
         private int _rowCount;
         private String _totalCost;
+        private String _totalQuantity;
+        private Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
-        public InvoicedItemCategory(String category, int rowCount, String totalCost)
+        public InvoicedItem(String animalId, String category, int rowCount, String totalQuantity, String totalCost)
         {
+            _animalId = animalId;
             _category = category;
             _rowCount = rowCount;
+            _totalQuantity = totalQuantity;
             _totalCost = totalCost;
         }
 
@@ -138,6 +159,26 @@ public class EHRBillingHelper
         public String getTotalCost()
         {
             return _totalCost;
+        }
+
+        public String getTotalQuantity()
+        {
+            return _totalQuantity;
+        }
+
+        public String getAnimalId()
+        {
+            return _animalId;
+        }
+
+        public void addColumnTextToCheck(String colName, List<String> colValues)
+        {
+            _columnTextChecks.put(colName, colValues);
+        }
+
+        public Map<String, List<String>> getColumnTextCheckMap()
+        {
+            return _columnTextChecks;
         }
     }
 }
