@@ -135,6 +135,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static String FIELD_QCSTATELABEL = "QCStateLabel";
     protected static String FIELD_OBJECTID = "objectid";
     protected static String FIELD_LSID = "lsid";
+    protected static final String BILLING_FOLDER = "Finance";
 
     protected String[] weightFields = {"Id", "date", "enddate", "project", "weight", FIELD_QCSTATELABEL, FIELD_OBJECTID, FIELD_LSID, "_recordid"};
     protected Object[] weightData1 = {getExpectedAnimalIDCasing("TESTSUBJECT1"), EHRClientAPIHelper.DATE_SUBSTITUTION, null, null, "12", EHRQCState.IN_PROGRESS.label, null, null, "_recordID"};
@@ -142,6 +143,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected abstract String getModuleDirectory();
     private EHRSetupHelper _setupHelper = new EHRSetupHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath());
+    protected EHRBillingHelper _billingHelper = new EHRBillingHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath(),BILLING_FOLDER);
 
     //xpath fragment
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
