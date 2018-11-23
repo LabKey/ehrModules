@@ -304,7 +304,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
     },
 
     //private
-    //updates the field error mesages based on the errors object returned by the store
+    //updates the field error messages based on the errors object returned by the store
     markInvalid : function()
     {
         var formMessages = [];
