@@ -130,7 +130,9 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         if (billingContainer == null)
             throw new PipelineJobException("Billing Container not found.");
 
-        getJob().getLogger().info("Beginning process to save monthly billing data");
+        getJob().getLogger().info("Beginning process to save billing run data");
+        getJob().getLogger().info("Start date: " + getSupport().getStartDate().toString());
+        getJob().getLogger().info("End date: " + getSupport().getEndDate().toString());
 
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
