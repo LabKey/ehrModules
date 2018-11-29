@@ -1971,7 +1971,8 @@ public class TriggerScriptHelper
             @Override
             public void exec(ResultSet rs) throws SQLException
             {
-                Integer totalAllowed = rs.getInt("allowed");
+                int totalAllowed = rs.getInt("allowed");
+                boolean totalAllowedNull = rs.wasNull();
                 String species = rs.getString("Species");
                 Set<String> animals = new CaseInsensitiveHashSet();
                 String animalString = rs.getString("Animals");
@@ -2013,10 +2014,10 @@ public class TriggerScriptHelper
                     }
                 }
 
-                Integer remaining = totalAllowed - animals.size();
+                int remaining = totalAllowed - animals.size();
                 if (remaining < 0)
                 {
-                    errors.add("There are not enough spaces on protocol: " + protocol + ". Allowed: " + totalAllowed + ", used: " + animals.size());
+                    errors.add("There are not enough spaces on protocol: " + protocol + ". Allowed: " + (totalAllowedNull ? "none": totalAllowed) + ", used: " + animals.size());
                 }
             }
         });
