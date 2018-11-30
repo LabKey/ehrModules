@@ -137,6 +137,14 @@ public class EHRBillingHelper
         private String _totalQuantity;
         private Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
+        public InvoicedItem(String category, int rowCount, String totalQuantity, String totalCost)
+        {
+            _category = category;
+            _rowCount = rowCount;
+            _totalQuantity = totalQuantity;
+            _totalCost = totalCost;
+        }
+
         public InvoicedItem(String animalId, String category, int rowCount, String totalQuantity, String totalCost)
         {
             _animalId = animalId;
