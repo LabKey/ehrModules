@@ -705,7 +705,6 @@ ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.10-18.20.sql -text
-ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.20-18.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-18.20-18.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-0.00-15.30.sql -text
@@ -881,6 +880,7 @@ ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-17.31-17.32.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-18.10-18.11.sql -text
+ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-0.00-15.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-0.00-16.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-16.20-16.30.sql -text
@@ -893,7 +893,6 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.10-18.20.sql -text
-ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.20-18.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-18.20-18.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-0.00-15.30.sql -text
@@ -1068,6 +1067,7 @@ ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-17.31-17.32.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr_lookups-17.30-17.31.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr_lookups-17.32-17.33.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr_lookups-18.10-18.11.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/ScriptHelper.js -text
