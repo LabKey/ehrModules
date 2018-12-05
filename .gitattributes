@@ -132,6 +132,7 @@ ehr/api-src/org/labkey/api/ehr/dataentry/AbstractFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/AnimalDetailsFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/BloodDrawFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/BulkEditFormType.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/ChildFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/DataEntryForm.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/DataEntryFormContext.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/DataEntryFormFactory.java -text
@@ -143,6 +144,7 @@ ehr/api-src/org/labkey/api/ehr/dataentry/ExtendedAnimalDetailsFormSection.java -
 ehr/api-src/org/labkey/api/ehr/dataentry/FormElement.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/FormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/NonStoreFormSection.java -text
+ehr/api-src/org/labkey/api/ehr/dataentry/ParentFormPanelSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/RequestForm.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/RequestFormSection.java -text
 ehr/api-src/org/labkey/api/ehr/dataentry/SimpleFormPanelSection.java -text
@@ -1206,6 +1208,7 @@ ehr/resources/web/ehr/buttons/roundsButtons.js -text
 ehr/resources/web/ehr/d3-graph-template.html -text
 ehr/resources/web/ehr/data/AssignmentClientStore.js -text
 ehr/resources/web/ehr/data/BloodDrawClientStore.js -text
+ehr/resources/web/ehr/data/ChildClientStore.js -text
 ehr/resources/web/ehr/data/ClinicalEncountersClientStore.js -text
 ehr/resources/web/ehr/data/ClinicalHistoryStore.js -text
 ehr/resources/web/ehr/data/ClinicalObservationsClientStore.js -text
@@ -1220,6 +1223,7 @@ ehr/resources/web/ehr/data/HousingClientStore.js -text
 ehr/resources/web/ehr/data/LabworkResultsStore.js -text
 ehr/resources/web/ehr/data/MiscChargesClientStore.js -text
 ehr/resources/web/ehr/data/PairingClientStore.js -text
+ehr/resources/web/ehr/data/ParentClientStore.js -text
 ehr/resources/web/ehr/data/PathologyDiagnosesStore.js -text
 ehr/resources/web/ehr/data/RequestStoreCollection.js -text
 ehr/resources/web/ehr/data/StoreCollection.js -text
@@ -1461,6 +1465,7 @@ ehr/resources/web/ehr/window/ManageRecordWindow.js -text
 ehr/resources/web/ehr/window/ManageTreatmentsWindow.js -text
 ehr/resources/web/ehr/window/MarkCompletedWindow.js -text
 ehr/resources/web/ehr/window/OpenSurgeryCasesWindow.js -text
+ehr/resources/web/ehr/window/ParentChildAddRecord.js -text
 ehr/resources/web/ehr/window/ReassignRequestWindow.js -text
 ehr/resources/web/ehr/window/RecentRemarksWindow.js -text
 ehr/resources/web/ehr/window/RecordDuplicatorWindow.js -text
