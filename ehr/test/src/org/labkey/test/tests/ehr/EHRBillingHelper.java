@@ -96,6 +96,8 @@ public class EHRBillingHelper
                 results.setFilter("Id", "Equals", item.getAnimalId());
             if (item.getCategory() != null)
                 results.setFilter("category", "Equals", item.getCategory());
+            if(item.getChargeID() != null)
+                results.setFilter("chargeId","Equals", item.getChargeID());
 
             assertEquals("Wrong row count for " + item.getCategory(), item.getRowCount(), results.getDataRowCount());
             if (item.getTotalQuantity() != null)
@@ -113,6 +115,8 @@ public class EHRBillingHelper
                 results.clearFilter("Id");
             if (item.getCategory() != null)
                 results.clearFilter("category");
+            if(item.getChargeID() != null)
+                results.clearFilter("chargeId");
         }
 
         results.clearFilter("invoiceId");
@@ -135,6 +139,7 @@ public class EHRBillingHelper
         private int _rowCount;
         private String _totalCost;
         private String _totalQuantity;
+        private String _chargeID;
         private Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
         public InvoicedItem(String category, int rowCount, String totalQuantity, String totalCost)
@@ -152,6 +157,16 @@ public class EHRBillingHelper
             _rowCount = rowCount;
             _totalQuantity = totalQuantity;
             _totalCost = totalCost;
+        }
+
+        public InvoicedItem(String animalId, String category, int rowCount, String totalQuantity, String totalCost, String chargeID)
+        {
+            _animalId = animalId;
+            _category = category;
+            _rowCount = rowCount;
+            _totalQuantity = totalQuantity;
+            _totalCost = totalCost;
+            _chargeID = chargeID;
         }
 
         public String getCategory()
@@ -177,6 +192,11 @@ public class EHRBillingHelper
         public String getAnimalId()
         {
             return _animalId;
+        }
+
+        public String getChargeID()
+        {
+            return _chargeID;
         }
 
         public void addColumnTextToCheck(String colName, List<String> colValues)
