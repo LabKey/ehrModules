@@ -1369,7 +1369,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         {
             Assert.assertEquals("Id not copied properly", MORE_ANIMAL_IDS[0], observationsGrid.getFieldValue(1 + i, "Id"));
 
-            Assert.assertEquals("formSort not set properly on row: " + i, new Long(i + 1), observationsGrid.getFnEval("return this.store.getAt(arguments[0]).get('formSort');", i));
+            Assert.assertEquals("formSort not set properly on row: " + i, Long.valueOf(i + 1), observationsGrid.getFnEval("return this.store.getAt(arguments[0]).get('formSort');", i));
         }
 
         int i = 1;
