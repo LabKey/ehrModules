@@ -57,7 +57,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
 
     protected enum Category {
         STD(){
-            public void parseSampleName(Map<String, Object> row, String fieldName) throws ValidationException
+            public void parseSampleName(Map<String, Object> row, String fieldName)
             {
                 String[] nameParts = StringUtils.split((String) row.get(fieldName), "_");
                 row.put("category", "Standard");
@@ -65,7 +65,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
             }
         },
         CTL(){
-            public void parseSampleName(Map<String, Object> row, String fieldName) throws ValidationException
+            public void parseSampleName(Map<String, Object> row, String fieldName)
             {
                 String[] nameParts = StringUtils.split((String)row.get(fieldName), "_");
                 row.put("category", "Control");
@@ -149,14 +149,14 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
         map.put("copiesPerRxn", copiesPerRxn);
 
         Double cp = (Double)map.get("Cp");
-        Double eluateVol = new Double((Integer)map.get("eluateVol"));
-        Double volPerRxn = new Double((Integer)map.get("volPerRxn"));
+        Double eluateVol = Double.valueOf((Integer)map.get("eluateVol"));
+        Double volPerRxn = Double.valueOf((Integer)map.get("volPerRxn"));
         if (!map.containsKey("sampleVol"))
             map.put("sampleVol", 1.0);
 
         Double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
 
-        Double viralLoad;
+        double viralLoad;
         if (copiesPerRxn != null)
         {
             Double dilutionFactor = (1.0 / sampleVol) * (eluateVol / volPerRxn);
