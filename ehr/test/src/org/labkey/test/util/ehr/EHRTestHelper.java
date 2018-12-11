@@ -246,12 +246,10 @@ public class EHRTestHelper
         grid.clickTbarButton("Templates");
 
         _test.waitAndClick(Ext4Helper.Locators.menuItem("Templates").notHidden());
-        _test.waitAndClick(Ext4Helper.Locators.menuItem(templateName).notHidden());
+        _test.click(Ext4Helper.Locators.menuItem("Apply Template").notHidden());
 
         _test.waitForElement(Ext4Helper.Locators.window("Apply Template"));
-        Ext4ComboRef combo = new Ext4ComboRef(Ext4ComboRef.getForLabel(_test, "Template Name").getId(), _test);
-        combo.waitForStoreLoad();
-        Assert.assertEquals(templateName, combo.getDisplayValue());
+        _test._ext4Helper.selectComboBoxItem("Template Name:",templateName);
 
         if (date != null)
         {

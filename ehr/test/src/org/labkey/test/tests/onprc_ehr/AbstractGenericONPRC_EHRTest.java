@@ -27,6 +27,7 @@ import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -135,8 +136,8 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
     protected void cacheIds(Collection<String> ids)
     {
-        beginAt(getBaseURL() + "/ehr/" + getContainerPath() + "/getDemographics.view?ids=" + StringUtils.join(ids, "&ids="));
-        waitForText("\"" + ids.iterator().next() + "\" : {");
+        beginAt(WebTestHelper.getBaseURL() + "/ehr/" + getContainerPath() + "/getDemographics.view?ids=" + StringUtils.join(ids, "&ids="));
+        waitForText(ids.iterator().next());
 
         goToProjectHome();
     }

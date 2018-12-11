@@ -15,6 +15,7 @@
  */
 package org.labkey.test.pages.ehr;
 
+import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.openqa.selenium.WebDriver;
@@ -40,6 +41,7 @@ public class EnterDataPage extends BaseColonyOverviewPage
 
     public WebElement clickMyTasksTab()
     {
+        waitForElement(Locator.linkWithId("MyTasksTab"));
         clickTab("My Tasks");
         return getActiveTabPanel();
     }

@@ -1806,20 +1806,23 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         Assert.assertEquals(1, visible.size());
 
         visible.get(0).sendKeys("ketamine");
+        sleep(2000);
         visible.get(0).sendKeys(Keys.ENTER);
         String code1 = "Ketamine injectable (100mg/ml) (E-70590)";
-        waitForElement(Locator.tagContainingText("div", code1));
+        waitForElement(Locator.tagContainingText("div", "1: " + code1),20000);
 
         visible.get(0).sendKeys("heart");
+        sleep(2000);
         visible.get(0).sendKeys(Keys.ENTER);
         String code2 = "APEX OF HEART (T-32040)";
-        waitForElement(Locator.tagContainingText("div", code2));
+        waitForElement(Locator.tagContainingText("div", "2: " + code2),20000);
         Assert.assertTrue(isTextBefore(code1, code2));
 
         visible.get(0).sendKeys("disease");
+        sleep(2000);
         visible.get(0).sendKeys(Keys.ENTER);
         String code3 = "ALEUTIAN DISEASE (D-03550)";
-        waitForElement(Locator.tagContainingText("div", code3));
+        waitForElement(Locator.tagContainingText("div", "3: " + code3),20000);
         Assert.assertTrue(isTextBefore(code2, code3));
 
         //move first code down

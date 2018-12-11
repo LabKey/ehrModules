@@ -22,6 +22,7 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
@@ -71,8 +72,8 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         notifications.add("DCM Finance Notification");
         notifications.add("Finance Notification");
 
-        beginAt(getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
-        int count = getElementCount(Locator.tagContainingText("a", "Run Report In Browser"));
+        beginAt(WebTestHelper.getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
+        int count = Locator.tagContainingText("a", "Run Report In Browser").findElements(getDriver()).size();
         for (int i = 0; i < count; i++)
         {
             Locator link = Locator.tagContainingText("a", "Run Report In Browser").index(i);
@@ -88,7 +89,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
                 assertTextNotPresent("not configured");
 
                 //avoid unnecessary reloading
-                beginAt(getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
+                beginAt(WebTestHelper.getBaseURL() + "/ldk/" + getContainerPath() + "/notificationAdmin.view");
             }
         }
     }
@@ -96,7 +97,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     @Test
     public void testBillingPipeline()
     {
-        beginAt(getBaseURL() + "/onprc_billing/" + getContainerPath() + "/financeManagement.view");
+        beginAt(WebTestHelper.getBaseURL() + "/onprc_billing/" + getContainerPath() + "/financeManagement.view");
         waitAndClickAndWait(Locator.linkContainingText("Perform Billing Run"));
         Ext4FieldRef.waitForField(this, "Start Date");
         Ext4FieldRef.getForLabel(this, "Start Date").setValue("1/1/10");
