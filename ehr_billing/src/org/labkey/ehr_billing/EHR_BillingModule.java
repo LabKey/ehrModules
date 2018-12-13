@@ -80,9 +80,6 @@ public class EHR_BillingModule extends SpringModule
     @Override
     protected void startupAfterSpringConfig(ModuleContext moduleContext)
     {
-
-        EHRService.get().registerClientDependency(ClientDependency.fromPath("ehr_billing/data/sources/EHR_BillingDefault.js"), this);
-
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHR_BillingContainerListener());
         DefaultSchema.registerProvider(EHR_BillingSchema.NAME, new DefaultSchema.SchemaProvider(this)

@@ -22,6 +22,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
     schemaName:'ehr',
 
     initComponent: function(){
+        this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
 
         Ext4.apply(this, {
             expandToFitContent: true,
