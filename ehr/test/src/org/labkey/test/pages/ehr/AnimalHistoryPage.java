@@ -190,37 +190,6 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
         assertTrue(message + ": " + String.join("\n", errors), errors.isEmpty());
     }
 
-    /**
-     * Replaced by assertExpectedColumnValues. Leaving in place for current feature branches.
-     * TODO: Remove in 18.2.4
-     */
-    @Deprecated
-    public boolean hasExpectedColumnValues(Map<String,String> expectedColValues)
-    {
-        WebElement activeReportPanel = getActiveReportPanel();
-
-        List<String> labels = getTexts(Locator.byClass("x4-field-label-cell").findElements(activeReportPanel));
-        List<String> values = getTexts(Locator.byClass("x4-field-label-cell").followingSibling("td").findElements(activeReportPanel));
-        Iterator<String> ilabels = labels.iterator();
-        Iterator<String> ivalues = values.iterator();
-        while (ilabels.hasNext() && ivalues.hasNext())
-        {
-            String label = ilabels.next();
-            String value = ivalues.next();
-
-            if (expectedColValues.containsKey(label))
-            {
-                String expected = expectedColValues.get(label);
-                log(label + ": expected=" + expected + ", actual=" + value);
-
-                if (value != null && !value.contains(expected))
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
     @Override
     protected ElementCache newElementCache()
     {
