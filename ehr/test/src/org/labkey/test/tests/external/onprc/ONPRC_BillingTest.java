@@ -62,6 +62,18 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         initTest.initProject();
     }
 
+    @Override
+    @LogMethod
+    protected void initProject() throws Exception
+    {
+        super.initProject();
+
+        SchemaHelper schemaHelper = new SchemaHelper(this);
+        // let's try moving the linked schema here, since it may be causing an error during study import (see issue #36061)
+        // TODO: revisit this after monitoring success on TeamCity for some time (> 1 week)
+        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
+    }
+
     @Test
     public void testNotifications()
     {
@@ -163,8 +175,9 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         super.populateInitialData();
 
         //the linked schema is created at this point since this method runs after other setup is complete
-        SchemaHelper schemaHelper = new SchemaHelper(this);
-        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
+        //NOTE: or perhaps not, let's move this later in the process (see initProject() above)
+        //SchemaHelper schemaHelper = new SchemaHelper(this);
+        //schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
 
         //TODO: import other reference tables
     }
