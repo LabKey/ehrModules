@@ -401,7 +401,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 EHR.DataEntryUtils.registerGridButton('ADDANIMALS', function(config){
     return Ext4.Object.merge({
         text: 'Add Batch',
-        tooltip: 'Click to add a batch of animals, either as a list or by location',
+        tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to add a batch of animals, either as a list or by location' : undefined,
         handler: function(btn){
             var grid = btn.up('gridpanel');
 

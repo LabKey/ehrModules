@@ -23,7 +23,7 @@ EHR.DataEntryUtils = new function(){
         ADDRECORD: function(config){
             return Ext4.Object.merge({
                 text: 'Add',
-                tooltip: 'Click to add a row',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to add a row' : undefined,
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     if (!grid.store || !grid.store.hasLoaded()){
@@ -48,7 +48,7 @@ EHR.DataEntryUtils = new function(){
         DELETERECORD: function(config){
             return Ext4.Object.merge({
                 text: 'Delete Selected',
-                tooltip: 'Click to delete selected rows',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to delete selected rows' : undefined,
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     var selections = grid.getSelectionModel().getSelection();
@@ -79,7 +79,7 @@ EHR.DataEntryUtils = new function(){
         SELECTALL: function(config){
             return Ext4.Object.merge({
                 text: 'Select All',
-                tooltip: 'Click to select all rows',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to select all rows' : undefined,
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     grid.getSelectionModel().selectAll();
@@ -89,7 +89,7 @@ EHR.DataEntryUtils = new function(){
         COPY_IDS: function(config){
             return Ext4.Object.merge({
                 text: 'Copy Ids',
-                tooltip: 'Click to copy all distinct Ids',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to copy all distinct Ids' : undefined,
                 handler: function(btn){
                     var store = btn.up('gridpanel').store;
                     if (store.getFields().get('Id')){
@@ -127,7 +127,7 @@ EHR.DataEntryUtils = new function(){
         REFRESH: function(config){
             return Ext4.Object.merge({
                 text: 'Refresh Grid',
-                tooltip: 'Click refresh the grid',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click refresh the grid' : undefined,
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     grid.getView().refresh();
@@ -137,7 +137,7 @@ EHR.DataEntryUtils = new function(){
         BULKEDITDATE: function(config){
             return Ext4.Object.merge({
                 text: 'Bulk Edit Date/Time',
-                tooltip: 'Click to edit the time of the selected rows in bulk',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to edit the time of the selected rows in bulk' : undefined,
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
                     var selected = grid.getSelectionModel().getSelection();
@@ -502,6 +502,7 @@ EHR.DataEntryUtils = new function(){
                 col.editor.hideTrigger = true;
             }
 
+            meta.showTooltip = EHR.DataEntryUtils.shouldShowTooltips();
             col.renderer = LABKEY.ext4.Util.getDefaultRenderer(col, meta, grid);
 
             //HTML-encode the column header
@@ -518,10 +519,15 @@ EHR.DataEntryUtils = new function(){
             return col;
         },
 
+        shouldShowTooltips: function() {
+            var showTooltip = LABKEY.getModuleContext('ehr').EHRShowDataEntryTooltips;
+            return showTooltip === true || showTooltip === "true";
+        },
+
         getGridButton: function(name, config){
             LDK.Assert.assertNotEmpty('Unknown grid button: ' + name, gridButtons[name]);
             if (gridButtons[name]){
-                return gridButtons[name](config)
+                return gridButtons[name](config);
             }
         },
 

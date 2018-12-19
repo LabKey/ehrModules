@@ -77,6 +77,19 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRShowDataEntryTooltips">
+            <canSetPerContainer>true</canSetPerContainer>
+            <defaultValue>true</defaultValue>
+            <description>Boolean property to determine if tooltips should be shown on the data entry screens. Defaults to true.</description>
+            <inputType>select</inputType>
+            <options>
+                <option display="true" value="true"/>
+                <option display="false" value="false"/>
+            </options>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
     </properties>
     <requiredModuleContext>
         <requiredModule name="LDK"/>

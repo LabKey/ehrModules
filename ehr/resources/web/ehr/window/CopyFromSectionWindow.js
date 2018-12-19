@@ -304,7 +304,7 @@ EHR.DataEntryUtils.registerGridButton('COPYFROMSECTION', function(config){
     return Ext4.Object.merge({
         text: 'Copy From Section',
         xtype: 'button',
-        tooltip: 'Click to copy records from one of the other sections',
+        tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Click to copy records from one of the other sections' : undefined,
         listeners: {
             beforerender: function(btn){
                 var grid = btn.up('gridpanel');

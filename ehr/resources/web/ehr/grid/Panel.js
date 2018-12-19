@@ -153,7 +153,7 @@ Ext4.define('EHR.grid.Panel', {
                 editable: false,
                 width: 40,
                 icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
-                tooltip: 'Edit',
+                tooltip: EHR.DataEntryUtils.shouldShowTooltips() ? 'Edit' : undefined,
                 renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
                     var errors = record.validate();
                     if (errors && !errors.isValid()){
@@ -166,7 +166,7 @@ Ext4.define('EHR.grid.Panel', {
                         }, this);
 
                         messages = Ext4.Array.unique(messages);
-                        if (messages.length){
+                        if (messages.length && EHR.DataEntryUtils.shouldShowTooltips()){
                             messages.unshift('Errors:');
                             cellMetaData.tdAttr = " data-qtip=\"" + Ext4.util.Format.htmlEncode(messages.join('<br>')) + "\"";
                         }
