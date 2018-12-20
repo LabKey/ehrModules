@@ -469,6 +469,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRStudyContainer", "/" + getContainerPath()));
         props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRAdminUser", DATA_ADMIN._email));
         props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "snapshot"));
+        props.add(new ModulePropertyValue("EHR", "/" + getProjectName(), "EHRShowDataEntryTooltips", "false"));
 
         if (extraProps != null)
             props.addAll(Arrays.asList(extraProps));
