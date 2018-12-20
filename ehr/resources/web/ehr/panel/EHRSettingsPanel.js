@@ -46,12 +46,20 @@ Ext4.define('EHR.panel.EHRSettingsPanel', {
                 }, {
                     xtype: 'button',
                     text: 'Load EHR table definitions',
+                    style: 'margin-right: 10px;',
                     handler: this.createEHRDomainHandler,
                     scope: this
                 }, {
                     xtype: 'button',
                     text: 'Load EHR_Lookup table definitions',
+                    style: 'margin-right: 10px;',
                     handler: this.createEHRLookupsDomainHandler,
+                    scope: this
+                }, {
+                    xtype: 'button',
+                    text: 'Load EHR_Billing table definitions',
+                    style: 'margin-right: 10px;',
+                    handler: this.createEHRBillingDomainHandler,
                     scope: this
                 }, {
                     html: 'Click the button below to go to the pipeline data import page to load / reload the dataset definitions for the study schema in this container. '
@@ -98,6 +106,24 @@ Ext4.define('EHR.panel.EHRSettingsPanel', {
             containerPath: ctx ? ctx['EHRStudyContainer'] : null,
             success: function () {
                 LABKEY.Utils.alert("Success","EHR_Lookups tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    },
+
+    createEHRBillingDomainHandler: function () {
+        var ctx = EHR.Utils.getEHRContext();
+
+        LABKEY.Domain.create({
+            module: this.moduleName,
+            domainKind: "EHR_Billing",
+            domainGroup: "ehr_billing",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR_Billing tables updated successfully.");
             },
             failure: function (e) {
                 LABKEY.Utils.alert("Error", e.exception);
