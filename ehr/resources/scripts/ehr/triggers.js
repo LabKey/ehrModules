@@ -148,9 +148,11 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
             EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
         }
 
-        //TODO: conditionalize range?
-        if ((-1 * timeDiffMills) > (1000 * 60 * 60 * 24 * 30)) //30 days
-            EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request more than 30 days in the future', 'ERROR');
+        var daysAllowed = helper.getDefaultAllowedDaysForFutureRequest();
+        if(daysAllowed != null) {
+            if ((-1 * timeDiffMills) > (1000 * 60 * 60 * 24 * daysAllowed)) //30 days
+                EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request more than '+ daysAllowed + ' days in the future', 'ERROR');
+        }
     }
 
     //dataset-specific beforeInsert

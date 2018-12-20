@@ -103,7 +103,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         cacheAccount: true,
         announceAllModifiedParticipants: false,
         doStandardProtocolCountValidation: true,
-        errorSeveritiyForBloodDrawsWithoutWeight: 'ERROR'
+        errorSeveritiyForBloodDrawsWithoutWeight: 'ERROR',
+        defaultAllowedDaysForFutureRequest: 30
     };
 
     var cachedValues = {
@@ -612,6 +613,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
         getErrorSeveritiyForBloodDrawsWithoutWeight: function(){
             return scriptOptions.errorSeveritiyForBloodDrawsWithoutWeight;
+        },
+
+        getDefaultAllowedDaysForFutureRequest: function(){
+            return scriptOptions.defaultAllowedDaysForFutureRequest;
         },
 
         // itemName is that item's name in the db row, itemLabel is the human-readable name, and itemValue is the actual value of the item
