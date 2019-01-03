@@ -5,5 +5,5 @@ repositories {
 }
 
 dependencies {
-   BuildUtils.addLabKeyDependency(project: project, config: "compile", depProjectPath: ":externalModules:labModules:LDK")
+   BuildUtils.addLabKeyDependency(project: project, config: "compile", depProjectPath: ":externalModules:labModules:LDK", depProjectConfig: "apiCompile")
 }
