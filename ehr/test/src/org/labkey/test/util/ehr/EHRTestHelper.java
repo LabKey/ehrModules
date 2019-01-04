@@ -363,8 +363,8 @@ public class EHRTestHelper
         {
             try
             {
-                badReports.get(0).first.select(); // select category tab
-                badReports.get(0).second.select(); // select report tab
+                badReports.get(0).getLeft().select(); // select category tab
+                badReports.get(0).getRight().select(); // select report tab
             }
             finally
             {
