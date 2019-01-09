@@ -59,7 +59,7 @@ Ext4.define('EHR.grid.Panel', {
                 return;
 
             var id = models[0].get('Id');
-            this.fireEvent('animalchange', id);
+            this.fireEvent('animalchange', id, models[0]); // passing all the records for this data entry row
         }, this);
 
         // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
