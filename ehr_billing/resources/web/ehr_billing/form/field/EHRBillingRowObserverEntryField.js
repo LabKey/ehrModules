@@ -30,7 +30,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingRowObserverEntryField', {
         }
         var ctx = LABKEY.moduleContext.ehr_billing;
 
-        Ext4.apply(this, {
+        Ext4.applyIf(this, {
             expandToFitContent: true,
             queryMode: 'local',
             anyMatch: true,
