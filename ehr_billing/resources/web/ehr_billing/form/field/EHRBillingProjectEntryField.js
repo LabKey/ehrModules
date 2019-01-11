@@ -20,6 +20,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
     matchFieldWidth: false,
     includeDefaultProjects: true,
     schemaName:'ehr',
+    filterSQL: null,
 
     initComponent: function(){
         this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -136,8 +137,8 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
         if (id){
             //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
             sql += "SELECT p.project, " +
-                    "p.title,  " +
                     "p.inves as investigator, " +
+                    "p.title,  " +
                     "1 as sort_order, " +
                     "CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
                     " FROM ehr.project p JOIN study.assignment a ON (a.project = p.project) " +
@@ -166,6 +167,10 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
                     "3 as sort_order, " +
                     "0 as isAssigned " +
                     "FROM ehr.project p ";
+
+            if (this.filterSQL) {
+                sql += "WHERE " + this.filterSQL + " ";
+            }
         }
 
         sql+= " ) t GROUP BY t.project,t.investigator, t.title";
