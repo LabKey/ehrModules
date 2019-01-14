@@ -329,7 +329,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             //update records in miscCharges to show proper invoiceId
             if (process.isMiscCharges())
-                updateProcessedMiscChargesRecords(rows);
+                updateProcessedMiscChargesRecords(process, rows);
         }
         catch (Exception e)
         {
@@ -337,13 +337,13 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
-    private void updateProcessedMiscChargesRecords(Collection<Map<String, Object>> rows) throws PipelineJobException
+    private void updateProcessedMiscChargesRecords(BillingPipelineJobProcess process, Collection<Map<String, Object>> rows) throws PipelineJobException
     {
         try
         {
-            getJob().getLogger().info("Updating " + rows.size() + " records in misc charges table");
-            TableInfo ti = EHR_BillingSchema.getInstance().getMiscCharges();
+            TableInfo ti = process.getMiscChargesTableInfo() != null ? process.getMiscChargesTableInfo() : EHR_BillingSchema.getInstance().getMiscCharges();
             String invoiceId = getOrCreateInvoiceRunRecord();
+            getJob().getLogger().info("Updating " + rows.size() + " records in " + ti.getName() + " table");
 
             int updates = 0;
             for (Map<String, Object> row : rows)
@@ -356,14 +356,14 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 Table.update(getJob().getUser(), ti, toUpdate, objectId);
             }
 
-            getJob().getLogger().info("Finished updating " + updates + " records in misc charges table.");
+            getJob().getLogger().info("Finished updating " + updates + " records in " + ti.getName() + " table.");
         }
         catch (RuntimeSQLException e)
         {
             throw new PipelineJobException(e);
         }
 
-        getJob().getLogger().info("Finished updating ehr_billing.miscCharges for Invoice Run Id " + _invoiceId);
+        getJob().getLogger().info("Finished updating records for Invoice Run Id " + _invoiceId);
     }
 
     private Collection<Map<String, Object>> getRowList(BillingPipelineJobProcess process, Container container)

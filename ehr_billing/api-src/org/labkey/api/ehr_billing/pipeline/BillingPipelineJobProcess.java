@@ -1,5 +1,7 @@
 package org.labkey.api.ehr_billing.pipeline;
 
+import org.labkey.api.data.TableInfo;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,7 @@ public class BillingPipelineJobProcess
     private List<String> _requiredFields;
     private boolean _useEHRContainer = false;
     private boolean _isMiscCharges = false;
+    private TableInfo _miscChargesTableInfo;
 
     public BillingPipelineJobProcess(String label, String schemaName, String queryName, Map<String, String> queryToInvoiceItemColMap)
     {
@@ -92,9 +95,20 @@ public class BillingPipelineJobProcess
         return _isMiscCharges;
     }
 
+    public TableInfo getMiscChargesTableInfo()
+    {
+        return _miscChargesTableInfo;
+    }
+
     public void setMiscCharges(boolean miscCharges)
     {
         _isMiscCharges = miscCharges;
+    }
+
+    public void setMiscCharges(boolean miscCharges, TableInfo tableInfo)
+    {
+        _isMiscCharges = miscCharges;
+        _miscChargesTableInfo = tableInfo;
     }
 
     public Map<String, Object> getQueryParams(BillingPipelineJobSupport support)
