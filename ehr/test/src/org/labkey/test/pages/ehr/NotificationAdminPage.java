@@ -54,30 +54,40 @@ public class NotificationAdminPage extends BaseColonyOverviewPage
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
     }
 
-    public void enableColonyManagementAlerts()
+    public void enableColonyManagementAlerts(String inputName)
     {
-        log("Enabling the notification for Colony Management Notification");
-        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed("status_ColonyManagementNotification"), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
+        log("Enabling Colony Management Notification");
+        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed(inputName), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
         clickButton("Save", 0);
         waitForElement(Ext4Helper.Locators.window().withDescendant(Window.Locators.title().withText("Success")));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
 
     }
 
-    public void enableDeathNotification()
+    public void enableDeathNotification(String inputName)
     {
-        log("Enabling the notification for Death Notification");
-        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed("status_DeathNotification"), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
+        log("Enabling Death Notification");
+        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed(inputName), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
         clickButton("Save", 0);
         waitForElement(Ext4Helper.Locators.window().withDescendant(Window.Locators.title().withText("Success")));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
 
     }
 
-    public void enableRequestAdminAlerts()
+    public void enableBillingNotification(String inputName)
     {
-        log("Enabling the notification for Request Admin Notification");
-        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed("status_RequestAdminNotification"), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
+        log("Enabling Billing Notification");
+        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed(inputName), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
+        clickButton("Save", 0);
+        waitForElement(Ext4Helper.Locators.window().withDescendant(Window.Locators.title().withText("Success")));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
+
+    }
+
+    public void enableRequestAdminAlerts(String inputName)
+    {
+        log("Enabling Request Admin Notification");
+        _ext4Helper.selectComboBoxItem(Ext4Helper.Locators.formItemWithInputNamed(inputName), Ext4Helper.TextMatchTechnique.EXACT, "Enabled");
         clickButton("Save", 0);
         waitForElement(Ext4Helper.Locators.window().withDescendant(Window.Locators.title().withText("Success")));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));

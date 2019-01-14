@@ -650,6 +650,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             _permissionsHelper.uncheckInheritedPermissions();
 
         _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(),"Folder Administrator");
         _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");

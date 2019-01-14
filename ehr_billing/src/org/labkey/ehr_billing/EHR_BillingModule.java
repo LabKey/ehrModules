@@ -20,8 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr_billing.EHR_BillingDomainKind;
+import org.labkey.api.ehr_billing.EHR_BillingService;
+import org.labkey.api.ehr_billing.notification.BillingNotificationService;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
@@ -30,8 +31,8 @@ import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
-import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.ContainerUser;
+import org.labkey.ehr_billing.notification.BillingNotificationServiceImpl;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
 import java.util.Collection;
@@ -53,7 +54,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public double getVersion()
     {
-        return 18.30;
+        return 18.31;
     }
 
     @Override
@@ -75,6 +76,9 @@ public class EHR_BillingModule extends SpringModule
         addController(org.labkey.ehr_billing.EHR_BillingController.NAME, EHR_BillingController.class);
         PropertyService.get().registerDomainKind(new EHR_BillingDomainKind());
         RoleManager.registerRole(new EHR_BillingRole());
+
+        EHR_BillingService.setInstance(new EHR_BillingServiceImpl());
+        BillingNotificationService.setInstance(new BillingNotificationServiceImpl());
     }
 
     @Override

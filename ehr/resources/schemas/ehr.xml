@@ -2174,6 +2174,7 @@
             <column columnName="division"/>
             <column columnName="userid"/>
             <column columnName="Lsid"/>
+            <column columnName="financialanalyst"/>
             <column columnName="CreatedBy"/>
             <column columnName="Created"/>
             <column columnName="ModifiedBy"/>

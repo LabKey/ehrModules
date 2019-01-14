@@ -34,7 +34,7 @@ public interface InvoicedItemsProcessingService
     @Nullable
     static InvoicedItemsProcessingService get()
     {
-        return ServiceRegistry.get(InvoicedItemsProcessingService.class);
+        return ServiceRegistry.get().getService(InvoicedItemsProcessingService.class);
     }
 
     default List<BillingPipelineJobProcess> getProcessList()

@@ -287,6 +287,8 @@ ehr/api-src/org/labkey/api/ehr/security/EHRScheduledAdminPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledDeletePermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledInsertPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRScheduledUpdatePermission.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRSecurityEscalator.java -text
+ehr/api-src/org/labkey/api/ehr/security/EHRSecurityEscalatorAuditProvider.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRSnomedEditPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRStartedAdminPermission.java -text
 ehr/api-src/org/labkey/api/ehr/security/EHRStartedDeletePermission.java -text
@@ -701,6 +703,7 @@ ehr/resources/schemas/dbscripts/postgresql/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-18.20-18.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-18.21-18.22.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr-18.30-18.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-0.00-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr_lookups-17.30-18.10.sql -text
@@ -891,6 +894,7 @@ ehr/resources/schemas/dbscripts/sqlserver/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-18.20-18.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-18.21-18.22.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr-18.30-18.31.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-0.00-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.10-17.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr_lookups-17.30-18.10.sql -text
@@ -1610,6 +1614,10 @@ ehr/test/src/org/labkey/test/util/ehr/EHRClientAPIHelper.java -text
 ehr/test/src/org/labkey/test/util/ehr/EHRTestHelper.java -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/EHR_BillingDomainKind.java -text
+ehr_billing/api-src/org/labkey/api/ehr_billing/EHR_BillingService.java -text
+ehr_billing/api-src/org/labkey/api/ehr_billing/notification/BillingNotificationProvider.java -text
+ehr_billing/api-src/org/labkey/api/ehr_billing/notification/BillingNotificationService.java -text
+ehr_billing/api-src/org/labkey/api/ehr_billing/notification/FieldDescriptor.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/BillingPipelineJobProcess.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/BillingPipelineJobSupport.java -text
 ehr_billing/api-src/org/labkey/api/ehr_billing/pipeline/InvoicedItemsProcessingService.java -text
@@ -1618,6 +1626,16 @@ ehr_billing/build.gradle -text
 ehr_billing/module.properties -text
 ehr_billing/resources/module.xml -text
 ehr_billing/resources/queries/ehr_billing/chargeableItems.js -text
+ehr_billing/resources/queries/ehr_billing/chargesMissingRate.query.xml -text
+ehr_billing/resources/queries/ehr_billing/chargesMissingRate.sql -text
+ehr_billing/resources/queries/ehr_billing/duplicateAliases.query.xml -text
+ehr_billing/resources/queries/ehr_billing/duplicateAliases.sql -text
+ehr_billing/resources/queries/ehr_billing/duplicateChargeableItems.query.xml -text
+ehr_billing/resources/queries/ehr_billing/duplicateChargeableItems.sql -text
+ehr_billing/resources/queries/ehr_billing/fiscalAuthorities.query.xml -text
+ehr_billing/resources/queries/ehr_billing/fiscalAuthorities/.qview.xml -text
+ehr_billing/resources/queries/ehr_billing/invalidChargeRateEntries.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invalidChargeRateEntries.sql -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.sql -text
 ehr_billing/resources/queries/ehr_billing/invoiceRuns.query.xml -text
@@ -1640,6 +1658,7 @@ ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.20-18.30.sql -
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.21-18.22.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.22-18.23.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.23-18.24.sql -text
+ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.30-18.31.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.30-17.31.sql -text
@@ -1657,6 +1676,7 @@ ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.20-18.30.sql -t
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.21-18.22.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.22-18.23.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.23-18.24.sql -text
+ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.30-18.31.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.30-17.31.sql -text
@@ -1689,7 +1709,10 @@ ehr_billing/src/org/labkey/ehr_billing/EHR_BillingController.java -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingManager.java -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingModule.java -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingSchema.java -text
+ehr_billing/src/org/labkey/ehr_billing/EHR_BillingServiceImpl.java -text
 ehr_billing/src/org/labkey/ehr_billing/EHR_BillingUserSchema.java -text
+ehr_billing/src/org/labkey/ehr_billing/notification/BillingNotification.java -text
+ehr_billing/src/org/labkey/ehr_billing/notification/BillingNotificationServiceImpl.java -text
 ehr_billing/src/org/labkey/ehr_billing/pipeline/BillingPipelineForm.java -text
 ehr_billing/src/org/labkey/ehr_billing/pipeline/BillingPipelineJob.java -text
 ehr_billing/src/org/labkey/ehr_billing/pipeline/BillingTask.java -text
