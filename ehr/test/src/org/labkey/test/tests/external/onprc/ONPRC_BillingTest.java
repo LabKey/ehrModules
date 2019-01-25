@@ -96,7 +96,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
             if (notifications.contains(notificationName))
             {
                 log("running notification: " + notificationName);
-                waitAndClickAndWait(link);
+                waitAndClick(WAIT_FOR_JAVASCRIPT, link, WAIT_FOR_PAGE * 3);
                 waitForText("The notification email was last sent on:");
                 assertTextNotPresent("not configured");
 
