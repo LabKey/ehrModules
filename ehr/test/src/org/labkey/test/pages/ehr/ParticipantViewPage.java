@@ -51,7 +51,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     protected static final Locator.XPathLocator categoryPanelTabs = categoryPanel.childTag("div").withClass("nav-bg").childTag("ul").withClass("nav").childTag("li").childTag("a");
     protected static final Locator.XPathLocator activeCategoryPanel = categoryPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active");
     protected static final Locator.XPathLocator reportPanel = activeCategoryPanel.descendant(Locator.tagWithId("div", "bs-report-tabs-list"));
-    protected static final Locator.XPathLocator reportPanelTabs = activeCategoryPanel.childTag("div").withClass("nav-bg").descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").childTag("a");
+    protected static final Locator.XPathLocator reportPanelTabs = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").childTag("a");
     protected static final Locator.XPathLocator activeReportTab = activeCategoryPanel.descendant(Locator.tag("ul").withClass("nav-pills")).childTag("li").withClass("active").childTag("a");
     protected static final Locator.XPathLocator activeReportPanel = reportPanel.childTag("div").withClass("tab-content").childTag("div").withClass("active").childTag("div");
     protected static final Locator.XPathLocator activeReportPanelContainer = activeReportPanel.descendant(Locator.tagWithAttributeContaining("div", "id", "innerCt"));
