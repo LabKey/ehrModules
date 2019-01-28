@@ -22,9 +22,11 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr_billing.EHR_BillingDomainKind;
 import org.labkey.api.ehr_billing.EHR_BillingService;
+import org.labkey.api.ehr_billing.notification.BillingNotificationProvider;
 import org.labkey.api.ehr_billing.notification.BillingNotificationService;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.module.Module;
+import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
@@ -32,6 +34,7 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.writer.ContainerUser;
+import org.labkey.ehr_billing.notification.BillingNotification;
 import org.labkey.ehr_billing.notification.BillingNotificationServiceImpl;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
@@ -84,6 +87,12 @@ public class EHR_BillingModule extends SpringModule
     @Override
     protected void startupAfterSpringConfig(ModuleContext moduleContext)
     {
+        Collection<BillingNotificationProvider> notificationProviders = BillingNotificationServiceImpl.get().getBillingNotificationProviders();
+        for (BillingNotificationProvider notificationProvider : notificationProviders)
+        {
+            NotificationService.get().registerNotification(new BillingNotification(notificationProvider.getModule(), notificationProvider));
+        }
+
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHR_BillingContainerListener());
         DefaultSchema.registerProvider(EHR_BillingSchema.NAME, new DefaultSchema.SchemaProvider(this)
