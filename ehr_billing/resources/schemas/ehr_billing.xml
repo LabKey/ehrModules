@@ -377,6 +377,7 @@
                 <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="project"/>
+            <column columnName="investigator"/>
             <column columnName="chargeType"/>
             <column columnName="chargeId"/>
             <column columnName="item">
@@ -713,6 +714,7 @@
     </table>
     <table tableName="invoice" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Invoice</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
             <column columnName="invoiceNumber"/>
@@ -722,6 +724,7 @@
             <column columnName="invoiceAmount"/>
             <column columnName="invoiceSentComment"/>
             <column columnName="paymentAmountReceived"/>
+            <column columnName="balanceDue"/>
             <column columnName="fullPaymentReceived"/>
             <column columnName="paymentReceivedOn"/>
             <column columnName="paymentReceivedComment"/>
