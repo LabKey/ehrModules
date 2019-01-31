@@ -996,7 +996,7 @@ public class EHRController extends SpringActionController
 
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            if (!getUser().isSiteAdmin())
+            if (!getUser().hasSiteAdminPermission())
             {
                 throw new UnauthorizedException("Only site admins can view this page");
             }

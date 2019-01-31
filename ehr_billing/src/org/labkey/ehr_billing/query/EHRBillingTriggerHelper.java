@@ -115,11 +115,6 @@ public class EHRBillingTriggerHelper
         return _container;
     }
 
-    public boolean isSiteAdmin()
-    {
-        return getUser().isSiteAdmin();
-    }
-
     public boolean isBillingAdmin()
     {
         return getContainer().hasPermission(getUser(), EHR_BillingAdminPermission.class);
