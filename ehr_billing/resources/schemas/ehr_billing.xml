@@ -377,6 +377,15 @@
                 <formatString>yyyy-MM-dd</formatString>
             </column>
             <column columnName="project"/>
+            <column columnName="debitedaccount">
+                <columnTitle>Debit Account</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_billing</fkDbSchema>
+                    <fkTable>aliases</fkTable>
+                    <fkColumnName>alias</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
             <column columnName="investigator"/>
             <column columnName="chargeType"/>
             <column columnName="chargeId"/>
@@ -390,15 +399,6 @@
             <column columnName="unitCost">
                 <columnTitle>Unit Cost</columnTitle>
                 <formatString>$###,##0.00</formatString>
-            </column>
-            <column columnName="debitedaccount">
-                <columnTitle>Debit Account</columnTitle>
-                <fk>
-                    <fkDbSchema>ehr_billing</fkDbSchema>
-                    <fkTable>aliases</fkTable>
-                    <fkColumnName>alias</fkColumnName>
-                    <fkDisplayColumnName useRawValue="true"/>
-                </fk>
             </column>
             <column columnName="creditedaccount">
                 <columnTitle>Credit Account</columnTitle>
@@ -841,31 +841,24 @@
             </column>
             <column columnName="position">
                 <columnTitle>Position</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="address">
                 <columnTitle>Address</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="city">
                 <columnTitle>City</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="state">
                 <columnTitle>State</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="country">
                 <columnTitle>County</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="zip">
                 <columnTitle>ZIP</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="phoneNumber">
                 <columnTitle>Phone Number</columnTitle>
-                <isHidden>true</isHidden>
             </column>
             <column columnName="active">
                 <columnTitle>Is Active?</columnTitle>

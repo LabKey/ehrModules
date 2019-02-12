@@ -108,6 +108,18 @@ Ext4.define('EHR_Billing.panel.InvoiceDetailsPanel', {
                 }
             }]
         },{
+            title: 'Total Charges By Account',
+            itemId: 'totalChargesByAccount',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoiceAccount',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)],
+                    sort: 'debitedAccount'
+                }
+            }]
+        },{
             title: 'All Invoiced Items',
             itemId: 'allItems',
             items: [{

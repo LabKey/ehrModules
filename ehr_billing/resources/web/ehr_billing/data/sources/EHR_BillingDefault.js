@@ -10,26 +10,6 @@
  */
 EHR.model.DataModelManager.registerMetadata('Default', {
     allQueries: {
-        chargeId: {
-            allowBlank: true, //TODO: true for now, need to find out whether chargeId is commonly used among centers.
-            xtype: 'ehr_billingRowObserverEntryField',
-
-            columnConfig: {
-                width: 100
-            },
-            editorConfig: {
-                caseSensitive: false,
-                id: 'ehr_billing-Misc-charges-chargeId',
-                valueField: 'rowId',
-                displayField: 'name',
-                observedField: 'chargetype',
-                observerLookupField: 'departmentCode'
-            },
-            lookup: {
-                columns: 'rowId, name, chargeCategoryId, departmentCode',
-                sort: 'name, chargeCategoryId'
-            }
-        },
         project: {
             xtype: 'ehr_billingprojectentryfield',
             editorConfig: {},

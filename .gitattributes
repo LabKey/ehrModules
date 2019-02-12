@@ -1641,6 +1641,8 @@ ehr_billing/resources/queries/ehr_billing/invoiceRunMonthlySummary.sql -text
 ehr_billing/resources/queries/ehr_billing/invoiceRuns.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoice.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoice.sql -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceAccount.query.xml -text
+ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceAccount.sql -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory.query.xml -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory.sql -text
 ehr_billing/resources/queries/ehr_billing/invoicedItemsByInvoiceCategory/.qview.xml -text

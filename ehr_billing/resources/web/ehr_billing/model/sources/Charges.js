@@ -37,12 +37,6 @@ EHR.model.DataModelManager.registerMetadata('Charges', {
                     width: 125
                 }
             },
-            chargeUnit: {
-                hidden: false,
-                columnConfig: {
-                    width: 100
-                }
-            },
             chargeCategory: {
                 hidden: false,
                 columnConfig: {

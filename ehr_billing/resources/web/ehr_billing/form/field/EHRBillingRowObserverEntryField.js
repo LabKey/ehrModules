@@ -14,6 +14,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingRowObserverEntryField', {
     emptyText: '',
     disabled: false,
     matchFieldWidth: false,
+    containerPath: null,
 
     initComponent: function () {
 
@@ -38,7 +39,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingRowObserverEntryField', {
             queryName: this.originalConfig.lookup.queryName,
             store: {
                 type: 'labkey-store',
-                containerPath: ctx ? ctx['BillingContainer'] : null,
+                containerPath: this.containerPath ? this.containerPath : (ctx ? ctx['BillingContainer'] : null),
                 schemaName: this.originalConfig.lookup.schemaName,
                 sql: this.makeSql(),
                 sort: this.originalConfig.lookup.sort,
