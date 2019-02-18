@@ -29,8 +29,8 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -388,7 +388,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 scrollIntoView(_el);
                 try
                 {
-                    doAndWaitForPageSignal(_el::click, REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
+                    doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(2));
                 }
                 catch (StaleElementReferenceException | TimeoutException ignore) // Tab signal might fire more than once
                 {
