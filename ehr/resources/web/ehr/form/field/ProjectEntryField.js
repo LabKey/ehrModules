@@ -21,6 +21,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     matchFieldWidth: false,
     includeDefaultProjects: true,
     invesLastNameCol: 'lastName',
+    autoSelectFirstProjectOnLoad: false,
 
     initComponent: function(){
         this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -123,6 +124,17 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                     scope: this,
                     delay: 50,
                     load: function(store){
+                        // allow for auto-select of the project, if not already selected, for quick data entry
+                        if (this.autoSelectFirstProjectOnLoad && !this.getValue()) {
+                            var storeProjects = Ext4.Array.filter(store.collect('project'), function(proj) {
+                                return LABKEY.Utils.isNumber(proj);
+                            });
+
+                            if (storeProjects.length > 0) {
+                                this.setValue(storeProjects[0]);
+                            }
+                        }
+
                         this.resolveProjectFromStore();
                         this.getPicker().refresh();
                     }
