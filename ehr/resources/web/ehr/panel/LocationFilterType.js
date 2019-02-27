@@ -163,7 +163,7 @@ Ext4.define('EHR.panel.LocationFilterType', {
         return filterArray;
     },
 
-    validateReport: function(report){
+    validateReportForFilterType: function(report){
         var areaFieldName = report.areaFieldName;
         var roomFieldName = report.roomFieldName;
         var cageFieldName = report.cageFieldName;
@@ -175,13 +175,16 @@ Ext4.define('EHR.panel.LocationFilterType', {
         return null;
     },
 
-    checkValid: function(){
+    isValid: function(){
         if(!this.down('#roomField').getValue() && !this.down('#areaField').getValue()){
-            alert('Error: Must Enter A Room or Area');
             return false;
         }
 
         return true;
+    },
+
+    getFilterInvalidMessage: function(){
+        return 'Error: Must Enter A Room or Area';
     },
 
     getTitle: function(){

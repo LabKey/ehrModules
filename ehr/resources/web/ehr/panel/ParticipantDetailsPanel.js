@@ -31,5 +31,18 @@ Ext4.define('EHR.panel.ParticipantDetailsPanel', {
         items[1].hidden = true;
 
         return items;
+    },
+
+    getFiltersFromUrl: function(){
+        var context = this.callParent(arguments);
+
+        // Handle parameter participantId (animal quicksearch)
+        if (document.location.search && document.location.search.indexOf('participantId') !== -1) {
+            context["subjects"] = document.location.search.split("=")[1];
+            context["inputType"] = "singleSubject";
+            this.isReportTabSelected = true;
+        }
+
+        return context;
     }
 });
