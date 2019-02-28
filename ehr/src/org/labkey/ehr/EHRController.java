@@ -18,10 +18,11 @@ package org.labkey.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
+import org.labkey.api.action.MutatingApiAction;
+import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
@@ -129,7 +130,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataEntryItemsAction extends ApiAction<GetDataEntryItemsForm>
+    public class GetDataEntryItemsAction extends ReadOnlyApiAction<GetDataEntryItemsForm>
     {
         public ApiResponse execute(GetDataEntryItemsForm form, BindException errors)
         {
@@ -241,7 +242,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(DeletePermission.class)
-    public class DiscardFormAction extends ApiAction<DiscardFormForm>
+    public class DiscardFormAction extends MutatingApiAction<DiscardFormForm>
     {
         public ApiResponse execute(DiscardFormForm form, BindException errors)
         {
@@ -478,7 +479,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDemographicsAction extends ApiAction<GetDemographicsForm>
+    public class GetDemographicsAction extends ReadOnlyApiAction<GetDemographicsForm>
     {
         public ApiResponse execute(GetDemographicsForm form, BindException errors)
         {
@@ -511,7 +512,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
+    public class SetGeneticCalculationTaskSettingsAction extends MutatingApiAction<ScheduleGeneticCalculationForm>
     {
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
         {
@@ -559,7 +560,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetRecordDeleteSettingsAction extends ApiAction<RecordDeleteForm>
+    public class SetRecordDeleteSettingsAction extends MutatingApiAction<RecordDeleteForm>
     {
         public ApiResponse execute(RecordDeleteForm form, BindException errors)
         {
@@ -618,7 +619,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAnimalDetailsAction extends ApiAction<AnimalDetailsForm>
+    public class GetAnimalDetailsAction extends ReadOnlyApiAction<AnimalDetailsForm>
     {
         public ApiResponse execute(AnimalDetailsForm form, BindException errors)
         {
@@ -675,7 +676,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
+    public class GetGeneticCalculationTaskSettingsAction extends ReadOnlyApiAction<ScheduleGeneticCalculationForm>
     {
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
         {
@@ -694,7 +695,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetRecordDeleteSettingsAction extends ApiAction<Object>
+    public class GetRecordDeleteSettingsAction extends ReadOnlyApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors)
         {
@@ -722,7 +723,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetLabResultSummary extends ApiAction<LabResultSummaryForm>
+    public class GetLabResultSummary extends ReadOnlyApiAction<LabResultSummaryForm>
     {
         public ApiResponse execute(LabResultSummaryForm form, BindException errors)
         {
@@ -837,7 +838,7 @@ public class EHRController extends SpringActionController
 
     @RequiresPermission(ReadPermission.class)
     //TODO: should enable @CSRF if we have SSRS updated to pass token.
-    public class GetClinicalHistoryAction extends ApiAction<HistoryForm>
+    public class GetClinicalHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
@@ -880,7 +881,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetCaseHistoryAction extends ApiAction<HistoryForm>
+    public class GetCaseHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
@@ -1153,7 +1154,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetReportLinksAction extends ApiAction<ReportLinkForm>
+    public class GetReportLinksAction extends ReadOnlyApiAction<ReportLinkForm>
     {
         public ApiResponse execute(ReportLinkForm form, BindException errors)
         {
@@ -1254,7 +1255,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataEntryFormDetailsAction extends ApiAction<EnterDataForm>
+    public class GetDataEntryFormDetailsAction extends ReadOnlyApiAction<EnterDataForm>
     {
         public ApiResponse execute(EnterDataForm form, BindException errors)
         {
@@ -1384,7 +1385,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class DataEntryFormJsonForQueryAction extends ApiAction<EnterDataForm>
+    public class DataEntryFormJsonForQueryAction extends ReadOnlyApiAction<EnterDataForm>
     {
         @Override
         public ApiResponse execute(EnterDataForm form, BindException errors)
@@ -1506,7 +1507,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class ManageFlagsAction extends ApiAction<ManageFlagsForm>
+    public class ManageFlagsAction extends MutatingApiAction<ManageFlagsForm>
     {
         public ApiResponse execute(ManageFlagsForm form, BindException errors)
         {
@@ -1617,7 +1618,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class BloodPlotDataAction extends ApiAction<IdForm>
+    public class BloodPlotDataAction extends ReadOnlyApiAction<IdForm>
     {
 
         @Override
@@ -1726,7 +1727,7 @@ public class EHRController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAnimalLockAction extends ApiAction<Object>
+    public class GetAnimalLockAction extends ReadOnlyApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors)
         {
@@ -1735,7 +1736,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class SetAnimalLockAction extends ApiAction<LockAnimalForm>
+    public class SetAnimalLockAction extends MutatingApiAction<LockAnimalForm>
     {
         public ApiResponse execute(LockAnimalForm form, BindException errors)
         {

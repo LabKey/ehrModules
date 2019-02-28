@@ -17,10 +17,10 @@
 package org.labkey.ehr_billing;
 
 import org.apache.commons.lang3.StringUtils;
-import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
+import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.ColumnInfo;
@@ -73,7 +73,7 @@ public class EHR_BillingController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class RunBillingPipelineAction extends ApiAction<BillingPipelineForm>
+    public class RunBillingPipelineAction extends MutatingApiAction<BillingPipelineForm>
     {
         public ApiResponse execute(BillingPipelineForm form, BindException errors)
         {

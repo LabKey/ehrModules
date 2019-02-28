@@ -144,6 +144,7 @@
 
                 LABKEY.Ajax.request({
                     url: LABKEY.ActionURL.buildURL('ehr_billing', 'RunBillingPipeline'),
+                    method: 'POST',
                     params: jsonParameters,
                     scope: this,
                     success: function() {

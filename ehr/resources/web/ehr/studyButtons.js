@@ -253,6 +253,7 @@ EHR.DatasetButtons = new function () {
                     Ext4.Msg.wait('Deleting...');
                     LABKEY.Ajax.request({
                         url: LABKEY.ActionURL.buildURL('ehr', 'discardForm', null, {taskIds: checked}),
+                        method: 'POST',
                         success: function (response, options) {
                             Ext4.Msg.hide();
                             Ext4.Msg.alert('Success', 'Tasks discarded');
