@@ -140,9 +140,9 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
         }
 
         @Override
-        protected void configureTranslator(DataIterator input, final SimpleTranslator it)
+        protected void configureTranslator(DataIterator input, final SimpleTranslator it, final DataIteratorContext context)
         {
-            super.configureTranslator(input, it);
+            super.configureTranslator(input, it, context);
 
             final String aliasColName = "aliases";
             int aliasInputIdx = 0;
