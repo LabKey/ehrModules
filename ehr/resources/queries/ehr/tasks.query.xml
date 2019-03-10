@@ -3,7 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
                 <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
-                <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
+                <tableUrl>/ehr/dataEntryFormDetails.view?formType=${formtype}&amp;taskid=${taskid}</tableUrl>
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
@@ -17,7 +17,7 @@
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
                         <shownInInsertView>true</shownInInsertView>
-                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <url>/ehr/dataEntryFormDetails.view?formType=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="taskid">
                         <isHidden>true</isHidden>
@@ -131,11 +131,11 @@
                     </column>
                     <column columnName="title">
                         <description>Task title or brief description</description>
-                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <url>/ehr/dataEntryFormDetails.view?formType=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="updateTitle" wrappedColumnName="title">
                         <columnTitle>Title</columnTitle>
-                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <url>/ehr/dataEntryForm.view?formType=${formtype}&amp;taskid=${taskid}</url>
                         <isHidden>true</isHidden>
                         <displayWidth>150</displayWidth>
                     </column>
