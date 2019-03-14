@@ -690,6 +690,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setFormElement(Locator.name("fileUpload"), getStudyPolicyXML());
         clickButton("Import");
     }
+    protected void setSeeUserAndGroupDetailsPermission(String userName)
+    {
+        goToSitePermissions();
+        _permissionsHelper.setUserPermissions(userName,"See User and Group Details");
+    }
 
     protected File getStudyPolicyXML()
     {
