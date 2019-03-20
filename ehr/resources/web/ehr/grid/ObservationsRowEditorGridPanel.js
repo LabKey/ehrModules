@@ -152,7 +152,7 @@ Ext4.define('EHR.grid.ObservationsRowEditorGridPanel', {
 
             if (rec.get('Id') != this.boundRecordId){
                 this.store.each(function(r){
-                    //udpate any record from the bound animal
+                    //update any record from the bound animal
                     if (r.get('Id') === this.boundRecordId){
                         r.set({
                             Id: newId,
