@@ -16,18 +16,21 @@ Ext4.onReady(function (){
 
             LABKEY.NavTrail.setTrail(data.title || query);
 
-            var keyField;
+            var keyFields=[];
             Ext4.each(data.columns, function(f){
                 if(f.isKeyField){
-                    keyField = f.name;
-                    return false;
+                    keyFields.push(f.name);
                 }
             }, this);
 
             //var insertURL = '/query/insertQueryRow.view?schemaName='+schema+'&queryName='+query;
-            var importURL = '/query/importData.view?schemaName='+schema+'&query.queryName='+query+'&query.sort=-'+keyField;
-            var updateURL = '/query/updateQueryRow.view?schemaName='+schema+'&queryName='+query+'&'+keyField+'=${'+keyField+'}';
+            var importURL = '/query/importData.view?schemaName='+schema+'&query.queryName='+query+'&query.sort=-'+keyFields[0];
             var deleteURL = '/query/deleteQueryRows.view?schemaName='+schema+'&query.queryName='+query;
+            var updateURL = '/query/updateQueryRow.view?schemaName='+schema+'&queryName='+query;
+            // add PK fields to the update URL
+            Ext4.each(keyFields, function(keyField) {
+                updateURL = updateURL.concat('&'+keyField+'=${'+keyField+'}');
+            })
 
             var config = {
                 title: query,
