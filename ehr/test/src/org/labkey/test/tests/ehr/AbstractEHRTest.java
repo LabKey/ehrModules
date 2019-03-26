@@ -581,7 +581,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected void assertNoErrorText()
     {
-        String[] texts = new String[]{"error", "Error", "ERROR", "failed", "Failed", "Invalid", "invalid"};
+        String[] texts = new String[]{" error", "Error", "ERROR", "failed", "Failed", "Invalid", "invalid"};
         String visibleText = findVisibleText(texts);
         assertNull("Error text found: " + visibleText, visibleText);
     }
