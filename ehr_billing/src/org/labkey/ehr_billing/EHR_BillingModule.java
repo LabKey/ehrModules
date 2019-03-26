@@ -57,7 +57,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public double getVersion()
     {
-        return 19.10;
+        return 19.11;
     }
 
     @Override
