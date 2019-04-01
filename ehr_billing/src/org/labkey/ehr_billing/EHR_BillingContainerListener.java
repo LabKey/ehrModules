@@ -53,21 +53,25 @@ public class EHR_BillingContainerListener implements ContainerListener
             if (chargeRatesTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(chargeRatesTable, containerFilter);
 
-            TableInfo chargeableItemsTable = EHR_BillingSchema.getInstance().getChargeableItems();
-            if (chargeableItemsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeableItemsTable, containerFilter);
+            TableInfo invoiceItemsTable = EHR_BillingSchema.getInstance().getTableInvoiceItems();
+            if (invoiceItemsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(invoiceItemsTable, containerFilter);
+
+            TableInfo invoiceTable = EHR_BillingSchema.getInstance().getInvoice();
+            if (invoiceTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(invoiceTable, containerFilter);
 
             TableInfo invoiceRunsTable = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
             if (invoiceRunsTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(invoiceRunsTable, containerFilter);
 
-            TableInfo invoiceItemsTable = EHR_BillingSchema.getInstance().getTableInvoiceItems();
-            if (invoiceItemsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(invoiceItemsTable, containerFilter);
-
             TableInfo miscChargesTable = EHR_BillingSchema.getInstance().getMiscCharges();
             if (miscChargesTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(miscChargesTable, containerFilter);
+
+            TableInfo chargeableItemsTable = EHR_BillingSchema.getInstance().getChargeableItems();
+            if (chargeableItemsTable.getTableType() == DatabaseTableType.TABLE)
+                Table.delete(chargeableItemsTable, containerFilter);
 
             TableInfo chargeUnitsTable = EHR_BillingSchema.getInstance().getChargeUnits();
             if (chargeUnitsTable.getTableType() == DatabaseTableType.TABLE)
@@ -77,12 +81,8 @@ public class EHR_BillingContainerListener implements ContainerListener
             if (chargeRateExemptionsTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(chargeRateExemptionsTable, containerFilter);
 
-            TableInfo invoiceTable = EHR_BillingSchema.getInstance().getInvoice();
-            if (invoiceTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(invoiceTable, containerFilter);
-
             TableInfo dataAccessTable = EHR_BillingSchema.getInstance().getDataAccessTable();
-            if (invoiceTable.getTableType() == DatabaseTableType.TABLE)
+            if (dataAccessTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(dataAccessTable, containerFilter);
 
             transaction.commit();
