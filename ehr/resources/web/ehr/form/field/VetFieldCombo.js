@@ -24,7 +24,7 @@ Ext4.define('EHR.form.field.VetFieldCombo', {
                 autoLoad: true
             },
             listConfig: {
-                innerTpl: '{[values["UserId/DisplayName"] + (values["UserId/LastName"] ? " (" + values["UserId/LastName"] + (values["UserId/FirstName"] ? ", " + values["UserId/FirstName"] : "") + ")" : "")]}',
+                innerTpl: '{[LABKEY.Utils.encodeHtml(values["UserId/DisplayName"] + (values["UserId/LastName"] ? " (" + values["UserId/LastName"] + (values["UserId/FirstName"] ? ", " + values["UserId/FirstName"] : "") + ")" : ""))]}',
                 getInnerTpl: function(){
                     return this.innerTpl;
                 }

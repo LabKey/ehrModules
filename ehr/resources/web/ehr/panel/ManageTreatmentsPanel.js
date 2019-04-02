@@ -275,7 +275,8 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
             },{
                 header: 'Ordered By',
                 width: 160,
-                dataIndex: 'performedby'
+                dataIndex: 'performedby',
+                renderer: 'htmlEncode'
             }]
         }
     }

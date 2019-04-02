@@ -40,7 +40,7 @@ Ext4.define('EHR.form.field.ProtocolField', {
 
     //can be overridden by child modules
     getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + (values["investigatorId/lastName"] ? " (" + values["investigatorId/lastName"] + ")" : "")]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;">{[LABKEY.Utils.encodeHtml(values["displayName"] + (values["investigatorId/lastName"] ? " (" + values["investigatorId/lastName"] + ")" : ""))]}&nbsp;</span>'];
     },
 
     getStoreCfg: function(){

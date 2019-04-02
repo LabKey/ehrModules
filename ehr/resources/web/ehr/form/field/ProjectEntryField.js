@@ -178,7 +178,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     },
 
     getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : ""))]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[LABKEY.Utils.encodeHtml(values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : "")))]}&nbsp;</span>'];
     },
 
     trigger1Cls: 'x4-form-search-trigger',

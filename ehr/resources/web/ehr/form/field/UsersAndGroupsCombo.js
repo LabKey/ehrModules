@@ -25,9 +25,7 @@ Ext4.define('EHR.form.field.UsersAndGroupsCombo', {
             anyMatch: true,
             caseSensitive: false,
             listConfig: {
-                innerTpl: '{[LABKEY.Utils.encodeHtml(values.DisplayName) + (values.LastName ? " (" + '
-                    + 'LABKEY.Utils.encodeHtml(values.LastName) + (values.FirstName ? ", " + '
-                    + 'LABKEY.Utils.encodeHtml(values.FirstName) : "") + ")" : "")]}',
+                innerTpl: '{[LABKEY.Utils.encodeHtml(values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : ""))]}',
                 getInnerTpl: function(){
                     return this.innerTpl;
                 }
