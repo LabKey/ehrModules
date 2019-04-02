@@ -20,6 +20,8 @@ import org.labkey.api.ehr.security.EHRRequestPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.security.permissions.SeeGroupDetailsPermission;
+import org.labkey.api.security.permissions.SeeUserDetailsPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 
 /**
@@ -37,7 +39,9 @@ public class EHRDataEntryRole extends AbstractEHRRole
             UpdatePermission.class,
             DeletePermission.class,
             EHRDataEntryPermission.class,
-            EHRRequestPermission.class
+            EHRRequestPermission.class,
+            SeeUserDetailsPermission.class,
+            SeeGroupDetailsPermission.class
         );
     }
 }
