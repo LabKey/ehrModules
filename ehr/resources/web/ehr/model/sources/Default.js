@@ -952,7 +952,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     anyMatch: true,
                     listConfig: {
-                        innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml(values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1060,7 +1060,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     plugins: ['ldk-usereditablecombo'],
                     anyMatch: true,
                     listConfig: {
-                        innerTpl: '{[values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : "")]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml(values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
