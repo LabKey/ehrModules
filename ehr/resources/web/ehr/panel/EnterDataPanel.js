@@ -25,6 +25,10 @@ Ext4.define('EHR.panel.EnterDataPanel', {
     },
 
     onLoad: function(results){
+        this.setSections(results);
+    },
+
+    setSections: function(results){
         var formMap = {};
         Ext4.each(results.forms, function(form){
             if (form.isAvailable && form.isVisible && form.canInsert){
