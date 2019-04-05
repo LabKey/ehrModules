@@ -21,6 +21,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
     includeDefaultProjects: true,
     schemaName:'ehr',
     filterSQL: null,
+    listenForAnimalChange: true,
 
     initComponent: function(){
         this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -35,7 +36,6 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
             store: {
                 type: 'labkey-store',
                 schemaName: 'study',
-                sql: this.makeSql(),
                 sort: 'sort_order,project',
                 autoLoad: false,
                 loading: true,
@@ -53,16 +53,17 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
             listeners: {
                 scope: this,
                 beforerender: function (field) {
-                    var target = field.up('form');
-                    if (!target)
-                        target = field.up('grid');
+                    if (this.listenForAnimalChange) {
+                        var target = field.up('form');
+                        if (!target)
+                            target = field.up('grid');
 
-                    if (target) {
-                        field.mon(target, 'animalchange', field.getProjects, field);
-                    }
-                    else {
-                        if(!field.up('panel'))
+                        if (target) {
+                            field.mon(target, 'animalchange', field.getProjects, field);
+                        }
+                        else {
                             console.error('Unable to find target');
+                        }
                     }
 
                     //attempt to load for the bound Id
