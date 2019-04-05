@@ -61,7 +61,8 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
                         field.mon(target, 'animalchange', field.getProjects, field);
                     }
                     else {
-                        console.error('Unable to find target');
+                        if(!field.up('panel'))
+                            console.error('Unable to find target');
                     }
 
                     //attempt to load for the bound Id
