@@ -15,26 +15,15 @@
  */
 package org.labkey.ehr.query;
 
-import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
-import org.labkey.api.data.validator.ColumnValidator;
-import org.labkey.api.data.validator.ColumnValidators;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
-import org.labkey.api.query.DuplicateKeyException;
-import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryUpdateService;
-import org.labkey.api.query.QueryUpdateServiceException;
-import org.labkey.api.query.RuntimeValidationException;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
-import org.labkey.api.query.ValidationException;
-import org.labkey.api.security.User;
 
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -120,42 +109,6 @@ public class LookupSetTable extends AbstractDataDefinedTable
         {
             super(ti);
         }
-
-        private void validateValue(Map<String, Object> row)
-        {
-            for (ColumnInfo col : getQueryTable().getColumns())
-            {
-                if (row.keySet().contains(col.getColumnName()))
-                {
-                    Object value = row.get(col.getColumnName());
-
-                    List<ColumnValidator> validators = ColumnValidators.create(col, null);
-                    for (ColumnValidator v : validators)
-                    {
-                        String msg = v.validate(1, value);
-                        if (msg != null)
-                            throw new RuntimeValidationException(msg, col.getName());
-                    }
-                }
-            }
-        }
-
-
-        @Override
-        protected Map<String, Object> insertRow(User user, Container container, Map<String, Object> row) throws DuplicateKeyException, ValidationException, QueryUpdateServiceException, SQLException
-        {
-            validateValue(row);
-            return super.insertRow(user, container, row);
-        }
-
-        @Override
-        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
-        {
-            validateValue(row);
-            return super.updateRow(user, container, row, oldRow);
-        }
-
-
     }
 }
 
