@@ -697,8 +697,7 @@ ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.report.xml -text
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.r -text
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.report.xml -text
-ehr/resources/schemas/dbscripts/postgresql/ehr-0.00-16.30.sql -text
-ehr/resources/schemas/dbscripts/postgresql/ehr-16.30-17.10.sql -text
+ehr/resources/schemas/dbscripts/postgresql/ehr-0.00-17.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/ehr-18.20-18.30.sql -text
@@ -873,10 +872,12 @@ ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-16.22-16.23.sql 
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-16.23-16.24.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-17.10-17.11.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-0.00-16.20.sql -text
+ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-0.00-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-16.20-16.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-16.21-16.22.sql -text
+ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-16.30-17.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-17.20-17.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr-17.22-17.23.sql -text
@@ -889,8 +890,7 @@ ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-17.32-17.33.sql 
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-18.10-18.11.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-18.11-18.12.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/ehr_lookups-18.20-18.21.sql -text
-ehr/resources/schemas/dbscripts/sqlserver/ehr-0.00-16.30.sql -text
-ehr/resources/schemas/dbscripts/sqlserver/ehr-16.30-17.10.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/ehr-0.00-17.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.20-17.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-17.30-18.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/ehr-18.20-18.30.sql -text
@@ -1064,10 +1064,12 @@ ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-16.22-16.23.sql -
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-16.23-16.24.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-17.10-17.11.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-0.00-16.20.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-0.00-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-16.10-16.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-16.20-16.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-16.20-16.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-16.21-16.22.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-16.30-17.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-17.20-17.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-17.21-17.22.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/ehr-17.22-17.23.sql -text
