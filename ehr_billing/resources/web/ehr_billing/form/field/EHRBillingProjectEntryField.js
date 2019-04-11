@@ -22,6 +22,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
     schemaName:'ehr',
     filterSQL: null,
     listenForAnimalChange: true,
+    showSearchTrigger: true,
 
     initComponent: function(){
         this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -30,9 +31,9 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
             expandToFitContent: true,
             queryMode: 'local',
             anyMatch: true,
-            trigger2Cls: Ext4.form.field.ComboBox.prototype.triggerCls,
+            trigger2Cls: this.showSearchTrigger ? Ext4.form.field.ComboBox.prototype.triggerCls : null,
             onTrigger2Click: Ext4.form.field.ComboBox.prototype.onTriggerClick,
-            trigger1Cls: 'x4-form-search-trigger',
+            trigger1Cls: this.showSearchTrigger ? 'x4-form-search-trigger' : Ext4.form.field.ComboBox.prototype.triggerCls,
             store: {
                 type: 'labkey-store',
                 schemaName: 'study',
@@ -84,7 +85,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
 
         this.callParent(arguments);
 
-        this.on('render', function(){
+        this.on('render', function () {
             Ext4.QuickTips.register({
                 target: this.triggerEl.elements[0],
                 text: 'Click to recalculate allowable projects'
@@ -102,7 +103,12 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
         ']}&nbsp;</span>'];
     },
 
-    onTrigger1Click: function(){
+    onTrigger1Click: function() {
+        if (!this.showSearchTrigger) {
+            this.onTriggerClick();
+            return;
+        }
+
         var boundRecord = EHR.DataEntryUtils.getBoundRecord(this);
         if (!boundRecord){
             Ext4.Msg.alert('Error', 'Unable to locate associated animal Id');
