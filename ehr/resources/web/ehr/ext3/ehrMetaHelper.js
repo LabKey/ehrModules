@@ -155,9 +155,9 @@ EHR.ext.metaHelper = new function(){
                     //TODO: it would be better to put this in LABKEY.ext.Combo, so this tpl doesnt conflict with non-combo editors
                     field.tpl = function(){var tpl = new Ext.XTemplate(
                         '<tpl for=".">' +
-                        '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none]') +'"]}' +
+                        '<div class="x-combo-list-item">{[LABKEY.Utils.encodeHtml(values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none]') +'")]}' +
                         //allow a flag to display both display and value fields
-                        '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
+                        '<tpl if="'+meta.showValueInList+'">{[LABKEY.Utils.encodeHtml(values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : "")]}</tpl>'+
                         '&nbsp;</div></tpl>'
                         );return tpl.compile()}() //FIX: 5860
                 }
