@@ -44,6 +44,7 @@ import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.BodyWebPart;
 import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
+import org.labkey.test.pages.ehr.EnterDataPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -61,6 +62,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2156,6 +2159,72 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                         "iStat"
                 ));
         checkClinicalHistoryType(expectedLabels);
+    }
+
+    @Test
+    public void testNecropsyRequestFlow()
+    {
+        String animalId = "12345";
+        LocalDateTime now = LocalDateTime.now();
+        String projectId = "640991";
+        String type = "Necropsy";
+        String chargeType = "1";
+        String procedureid = "Necropsy Grade 2: Standard";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String tissue = "AMNION (T-88300)";
+
+        log("Begin the test with entry data page");
+        EnterDataPage enterData = EnterDataPage.beginAt(this, getContainerPath());
+        enterData.waitAndClickAndWait(Locator.linkWithText("Necropsy Request"));
+        waitForElement(Locator.pageHeader("Necropsy Request"));
+
+        log("Setting the Necropsy details");
+        setNecropsYFormElement("Id", animalId);
+        setNecropsYFormElement("date", now.format(formatter));
+        click(Locator.tagWithClassContaining("div","x4-trigger-index-1"));
+        _ext4Helper.selectComboBoxItem("Center Project:",Ext4Helper.TextMatchTechnique.CONTAINS,"Other");
+        _ext4Helper.selectComboBoxItem("Project:",Ext4Helper.TextMatchTechnique.CONTAINS,projectId);
+        clickButton("Submit",0);
+        setNecropsYFormElement("type", type);
+        setNecropsYFormElement("chargetype", chargeType);
+        setNecropsYFormElement("procedureid", procedureid);
+
+        log("Entering values for Tissue Samples");
+        Ext4GridRef grid = _helper.getExt4GridForFormSection("Tissue Samples");
+        _helper.addRecordToGrid(grid);
+        int index = grid.getRowCount();
+        grid.setGridCell(index, "Id", animalId);
+        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "tissue", tissue);
+
+        log("Entering values for Organ Weights");
+        grid = _helper.getExt4GridForFormSection("Organ Weights");
+        _helper.addRecordToGrid(grid);
+        index = grid.getRowCount();
+        grid.setGridCell(index, "Id", animalId);
+        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "tissue", tissue);
+
+        log("Submit the request and approve");
+        clickButton("Request & Approve", 0);
+
+        waitForElement(Locator.linkWithText("Pending Requests"));
+        assertElementPresent(Locator.linkWithText("Pending Requests"));
+        click(Locator.linkWithText("Approved Requests"));
+
+        log("Verifying the submitted Necropsy Request");
+        DataRegionTable regionTable = new DataRegionTable("query", getDriver());
+        assertEquals("There should be single approved necropsy request", 1, regionTable.getDataRowCount());
+
+        //code to add for the remaining flow
+    }
+
+    private void setNecropsYFormElement(String id, String value)
+    {
+        Locator loc = Locator.name(id);
+        waitForElement(loc);
+        setFormElement(loc, value);
+        assertEquals(value, getFormElement(loc));
     }
 
     @Override
