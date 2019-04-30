@@ -24,7 +24,7 @@ Ext4.onReady(function(){
         },{
             header: 'Employee Information',
             items: [{
-                name: 'Employee List', url: '<%=contextPath%>/query' + container + '/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=Employees&query.viewName=' + employeeDefaultView
+                name: 'Employee List', url: '<%=contextPath%>/query' + container + '/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=Employees' + (employeeDefaultView ? ('&query.viewName=' + employeeDefaultView) : '')
             },{
                 name: 'View/Edit Dates Employees Completed Requirements', url: '<%=contextPath%>/query' + container + '/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=CompletionDates'
             },{
