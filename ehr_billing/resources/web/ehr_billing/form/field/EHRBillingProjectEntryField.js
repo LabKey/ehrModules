@@ -94,7 +94,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
     },
 
     getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;{' +
+        return ['<span style="display:inline-block;width:225px;white-space:nowrap;{' +
         '[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[' +
         LABKEY.Utils.encodeHtml + '(values["project"])' +
         ' + " " + (values["title"] ? (' +
