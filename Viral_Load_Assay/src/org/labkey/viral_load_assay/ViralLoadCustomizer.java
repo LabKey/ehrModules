@@ -66,7 +66,7 @@ public class ViralLoadCustomizer implements TableCustomizer
                 return;
             }
 
-            TableInfo data = schema.createDataTable();
+            TableInfo data = schema.createDataTable(null);
             String tableName = data.getDomain().getStorageTableName();
 
             String name = "viralLoad";
