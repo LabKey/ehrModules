@@ -17,6 +17,7 @@ package org.labkey.ehr_billing;
 
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.SimpleUserSchema;
@@ -37,11 +38,11 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
         aliases
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getAliasesTable()).init();
+                                schema, EHR_BillingSchema.getInstance().getAliasesTable(), cf).init();
 
                 return table;
             }
@@ -49,11 +50,11 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
         chargeRates
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getChargeRatesTable()).init();
+                                schema, EHR_BillingSchema.getInstance().getChargeRatesTable(), cf).init();
 
                 return table;
             }
@@ -61,65 +62,65 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
         invoiceRuns
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getTableInvoiceRuns()).init();
+                                schema, EHR_BillingSchema.getInstance().getTableInvoiceRuns(), cf).init();
                 return table;
             }
         },
         invoicedItems
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getTableInvoiceItems()).init();
+                                schema, EHR_BillingSchema.getInstance().getTableInvoiceItems(), cf).init();
                 return table;
             }
         },
         miscCharges
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getMiscCharges()).init();
+                                schema, EHR_BillingSchema.getInstance().getMiscCharges(), cf).init();
                 return table;
             }
         },
         chargeableItems
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getChargeableItems()).init();
+                                schema, EHR_BillingSchema.getInstance().getChargeableItems(), cf).init();
                 return table;
             }
         },
         invoice
         {
             @Override
-            public TableInfo createTable(EHR_BillingUserSchema schema)
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
             {
                 SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_BillingSchema.getInstance().getInvoice()).init();
+                                schema, EHR_BillingSchema.getInstance().getInvoice(), cf).init();
                 return table;
             }
         };
 
-        public abstract TableInfo createTable(EHR_BillingUserSchema schema);
+        public abstract TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf);
     }
 
     @Override
     @Nullable
-    public TableInfo createTable(String name)
+    public TableInfo createTable(String name, ContainerFilter cf)
     {
         if (name != null)
         {
@@ -135,9 +136,9 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
             }
             if (tableType != null)
             {
-                return tableType.createTable(this);
+                return tableType.createTable(this, cf);
             }
         }
-        return super.createTable(name);
+        return super.createTable(name, cf);
     }
 }

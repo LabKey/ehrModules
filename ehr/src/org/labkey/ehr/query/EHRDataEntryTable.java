@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.jetbrains.annotations.NotNull;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.security.AbstractEHRPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
@@ -38,9 +39,9 @@ import org.labkey.api.security.permissions.UpdatePermission;
  */
 public class EHRDataEntryTable<SchemaType extends UserSchema> extends EHRExtensibleTable<SchemaType>
 {
-    public EHRDataEntryTable(SchemaType schema, TableInfo table)
+    public EHRDataEntryTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {
-        super(schema, table);
+        super(schema, table, cf);
     }
 
     @Override

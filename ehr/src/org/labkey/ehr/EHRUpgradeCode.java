@@ -46,7 +46,15 @@ public class EHRUpgradeCode implements UpgradeCode
         GregorianCalendar cal = new GregorianCalendar(1950, Calendar.JANUARY, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
+// CONSIDER
+//        PreparedStatement stmt = schema.getScope().getConnection().prepareStatement(
+//                "INSERT INTO ehr_lookups.calendar\n" +
+//                        "\t(TargetDateTime, TargetDate, Year, Month, Day, DayAfter)\n" +
+//                        "\tVALUES (?, ?, ?, ?, ?, ?)");
+//        stmt.addBatch();
+
         // Insert rows from January 1, 1950 to December 31, 2029
+        TableInfo calendar = EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar");
         while (cal.get(Calendar.YEAR) < 2030)
         {
             Map<String, Object> row = new HashMap<>();
@@ -60,7 +68,7 @@ public class EHRUpgradeCode implements UpgradeCode
             cal.add(Calendar.DATE, 1);
             row.put("DayAfter", cal.getTime());
 
-            Table.insert(null, EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar"), row);
+            Table.insert(null, calendar, row);
         }
     }
 

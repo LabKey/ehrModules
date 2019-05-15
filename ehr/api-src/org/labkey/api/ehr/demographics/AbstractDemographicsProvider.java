@@ -142,7 +142,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
             throw new IllegalArgumentException("Schema " + _schemaName + " not found in the container: " + c.getPath());
         }
 
-        final TableInfo ti = us.getTable(_queryName);
+        final TableInfo ti = us.getTable(_queryName, null);
         if (ti == null)
         {
             throw new IllegalArgumentException("Table: " + _schemaName + "." + _queryName + " not found in the container: " + c.getPath());

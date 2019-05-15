@@ -291,7 +291,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
             {
                 // nothing special about AliasedColumn, just makes it easy to copy ColumnInfo here (to avoid mutating existing ColumnInfo)
                 AliasedColumn ac = new AliasedColumn(ti, ci.getName(), ci);
-                ac.setFk(null);  // null out foreign key lookup to prevent lots of LEFT JOINs
+                ac.clearFk();  // null out foreign key lookup to prevent lots of LEFT JOINs
                 map.replace(entry.getKey(), ac);
             }
         }

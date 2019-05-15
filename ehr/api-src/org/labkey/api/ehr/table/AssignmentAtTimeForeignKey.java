@@ -17,6 +17,7 @@ package org.labkey.api.ehr.table;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.LookupForeignKey;
@@ -80,14 +81,14 @@ public class AssignmentAtTimeForeignKey extends LookupForeignKey
             return null;
         }
 
-        ti.getColumn(_pkCol.getName()).setHidden(true);
-        ti.getColumn(_pkCol.getName()).setKeyField(true);
+        ((BaseColumnInfo)ti.getColumn(_pkCol.getName())).setHidden(true);
+        ((BaseColumnInfo)ti.getColumn(_pkCol.getName())).setKeyField(true);
 
-        ti.getColumn("projectsAtTime").setLabel("Center Projects At Time");
-        ti.getColumn("protocolsAtTime").setLabel("IACUC Protocols At Time");
-        ti.getColumn("investigatorsAtTime").setLabel("Investigators At Time");
-        ti.getColumn("projectNumbersAtTime").setLabel("Project Numbers At Time");
-        ti.getColumn("projectNumbersAtTime").setHidden(true);
+        ((BaseColumnInfo)ti.getColumn("projectsAtTime")).setLabel("Center Projects At Time");
+        ((BaseColumnInfo)ti.getColumn("protocolsAtTime")).setLabel("IACUC Protocols At Time");
+        ((BaseColumnInfo)ti.getColumn("investigatorsAtTime")).setLabel("Investigators At Time");
+        ((BaseColumnInfo)ti.getColumn("projectNumbersAtTime")).setLabel("Project Numbers At Time");
+        ((BaseColumnInfo)ti.getColumn("projectNumbersAtTime")).setHidden(true);
 
         return ti;
     }

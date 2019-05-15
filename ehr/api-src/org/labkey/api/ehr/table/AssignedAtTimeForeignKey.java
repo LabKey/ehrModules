@@ -17,6 +17,7 @@ package org.labkey.api.ehr.table;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.LookupForeignKey;
@@ -73,10 +74,10 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
             return null;
         }
 
-        ti.getColumn(_pkCol.getName()).setHidden(true);
-        ti.getColumn(_pkCol.getName()).setKeyField(true);
+        ((BaseColumnInfo)ti.getColumn(_pkCol.getName())).setHidden(true);
+        ((BaseColumnInfo)ti.getColumn(_pkCol.getName())).setKeyField(true);
 
-        ti.getColumn("projectAtTime").setLabel("Assigned to Center Project At Time");
+        ((BaseColumnInfo)ti.getColumn("projectAtTime")).setLabel("Assigned to Center Project At Time");
 
         return ti;
     }

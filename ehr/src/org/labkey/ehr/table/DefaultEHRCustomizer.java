@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
@@ -189,7 +190,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table instanceof AbstractTableInfo)
         {
             //this will force qcstate toward the end of the non-calculated columns
-            ColumnInfo qc = table.getColumn("qcstate");
+            var qc = ((AbstractTableInfo)table).getMutableColumn("qcstate");
             if (qc != null)
             {
                 AbstractTableInfo ati = (AbstractTableInfo)table;
@@ -216,7 +217,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             appendCalculatedCols(ti, "date");
         }
 
-        ColumnInfo objectId = ti.getColumn("objectid");
+        var objectId = ti.getMutableColumn("objectid");
         if (objectId != null)
         {
             objectId.setHidden(true);
@@ -224,7 +225,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             objectId.setUserEditable(false);
         }
 
-        ColumnInfo runId = ti.getColumn("runId");
+        var runId = ti.getMutableColumn("runId");
         if (runId != null)
         {
             runId.setLabel("Run Id");
@@ -240,7 +241,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-        ColumnInfo qcstate = ti.getColumn("qcstate");
+        var qcstate = ti.getMutableColumn("qcstate");
         if (qcstate != null)
         {
             qcstate.setLabel("Status");
@@ -254,7 +255,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             //qcstate.setUserEditable(false);
         }
 
-        ColumnInfo parentId = ti.getColumn("parentId");
+        var parentId = ti.getMutableColumn("parentId");
         if (parentId != null)
         {
             parentId.setLabel("Encounter Id");
@@ -267,7 +268,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
-        ColumnInfo formSort = ti.getColumn("formSort");
+        var formSort = ti.getMutableColumn("formSort");
         if (formSort != null)
         {
             formSort.setHidden(true);
@@ -276,7 +277,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             formSort.setLabel("Form Sort Order");
         }
 
-        ColumnInfo caseId = ti.getColumn("caseId");
+        var caseId = ti.getMutableColumn("caseId");
         if (caseId != null)
         {
             caseId.setHidden(true);
@@ -288,7 +289,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ehrContainer == null)
             ehrContainer = ti.getUserSchema().getContainer();
 
-        ColumnInfo taskId = ti.getColumn("taskId");
+        var taskId = ti.getMutableColumn("taskId");
         if (taskId != null)
         {
             taskId.setLabel("Task Id");
@@ -301,7 +302,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             taskId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
-        ColumnInfo requestId = ti.getColumn("requestId");
+        var requestId = ti.getMutableColumn("requestId");
         if (requestId != null)
         {
             requestId.setLabel("Request Id");
@@ -322,14 +323,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         customizeCageCol(ti, "cage1");
         customizeCageCol(ti, "cage2");
 
-        ColumnInfo description = ti.getColumn("description");
+        var description = ti.getMutableColumn("description");
         if (description != null)
         {
             description.setDisplayWidth("400");
             description.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
-        ColumnInfo project = ti.getColumn("project");
+        var project = ti.getMutableColumn("project");
         if (project != null && !ti.getName().equalsIgnoreCase("project"))
         {
             //this was disabled in order to restore better edit behavior (a combo)
@@ -339,13 +340,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 project.setFk(new QueryForeignKey(us, ehrContainer, "project", "project", "project"));
         }
 
-        ColumnInfo code = ti.getColumn("code");
+        var code = ti.getMutableColumn("code");
         if (code != null)
         {
             code.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
-        for (ColumnInfo col : ti.getColumns())
+        for (var col : ti.getMutableColumns())
         {
             if (PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()))
             {
@@ -365,7 +366,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeRoomCol(AbstractTableInfo ti, String name)
     {
-        ColumnInfo room = ti.getColumn(name);
+        var room = ti.getMutableColumn(name);
         if (room != null)
         {
             ensureSortColumn(ti, name, room);
@@ -413,7 +414,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeCageCol(AbstractTableInfo ti, String name)
     {
-        ColumnInfo cage = ti.getColumn(name);
+        var cage = ti.getMutableColumn(name);
         if (cage != null)
         {
             ensureSortColumn(ti, name, cage);
@@ -423,7 +424,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void setConceptURI(ColumnInfo ci, String conceptURI)
+    private void setConceptURI(BaseColumnInfo ci, String conceptURI)
     {
         if (ci.isLocked())
         {
@@ -435,7 +436,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             if (((AliasedColumn)ci).getColumn() != null)
             {
-                setConceptURI(((AliasedColumn)ci).getColumn(), conceptURI);
+                setConceptURI((BaseColumnInfo)((AliasedColumn)ci).getColumn(), conceptURI);
             }
         }
     }
@@ -448,20 +449,20 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         // Ensure the basic EHR triggers are initialized
 //        ti.addTriggerFactory(new TriggerScriptFactory());
 
-        ColumnInfo idColumn = ti.getColumn("Id");
+        var idColumn = ti.getMutableColumn("Id");
         if (idColumn != null && !idColumn.isLocked())
         {
             setConceptURI(idColumn, PARTICIPANT_CONCEPT_URI);
         }
 
         //NOTE: this is LabKey's magic 3-part join column.  It doesnt do anythng useful for our data and ends up being confusing when users see it.
-        ColumnInfo datasets = ti.getColumn(FieldKey.fromString("Datasets"));
+        var datasets = ti.getMutableColumn(FieldKey.fromString("Datasets"));
         if (datasets != null)
         {
             ti.removeColumn(datasets);
         }
 
-        ColumnInfo dataset = ti.getColumn(FieldKey.fromString("Dataset"));
+        var dataset = ti.getMutableColumn(FieldKey.fromString("Dataset"));
         if (dataset != null)
         {
             dataset.setHidden(true);
@@ -773,7 +774,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void appendSNOMEDCol(AbstractTableInfo ti)
     {
         String name = "codes";
-        ColumnInfo existing = ti.getColumn(name);
+        var existing = ti.getMutableColumn(name);
         if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
         {
             //display version of the column
@@ -826,12 +827,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName, String targetColName)
     {
-        ColumnInfo existing = ti.getColumn(name);
+        var existing = ti.getMutableColumn(name);
         if (existing == null && ti.getColumn("objectid") != null)
         {
             final UserSchema us = getUserSchema(ti, EHRSchema.EHR_SCHEMANAME);
 
-            ColumnInfo ci = new WrappedColumn(ti.getColumn("objectid"), name);
+            WrappedColumn ci = new WrappedColumn(ti.getColumn("objectid"), name);
             LookupForeignKey fk = new LookupForeignKey(targetColName)
             {
                 @Override
@@ -856,7 +857,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn("history") != null)
             return;
 
-        ColumnInfo ci = new WrappedColumn(ti.getColumn(ID_COL), "history");
+        WrappedColumn ci = new WrappedColumn(ti.getColumn(ID_COL), "history");
         ci.setDisplayColumnFactory(new DisplayColumnFactory()
         {
             @Override
@@ -1165,77 +1166,77 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             return;
         }
 
-        ColumnInfo col = getWrappedIdCol(us, ds, "age", "demographicsAge");
+        var col = getWrappedIdCol(us, ds, "age", "demographicsAge");
         col.setLabel("Age");
         col.setDescription("This calculates the age of the animal in year, months or days.  It shows the current age for living animals or age at time of death.");
         ds.addColumn(col);
 
-        ColumnInfo col3 = getWrappedIdCol(us, ds, "AgeClass", "demographicsAgeClass");
+        var col3 = getWrappedIdCol(us, ds, "AgeClass", "demographicsAgeClass");
         col3.setLabel("Age Class");
         col3.setDescription("Calculates the age class of the animal, which is used to calculate reference ranges");
         ds.addColumn(col3);
 
-        ColumnInfo col2 = getWrappedIdCol(us, ds, "MostRecentArrival", "demographicsArrival");
+        var col2 = getWrappedIdCol(us, ds, "MostRecentArrival", "demographicsArrival");
         col2.setLabel("Arrival Date");
         col2.setDescription("Calculates the most recent arrival per animal, if applicable, and most recent arrival at the center.");
         ds.addColumn(col2);
 
-        ColumnInfo col9 = getWrappedIdCol(us, ds, "numRoommates", "demographicsCurrentRoommates");
+        var col9 = getWrappedIdCol(us, ds, "numRoommates", "demographicsCurrentRoommates");
         col9.setLabel("Cagemates");
         col9.setDescription("Calculates the total number of roommates per animal and total animals per cage");
         ds.addColumn(col9);
 
-        ColumnInfo col12 = getWrappedIdCol(us, ds, "MostRecentDeparture", "demographicsMostRecentDeparture");
+        var col12 = getWrappedIdCol(us, ds, "MostRecentDeparture", "demographicsMostRecentDeparture");
         col12.setLabel("Departure Date");
         col12.setDescription("Calculates the most recent departure date for each animal");
         ds.addColumn(col12);
 
-        ColumnInfo col11 = getWrappedIdCol(us, ds, "Demographics", "demographics");
+        var col11 = getWrappedIdCol(us, ds, "Demographics", "demographics");
         col11.setLabel("Demographics");
         col11.setDescription("Contains basic demographic information on the animals, including gender, dam, sire, etc.  This is similar to what was formerly called abstract.");
         ds.addColumn(col11);
 
-        ColumnInfo col15 = getWrappedIdCol(us, ds, "death", "deaths");
+        var col15 = getWrappedIdCol(us, ds, "death", "deaths");
         col15.setLabel("Death Information");
         col15.setDescription("Contains information about the death of this animal, if applicable.");
         ds.addColumn(col15);
 
-        ColumnInfo col16 = getWrappedIdCol(us, ds, "birth", "birth");
+        var col16 = getWrappedIdCol(us, ds, "birth", "birth");
         col16.setLabel("Birth Information");
         col16.setDescription("Contains information about the birth of this animal.");
         ds.addColumn(col16);
 
-        ColumnInfo col13 = getWrappedIdCol(us, ds, "curLocation", "demographicsCurLocation");
+        var col13 = getWrappedIdCol(us, ds, "curLocation", "demographicsCurLocation");
         col13.setLabel("Housing - Current");
         col13.setDescription("The calculates the current housing location for each living animal.");
         ds.addColumn(col13);
 
-        ColumnInfo col14 = getWrappedIdCol(us, ds, "lastHousing", "demographicsLastHousing");
+        var col14 = getWrappedIdCol(us, ds, "lastHousing", "demographicsLastHousing");
         col14.setLabel("Housing - Final Location");
         col14.setDescription("This calculates the final housing location for the animal.  This is distinct from active housing, because it will return a location for dead animals");
         ds.addColumn(col14);
 
-        ColumnInfo col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
+        var col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
         col19.setLabel("Weight Change");
         col19.setDescription("This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight");
         ds.addColumn(col19);
 
-        ColumnInfo col20 = getWrappedIdCol(us, ds, "MostRecentWeight", "demographicsMostRecentWeight");
+        var col20 = getWrappedIdCol(us, ds, "MostRecentWeight", "demographicsMostRecentWeight");
         col20.setLabel("Weight - Current");
         col20.setDescription("This calculates the most recent weight for the animal, based on the weight table");
         ds.addColumn(col20);
 
-        ColumnInfo col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
+        var col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
         col8.setLabel("Required Case Size");
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
-        ColumnInfo col21 = getWrappedIdCol(us, ds, "MhcStatus", "demographicsMhcStatus");
+        var col21 = getWrappedIdCol(us, ds, "MhcStatus", "demographicsMhcStatus");
         col12.setLabel("MHC Status");
         col12.setDescription("MHC status");
         ds.addColumn(col21);
 
-        ColumnInfo id = ds.getColumn(ID_COL);
+        var id = ds.getMutableColumn(ID_COL);
         if (id != null)
         {
             id.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${Id}"));
@@ -1243,7 +1244,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ds.setDetailsURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${Id}"));
     }
 
-    private ColumnInfo getWrappedIdCol(UserSchema us, AbstractTableInfo ds, String name, String queryName)
+    private BaseColumnInfo getWrappedIdCol(UserSchema us, AbstractTableInfo ds, String name, String queryName)
     {
         WrappedColumn col = new WrappedColumn(ds.getColumn(ID_COL), name);
         col.setReadOnly(true);
@@ -1318,8 +1319,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         doSharedCustomization(ti);
         customizeButtonBar(ti);
-        ti.getColumn("rowid").setShownInInsertView(true);
-        ti.getColumn("rowid").setUserEditable(false);
+        ti.getMutableColumn("rowid").setShownInInsertView(true);
+        ti.getMutableColumn("rowid").setUserEditable(false);
     }
 
     private void customizeAnimalGroupMembers(AbstractTableInfo table)
@@ -1445,7 +1446,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             if (us != null)
             {
                 ColumnInfo protocolCol = table.getColumn("protocol");
-                ColumnInfo col = table.addColumn(new WrappedColumn(protocolCol, "activeAnimals"));
+                var col = table.addColumn(new WrappedColumn(protocolCol, "activeAnimals"));
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
@@ -1474,7 +1475,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn(name) == null)
         {
             SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".protocol, (SELECT p.protocol FROM ehr.project p WHERE p.project = " + ExprColumn.STR_TABLE_ALIAS + ".project))");
-            ColumnInfo col = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("protocol"), ti.getColumn("project"));
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("protocol"), ti.getColumn("project"));
             col.setLabel("Coalesced Protocol");
             col.setHidden(true);
             ti.addColumn(col);
@@ -1493,7 +1494,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             ColumnInfo projectCol = table.getColumn("project");
             if (table.getColumn("activeAssignments") == null)
             {
-                ColumnInfo col = table.addColumn(new WrappedColumn(projectCol, "activeAssignments"));
+                var col = table.addColumn(new WrappedColumn(projectCol, "activeAssignments"));
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
@@ -1502,7 +1503,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             if (table.getColumn("activelyAssignedBySpecies") == null)
             {
-                ColumnInfo col2 = table.addColumn(new WrappedColumn(projectCol, "activelyAssignedBySpecies"));
+                var col2 = table.addColumn(new WrappedColumn(projectCol, "activelyAssignedBySpecies"));
                 col2.setLabel("Animals Actively Assigned, By Species");
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
@@ -1608,14 +1609,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 if (ti != null)
                 {
-                    ColumnInfo roomAtTime = ti.getColumn("RoomAtTime");
+                    var roomAtTime = (BaseColumnInfo)ti.getColumn("RoomAtTime");
                     if (ti instanceof AbstractTableInfo)
                         roomAtTime.setFk(new QueryForeignKey(getUserSchema((AbstractTableInfo) ti, "ehr_lookups"), null, "rooms", "room", "room"));
                     else
                         _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
 
-                    ti.getColumn(pkCol.getName()).setHidden(true);
-                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
                 }
                 else
                 {
@@ -1634,9 +1635,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         doSharedCustomization(ti);
 
         UserSchema us = getUserSchema(ti, "ehr_lookups");
-        ColumnInfo roomCol = ti.getColumn("room");
+        var roomCol = ti.getMutableColumn("room");
 
-        ColumnInfo utilization = ti.getColumn("utilization");
+        var utilization = ti.getMutableColumn("utilization");
         if (utilization == null)
         {
             WrappedColumn col = new WrappedColumn(roomCol, "utilization");
@@ -1656,7 +1657,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private boolean hasAnimalLookup(AbstractTableInfo ti)
     {
-        ColumnInfo idCol = ti.getColumn("Id");
+        var idCol = ti.getMutableColumn("Id");
         if (idCol == null || idCol.getFk() == null || !idCol.getFk().getLookupTableName().equalsIgnoreCase("animal"))
             return false;
 
@@ -1739,8 +1740,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 }
                 else
                 {
-                    ti.getColumn(pkCol.getName()).setHidden(true);
-                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
                 }
 
                 return ti;
@@ -1755,7 +1756,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "daysElapsed";
         if (ti.getColumn(name) == null)
         {
-            ColumnInfo date = ti.getColumn("date");
+            var date = ti.getMutableColumn("date");
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
             SQLFragment sql = new SQLFragment("(CASE WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " <= {fn now()} THEN (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "cast({fn curdate()} as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + " + 1) ELSE 0 END)");
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.INTEGER, date);
@@ -1878,8 +1879,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 if (ti != null)
                 {
-                    ti.getColumn(pkCol.getName()).setHidden(true);
-                    ti.getColumn(pkCol.getName()).setKeyField(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
+                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
                 }
                 else
                 {
@@ -1912,7 +1913,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         for (String name : new String[]{"EnrollmentSiteId", "CurrentSiteId", "InitialCohort", "Cohort", "StartDate"})
         {
-            ColumnInfo col = ds.getColumn(name);
+            var col = ds.getMutableColumn(name);
             if (col != null)
             {
                 col.setHidden(true);
@@ -1925,8 +1926,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void appendDuration(AbstractTableInfo ti)
     {
-        ColumnInfo date = ti.getColumn("date");
-        ColumnInfo enddate = ti.getColumn("enddate");
+        var date = ti.getMutableColumn("date");
+        var enddate = ti.getMutableColumn("enddate");
         if (date != null && enddate != null && ti.getColumn("duration") == null)
         {
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";

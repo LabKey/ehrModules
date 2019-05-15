@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.query;
 
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.query.SimpleTableDomainKind;
@@ -23,9 +24,9 @@ import org.labkey.ehr.model.EHR_LookupsDomainKind;
 
 public class EHR_LookupsCustomPermissionsTable<SchemaType extends UserSchema> extends EHRCustomPermissionsTable<SchemaType>
 {
-    public EHR_LookupsCustomPermissionsTable(SchemaType schema, TableInfo table)
+    public EHR_LookupsCustomPermissionsTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {
-        super(schema, table);
+        super(schema, table, cf);
     }
 
     @Override

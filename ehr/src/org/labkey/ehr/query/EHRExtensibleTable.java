@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.query.QueryUpdateService;
@@ -28,9 +29,9 @@ import org.labkey.ehr.model.EHRDomainUpdateHelper;
 
 public class EHRExtensibleTable<SchemaType extends UserSchema> extends SimpleUserSchema.SimpleTable<SchemaType>
 {
-    public EHRExtensibleTable(SchemaType schema, TableInfo table)
+    public EHRExtensibleTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {
-        super(schema, table);
+        super(schema, table, cf);
     }
 
     @Override

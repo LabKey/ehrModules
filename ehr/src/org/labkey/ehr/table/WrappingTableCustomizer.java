@@ -16,6 +16,7 @@
 package org.labkey.ehr.table;
 
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.JdbcType;
@@ -65,7 +66,7 @@ public class WrappingTableCustomizer implements TableCustomizer
         {
             if (col.getConceptURI() == null)
             {
-                col.setConceptURI(LaboratoryService.PARTICIPANT_CONCEPT_URI);
+                ((BaseColumnInfo)col).setConceptURI(LaboratoryService.PARTICIPANT_CONCEPT_URI);
             }
 
             String name = "EHR";

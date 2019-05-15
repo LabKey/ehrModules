@@ -20,6 +20,7 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
@@ -166,43 +167,43 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return nameMap;
     }
 
-    public TableInfo createTable(String name)
+    public TableInfo createTable(String name, ContainerFilter cf)
     {
         Set<String> available = super.getTableNames();
 
         if (TABLE_SNOMED.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "code", EHRSnomedEditPermission.class);
+            return getContainerScopedTable(name, cf, "code", EHRSnomedEditPermission.class);
         else if (TABLE_AREAS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "area", EHRLocationEditPermission.class);
+            return getContainerScopedTable(name, cf, "area", EHRLocationEditPermission.class);
         else if (TABLE_CAGE.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "location", EHRHousingTransferPermission.class);
+            return getContainerScopedTable(name, cf, "location", EHRHousingTransferPermission.class);
         else if (TABLE_CAGE_TYPE.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "cagetype", EHRLocationEditPermission.class);
+            return getContainerScopedTable(name, cf, "cagetype", EHRLocationEditPermission.class);
         else if (TABLE_CAGE_POSITIONS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "cage", EHRLocationEditPermission.class);
+            return getContainerScopedTable(name, cf, "cage", EHRLocationEditPermission.class);
         else if (TABLE_ROOMS.equalsIgnoreCase(name))
-            return getContainerScopedTable(name, "room", EHRLocationEditPermission.class);
+            return getContainerScopedTable(name, cf, "room", EHRLocationEditPermission.class);
         else if ("procedures".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if ("procedure_default_flags".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if ("procedure_default_treatments".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if ("procedure_default_charges".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if ("procedure_default_codes".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if ("procedure_default_comments".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRProcedureManagementPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRProcedureManagementPermission.class);
         else if (TABLE_SNOMED_SUBSET_CODES.equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRSnomedEditPermission.class);
         else if ("drug_defaults".equalsIgnoreCase(name))
-            return getCustomPermissionTable(createSourceTable(name), EHRSnomedEditPermission.class);
+            return getCustomPermissionTable(createSourceTable(name), cf, EHRSnomedEditPermission.class);
         else if (TABLE_VETERINARIANS.equalsIgnoreCase(name))
-            return createVeterinariansTable(name);
+            return createVeterinariansTable(name, cf);
         else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
-            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), "setname");
+            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), cf, "setname");
             ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
@@ -211,7 +212,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
         if (available.contains(name))
         {
-            TableInfo ti = super.createTable(name);
+            TableInfo ti = super.createTable(name, cf);
 
             // By default, any hard tables in the ehr_lookups schema not accounted for above will fall into one of the
             // two categories below. Both of these will add a check that makes sure the user has EHRDataAdminPermission
@@ -219,19 +220,19 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             // have a true DB PK or rowid but a User psedoPK that should be accounted for at the container level.
             String pkColName = getPkColName(ti);
             if (pkColName != null && !"rowid".equalsIgnoreCase(pkColName) && ti.getColumn("container") != null)
-                return getContainerScopedTable(name, pkColName, EHRDataAdminPermission.class);
+                return getContainerScopedTable(name, cf, pkColName, EHRDataAdminPermission.class);
             else
-                return getCustomPermissionTable(createSourceTable(name), EHRDataAdminPermission.class);
+                return getCustomPermissionTable(createSourceTable(name), cf, EHRDataAdminPermission.class);
         }
 
         //try to find it in propertySets
         Map<String, Map<String, Object>> nameMap = getPropertySetNames();
         if (nameMap.containsKey(name))
-            return createForPropertySet(this, name, nameMap.get(name));
+            return createForPropertySet(this, cf, name, nameMap.get(name));
 
         Map<String, String> labworkMap = getLabworkTypeNames();
         if (labworkMap.containsKey(name))
-            return createForLabwork(this, name, labworkMap.get(name));
+            return createForLabwork(this, cf, name, labworkMap.get(name));
 
         return null;
     }
@@ -248,9 +249,9 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return null;
     }
 
-    private TableInfo createVeterinariansTable(String name)
+    private TableInfo createVeterinariansTable(String name, ContainerFilter cf)
     {
-        FilteredTable ti = new FilteredTable<>(CoreSchema.getInstance().getTableInfoUsersData(), this);
+        FilteredTable ti = new FilteredTable<>(CoreSchema.getInstance().getTableInfoUsersData(), this, cf);
         ti.setPublicSchemaName(EHRSchema.EHR_LOOKUPS);
 
         Set<Integer> userIds = new HashSet<>();
@@ -291,16 +292,16 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
         ti.addWrapColumn(ti.getRealTable().getColumn("UserId"));
         ti.addWrapColumn(ti.getRealTable().getColumn("DisplayName"));
-        ti.getColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
+        ti.getMutableColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
         ti.setName(name);
         ti.setTitle("Veterinarians");
 
         return ti;
     }
 
-    private TableInfo getContainerScopedTable(String name, String psuedoPk, @Nullable Class<? extends Permission> perm)
+    private TableInfo getContainerScopedTable(String name, ContainerFilter cf, String psuedoPk, @Nullable Class<? extends Permission> perm)
     {
-        EHR_LookupsContainerScopedTable ret = new EHR_LookupsContainerScopedTable<>(this, this.createSourceTable(name), psuedoPk);
+        EHR_LookupsContainerScopedTable ret = new EHR_LookupsContainerScopedTable<>(this, this.createSourceTable(name), cf, psuedoPk);
         if (perm != null)
         {
             ret.addPermissionMapping(InsertPermission.class, perm);
@@ -310,28 +311,28 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return ret.init();
     }
 
-    private TableInfo getCustomPermissionTable(TableInfo schemaTable, Class<? extends Permission> perm)
+    private TableInfo getCustomPermissionTable(TableInfo schemaTable, ContainerFilter cf, Class<? extends Permission> perm)
     {
-        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable<>(this, schemaTable);
+        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable<>(this, schemaTable, cf);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
         return ret.init();
     }
 
-    private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)
+    private LookupSetTable createForPropertySet(UserSchema us, ContainerFilter cf, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LOOKUPS);
-        LookupSetTable ret = new LookupSetTable(us, table, setName, map);
+        LookupSetTable ret = new LookupSetTable(us, table, cf, setName, map);
         ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
         ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
         ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
         return ret.init();
     }
 
-    private LabworkTypeTable createForLabwork(UserSchema us, String tableName, String typeName)
+    private LabworkTypeTable createForLabwork(UserSchema us, ContainerFilter cf, String tableName, String typeName)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LAB_TESTS);
-        return new LabworkTypeTable(us, table, tableName, typeName).init();
+        return new LabworkTypeTable(us, table, cf, tableName, typeName).init();
     }
 }

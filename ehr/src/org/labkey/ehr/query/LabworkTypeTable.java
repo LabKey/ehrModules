@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.dataiterator.DataIterator;
 import org.labkey.api.dataiterator.DataIteratorBuilder;
@@ -55,9 +56,9 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
     private static final String FILTER_FIELD = "testid";
     private static final String TYPE_FIELD = "type";
 
-    public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, String tableName, String filterValue)
+    public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, ContainerFilter cf, String tableName, String filterValue)
     {
-        super(schema, table, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
+        super(schema, table, cf, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
         addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
         addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
         addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);

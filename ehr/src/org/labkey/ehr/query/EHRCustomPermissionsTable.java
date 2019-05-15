@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.ldk.table.CustomPermissionsTable;
@@ -28,9 +29,9 @@ import org.labkey.ehr.model.EHRDomainUpdateHelper;
 
 public class EHRCustomPermissionsTable<SchemaType extends UserSchema> extends CustomPermissionsTable<SchemaType>
 {
-    public EHRCustomPermissionsTable(SchemaType schema, TableInfo table)
+    public EHRCustomPermissionsTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {
-        super(schema, table);
+        super(schema, table, cf);
     }
 
     @Override

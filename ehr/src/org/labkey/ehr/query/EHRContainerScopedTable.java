@@ -16,6 +16,7 @@
 package org.labkey.ehr.query;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.ldk.table.ContainerScopedTable;
@@ -27,9 +28,9 @@ import org.labkey.ehr.model.EHRDomainUpdateHelper;
 
 public class EHRContainerScopedTable<SchemaType extends UserSchema> extends ContainerScopedTable<SchemaType>
 {
-    public EHRContainerScopedTable(SchemaType schema, TableInfo table, String newPk)
+    public EHRContainerScopedTable(SchemaType schema, TableInfo table, ContainerFilter cf, String newPk)
     {
-        super(schema, table, newPk);
+        super(schema, table, cf, newPk);
     }
 
     @Override

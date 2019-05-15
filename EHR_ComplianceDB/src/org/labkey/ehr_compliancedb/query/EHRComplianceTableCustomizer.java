@@ -65,12 +65,12 @@ public class EHRComplianceTableCustomizer implements TableCustomizer
     {
         if (ti.getColumn("employeeid") != null && !ti.getName().equalsIgnoreCase("employees"))
         {
-            ti.getColumn("employeeid").setFk(new QueryForeignKey(ti.getUserSchema(), null, "employees", "employeeid", "employeeid"));
+            ti.getMutableColumn("employeeid").setFk(new QueryForeignKey(ti.getUserSchema(), null, "employees", "employeeid", "employeeid"));
         }
 
         if (ti.getColumn("requirementname") != null && !ti.getName().equalsIgnoreCase("requirements"))
         {
-            ti.getColumn("requirementname").setFk(new QueryForeignKey(ti.getUserSchema(), null, "requirements", "requirementname", "requirementname"));
+            ti.getMutableColumn("requirementname").setFk(new QueryForeignKey(ti.getUserSchema(), null, "requirements", "requirementname", "requirementname"));
         }
     }
 

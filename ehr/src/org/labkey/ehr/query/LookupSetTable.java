@@ -17,6 +17,7 @@ package org.labkey.ehr.query;
 
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
@@ -45,9 +46,9 @@ public class LookupSetTable extends AbstractDataDefinedTable
         return CACHE_KEY + "||" + c.getId();
     }
 
-    public LookupSetTable(UserSchema schema, SchemaTableInfo table, String setName, Map<String, Object> map)
+    public LookupSetTable(UserSchema schema, SchemaTableInfo table, ContainerFilter cf, String setName, Map<String, Object> map)
     {
-        super(schema, table, FILTER_COL, VALUE_COL, setName, setName);
+        super(schema, table, cf, FILTER_COL, VALUE_COL, setName, setName);
 
         setTitleColumn(VALUE_COL);
 
@@ -72,17 +73,17 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
         if (_keyField != null)
         {
-            ColumnInfo keyCol = getColumn(_keyField);
+            var keyCol = getMutableColumn(_keyField);
             if (keyCol != null)
             {
                 keyCol.setKeyField(true);
-                getColumn("rowid").setKeyField(false);
+                getMutableColumn("rowid").setKeyField(false);
             }
         }
         else
         {
-            getColumn(VALUE_COL).setKeyField(false);
-            getColumn("rowid").setKeyField(true);
+            getMutableColumn(VALUE_COL).setKeyField(false);
+            getMutableColumn("rowid").setKeyField(true);
         }
 
         if (_titleColumn != null)

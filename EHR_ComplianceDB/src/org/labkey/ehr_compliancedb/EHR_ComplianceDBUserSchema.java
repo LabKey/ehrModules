@@ -16,6 +16,7 @@
 package org.labkey.ehr_compliancedb;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.SchemaTableInfo;
@@ -42,15 +43,15 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
     }
 
     @Override
-    public TableInfo createTable(String name)
+    public TableInfo createTable(String name, ContainerFilter cf)
     {
         if (TABLE_REQUIREMENTS.equalsIgnoreCase(name))
         {
             SchemaTableInfo table = _dbSchema.getTable(name);
-            return new ContainerScopedTable(this, table, "requirementname").init();
+            return new ContainerScopedTable<>(this, table, cf, "requirementname").init();
         }
 
-        return super.createTable(name);
+        return super.createTable(name, cf);
     }
 
     public static void register(final Module m)
@@ -59,11 +60,11 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
 
         DefaultSchema.registerProvider(EHR_ComplianceDBModule.SCHEMA_NAME, new DefaultSchema.SchemaProvider(m)
         {
+            @Override
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
                 return new EHR_ComplianceDBUserSchema(schema.getUser(), schema.getContainer(), dbSchema);
             }
         });
     }
-
 }

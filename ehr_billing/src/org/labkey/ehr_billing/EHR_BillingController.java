@@ -23,6 +23,7 @@ import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
@@ -165,7 +166,7 @@ public class EHR_BillingController extends SpringActionController
             ColumnInfo objectid = ti.getColumn("objectid");
 
             if (null == objectid.getDefaultValue())
-                objectid.setDefaultValue(GUID.makeGUID());
+                ((BaseColumnInfo)objectid).setDefaultValue(GUID.makeGUID());
 
             ActionURL url = getViewContext().getActionURL().clone();
 

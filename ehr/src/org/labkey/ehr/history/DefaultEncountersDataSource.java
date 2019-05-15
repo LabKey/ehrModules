@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.jetbrains.annotations.NotNull;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -156,7 +157,9 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             return null;
 
         final TableInfo snomed = QueryService.get().getUserSchema(u, c, "ehr").getTable(EHRSchema.TABLE_SNOMED_TAGS);
-        snomed.getColumn("recordid").setFk(new QueryForeignKey("study", c, null, u, "Clinical Encounters", "objectid", "objectid"));
+        ((BaseColumnInfo)snomed.getColumn("recordid")).setFk(QueryForeignKey.from(snomed.getUserSchema(), null)
+                .schema("study", c)
+                .to( "Clinical Encounters", "objectid", "objectid"));
 
         SimpleFilter newFilter = new SimpleFilter();
         for (SimpleFilter.FilterClause fc : filter.getClauses())

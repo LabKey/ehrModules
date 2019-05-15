@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.query;
 
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.query.SimpleTableDomainKind;
@@ -23,9 +24,9 @@ import org.labkey.ehr.model.EHR_LookupsDomainKind;
 
 public class EHR_LookupsContainerScopedTable<SchemaType extends UserSchema> extends EHRContainerScopedTable<SchemaType>
 {
-    public EHR_LookupsContainerScopedTable(SchemaType schema, TableInfo table, String newPk)
+    public EHR_LookupsContainerScopedTable(SchemaType schema, TableInfo table, ContainerFilter cf, String newPk)
     {
-        super(schema, table, newPk);
+        super(schema, table, cf, newPk);
     }
 
     @Override
