@@ -1585,7 +1585,6 @@ ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/dataEntryForm.jsp -text
 ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon[!!-~]Small.zip -text
 ehr/test/sampledata/EHR[!!-~]Study[!!-~]Anon.zip -text
-ehr/test/sampledata/cnprcEHRStudyPolicy.xml -text
 ehr/test/sampledata/ehrTestStudyPolicy.xml -text
 ehr/test/sampledata/onprcEHRStudyPolicy.xml -text
 ehr/test/sampledata/snprcEHRStudyPolicy.xml -text
