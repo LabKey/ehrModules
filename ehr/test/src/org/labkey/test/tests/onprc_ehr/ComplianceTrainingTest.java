@@ -31,6 +31,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
@@ -401,7 +402,7 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
 
         try
         {
-            Connection cn = new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
+            Connection cn = WebTestHelper.getRemoteApiConnection();
 
             InsertRowsCommand insertCmd;
             Map<String,Object> rowMap;

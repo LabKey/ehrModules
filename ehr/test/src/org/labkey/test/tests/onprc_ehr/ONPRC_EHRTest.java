@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -42,7 +41,6 @@ import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.BodyWebPart;
-import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.pages.ehr.EnterDataPage;
 import org.labkey.test.util.DataRegionTable;
@@ -1124,7 +1122,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         SelectRowsCommand cmd = new SelectRowsCommand("ehr_lookups", "labwork_panels");
         cmd.addFilter(new Filter("servicename", panelName));
         cmd.addSort(new Sort("sort_order"));
-        SelectRowsResponse srr = cmd.execute(new Connection(getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+        SelectRowsResponse srr = cmd.execute(WebTestHelper.getRemoteApiConnection(), getContainerPath());
         List<Map<String, Object>> expectedRows = srr.getRows();
 
         waitAndClick(Ext4Helper.Locators.ext4Tab(title));
@@ -1241,7 +1239,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         Map<String, String> queryResults = new HashMap<>();
         SelectRowsCommand cmd = new SelectRowsCommand("ehr_lookups", queryName);
-        SelectRowsResponse srr = cmd.execute(new Connection(WebTestHelper.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+        SelectRowsResponse srr = cmd.execute(WebTestHelper.getRemoteApiConnection(), getContainerPath());
         for (Map<String, Object> row : srr.getRows())
         {
             if (row.get("units") != null)
@@ -1363,7 +1361,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         SelectRowsCommand cmd = new SelectRowsCommand("ehr", "formtemplaterecords");
         cmd.addFilter(new Filter("templateid", obsTemplate));
         cmd.addSort(new Sort("rowid"));
-        SelectRowsResponse srr = cmd.execute(new Connection(WebTestHelper.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword()), getContainerPath());
+        SelectRowsResponse srr = cmd.execute(WebTestHelper.getRemoteApiConnection(), getContainerPath());
 
         int expectedObsRows = srr.getRowCount().intValue();
         observationsGrid.waitForRowCount(expectedObsRows);
