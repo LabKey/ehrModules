@@ -16,6 +16,8 @@
 package org.labkey.api.ehr_billing.pipeline;
 
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.data.Container;
+import org.labkey.api.security.User;
 import org.labkey.api.services.ServiceRegistry;
 
 import java.util.Collections;
@@ -49,4 +51,10 @@ public interface InvoicedItemsProcessingService
      * @return generated invoice num
      */
     String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate);
+
+    /**
+     * Process center specific billing columns, if any.
+     * @param invoiceId invoice id for which additional processing can be performed
+     */
+    void performAdditionalProcessing(String invoiceId, User user, Container container);
 }
