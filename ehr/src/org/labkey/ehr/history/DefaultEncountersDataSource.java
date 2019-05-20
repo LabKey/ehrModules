@@ -156,7 +156,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         if (dataset == null)
             return null;
 
-        final TableInfo snomed = QueryService.get().getUserSchema(u, c, "ehr").getTable(EHRSchema.TABLE_SNOMED_TAGS);
+        final TableInfo snomed = QueryService.get().getUserSchema(u, c, "ehr").getTable(EHRSchema.TABLE_SNOMED_TAGS, null, true, true);
         ((BaseColumnInfo)snomed.getColumn("recordid")).setFk(QueryForeignKey.from(snomed.getUserSchema(), null)
                 .schema("study", c)
                 .to( "Clinical Encounters", "objectid", "objectid"));
