@@ -23,6 +23,8 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
+import org.labkey.api.data.Results;
+import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
@@ -59,6 +61,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -141,8 +144,6 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 runProcessing(process, billingRunContainer);
             }
             updateInvoiceTable(billingContainer);
-
-            processingService.performAdditionalProcessing(_invoiceId, getJob().getUser(), getJob().getContainer());
 
             transaction.commit();
         }
