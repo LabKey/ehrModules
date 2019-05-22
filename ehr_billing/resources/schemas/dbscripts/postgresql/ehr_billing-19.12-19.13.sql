@@ -1,0 +1,1 @@
+ALTER TABLE ehr_billing.chargeableItemCategories ADD COLUMN LSID LSIDtype;

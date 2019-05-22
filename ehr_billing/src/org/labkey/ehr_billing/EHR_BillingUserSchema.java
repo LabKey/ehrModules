@@ -113,6 +113,17 @@ public class EHR_BillingUserSchema extends SimpleUserSchema
                                 schema, EHR_BillingSchema.getInstance().getInvoice(), cf).init();
                 return table;
             }
+        },
+        chargeableItemCategories
+        {
+            @Override
+            public TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf)
+            {
+                SimpleUserSchema.SimpleTable<EHR_BillingUserSchema> table =
+                        new SimpleUserSchema.SimpleTable<>(
+                                schema, EHR_BillingSchema.getInstance().getChargeableItemCategories(), cf).init();
+                return table;
+            }
         };
 
         public abstract TableInfo createTable(EHR_BillingUserSchema schema, ContainerFilter cf);

@@ -35,6 +35,7 @@ public class EHR_BillingSchema
     public static final String TABLE_INVOICED_ITEMS = "invoicedItems";
     public static final String TABLE_MISC_CHARGES = "miscCharges";
     public static final String TABLE_CHARGEABLE_ITEMS = "chargeableItems";
+    public static final String TABLE_CHARGEABLE_ITEM_CATEGORIES = "chargeableItemCategories";
     public static final String TABLE_CHARGE_UNITS = "chargeUnits";
     public static final String TABLE_CHARGE_RATE_EXEMPTIONS = "chargeRateExemptions";
     public static final String TABLE_INVOICE = "invoice";
@@ -110,5 +111,10 @@ public class EHR_BillingSchema
     public TableInfo getDataAccessTable()
     {
         return getSchema().getTable(TABLE_DATA_ACCESS);
+    }
+
+    public TableInfo getChargeableItemCategories()
+    {
+        return getSchema().getTable(TABLE_CHARGEABLE_ITEM_CATEGORIES);
     }
 }

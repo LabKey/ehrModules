@@ -1664,6 +1664,7 @@ ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.30-19.10.sql -
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-18.31-18.32.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-19.10-19.11.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-19.11-19.12.sql -text
+ehr_billing/resources/schemas/dbscripts/postgresql/ehr_billing-19.12-19.13.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/postgresql/obsolete/ehr_billing-17.30-17.31.sql -text
@@ -1686,6 +1687,7 @@ ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.30-19.10.sql -t
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-18.31-18.32.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-19.10-19.11.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-19.11-19.12.sql -text
+ehr_billing/resources/schemas/dbscripts/sqlserver/ehr_billing-19.12-19.13.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.20-17.21.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.21-17.22.sql -text
 ehr_billing/resources/schemas/dbscripts/sqlserver/obsolete/ehr_billing-17.30-17.31.sql -text
