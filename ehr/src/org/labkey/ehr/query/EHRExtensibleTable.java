@@ -49,6 +49,7 @@ public class EHRExtensibleTable<SchemaType extends UserSchema> extends SimpleUse
         return EHRDomainKind.getDomainContainer(getContainer());
     }
 
+    @Override
     public QueryUpdateService getUpdateService()
     {
         TableInfo table = getRealTable();

@@ -48,6 +48,7 @@ public class EHRContainerScopedTable<SchemaType extends UserSchema> extends Cont
         return EHRDomainKind.getDomainContainer(getContainer());
     }
 
+    @Override
     public QueryUpdateService getUpdateService()
     {
         TableInfo table = getRealTable();
