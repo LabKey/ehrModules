@@ -69,7 +69,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
 
     public String getModulePath()
     {
-        return "/server/customModules/" + getModuleDirectory();
+        return "server/modules/onprcEHRModules/" + getModuleDirectory();
     }
 
     @Override
