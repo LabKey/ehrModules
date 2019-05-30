@@ -71,6 +71,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,9 +99,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     }
 
+    @Override
     public void customize(TableInfo table)
     {
-
         LDKService.get().getBuiltInColumnsCustomizer(false).customize(table);
         UserSchema us = table.getUserSchema();
         if (us != null)
@@ -212,139 +213,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (_addLinkDisablers)
             setLinkDisablers(ti);
 
-        if (ti.getColumn("dateOnly") != null)
-        {
-            appendCalculatedCols(ti, "date");
-        }
-
-        var objectId = ti.getMutableColumn("objectid");
-        if (objectId != null)
-        {
-            objectId.setHidden(true);
-            objectId.setLabel("Key");
-            objectId.setUserEditable(false);
-        }
-
-        var runId = ti.getMutableColumn("runId");
-        if (runId != null)
-        {
-            runId.setLabel("Run Id");
-            if (runId.getFk() == null)
-            {
-                UserSchema study = getEHRStudyUserSchema(ti);
-                if (study != null)
-                    runId.setFk(new QueryForeignKey(study, null, "Clinpath Runs", "objectid", ID_COL));
-            }
-
-            runId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            runId.setUserEditable(false);
-        }
-
         Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-        var qcstate = ti.getMutableColumn("qcstate");
-        if (qcstate != null)
-        {
-            qcstate.setLabel("Status");
-            if (qcstate.getFk() == null)
-            {
-                UserSchema study = getEHRStudyUserSchema(ti);
-                if (study != null)
-                    qcstate.setFk(new QueryForeignKey(QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "core"), ehrContainer, "QCState","RowId", "Label"));
-            }
-            //TODO: disabled due to issue with DataIterator
-            //qcstate.setUserEditable(false);
-        }
-
-        var parentId = ti.getMutableColumn("parentId");
-        if (parentId != null)
-        {
-            parentId.setLabel("Encounter Id");
-            if (parentId.getFk() == null)
-            {
-                UserSchema study = getEHRStudyUserSchema(ti);
-                if (study != null)
-                    parentId.setFk(new QueryForeignKey(study, null, "Clinical Encounters", "objectid", ID_COL));
-            }
-            parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
-
-        var formSort = ti.getMutableColumn("formSort");
-        if (formSort != null)
-        {
-            formSort.setHidden(true);
-            formSort.setShownInInsertView(false);
-            formSort.setShownInUpdateView(false);
-            formSort.setLabel("Form Sort Order");
-        }
-
-        var caseId = ti.getMutableColumn("caseId");
-        if (caseId != null)
-        {
-            caseId.setHidden(true);
-            caseId.setLabel("Case Id");
-        }
-
-
         //if not set, default to current container
         if (ehrContainer == null)
             ehrContainer = ti.getUserSchema().getContainer();
-
-        var taskId = ti.getMutableColumn("taskId");
-        if (taskId != null)
-        {
-            taskId.setLabel("Task Id");
-            if (taskId.getFk() == null)
-            {
-                UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
-                if (schema != null)
-                    taskId.setFk(new QueryForeignKey(schema, ehrContainer, "tasks", "taskid", "rowid"));
-            }
-            taskId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
-
-        var requestId = ti.getMutableColumn("requestId");
-        if (requestId != null)
-        {
-            requestId.setLabel("Request Id");
-            if (requestId.getFk() == null)
-            {
-                UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
-                if (schema != null)
-                    requestId.setFk(new QueryForeignKey(schema, ehrContainer, "requests", "requestid", "rowid"));
-            }
-            requestId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
-
-        customizeRoomCol(ti, "room");
-        customizeRoomCol(ti, "room1");
-        customizeRoomCol(ti, "room2");
-
-        customizeCageCol(ti, "cage");
-        customizeCageCol(ti, "cage1");
-        customizeCageCol(ti, "cage2");
-
-        var description = ti.getMutableColumn("description");
-        if (description != null)
-        {
-            description.setDisplayWidth("400");
-            description.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
-
-        var project = ti.getMutableColumn("project");
-        if (project != null && !ti.getName().equalsIgnoreCase("project"))
-        {
-            //this was disabled in order to restore better edit behavior (a combo)
-            //project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
-            if (us != null)
-                project.setFk(new QueryForeignKey(us, ehrContainer, "project", "project", "project"));
-        }
-
-        var code = ti.getMutableColumn("code");
-        if (code != null)
-        {
-            code.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
 
         for (var col : ti.getMutableColumns())
         {
@@ -356,45 +228,152 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     UserSchema us = getEHRStudyUserSchema(ti);
                     if (us != null)
                     {
-                        col.setFk(new QueryForeignKey(us, null, "Animal", "Id", "Id"));
+                        col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, null, "Animal", "Id", "Id"));
                         col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", us.getContainer()));
                     }
                 }
             }
-        }
-    }
 
-    private void customizeRoomCol(AbstractTableInfo ti, String name)
-    {
-        var room = ti.getMutableColumn(name);
-        if (room != null)
-        {
-            ensureSortColumn(ti, name, room);
-
-            if (!ti.getName().equalsIgnoreCase("rooms"))
+            switch (col.getName().toLowerCase())
             {
-                Container ehrContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-                if (ehrContainer != null)
-                {
-                    UserSchema us = getUserSchema(ti, "ehr_lookups", ehrContainer);
-                    if (us != null){
-                        room.setFk(new QueryForeignKey(us, ehrContainer, "rooms", "room", "room"));
+                case "dateonly":
+                    appendCalculatedCols(ti, "date");
+                    break;
+                case "objectid":
+                    col.setHidden(true);
+                    col.setLabel("Key");
+                    col.setUserEditable(false);
+                    break;
+                case "runid":
+                    col.setLabel("Run Id");
+                    if (col.getFk() == null)
+                    {
+                        UserSchema study = getEHRStudyUserSchema(ti);
+                        if (study != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), study, null, "Clinpath Runs", "objectid", ID_COL));
                     }
-                }
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    col.setUserEditable(false);
+                    break;
 
-                if (room.getLabel().equals("room"))
-                    room.setLabel("Room");
+                case "qcstate":
+                    col.setLabel("Status");
+                    if (col.getFk() == null)
+                    {
+                        UserSchema study = getEHRStudyUserSchema(ti);
+                        if (study != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "core"), ehrContainer, "QCState","RowId", "Label"));
+                    }
+                    //TODO: disabled due to issue with DataIterator
+                    //col.setUserEditable(false);
+                    break;
 
-                //room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                case "parentid":
+                    col.setLabel("Encounter Id");
+                    if (col.getFk() == null)
+                    {
+                        UserSchema study = getEHRStudyUserSchema(ti);
+                        if (study != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), study, null, "Clinical Encounters", "objectid", ID_COL));
+                    }
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    break;
+
+                case "formsort":
+                    col.setHidden(true);
+                    col.setShownInInsertView(false);
+                    col.setShownInUpdateView(false);
+                    col.setLabel("Form Sort Order");
+                    break;
+
+                case "caseid":
+                    col.setHidden(true);
+                    col.setLabel("Case Id");
+                    break;
+
+                case "taskid":
+                    col.setLabel("Task Id");
+                    if (col.getFk() == null)
+                    {
+                        UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
+                        if (schema != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), schema, ehrContainer, "tasks", "taskid", "rowid"));
+                    }
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    break;
+
+                case "requestid":
+                    col.setLabel("Request Id");
+                    if (col.getFk() == null)
+                    {
+                        UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
+                        if (schema != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), schema, ehrContainer, "requests", "requestid", "rowid"));
+                    }
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    break;
+
+                case "room":
+                case "room1":
+                case "room2":
+                    customizeRoomCol(ti, col, ehrContainer);
+                    break;
+
+                case "cage":
+                case "cage1":
+                case "cage2":
+                    customizeCageCol(ti, col);
+                    break;
+
+                case "description":
+                    col.setDisplayWidth("400");
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    break;
+
+                case "project":
+                    if (!ti.getName().equalsIgnoreCase("project"))
+                    {
+                        //this was disabled in order to restore better edit behavior (a combo)
+                        //project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                        UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
+                        if (us != null)
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, ehrContainer, "project", "project", "project"));
+                    }
+                    break;
+
+                case "code":
+                    col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                    break;
             }
         }
     }
 
-    /** Add a dummy column so that we always have it present. Other TableCustomizers might swap it out later for a fancier version */
-    private void ensureSortColumn(AbstractTableInfo ti, String name, ColumnInfo baseColumn)
+    private void customizeRoomCol(AbstractTableInfo ti, BaseColumnInfo room, Container ehrContainer)
     {
-        String sortName = name + "_sortValue";
-        if (ti.getColumn(sortName) == null)
+        ensureSortColumn(ti, room);
+
+        if (!room.getParentTable().getName().equalsIgnoreCase("rooms"))
+        {
+            if (ehrContainer != null)
+            {
+                UserSchema us = getUserSchema(ti, "ehr_lookups", ehrContainer);
+                if (us != null){
+                    room.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, ehrContainer, "rooms", "room", "room"));
+                }
+            }
+
+            if (room.getLabel().equals("room"))
+                room.setLabel("Room");
+
+            //room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
+    }
+
+    /** Add a dummy column so that we always have it present. Other TableCustomizers might swap it out later for a fancier version */
+    private void ensureSortColumn(AbstractTableInfo ti, ColumnInfo baseColumn)
+    {
+        String sortName = baseColumn.getName() + "_sortValue";
+        if (ti.getColumn(sortName, false) == null)
         {
             AliasedColumn sortCol = new AliasedColumn(ti, sortName, baseColumn);
             sortCol.setKeyField(false);
@@ -412,16 +391,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void customizeCageCol(AbstractTableInfo ti, String name)
+    private void customizeCageCol(AbstractTableInfo ti, BaseColumnInfo cage)
     {
-        var cage = ti.getMutableColumn(name);
-        if (cage != null)
-        {
-            ensureSortColumn(ti, name, cage);
+        ensureSortColumn(ti, cage);
 
-            cage.setDisplayWidth("40");
-            cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-        }
+        cage.setDisplayWidth("40");
+        cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
     }
 
     private void setConceptURI(BaseColumnInfo ci, String conceptURI)
@@ -570,7 +545,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         String name = "isActive";
-        if (ti.getColumn(name) == null)
+        if (ti.getColumn(name, false) == null)
         {
             SQLFragment sql = new SQLFragment("(CASE " +
                     // when the start is in the future, using whole-day increments, it is not active
@@ -600,7 +575,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         String name = "isActive";
-        if (ti.getColumn(name) == null)
+        if (ti.getColumn(name, false) == null)
         {
             SQLFragment sql = new SQLFragment("(CASE " +
                 // any record with a future start date (whole-day increments) is inactive.
@@ -618,7 +593,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         String expired = "isExpired";
-        if (ti.getColumn(expired) == null)
+        if (ti.getColumn(expired, false) == null)
         {
             SQLFragment sql = new SQLFragment("(CASE " +
                     // any record with a null or future enddate (considering time) is active
@@ -688,7 +663,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void customizeDemographics(AbstractTableInfo ti)
     {
         String lastDayAtCenter = "lastDayAtCenter";
-        if (ti.getColumn(lastDayAtCenter) == null)
+        if (ti.getColumn(lastDayAtCenter, false) == null)
         {
             if (ti.getColumn("death") == null || ti.getColumn("Id") == null)
             {
@@ -714,7 +689,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void addIsNumericId(AbstractTableInfo ti)
     {
         String name = "isNumericId";
-        if (ti.getColumn(name) == null)
+        if (ti.getColumn(name, false) == null)
         {
             SQLFragment sql = null;
 
@@ -854,7 +829,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void appendHistoryCol(AbstractTableInfo ti)
     {
-        if (ti.getColumn("history") != null)
+        if (ti.getColumn("history", false) != null)
             return;
 
         WrappedColumn ci = new WrappedColumn(ti.getColumn(ID_COL), "history");
@@ -865,7 +840,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 return new DataColumn(colInfo)
                 {
-
+                    @Override
                     public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
                     {
                         Object objectid = ctx.get("objectid");
@@ -891,16 +866,19 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         keys.add(FieldKey.fromString("objectid"));
                     }
 
+                    @Override
                     public boolean isSortable()
                     {
                         return false;
                     }
 
+                    @Override
                     public boolean isFilterable()
                     {
                         return false;
                     }
 
+                    @Override
                     public boolean isEditable()
                     {
                         return false;
@@ -1076,19 +1054,19 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (moreActionsBtn == null)
         {
             //abort if there are no custom buttons
-            if (buttons == null || buttons.size() == 0)
+            if (buttons.size() == 0)
                 return;
 
             moreActionsBtn = new UserDefinedButtonConfig();
             moreActionsBtn.setText(MORE_ACTIONS);
             moreActionsBtn.setInsertPosition(-1);
 
-            List<NavTree> menuItems = new ArrayList<NavTree>();
+            List<NavTree> menuItems = new ArrayList<>();
             if (moreActionsBtn.getMenuItems() != null)
                 menuItems.addAll(moreActionsBtn.getMenuItems());
 
             //create map of existing item names
-            Map<String, NavTree> btnNameMap = new HashMap<String, NavTree>();
+            Map<String, NavTree> btnNameMap = new HashMap<>();
             for (NavTree item : menuItems)
             {
                 btnNameMap.put(item.getText(), item);
@@ -1118,18 +1096,15 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void addScriptInclude(ButtonBarConfig cfg, String script)
     {
-        Set<String> scripts = new LinkedHashSet<String>();
+        Set<String> scripts = new LinkedHashSet<>();
         String[] existing = cfg.getScriptIncludes();
         if (existing != null)
         {
-            for (String s : existing)
-            {
-                scripts.add(s);
-            }
+            Collections.addAll(scripts, existing);
         }
 
         scripts.add(script);
-        cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
+        cfg.setScriptIncludes(scripts.toArray(new String[0]));
     }
 
     private void setScriptIncludes(ButtonBarConfig cfg)
@@ -1140,14 +1115,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             String[] existing = cfg.getScriptIncludes();
             if (existing != null)
             {
-                for (String s : existing)
-                {
-                    scripts.add(s);
-                }
+                Collections.addAll(scripts, existing);
             }
 
             scripts.add("ehr.context");
-            cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
+            cfg.setScriptIncludes(scripts.toArray(new String[0]));
         }
     }
 
@@ -1250,7 +1222,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);        
-        col.setFk(new QueryForeignKey(us, null, queryName, ID_COL, ID_COL));
+        col.setFk(new QueryForeignKey(ds.getUserSchema(), ds.getContainerFilter(), us, null, queryName, ID_COL, ID_COL));
 
         return col;
     }
@@ -1355,14 +1327,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table.getColumn(name) == null)
         {
             WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), name);
-            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new AgeDisplayColumn(colInfo);
-                }
-            });
+            wrap.setDisplayColumnFactory(AgeDisplayColumn::new);
             wrap.setLabel("Age (Years and Days)");
 
             table.addColumn(wrap);
@@ -1372,14 +1337,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table.getColumn(nameMonth) == null)
         {
             WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), nameMonth);
-            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new AgeMonthsDisplayColumn(colInfo);
-                }
-            });
+            wrap.setDisplayColumnFactory(AgeMonthsDisplayColumn::new);
             wrap.setLabel("Age (Months and Days)");
 
             table.addColumn(wrap);
@@ -1389,14 +1347,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table.getColumn(nameYearMonth) == null)
         {
             WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), nameYearMonth);
-            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new AgeYearMonthsDisplayColumn(colInfo);
-                }
-            });
+            wrap.setDisplayColumnFactory(AgeYearMonthsDisplayColumn::new);
             wrap.setLabel("Age (Years and Months)");
 
             table.addColumn(wrap);
@@ -1406,14 +1357,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table.getColumn(nameYearMonthDay) == null)
         {
             WrappedColumn wrap = new WrappedColumn(table.getColumn("ageInYears"), nameYearMonthDay);
-            wrap.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new AgeYearsMonthsDaysDisplayColumn(colInfo);
-                }
-            });
+            wrap.setDisplayColumnFactory(AgeYearsMonthsDaysDisplayColumn::new);
             wrap.setLabel("Age (Years, Months, and Days)");
 
             table.addColumn(wrap);
@@ -1450,7 +1394,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
-                col.setFk(new QueryForeignKey(us, null, "protocolActiveAnimals", "protocol", "protocol"));
+                col.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "protocolActiveAnimals", "protocol", "protocol"));
             }
         }
 
@@ -1498,7 +1442,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
-                col.setFk(new QueryForeignKey(us, null, "projectTotalActivelyAssigned", "project", "project"));
+                col.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "projectTotalActivelyAssigned", "project", "project"));
             }
 
             if (table.getColumn("activelyAssignedBySpecies") == null)
@@ -1507,7 +1451,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col2.setLabel("Animals Actively Assigned, By Species");
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
-                col2.setFk(new QueryForeignKey(us, null, "projectTotalActivelyAssignedBySpecies", "project", "project"));
+                col2.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "projectTotalActivelyAssignedBySpecies", "project", "project"));
             }
         }
 
@@ -1543,7 +1487,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             return;
 
         String name = "housingAtTime";
-        if (ds.getColumn(name) != null)
+        if (ds.getColumn(name, false) != null)
             return;
 
         final ColumnInfo pkCol = getPkCol(ds);
@@ -1607,21 +1551,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     return null;
                 }
 
-                if (ti != null)
-                {
-                    var roomAtTime = (BaseColumnInfo)ti.getColumn("RoomAtTime");
-                    if (ti instanceof AbstractTableInfo)
-                        roomAtTime.setFk(new QueryForeignKey(getUserSchema((AbstractTableInfo) ti, "ehr_lookups"), null, "rooms", "room", "room"));
-                    else
-                        _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
-
-                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
-                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
-                }
+                var roomAtTime = (BaseColumnInfo)ti.getColumn("RoomAtTime");
+                if (ti instanceof AbstractTableInfo)
+                    roomAtTime.setFk(new QueryForeignKey(getUserSchema((AbstractTableInfo) ti, "ehr_lookups"), null, "rooms", "room", "room"));
                 else
-                {
-                    _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ". table was null");
-                }
+                    _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
+
+                ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
+                ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
 
                 return ti;
             }
@@ -1644,7 +1581,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setReadOnly(true);
             col.setIsUnselectable(true);
             col.setUserEditable(false);
-            col.setFk(new QueryForeignKey(us, null, "roomUtilization", "room", "room"));
+            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, null, "roomUtilization", "room", "room"));
             ti.addColumn(col);
         }
     }
@@ -1658,16 +1595,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private boolean hasAnimalLookup(AbstractTableInfo ti)
     {
         var idCol = ti.getMutableColumn("Id");
-        if (idCol == null || idCol.getFk() == null || !idCol.getFk().getLookupTableName().equalsIgnoreCase("animal"))
-            return false;
-
-        return true;
+        return idCol != null && idCol.getFk() != null && idCol.getFk().getLookupTableName().equalsIgnoreCase("animal");
     }
 
     private void appendSurvivorshipCol(UserSchema ehrSchema, AbstractTableInfo ds)
     {
         String name = "survivorship";
-        if (ds.getColumn(name) != null)
+        if (ds.getColumn(name, false) != null)
             return;
 
         final ColumnInfo pkCol = getPkCol(ds);
@@ -1754,7 +1688,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void appendTimeSinceCol(UserSchema us, AbstractTableInfo ti)
     {
         String name = "daysElapsed";
-        if (ti.getColumn(name) == null)
+        if (ti.getColumn(name, false) == null)
         {
             var date = ti.getMutableColumn("date");
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
@@ -1772,7 +1706,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private void appendAgeAtTimeCol(UserSchema ehrSchema, AbstractTableInfo ds, final String dateColName)
     {
         String name = "ageAtTime";
-        if (ds.getColumn(name) != null)
+        if (ds.getColumn(name, false) != null)
             return;
 
         final ColumnInfo pkCol = getPkCol(ds);
@@ -1913,7 +1847,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         for (String name : new String[]{"EnrollmentSiteId", "CurrentSiteId", "InitialCohort", "Cohort", "StartDate"})
         {
-            var col = ds.getMutableColumn(name);
+            var col = ds.getMutableColumn(name, false);
             if (col != null)
             {
                 col.setHidden(true);
@@ -1928,7 +1862,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         var date = ti.getMutableColumn("date");
         var enddate = ti.getMutableColumn("enddate");
-        if (date != null && enddate != null && ti.getColumn("duration") == null)
+        if (date != null && enddate != null && ti.getColumn("duration", false) == null)
         {
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
             SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "(cast(COALESCE(CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + " as date), {fn curdate()}) as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + "))");

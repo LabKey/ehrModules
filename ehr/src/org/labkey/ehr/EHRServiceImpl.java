@@ -652,7 +652,7 @@ public class EHRServiceImpl extends EHRService
             return;
 
         String calendarYear = "calendarYear";
-        if (ti.getColumn(calendarYear) == null)
+        if (ti.getColumn(calendarYear, false) == null)
         {
             String colSql = dateCol.getValueSql(ExprColumn.STR_TABLE_ALIAS).getSQL();
             SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDatePart(Calendar.YEAR, colSql));
@@ -689,7 +689,7 @@ public class EHRServiceImpl extends EHRService
     private void addDatePartCol(AbstractTableInfo ti, ColumnInfo dateCol, String label, String description, Integer datePart)
     {
         String colName = dateCol.getName() + label.replaceAll(" ", "");
-        if (ti.getColumn(colName) == null)
+        if (ti.getColumn(colName, false) == null)
         {
             String colSql = dateCol.getValueSql(ExprColumn.STR_TABLE_ALIAS).getSQL();
             SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDatePart(datePart, colSql) + ")");
