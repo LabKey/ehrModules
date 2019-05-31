@@ -226,9 +226,14 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 throw new PipelineJobException("There is already an existing billing period that overlaps the provided interval");
             }
 
-            if (getSupport().getEndDate().before(getSupport().getStartDate()) || getSupport().getEndDate().equals(getSupport().getStartDate()))
+            if (getSupport().getEndDate().before(getSupport().getStartDate()))
             {
                 throw new PipelineJobException("Cannot create a billing run with an end date before the start date");
+            }
+
+            if(getSupport().getEndDate().equals(getSupport().getStartDate()))
+            {
+                throw new PipelineJobException("Cannot create a billing run with the same start and end date");
             }
 
             Date today = DateUtils.truncate(new Date(), Calendar.DATE);
