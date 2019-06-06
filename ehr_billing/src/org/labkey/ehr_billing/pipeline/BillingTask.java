@@ -23,8 +23,6 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
-import org.labkey.api.data.Results;
-import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
@@ -61,7 +59,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +142,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             }
             updateInvoiceTable(billingContainer);
 
+            processingService.performAdditionalProcessing(_invoiceId, getJob().getUser(), getJob().getContainer());
+
             transaction.commit();
         }
 
@@ -215,7 +214,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             // first look for existing records overlapping the provided date range.
             // so this should not be a problem
             TableInfo invoiceRunsUser = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(),
-                    EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
+                    EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS, null);
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("billingPeriodStart"), getSupport().getEndDate(), CompareType.DATE_LTE);
             filter.addCondition(FieldKey.fromString("billingPeriodEnd"), getSupport().getStartDate(), CompareType.DATE_GTE);
 
