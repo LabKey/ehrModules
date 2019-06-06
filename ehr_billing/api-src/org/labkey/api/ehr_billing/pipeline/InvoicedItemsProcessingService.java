@@ -51,10 +51,4 @@ public interface InvoicedItemsProcessingService
      * @return generated invoice num
      */
     String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate);
-
-    /**
-     * Process center specific billing columns, if any.
-     * @param invoiceId invoice Run Id for which additional processing can be performed
-     */
-    void performAdditionalProcessing(String invoiceId, User user, Container container);
 }

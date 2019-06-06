@@ -142,8 +142,6 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             }
             updateInvoiceTable(billingContainer);
 
-            processingService.performAdditionalProcessing(_invoiceId, getJob().getUser(), getJob().getContainer());
-
             transaction.commit();
         }
 
