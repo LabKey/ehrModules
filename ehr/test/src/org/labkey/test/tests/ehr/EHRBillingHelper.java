@@ -98,6 +98,8 @@ public class EHRBillingHelper
                 results.setFilter("category", "Equals", item.getCategory());
             if(item.getChargeID() != null)
                 results.setFilter("chargeId","Equals", item.getChargeID());
+            if(item.getChargeCategoryID() != null)
+                results.setFilter("chargeId/chargeCategoryid","Equals", item.getChargeCategoryID());
 
             assertEquals("Wrong row count for " + item.getCategory(), item.getRowCount(), results.getDataRowCount());
             if (item.getTotalQuantity() != null)
@@ -139,6 +141,7 @@ public class EHRBillingHelper
         private int _rowCount;
         private String _totalCost;
         private String _totalQuantity;
+        private String _chargeCategoryId;
         private String _chargeID;
         private Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
@@ -169,6 +172,15 @@ public class EHRBillingHelper
             _chargeID = chargeID;
         }
 
+        public InvoicedItem(String category, int rowCount, String totalQuantity, String totalCost, String chargeCategoryId)
+        {
+            _category = category;
+            _rowCount = rowCount;
+            _totalQuantity = totalQuantity;
+            _totalCost = totalCost;
+            _chargeCategoryId = chargeCategoryId;
+        }
+
         public String getCategory()
         {
             return _category;
@@ -197,6 +209,11 @@ public class EHRBillingHelper
         public String getChargeID()
         {
             return _chargeID;
+        }
+
+        public String getChargeCategoryID()
+        {
+            return _chargeCategoryId;
         }
 
         public void addColumnTextToCheck(String colName, List<String> colValues)
