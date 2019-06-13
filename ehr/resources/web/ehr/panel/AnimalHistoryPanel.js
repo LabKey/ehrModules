@@ -82,6 +82,58 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         this.createTabPanel();
     },
 
+    displayWarning: function(tab){
+        var status = Ext4.create('Ext.Component',{
+            itemId: 'reportMessage',
+            html: '<div class="alert alert-warning">' + tab.report.warning + '</div>'
+        });
+
+        tab.add(status);
+    },
+
+    displayReport: function(tab){
+        // If we have a status to show the user to help set expectations, display it at the top
+        if (tab.report.reportStatus) {
+            var status = Ext4.create('Ext.Component',{
+                itemId: 'reportStatus',
+                html: '<div class="alert alert-warning" role="alert">Report Status: <strong>'
+                        + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
+                        + '</strong></div>'
+            });
+
+            tab.add(status);
+        }
+
+        if (tab.report.warning) {
+            this.displayWarning(tab);
+        }
+        else {
+            switch (tab.report.reportType) {
+                case 'query':
+                    this.loadQuery(tab);
+                    break;
+                case 'details':
+                    this.loadDetails(tab);
+                    break;
+                case 'report':
+                    this.loadReport(tab);
+                    break;
+                case 'js':
+                    this.loadJS(tab);
+                    break;
+                default:
+                    LDK.Utils.getErrorCallback()({
+                        message: 'Improper Report Type'
+                    });
+            }
+        }
+
+        tab.add({
+            html:"<div id='reporttype-" + tab.report.reportType + "' style=\"display: none;\"/>",
+            hidden:true
+        });
+    },
+
     //override
     getFilterArray: function(tab){
         var report = tab.report;
@@ -98,8 +150,8 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     },
 
     filterTypes: [{
-        xtype: 'ldk-singlesubjectfiltertype',
-        inputValue: LDK.panel.SingleSubjectFilterType.filterName,
+        xtype: 'ehr-singleanimalfiltertype',
+        inputValue: EHR.panel.SingleAnimalFilterType.filterName,
         label: 'Single Animal',
         nounSingular: 'Animal',
         aliasTable: {
