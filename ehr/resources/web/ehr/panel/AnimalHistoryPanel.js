@@ -151,7 +151,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
     filterTypes: [{
         xtype: 'ehr-singleanimalfiltertype',
-        inputValue: EHR.panel.SingleAnimalFilterType.filterName,
+        inputValue: LDK.panel.SingleSubjectFilterType.filterName,
         label: 'Single Animal',
         nounSingular: 'Animal',
         aliasTable: {

@@ -20,6 +20,7 @@ import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ehr.panel.LocationFilterType;
 import org.labkey.test.components.ehr.panel.MultiAnimalFilterType;
+import org.labkey.test.components.ehr.panel.SingleAnimalFilterType;
 import org.labkey.test.components.ext4.Window;
 import org.labkey.test.components.ldk.panel.NoFiltersFilterType;
 import org.labkey.test.components.ldk.panel.SingleSubjectFilterType;
@@ -104,9 +105,9 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
         refreshReport();
     }
 
-    public SingleSubjectFilterType<A> selectSingleAnimalSearch()
+    public SingleAnimalFilterType<A> selectSingleAnimalSearch()
     {
-        return new SingleSubjectFilterType<>((A)this).select();
+        return new SingleAnimalFilterType<>((A)this).select();
     }
 
     public MultiAnimalFilterType<A> selectMultiAnimalSearch()

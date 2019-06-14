@@ -3,6 +3,10 @@ Ext4.define('EHR.panel.SingleAnimalFilterType', {
     extend: 'LDK.panel.SingleSubjectFilterType',
     alias: 'widget.ehr-singleanimalfiltertype',
 
+    statics: {
+        filterName: 'singleSubject',
+        DEFAULT_LABEL: 'Single Animal'
+    },
 
     validateAlias: function(tab) {
         if (!this.isValid()) {
