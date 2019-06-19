@@ -62,3 +62,4 @@ Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/DefaultVLImportMethod.jav
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/LC480ImportMethod.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/LightCyclerImportMethod.java -text
 Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/ViralLoadAssayDataProvider.java -text
+Viral_Load_Assay/test/src/org/labkey/test/tests/external/labModules/ViralLoadAssayTest.java -text
