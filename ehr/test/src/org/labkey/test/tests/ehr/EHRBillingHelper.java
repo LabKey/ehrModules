@@ -6,7 +6,10 @@ import org.labkey.test.Locator;
 import org.labkey.test.components.ext4.Window;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.SummaryStatisticsHelper;
+import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.util.HashMap;
@@ -86,12 +89,21 @@ public class EHRBillingHelper
         results.clearFilter("Id");
     }
 
-    public void verifyBillingInvoicedItems(String invoiceId, List<InvoicedItem> items)
+    @LogMethod
+    public void verifyBillingInvoicedItems(@LoggedParam String invoiceId, List<InvoicedItem> items)
     {
         DataRegionTable results = goToInvoiceItemsForId(invoiceId);
 
         for (InvoicedItem item : items)
         {
+            StringBuilder msg = new StringBuilder("Verify Invoiced Item: ");
+            if (item.getAnimalId() != null)
+                msg.append("AnimalId = ").append(item.getAnimalId());
+            else
+                msg.append("Category = ").append(item.getCategory());
+            TestLogger.log(msg.toString());
+            TestLogger.increaseIndent();
+
             if (item.getAnimalId() != null)
                 results.setFilter("Id", "Equals", item.getAnimalId());
             if (item.getCategory() != null)
@@ -119,6 +131,8 @@ public class EHRBillingHelper
                 results.clearFilter("category");
             if(item.getChargeID() != null)
                 results.clearFilter("chargeId");
+
+            TestLogger.decreaseIndent();
         }
 
         results.clearFilter("invoiceId");
