@@ -21,7 +21,10 @@ import org.labkey.test.Locator;
 import org.labkey.test.components.ext4.Window;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.SummaryStatisticsHelper;
+import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.util.HashMap;
@@ -101,18 +104,29 @@ public class EHRBillingHelper
         results.clearFilter("Id");
     }
 
-    public void verifyBillingInvoicedItems(String invoiceId, List<InvoicedItem> items)
+    @LogMethod
+    public void verifyBillingInvoicedItems(@LoggedParam String invoiceId, List<InvoicedItem> items)
     {
         DataRegionTable results = goToInvoiceItemsForId(invoiceId);
 
         for (InvoicedItem item : items)
         {
+            StringBuilder msg = new StringBuilder("Verify Invoiced Item: ");
+            if (item.getAnimalId() != null)
+                msg.append("AnimalId = ").append(item.getAnimalId());
+            else
+                msg.append("Category = ").append(item.getCategory());
+            TestLogger.log(msg.toString());
+            TestLogger.increaseIndent();
+
             if (item.getAnimalId() != null)
                 results.setFilter("Id", "Equals", item.getAnimalId());
             if (item.getCategory() != null)
                 results.setFilter("category", "Equals", item.getCategory());
             if(item.getChargeID() != null)
                 results.setFilter("chargeId","Equals", item.getChargeID());
+            if(item.getChargeCategoryID() != null)
+                results.setFilter("chargeId/chargeCategoryid","Equals", item.getChargeCategoryID());
 
             assertEquals("Wrong row count for " + item.getCategory(), item.getRowCount(), results.getDataRowCount());
             if (item.getTotalQuantity() != null)
@@ -132,6 +146,8 @@ public class EHRBillingHelper
                 results.clearFilter("category");
             if(item.getChargeID() != null)
                 results.clearFilter("chargeId");
+
+            TestLogger.decreaseIndent();
         }
 
         results.clearFilter("invoiceId");
@@ -154,6 +170,7 @@ public class EHRBillingHelper
         private int _rowCount;
         private String _totalCost;
         private String _totalQuantity;
+        private String _chargeCategoryId;
         private String _chargeID;
         private Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
@@ -184,6 +201,15 @@ public class EHRBillingHelper
             _chargeID = chargeID;
         }
 
+        public InvoicedItem(String category, int rowCount, String totalQuantity, String totalCost, String chargeCategoryId)
+        {
+            _category = category;
+            _rowCount = rowCount;
+            _totalQuantity = totalQuantity;
+            _totalCost = totalCost;
+            _chargeCategoryId = chargeCategoryId;
+        }
+
         public String getCategory()
         {
             return _category;
@@ -212,6 +238,11 @@ public class EHRBillingHelper
         public String getChargeID()
         {
             return _chargeID;
+        }
+
+        public String getChargeCategoryID()
+        {
+            return _chargeCategoryId;
         }
 
         public void addColumnTextToCheck(String colName, List<String> colValues)
