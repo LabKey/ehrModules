@@ -16,14 +16,27 @@
 package org.labkey.test.tests.ehr;
 
 import org.jetbrains.annotations.Nullable;
+import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.query.Filter;
+import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsResponse;
+
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ext4.Window;
+import org.labkey.test.tests.mobileappstudy.ReadResponseTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.SummaryStatisticsHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
+import javax.print.DocFlavor;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +112,76 @@ public class EHRBillingHelper
         assertEquals("Wrong value for Total cost", totalCost, results.getColumnDataAsText("totalcost"));
         assertEquals("Wrong value for Quantity",quantity,results.getColumnDataAsText("quantity"));
         results.clearFilter("Id");
+    }
+
+    public void verifyBillingInvoicedItemsUsingAPI(String InvoicedId, List<InvoicedItem> items) throws IOException, CommandException
+    {
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        Connection cn = WebTestHelper.getRemoteApiConnection();
+
+        SelectRowsCommand sr = new SelectRowsCommand("ehr_billing", "invoicedItems");
+
+        int i=1;
+        for (InvoicedItem item : items)
+        {
+            _test.log("Counter " + i++);
+            _test.log("Animal ID " + item._animalId);
+            _test.log("Category " + item.getCategory());
+            if (item.getAnimalId() != null)
+                sr.addFilter(new Filter("Id", item.getAnimalId()));
+            if (item.getCategory() != null)
+                sr.addFilter(new Filter("category", item.getCategory()));
+            if (item.getChargeID() != null)
+            {
+                SelectRowsCommand chargeId = new SelectRowsCommand("ehr_billing", "chargeableItems");
+                chargeId.addFilter(new Filter("name",item.getChargeID()));
+                SelectRowsResponse chargeableItemResponse = chargeId.execute(cn, _projectName + "/" + _billingFolder);
+
+                _test.log(" Id   " + chargeableItemResponse.getRows().get(0).get("rowId").toString());
+                sr.addFilter(new Filter("chargeId", chargeableItemResponse.getRows().get(0).get("rowId").toString()));
+            }
+
+            SelectRowsResponse resp = sr.execute(cn, _projectName + "/" + _billingFolder);
+            assertEquals("Wrong row count for " + item.getCategory() + item._animalId, item.getRowCount(), resp.getRowCount().intValue());
+
+            if (item.getTotalQuantity() != null)
+            {
+                int sumQuantity = 0;
+                for (Map<String, Object> row : resp.getRows())
+                    sumQuantity += (double) row.get("quantity");
+
+                assertEquals("Total quantity is not as expected",String.valueOf(sumQuantity), item.getTotalQuantity());
+            }
+
+            if (item.getTotalCost() != null && !item.getTotalCost().equalsIgnoreCase("n/a"))
+            {
+
+                double sumCost = 0.0;
+                for (Map<String, Object> row : resp.getRows())
+                    sumCost += (double) row.get("totalcost");
+
+                assertEquals("Total cost is not as expected", formatter.format(sumCost), item.getTotalCost());
+            }
+
+            if (!item.getColumnTextCheckMap().isEmpty())
+            {
+                for (Map.Entry<String, List<String>> entry : item.getColumnTextCheckMap().entrySet())
+                {
+                    List<String> input = new ArrayList<String>();
+                    for (Map<String, Object> row : resp.getRows())
+                    {
+                        if (resp.getColumnDataType(entry.getKey()).toString().equalsIgnoreCase("STRING"))
+                            input.add(row.get(entry.getKey()).toString());
+                        else
+                            input.add(formatter.format(row.get(entry.getKey())));
+                    }
+
+                    assertEquals("Wrong values for column: " + entry.getKey(), input, entry.getValue());
+                }
+
+            }
+        }
     }
 
     public void verifyBillingInvoicedItems(String invoiceId, List<InvoicedItem> items)
