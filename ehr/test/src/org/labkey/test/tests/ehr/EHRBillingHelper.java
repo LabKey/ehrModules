@@ -121,9 +121,15 @@ public class EHRBillingHelper
         Connection cn = WebTestHelper.getRemoteApiConnection();
         SelectRowsCommand sr;
 
+        SelectRowsCommand invoiceIdSr =new  SelectRowsCommand("ehr_billing", "invoiceRuns");
+        invoiceIdSr.addFilter(new Filter("rowId", InvoicedId));
+        SelectRowsResponse invoiceIdResponse = invoiceIdSr.execute(cn, _projectName + "/" + _billingFolder);
+
         for (InvoicedItem item : items)
         {
             sr = new SelectRowsCommand("ehr_billing", "invoicedItems");
+            sr.addFilter(new Filter("invoiceId",invoiceIdResponse.getRows().get(0).get("objectId").toString()));
+
             if (item.getAnimalId() != null)
                 sr.addFilter(new Filter("Id", item.getAnimalId()));
             if (item.getCategory() != null)
