@@ -25,11 +25,9 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.ext4.Window;
-import org.labkey.test.tests.tnprc_ehr.TNPRC_RequestsTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.SummaryStatisticsHelper;
 import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -203,25 +201,43 @@ public class EHRBillingHelper
             TestLogger.log(msg.toString());
             TestLogger.increaseIndent();
 
+            String filterDescription = "";
+            String separator = "";
             if (item.getAnimalId() != null)
+            {
                 results.setFilter("Id", "Equals", item.getAnimalId());
+                filterDescription += separator + "Id: " + item.getAnimalId();
+                separator = ", ";
+            }
             if (item.getCategory() != null)
+            {
                 results.setFilter("category", "Equals", item.getCategory());
+                filterDescription += separator + "Category : " + item.getCategory();
+                separator = ", ";
+            }
             if(item.getChargeID() != null)
-                results.setFilter("chargeId","Equals", item.getChargeID());
+            {
+                results.setFilter("chargeId", "Equals", item.getChargeID());
+                filterDescription += separator + "ChargeId : " + item.getChargeID();
+                separator = ", ";
+            }
             if(item.getChargeCategoryID() != null)
-                results.setFilter("chargeId/chargeCategoryid","Equals", item.getChargeCategoryID());
+            {
+                results.setFilter("chargeId/chargeCategoryid", "Equals", item.getChargeCategoryID());
+                filterDescription += separator + "ChargeCategoryId: " + item.getChargeCategoryID();
+                separator = ", ";
+            }
 
-            assertEquals("Wrong row count for " + item.getCategory(), item.getRowCount(), results.getDataRowCount());
+            assertEquals("Wrong row count for " + filterDescription, item.getRowCount(), results.getDataRowCount());
             if (item.getTotalQuantity() != null)
-                results.verifySummaryStatisticValue("quantity", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalQuantity());
+                results.verifySummaryStatisticValue("quantity", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalQuantity(), filterDescription);
             if (item.getTotalCost() != null)
-                results.verifySummaryStatisticValue("totalcost", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalCost());
+                results.verifySummaryStatisticValue("totalcost", SummaryStatisticsHelper.BASE_STAT_SUM, item.getTotalCost(), filterDescription);
 
             if (!item.getColumnTextCheckMap().isEmpty())
             {
                 for (Map.Entry<String, List<String>> entry : item.getColumnTextCheckMap().entrySet())
-                    assertEquals("Wrong values for column: " + entry.getKey(), entry.getValue(), results.getColumnDataAsText(entry.getKey()));
+                    assertEquals("Wrong values for column " + entry.getKey() + " with filter " + filterDescription, entry.getValue(), results.getColumnDataAsText(entry.getKey()));
             }
 
             if (item.getAnimalId() != null)
