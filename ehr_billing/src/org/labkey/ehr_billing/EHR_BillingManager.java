@@ -24,14 +24,21 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.InvalidKeyException;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.security.User;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -52,43 +59,57 @@ public class EHR_BillingManager
         return _instance;
     }
 
-    public List<String> deleteBillingRuns(User user, Collection<String> pks, boolean testOnly)
+    public List<String> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws SQLException, QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
-        TableInfo invoiceRuns = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
-        TableInfo invoicedItems = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
+        TableInfo invoice = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE);
+        TableInfo invoiceRuns = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
+        TableInfo invoicedItems = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
         TableInfo miscCharges = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_MISC_CHARGES);
 
         //create filters
-        SimpleFilter invoiceRunFilter = new SimpleFilter(FieldKey.fromString("invoiceId"), pks, CompareType.IN);
+        SimpleFilter objectIdFilter = new SimpleFilter(FieldKey.fromString("objectid"), pks, CompareType.IN);
+        SimpleFilter invoiceIdFilter = new SimpleFilter(FieldKey.fromString("invoiceId"), pks, CompareType.IN);
+        SimpleFilter invoiceRunIdFilter = new SimpleFilter(FieldKey.fromString("invoiceRunId"), pks, CompareType.IN);
 
         SimpleFilter miscChargesFilter = new SimpleFilter(FieldKey.fromString("invoiceId"), pks, CompareType.IN);
+        TableSelector tsInvItems = new TableSelector(invoicedItems, invoiceIdFilter, null);
+        TableSelector tsInvoice = new TableSelector(invoice, invoiceRunIdFilter, null);
 
         //perform the work
         List<String> ret = new ArrayList<>();
         if (testOnly)
         {
-            TableSelector tsRuns = new TableSelector(invoicedItems, invoiceRunFilter, null);
-            ret.add(tsRuns.getRowCount() + " records from invoiced items");
+            ret.add(tsInvItems.getRowCount() + " records from invoiced items");
+            ret.add(tsInvoice.getRowCount() + " records from invoice");
 
             TableSelector tsMiscCharges2 = new TableSelector(miscCharges, miscChargesFilter, null);
-            ret.add(tsMiscCharges2.getRowCount() + " records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted.");
+            ret.add(tsMiscCharges2.getRowCount() + " invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted.");
         }
         else
         {
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
-                long deleted1 = Table.delete(invoicedItems, invoiceRunFilter);
+                Map<String, Object>[] invoicedItemsRows = tsInvItems.getMapArray();
+                deleteInvoicedRows(invoicedItems, invoicedItemsRows, user, container);
+
+                Map<String, Object>[] invoiceRows = tsInvoice.getMapArray();
+                deleteInvoicedRows(invoice, invoiceRows, user, container);
 
                 TableSelector tsMiscCharges2 = new TableSelector(miscCharges, Collections.singleton("objectid"), miscChargesFilter, null);
+                Map<String, Object>[] miscChargeRows = tsMiscCharges2.getMapArray();
                 String[] miscChargesIds = tsMiscCharges2.getArray(String.class);
+                List<Map<String, Object>> toSave = new ArrayList<>();
+
                 for (String objectid : miscChargesIds)
                 {
                     Map<String, Object> map = new CaseInsensitiveHashMap<>();
                     map.put("invoiceId", null);
-                    map = Table.update(user, miscCharges, map, objectid);
+                    map = Table.update(user, miscCharges, map, objectid);//note: not using query update service here due to trigger script calls to demographic providers from the "finance" folder to get an animal record, which results in schema and query not found error
                 }
 
-                long deleted3 = Table.delete(invoiceRuns, new SimpleFilter(FieldKey.fromString("objectid"), pks, CompareType.IN));
+                TableSelector tsInvoiceRuns = new TableSelector(invoiceRuns, objectIdFilter, null);
+                Map<String, Object>[] invoiceRunRows = tsInvoiceRuns.getMapArray();
+                deleteInvoicedRows(invoiceRuns, invoiceRunRows, user, container);
 
                 transaction.commit();
             }
@@ -97,6 +118,13 @@ public class EHR_BillingManager
         return ret;
     }
 
+    private void deleteInvoicedRows(TableInfo tableInfo, Map<String, Object>[] rows, User user, Container container) throws SQLException, QueryUpdateServiceException, BatchValidationException, InvalidKeyException
+    {
+        if(rows.length>0)
+        {
+            tableInfo.getUpdateService().deleteRows(user, container, Arrays.asList(rows), null, null);
+        }
+    }
     public Container getBillingContainer(Container c)
     {
         Module billing = ModuleLoader.getInstance().getModule(EHR_BillingModule.NAME);
