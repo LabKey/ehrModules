@@ -35,6 +35,8 @@ import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.security.User;
+import org.labkey.api.data.AuditConfigurable;
+import org.labkey.api.gwt.client.AuditBehaviorType;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,8 +64,15 @@ public class EHR_BillingManager
     public List<String> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws SQLException, QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
         TableInfo invoice = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE);
+        if (invoice.supportsAuditTracking())
+            ((AuditConfigurable) invoice).setAuditBehavior(AuditBehaviorType.NONE);
+
         TableInfo invoiceRuns = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
+
         TableInfo invoicedItems = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
+        if(invoicedItems.supportsAuditTracking())
+            ((AuditConfigurable)invoicedItems).setAuditBehavior(AuditBehaviorType.NONE);
+
         TableInfo miscCharges = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_MISC_CHARGES);
 
         //create filters
