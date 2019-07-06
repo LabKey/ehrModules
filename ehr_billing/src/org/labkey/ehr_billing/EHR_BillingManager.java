@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2017-2019 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.labkey.ehr_billing;
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -20,6 +36,7 @@ import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.security.User;
+import org.labkey.api.data.RuntimeSQLException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -98,13 +115,21 @@ public class EHR_BillingManager
         return ret;
     }
 
-    private void deleteInvoiceRuns(TableInfo tableInfo, Map<String, Object>[] rows, User user, Container container) throws SQLException, QueryUpdateServiceException, BatchValidationException, InvalidKeyException
+    private void deleteInvoiceRuns(TableInfo tableInfo, Map<String, Object>[] rows, User user, Container container) throws QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
         if(rows.length>0)
         {
-            tableInfo.getUpdateService().deleteRows(user, container, Arrays.asList(rows), null, null);
+            try
+            {
+                tableInfo.getUpdateService().deleteRows(user, container, Arrays.asList(rows), null, null);
+            }
+            catch (SQLException e)
+            {
+                throw new RuntimeSQLException(e);
+            }
         }
     }
+
     public Container getBillingContainer(Container c)
     {
         Module billing = ModuleLoader.getInstance().getModule(EHR_BillingModule.NAME);
