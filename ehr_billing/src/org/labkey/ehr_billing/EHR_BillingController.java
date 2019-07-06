@@ -115,7 +115,7 @@ public class EHR_BillingController extends SpringActionController
         }
 
         @Override
-        public ModelAndView getConfirmView(QueryForm form, BindException errors) throws SQLException, BatchValidationException, InvalidKeyException, QueryUpdateServiceException
+        public ModelAndView getConfirmView(QueryForm form, BindException errors) throws BatchValidationException, InvalidKeyException, QueryUpdateServiceException
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
 
@@ -130,7 +130,7 @@ public class EHR_BillingController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public boolean handlePost(QueryForm form, BindException errors) throws SQLException, BatchValidationException, InvalidKeyException, QueryUpdateServiceException
+        public boolean handlePost(QueryForm form, BindException errors) throws BatchValidationException, InvalidKeyException, QueryUpdateServiceException
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
             EHR_BillingManager.get().deleteBillingRuns(getUser(), getContainer(), ids, false);

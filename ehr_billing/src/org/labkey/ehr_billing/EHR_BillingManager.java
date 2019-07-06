@@ -61,7 +61,7 @@ public class EHR_BillingManager
         return _instance;
     }
 
-    public List<String> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws SQLException, QueryUpdateServiceException, BatchValidationException, InvalidKeyException
+    public List<String> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
         TableInfo invoice = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_INVOICE);
         TableInfo invoiceRuns = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
