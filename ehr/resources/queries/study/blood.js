@@ -123,7 +123,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid || null, row.quantity);
                 if (msg != null) {
                     if (msg.toLowerCase().indexOf('unknown weight') > -1) {
-                        volumeErrorSeverify = helper.getErrorSeveritiyForBloodDrawsWithoutWeight();
+                        volumeErrorSeverify = helper.getErrorSeverityForBloodDrawsWithoutWeight();
                     }
 
                     //TODO: change all future bloods draws to review required, if submitted for medical purpose.

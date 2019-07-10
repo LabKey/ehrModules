@@ -638,7 +638,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     ){
         var assignmentErrors = helper.getJavaHelper().validateAssignment(row.Id, row.project, row.date);
         if (assignmentErrors){
-            EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, helper.getErrorSeveritiyForImproperAssignment());
+            EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, helper.getErrorSeverityForImproperAssignment());
         }
     }
 
@@ -650,7 +650,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     ){
         helper.logDebugMsg('Verifying room/cage:');
         if (!helper.getJavaHelper().validateHousing(row.Id, row.room, row.cage, row.date)){
-            EHR.Server.Utils.addError(scriptErrors, 'room', 'Not housed in this location on this date', helper.getErrorSeveritiyForImproperHousing());
+            EHR.Server.Utils.addError(scriptErrors, 'room', 'Not housed in this location on this date', helper.getErrorSeverityForImproperHousing());
         }
     }
 
