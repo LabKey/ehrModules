@@ -71,8 +71,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      * @param {Boolean} skipHousingCheck Skip housing verification normally done for rows containing ID, room and date
      * @param {Boolean} skipAssignmentCheck Skip assignment verification normally done for rows containing ID, project and date
      * @param {Boolean} notificationTypes
-     * @param {String} errorSeveritiyForImproperHousing Error level for housing validation. ERROR, WARN, INFO, DEBUG
-     * @param {String} errorSeveritiyForImproperAssignment Error level for assignment validation. ERROR, WARN, INFO, DEBUG
+     * @param {String} errorSeverityForImproperHousing Error level for housing validation. ERROR, WARN, INFO, DEBUG
+     * @param {String} errorSeverityForImproperAssignment Error level for assignment validation. ERROR, WARN, INFO, DEBUG
      * @param {Boolean} requiresStatusRecalc Recalculate calculated_status when changing a record
      * @param {Boolean} allowDatesInDistantPast Skip validation errors for dates entered > 60 days in the past
      * @param {Array} lookupValidationFields Array of fields to verify lookups return records
@@ -80,7 +80,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      * @param {Boolean} announceAllModifiedParticipants Announce when modified to listeners such as demographics providers
      *                  to update cached records.
      * @param {Boolean} doStandardProtocolCountValidation Validate animals in protocol using ehr.protocolTotalAnimalsBySpecies
-     * @param {Boolean} errorSeveritiyForBloodDrawsWithoutWeight Error level for blood draw requests for animals without weight
+     * @param {Boolean} errorSeverityForBloodDrawsWithoutWeight Error level for blood draw requests for animals without weight
      */
 
     var scriptOptions = {
@@ -95,15 +95,15 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         skipHousingCheck: false,
         skipAssignmentCheck: false,
         notificationTypes: null,
-        errorSeveritiyForImproperHousing: 'WARN',
-        errorSeveritiyForImproperAssignment: 'INFO',
+        errorSeverityForImproperHousing: 'WARN',
+        errorSeverityForImproperAssignment: 'INFO',
         requiresStatusRecalc: false,
         allowDatesInDistantPast: false,
         lookupValidationFields: [],
         cacheAccount: true,
         announceAllModifiedParticipants: false,
         doStandardProtocolCountValidation: true,
-        errorSeveritiyForBloodDrawsWithoutWeight: 'ERROR',
+        errorSeverityForBloodDrawsWithoutWeight: 'ERROR',
         defaultAllowedDaysForFutureRequest: 30
     };
 
@@ -501,8 +501,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.allowFutureDates;
         },
 
-        getErrorSeveritiyForImproperHousing: function(){
-            return scriptOptions.errorSeveritiyForImproperHousing;
+        getErrorSeverityForImproperHousing: function(){
+            return scriptOptions.errorSeverityForImproperHousing;
         },
 
         isGeneratedByServer: function(){
@@ -599,8 +599,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return this.isGeneratedByServer() || scriptOptions.allowDatesInDistantPast;
         },
 
-        getErrorSeveritiyForImproperAssignment: function(){
-            return scriptOptions.errorSeveritiyForImproperAssignment;
+        getErrorSeverityForImproperAssignment: function(){
+            return scriptOptions.errorSeverityForImproperAssignment;
         },
 
         getSNOMEDCodeFieldName: function(){
@@ -611,8 +611,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.cacheAccount;
         },
 
-        getErrorSeveritiyForBloodDrawsWithoutWeight: function(){
-            return scriptOptions.errorSeveritiyForBloodDrawsWithoutWeight;
+        getErrorSeverityForBloodDrawsWithoutWeight: function(){
+            return scriptOptions.errorSeverityForBloodDrawsWithoutWeight;
         },
 
         getDefaultAllowedDaysForFutureRequest: function(){
