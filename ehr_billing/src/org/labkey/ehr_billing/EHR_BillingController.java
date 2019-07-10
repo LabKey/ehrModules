@@ -31,12 +31,15 @@ import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.pipeline.PipelineValidationException;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.security.RequiresPermission;
@@ -58,6 +61,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,12 +115,12 @@ public class EHR_BillingController extends SpringActionController
         }
 
         @Override
-        public ModelAndView getConfirmView(QueryForm form, BindException errors)
+        public ModelAndView getConfirmView(QueryForm form, BindException errors) throws BatchValidationException, InvalidKeyException, QueryUpdateServiceException
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
 
             StringBuilder msg = new StringBuilder("You have selected " + ids.size() + " billing runs to delete.  This will also delete: <p>");
-            for (String m : EHR_BillingManager.get().deleteBillingRuns(getUser(), ids, true))
+            for (String m : EHR_BillingManager.get().deleteBillingRuns(getUser(),getContainer(), ids, true))
             {
                 msg.append(m).append("<br>");
             }
@@ -126,10 +130,10 @@ public class EHR_BillingController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public boolean handlePost(QueryForm form, BindException errors)
+        public boolean handlePost(QueryForm form, BindException errors) throws BatchValidationException, InvalidKeyException, QueryUpdateServiceException
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
-            EHR_BillingManager.get().deleteBillingRuns(getUser(), ids, false);
+            EHR_BillingManager.get().deleteBillingRuns(getUser(), getContainer(), ids, false);
 
             return true;
         }
