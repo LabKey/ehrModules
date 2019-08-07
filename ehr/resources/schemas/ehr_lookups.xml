@@ -2641,6 +2641,7 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
+            <column columnName="datedisabled" />
         </columns>
     </table>
     <table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
