@@ -39,27 +39,32 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
     public static final String CONTROLLER_NAME = "viralloadassay";
     public static final String SCHEMA_NAME = "viral_load_assay";
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public double getVersion()
     {
         return 12.25;
     }
 
+    @Override
     public boolean hasScripts()
     {
         return true;
     }
 
+    @Override
     @NotNull
     protected Collection<WebPartFactory> createWebPartFactories()
     {
         return Collections.emptyList();
     }
 
+    @Override
     protected void init()
     {
         addController(CONTROLLER_NAME, Viral_Load_AssayController.class);
