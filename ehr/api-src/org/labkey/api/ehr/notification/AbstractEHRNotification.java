@@ -120,8 +120,11 @@ abstract public class AbstractEHRNotification extends AbstractNotification
 
         newValues.put(lastSave, String.valueOf(new Date().getTime()));
         map.putAll(newValues);
-
-        map.save();
+        // Used in essentially creating a cache for LabKey-generated notifications. Does not constitute a CSRF vulnerability.
+        try (var ignored = SpringActionController.ignoreSqlUpdates())
+        {
+            map.save();
+        }
     }
 
     protected String getParameterUrlString(Container c, Map<String, Object> params)
