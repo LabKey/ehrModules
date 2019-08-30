@@ -16,6 +16,7 @@
 package org.labkey.api.ehr.notification;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.ldk.notification.AbstractNotification;
