@@ -24,7 +24,6 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
@@ -66,7 +65,7 @@ public class WrappingTableCustomizer implements TableCustomizer
         {
             if (col.getConceptURI() == null)
             {
-                ((BaseColumnInfo)col).setConceptURI(LaboratoryService.PARTICIPANT_CONCEPT_URI);
+                ((BaseColumnInfo)col).setConceptURI(DefaultEHRCustomizer.PARTICIPANT_CONCEPT_URI);
             }
 
             String name = "EHR";
@@ -96,7 +95,7 @@ public class WrappingTableCustomizer implements TableCustomizer
         //preferentially guess based on conceptURI
         for (ColumnInfo col : ti.getColumns())
         {
-            if (LaboratoryService.PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
+            if (DefaultEHRCustomizer.PARTICIPANT_CONCEPT_URI.equals(col.getConceptURI()) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
             {
                 return col;
             }
