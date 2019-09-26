@@ -1,65 +1,47 @@
-* text=auto !eol
-Viral_Load_Assay/build.gradle -text
-Viral_Load_Assay/module.properties -text
-Viral_Load_Assay/resources/assay/Viral_Loads/config.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/domains/batch.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/domains/result.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/domains/run.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Batches.query.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Data.query.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Data/.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Data/By[!!-~]Column.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Data/By[!!-~]Row.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Runs.query.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Runs/.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/StandardCurve.query.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/StandardCurve.sql -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary.query.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary.sql -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary/.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary/By[!!-~]Column.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary/By[!!-~]Row.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/queries/Viral_Load_Summary/Data[!!-~]Only.qview.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/views/run.html -text
-Viral_Load_Assay/resources/assay/Viral_Loads/views/run.view.xml -text
-Viral_Load_Assay/resources/assay/Viral_Loads/views/upload.html -text
-Viral_Load_Assay/resources/assay/Viral_Loads/views/upload.view.xml -text
-Viral_Load_Assay/resources/module.xml -text
-Viral_Load_Assay/resources/reports/schemas/assay/Viral_Load[!!-~]Data/Viral[!!-~]Load[!!-~]Graph.r -text
-Viral_Load_Assay/resources/reports/schemas/assay/Viral_Load[!!-~]Data/Viral[!!-~]Load[!!-~]Graph.report.xml -text
-Viral_Load_Assay/resources/reports/schemas/assay/Viral_Load[!!-~]Data/Viral[!!-~]Load[!!-~]JS[!!-~]Graph.js -text
-Viral_Load_Assay/resources/reports/schemas/assay/Viral_Load[!!-~]Data/Viral[!!-~]Load[!!-~]JS[!!-~]Graph.report.xml -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-0.00-11.10.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-11.10-11.20.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.10-12.20.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.11-12.12.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.20-12.21.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.21-12.22.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.22-12.23.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/Viral_Load_Assay-12.23-12.24.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/obsolete/Viral_Load_Assay-11.10-11.11.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/postgresql/obsolete/Viral_Load_Assay-11.11-11.12.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-11.10-11.20.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.10-12.20.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.11-12.12.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.20-12.21.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.21-12.22.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.22-12.23.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/Viral_Load_Assay-12.23-12.24.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/obsolete/Viral_Load_Assay-11.10-11.11.sql -text
-Viral_Load_Assay/resources/schemas/dbscripts/sqlserver/obsolete/Viral_Load_Assay-11.11-11.12.sql -text
-Viral_Load_Assay/resources/schemas/viral_load_assay.xml -text
-Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/ABI7500.txt -text
-Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/LC_data.txt -text
-Viral_Load_Assay/resources/web/Viral_Load_Assay/SampleData/lc480.txt -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/ViralLoadCustomizer.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayController.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssayModule.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_AssaySchema.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/Viral_Load_Manager.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/ABI7500ImportMethod.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/DefaultVLImportMethod.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/LC480ImportMethod.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/LightCyclerImportMethod.java -text
-Viral_Load_Assay/src/org/labkey/viral_load_assay/assay/ViralLoadAssayDataProvider.java -text
-Viral_Load_Assay/test/src/org/labkey/test/tests/external/labModules/ViralLoadAssayTest.java -text
+# Convert text files to OS line-endings on checkout, and LF on check-in
+*               text=auto !eol
+
+# Text files to convert
+*.css           text diff=css
+*.htm           text diff=html
+*.html          text diff=html
+*.java          text diff=java
+*.js            text
+*.json          text
+*.jsp           text
+*.jspf          text
+*.jspx          text
+*.properties    text
+*.py            text diff=python
+*.sql           text
+*.tld           text
+*.ts            text
+*.txt           text
+*.xml           text
+*.yml           text
+
+# Keep unix endings
+*.bash          text eol=lf
+*.sh            text eol=lf
+
+# Keep Windows endings
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+
+# Known binary files -- Don't change (binary is a macro for -text -diff)
+*.bin           binary
+*.class         binary
+*.dll           binary
+*.ear           binary
+*.exe           binary
+*.gif           binary
+*.gz            binary
+*.ico           binary
+*.jar           binary
+*.jpg           binary
+*.jpeg          binary
+*.png           binary
+*.so            binary
+*.tar           binary
+*.war           binary
+*.zip           binary
