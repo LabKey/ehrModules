@@ -1,0 +1,16 @@
+frequency	hourofday	timedescription
+Daily - AM	8	AM
+Daily - Noon	12	Noon
+Daily - PM	14	PM
+Daily - Night	19	Night
+Daily - AM/PM	8	AM
+Daily - AM/PM	14	PM
+Daily - AM/Night	8	AM
+Daily - AM/Night	19	Night
+Daily - AM/PM/Night	8	AM
+Daily - AM/PM/Night	14	PM
+Daily - AM/PM/Night	19	Night
+Daily - Any Time	8	AM
+Weekly	8	AM
+Monthly	8	AM
+Alternating Days	8	AM

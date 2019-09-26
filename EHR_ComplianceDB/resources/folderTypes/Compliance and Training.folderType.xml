@@ -1,0 +1,28 @@
+<folderType xmlns="http://labkey.org/data/xml/folderType">
+    <name>Compliance and Training</name>
+    <description>The folder type used for the Compliance and Training</description>
+    <requiredWebParts>
+
+    </requiredWebParts>
+    <preferredWebParts>
+
+    </preferredWebParts>
+    <folderTabs>
+        <folderTab>
+            <name>compliance</name>
+            <caption>Compliance and Training</caption>
+            <preferredWebParts>
+                <webPart>
+                    <name>Compliance</name>
+                    <location>body</location>
+                </webPart>
+            </preferredWebParts>
+        </folderTab>
+    </folderTabs>
+    <modules>
+        <moduleName>LDK</moduleName>
+        <moduleName>EHR_ComplianceDB</moduleName>
+    </modules>
+    <defaultModule>EHR_ComplianceDB</defaultModule>
+    <workbookType>false</workbookType>
+</folderType>

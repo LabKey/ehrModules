@@ -1,0 +1,28 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeid"/>
+        <column name="lastName"/>
+        <column name="middleName"/>
+        <column name="firstName"/>
+        <column name="email"/>
+        <column name="type"/>
+        <column name="category"/>
+        <column name="title"/>
+        <column name="unit"/>
+        <column name="supervisor"/>
+        <column name="emergencycontact" />
+        <column name="location"/>
+        <column name="startdate"/>
+        <column name="enddate"/>
+        <column name="notes"/>
+        <column name="isemployee"/>
+        <column name="animals"/>
+        <column name="barrier"/>
+        <column name="tissue"/>
+        <column name="contactsSla"/>
+    </columns>
+    <sorts>
+        <sort column="lastName" descending="false"/>
+        <sort column="firstName" descending="false"/>
+    </sorts>
+</customView>

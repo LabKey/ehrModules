@@ -1,0 +1,52 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="fiscalAuthorities" tableDbType="TABLE">
+                <tableTitle>Financial Analysts</tableTitle>
+                <titleColumn>lastName</titleColumn>
+                <columns>
+                    <column columnName="rowid">
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
+                    <column columnName="objectid">
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
+                    <column columnName="faid">
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
+                    <column columnName="firstName">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="lastName">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="position">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="address">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="city">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="state">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="country">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="zip">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="phoneNumber">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <column columnName="isActive">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

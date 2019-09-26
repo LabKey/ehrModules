@@ -1,0 +1,31 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function(){
+        var webpart = <%=webpartContext%>;
+
+        var container = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+        if (!container){
+            Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+            return;
+        }
+
+        Ext4.create('Ext.panel.Panel', {
+            border: false,
+            items: [{
+                html: 'This is the public section for Compliance/Training.  Currently, it allows user to lookup employee information and to view the training history of employees.  This do this, click the link below to load a list of employees.  This list can be filtered by name, supervisor or any of the columns.  Once you have found an employee, click the details link to view a summary of their training history.',
+                border: false,
+                style: 'padding-bottom: 10px;'
+            },{
+                xtype: 'ldk-linkbutton',
+                text: '<li>View Employee List</li>',
+                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'EmployeeData', 'query.queryName': 'Employees'})
+            },{
+                xtype: 'ldk-linkbutton',
+                text: '<li>View Private Section (authorized users only)</li>',
+                href: LABKEY.ActionURL.buildURL('project', 'start', container),
+                style: 'margin-top: 10px;'
+            }]
+        }).render(webpart.wrapperDivId);
+    });
+
+</script>

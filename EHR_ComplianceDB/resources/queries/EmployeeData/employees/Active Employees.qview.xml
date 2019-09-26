@@ -1,0 +1,9 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <sorts>
+        <sort column="lastName" descending="false"/>
+        <sort column="firstName" descending="false"/>
+    </sorts>
+    <filters>
+        <filter column="endDateCoalesced" operator="dategte" value="+0d"/>
+    </filters>
+</customView>

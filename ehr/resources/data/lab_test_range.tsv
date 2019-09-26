@@ -1,0 +1,589 @@
+test	species	gender	age_class	ref_range_min	ref_range_max	type
+ALB	Cynomolgus	female	1			Chemistry
+ALB	Cynomolgus	female	2			Chemistry
+ALB	Cynomolgus	female	3	3.0	5.0	Chemistry
+ALB	Cynomolgus	female	4			Chemistry
+ALB	Cynomolgus	male	1			Chemistry
+ALB	Cynomolgus	male	2			Chemistry
+ALB	Cynomolgus	male	3	4.0	5.0	Chemistry
+ALB	Cynomolgus	male	4			Chemistry
+ALB	Marmoset	female	1			Chemistry
+ALB	Marmoset	female	2			Chemistry
+ALB	Marmoset	female	3	3.0	6.0	Chemistry
+ALB	Marmoset	female	4			Chemistry
+ALB	Marmoset	male	1			Chemistry
+ALB	Marmoset	male	2			Chemistry
+ALB	Marmoset	male	3	4.0	5.0	Chemistry
+ALB	Marmoset	male	4			Chemistry
+ALB	Rhesus	female	1	4.0	4.0	Chemistry
+ALB	Rhesus	female	2	4.0	5.0	Chemistry
+ALB	Rhesus	female	3	3.0	5.0	Chemistry
+ALB	Rhesus	female	4	3.0	4.0	Chemistry
+ALB	Rhesus	male	1	3.0	5.0	Chemistry
+ALB	Rhesus	male	2	4.0	5.0	Chemistry
+ALB	Rhesus	male	3	4.0	5.0	Chemistry
+ALB	Rhesus	male	4	3.0	4.0	Chemistry
+ALKP	Cynomolgus	female	1			Chemistry
+ALKP	Cynomolgus	female	2			Chemistry
+ALKP	Cynomolgus	female	3	99.0	227.0	Chemistry
+ALKP	Cynomolgus	female	4			Chemistry
+ALKP	Cynomolgus	male	1			Chemistry
+ALKP	Cynomolgus	male	2			Chemistry
+ALKP	Cynomolgus	male	3	30.0	552.0	Chemistry
+ALKP	Cynomolgus	male	4			Chemistry
+ALKP	Marmoset	female	1			Chemistry
+ALKP	Marmoset	female	2			Chemistry
+ALKP	Marmoset	female	3	9.0	185.0	Chemistry
+ALKP	Marmoset	female	4			Chemistry
+ALKP	Marmoset	male	1			Chemistry
+ALKP	Marmoset	male	2			Chemistry
+ALKP	Marmoset	male	3	47.0	133.0	Chemistry
+ALKP	Marmoset	male	4			Chemistry
+ALKP	Rhesus	female	1	472.0	1540.0	Chemistry
+ALKP	Rhesus	female	2	169.0	810.0	Chemistry
+ALKP	Rhesus	female	3	33.0	212.0	Chemistry
+ALKP	Rhesus	female	4	43.0	228.0	Chemistry
+ALKP	Rhesus	male	1	482.0	1433.0	Chemistry
+ALKP	Rhesus	male	2	315.0	802.0	Chemistry
+ALKP	Rhesus	male	3	28.0	221.0	Chemistry
+ALKP	Rhesus	male	4	50.0	199.0	Chemistry
+BUN	Cynomolgus	female	1			Chemistry
+BUN	Cynomolgus	female	2			Chemistry
+BUN	Cynomolgus	female	3	8.0	24.0	Chemistry
+BUN	Cynomolgus	female	4			Chemistry
+BUN	Cynomolgus	male	1			Chemistry
+BUN	Cynomolgus	male	2			Chemistry
+BUN	Cynomolgus	male	3	11.0	21.0	Chemistry
+BUN	Cynomolgus	male	4			Chemistry
+BUN	Marmoset	female	1			Chemistry
+BUN	Marmoset	female	2			Chemistry
+BUN	Marmoset	female	3	14.0	31.0	Chemistry
+BUN	Marmoset	female	4			Chemistry
+BUN	Marmoset	male	1			Chemistry
+BUN	Marmoset	male	2			Chemistry
+BUN	Marmoset	male	3	13.0	35.0	Chemistry
+BUN	Marmoset	male	4			Chemistry
+BUN	Rhesus	female	1	6.0	23.0	Chemistry
+BUN	Rhesus	female	2	11.0	37.0	Chemistry
+BUN	Rhesus	female	3	11.0	27.0	Chemistry
+BUN	Rhesus	female	4	7.0	29.0	Chemistry
+BUN	Rhesus	male	1	4.0	30.0	Chemistry
+BUN	Rhesus	male	2	12.0	30.0	Chemistry
+BUN	Rhesus	male	3	10.0	26.0	Chemistry
+BUN	Rhesus	male	4	12.0	27.0	Chemistry
+CA	Cynomolgus	female	1			Chemistry
+CA	Cynomolgus	female	2			Chemistry
+CA	Cynomolgus	female	3	9.0	11.0	Chemistry
+CA	Cynomolgus	female	4			Chemistry
+CA	Cynomolgus	male	1			Chemistry
+CA	Cynomolgus	male	2			Chemistry
+CA	Cynomolgus	male	3	9.0	11.0	Chemistry
+CA	Cynomolgus	male	4			Chemistry
+CA	Marmoset	female	1			Chemistry
+CA	Marmoset	female	2			Chemistry
+CA	Marmoset	female	3	9.0	12.0	Chemistry
+CA	Marmoset	female	4			Chemistry
+CA	Marmoset	male	1			Chemistry
+CA	Marmoset	male	2			Chemistry
+CA	Marmoset	male	3	9.0	12.0	Chemistry
+CA	Marmoset	male	4			Chemistry
+CA	Rhesus	female	1	10.0	12.0	Chemistry
+CA	Rhesus	female	2	9.0	11.0	Chemistry
+CA	Rhesus	female	3	9.0	11.0	Chemistry
+CA	Rhesus	female	4	9.0	11.0	Chemistry
+CA	Rhesus	male	1	10.0	12.0	Chemistry
+CA	Rhesus	male	2	9.0	11.0	Chemistry
+CA	Rhesus	male	3	9.0	11.0	Chemistry
+CA	Rhesus	male	4	9.0	11.0	Chemistry
+CHOL	Cynomolgus	female	1			Chemistry
+CHOL	Cynomolgus	female	2			Chemistry
+CHOL	Cynomolgus	female	3	77.0	173.0	Chemistry
+CHOL	Cynomolgus	female	4			Chemistry
+CHOL	Cynomolgus	male	1			Chemistry
+CHOL	Cynomolgus	male	2			Chemistry
+CHOL	Cynomolgus	male	3	63.0	157.0	Chemistry
+CHOL	Cynomolgus	male	4			Chemistry
+CHOL	Marmoset	female	1			Chemistry
+CHOL	Marmoset	female	2			Chemistry
+CHOL	Marmoset	female	3	64.0	180.0	Chemistry
+CHOL	Marmoset	female	4			Chemistry
+CHOL	Marmoset	male	1			Chemistry
+CHOL	Marmoset	male	2			Chemistry
+CHOL	Marmoset	male	3	97.0	264.0	Chemistry
+CHOL	Marmoset	male	4			Chemistry
+CHOL	Rhesus	female	1	108.0	266.0	Chemistry
+CHOL	Rhesus	female	2	108.0	195.0	Chemistry
+CHOL	Rhesus	female	3	99.0	219.0	Chemistry
+CHOL	Rhesus	female	4	100.0	192.0	Chemistry
+CHOL	Rhesus	male	1	109.0	295.0	Chemistry
+CHOL	Rhesus	male	2	100.0	196.0	Chemistry
+CHOL	Rhesus	male	3	93.0	200.0	Chemistry
+CHOL	Rhesus	male	4	86.0	202.0	Chemistry
+CL	Cynomolgus	female	1			Chemistry
+CL	Cynomolgus	female	2			Chemistry
+CL	Cynomolgus	female	3	104.0	110.0	Chemistry
+CL	Cynomolgus	female	4			Chemistry
+CL	Cynomolgus	male	1			Chemistry
+CL	Cynomolgus	male	2			Chemistry
+CL	Cynomolgus	male	3	102.0	110.0	Chemistry
+CL	Cynomolgus	male	4			Chemistry
+CL	Marmoset	female	1			Chemistry
+CL	Marmoset	female	2			Chemistry
+CL	Marmoset	female	3	105.0	117.0	Chemistry
+CL	Marmoset	female	4			Chemistry
+CL	Marmoset	male	1			Chemistry
+CL	Marmoset	male	2			Chemistry
+CL	Marmoset	male	3	104.0	116.0	Chemistry
+CL	Marmoset	male	4			Chemistry
+CL	Rhesus	female	1	107.0	115.0	Chemistry
+CL	Rhesus	female	2	104.0	117.0	Chemistry
+CL	Rhesus	female	3	104.0	116.0	Chemistry
+CL	Rhesus	female	4	103.0	115.0	Chemistry
+CL	Rhesus	male	1	105.0	116.0	Chemistry
+CL	Rhesus	male	2	104.0	114.0	Chemistry
+CL	Rhesus	male	3	104.0	114.0	Chemistry
+CL	Rhesus	male	4	105.0	114.0	Chemistry
+CPK	Cynomolgus	female	1			Chemistry
+CPK	Cynomolgus	female	2			Chemistry
+CPK	Cynomolgus	female	3	0.0	1452.0	Chemistry
+CPK	Cynomolgus	female	4			Chemistry
+CPK	Cynomolgus	male	1			Chemistry
+CPK	Cynomolgus	male	2			Chemistry
+CPK	Cynomolgus	male	3	0.0	1189.0	Chemistry
+CPK	Cynomolgus	male	4			Chemistry
+CPK	Marmoset	female	1			Chemistry
+CPK	Marmoset	female	2			Chemistry
+CPK	Marmoset	female	3			Chemistry
+CPK	Marmoset	female	4			Chemistry
+CPK	Marmoset	male	1			Chemistry
+CPK	Marmoset	male	2			Chemistry
+CPK	Marmoset	male	3			Chemistry
+CPK	Marmoset	male	4			Chemistry
+CPK	Rhesus	female	1	0.0	933.0	Chemistry
+CPK	Rhesus	female	2	0.0	1565.0	Chemistry
+CPK	Rhesus	female	3	0.0	815.0	Chemistry
+CPK	Rhesus	female	4	0.0	593.0	Chemistry
+CPK	Rhesus	male	1	0.0	1164.0	Chemistry
+CPK	Rhesus	male	2	0.0	938.0	Chemistry
+CPK	Rhesus	male	3	0.0	326.0	Chemistry
+CPK	Rhesus	male	4	0.0	611.0	Chemistry
+CREAT	Cynomolgus	female	1			Chemistry
+CREAT	Cynomolgus	female	2			Chemistry
+CREAT	Cynomolgus	female	3	0.0	1.0	Chemistry
+CREAT	Cynomolgus	female	4			Chemistry
+CREAT	Cynomolgus	male	1			Chemistry
+CREAT	Cynomolgus	male	2			Chemistry
+CREAT	Cynomolgus	male	3	1.0	1.0	Chemistry
+CREAT	Cynomolgus	male	4			Chemistry
+CREAT	Marmoset	female	1			Chemistry
+CREAT	Marmoset	female	2			Chemistry
+CREAT	Marmoset	female	3	0.0	1.0	Chemistry
+CREAT	Marmoset	female	4			Chemistry
+CREAT	Marmoset	male	1			Chemistry
+CREAT	Marmoset	male	2			Chemistry
+CREAT	Marmoset	male	3	0.0	1.0	Chemistry
+CREAT	Marmoset	male	4			Chemistry
+CREAT	Rhesus	female	1	0.0	1.0	Chemistry
+CREAT	Rhesus	female	2	1.0	1.0	Chemistry
+CREAT	Rhesus	female	3	1.0	1.0	Chemistry
+CREAT	Rhesus	female	4	1.0	1.0	Chemistry
+CREAT	Rhesus	male	1	1.0	1.0	Chemistry
+CREAT	Rhesus	male	2	1.0	1.0	Chemistry
+CREAT	Rhesus	male	3	1.0	2.0	Chemistry
+CREAT	Rhesus	male	4	1.0	1.0	Chemistry
+FE	Cynomolgus	female	1			Chemistry
+FE	Cynomolgus	female	2			Chemistry
+FE	Cynomolgus	female	3	66.0	174.0	Chemistry
+FE	Cynomolgus	female	4			Chemistry
+FE	Cynomolgus	male	1			Chemistry
+FE	Cynomolgus	male	2			Chemistry
+FE	Cynomolgus	male	3	94.0	186.0	Chemistry
+FE	Cynomolgus	male	4			Chemistry
+FE	Marmoset	female	1			Chemistry
+FE	Marmoset	female	2			Chemistry
+FE	Marmoset	female	3	0.0	243.0	Chemistry
+FE	Marmoset	female	4			Chemistry
+FE	Marmoset	male	1			Chemistry
+FE	Marmoset	male	2			Chemistry
+FE	Marmoset	male	3	72.0	178.0	Chemistry
+FE	Marmoset	male	4			Chemistry
+FE	Rhesus	female	1	16.0	199.0	Chemistry
+FE	Rhesus	female	2	48.0	138.0	Chemistry
+FE	Rhesus	female	3	58.0	192.0	Chemistry
+FE	Rhesus	female	4	39.0	180.0	Chemistry
+FE	Rhesus	male	1	44.0	186.0	Chemistry
+FE	Rhesus	male	2	69.0	187.0	Chemistry
+FE	Rhesus	male	3	91.0	209.0	Chemistry
+FE	Rhesus	male	4	76.0	172.0	Chemistry
+GGT	Cynomolgus	female	1			Chemistry
+GGT	Cynomolgus	female	2			Chemistry
+GGT	Cynomolgus	female	3	14.0	88.0	Chemistry
+GGT	Cynomolgus	female	4			Chemistry
+GGT	Cynomolgus	male	1			Chemistry
+GGT	Cynomolgus	male	2			Chemistry
+GGT	Cynomolgus	male	3	28.0	116.0	Chemistry
+GGT	Cynomolgus	male	4			Chemistry
+GGT	Marmoset	female	1			Chemistry
+GGT	Marmoset	female	2			Chemistry
+GGT	Marmoset	female	3	0.0	30.0	Chemistry
+GGT	Marmoset	female	4			Chemistry
+GGT	Marmoset	male	1			Chemistry
+GGT	Marmoset	male	2			Chemistry
+GGT	Marmoset	male	3	0.0	17.0	Chemistry
+GGT	Marmoset	male	4			Chemistry
+GGT	Rhesus	female	1	64.0	146.0	Chemistry
+GGT	Rhesus	female	2	39.0	95.0	Chemistry
+GGT	Rhesus	female	3	23.0	57.0	Chemistry
+GGT	Rhesus	female	4	21.0	57.0	Chemistry
+GGT	Rhesus	male	1	51.0	180.0	Chemistry
+GGT	Rhesus	male	2	47.0	106.0	Chemistry
+GGT	Rhesus	male	3	24.0	81.0	Chemistry
+GGT	Rhesus	male	4	23.0	86.0	Chemistry
+GLUC	Cynomolgus	female	1			Chemistry
+GLUC	Cynomolgus	female	2			Chemistry
+GLUC	Cynomolgus	female	3	36.0	90.0	Chemistry
+GLUC	Cynomolgus	female	4			Chemistry
+GLUC	Cynomolgus	male	1			Chemistry
+GLUC	Cynomolgus	male	2			Chemistry
+GLUC	Cynomolgus	male	3	22.0	80.0	Chemistry
+GLUC	Cynomolgus	male	4			Chemistry
+GLUC	Marmoset	female	1			Chemistry
+GLUC	Marmoset	female	2			Chemistry
+GLUC	Marmoset	female	3	55.0	211.0	Chemistry
+GLUC	Marmoset	female	4			Chemistry
+GLUC	Marmoset	male	1			Chemistry
+GLUC	Marmoset	male	2			Chemistry
+GLUC	Marmoset	male	3	56.0	172.0	Chemistry
+GLUC	Marmoset	male	4			Chemistry
+GLUC	Rhesus	female	1	62.0	132.0	Chemistry
+GLUC	Rhesus	female	2	42.0	110.0	Chemistry
+GLUC	Rhesus	female	3	43.0	97.0	Chemistry
+GLUC	Rhesus	female	4	40.0	108.0	Chemistry
+GLUC	Rhesus	male	1	67.0	125.0	Chemistry
+GLUC	Rhesus	male	2	49.0	105.0	Chemistry
+GLUC	Rhesus	male	3	42.0	97.0	Chemistry
+GLUC	Rhesus	male	4	41.0	97.0	Chemistry
+HCT	Cynomolgus	female	1	32.0	44.0	Hematology
+HCT	Cynomolgus	male	1	34.0	46.0	Hematology
+HCT	Rhesus	female	1	38.0	48.0	Hematology
+HCT	Rhesus	female	2	32.0	45.0	Hematology
+HCT	Rhesus	female	3	36.0	49.0	Hematology
+HCT	Rhesus	female	4	38.0	52.0	Hematology
+HCT	Rhesus	male	1	39.0	46.0	Hematology
+HCT	Rhesus	male	2	35.0	46.0	Hematology
+HCT	Rhesus	male	3	41.0	51.0	Hematology
+HCT	Rhesus	male	4	39.0	52.0	Hematology
+HGB	Cynomolgus	female	1	11.0	14.0	Hematology
+HGB	Cynomolgus	male	1	11.0	15.0	Hematology
+HGB	Rhesus	female	1	12.0	15.0	Hematology
+HGB	Rhesus	female	2	11.0	14.0	Hematology
+HGB	Rhesus	female	3	12.0	16.0	Hematology
+HGB	Rhesus	female	4	12.0	17.0	Hematology
+HGB	Rhesus	male	1	13.0	15.0	Hematology
+HGB	Rhesus	male	2	12.0	15.0	Hematology
+HGB	Rhesus	male	3	13.0	16.0	Hematology
+HGB	Rhesus	male	4	13.0	17.0	Hematology
+K	Cynomolgus	female	1			Chemistry
+K	Cynomolgus	female	2			Chemistry
+K	Cynomolgus	female	3	3.0	4.0	Chemistry
+K	Cynomolgus	female	4			Chemistry
+K	Cynomolgus	male	1			Chemistry
+K	Cynomolgus	male	2			Chemistry
+K	Cynomolgus	male	3	3.0	5.0	Chemistry
+K	Cynomolgus	male	4			Chemistry
+K	Marmoset	female	1			Chemistry
+K	Marmoset	female	2			Chemistry
+K	Marmoset	female	3	3.0	6.0	Chemistry
+K	Marmoset	female	4			Chemistry
+K	Marmoset	male	1			Chemistry
+K	Marmoset	male	2			Chemistry
+K	Marmoset	male	3	3.0	5.0	Chemistry
+K	Marmoset	male	4			Chemistry
+K	Rhesus	female	1	3.0	6.0	Chemistry
+K	Rhesus	female	2	3.0	4.0	Chemistry
+K	Rhesus	female	3	3.0	5.0	Chemistry
+K	Rhesus	female	4	3.0	5.0	Chemistry
+K	Rhesus	male	1	3.0	6.0	Chemistry
+K	Rhesus	male	2	3.0	5.0	Chemistry
+K	Rhesus	male	3	3.0	5.0	Chemistry
+K	Rhesus	male	4	4.0	5.0	Chemistry
+LDH	Cynomolgus	female	1			Chemistry
+LDH	Cynomolgus	female	2			Chemistry
+LDH	Cynomolgus	female	3	68.0	1100.0	Chemistry
+LDH	Cynomolgus	female	4			Chemistry
+LDH	Cynomolgus	male	1			Chemistry
+LDH	Cynomolgus	male	2			Chemistry
+LDH	Cynomolgus	male	3	0.0	1544.0	Chemistry
+LDH	Cynomolgus	male	4			Chemistry
+LDH	Marmoset	female	1			Chemistry
+LDH	Marmoset	female	2			Chemistry
+LDH	Marmoset	female	3	100.0	266.0	Chemistry
+LDH	Marmoset	female	4			Chemistry
+LDH	Marmoset	male	1			Chemistry
+LDH	Marmoset	male	2			Chemistry
+LDH	Marmoset	male	3	103.0	253.0	Chemistry
+LDH	Marmoset	male	4			Chemistry
+LDH	Rhesus	female	1	190.0	542.0	Chemistry
+LDH	Rhesus	female	2	78.0	718.0	Chemistry
+LDH	Rhesus	female	3	45.0	469.0	Chemistry
+LDH	Rhesus	female	4	46.0	636.0	Chemistry
+LDH	Rhesus	male	1	165.0	659.0	Chemistry
+LDH	Rhesus	male	2	180.0	535.0	Chemistry
+LDH	Rhesus	male	3	94.0	503.0	Chemistry
+LDH	Rhesus	male	4	50.0	630.0	Chemistry
+MCH	Cynomolgus	female	1	23.0	26.0	Hematology
+MCH	Cynomolgus	male	1	23.0	27.0	Hematology
+MCH	Rhesus	female	1	22.0	24.0	Hematology
+MCH	Rhesus	female	2	21.0	26.0	Hematology
+MCH	Rhesus	female	3	22.0	26.0	Hematology
+MCH	Rhesus	female	4	21.0	26.0	Hematology
+MCH	Rhesus	male	1	21.0	26.0	Hematology
+MCH	Rhesus	male	2	22.0	25.0	Hematology
+MCH	Rhesus	male	3	23.0	27.0	Hematology
+MCH	Rhesus	male	4	22.0	26.0	Hematology
+MCHC	Cynomolgus	female	1	32.0	34.0	Hematology
+MCHC	Cynomolgus	male	1	32.0	34.0	Hematology
+MCHC	Rhesus	female	1	31.0	33.0	Hematology
+MCHC	Rhesus	female	2	31.0	34.0	Hematology
+MCHC	Rhesus	female	3	30.0	34.0	Hematology
+MCHC	Rhesus	female	4	30.0	34.0	Hematology
+MCHC	Rhesus	male	1	31.0	33.0	Hematology
+MCHC	Rhesus	male	2	31.0	34.0	Hematology
+MCHC	Rhesus	male	3	30.0	34.0	Hematology
+MCHC	Rhesus	male	4	31.0	34.0	Hematology
+MCV	Cynomolgus	female	1	68.0	80.0	Hematology
+MCV	Cynomolgus	male	1	72.0	82.0	Hematology
+MCV	Rhesus	female	1	68.0	76.0	Hematology
+MCV	Rhesus	female	2	67.0	76.0	Hematology
+MCV	Rhesus	female	3	69.0	80.0	Hematology
+MCV	Rhesus	female	4	69.0	81.0	Hematology
+MCV	Rhesus	male	1	68.0	79.0	Hematology
+MCV	Rhesus	male	2	70.0	76.0	Hematology
+MCV	Rhesus	male	3	72.0	84.0	Hematology
+MCV	Rhesus	male	4	70.0	81.0	Hematology
+MPV	Cynomolgus	female	1	8.0	11.0	Hematology
+MPV	Cynomolgus	male	1	8.0	11.0	Hematology
+MPV	Rhesus	female	1	9.0	13.0	Hematology
+MPV	Rhesus	female	2	8.0	13.0	Hematology
+MPV	Rhesus	female	3	8.0	12.0	Hematology
+MPV	Rhesus	female	4	7.0	13.0	Hematology
+MPV	Rhesus	male	1	8.0	12.0	Hematology
+MPV	Rhesus	male	2	8.0	12.0	Hematology
+MPV	Rhesus	male	3	8.0	12.0	Hematology
+MPV	Rhesus	male	4	7.0	11.0	Hematology
+NA	Cynomolgus	female	1			Hematology
+NA	Cynomolgus	female	2			Hematology
+NA	Cynomolgus	female	3	143.0	147.0	Hematology
+NA	Cynomolgus	female	4			Hematology
+NA	Cynomolgus	male	1			Hematology
+NA	Cynomolgus	male	2			Hematology
+NA	Cynomolgus	male	3	143.0	149.0	Hematology
+NA	Cynomolgus	male	4			Hematology
+NA	Marmoset	female	1			Hematology
+NA	Marmoset	female	2			Hematology
+NA	Marmoset	female	3	146.0	154.0	Hematology
+NA	Marmoset	female	4			Hematology
+NA	Marmoset	male	1			Hematology
+NA	Marmoset	male	2			Hematology
+NA	Marmoset	male	3	148.0	157.0	Hematology
+NA	Marmoset	male	4			Hematology
+NA	Rhesus	female	1	140.0	149.0	Hematology
+NA	Rhesus	female	2	141.0	150.0	Hematology
+NA	Rhesus	female	3	141.0	152.0	Hematology
+NA	Rhesus	female	4	140.0	151.0	Hematology
+NA	Rhesus	male	1	141.0	150.0	Hematology
+NA	Rhesus	male	2	140.0	152.0	Hematology
+NA	Rhesus	male	3	142.0	153.0	Hematology
+NA	Rhesus	male	4	143.0	150.0	Hematology
+PHOS	Cynomolgus	female	1			Chemistry
+PHOS	Cynomolgus	female	2			Chemistry
+PHOS	Cynomolgus	female	3	3.0	6.0	Chemistry
+PHOS	Cynomolgus	female	4			Chemistry
+PHOS	Cynomolgus	male	1			Chemistry
+PHOS	Cynomolgus	male	2			Chemistry
+PHOS	Cynomolgus	male	3	4.0	7.0	Chemistry
+PHOS	Cynomolgus	male	4			Chemistry
+PHOS	Marmoset	female	1			Chemistry
+PHOS	Marmoset	female	2			Chemistry
+PHOS	Marmoset	female	3	2.0	7.0	Chemistry
+PHOS	Marmoset	female	4			Chemistry
+PHOS	Marmoset	male	1			Chemistry
+PHOS	Marmoset	male	2			Chemistry
+PHOS	Marmoset	male	3	3.0	6.0	Chemistry
+PHOS	Marmoset	male	4			Chemistry
+PHOS	Rhesus	female	1	5.0	8.0	Chemistry
+PHOS	Rhesus	female	2	3.0	7.0	Chemistry
+PHOS	Rhesus	female	3	2.0	6.0	Chemistry
+PHOS	Rhesus	female	4	2.0	6.0	Chemistry
+PHOS	Rhesus	male	1	5.0	8.0	Chemistry
+PHOS	Rhesus	male	2	4.0	8.0	Chemistry
+PHOS	Rhesus	male	3	2.0	6.0	Chemistry
+PHOS	Rhesus	male	4	3.0	6.0	Chemistry
+PLT	Cynomolgus	female	1	232.0	522.0	Hematology
+PLT	Cynomolgus	male	1	269.0	489.0	Hematology
+PLT	Rhesus	female	1	341.0	678.0	Hematology
+PLT	Rhesus	female	2	277.0	620.0	Hematology
+PLT	Rhesus	female	3	229.0	524.0	Hematology
+PLT	Rhesus	female	4	197.0	482.0	Hematology
+PLT	Rhesus	male	1	333.0	682.0	Hematology
+PLT	Rhesus	male	2	308.0	603.0	Hematology
+PLT	Rhesus	male	3	231.0	491.0	Hematology
+PLT	Rhesus	male	4	236.0	551.0	Hematology
+RBC	Cynomolgus	female	1	4.0	6.0	Hematology
+RBC	Cynomolgus	male	1	4.0	6.0	Hematology
+RBC	Rhesus	female	1	5.0	7.0	Hematology
+RBC	Rhesus	female	2	4.0	6.0	Hematology
+RBC	Rhesus	female	3	5.0	7.0	Hematology
+RBC	Rhesus	female	4	5.0	7.0	Hematology
+RBC	Rhesus	male	1	5.0	6.0	Hematology
+RBC	Rhesus	male	2	5.0	6.0	Hematology
+RBC	Rhesus	male	3	5.0	7.0	Hematology
+RBC	Rhesus	male	4	5.0	7.0	Hematology
+RDW	Cynomolgus	female	1	11.0	13.0	Hematology
+RDW	Cynomolgus	male	1	11.0	13.0	Hematology
+RDW	Rhesus	female	1	11.0	15.0	Hematology
+RDW	Rhesus	female	2	11.0	14.0	Hematology
+RDW	Rhesus	female	3	11.0	15.0	Hematology
+RDW	Rhesus	female	4	11.0	14.0	Hematology
+RDW	Rhesus	male	1	11.0	15.0	Hematology
+RDW	Rhesus	male	2	12.0	14.0	Hematology
+RDW	Rhesus	male	3	11.0	14.0	Hematology
+RDW	Rhesus	male	4	10.0	17.0	Hematology
+SGOT	Cynomolgus	female	1			Chemistry
+SGOT	Cynomolgus	female	2			Chemistry
+SGOT	Cynomolgus	female	3	23.0	63.0	Chemistry
+SGOT	Cynomolgus	female	4			Chemistry
+SGOT	Cynomolgus	male	1			Chemistry
+SGOT	Cynomolgus	male	2			Chemistry
+SGOT	Cynomolgus	male	3	24.0	66.0	Chemistry
+SGOT	Cynomolgus	male	4			Chemistry
+SGOT	Marmoset	female	1			Chemistry
+SGOT	Marmoset	female	2			Chemistry
+SGOT	Marmoset	female	3	68.0	178.0	Chemistry
+SGOT	Marmoset	female	4			Chemistry
+SGOT	Marmoset	male	1			Chemistry
+SGOT	Marmoset	male	2			Chemistry
+SGOT	Marmoset	male	3	89.0	171.0	Chemistry
+SGOT	Marmoset	male	4			Chemistry
+SGOT	Rhesus	female	1	26.0	69.0	Chemistry
+SGOT	Rhesus	female	2	23.0	64.0	Chemistry
+SGOT	Rhesus	female	3	15.0	48.0	Chemistry
+SGOT	Rhesus	female	4	17.0	54.0	Chemistry
+SGOT	Rhesus	male	1	30.0	70.0	Chemistry
+SGOT	Rhesus	male	2	29.0	69.0	Chemistry
+SGOT	Rhesus	male	3	16.0	50.0	Chemistry
+SGOT	Rhesus	male	4	22.0	49.0	Chemistry
+SGPT	Cynomolgus	female	1			Chemistry
+SGPT	Cynomolgus	female	2			Chemistry
+SGPT	Cynomolgus	female	3	13.0	69.0	Chemistry
+SGPT	Cynomolgus	female	4			Chemistry
+SGPT	Cynomolgus	male	1			Chemistry
+SGPT	Cynomolgus	male	2			Chemistry
+SGPT	Cynomolgus	male	3	18.0	54.0	Chemistry
+SGPT	Cynomolgus	male	4			Chemistry
+SGPT	Marmoset	female	1			Chemistry
+SGPT	Marmoset	female	2			Chemistry
+SGPT	Marmoset	female	3	0.0	17.0	Chemistry
+SGPT	Marmoset	female	4			Chemistry
+SGPT	Marmoset	male	1			Chemistry
+SGPT	Marmoset	male	2			Chemistry
+SGPT	Marmoset	male	3	1.0	12.0	Chemistry
+SGPT	Marmoset	male	4			Chemistry
+SGPT	Rhesus	female	1	13.0	39.0	Chemistry
+SGPT	Rhesus	female	2	18.0	45.0	Chemistry
+SGPT	Rhesus	female	3	6.0	48.0	Chemistry
+SGPT	Rhesus	female	4	9.0	54.0	Chemistry
+SGPT	Rhesus	male	1	11.0	45.0	Chemistry
+SGPT	Rhesus	male	2	16.0	51.0	Chemistry
+SGPT	Rhesus	male	3	6.0	64.0	Chemistry
+SGPT	Rhesus	male	4	13.0	63.0	Chemistry
+TB	Cynomolgus	female	1			Chemistry
+TB	Cynomolgus	female	2			Chemistry
+TB	Cynomolgus	female	3	0.0	0.0	Chemistry
+TB	Cynomolgus	female	4			Chemistry
+TB	Cynomolgus	male	1			Chemistry
+TB	Cynomolgus	male	2			Chemistry
+TB	Cynomolgus	male	3	0.0	0.0	Chemistry
+TB	Cynomolgus	male	4			Chemistry
+TB	Marmoset	female	1			Chemistry
+TB	Marmoset	female	2			Chemistry
+TB	Marmoset	female	3	0.0	0.0	Chemistry
+TB	Marmoset	female	4			Chemistry
+TB	Marmoset	male	1			Chemistry
+TB	Marmoset	male	2			Chemistry
+TB	Marmoset	male	3	0.0	1.0	Chemistry
+TB	Marmoset	male	4			Chemistry
+TB	Rhesus	female	1	0.0	0.0	Chemistry
+TB	Rhesus	female	2	0.0	0.0	Chemistry
+TB	Rhesus	female	3	0.0	1.0	Chemistry
+TB	Rhesus	female	4	0.0	0.0	Chemistry
+TB	Rhesus	male	1	0.0	0.0	Chemistry
+TB	Rhesus	male	2	0.0	0.0	Chemistry
+TB	Rhesus	male	3	0.0	0.0	Chemistry
+TB	Rhesus	male	4	0.0	0.0	Chemistry
+TP	Cynomolgus	female	1			Chemistry
+TP	Cynomolgus	female	2			Chemistry
+TP	Cynomolgus	female	3	6.0	8.0	Chemistry
+TP	Cynomolgus	female	4			Chemistry
+TP	Cynomolgus	male	1			Chemistry
+TP	Cynomolgus	male	2			Chemistry
+TP	Cynomolgus	male	3	7.0	8.0	Chemistry
+TP	Cynomolgus	male	4			Chemistry
+TP	Marmoset	female	1			Chemistry
+TP	Marmoset	female	2			Chemistry
+TP	Marmoset	female	3	6.0	9.0	Chemistry
+TP	Marmoset	female	4			Chemistry
+TP	Marmoset	male	1			Chemistry
+TP	Marmoset	male	2			Chemistry
+TP	Marmoset	male	3	7.0	9.0	Chemistry
+TP	Marmoset	male	4			Chemistry
+TP	Rhesus	female	1	6.0	7.0	Chemistry
+TP	Rhesus	female	2	6.0	7.0	Chemistry
+TP	Rhesus	female	3	6.0	8.0	Chemistry
+TP	Rhesus	female	4	6.0	8.0	Chemistry
+TP	Rhesus	male	1	6.0	8.0	Chemistry
+TP	Rhesus	male	2	6.0	7.0	Chemistry
+TP	Rhesus	male	3	7.0	8.0	Chemistry
+TP	Rhesus	male	4	6.0	9.0	Chemistry
+TRIG	Cynomolgus	female	1			Chemistry
+TRIG	Cynomolgus	female	2			Chemistry
+TRIG	Cynomolgus	female	3	0.0	98.0	Chemistry
+TRIG	Cynomolgus	female	4			Chemistry
+TRIG	Cynomolgus	male	1			Chemistry
+TRIG	Cynomolgus	male	2			Chemistry
+TRIG	Cynomolgus	male	3	5.0	121.0	Chemistry
+TRIG	Cynomolgus	male	4			Chemistry
+TRIG	Marmoset	female	1			Chemistry
+TRIG	Marmoset	female	2			Chemistry
+TRIG	Marmoset	female	3	0.0	541.0	Chemistry
+TRIG	Marmoset	female	4			Chemistry
+TRIG	Marmoset	male	1			Chemistry
+TRIG	Marmoset	male	2			Chemistry
+TRIG	Marmoset	male	3	4.0	304.0	Chemistry
+TRIG	Marmoset	male	4			Chemistry
+TRIG	Rhesus	female	1	15.0	68.0	Chemistry
+TRIG	Rhesus	female	2	0.0	96.0	Chemistry
+TRIG	Rhesus	female	3	0.0	164.0	Chemistry
+TRIG	Rhesus	female	4	0.0	385.0	Chemistry
+TRIG	Rhesus	male	1	2.0	92.0	Chemistry
+TRIG	Rhesus	male	2	0.0	128.0	Chemistry
+TRIG	Rhesus	male	3	0.0	119.0	Chemistry
+TRIG	Rhesus	male	4	0.0	305.0	Chemistry
+UA	Marmoset	female	1			Chemistry
+UA	Marmoset	female	2			Chemistry
+UA	Marmoset	female	3			Chemistry
+UA	Marmoset	female	4			Chemistry
+UA	Marmoset	male	1			Chemistry
+UA	Marmoset	male	2			Chemistry
+UA	Marmoset	male	3			Chemistry
+UA	Marmoset	male	4			Chemistry
+WBC	Cynomolgus	female	1	6.0	18.0	Hematology
+WBC	Cynomolgus	male	1	8.0	16.0	Hematology
+WBC	Rhesus	female	1	7.0	21.0	Hematology
+WBC	Rhesus	female	2	4.0	20.0	Hematology
+WBC	Rhesus	female	3	4.0	16.0	Hematology
+WBC	Rhesus	female	4	4.0	13.0	Hematology
+WBC	Rhesus	male	1	7.0	18.0	Hematology
+WBC	Rhesus	male	2	6.0	18.0	Hematology
+WBC	Rhesus	male	3	4.0	12.0	Hematology
+WBC	Rhesus	male	4	4.0	13.0	Hematology

@@ -1,0 +1,30 @@
+testid	name	units	aliases	alertOnAbnormal	alertOnAny	includeInPanel	sort_order
+BANDS	Bands			true	false	true	17
+BD	Bands??	%		true	false	false	
+BD-AB	AB = absolute count??	ths/uL		true	false	false	
+BS	Basophils	%		true	false	true	16
+BS-AB	AB = absolute count??	ths/uL		true	false	false	
+EO	Eosinophils	%		true	false	true	15
+EO-AB	AB = absolute count??	ths/uL		true	false	false	
+GLOB	Globulin	g/dL		true	false	false	
+GLYCOSYLATED HGB	GLYCOSYLATED HGB			true	false	false	
+HCT	Hematocrit	%		true	false	true	4
+LY	Lymphocytes	%		true	false	true	13
+LY-AB	AB = absolute count??	ths/uL		true	false	false	
+MCH	Mean corpuscular hemoglobin	picograms		true	false	true	6
+MCHC	Mean corpuscular hemoglobin concentration	g/dL		true	false	true	7
+MCV	Mean corpuscular volume	fL		true	false	true	5
+METAMYELO	Metamyelocytes	%		true	false	true	18
+MN	Monocytes	%		true	false	true	14
+MN-AB	AB = absolute count??	ths/uL		true	false	false	
+MPV	Mean platelet volume	fl		true	false	true	10
+MYELO	Myelocytes	%		true	false	true	19
+NA	Sodium	mmol/L		true	false	false	
+NE	Neutrophils	%		true	false	true	12
+NE-AB	AB = absolute count??	ths/uL		true	false	false	
+PCV	Packed cell volume	%		true	false	true	11
+PLT	Platelets	ths/uL		true	false	true	9
+RBC	Red Blood Cells	10^6/uL		true	false	true	2
+RDW	Red blood cell distribution width	%		true	false	true	8
+RETICULO	Reticulocytes	%		true	false	true	21
+WBC	White Blood Cells	ths/uL		true	false	true	1

@@ -1,0 +1,18 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="menseCycleLength" tableDbType="NOT_IN_DB">
+                <tableTitle>Estimated Cycle Length</tableTitle>
+                <columns>
+                    <column columnName="previousMens">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="daysSinceLastMens">
+                        <isHidden>true</isHidden>
+                    </column>
+
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -1,0 +1,2185 @@
+<tables xmlns="http://labkey.org/data/xml">
+    <!--TODO: should deprecate-->
+    <table tableName="module_properties" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Admin-configurable properties for setting up the EHR.</description>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="prop_name">
+                <nullable>true</nullable>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="stringvalue">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="floatvalue">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="snomed_tags" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <tableTitle>SNOMED Tags</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>objectid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="Id">
+                <columnTitle>Id</columnTitle>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>Animal</fkTable>
+                    <fkColumnName>Id</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="date">
+
+            </column>
+            <column columnName="recordid">
+                <columnTitle>Record Id</columnTitle>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="set_number">
+                <columnTitle>Set Number</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="code">
+                <columnTitle>SNOMED Code</columnTitle>
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>snomed</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="qualifier">
+                <columnTitle>Qualifier</columnTitle>
+            </column>
+            <column columnName="sort">
+                <columnTitle>Sort Order</columnTitle>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+            </column>
+            <column columnName="taskid">
+                <columnTitle>Task Id</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>tasks</fkTable>
+                    <fkColumnName>taskid</fkColumnName>
+                </fk>
+            </column>
+            <!--<column columnName="qcstate">-->
+                <!--<nullable>true</nullable>-->
+                <!--<fk>-->
+                    <!--<fkDbSchema>study</fkDbSchema>-->
+                    <!--<fkTable>QCState</fkTable>-->
+                    <!--<fkColumnName>rowid</fkColumnName>-->
+                <!--</fk>-->
+            <!--</column>-->
+            <column columnName="parentid">
+                <columnTitle>Parent Id</columnTitle>
+                <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="formsort"/>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+            <column columnName="container">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="created">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modifiedby">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modified">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="tasks" tableDbType="TABLE" useColumnOrder="true">
+        <description>Grouping of records across multiple datasets, associated with a particular data entry form</description>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <tableTitle>Tasks</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>taskid</pkColumnName>
+        <columns>
+            <column columnName="taskid">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="rowid">
+                <shownInInsertView>true</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+            </column>
+            <column columnName="title">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="billingtype">
+                <columnTitle>Billing Type</columnTitle>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>billingtypes</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="formtype">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="category">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="requestid">
+            </column>
+            <column columnName="qcstate">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>QCState</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="assignedto">
+                <columnTitle>Assigned To</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="duedate">
+                <columnTitle>Due Date</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="datecompleted">
+                <nullable>true</nullable>
+                <isUserEditable>false</isUserEditable>
+                <columnTitle>Date Finalized</columnTitle>
+            </column>
+            <column columnName="container">
+            </column>
+            <column columnName="createdby">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="created">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modifiedby">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="modified">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="requests" tableDbType="TABLE" useColumnOrder="true">
+        <description>Request for service of some sort, such as a blood draw. Parent record for the associated dataset rows.</description>
+        <tableTitle>Requests</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <pkColumnName>requestid</pkColumnName>
+        <columns>
+            <column columnName="requestid">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+            </column>
+            <column columnName="title">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="notify1">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>PrincipalsWithoutAdmin</fkTable>
+                    <fkColumnName>userid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="notify2">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>PrincipalsWithoutAdmin</fkTable>
+                    <fkColumnName>userid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="notify3">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>PrincipalsWithoutAdmin</fkTable>
+                    <fkColumnName>userid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="sendemail">
+                <nullable>true</nullable>
+                <defaultValue>true</defaultValue>
+                <columnTitle>Send Email On Complete?</columnTitle>
+            </column>
+            <column columnName="pi">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="priority">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="formtype">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="daterequested">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="enddate">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="qcstate">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>QCState</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="remark">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="reports" tableDbType="TABLE" useColumnOrder="true">
+        <description>Configuration for the Animal History user interface, with each row representing one of the secondary level tabs</description>
+        <tableTitle>Reports</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="reportname">
+                <columnTitle>Report Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="category">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="reporttype">
+                <columnTitle>Report Type</columnTitle>
+                <nullable>true</nullable>
+                <description>One of: js (a JavaScript function hung from the EHR.reports object), report (R report), or query</description>
+            </column>
+            <column columnName="reporttitle">
+                <columnTitle>Report Title</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="visible">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="sort_order">
+                <columnTitle>Sort Order</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="containerpath">
+                <columnTitle>Container Path</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="schemaname">
+                <columnTitle>Schema Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="queryname">
+                <columnTitle>Query Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="viewname">
+                <columnTitle>View Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="report">
+                <columnTitle>Report Path</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="subjectIdFieldName">
+                <columnTitle>Subject Id Field Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="datefieldname">
+                <columnTitle>Date Field Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="todayonly">
+                <nullable>true</nullable>
+                <columnTitle>By Default, This Query Should Be Filtered To Show Today's Data</columnTitle>
+            </column>
+            <column columnName="queryhaslocation">
+                <nullable>true</nullable>
+                <columnTitle>Query Contains Fields For Room/Cage?</columnTitle>
+            </column>
+            <column columnName="QCStatePublicDataFieldName">
+                <nullable>true</nullable>
+                <columnTitle>QCState PublicData Field Name</columnTitle>
+            </column>
+            <column columnName="jsonConfig">
+                <nullable>true</nullable>
+                <columnTitle>JSON Config</columnTitle>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="reportstatus">
+                <description>Optional, description to be presented to user along with report. Might indicate it's a work in progress, for example.</description>
+            </column>
+        </columns>
+    </table>
+    <table tableName="cage_observations" tableDbType="TABLE" useColumnOrder="true">
+        <description>Observations associated with a whole cage, and not attributable to a single animal, from a specific date/time</description>
+        <tableTitle>Cage Observations</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="date">
+                <nullable>false</nullable>
+                <columnTitle>Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="room">
+                <nullable>false</nullable>
+                <columnTitle>Room</columnTitle>
+            </column>
+            <column columnName="cage">
+                <columnTitle>Cage</columnTitle>
+            </column>
+            <column columnName="feces">
+                <columnTitle>Feces</columnTitle>
+            </column>
+            <column columnName="remark">
+                <columnTitle>Remark</columnTitle>
+                <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="no_observations">
+                <nullable>true</nullable>
+                <columnTitle>Everything Is OK</columnTitle>
+            </column>
+            <column columnName="userid">
+                <columnTitle>UserID</columnTitle>
+                <!--<fk>-->
+                <!--<fkDbSchema>core</fkDbSchema>-->
+                <!--<fkTable>Users</fkTable>-->
+                <!--<fkColumnName>UserId</fkColumnName>-->
+                <!--</fk>-->
+            </column>
+            <column columnName="qcstate">
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>QCState</fkTable>
+                    <fkColumnName>rowid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>ObjectId</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <!--<isKeyField>true</isKeyField>-->
+            </column>
+            <column columnName="rowid">
+                <columnTitle>Key</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <isKeyField>true</isKeyField>
+            </column>
+            <!--<column columnName="ts">-->
+            <!--<columnTitle>Last Changed</columnTitle>-->
+            <!--<shownInInsertView>false</shownInInsertView>-->
+            <!--<shownInUpdateView>false</shownInUpdateView>-->
+            <!--<shownInDetailsView>false</shownInDetailsView>-->
+            <!--<isHidden>true</isHidden>-->
+            <!--</column>-->
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+                <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="parentid">
+                <columnTitle>Parent Id</columnTitle>
+                <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+            </column>
+            <column columnName="taskid">
+                <columnTitle>Task Id</columnTitle>
+                <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+        <pkColumnName>rowid</pkColumnName>
+    </table>
+    <!--TODO: should deprecate-->
+    <table tableName="extracts" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated.</description>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="queryname">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="schemaname">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="containerpath">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="viewname">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="filename">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="columns">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="fieldstohash">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="formtemplates" tableDbType="TABLE" useColumnOrder="true">
+        <description>Templates, tied to a specific data entry form, that users can use to pre-populate common sets of rows and values</description>
+        <tableTitle>Form Templates</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>entityid</pkColumnName>
+        <titleColumn>title</titleColumn>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</tableUrl>
+        <columns>
+            <column columnName="entityid">
+                <!--<isAutoInc>true</isAutoInc>-->
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+            </column>
+            <column columnName="formtype">
+                <columnTitle>Form Type</columnTitle>
+                <!--<fk>-->
+                <!--<fkDbSchema>ehr</fkDbSchema>-->
+                <!--<fkTable>formtypes</fkTable>-->
+                <!--<fkColumnName>formtype</fkColumnName>-->
+                <!--</fk>-->
+            </column>
+            <column columnName="userId">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="title">
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="hidden">
+                <columnTitle>Hidden?</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="notificationrecipients" tableDbType="TABLE" useColumnOrder="true">
+        <description>Subscriptions to specific notification types, to be delivered via email, based on the notification's schedule</description>
+        <tableTitle>Notification Recipients</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="notificationtype">
+                <columnTitle>Notification Type</columnTitle>
+                <nullable>true</nullable>
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>notificationtypes</fkTable>
+                    <fkColumnName>notificationtype</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="recipient">
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>PrincipalsWithoutAdmin</fkTable>
+                    <fkColumnName>userid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="formpanelsections" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
+        <tableTitle>Form Panel Sections</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="destination">
+            </column>
+            <column columnName="formtype">
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>formtypes</fkTable>
+                    <fkColumnName>formtype</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="xtype">
+            </column>
+            <column columnName="sort_order">
+            </column>
+            <column columnName="schemaName">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="queryName">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="title">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="metadatasources">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="buttons">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="initialTemplates">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="configJson">
+                <nullable>true</nullable>
+                <columnTitle>JSON Config</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="formtemplaterecords" tableDbType="TABLE" useColumnOrder="true">
+        <description>Dataset rows that are pre-filled (often only partially) within the context of a user-defined data entry template</description>
+        <tableTitle>Form Template Records</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="templateid">
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>formtemplates</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="storeid">
+            </column>
+            <column columnName="targettemplate">
+                <columnTitle>Target Template</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>formtemplates</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="json">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="notificationtypes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Types of notifications for automated emails to be run on a scheduled basis</description>
+        <tableTitle>Notification Types</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>notificationtype</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</tableUrl>
+        <columns>
+            <column columnName="notificationtype">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="formtypes" tableDbType="TABLE" useColumnOrder="true">
+        <description>Deprecated. Configuration for ExtJS 3-based data entry forms</description>
+        <tableTitle>Form Types</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="formtype">
+            </column>
+            <column columnName="category">
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="permitsSingleIdOnly">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="configjson">
+                <nullable>true</nullable>
+                <columnTitle>JSON Config</columnTitle>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>IACUC Protocols</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>protocol</pkColumnName>
+        <tableUrl>/ehr/protocolDetails.view?protocol=${protocol}</tableUrl>
+        <columns>
+            <column columnName="protocol">
+                <isKeyField>true</isKeyField>
+                <columnTitle>IACUC Protocol</columnTitle>
+            </column>
+            <column columnName="title">
+                <nullable>true</nullable>
+                <columnTitle>Title</columnTitle>
+            </column>
+            <column columnName="inves">
+                <nullable>true</nullable>
+                <columnTitle>Investigator</columnTitle>
+            </column>
+            <column columnName="investigatorId">
+                <columnTitle>Investigator</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="approve">
+                <columnTitle>3-yr Approval Date</columnTitle>
+                <nullable>true</nullable>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="lastAnnualReview">
+                <columnTitle>Date of Last Annual Update</columnTitle>
+                <nullable>true</nullable>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>End Date</columnTitle>
+                <nullable>true</nullable>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="first_approval">
+                <columnTitle>First Approval Date</columnTitle>
+                <nullable>true</nullable>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="project_type">
+                <columnTitle>Type</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="external_id">
+                <columnTitle>External Id</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="ibc_approval_required">
+                <columnTitle>IBC Approval Required?</columnTitle>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="ibc_approval_num">
+                <columnTitle>IBC Approval Number</columnTitle>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="usda_level">
+                <columnTitle>USDA Level</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="last_modification">
+                <columnTitle>Date of Last Modification</columnTitle>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="maxAnimals">
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="container">
+
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diCreatedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diCreated">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diModifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diModified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="project" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Projects</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>project</pkColumnName>
+        <tableUrl>/ehr/projectDetails.view?project=${project}</tableUrl>
+        <columns>
+            <column columnName="project">
+                <isKeyField>true</isKeyField>
+                <columnTitle>Project</columnTitle>
+            </column>
+            <column columnName="name">
+                <columnTitle>Project Name</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="protocol">
+                <columnTitle>IACUC Protocol</columnTitle>
+            </column>
+            <column columnName="account">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="inves">
+                <nullable>true</nullable>
+                <columnTitle>Investigator</columnTitle>
+            </column>
+            <column columnName="investigatorId">
+                <columnTitle>Project Coordinator</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="inves2">
+                <nullable>true</nullable>
+                <columnTitle>Second Investigator</columnTitle>
+            </column>
+            <column columnName="avail">
+                <nullable>true</nullable>
+                <columnTitle>Availability</columnTitle>
+            </column>
+            <column columnName="title">
+                <nullable>true</nullable>
+                <columnTitle>Title</columnTitle>
+            </column>
+            <column columnName="research">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="use_category">
+                <columnTitle>Use Category</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="reqname">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="contact_emails">
+                <columnTitle>Contact Emails</columnTitle>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="startdate">
+                <columnTitle>Start Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>End Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="alwaysavailable">
+                <columnTitle>Is Always Available?</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="projecttype">
+                <columnTitle>Project Type</columnTitle>
+            </column>
+            <column columnName="shortname">
+                <columnTitle>Short Name (Used In Data Entry)</columnTitle>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>false</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+            <column columnName="container">
+
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diCreatedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diCreated">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diModifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diModified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="protocol_counts" tableDbType="TABLE" useColumnOrder="true">
+        <description>Limits for the number of animals approved for an IACUC protocol</description>
+        <tableTitle>NHPs Allowed Per Protocol</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="protocol">
+                <columnTitle>IACUC Protocol</columnTitle>
+            </column>
+            <column columnName="project">
+                <columnTitle>Project</columnTitle>
+            </column>
+            <column columnName="species">
+                <columnTitle>Species</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>species</fkTable>
+                    <fkColumnName>common</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="gender">
+                <columnTitle>Gender</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>gender_codes</fkTable>
+                    <fkColumnName>code</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="allowed">
+                <columnTitle># Animals Allowed</columnTitle>
+            </column>
+            <column columnName="start">
+                <columnTitle>Start Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>End Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="description">
+                <columnTitle>Additional Detail</columnTitle>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="objectid">
+                <columnTitle>Key2</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="protocol_amendments" tableDbType="TABLE" useColumnOrder="true">
+        <description>IACUC protocol and project amendments and renewals</description>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_amendments&amp;rowid=${rowid}</tableUrl>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="protocol">
+                <columnTitle>IACUC Protocol</columnTitle>
+            </column>
+            <column columnName="project">
+                <columnTitle>Project</columnTitle>
+            </column>
+            <column columnName="date">
+                <columnTitle>Amendment Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="submitted">
+                <columnTitle>Submission Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="approved">
+                <columnTitle>Approval Date</columnTitle>
+                <formatString>Date</formatString>
+            </column>
+            <column columnName="comment">
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="objectid">
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
+        <description>Additional EHR-specific information associated with the core.qcstate table</description>
+        <tableTitle>QCState Metadata</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>QCStateLabel</pkColumnName>
+        <columns>
+            <column columnName="QCStateLabel">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="draftData">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="isDeleted">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="isRequest">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="allowFutureDates">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="animal_groups" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Animal Groups</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <tableUrl>/ehr/animalGroupDetails.view?groupId=${rowid}</tableUrl>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="name">
+            </column>
+            <column columnName="date">
+                <columnTitle>Date Created</columnTitle>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>Date Disbanded</columnTitle>
+            </column>
+            <column columnName="purpose"/>
+            <column columnName="comment"/>
+            <column columnName="category">
+                <displayWidth>80</displayWidth>
+            </column>
+            <column columnName="housing" wrappedColumnName="rowid">
+                <columnTitle>Housing</columnTitle>
+                <isUnselectable>true</isUnselectable>
+                <isUserEditable>true</isUserEditable>
+                <displayWidth>200</displayWidth>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>animal_group_housing</fkTable>
+                    <fkColumnName>groupId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="container"/>
+            <column columnName="objectid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diCreatedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diCreated">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="diModifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="diModified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="supplemental_pedigree" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Supplemental Pedigree</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInDetailsView>false</shownInDetailsView>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="Id">
+            </column>
+            <column columnName="gender">
+            </column>
+            <column columnName="dam">
+            </column>
+            <column columnName="sire">
+            </column>
+            <column columnName="birth">
+            </column>
+            <column columnName="acquiredate">
+                <columnTitle>Acquire Date</columnTitle>
+            </column>
+            <column columnName="departdate">
+                <columnTitle>Depart Date</columnTitle>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="kinship" tableDbType="TABLE" useColumnOrder="true">
+        <description>Relatedness of every animal to every other animal in the colony</description>
+        <tableTitle>Kinship</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>SUMMARY</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+            </column>
+            <column columnName="Id">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="Id2">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="coefficient">
+                <nullable>true</nullable>
+                <formatString>##.######</formatString>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="protocolProcedures" tableDbType="TABLE" useColumnOrder="true">
+        <description>Mapping of allowable procedures to IACUC protocols</description>
+        <tableTitle>Allowable Procedures Per Protocol</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="protocol">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="project">
+
+            </column>
+            <column columnName="procedureName">
+                <columnTitle>Procedure Name</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="code">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="startdate">
+                <columnTitle>Start Date</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>End Date</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="allowed">
+                <columnTitle># Allowed</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="frequency">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="daysBetween">
+                <columnTitle>Minimum # of Days Between</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="objectid">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="remark">
+                <columnTitle>Additional Information</columnTitle>
+                <isUserEditable>true</isUserEditable>
+                <isHidden>false</isHidden>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="status" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Status</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>QCStateLabel</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <shownInInsertView>false</shownInInsertView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="label">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="description">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="publicData">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="draftData">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="isDeleted">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="isRequest">
+                <nullable>true</nullable>
+            </column>
+            <column columnName="allowFutureDates">
+                <nullable>true</nullable>
+            </column>
+        </columns>
+    </table>
+    <table tableName="encounter_participants" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Encounter Participants</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="Id">
+                <columnTitle>Id</columnTitle>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>Animal</fkTable>
+                    <fkColumnName>Id</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="userid">
+                <columnTitle>User Id</columnTitle>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>UserId</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="username">
+                <columnTitle>User Name</columnTitle>
+                <inputType>textfield</inputType>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>Users</fkTable>
+                    <fkColumnName>DisplayName</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="role">
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>encounter_roles</fkTable>
+                    <fkColumnName>value</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="parentid">
+                <columnTitle>Encounter Id</columnTitle>
+            </column>
+            <column columnName="taskid">
+                <columnTitle>Task Id</columnTitle>
+            </column>
+            <column columnName="comment"/>
+            <column columnName="objectid">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="formsort"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="scheduled_task_types" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Scheduled Task Types</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <columns>
+            <column columnName="tasktype"/>
+            <column columnName="container"/>
+        </columns>
+    </table>
+    <table tableName="scheduled_tasks" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Scheduled Tasks</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="taskid"/>
+            <column columnName="tasktype"/>
+            <column columnName="date"/>
+            <column columnName="enddate"/>
+            <column columnName="frequency"/>
+            <column columnName="id"/>
+            <column columnName="location"/>
+            <column columnName="description"/>
+            <column columnName="json"/>
+            <column columnName="objectid"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="encounter_flags" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Encounter Flags</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="Id">
+                <columnTitle>Id</columnTitle>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>Animal</fkTable>
+                    <fkColumnName>Id</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="date"/>
+            <column columnName="parentid"/>
+            <column columnName="schemaName"/>
+            <column columnName="queryName"/>
+            <column columnName="flag"/>
+            <column columnName="value"/>
+            <column columnName="remark"/>
+            <column columnName="objectid"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="encounter_summaries" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Encounter Summaries</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="Id">
+                <columnTitle>Id</columnTitle>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>Animal</fkTable>
+                    <fkColumnName>Id</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="date"/>
+            <column columnName="category">
+                <columnTitle>Category</columnTitle>
+            </column>
+            <column columnName="parentid"/>
+            <column columnName="taskid">
+                <columnTitle>Task Id</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr</fkDbSchema>
+                    <fkTable>tasks</fkTable>
+                    <fkColumnName>taskid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="schemaName">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="queryName">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="remark"/>
+            <column columnName="objectid"/>
+            <column columnName="formsort"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="treatment_times" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Treatment Times</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="treatmentid">
+                <columnTitle>Treatment Id</columnTitle>
+                <fk>
+                    <fkDbSchema>study</fkDbSchema>
+                    <fkTable>Treatment Orders</fkTable>
+                    <fkColumnName>objectid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="time"/>
+            <column columnName="objectid"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="protocolexemptions" tableDbType="TABLE" useColumnOrder="true">
+        <description>Exemptions from normal requirements for individual IACUS (described in free text)</description>
+        <tableTitle>Protocol Exemptions</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="protocol">
+                <nullable>false</nullable>
+            </column>
+            <column columnName="project">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="exemption">
+                <columnTitle>Exemption</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="startdate">
+                <columnTitle>Start Date</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="enddate">
+                <columnTitle>End Date</columnTitle>
+                <nullable>true</nullable>
+            </column>
+            <column columnName="remark">
+                <columnTitle>Remark</columnTitle>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="container">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="institutions" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Institutions</tableTitle>
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <columns>
+            <column columnName="id"/>
+            <column columnName="name"/>
+            <column columnName="abbreviation"/>
+            <column columnName="city"/>
+            <column columnName="state"/>
+            <column columnName="country"/>
+            <column columnName="affiliate"/>
+            <column columnName="web_site"/>
+            <column columnName="fileStatus"/>
+            <column columnName="recordClass"/>
+            <column columnName="objectid"/>
+            <column columnName="container"/>
+            <column columnName="createdby"/>
+            <column columnName="created"/>
+            <column columnName="modifiedby"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableDbType="TABLE" tableName="observation_types">
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="value">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="category"/>
+            <column columnName="editorconfig"/>
+            <column columnName="schemaName">
+                <description>Schema Name To Be Used In Validation of Allowable Values</description>
+            </column>
+            <column columnName="queryName">
+                <description>Query Name To Be Used In Validation of Allowable Values</description>
+            </column>
+            <column columnName="valueColumn">
+                <description>The column in the target table that provides the list of alowable values</description>
+            </column>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Container"/>
+        </columns>
+    </table>
+    <table tableDbType="TABLE" tableName="investigators">
+        <columns>
+            <column columnName="rowid"/>
+            <column columnName="firstName"/>
+            <column columnName="lastName"/>
+            <column columnName="position"/>
+            <column columnName="address"/>
+            <column columnName="city"/>
+            <column columnName="state"/>
+            <column columnName="country"/>
+            <column columnName="zip"/>
+            <column columnName="phoneNumber"/>
+            <column columnName="investigatorType"/>
+            <column columnName="emailAddress"/>
+            <column columnName="dateCreated"/>
+            <column columnName="dateDisabled"/>
+            <column columnName="division"/>
+            <column columnName="userid"/>
+            <column columnName="Lsid"/>
+            <column columnName="financialanalyst"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Container"/>
+        </columns>
+    </table>
+</tables>

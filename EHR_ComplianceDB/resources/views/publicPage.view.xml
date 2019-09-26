@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Compliance/Training Public Page">
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+        <dependency path="LDK/LDKApi"/>
+    </dependencies>
+</view>

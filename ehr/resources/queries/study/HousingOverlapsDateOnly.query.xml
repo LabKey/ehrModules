@@ -1,0 +1,48 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="HousingOverlapsDateOnly" tableDbType="TABLE">
+                <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+                <tableTitle>Housing Overlaps</tableTitle>
+                <description>This query identifies overlapping housing records, accounting for date only, not date/time</description>
+                <tableUrl />
+                <columns>
+                    <column columnName="lsid">
+                        <isKeyField>true</isKeyField>
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+                <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>ehr.context</includeScript>
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
+
+                    <item text="Grid Views">
+                        <originalText>Grid Views</originalText>
+                    </item>
+                    <item text="Charts">
+                        <originalText>Charts</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <item text="More Actions" insertPosition="end" requiresSelection="true">
+                        <item text="Jump To History">
+                            <onClick>
+                                EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName, 'Housing');
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                EHR.window.GetDistinctWindow.getDistinctHandler(dataRegionName, 'Housing');
+                            </onClick>
+                        </item>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

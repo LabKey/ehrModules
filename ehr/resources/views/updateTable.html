@@ -1,0 +1,65 @@
+<script type="text/javascript">
+//this page reenables the edit UI on a table, using the default LabKey actions
+Ext4.onReady(function (){
+    var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
+    var schema = LABKEY.ActionURL.getParameter('schemaName');
+
+    LABKEY.Query.getQueryDetails({
+        schemaName: schema,
+        queryName: query,
+        success: function(data){
+            if(!data || !data.columns){
+                alert('Problem retrieving query\'s information' + (data.exception ? ': ' + data.exception : ''));
+                console.error(data);
+                return;
+            }
+
+            LABKEY.NavTrail.setTrail(data.title || query);
+
+            var keyFields=[];
+            Ext4.each(data.columns, function(f){
+                if(f.isKeyField){
+                    keyFields.push(f.name);
+                }
+            }, this);
+
+            //var insertURL = '/query/insertQueryRow.view?schemaName='+schema+'&queryName='+query;
+            var importURL = '/query/importData.view?schemaName='+schema+'&query.queryName='+query+'&query.sort=-'+keyFields[0];
+            var deleteURL = '/query/deleteQueryRows.view?schemaName='+schema+'&query.queryName='+query;
+            var updateURL = '/query/updateQueryRow.view?schemaName='+schema+'&queryName='+query;
+            // add PK fields to the update URL
+            Ext4.each(keyFields, function(keyField) {
+                updateURL = updateURL.concat('&'+keyField+'=${'+keyField+'}');
+            })
+
+            var config = {
+                title: query,
+                schemaName: schema,
+                queryName: query,
+                allowChooseQuery: false,
+                allowChooseView: true,
+                showDetailsColumn: true,
+                showUpdateColumn: true,
+                showRecordSelectors: true,
+                buttonBarPosition: 'top',
+                frame: 'none',
+                dataRegionName: 'query',
+                updateURL: updateURL,
+                insertURL: null,
+                importURL: importURL,
+                deleteURL: deleteURL,
+                scope: this,
+                timeout: 0,
+                linkTarget: LABKEY.ActionURL.getParameter('linkTarget') || '_blank',
+                failure: LDK.Utils.getErrorCallback()
+            };
+
+            var webpart = <%=webpartContext%>;
+            new LABKEY.QueryWebPart(config).render(webpart.wrapperDivId);
+        },
+        failure: LDK.Utils.getErrorCallback(),
+        scope: this
+    });
+});
+
+</script>

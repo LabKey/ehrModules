@@ -1,0 +1,428 @@
+<p>
+    This is an admin only page that helps compare study datasets and EHR reports for EHR modules related reference studies.
+    The page starts by looking at projects on your server which have the EHR module enabled. It then attempts to find the
+    EHRStudyContainer, using the project defined module property, so that it can query that study container for the distinct
+    list of datasets, dataset columns, and EHR reports.
+</p>
+
+<h3>EHR Study Containers</h3>
+<div id="ehr-container-list"></div>
+</br>
+<h3>Distinct Datasets</h3>
+<div id="ehr-distinct-datasets"></div>
+</br>
+<h3>Distinct Datasets Columns</h3>
+<div id="ehr-distinct-dataset-shared-config"></div>
+</br>
+<div id="ehr-distinct-dataset-columns"></div>
+</br>
+<h3>Distinct Reports</h3>
+<div id="ehr-distinct-reports"></div>
+
+<script type="text/javascript">
+    Ext4.onReady(function() {
+        var ehrStudyContainers = [];
+
+        function updateEhrProjectList() {
+            var html = '<ul>';
+            Ext4.each(Ext4.Array.pluck(ehrStudyContainers, 'path'), function(path) {
+                html += '<li>' + path + '</li>';
+            });
+            html += '</ul>';
+
+            Ext4.get('ehr-container-list').update(html);
+        }
+
+        function getEhrDistinctDatasets() {
+            var innerSql = '', sep = '';
+            Ext4.each(ehrStudyContainers, function(container) {
+                innerSql += sep + 'SELECT \'' + container.path + '\' AS PRC,'
+                        + 'DataSetId, Name, CategoryId.Label AS Category, DemographicData, KeyPropertyName, ShowByDefault, Type\n'
+                        + 'FROM "' + container.path + '".study.DataSets\n';
+                sep = 'UNION ';
+            });
+
+            new LABKEY.QueryWebPart({
+                renderTo: 'ehr-distinct-datasets',
+                frame: 'none',
+                showRecordSelectors: true,
+                schemaName: 'study',
+                sql: 'SELECT Name,\n' +
+                'GROUP_CONCAT(DISTINCT Category) AS Category,\n' +
+                'MIN(DataSetId) AS DataSetId,\n' +
+                'GROUP_CONCAT(DISTINCT DemographicData) AS DemographicData,\n' +
+                'GROUP_CONCAT(DISTINCT KeyPropertyName) AS KeyPropertyName,\n' +
+                'GROUP_CONCAT(DISTINCT ShowByDefault) AS ShowByDefault,\n' +
+                'GROUP_CONCAT(DISTINCT Type) AS Type,\n' +
+                'COUNT(DISTINCT PRC) AS CountOfPRCs,\n' +
+                'GROUP_CONCAT(PRC) AS PRCs\n' +
+                'FROM (\n' + innerSql + ') x GROUP BY Name',
+                maxRows: 20,
+                buttonBar: {
+                    items:[
+                        LABKEY.QueryWebPart.standardButtons.exportRows,
+                        LABKEY.QueryWebPart.standardButtons.print,
+                        LABKEY.QueryWebPart.standardButtons.pageSize,
+                        {
+                            text: 'Generate Dataset Manifest',
+                            handler: generateDatasetManifest
+                        }
+                    ]
+                }
+            });
+        }
+
+        function codeMirrorWindow(title, content, mode) {
+            var codeMirrorId = Ext4.id();
+
+            var panel = Ext4.create('Ext.panel.Panel', {
+                border: false,
+                html: '<textarea id="' + codeMirrorId + '" wrap="on" rows="40" cols="120" style="width: 100%;"></textarea>'
+            });
+
+            panel.on('afterrender', function() {
+                var codeMirror = CodeMirror.fromTextArea(Ext4.get(codeMirrorId).dom, {
+                    mode: mode,
+                    lineNumbers: true,
+                    lineWrapping: true
+                });
+
+                codeMirror.setSize(null, '550px');
+                codeMirror.setValue(content);
+            });
+
+            var win = Ext4.create('Ext.window.Window', {
+                title: title,
+                modal: true,
+                width: Ext4.getBody().getWidth() * .8,
+                layout: 'fit',
+                border: false,
+                items: [panel],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    items: ['->', {
+                        text: 'Close',
+                        handler: function() {
+                            win.close();
+                        }
+                    }]
+                }]
+            }).show();
+        }
+
+        function generateDatasetManifest(dr) {
+            LABKEY.Query.selectRows({
+                schemaName: dr.schemaName,
+                queryName: dr.queryName,
+                filterArray: dr.getUserFilterArray(),
+                success: function(data) {
+                    var datasetXml = '',
+                            categoryXml = '',
+                            distinctCategories = [];
+
+                    datasetXml = '\t<datasets>\n';
+                    Ext4.each(data.rows, function(row) {
+                        var category = row['Category'][0],
+                                isDemographic = row['DemographicData'][0] == '1',
+                                isHidden = row['ShowByDefault'][0] == '0',
+                                type = row['Type'][0];
+
+                        if (category.indexOf(',') > -1) {
+                            category = '???';
+                        }
+                        if (distinctCategories.indexOf(category) == -1) {
+                            distinctCategories.push(category);
+                        }
+
+                        datasetXml += '\t\t<dataset name="' + row['Name'] + '" id="' + row['DataSetId'] + '"'
+                                + ' category="' + category + '"' + (isDemographic ? ' demographicData="true"' : '')
+                                + ' type="' + type + '"' + (isHidden ? ' showByDefault="false"' : '') + '/>\n';
+                    });
+                    datasetXml += '\t</datasets>\n';
+
+                    categoryXml = '\t<categories>\n';
+                    Ext4.each(distinctCategories.sort(), function(category) {
+                        categoryXml += '\t\t<category>' + category + '</category>\n';
+                    });
+                    categoryXml += '\t</categories>\n';
+
+                    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+                            + '<datasets metaDataFile="datasets_metadata.xml" xmlns="http://labkey.org/study/xml">\n'
+                            + categoryXml
+                            + datasetXml
+                            + '</datasets>';
+
+                    codeMirrorWindow('Dataset Manifest XML', xml, 'application/xml');
+                }
+            });
+        }
+
+        function getEhrDistinctDatasetColumns() {
+            var sharedConfigColumnFilter;
+
+            var sharedConfigFilterCb = Ext4.create('Ext.form.field.Checkbox', {
+                boxLabel: 'Filter out shared config columns:',
+                listeners: {
+                    change: function(cb, checked) {
+                        if (checked) {
+                            sharedConfigColumnFilter = LABKEY.Filter.create('ColumnName', sharedConfigFilterColumns.getValue(), LABKEY.Filter.Types.NOT_IN);
+                            qwp.addFilter(sharedConfigColumnFilter);
+                        }
+                        else if (sharedConfigColumnFilter) {
+                            qwp.removeFilter(sharedConfigColumnFilter);
+                        }
+                    }
+                }
+            });
+
+            var sharedConfigFilterColumns = Ext4.create('Ext.form.field.Text', {
+                hideLabel: true,
+                width: 450,
+                padding: '0 0 0 10px',
+                value: 'taskid;parentid;requestid;enddate;project;performedby;description;remark'
+            });
+
+            Ext4.create('Ext.form.FieldContainer', {
+                renderTo: 'ehr-distinct-dataset-shared-config',
+                layout: 'hbox',
+                width: 750,
+                items: [sharedConfigFilterCb, sharedConfigFilterColumns]
+            });
+
+            var innerSql = '', sep = '';
+            Ext4.each(ehrStudyContainers, function(container) {
+                innerSql += sep + 'SELECT \'' + container.path + '\' AS PRC,'
+                        + 'DataSet.Name AS DataSetName, DataSet.Label AS DataSetLabel,\n'
+                        + 'DataSet.DemographicData AS DemographicData, Name, RangeURI, Hidden\n'
+                        + 'FROM "' + container.path + '".study.DataSetColumns\n';
+                sep = 'UNION ';
+            });
+
+            var qwp = new LABKEY.QueryWebPart({
+                renderTo: 'ehr-distinct-dataset-columns',
+                frame: 'none',
+                showRecordSelectors: true,
+                schemaName: 'study',
+                sql: 'SELECT DataSetName,\n' +
+                'GROUP_CONCAT(DISTINCT DataSetLabel) AS DataSetLabel,\n' +
+                'GROUP_CONCAT(DISTINCT DemographicData) AS DemographicData,\n' +
+                'Name AS ColumnName,\n' +
+                'GROUP_CONCAT(DISTINCT RangeURI) AS RangeURI,\n' +
+                //'GROUP_CONCAT(DISTINCT Hidden) AS Hidden,\n' +
+                'COUNT(*) AS CountOfPRCs,\n' +
+                'GROUP_CONCAT(PRC) AS PRCs\n' +
+                'FROM (\n' + innerSql + ') x GROUP BY DataSetName, Name',
+                maxRows: 20,
+                buttonBar: {
+                    items:[
+                        LABKEY.QueryWebPart.standardButtons.exportRows,
+                        LABKEY.QueryWebPart.standardButtons.print,
+                        LABKEY.QueryWebPart.standardButtons.pageSize,
+                        {
+                            text: 'Generate Dataset Metadata',
+                            handler: function(dr) {
+                                var sharedConfigColnames = [];
+                                if (sharedConfigFilterCb.getValue()) {
+                                    sharedConfigColnames = sharedConfigFilterColumns.getValue().split(';');
+                                }
+
+                                generateDatasetMetadata(dr, sharedConfigColnames);
+                            }
+                        }
+                    ]
+                }
+            });
+        }
+
+        function generateDatasetMetadata(dr, sharedConfigColnames) {
+            LABKEY.Query.selectRows({
+                schemaName: dr.schemaName,
+                queryName: dr.queryName,
+                filterArray: dr.getUserFilterArray(),
+                sort: 'DataSetName,ColumnName',
+                success: function(data) {
+                    var store = Ext4.create('Ext.data.Store', {
+                        fields: [
+                            {name: 'DataSetName'},
+                            {name: 'DataSetLabel'},
+                            {name: 'DemographicData'},
+                            {name: 'ColumnName'},
+                            {name: 'RangeURI'},
+                            //{name: 'Hidden'},
+                            {name: 'CountOfPRCs'},
+                            {name: 'PRCs'}
+                        ]
+                    });
+                    store.loadData(data.rows);
+
+                    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+                            + '<tables xmlns="http://labkey.org/data/xml">\n'
+                            + getSharedConfigXml(sharedConfigColnames);
+
+                    Ext4.each(store.collect('DataSetName'), function(datasetName) {
+                        var firstDatasetRecord = store.findRecord('DataSetName', datasetName);
+                        var isDemographic = firstDatasetRecord.get('DemographicData')[0] == '1';
+                        var datasetLabel = firstDatasetRecord.get('DataSetLabel')[0];
+                        if (datasetLabel.indexOf(',') > -1) {
+                            datasetLabel = '???';
+                        }
+
+                        xml += '\t<table tableName="' + datasetName + '" tableDbType="TABLE">\n'
+                                + '\t\t<tableTitle>' + datasetLabel + '</tableTitle>\n'
+                                + '\t\t<columns>\n'
+                                + getBaseDatasetColumnsXml();
+
+                        Ext4.each(store.query('DataSetName', datasetName).items, function(column) {
+                            var name = column.get('ColumnName'),
+                                    rangeURI = getTypeFromRangeURI(column.get('RangeURI')[0]),
+                                    propertyURI = name.toLowerCase() == 'objectid' ? 'urn:ehr.labkey.org/#ObjectId' : null,
+                                    isKeyField = !isDemographic && name.toLowerCase() == 'objectid';
+
+                            if (sharedConfigColnames.indexOf(name) == -1) {
+                                xml += getDatasetColumnXml(name, rangeURI, propertyURI, isKeyField);
+                            }
+                        });
+
+                        xml += '\t\t</columns>\n'
+                                + '\t</table>\n';
+                    });
+
+                    xml += '</tables>';
+
+                    codeMirrorWindow('Dataset Metadata XML', xml, 'application/xml');
+                }
+            });
+        }
+
+        function getSharedConfigXml(sharedConfigColnames) {
+            if (sharedConfigColnames.length == 0) {
+                return '';
+            }
+
+            return '\t<sharedConfig>\n'
+                    + '\t\t<columns>\n'
+                    + (sharedConfigColnames.indexOf('taskid') > -1 ? getDatasetColumnXml('taskid', 'varchar', 'urn:ehr.labkey.org/#TaskId') : '')
+                    + (sharedConfigColnames.indexOf('parentid') > -1 ? getDatasetColumnXml('parentid', 'varchar', 'urn:ehr.labkey.org/#ParentId') : '')
+                    + (sharedConfigColnames.indexOf('requestid') > -1 ? getDatasetColumnXml('requestid', 'varchar', 'urn:ehr.labkey.org/#RequestId') : '')
+                    + (sharedConfigColnames.indexOf('enddate') > -1 ? getDatasetColumnXml('enddate', 'timestamp', 'urn:ehr.labkey.org/#EndDate') : '')
+                    + (sharedConfigColnames.indexOf('project') > -1 ? getDatasetColumnXml('project', 'integer', 'urn:ehr.labkey.org/#Project') : '')
+                    + (sharedConfigColnames.indexOf('performedby') > -1 ? getDatasetColumnXml('performedby', 'varchar', 'urn:ehr.labkey.org/#PerformedBy') : '')
+                    + (sharedConfigColnames.indexOf('description') > -1 ? getDatasetColumnXml('description', 'varchar', 'urn:ehr.labkey.org/#Description') : '')
+                    + (sharedConfigColnames.indexOf('remark') > -1 ? getDatasetColumnXml('remark', 'varchar', 'urn:ehr.labkey.org/#Remark') : '')
+                    + '\t\t</columns>\n'
+                    + '\t</sharedConfig>\n';
+        }
+
+        function getDatasetColumnXml(name, datatype, propertyURI, isKeyField) {
+            return '\t\t\t<column columnName="' + name + '">\n'
+                    + '\t\t\t\t<datatype>' + datatype + '</datatype>\n'
+                    + (propertyURI ? '\t\t\t\t<propertyURI>' + propertyURI + '</propertyURI>\n' : '')
+                    + (isKeyField ? '\t\t\t\t<isKeyField>true</isKeyField>\n' : '')
+                    + '\t\t\t</column>\n';
+        }
+
+        function getBaseDatasetColumnsXml() {
+            return '\t\t\t<column columnName="Id">\n' +
+                    '\t\t\t\t<datatype>varchar</datatype>\n' +
+                    '\t\t\t\t<propertyURI>http://cpas.labkey.com/Study#ParticipantId</propertyURI>\n' +
+                    '\t\t\t\t<importAliases>\n' +
+                    '\t\t\t\t\t<importAlias>ptid</importAlias>\n' +
+                    '\t\t\t\t</importAliases>\n' +
+                    '\t\t\t</column>\n' +
+                    '\t\t\t<column columnName="date">\n' +
+                    '\t\t\t\t<datatype>timestamp</datatype>\n' +
+                    '\t\t\t\t<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>\n' +
+                    '\t\t\t\t<conceptURI>http://cpas.labkey.com/Study#VisitDate</conceptURI>\n' +
+                    '\t\t\t</column>\n';
+        }
+
+        function getTypeFromRangeURI(rangeURI) {
+            if (rangeURI == 'http://www.w3.org/2001/XMLSchema#string' || rangeURI == 'http://www.w3.org/2001/XMLSchema#multiLine') {
+                return 'varchar';
+            }
+            else if (rangeURI == 'http://www.w3.org/2001/XMLSchema#double') {
+                return 'double';
+            }
+            else if (rangeURI == 'http://www.w3.org/2001/XMLSchema#int') {
+                return 'integer';
+            }
+            else if (rangeURI == 'http://www.w3.org/2001/XMLSchema#dateTime') {
+                return 'timestamp';
+            }
+            else if (rangeURI == 'http://www.w3.org/2001/XMLSchema#boolean') {
+                return 'boolean';
+            }
+
+            return '???';
+        }
+
+        function getEhrDistinctReports() {
+            var innerSql = '', sep = '';
+            Ext4.each(ehrStudyContainers, function(container) {
+                innerSql += sep + 'SELECT \'' + container.path + '\' AS PRC,'
+                        + 'reportname, category, reporttype, reporttitle, visible, schemaname, queryname, viewname\n'
+                        + 'FROM "' + container.path + '".ehr.Reports\n';
+                sep = 'UNION ';
+            });
+
+            new LABKEY.QueryWebPart({
+                renderTo: 'ehr-distinct-reports',
+                frame: 'none',
+                showRecordSelectors: true,
+                schemaName: 'study',
+                sql: 'SELECT reportname AS Name,\n' +
+                    'GROUP_CONCAT(DISTINCT category) AS Category,\n' +
+                    'GROUP_CONCAT(DISTINCT reporttype) AS Type,\n' +
+                    'GROUP_CONCAT(DISTINCT reporttitle) AS Title,\n' +
+                    'GROUP_CONCAT(DISTINCT visible) AS Visible,\n' +
+                    'GROUP_CONCAT(DISTINCT schemaname) AS SchemaName,\n' +
+                    'GROUP_CONCAT(DISTINCT queryname) AS QueryName,\n' +
+                    'GROUP_CONCAT(DISTINCT viewname) AS ViewName,\n' +
+                    'COUNT(DISTINCT PRC) AS CountOfPRCs,\n' +
+                    'GROUP_CONCAT(PRC) AS PRCs\n' +
+                    'FROM (\n' + innerSql + ') x GROUP BY reportname',
+                maxRows: 20,
+                buttonBar: {
+                    items:[
+                        LABKEY.QueryWebPart.standardButtons.exportRows,
+                        LABKEY.QueryWebPart.standardButtons.print,
+                        LABKEY.QueryWebPart.standardButtons.pageSize
+                    ]
+                }
+            });
+        }
+
+        LABKEY.Security.getContainers({
+            containerPath: '/',
+            includeSubfolders: true,
+            includeEffectivePermissions: false,
+            moduleProperties: '*',
+            success: function(result) {
+                Ext4.each(result.children, function(child) {
+                    if (child.activeModules.indexOf('EHR') > -1) {
+                        var ehrStudyContainerProp = Ext4.Array.findBy(child.moduleProperties, function(item){
+                            return item.module == 'EHR' && item.name == 'EHRStudyContainer';
+                        });
+
+                        if (ehrStudyContainerProp.value == child.path) {
+                            ehrStudyContainers.push(child);
+                            updateEhrProjectList();
+                        }
+                        else {
+                            Ext4.each(child.children, function(subfolder) {
+                                ehrStudyContainers.push(subfolder);
+                                updateEhrProjectList();
+                            });
+                        }
+                    }
+                });
+
+                getEhrDistinctDatasets();
+                getEhrDistinctDatasetColumns();
+                getEhrDistinctReports();
+            }
+        });
+    });
+</script>

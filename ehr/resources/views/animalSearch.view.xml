@@ -1,0 +1,7 @@
+<view xmlns="http://labkey.org/data/xml/view">
+    <dependencies>
+        <dependency path="ehr.context" />
+        <dependency path="extWidgets/SearchPanel.js"/>
+        <dependency path="ehr/panel/AnimalSearchPanel.js"/>
+    </dependencies>
+</view>

@@ -1,0 +1,28 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeid"/>
+        <column name="lastName"/>
+        <column name="firstName"/>
+        <column name="email"/>
+        <column name="personid"/>
+        <column name="type"/>
+        <column name="majorudds"/>
+        <column name="title"/>
+        <column name="unit"/>
+        <column name="supervisor"/>
+        <column name="emergencycontact" />
+        <column name="emergencycontactdaytimephone" />
+        <column name="emergencycontactnighttimephone" />
+        <column name="category"/>
+        <column name="location"/>
+        <column name="startdate"/>
+        <column name="enddate"/>
+        <column name="notes"/>
+    </columns>
+    <sorts>
+        <sort column="majorudds" descending="false"/>
+    </sorts>
+    <filters>
+        <filter column="endDateCoalesced" operator="dategte" value="+0d"/>
+    </filters>
+</customView>

@@ -1,0 +1,37 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeid"/>
+        <column name="lastName"/>
+        <column name="firstName"/>
+        <column name="email"/>
+        <column name="title"/>
+        <column name="unit"/>
+        <column name="UsernameStatus/HasUsername">
+            <properties>
+                <property name="columnTitle" value="Has A LabKey Username?"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/EmailExists">
+            <properties>
+                <property name="columnTitle" value="Email Matches Their LabKey Username?"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/SOPAccess">
+            <properties>
+                <property name="columnTitle" value="Has SOP Access?"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/ColonyAccess">
+            <properties>
+                <property name="columnTitle" value="Has Colony Records Access?"/>
+            </properties>
+        </column>
+    </columns>
+    <sorts>
+        <sort column="lastName" descending="false"/>
+        <sort column="firstName" descending="false"/>
+    </sorts>
+    <filters>
+        <filter column="endDateCoalesced" operator="dategte" value="+0d"/>
+    </filters>
+</customView>

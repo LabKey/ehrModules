@@ -1,0 +1,8 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="next30Days" tableDbType="TABLE">
+            </table>
+        </tables>
+    </metadata>
+</query>

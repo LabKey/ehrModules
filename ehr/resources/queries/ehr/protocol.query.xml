@@ -1,0 +1,12 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="protocol" tableDbType="TABLE">
+                <insertUrl />
+                <importUrl />
+                <updateUrl />
+                <deleteUrl />
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view"
+       title="Training">
+    <dependencies>
+        <dependency path="Ext4"/>
+    </dependencies>
+</view>

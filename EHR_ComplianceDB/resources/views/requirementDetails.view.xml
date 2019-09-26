@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Requirement Details" frame="none">
+    <dependencies>
+        <dependency path="Ext4"/>
+        <dependency path="LDK/LDKApi"/>
+    </dependencies>
+</view>

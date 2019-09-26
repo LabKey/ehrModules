@@ -1,0 +1,24 @@
+<module xmlns="http://labkey.org/moduleProperties/xml/">
+    <properties>
+        <propertyDescriptor name="EmployeeContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+            <description>This is the containerPath to the folder holding the primary data for employees and compliance records.  Use of slashes is very important - it should be in the format '/myProject/compliance'</description>
+        </propertyDescriptor>
+        <propertyDescriptor name="EmployeeDefaultView">
+            <canSetPerContainer>true</canSetPerContainer>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+            <description>This is the default view to show on the employees table</description>
+        </propertyDescriptor>
+    </properties>
+    <clientDependencies>
+        <dependency path="clientapi/ext4.lib.xml"/>
+    </clientDependencies>
+    <requiredModuleContext>
+        <requiredModule name="LDK" />
+    </requiredModuleContext>
+</module>

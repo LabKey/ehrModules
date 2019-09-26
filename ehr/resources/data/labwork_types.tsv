@@ -1,0 +1,9 @@
+type	tableName
+Biochemistry	chemistry_tests
+Cytology	cytology_tests
+Hematology	hematology_tests
+Immunology	immunology_tests
+iStat	istat_tests
+Misc Tests	misc_tests
+Urinalysis	urinalysis_tests
+Virology	virology_tests

@@ -1,0 +1,10 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="snomed" tableDbType="TABLE">
+                <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+                <titleColumn>meaning</titleColumn>
+            </table>
+        </tables>
+    </metadata>
+</query>

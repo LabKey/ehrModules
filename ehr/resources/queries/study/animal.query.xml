@@ -1,0 +1,11 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Animal" tableDbType="TABLE">
+                <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+                <columns>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

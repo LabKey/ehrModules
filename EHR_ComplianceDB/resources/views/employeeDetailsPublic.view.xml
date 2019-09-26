@@ -1,0 +1,7 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Employee Details" frame="none">
+    <dependencies>
+        <dependency path="Ext4"/>
+        <dependency path="LDK/LDKApi"/>
+        <dependency path="ehr_compliancedb/panel/EmployeeDetailsPanel.js"/>
+    </dependencies>
+</view>

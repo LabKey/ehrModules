@@ -1,0 +1,32 @@
+testname	units	dataset	alertOnComplete
+CBC		Hematology	false
+Chlamydia trachomatis Detection by NAA		Bacteriology	false
+Chol/HDL Ratio		Chemistry	false
+Culture, Bacterial/Smear		Bacteriology	false
+Culture, Enteric		Bacteriology	false
+Culture, Fungus, Dermal/Smear		Bacteriology	false
+Culture, Other		Bacteriology	false
+Culture, Sterile Fluid/Tissue/Smear		Bacteriology	false
+Culture, Urine		Bacteriology	false
+Culture, Wound/Smear		Bacteriology	false
+Direct Smear for Protozoa		Parasitology	false
+ELISA - HBV		Virology	false
+ELISA - Measles		Virology	false
+ELISA - SIV		Virology	false
+ELISA - SRV		Virology	false
+ELISA - STLV-1		Virology	false
+GIFN for TB detection		Bacteriology	false
+Glycosylated Hemoglobin		Hematology	false
+Isolation - HBV		Virology	false
+Lipid Panel		Chemistry	false
+Mycobacteria Smear and Culture		Bacteriology	false
+Occult Blood		Parasitology	false
+Osmolarity		Chemistry	false
+Ova and Parasite Antigen Panel (EIA)		Parasitology	false
+Ova and Parasite Concentration (Fecal Float)		Parasitology	false
+Ova and Parasite Wet Prep		Parasitology	false
+PCR - Individual Bacterium		Bacteriology	false
+PCR - SRV 1,2,3,4,5		Virology	false
+PCR - STLV-1		Virology	false
+Prothrombin Time (PT) and Activated Partial Thromboplastin Time (APTT)		Chemistry	false
+Vet-19 Chem Panel		Chemistry	false

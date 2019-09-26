@@ -1,0 +1,21 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeid"/>
+        <column name="employeeid/lastName">
+            <properties>
+                <property name="columnTitle" value="Last Name"/>
+            </properties>
+        </column>
+        <column name="employeeid/firstName">
+            <properties>
+                <property name="columnTitle" value="First Name"/>
+            </properties>
+        </column>
+        <column name="requirementname"/>
+    </columns>
+    <sorts>
+        <sort column="employeeid/lastName" descending="false"/>
+        <sort column="employeeid/firstName" descending="false"/>
+        <sort column="requirementname" descending="false"/>
+    </sorts>
+</customView>

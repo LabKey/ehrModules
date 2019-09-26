@@ -1,0 +1,15 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function (){
+        if (!LABKEY.ActionURL.getParameter('employeeid')){
+            alert('Must Provide An Employee Id');
+            return;
+        }
+
+        var webpart = <%=webpartContext%>;
+        Ext4.create('EHR_ComplianceDB.panel.EmployeeDetailsPanel', {
+            employeeId: LABKEY.ActionURL.getParameter('employeeid')
+        }).render(webpart.wrapperDivId);
+    });
+
+</script>

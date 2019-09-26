@@ -1,0 +1,116 @@
+<script type="text/javascript">
+
+Ext4.onReady(function(){
+    var webpart = <%=webpartContext%>;
+    var employeeContainer = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+    if (!employeeContainer){
+        Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+    }
+    else {
+        new LABKEY.QueryWebPart({
+            renderTo: 'summary',
+            dataRegionName: 'summaryQWP',
+            title: 'Summary of Requirements',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'ComplianceRecentTests',
+            viewName: 'Training',
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            allowChooseView: false,
+            showDetailsColumn: false,
+            maxRows: 10
+        });
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'trainingQWP',
+            dataRegionName: 'trainingQWP',
+            title: 'Manage Training Requirements',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'completionDates',
+            viewName: 'Training',
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            allowChooseView: false,
+            showDetailsColumn: false,
+            maxRows: 10,
+            buttonBar: {
+                includeStandardButtons: true,
+                items:[
+                  'Import Data'
+                ]
+            }
+        });
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'employeeQWP',
+            dataRegionName: 'employeeQWP',
+            title: 'List of Staff',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'employees',
+            viewName: 'No Personal Info',
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showUpdateColumn: false,
+            showDetailsColumn: false,
+            allowChooseQuery: false,
+            allowChooseView: false,
+            maxRows: 10
+        });
+    }
+});
+</script>
+<ul>
+<li>
+    This page provides a mechanism for trainers to directly enter the dates that staff complete training requirements.
+</li>
+<br>
+<li>
+    Below are three grids.  The top grid displays a summary of each employee, the requirements they need to complete, and the last date they completed it.
+</li>
+<br>
+<li>
+    The second grid displays the dates that each employee completed Complaince/Training requirements.  You can import new information using the 'Insert New' button.  Employees must be entered using their employee ID.  This is usually the beginning of their email.
+</li>
+<br>
+<li>
+    At the bottom of this page there is a list of all employees, including their employee ID.  This can be used to look up an employee ID if you do not know it.
+</li>
+<br>
+<li>
+    All grids can be sorted and filtered by clicking on the column header.
+</li>
+<br>
+<li>
+    If you need to add a new employee record, contact Sandra Boehm <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Issue_Tracker/list.view?" target="new">here</a>
+</li>
+<br>
+</ul>
+<br>
+<p/>
+
+<h3>Navigation:</h3>
+<ul>
+<li>
+    <a href="#summary">List of the requirements that each employee needs to complete</a>
+</li>
+<li>
+    <a href="#trainingQWP">List of the dates that employees completed requirements</a>
+</li>
+<li>
+    <a href="#employeeQWP">Employee List and Employee Information</a>
+</li>
+</ul>
+
+<br>
+<div id="trainingQWP">Training</div>
+<br>
+<div id="employeeQWP">Employees</div>
+<br>
+<div id="summary">Summary</div>

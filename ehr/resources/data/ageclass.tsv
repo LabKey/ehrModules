@@ -1,0 +1,10 @@
+species	ageclass	min	max	rowid
+Marmoset	3	2.0	8.0	1
+Marmoset	4	8.0		2
+Marmoset	1	0.0	1.0	3
+Marmoset	2	1.0	2.0	4
+Rhesus	2	1.0	4.0	5
+Rhesus	1	0.0	1.0	6
+Rhesus	3	4.0	20.0	7
+Rhesus	4	20.0		8
+Cynomolgus	3	5.0		9

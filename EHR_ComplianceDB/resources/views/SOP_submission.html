@@ -1,0 +1,224 @@
+<script type="text/javascript">
+
+Ext4.onReady(function(){
+    var webpart = <%=webpartContext%>;
+    var employeeContainer = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+    if (!employeeContainer){
+        Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+        return;
+    }
+
+    //we look up this employee's information
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr_compliancedb',
+        queryName: 'Employees',
+        containerPath: employeeContainer,
+        filterArray: [LABKEY.Filter.create('Email', LABKEY.Security.currentUser.email, LABKEY.Filter.Types.EQUAL)],
+        success: onSuccess,
+        timeout: 0
+    });
+
+    var username;
+    function onSuccess(results){
+        if (results.rows.length < 1){
+            alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');
+            return;
+        }
+
+        username = results.rows[0].employeeid;
+        var email = LABKEY.Security.currentUser.email;
+
+        //then we display a list of all their required SOPs
+        new LABKEY.QueryWebPart({
+            renderTo: 'sopDiv',
+            title: 'Unread SOPs (Less Than 10 Months Until Renewal)',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'SOPrequirements',
+            viewName: 'To Read',
+            buttonBarPosition: 'top',
+            buttonBar: {
+               includeStandardButtons: false,
+               items:[
+                 LABKEY.QueryWebPart.standardButtons.views,
+                 LABKEY.QueryWebPart.standardButtons.exportRows,
+                 LABKEY.QueryWebPart.standardButtons.print,
+                 LABKEY.QueryWebPart.standardButtons.pageSize,
+                 {text: 'Mark Read', requiresSelection: true, handler: markRead}
+               ]
+            },
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            filters: [
+                LABKEY.Filter.create('EmployeeId', username, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)
+            ],
+            timeout: 0
+        });
+
+        //then we display a list of all completed required SOPs
+        new LABKEY.QueryWebPart({
+            renderTo: 'sopDiv2',
+            title: 'Dates SOPs Were Last Read',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'SOPDateLastRead',
+            buttonBarPosition: 'top',
+            buttonBar: {
+            	includeStandardButtons: false,
+            	items: [
+            		LABKEY.QueryWebPart.standardButtons.views,
+            		LABKEY.QueryWebPart.standardButtons.exportRows,
+            		LABKEY.QueryWebPart.standardButtons.print,
+            		LABKEY.QueryWebPart.standardButtons.pageSize,
+            		{text: 'Mark Reread', requiresSelection: true, handler: markRead}
+            	]
+            },
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            filters: [
+                LABKEY.Filter.create('EmployeeId', username, LABKEY.Filter.Types.EQUAL)
+            ],
+            timeout: 0
+        });
+
+        //we find remaining SOPs
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr_compliancedb',
+            queryName: 'SOPrequirements',
+            viewName: 'To Read Standard',
+            containerPath: employeeContainer,
+            filterArray: [
+                LABKEY.Filter.create('employeeid', username, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)
+            ],
+            scope: this,
+            success: function(data){
+                //here is simple JS to make the form
+                var theForm = document.getElementById('SOPform');
+                var submit = document.getElementById("SOPsubmitButton");
+
+                if (data.rows.length == 0)
+                    submit.disabled = false;
+                else
+                    submit.disabled = true;
+                submit.onclick = submitRequest
+            },
+            timeout: 0
+        });
+    }
+
+    function markRead(dataRegion) {
+        var checked = LABKEY.DataRegions[dataRegion.name].getChecked();
+        if (!checked.length)
+            return;
+
+        Ext4.Msg.wait("Loading...");
+        var rows = [];
+        for (var i=0;i<checked.length;i++){
+            rows.push({
+                SOPID: checked[i],
+                EmployeeId: username,
+                Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
+            });
+        }
+
+        LABKEY.Query.insertRows({
+             containerPath: employeeContainer,
+             schemaName: 'ehr_compliancedb',
+             queryName: 'SOPDates',
+             rows: rows,
+             scope: this,
+             failure: function(errorInfo) {
+                Ext4.Msg.hide();
+                Ext4.Msg.alert("Error: please contact the site admin");
+                console.error(errorInfo)
+             },
+             success: function(){
+                dataRegion.selectNone();
+                Ext4.Msg.hide();
+                window.location.reload();
+             }
+        });
+    }
+ 
+    function submitRequest(dataRegion, dataRegionName) {
+        if (!document.getElementById('sopCheck').checked){
+            alert('You must check the box above the submit button to certify you have read your SOPs');
+            return false;
+        }
+
+        if(!username){
+            return;
+        }
+
+        LABKEY.Query.insertRows({
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
+            queryName: 'CompletionDates',
+            scope: this,
+            rows: [{
+                RequirementName: 'SOP REVIEW-ANNUAL',
+                EmployeeId: username,
+                Date: Ext4.util.Format.date(new Date(), 'Y-m-d')
+            }],
+            success: function(){
+                Ext4.Msg.alert('SOPs Complete', 'Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.', function(){
+                    window.location = LABKEY.ActionURL.buildURL('project', 'begin.view', 'home');
+                }, this);
+            },
+            failure: function(errorInfo){
+                alert("Error: please contact the site admin");
+                console.error(errorInfo);
+            }
+        });
+    }
+});
+
+</script>
+
+<p>
+<ul>
+    <li>
+        Below is a list of the SOPs you are required to read, based on your position at the center.  Each SOP must be read every 12 months.  The 'Months Until Renewal' column indicates how soon you must re-read each SOP.
+    </li>
+<br>
+    <li>
+        To download an SOP, click the PDF icon in the PDF column.
+    </li>
+<br>
+    <li>
+        Once you have read an SOP, check the box next to it (far left) and hit the 'Mark Read' button at the top of the grid.  Today's date should now appear next to this SOP, indicating that you have read it.  Note that once you mark an SOP read, it will move to the bottom 'Completed SOPs' grid.
+    </li>
+<br>
+    <li>
+        <font color="red">IMPORTANT: Once you read all of your SOPs and have marked them as read, you need to check the box next to 'I Certify That I have read all the required SOPs', then hit 'Submit'.  If you do not complete this step, your SOPs will not be marked complete.</font>
+    </li>
+</ul>
+<p/>
+
+<hr>
+
+<br>
+<table border="1" id="SOPform">
+    <tr>
+        <td>
+            I certify that I have read all the required SOPs.
+            <input type="checkbox" id="sopCheck" value="1"/>
+            <p/>
+            <i>**This button will be disabled until all your SOPs have been marked read.</i>
+            <br>
+            <button id="SOPsubmitButton" disabled="disabled">Submit</button>
+            <br>
+
+        </td>
+    </tr>
+</table>
+
+<br><br>
+
+<div id="sopDiv"></div>
+
+<br><br>
+
+<div id="sopDiv2"></div>

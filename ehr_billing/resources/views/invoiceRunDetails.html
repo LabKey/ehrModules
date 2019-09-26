@@ -1,0 +1,139 @@
+
+<div id="invoice-run-details-panel"></div>
+<div id="invoice-run-details-tabpanel"></div>
+
+<script type="text/javascript">
+
+Ext4.onReady(function(){
+    var invoiceRunId = LABKEY.ActionURL.getParameter('invoiceRunId');
+    if (!invoiceRunId){
+        Ext4.Msg.alert('Error', 'Must provide an invoiceId.');
+        return;
+    }
+
+    Ext4.create('LABKEY.ext.DetailsPanel', {
+        renderTo: 'invoice-run-details-panel',
+        showTitle: false,
+        border: false,
+        bodyStyle: 'background-color: transparent;',
+        showBackBtn: false,
+        store: {
+            schemaName: 'ehr_billing',
+            queryName: 'invoiceRuns',
+            filterArray: [
+                LABKEY.Filter.create('objectid', invoiceRunId, LABKEY.Filter.Types.EQUAL)
+            ],
+            listeners: {
+                load: function(store){
+                    var rec = store.getAt(0);
+                    if (!rec)
+                        return;
+
+                    Ext4.create('EHR_Billing.panel.InvoiceDetailsPanel', {
+                        renderTo: 'invoice-run-details-tabpanel',
+                        invoiceRunId: invoiceRunId,
+                        boundRecord: rec
+                    });
+                }
+            }
+        }
+    });
+});
+
+Ext4.define('EHR_Billing.panel.InvoiceDetailsPanel', {
+    extend: 'LABKEY.ext4.BootstrapTabPanel',
+
+    invoiceRunId: null,
+    boundRecord: null,
+
+    border: false,
+    padding: '20px 0 0 0',
+    defaults: {
+        border: false,
+        padding: '10px 0 0 0'
+    },
+
+    initComponent: function(){
+        var startDate = this.boundRecord.get('billingPeriodStart') ? this.boundRecord.get('billingPeriodStart').clearTime() : null;
+        var endDate = this.boundRecord.get('billingPeriodEnd') ? this.boundRecord.get('billingPeriodEnd').clearTime() : null;
+
+        var interval = 0;
+        if (startDate && endDate){
+            interval = endDate.getTime() - startDate.getTime();
+            interval = 1 + Math.round(interval / (1000 * 60 * 60 * 24));
+        }
+
+        this.items = [{
+            title: 'Summary',
+            itemId: 'summaryItems',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoice',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)]
+                }
+            }]
+        },{
+            title: 'Total Charges By Category',
+            itemId: 'totalChargesByCategory',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoiceCategory',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)]
+                }
+            }]
+        },{
+            title: 'Total Charges By Project',
+            itemId: 'totalChargesByProject',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoiceProject',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)]
+                }
+            }]
+        },{
+            title: 'Total Charges By Item',
+            itemId: 'totalChargesByItem',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoiceItem',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)]
+                }
+            }]
+        },{
+            title: 'Total Charges By Account',
+            itemId: 'totalChargesByAccount',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItemsByInvoiceAccount',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)],
+                    sort: 'debitedAccount'
+                }
+            }]
+        },{
+            title: 'All Invoiced Items',
+            itemId: 'allItems',
+            items: [{
+                xtype: 'ldk-querycmp',
+                queryConfig:  {
+                    schemaName: 'ehr_billing',
+                    queryName: 'invoicedItems',
+                    filters: [LABKEY.Filter.create('invoiceId', this.invoiceRunId, LABKEY.Filter.Types.EQUAL)]
+                }
+            }]
+        }];
+
+        this.callParent(arguments);
+    }
+});
+
+</script>

@@ -1,0 +1,12 @@
+meaning	sort_order
+Daily - AM	1
+Daily - Noon	2
+Daily - PM	3
+Daily - Night	4
+Daily - AM/PM	5
+Daily - AM/Night	6
+Daily - AM/PM/Night	7
+Daily - Any Time	8
+Weekly	9
+Monthly	10
+Alternating Days	11

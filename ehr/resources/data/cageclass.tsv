@@ -1,0 +1,9 @@
+requirementset	low	high	sqft	height
+The Guide	0.0	1.5	1.6	30.0
+The Guide	1.5	3.0	3.0	30.0
+The Guide	3.0	10.0	4.3	30.0
+The Guide	10.0	15.0	6.0	32.0
+The Guide	15.0	20.0	8.0	36.0
+The Guide	20.0	25.0	10.0	46.0
+The Guide	25.0	30.0	15.0	46.0
+The Guide	30.0	100.0	25.0	60.0

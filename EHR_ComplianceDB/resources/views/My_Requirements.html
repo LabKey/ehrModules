@@ -1,0 +1,55 @@
+<script type="text/javascript">
+
+Ext4.onReady(function(){
+    var webpart = <%=webpartContext%>;
+
+    var employeeContainer = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+    if (!employeeContainer){
+        Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+        return;
+    }
+
+    Ext4.get(webpart.wrapperDivId).update('This page contains a list of all the compliance and training requirements you need to complete, which is based on your role at the center.  ' +
+        'For each requirement, you will see the last date that it was completed and the number of months until it must be renewed.' +
+        '<p></p><div id="grid_'+webpart.wrapperDivId+'"></div>')
+
+    var userName = LABKEY.Security.currentUser.email;
+
+    //we find this employee's info
+    var employeeStore = Ext4.create('LABKEY.ext4.data.Store', {
+        schemaName: 'ehr_compliancedb',
+        queryName: 'Employees',
+        containerPath: employeeContainer,
+        filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    employeeStore.on('load', loadRequirements);
+    employeeStore.load();
+
+    function loadRequirements()
+    {
+        if (employeeStore.getCount() < 1){
+            alert('No Records Found for user ID: '+userName+'.');
+            return;
+        }
+
+        var employeeRecord = employeeStore.getAt(0);
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'grid_' + webpart.wrapperDivId,
+            frame: 'none',
+            title: 'My Requirements',
+            schemaName: 'ehr_compliancedb',
+            queryName: 'ComplianceRecentTests',
+            containerPath: employeeContainer,
+            filterArray: [LABKEY.Filter.create('employeeid', employeeRecord.get('employeeid'), LABKEY.Filter.Types.EQUAL)],
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showDetailsColumn: false,
+            timeout: 0
+        });
+    }
+});
+</script>

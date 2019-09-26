@@ -1,0 +1,26 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="invoiceRuns" tableDbType="NOT_IN_DB">
+                <tableTitle>Invoice Runs</tableTitle>
+                <columns>
+                    <column columnName="runDate">
+                        <formatString>DateTime</formatString>
+                    </column>
+                    <column columnName="billingPeriodStart">
+                        <formatString>Date</formatString>
+                    </column>
+                    <column columnName="billingPeriodEnd">
+                        <formatString>Date</formatString>
+                    </column>
+                    <column columnName="modified">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="modifiedBy">
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

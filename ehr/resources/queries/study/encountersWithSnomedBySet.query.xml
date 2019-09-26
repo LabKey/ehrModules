@@ -1,0 +1,31 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="encountersWithSnomedBySet" tableDbType="TABLE">
+                <tableTitle>SNOMED Codes</tableTitle>
+                <columns>
+                    <column columnName="codesMeaning">
+                        <columnTitle>SNOMED Codes</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <displayWidth>600</displayWidth>
+                    </column>
+                    <column columnName="codes">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                    </column>
+                    <column columnName="caseno">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                    </column>
+                    <column columnName="date">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                    </column>
+                    <column columnName="set_number">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                    </column>
+                    <column columnName="objectid">
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

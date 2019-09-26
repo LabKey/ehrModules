@@ -1,0 +1,16 @@
+testid	name	units	aliases	alertOnAbnormal	alertOnAny	includeInPanel	sort_order
+BS	Basophils	%		true	false	false	15
+EO	Eosinophils	%		true	false	false	14
+HCT	Hematocrit	%		true	false	false	4
+HGB	Hemoglobin	g/dL		true	false	false	3
+LY	Lymphocytes	%		true	false	false	12
+MCH	Mean Corpuscular Hemoglobin	pg		true	false	false	6
+MCHC	Mean Corpuscular Hemoglobin Concentration	g/dL		true	false	false	7
+MCV	Mean Corpuscular Volume	fL		true	false	false	10
+MN	Monocytes	%		true	false	false	13
+MPV	Mean Platelet Volume	fL		true	false	false	10
+NE	Neutrophils	%		true	false	false	11
+PLT	Platelet	10^3/uL		true	false	false	9
+RBC	Red Blood Cells	10^6/uL		true	false	false	2
+RDW-CV	Red Blood Cell Distribution Width - Coefficient Variation	%		true	false	false	8
+WBC	White Blood Cells	10^3/uL		true	false	false	1
