@@ -1,0 +1,15 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" canOverride="true">
+    <columns>
+        <column name="RowId"/>
+        <column name="Name"/>
+        <column name="runDate"/>
+        <column name="instrument"/>
+        <column name="slope"/>
+        <column name="intercept"/>
+        <column name="rSquared"/>
+        <column name="workbook"/>
+    </columns>
+   <sorts>
+       <sort column="Created" descending="true"/>
+   </sorts>
+</customView>

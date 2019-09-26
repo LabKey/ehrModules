@@ -1,0 +1,15 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" canOverride="true">
+    <columns>
+        <column name="subjectId" />
+        <column name="date" />
+        <column name="category"/>
+        <column name="viralLoad" />
+        <column name="stdDeviation" />
+        <column name="qcflags" />
+        <column name="comments" />
+    </columns>
+    <sorts>
+        <sort column="Run/RowId" />
+        <sort column="well96/addressByRow" />
+    </sorts>
+</customView>

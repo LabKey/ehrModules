@@ -1,0 +1,131 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function() {
+        var webpart = <%=webpartContext%>;
+        Ext4.get(webpart.wrapperDivId).update(
+            '<div id="'+webpart.wrapperDivId+'_details" style="margin-bottom: 10px;"></div>' +
+            '<div id="'+webpart.wrapperDivId+'_graph"></div>' +
+            '<div id="'+webpart.wrapperDivId+'_results" style="margin-bottom: 10px;"></div><br><br>' +
+            '<div id="'+webpart.wrapperDivId+'_resultSummary"></div>'
+        );
+
+        Ext4.create('LDK.panel.DetailsPanel', {
+            title: 'Run Details',
+            store: {
+                type: 'labkey-store',
+                schemaName: LABKEY.page.assay.protocolSchemaName,
+                queryName: 'Runs',
+                viewName: '~~DETAILS~~',
+                filterArray: [
+                    LABKEY.Filter.create('RowId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
+                ]
+            }
+        }).render(webpart.wrapperDivId + '_details');
+
+        LDK.Utils.getReadOnlyQWP({
+            frame: true,
+            title: 'Results',
+            containerPath: Laboratory.Utils.getQueryContainerPath(),
+            schemaName: LABKEY.page.assay.protocolSchemaName,
+            queryName: 'Data',
+            viewName: 'By Row',
+            filterArray: [
+                LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
+            ]
+        }).render(webpart.wrapperDivId + '_results');
+
+        LDK.Utils.getReadOnlyQWP({
+            frame: true,
+            title: 'Result Summary',
+            containerPath: Laboratory.Utils.getQueryContainerPath(),
+            schemaName: LABKEY.page.assay.protocolSchemaName,
+            queryName: 'Viral_Load_Summary',
+            viewName: 'By Row',
+            filterArray: [
+                LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
+            ]
+        }).render(webpart.wrapperDivId + '_resultSummary');
+
+        var runRow;
+        var shouldShowGraph = false;
+        var multi = new LABKEY.MultiRequest();
+        multi.add(LABKEY.Query.selectRows, {
+            schemaName: LABKEY.page.assay.protocolSchemaName,
+            queryName: 'Runs',
+            columns: 'rowid,slope,rSquared,intercept',
+            filterArray: [
+                LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
+            ],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                if (!results.rows || !results.rows.length){
+                    return;
+                }
+
+                runRow = results.rows[0];
+            }
+        });
+
+        multi.add(LABKEY.Query.selectRows, {
+            schemaName: LABKEY.page.assay.protocolSchemaName,
+            queryName: 'StandardCurve',
+            filterArray: [
+                LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('ct', null, LABKEY.Filter.Types.NONBLANK)
+            ],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                if (!results.rows || !results.rows.length){
+                    return;
+                }
+
+                shouldShowGraph = true;
+            }
+        });
+
+        multi.send(function(){
+            if (!runRow || !shouldShowGraph){
+                console.log('will not show graph');
+                return;
+            }
+
+            var cfg = {
+                renderType: 'scatter_plot',
+                style: 'margin-bottom: 10px;margin-top:10px;',
+                width: 600,
+                height: 500,
+                schemaName: LABKEY.page.assay.protocolSchemaName,
+                queryName: 'StandardCurve',
+                userFilters: [
+                    LABKEY.Filter.create('Run', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)
+                ],
+                defaultTitleFn: function() { return 'Standard Curve' },
+                allowShare: false,
+                isDeveloper: false,
+                hideSave: true,
+                autoColumnYName: 'ct',
+                autoColumnXName: 'logInputCopies',
+                allowEditMode: false ,
+                failure: LDK.Utils.getErrorCallback()
+            };
+
+            if (runRow.slope){
+                cfg.curveFit = {
+                    type : 'linear',
+                    points: 10,
+                    min: 0,
+                    max: 7,
+                    params : [runRow.slope, runRow.intercept]
+                }
+            }
+
+            Ext4.create('LABKEY.ext4.GenericChartPanel', cfg).render(webpart.wrapperDivId + '_graph');
+
+//            Ext4.create('LDK.panel.WebpartPanel', {
+//                title: 'Standard Curve',
+//                items: [cfg]
+//            }).render(webpart.wrapperDivId + '_graph');
+        }, this);
+    });
+
+</script>

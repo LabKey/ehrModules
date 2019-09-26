@@ -1,0 +1,7 @@
+<ap:provider xmlns:ap="http://labkey.org/study/assay/xml">
+    <ap:name>Viral Loads</ap:name>
+    <ap:description>Viral Load Assay</ap:description>
+    <ap:requiredModules>
+        <ap:moduleName>Viral_Load_Assay</ap:moduleName>
+    </ap:requiredModules>
+</ap:provider>

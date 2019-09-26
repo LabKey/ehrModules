@@ -1,0 +1,153 @@
+<tables xmlns="http://labkey.org/data/xml">
+    <table tableName="vl_technique" tableDbType="TABLE">
+        <tableTitle>Viral Load Assay Techniques</tableTitle>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <pkColumnName>technique</pkColumnName>
+        <columns>
+            <column columnName="technique">
+            </column>
+        </columns>
+    </table>
+    <table tableName="vl_instrument" tableDbType="TABLE">
+        <tableTitle>Viral Load Assay Instruments</tableTitle>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <pkColumnName>instrument</pkColumnName>
+        <columns>
+            <column columnName="instrument">
+            </column>
+        </columns>
+    </table>
+    <table tableName="assays" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Viral Load Assay Types</tableTitle>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <pkColumnName>assayname</pkColumnName>
+        <columns>
+            <column columnName="assayname">
+                <columnTitle>Assay Name</columnTitle>
+            </column>
+            <column columnName="virus">
+            </column>
+            <column columnName="forwardprimer">
+                <nullable>true</nullable>
+                <columnTitle>Forward Primer</columnTitle>
+            </column>
+            <column columnName="reverseprimer">
+                <nullable>true</nullable>
+                <columnTitle>Reverse Primer</columnTitle>
+            </column>
+            <column columnName="createdby">
+                <!--<isHidden>true</isHidden>-->
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <!--<isHidden>true</isHidden>-->
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="challenge_dates" tableDbType="TABLE" useColumnOrder="true">
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <isUserEditable>false</isUserEditable>
+            </column>
+            <column columnName="subjectname">
+                <columnTitle>Subject Id</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="date">
+                <columnTitle>Challenge Date</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="agent">
+                <columnTitle>Agent</columnTitle>
+                <nullable>false</nullable>
+                <!--<fk>-->
+                <!--<fkDbSchema>viral_load_assay</fkDbSchema>-->
+                <!--<fkTable>assays</fkTable>-->
+                <!--<fkColumnName>assayname</fkColumnName>-->
+                <!--</fk>-->
+            </column>
+            <column columnName="isVaccination">
+                <columnTitle>Is Vaccination?</columnTitle>
+            </column>
+            <column columnName="container">
+            </column>
+            <column columnName="createdby">
+                <!--<isHidden>true</isHidden>-->
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <!--<isHidden>true</isHidden>-->
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+    </table>
+    <table tableName="abi7500_detectors" tableDbType="TABLE">
+        <tableTitle>ABI7500 Detectors</tableTitle>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+            </column>
+            <column columnName="assayName">
+                <fk>
+                    <fkDbSchema>viral_load_assay</fkDbSchema>
+                    <fkTable>assays</fkTable>
+                    <fkColumnName>assayname</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="detector">
+            </column>
+            <column columnName="reporter">
+                <fk>
+                    <fkDbSchema>viral_load_assay</fkDbSchema>
+                    <fkTable>fluors</fkTable>
+                    <fkColumnName>name</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="quencher">
+                <fk>
+                    <fkDbSchema>viral_load_assay</fkDbSchema>
+                    <fkTable>fluors</fkTable>
+                    <fkColumnName>name</fkColumnName>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="fluors" tableDbType="TABLE">
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <pkColumnName>name</pkColumnName>
+        <columns>
+            <column columnName="name">
+            </column>
+        </columns>
+    </table>
+</tables>
