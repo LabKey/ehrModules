@@ -38,7 +38,7 @@ import java.util.Map;
 public class EHRUpgradeCode implements UpgradeCode
 {
     /**
-     * called at 16.20-16.30
+     * called at every bootstrap to initialize the calendar
      */
     @SuppressWarnings({"UnusedDeclaration"})
     public void populateCalendar(final ModuleContext moduleContext)

@@ -10190,7 +10190,7 @@ CREATE TABLE ehr_lookups.calendar (
 );
 
 -- Populate via Java code instead of hard-coding thousands of date rows
-EXEC core.executeJavaUpgradeCode 'populateCalendar';
+EXEC core.executeJavaInitializationCode 'populateCalendar';
 
 DROP INDEX ehr_lookups_set_name_value ON ehr_lookups.lookups;
 
