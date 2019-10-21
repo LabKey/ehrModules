@@ -122,7 +122,6 @@
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>
                         <columnTitle>Status</columnTitle>
-                        <displayWidth>50</displayWidth>
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>
