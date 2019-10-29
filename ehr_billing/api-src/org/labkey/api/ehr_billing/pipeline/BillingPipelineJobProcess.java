@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * One section of an EHR billing implementation that generates the line items of a particular type of changes,
+ * like per-diems or blood draws.
+ */
 public class BillingPipelineJobProcess
 {
     private String _label;
@@ -33,6 +37,13 @@ public class BillingPipelineJobProcess
     private boolean _isMiscCharges = false;
     private TableInfo _miscChargesTableInfo;
 
+    /**
+     *
+     * @param label human-readable description for this source of charges
+     * @param schemaName name of the schema that holds the query to be executed
+     * @param queryName the name of the query that knows how to generate line items for the invoice
+     * @param queryToInvoiceItemColMap mapping of column names from the query above to the column names in the ehr_billing.invoicedItems table
+     */
     public BillingPipelineJobProcess(String label, String schemaName, String queryName, Map<String, String> queryToInvoiceItemColMap)
     {
         _label = label;

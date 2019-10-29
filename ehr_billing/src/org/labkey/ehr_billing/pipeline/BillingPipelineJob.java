@@ -34,6 +34,10 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Drives the background process that calculates invoices based on data already entered and copies it into the
+ * ehr_billing tables like invoicedItems. Intended to be invoked once per billing period under normal usage
+ */
 public class BillingPipelineJob extends PipelineJob implements BillingPipelineJobSupport
 {
     private File _analysisDir;
@@ -88,14 +92,12 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
 
     public Date getStartDate()
     {
-        Date ret = _form.getStartDate() == null ? null : DateUtils.truncate(_form.getStartDate(), Calendar.DATE);
-        return ret;
+        return _form.getStartDate() == null ? null : DateUtils.truncate(_form.getStartDate(), Calendar.DATE);
     }
 
     public Date getEndDate()
     {
-        Date ret = _form.getEndDate() == null ? null : DateUtils.truncate(_form.getEndDate(), Calendar.DATE);
-        return ret;
+        return _form.getEndDate() == null ? null : DateUtils.truncate(_form.getEndDate(), Calendar.DATE);
     }
 
     public String getComment()

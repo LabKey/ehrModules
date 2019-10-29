@@ -7,8 +7,10 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.AbstractTableCustomizer;
 import org.labkey.api.query.ExprColumn;
 
+/** Applies metadata to EHR billing queries, and injects calculated columns via SQL expressions */
 public class EHR_BillingCustomizer extends AbstractTableCustomizer
 {
+    @Override
     public void customize(TableInfo table)
     {
         if (table instanceof AbstractTableInfo)
