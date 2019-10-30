@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * One section of an EHR billing implementation that generates the line items of a particular type of changes,
+ * One section of an EHR billing implementation that generates the line items of a particular type of charges,
  * like per-diems or blood draws.
  */
 public class BillingPipelineJobProcess
