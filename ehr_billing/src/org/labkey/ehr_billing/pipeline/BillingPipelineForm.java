@@ -17,6 +17,7 @@ package org.labkey.ehr_billing.pipeline;
 
 import java.util.Date;
 
+/** Captures user's description of the billing to be performed as part of the requested invoice run. */
 public class BillingPipelineForm
 {
     private String _protocolName;

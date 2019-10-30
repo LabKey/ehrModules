@@ -27,7 +27,7 @@ public class EHR_BillingRole extends AbstractModuleScopedRole
 {
     public EHR_BillingRole()
     {
-        super("EHR Billling", "This role is required in order to import data into Billing tables.",
+        super("EHR Billing", "This role is required in order to import data into Billing tables.",
             EHR_BillingModule.class,
             ReadPermission.class,
             InsertPermission.class,

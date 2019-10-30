@@ -15,7 +15,6 @@
  */
 package org.labkey.ehr_billing.query;
 
-import org.apache.log4j.Logger;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -37,13 +36,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Helper class for EHR Billing trigger scripts
+ * Helper class for EHR Billing trigger scripts. Referenced from JavaScript files to make it easier to do certain
+ * kind of validation work than it would be directly in the JS code.
  */
 public class EHRBillingTriggerHelper
 {
-    private Container _container = null;
-    private User _user = null;
-    private static final Logger _log = Logger.getLogger(EHRBillingTriggerHelper.class);
+    private Container _container;
+    private User _user;
     private Map<Integer, Map<String, Object>> _cachedCharges = new HashMap<>();
 
     public EHRBillingTriggerHelper(int userId, String containerId)
@@ -95,7 +94,7 @@ public class EHRBillingTriggerHelper
             filter.addCondition(FieldKey.fromString("container"), target.getId(), CompareType.EQUAL);
             TableSelector ts = new TableSelector(chargeableItems, PageFlowUtil.set("rowid", "name", "allowscustomunitcost", "allowblankid", "active"), filter, null);
             Map<String, Object>[] ret = ts.getMapArray();
-            if (ret != null && ret.length == 1)
+            if (ret.length == 1)
             {
                 _cachedCharges.put(chargeId, ret[0]);
             }

@@ -28,9 +28,9 @@ import org.labkey.api.security.User;
  */
 public class EHR_BillingUserSchema extends SimpleUserSchema
 {
-    public EHR_BillingUserSchema(String name, @Nullable String description, User user, Container container, DbSchema dbschema)
+    public EHR_BillingUserSchema(String name, User user, Container container)
     {
-        super(name, description, user, container, dbschema);
+        super(name, "Tables shared across billing implementations for multiple centers", user, container, EHR_BillingSchema.getInstance().getSchema());
     }
 
     public enum TableType

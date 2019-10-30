@@ -2,6 +2,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="chargeRates" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Charge Rates</tableTitle>
+        <description>Base rates for a given chargeableItem, for a given item period of validity</description>
         <auditLogging>DETAILED</auditLogging>
         <insertUrl/>
         <columns>
@@ -40,6 +41,7 @@
     </table>
     <table tableName="aliases" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Aliases</tableTitle>
+        <description>Financial accounts that are available to pay or receive charges</description>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid"/>
@@ -114,6 +116,7 @@
     <table tableName="invoiceRuns" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Billing Periods</tableTitle>
+        <description>A run of the billing system, capturing multiple invoices, for a given time period</description>
         <tableUrl>/ehr_billing/invoiceRunDetails.view?invoiceRunId=${objectid}</tableUrl>
         <columns>
             <column columnName="rowId">
@@ -186,6 +189,7 @@
     </table>
     <table tableName="invoicedItems" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Invoiced Items</tableTitle>
+        <description>Individual line items that have been assigned to an invoice</description>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId">
@@ -365,6 +369,7 @@
     <table tableName="miscCharges" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Misc Charges</tableTitle>
+        <description>Charges that are not captured directly from the clinical record but need to be billed, and are typically directly entered by users</description>
         <columns>
             <column columnName="Id">
                 <columnTitle>Id</columnTitle>
@@ -558,6 +563,7 @@
     <table tableName="chargeableItems" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Chargeable Items</tableTitle>
+        <description>Definitions of items (supplies, services, tests, etc) that can be billed</description>
         <insertUrl/>
         <importUrl/>
         <columns>
@@ -625,6 +631,7 @@
     <table tableName="chargeRateExemptions" tableDbType="TABLE" useColumnOrder="true">
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Exemptions to Default Rates</tableTitle>
+        <description>Project-level overrides of rates for specific chargeableItems for a given time period</description>
         <columns>
             <column columnName="rowId"/>
             <column columnName="project">
@@ -714,6 +721,7 @@
     </table>
     <table tableName="invoice" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Invoice</tableTitle>
+        <description>A grouping of charges for a given time period and account</description>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
@@ -750,6 +758,7 @@
     <table tableName="chargeableItemCategories" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Chargeable Item Categories</tableTitle>
         <auditLogging>DETAILED</auditLogging>
+        <description>Groupings into which chargeableItems are classified</description>
         <columns>
             <column columnName="rowId">
                 <columnTitle>Row Id</columnTitle>
@@ -784,6 +793,7 @@
     <table tableName="dataAccess" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Billing Data Read Access</tableTitle>
         <auditLogging>DETAILED</auditLogging>
+        <description>Mapping which controls which non-admin users are allowed to see reports for investigators</description>
         <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="rowid">

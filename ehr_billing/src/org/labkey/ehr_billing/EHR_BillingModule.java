@@ -99,7 +99,7 @@ public class EHR_BillingModule extends SpringModule
         {
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
-                return new EHR_BillingUserSchema(EHR_BillingSchema.NAME, null, schema.getUser(), schema.getContainer(), EHR_BillingSchema.getInstance().getSchema());
+                return new EHR_BillingUserSchema(EHR_BillingSchema.NAME, schema.getUser(), schema.getContainer());
             }
         });
     }

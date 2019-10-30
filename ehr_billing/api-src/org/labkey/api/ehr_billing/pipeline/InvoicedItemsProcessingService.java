@@ -39,6 +39,7 @@ public interface InvoicedItemsProcessingService
         return ServiceRegistry.get().getService(InvoicedItemsProcessingService.class);
     }
 
+    /** @return the inputs to the billing process that are capable of generating charges */
     default List<BillingPipelineJobProcess> getProcessList()
     {
         return Collections.emptyList();
