@@ -30,9 +30,9 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
-import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.TextSearcher;
@@ -54,7 +54,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Category({External.class, ONPRC.class, LabModule.class})
+@Category({External.class, EHR.class, LabModule.class})
 public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 {
     private static final String ASSAY_NAME = "Viral Load Test";
