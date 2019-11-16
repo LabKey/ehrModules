@@ -78,7 +78,6 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
-import org.labkey.api.util.ResultSetUtil;
 import org.labkey.data.xml.ColumnType;
 import org.labkey.data.xml.TableType;
 import org.labkey.data.xml.TablesDocument;
@@ -838,18 +837,13 @@ public class EHRManager
 
                     Set<String> indexNames = new CaseInsensitiveHashSet();
                     DatabaseMetaData meta = realTable.getSchema().getScope().getConnection().getMetaData();
-                    ResultSet rs = null;
-                    try
+
+                    try (ResultSet rs = meta.getIndexInfo(realTable.getSchema().getScope().getDatabaseName(), realTable.getSchema().getName(), tableName, false, false))
                     {
-                        rs = meta.getIndexInfo(realTable.getSchema().getScope().getDatabaseName(), realTable.getSchema().getName(), tableName, false, false);
                         while (rs.next())
                         {
                             indexNames.add(rs.getString("INDEX_NAME"));
                         }
-                    }
-                    finally
-                    {
-                        ResultSetUtil.close(rs);
                     }
 
                     boolean exists = indexNames.contains(indexName);
@@ -1053,18 +1047,12 @@ public class EHRManager
     {
         Set<String> indexNames = new CaseInsensitiveHashSet();
         DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
-        ResultSet rs = null;
-        try
+        try (ResultSet rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false))
         {
-            rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
             while (rs.next())
             {
                 indexNames.add(rs.getString("INDEX_NAME"));
             }
-        }
-        finally
-        {
-            ResultSetUtil.close(rs);
         }
 
         return indexNames.contains(indexName);
@@ -1132,97 +1120,90 @@ public class EHRManager
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
     {
-        TableResultSet results = null;
+        DbSchema expSchema = DbSchema.get(ExpSchema.SCHEMA_NAME);
+        TableInfo propertyDomain = expSchema.getTable("propertydomain");
+        TableInfo propertyDescriptor = expSchema.getTable("propertydescriptor");
 
-        try
+        //find propertyId
+        TableSelector ts = new TableSelector(propertyDescriptor, Collections.singleton("propertyid"), new SimpleFilter(FieldKey.fromString("PropertyURI"), pd.getPropertyURI()), null);
+        Integer[] ids = ts.getArray(Integer.class);
+        if (ids.length == 0)
         {
-            DbSchema expSchema = DbSchema.get(ExpSchema.SCHEMA_NAME);
-            TableInfo propertyDomain = expSchema.getTable("propertydomain");
-            TableInfo propertyDescriptor = expSchema.getTable("propertydescriptor");
+            throw new SQLException("Unknown propertyURI: " + pd.getPropertyURI());
+        }
+        int propertyId = ids[0];
 
-            //find propertyId
-            TableSelector ts = new TableSelector(propertyDescriptor, Collections.singleton("propertyid"), new SimpleFilter(FieldKey.fromString("PropertyURI"), pd.getPropertyURI()), null);
-            Integer[] ids = ts.getArray(Integer.class);
-            if (ids.length == 0)
-            {
-                throw new SQLException("Unknown propertyURI: " + pd.getPropertyURI());
-            }
-            int propertyId = ids[0];
+        //first ensure the propertyURI exists
+        SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name " + (expSchema.getSqlDialect().isPostgreSQL() ? "ilike" : "like") + " ?)", d.getTypeId(), pd.getName());
+        SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
+        List<Integer> oldIds = new ArrayList<>();
 
-            //first ensure the propertyURI exists
-            SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name " + (expSchema.getSqlDialect().isPostgreSQL() ? "ilike" : "like") + " ?)", d.getTypeId(), pd.getName());
-            SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
-            results = selector.getResultSet();
-
-            List<Integer> oldIds = new ArrayList<>();
+        try (TableResultSet results = selector.getResultSet())
+        {
             while (results.next())
             {
                 Map<String, Object> row = results.getRowMap();
-                oldIds.add((Integer)row.get("propertyid"));
+                oldIds.add((Integer) row.get("propertyid"));
             }
+        }
 
-            if (oldIds.size() == 0)
+        if (oldIds.size() == 0)
+        {
+            //this should not happen
+            throw new SQLException("Unexpected: propertyId " + pd.getPropertyURI() + " does not exists for domain: " + d.getTypeURI());
+        }
+
+        if (oldIds.size() == 1 && oldIds.contains(propertyId))
+        {
+            //property ID already correct
+            return;
+        }
+
+        SqlExecutor executor = new SqlExecutor(expSchema);
+
+        if (oldIds.size() == 1)
+        {
+            //only 1 ID, but not using correct propertyURI
+            String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
+            long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.get(0));
+
+            PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(oldIds.get(0));
+            if (toDelete != null)
             {
-                //this should not happen
-                throw new SQLException("Unexpected: propertyId " + pd.getPropertyURI() + " does not exists for domain: " + d.getTypeURI());
+                PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());
+                OntologyManager.deletePropertyDescriptor(toDelete);
             }
+        }
+        else
+        {
+            //if more than 1 row exists, this means we have duplicate property descriptors
+            SQLFragment selectSql = new SQLFragment("select min(sortorder) from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name = ?");
+            SqlSelector ss = new SqlSelector(expSchema.getScope(), selectSql);
+            ResultSet resultSet = ss.getResultSet();
+            Integer minSort = resultSet.getInt(0);
 
-            if (oldIds.size() == 1 && oldIds.contains(propertyId))
+            String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid IN ? AND sortorder = ?";
+            executor.execute(updateSql, propertyId, d.getTypeId(), oldIds, minSort);
+
+            oldIds.remove(propertyId);
+            for (Integer id : oldIds)
             {
-                //property ID already correct
-                return;
-            }
-
-            SqlExecutor executor = new SqlExecutor(expSchema);
-
-            if (oldIds.size() == 1)
-            {
-                //only 1 ID, but not using correct propertyURI
-                String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
-                long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.get(0));
-
-                PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(oldIds.get(0));
+                PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(id);
                 if (toDelete != null)
                 {
                     PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());
                     OntologyManager.deletePropertyDescriptor(toDelete);
                 }
             }
-            else
-            {
-                //if more than 1 row exists, this means we have duplicate property descriptors
-                SQLFragment selectSql = new SQLFragment("select min(sortorder) from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name = ?");
-                SqlSelector ss = new SqlSelector(expSchema.getScope(), selectSql);
-                ResultSet resultSet = ss.getResultSet();
-                Integer minSort = resultSet.getInt(0);
 
-                String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid IN ? AND sortorder = ?";
-                executor.execute(updateSql, propertyId, d.getTypeId(), oldIds, minSort);
-
-                oldIds.remove(propertyId);
-                for (Integer id : oldIds)
-                {
-                    PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(id);
-                    if (toDelete != null)
-                    {
-                        PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());
-                        OntologyManager.deletePropertyDescriptor(toDelete);
-                    }
-                }
-
-                String deleteSql2 = "DELETE FROM exp.propertydomain WHERE propertyid != ? AND domainId = ? AND propertyid IN ? AND sortorder != ?";
-                executor.execute(deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
-            }
-        }
-        finally
-        {
-            ResultSetUtil.close(results);
+            String deleteSql2 = "DELETE FROM exp.propertydomain WHERE propertyid != ? AND domainId = ? AND propertyid IN ? AND sortorder != ?";
+            executor.execute(deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
         }
     }
 
     public Map<String, Map<String, Object>> getAnimalDetails(User u, Container c, String[] animalsIds, Set<String> extraSources)
     {
-        Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> ret = new HashMap<>();
 
         //first the basic information
 

@@ -119,21 +119,25 @@ public class EHRModule extends ExtendedSimpleModule
     public static final String NAME = "EHR";
     public static final String CONTROLLER_NAME = "ehr";
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public double getVersion()
     {
         return 19.30;
     }
 
+    @Override
     public boolean hasScripts()
     {
         return true;
     }
 
+    @Override
     protected void init()
     {
         addController(CONTROLLER_NAME, EHRController.class);
@@ -286,6 +290,7 @@ public class EHRModule extends ExtendedSimpleModule
     {
         DefaultSchema.registerProvider(EHRSchema.EHR_SCHEMANAME, new DefaultSchema.SchemaProvider(this)
         {
+            @Override
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
                 return new EHRUserSchema(schema.getUser(), schema.getContainer(), EHRSchema.getInstance().getSchema());
@@ -294,6 +299,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         DefaultSchema.registerProvider(EHRSchema.EHR_LOOKUPS, new DefaultSchema.SchemaProvider(this)
         {
+            @Override
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
                 return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), EHRSchema.getInstance().getEHRLookupsSchema());
@@ -311,10 +317,9 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public JSONObject getPageContextJson(ContainerUser context)
     {
-        Map<String, Object> ret = new HashMap<>();
         Container c = context.getContainer();
         Map<String, String> map = getDefaultPageContextJson(c);
-        ret.putAll(map);
+        Map<String, Object> ret = new HashMap<>(map);
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
