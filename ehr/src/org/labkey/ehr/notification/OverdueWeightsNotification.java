@@ -31,7 +31,6 @@ import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.util.ResultSetUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,18 +95,16 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
      */
     private void animalsNotWeightedInPast60Days(Container c, User u, StringBuilder msg)
     {
-        Results rs = null;
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
+        filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
+        filter.addCondition(FieldKey.fromString("Id/curLocation/Cage"), null, CompareType.NONBLANK);
 
-        try
+        QueryHelper qh = new QueryHelper(c, u, "study", "Demographics", "Weight Detail");
+
+        try (Results results = qh.select(filter))
         {
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
-            filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
-            filter.addCondition(FieldKey.fromString("Id/curLocation/Cage"), null, CompareType.NONBLANK);
 
-            QueryHelper qh = new QueryHelper(c, u, "study", "Demographics", "Weight Detail");
-            rs = qh.select(filter);
-
-            if (rs.next())
+            if (results.next())
             {
                 msg.append("<b>WARNING: The following animals are in cage locations and have not been weighed in the past 60 days:</b><br>");
                 msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "/executeQuery.view?schemaName=study&query.viewName=By Location&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive&query.Id/curLocation/Cage~isnonblank'>Click here to view them</a><p>\n");
@@ -115,11 +112,11 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                 Map<String, Map<String, Map<String, Object>>> summary = new HashMap<>();
                 do
                 {
-                    String area = rs.getString(FieldKey.fromString("Id/curLocation/Area"));
+                    String area = results.getString(FieldKey.fromString("Id/curLocation/Area"));
                     if (area == null)
                         area = "No Area";
 
-                    String room = rs.getString(FieldKey.fromString("Id/curLocation/Room"));
+                    String room = results.getString(FieldKey.fromString("Id/curLocation/Room"));
                     if (room == null)
                         room = "No Room";
 
@@ -136,14 +133,14 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                         roomNode.put("html", new StringBuilder());
                     }
 
-                    roomNode.put("incomplete", (((Integer)roomNode.get("incomplete")) + 1));
-                    StringBuilder html = (StringBuilder)roomNode.get("html");
-                    html.append("<tr><td>" + appendField("Id/curLocation/cage", rs) + "</td><td>" + appendField("Id", rs) + "</td><td>" + appendField("Id/MostRecentWeight/DaysSinceWeight", rs) + "</td></tr>");
+                    roomNode.put("incomplete", (((Integer) roomNode.get("incomplete")) + 1));
+                    StringBuilder html = (StringBuilder) roomNode.get("html");
+                    html.append("<tr><td>" + appendField("Id/curLocation/cage", results) + "</td><td>" + appendField("Id", results) + "</td><td>" + appendField("Id/MostRecentWeight/DaysSinceWeight", results) + "</td></tr>");
 
                     areaNode.put(room, roomNode);
                     summary.put(area, areaNode);
                 }
-                while (rs.next());
+                while (results.next());
 
                 for (String area : summary.keySet())
                 {
@@ -154,7 +151,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                         Map<String, Object> roomNode = areaNode.get(room);
                         msg.append("Room: " + room + "<br>\n");
                         msg.append("<table border=1><tr><td>Cage</td><td>Id</td><td>Days Since Weight</td></tr>");
-                        msg.append((StringBuilder)roomNode.get("html"));
+                        msg.append((StringBuilder) roomNode.get("html"));
                         msg.append("</table><p>\n");
                     }
                     msg.append("<p>");
@@ -165,10 +162,6 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         catch (SQLException e)
         {
             throw new RuntimeSQLException(e);
-        }
-        finally
-        {
-            ResultSetUtil.close(rs);
         }
     }
 
