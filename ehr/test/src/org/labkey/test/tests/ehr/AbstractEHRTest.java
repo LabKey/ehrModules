@@ -300,22 +300,18 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @Override
     public void doCleanup(boolean afterTest) throws TestTimeoutException
     {
-        try
-        {
-            //note: always delete users from root, which will always exist, even when the test project doesnt
-            log("Deleting EHR users, if they exist");
-
-            log(DATA_ADMIN.getEmail() + ": " + _helper.deleteUserAPI(DATA_ADMIN.getEmail()));
-            log(REQUESTER.getEmail() + ": " + _helper.deleteUserAPI(REQUESTER.getEmail()));
-            log(BASIC_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(BASIC_SUBMITTER.getEmail()));
-            log(REQUEST_ADMIN.getEmail() + ": " + _helper.deleteUserAPI(REQUEST_ADMIN.getEmail()));
-            log(FULL_UPDATER.getEmail() + ": " + _helper.deleteUserAPI(FULL_UPDATER.getEmail()));
-            log(FULL_SUBMITTER.getEmail() + ": " + _helper.deleteUserAPI(FULL_SUBMITTER.getEmail()));
-        }
-        catch (CommandException | IOException e)
-        {
-            log("unable to delete users: " + e.getMessage());
-        }
+        _userHelper.deleteUsers(false,
+                DATA_ADMIN.getEmail(),
+                REQUESTER.getEmail(),
+                BASIC_SUBMITTER.getEmail(),
+                FULL_SUBMITTER.getEmail(),
+                FULL_UPDATER.getEmail(),
+                REQUEST_ADMIN.getEmail(),
+                PATHOLOGY_REPORT.getEmail(),
+                NON_PATHOLOGY_REPORT.getEmail(),
+                INVESTIGATOR.getEmail(),
+                INVESTIGATOR_PRINCIPAL.getEmail()
+        );
 
         try
         {
@@ -623,7 +619,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         enableEmailRecorder();
 
-        _userHelper.createUser(DATA_ADMIN.getEmail(), true, true);
+        _userHelper.createUser(DATA_ADMIN.getEmail(), false);
         _userHelper.createUser(REQUESTER.getEmail(), true, true);
         _userHelper.createUser(BASIC_SUBMITTER.getEmail(), true, true);
         _userHelper.createUser(FULL_SUBMITTER.getEmail(), true, true);
