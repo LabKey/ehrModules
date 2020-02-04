@@ -16,7 +16,14 @@
 package org.labkey.api.ehr_billing.pipeline;
 
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
+import org.labkey.api.pipeline.PipelineJobException;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.services.ServiceRegistry;
 
@@ -58,4 +65,23 @@ public interface InvoicedItemsProcessingService
      * @param invoiceId invoice Run Id for which additional processing can be performed
      */
     void performAdditionalProcessing(String invoiceId, User user, Container container);
+
+    default void verifyBillingRunPeriod(User user, Container container, Date startDate, Date endDate) throws PipelineJobException
+    {
+        // first look for existing records overlapping the provided date range.
+        // so this should not be a problem
+        TableInfo invoiceRunsUser = QueryService.get().getUserSchema(user, container,
+                "ehr_billing").getTable("invoiceRuns", null);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("billingPeriodStart"), endDate, CompareType.DATE_LTE);
+        filter.addCondition(FieldKey.fromString("billingPeriodEnd"), startDate, CompareType.DATE_GTE);
+
+        if (null != invoiceRunsUser)
+        {
+            TableSelector ts = new TableSelector(invoiceRunsUser, filter, null);
+            if (ts.exists())
+            {
+                throw new PipelineJobException("There is already an existing billing period that overlaps the provided interval");
+            }
+        }
+    }
 }

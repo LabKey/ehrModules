@@ -50,6 +50,7 @@ import org.labkey.api.util.FileType;
 import org.labkey.api.util.GUID;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
+import org.labkey.ehr_billing.EHR_BillingUserSchema;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -211,32 +212,23 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             getJob().getLogger().info("Creating invoice run record");
 
-            // first look for existing records overlapping the provided date range.
-            // so this should not be a problem
-            TableInfo invoiceRunsUser = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(),
-                    EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS, null);
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("billingPeriodStart"), getSupport().getEndDate(), CompareType.DATE_LTE);
-            filter.addCondition(FieldKey.fromString("billingPeriodEnd"), getSupport().getStartDate(), CompareType.DATE_GTE);
+            Date startDate = getSupport().getStartDate();
+            Date endDate = getSupport().getEndDate();
 
+            processingService.verifyBillingRunPeriod(getJob().getUser(), getJob().getContainer(), startDate, endDate);
 
-            TableSelector ts = new TableSelector(invoiceRunsUser, filter, null);
-            if (ts.exists())
-            {
-                throw new PipelineJobException("There is already an existing billing period that overlaps the provided interval");
-            }
-
-            if (getSupport().getEndDate().before(getSupport().getStartDate()))
+            if (endDate.before(startDate))
             {
                 throw new PipelineJobException("Cannot create a billing run with an end date before the start date");
             }
 
-            if(getSupport().getEndDate().equals(getSupport().getStartDate()))
+            if(endDate.equals(startDate))
             {
                 throw new PipelineJobException("Cannot create a billing run with the same start and end date");
             }
 
             Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-            if (getSupport().getEndDate().after(today) || getSupport().getEndDate().equals(today))
+            if (endDate.after(today) || endDate.equals(today))
             {
                 throw new PipelineJobException("Cannot create a billing run with an end date in the future");
             }
@@ -244,8 +236,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             TableInfo invoiceRuns = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
 
             Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
-            toCreate.put("billingPeriodStart", getSupport().getStartDate());
-            toCreate.put("billingPeriodEnd", getSupport().getEndDate());
+            toCreate.put("billingPeriodStart", startDate);
+            toCreate.put("billingPeriodEnd", endDate);
             toCreate.put("runDate", new Date());
             toCreate.put("status", "Finalized");
             toCreate.put("comment", getSupport().getComment());
