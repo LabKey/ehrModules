@@ -26,6 +26,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.services.ServiceRegistry;
+import org.labkey.api.util.Pair;
 
 import java.util.Collections;
 import java.util.Date;
@@ -66,7 +67,7 @@ public interface InvoicedItemsProcessingService
      */
     void performAdditionalProcessing(String invoiceId, User user, Container container);
 
-    default void verifyBillingRunPeriod(User user, Container container, Date startDate, Date endDate) throws PipelineJobException
+    default Pair<String,String> verifyBillingRunPeriod(User user, Container container, Date startDate, Date endDate) throws PipelineJobException
     {
         // first look for existing records overlapping the provided date range.
         // so this should not be a problem
@@ -83,5 +84,8 @@ public interface InvoicedItemsProcessingService
                 throw new PipelineJobException("There is already an existing billing period that overlaps the provided interval");
             }
         }
+        return null;
     }
+
+    default void processBillingRerun(String oldInvoiceId, String newInvoiceId, Date billingRunEndDate, User user, Container container) {}
 }

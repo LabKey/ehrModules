@@ -46,8 +46,10 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.Pair;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
 import org.labkey.ehr_billing.EHR_BillingUserSchema;
@@ -132,18 +134,29 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         getJob().getLogger().info("Start date: " + getSupport().getStartDate().toString());
         getJob().getLogger().info("End date: " + getSupport().getEndDate().toString());
 
+        User user = getJob().getUser();
+        Container container = getJob().getContainer();
+
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             getOrCreateInvoiceRunRecord();
             loadTransactionNumber();
-            for (BillingPipelineJobProcess process : processingService.getProcessList())
-            {
-                Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
-                runProcessing(process, billingRunContainer);
-            }
-            updateInvoiceTable(billingContainer);
 
-            processingService.performAdditionalProcessing(_invoiceId, getJob().getUser(), getJob().getContainer());
+            if (null != _previousInvoice)
+            {
+                processingService.processBillingRerun(_previousInvoice.first, _invoiceId, getSupport().getEndDate(), user, billingContainer);
+            }
+            else
+            {
+                for (BillingPipelineJobProcess process : processingService.getProcessList())
+                {
+                    Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
+                    runProcessing(process, billingRunContainer);
+                }
+                updateInvoiceTable(billingContainer);
+
+                processingService.performAdditionalProcessing(_invoiceId, user, container);
+            }
 
             transaction.commit();
         }
@@ -202,6 +215,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     }
 
     private String _invoiceId = null;
+    private Pair<String,String> _previousInvoice = null;
 
     private String getOrCreateInvoiceRunRecord() throws PipelineJobException
     {
@@ -215,7 +229,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Date startDate = getSupport().getStartDate();
             Date endDate = getSupport().getEndDate();
 
-            processingService.verifyBillingRunPeriod(getJob().getUser(), getJob().getContainer(), startDate, endDate);
+            _previousInvoice= processingService.verifyBillingRunPeriod(getJob().getUser(), getJob().getContainer(), startDate, endDate);
 
             if (endDate.before(startDate))
             {
@@ -240,7 +254,10 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             toCreate.put("billingPeriodEnd", endDate);
             toCreate.put("runDate", new Date());
             toCreate.put("status", "Finalized");
-            toCreate.put("comment", getSupport().getComment());
+
+            var runComment = getSupport().getComment();
+            var comment = null != _previousInvoice ?  "Rerun for " + _previousInvoice.second : runComment;
+            toCreate.put("comment", comment);
 
             toCreate.put("container", getJob().getContainer().getId());
             toCreate.put("objectid", new GUID().toString());
@@ -294,7 +311,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
             {
-                CaseInsensitiveHashMap toInsert = new CaseInsensitiveHashMap();
+                Map<String,Object> toInsert = new CaseInsensitiveHashMap<>();
                 toInsert.put("container", getJob().getContainer().getId());
                 toInsert.put("objectId", new GUID());
                 toInsert.put("invoiceId", invoiceId);
@@ -428,7 +445,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Map<String, Object> row = iterator.next();
             String invoiceNumber = (String) row.get("invoiceNumber");
 
-            CaseInsensitiveHashMap toUpdate = new CaseInsensitiveHashMap();
+            Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
 
             for(String col : row.keySet())
             {
@@ -458,8 +475,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         SQLFragment sqlFragment = new SQLFragment();
         sqlFragment.append("SELECT\n");
         sqlFragment.append("invItm.invoiceNumber, sum(totalcost) as invoiceAmount\n");
-        sqlFragment.append("FROM " + EHR_BILLING_SCHEMA.getName() + ".invoicedItems invItm\n");
-        sqlFragment.append("INNER JOIN " + EHR_BILLING_SCHEMA.getName() + ".invoice inv\n");
+        sqlFragment.append("FROM ").append(EHR_BILLING_SCHEMA.getName()).append(".invoicedItems invItm\n");
+        sqlFragment.append("INNER JOIN ").append(EHR_BILLING_SCHEMA.getName()).append(".invoice inv\n");
         sqlFragment.append("ON invItm.invoiceNumber = inv.invoiceNumber\n");
         sqlFragment.append("WHERE invItm.container = ?\n");
         sqlFragment.add(billingContainer.getId());
