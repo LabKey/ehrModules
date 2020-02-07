@@ -144,7 +144,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             if (null != _previousInvoice)
             {
-                processingService.processBillingRerun(_previousInvoice.first, _invoiceId, getSupport().getEndDate(), user, billingContainer);
+                processingService.processBillingRerun(_invoiceId, getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer);
             }
             else
             {
