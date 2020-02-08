@@ -16,6 +16,7 @@
 package org.labkey.ehr_compliancedb;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.ldk.ExtendedSimpleModule;
@@ -45,7 +46,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     }
 
     @Override
-    public double getVersion()
+    public @Nullable Double getSchemaVersion()
     {
         return 12.38;
     }
