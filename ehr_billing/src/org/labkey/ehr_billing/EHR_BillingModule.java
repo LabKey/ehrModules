@@ -17,6 +17,7 @@
 package org.labkey.ehr_billing;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -55,7 +56,7 @@ public class EHR_BillingModule extends SpringModule
     }
 
     @Override
-    public double getVersion()
+    public @Nullable Double getSchemaVersion()
     {
         return 20.000;
     }
