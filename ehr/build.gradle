@@ -2,6 +2,6 @@ import org.labkey.gradle.util.BuildUtils;
 
 dependencies {
    implementation "com.sun.mail:jakarta.mail:${javaMailVersion}"
-   BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiCompile")
-   BuildUtils.addLabKeyDependency(project: project, config: "apiImplementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiCompile")
+   BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiJarFile")
+   BuildUtils.addLabKeyDependency(project: project, config: "apiImplementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiJarFile")
 }
