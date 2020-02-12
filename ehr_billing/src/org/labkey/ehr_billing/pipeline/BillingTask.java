@@ -144,19 +144,17 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             if (null != _previousInvoice)
             {
-                processingService.processBillingRerun(_invoiceId, getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer);
+                processingService.processBillingRerun(_invoiceId, getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
             }
-            else
-            {
-                for (BillingPipelineJobProcess process : processingService.getProcessList())
-                {
-                    Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
-                    runProcessing(process, billingRunContainer);
-                }
-                updateInvoiceTable(billingContainer);
 
-                processingService.performAdditionalProcessing(_invoiceId, user, container);
+            for (BillingPipelineJobProcess process : processingService.getProcessList())
+            {
+                Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
+                runProcessing(process, billingRunContainer);
             }
+            updateInvoiceTable(billingContainer);
+
+            processingService.performAdditionalProcessing(_invoiceId, user, container);
 
             transaction.commit();
         }
@@ -384,7 +382,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         String schemaName = process.getSchemaName();
         String queryName = process.getQueryName();
         UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), container, schemaName);
-        TableInfo ti = us.getTable(queryName);
+        TableInfo ti = us.getTable(queryName, null);
 
         Set<String> queryColNames = process.getQueryToInvoiceItemColMap().keySet();
         List<FieldKey> columns = new ArrayList<>();

@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ehr_billing.pipeline;
 
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -87,5 +88,5 @@ public interface InvoicedItemsProcessingService
         return null;
     }
 
-    default void processBillingRerun(String newInvoiceId, Date billingRunEndDate, int nextTransactionNumber, User user, Container container) {}
+    default void processBillingRerun(String newInvoiceId, Date billingRunEndDate, int nextTransactionNumber, User user, Container container, Logger logger) {}
 }
