@@ -88,5 +88,5 @@ public interface InvoicedItemsProcessingService
         return null;
     }
 
-    default void processBillingRerun(String newInvoiceId, Date billingRunEndDate, int nextTransactionNumber, User user, Container container, Logger logger) {}
+    default void processBillingRerun(String newInvoiceId, Date billingStartDate, Date billingRunEndDate, int nextTransactionNumber, User user, Container container, Logger logger) {}
 }
