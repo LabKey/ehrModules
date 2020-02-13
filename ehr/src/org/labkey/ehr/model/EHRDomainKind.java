@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.labkey.ehr.model;
-
+import org.json.JSONObject;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.property.Domain;
@@ -29,7 +29,7 @@ import org.labkey.data.xml.domainTemplate.EHRTemplateType;
 import java.util.List;
 import java.util.Set;
 
-public class EHRDomainKind extends ExtendedTableDomainKind
+public class EHRDomainKind extends ExtendedTableDomainKind<JSONObject>
 {
     public static final String KIND_NAME = "EHR";
 

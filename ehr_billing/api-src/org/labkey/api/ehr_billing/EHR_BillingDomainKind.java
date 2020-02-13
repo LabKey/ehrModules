@@ -23,13 +23,14 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.data.xml.domainTemplate.DomainTemplateType;
 import org.labkey.data.xml.domainTemplate.EHRBillingTemplateType;
 
+import org.json.JSONObject;
 import java.util.List;
 
 /**
  *  Defines a DomainKind to allow tables in ehr_billing schema to be extensible.
  *  Ensure that tables to be extended has a LSID column - this is a requirement to make tables extensible.
  */
-public class EHR_BillingDomainKind extends ExtendedTableDomainKind
+public class EHR_BillingDomainKind extends ExtendedTableDomainKind<JSONObject>
 {
     private final String NAMESPACE_PREFIX = "ehr_billing";
     private final String SCHEMA_NAME = "ehr_billing";
