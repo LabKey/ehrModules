@@ -58,7 +58,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 20.001;
+        return 20.000;
     }
 
     @Override
