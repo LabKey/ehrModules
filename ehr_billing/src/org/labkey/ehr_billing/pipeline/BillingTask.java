@@ -89,34 +89,39 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             super(BillingTask.class);
         }
 
+        @Override
         public List<FileType> getInputTypes()
         {
             return Collections.emptyList();
         }
 
+        @Override
         public String getStatusName()
         {
             return PipelineJob.TaskStatus.running.toString();
         }
 
+        @Override
         public List<String> getProtocolActionNames()
         {
             return Arrays.asList("Calculating Billing Data");
         }
 
+        @Override
         public PipelineJob.Task createTask(PipelineJob job)
         {
-            BillingTask task = new BillingTask(this, job);
 
-            return task;
+            return new BillingTask(this, job);
         }
 
+        @Override
         public boolean isJobComplete(PipelineJob job)
         {
             return false;
         }
     }
 
+    @Override
     @NotNull
     public RecordedActionSet run() throws PipelineJobException
     {
@@ -155,10 +160,10 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     runProcessing(process, billingRunContainer);
                 }
             }
-                updateInvoiceTable(billingContainer);
 
-                processingService.performAdditionalProcessing(_invoiceId, user, container);
+            updateInvoiceTable(billingContainer);
 
+            processingService.performAdditionalProcessing(_invoiceId, user, container);
 
             transaction.commit();
         }
@@ -217,6 +222,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     }
 
     private String _invoiceId = null;
+    // Pair of previous matching billing run's objectId and rowId
     private Pair<String,String> _previousInvoice = null;
 
     private String getOrCreateInvoiceRunRecord() throws PipelineJobException
@@ -231,17 +237,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Date startDate = getSupport().getStartDate();
             Date endDate = getSupport().getEndDate();
 
-            _previousInvoice= processingService.verifyBillingRunPeriod(getJob().getUser(), getJob().getContainer(), startDate, endDate);
-
-            if (endDate.before(startDate))
-            {
-                throw new PipelineJobException("Cannot create a billing run with an end date before the start date");
-            }
-
-            if(endDate.equals(startDate))
-            {
-                throw new PipelineJobException("Cannot create a billing run with the same start and end date");
-            }
+            _previousInvoice = getSupport().getPreviousInvoice();
 
             Date today = DateUtils.truncate(new Date(), Calendar.DATE);
             if (endDate.after(today) || endDate.equals(today))

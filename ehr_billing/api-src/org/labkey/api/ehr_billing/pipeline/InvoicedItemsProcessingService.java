@@ -39,6 +39,8 @@ import java.util.Map;
  * BillingPipelineJobProcess objects that define what schema.query to execute and the mapping from that query's
  * columns to the ehr_billing.invoicedItem table's columns.
  * Additionally, get center specific generated invoice number.
+ *
+ * Currently registered server wide but should allow multiple co-existing services and resolve per container's active modules
  */
 public interface InvoicedItemsProcessingService
 {
@@ -68,10 +70,13 @@ public interface InvoicedItemsProcessingService
      */
     void performAdditionalProcessing(String invoiceId, User user, Container container);
 
+    /*
+     * Returns Pair of previous matching billing run's objectId and rowId
+     * */
+    @Nullable
     default Pair<String,String> verifyBillingRunPeriod(User user, Container container, Date startDate, Date endDate) throws PipelineJobException
     {
-        // first look for existing records overlapping the provided date range.
-        // so this should not be a problem
+        // look for existing runs overlapping the provided date range.
         TableInfo invoiceRunsUser = QueryService.get().getUserSchema(user, container,
                 "ehr_billing").getTable("invoiceRuns", null);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("billingPeriodStart"), endDate, CompareType.DATE_LTE);

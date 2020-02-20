@@ -15,6 +15,9 @@
  */
 package org.labkey.ehr_billing.pipeline;
 
+import org.jetbrains.annotations.Nullable;
+import org.labkey.api.util.Pair;
+
 import java.util.Date;
 
 /** Captures user's description of the billing to be performed as part of the requested invoice run. */
@@ -24,6 +27,7 @@ public class BillingPipelineForm
     private Date _startDate;
     private Date _endDate;
     private String _comment;
+    private Pair<String,String> _previousInvoice; // Pair of previous invoice objectId and rowId
 
     public String getProtocolName()
     {
@@ -63,5 +67,16 @@ public class BillingPipelineForm
     public void setComment(String comment)
     {
         _comment = comment;
+    }
+
+    @Nullable
+    public Pair<String, String> getPreviousInvoice()
+    {
+        return _previousInvoice;
+    }
+
+    public void setPreviousInvoice(Pair<String, String> previousInvoice)
+    {
+        _previousInvoice = previousInvoice;
     }
 }
