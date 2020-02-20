@@ -54,6 +54,7 @@ import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
 import org.labkey.ehr_billing.EHR_BillingUserSchema;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +151,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             if (null != _previousInvoice)
             {
-                processingService.processBillingRerun(_invoiceId, getSupport().getStartDate(), getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
+                processingService.processBillingRerun(_invoiceId, _invoiceRowId, getSupport().getStartDate(), getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
             }
             else
             {
@@ -222,6 +224,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     }
 
     private String _invoiceId = null;
+    private String _invoiceRowId  = null;
     // Pair of previous matching billing run's objectId and rowId
     private Pair<String,String> _previousInvoice = null;
 
@@ -262,6 +265,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             toCreate = Table.insert(getJob().getUser(), invoiceRuns, toCreate);
             _invoiceId = (String)toCreate.get("objectid");
+            _invoiceRowId =  String.valueOf(toCreate.get("rowId"));
             return _invoiceId;
         }
         catch (RuntimeSQLException e)
@@ -435,6 +439,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
         TableResultSet invoiceTotalCost = getInvoiceTotalCost(billingRunContainer);
         Iterator<Map<String, Object>> iterator = invoiceTotalCost.iterator();
+        Map<String,BigDecimal> existingInvoiceAmounts = getExistingInvoiceAmounts();
 
         getJob().getLogger().info(invoiceTotalCost.getSize() + " rows to be updated");
 
@@ -443,17 +448,20 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Map<String, Object> row = iterator.next();
             String invoiceNumber = (String) row.get("invoiceNumber");
 
-            Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-
-            for(String col : row.keySet())
+            if (null == existingInvoiceAmounts.get(invoiceNumber))
             {
-                if(col.equals("_row"))
-                    continue;
+                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
 
-                toUpdate.put(col, row.get(col));
+                for (String col : row.keySet())
+                {
+                    if (col.equals("_row"))
+                        continue;
+
+                    toUpdate.put(col, row.get(col));
+                }
+
+                Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
             }
-
-            Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
         }
         try
         {
@@ -466,6 +474,21 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
 
         getJob().getLogger().info("Finished updating rows in ehr_billing.invoice table");
+    }
+
+
+    private Map<String,BigDecimal> getExistingInvoiceAmounts()
+    {
+        SQLFragment sqlFragment = new SQLFragment();
+        sqlFragment.append("SELECT invoiceNumber, invoiceAmount ");
+        sqlFragment.append("FROM ").append(EHR_BILLING_SCHEMA.getName()).append(".invoice ");
+
+        SqlSelector selector = new SqlSelector(EHR_BILLING_SCHEMA, sqlFragment);
+        var rows = selector.getMapCollection();
+
+        Map<String,BigDecimal> existingInvoiceAmounts = new HashMap<>();
+        rows.forEach(row -> existingInvoiceAmounts.put(row.get("invoiceNumber").toString(), (BigDecimal) row.get("invoiceAmount")));
+        return existingInvoiceAmounts;
     }
 
     private TableResultSet getInvoiceTotalCost(Container billingContainer)

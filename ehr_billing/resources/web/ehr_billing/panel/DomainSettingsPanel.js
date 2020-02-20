@@ -29,9 +29,14 @@ Ext4.define('EHR_Billing.panel.DomainSettingsPanel', {
                 handler: this.createDomainHandler,
                 scope: this
             });
+            this.addAdditionalButtons();
         }
 
         this.callParent();
+    },
+
+    addAdditionalButtons: function() {
+      // do-nothing ; allow subclasses to add their own buttons through override
     },
 
     createDomainHandler: function () {
