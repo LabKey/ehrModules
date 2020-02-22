@@ -43,18 +43,31 @@ EHR.Server.TriggerManager = new function(){
          * @type {Object}
          */
         Events: {
+            /** equivalent to standard init() function */
             INIT: 'init',
+            /** equivalent to standard beforeInsert() function */
             BEFORE_INSERT: 'beforeInsert',
+            /** equivalent to standard afterInsert() function */
             AFTER_INSERT: 'afterInsert',
+            /** equivalent to standard beforeDelete() function */
             BEFORE_DELETE: 'beforeDelete',
+            /** equivalent to standard afterDelete() function */
             AFTER_DELETE: 'afterDelete',
+            /** equivalent to standard beforeUpdate() function */
             BEFORE_UPDATE: 'beforeUpdate',
+            /** equivalent to standard afterUpdate() function */
             AFTER_UPDATE: 'afterUpdate',
+            /** invoked before both insert and update operations */
             BEFORE_UPSERT: 'beforeUpsert',
+            /** invoked after both insert and update operations */
             AFTER_UPSERT: 'afterUpsert',
+            /** invoked when a record is being saved into the 'Completed' QC state, regardless of if it's an insert or update */
             ON_BECOME_PUBLIC: 'onBecomePublic',
+            /** invoked after a record was being saved into the 'Completed' QC state, regardless of if it's an insert or update */
             AFTER_BECOME_PUBLIC: 'afterBecomePublic',
+            /** equivalent to standard complete() function */
             COMPLETE: 'complete',
+            /** generates a single-string description, returned from the function, to capture the important details of the row */
             DESCRIPTION: 'description'
         },
 
