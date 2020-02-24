@@ -30,7 +30,7 @@ import java.util.List;
  *  Defines a DomainKind to allow tables in ehr_billing schema to be extensible.
  *  Ensure that tables to be extended has a LSID column - this is a requirement to make tables extensible.
  */
-public class EHR_BillingDomainKind extends ExtendedTableDomainKind<JSONObject>
+public class EHR_BillingDomainKind extends ExtendedTableDomainKind
 {
     private final String NAMESPACE_PREFIX = "ehr_billing";
     private final String SCHEMA_NAME = "ehr_billing";

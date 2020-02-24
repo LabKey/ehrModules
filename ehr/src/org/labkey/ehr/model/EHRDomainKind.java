@@ -29,7 +29,7 @@ import org.labkey.data.xml.domainTemplate.EHRTemplateType;
 import java.util.List;
 import java.util.Set;
 
-public class EHRDomainKind extends ExtendedTableDomainKind<JSONObject>
+public class EHRDomainKind extends ExtendedTableDomainKind
 {
     public static final String KIND_NAME = "EHR";
 
