@@ -27,8 +27,10 @@ import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr_billing.pipeline.InvoicedItemsProcessingService;
 import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
 import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.pipeline.PipelineValidationException;
 import org.labkey.api.query.BatchValidationException;
@@ -46,6 +48,7 @@ import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -62,6 +65,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +90,37 @@ public class EHR_BillingController extends SpringActionController
 
             try
             {
+                Date startDate = form.getStartDate();
+                Date endDate = form.getEndDate();
+
+                if (endDate.before(startDate))
+                {
+                    throw new PipelineJobException("Cannot create a billing run with an end date before the start date");
+                }
+
+                if(endDate.equals(startDate))
+                {
+                    throw new PipelineJobException("Cannot create a billing run with the same start and end date");
+                }
+
+                InvoicedItemsProcessingService processingService = InvoicedItemsProcessingService.get();
+                if (null != processingService)
+                {
+                    Pair<String,String> previousInvoice = processingService.verifyBillingRunPeriod(getUser(), getContainer(), form.getStartDate(), form.getEndDate());
+
+                    if (null != previousInvoice)
+                    {
+                        form.setPreviousInvoice(previousInvoice);
+                    }
+                }
+
                 PipeRoot pipelineRoot = PipelineService.get().findPipelineRoot(getContainer());
                 File analysisDir = BillingPipelineJob.createAnalysisDir(pipelineRoot, form.getProtocolName());
                 PipelineService.get().queueJob(new BillingPipelineJob(getContainer(), getUser(), getViewContext().getActionURL(), pipelineRoot, analysisDir, form));
 
                 resultProperties.put("success", true);
             }
-            catch (PipelineValidationException e)
+            catch (PipelineValidationException | PipelineJobException e)
             {
                 errors.reject(ERROR_MSG, e.getMessage());
                 return null;

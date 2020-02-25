@@ -46,11 +46,15 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.Pair;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
+import org.labkey.ehr_billing.EHR_BillingUserSchema;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +63,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,34 +91,39 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             super(BillingTask.class);
         }
 
+        @Override
         public List<FileType> getInputTypes()
         {
             return Collections.emptyList();
         }
 
+        @Override
         public String getStatusName()
         {
             return PipelineJob.TaskStatus.running.toString();
         }
 
+        @Override
         public List<String> getProtocolActionNames()
         {
             return Arrays.asList("Calculating Billing Data");
         }
 
+        @Override
         public PipelineJob.Task createTask(PipelineJob job)
         {
-            BillingTask task = new BillingTask(this, job);
 
-            return task;
+            return new BillingTask(this, job);
         }
 
+        @Override
         public boolean isJobComplete(PipelineJob job)
         {
             return false;
         }
     }
 
+    @Override
     @NotNull
     public RecordedActionSet run() throws PipelineJobException
     {
@@ -131,18 +141,31 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         getJob().getLogger().info("Start date: " + getSupport().getStartDate().toString());
         getJob().getLogger().info("End date: " + getSupport().getEndDate().toString());
 
+        User user = getJob().getUser();
+        Container container = getJob().getContainer();
+
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             getOrCreateInvoiceRunRecord();
             loadTransactionNumber();
-            for (BillingPipelineJobProcess process : processingService.getProcessList())
+
+            if (null != _previousInvoice)
             {
-                Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
-                runProcessing(process, billingRunContainer);
+                processingService.processBillingRerun(_invoiceId, _invoiceRowId, getSupport().getStartDate(), getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
             }
+            else
+            {
+
+                for (BillingPipelineJobProcess process : processingService.getProcessList())
+                {
+                    Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
+                    runProcessing(process, billingRunContainer);
+                }
+            }
+
             updateInvoiceTable(billingContainer);
 
-            processingService.performAdditionalProcessing(_invoiceId, getJob().getUser(), getJob().getContainer());
+            processingService.performAdditionalProcessing(_invoiceId, user, container);
 
             transaction.commit();
         }
@@ -201,6 +224,9 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     }
 
     private String _invoiceId = null;
+    private String _invoiceRowId  = null;
+    // Pair of previous matching billing run's objectId and rowId
+    private Pair<String,String> _previousInvoice = null;
 
     private String getOrCreateInvoiceRunRecord() throws PipelineJobException
     {
@@ -211,32 +237,13 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             getJob().getLogger().info("Creating invoice run record");
 
-            // first look for existing records overlapping the provided date range.
-            // so this should not be a problem
-            TableInfo invoiceRunsUser = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(),
-                    EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS, null);
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("billingPeriodStart"), getSupport().getEndDate(), CompareType.DATE_LTE);
-            filter.addCondition(FieldKey.fromString("billingPeriodEnd"), getSupport().getStartDate(), CompareType.DATE_GTE);
+            Date startDate = getSupport().getStartDate();
+            Date endDate = getSupport().getEndDate();
 
-
-            TableSelector ts = new TableSelector(invoiceRunsUser, filter, null);
-            if (ts.exists())
-            {
-                throw new PipelineJobException("There is already an existing billing period that overlaps the provided interval");
-            }
-
-            if (getSupport().getEndDate().before(getSupport().getStartDate()))
-            {
-                throw new PipelineJobException("Cannot create a billing run with an end date before the start date");
-            }
-
-            if(getSupport().getEndDate().equals(getSupport().getStartDate()))
-            {
-                throw new PipelineJobException("Cannot create a billing run with the same start and end date");
-            }
+            _previousInvoice = getSupport().getPreviousInvoice();
 
             Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-            if (getSupport().getEndDate().after(today) || getSupport().getEndDate().equals(today))
+            if (endDate.after(today) || endDate.equals(today))
             {
                 throw new PipelineJobException("Cannot create a billing run with an end date in the future");
             }
@@ -244,17 +251,21 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             TableInfo invoiceRuns = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
 
             Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
-            toCreate.put("billingPeriodStart", getSupport().getStartDate());
-            toCreate.put("billingPeriodEnd", getSupport().getEndDate());
+            toCreate.put("billingPeriodStart", startDate);
+            toCreate.put("billingPeriodEnd", endDate);
             toCreate.put("runDate", new Date());
             toCreate.put("status", "Finalized");
-            toCreate.put("comment", getSupport().getComment());
+
+            var runComment = getSupport().getComment();
+            var comment = null != _previousInvoice ?  "Rerun for " + _previousInvoice.second : runComment;
+            toCreate.put("comment", comment);
 
             toCreate.put("container", getJob().getContainer().getId());
             toCreate.put("objectid", new GUID().toString());
 
             toCreate = Table.insert(getJob().getUser(), invoiceRuns, toCreate);
             _invoiceId = (String)toCreate.get("objectid");
+            _invoiceRowId =  String.valueOf(toCreate.get("rowId"));
             return _invoiceId;
         }
         catch (RuntimeSQLException e)
@@ -302,7 +313,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
             {
-                CaseInsensitiveHashMap toInsert = new CaseInsensitiveHashMap();
+                Map<String,Object> toInsert = new CaseInsensitiveHashMap<>();
                 toInsert.put("container", getJob().getContainer().getId());
                 toInsert.put("objectId", new GUID());
                 toInsert.put("invoiceId", invoiceId);
@@ -375,7 +386,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         String schemaName = process.getSchemaName();
         String queryName = process.getQueryName();
         UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), container, schemaName);
-        TableInfo ti = us.getTable(queryName);
+        TableInfo ti = us.getTable(queryName, null);
 
         Set<String> queryColNames = process.getQueryToInvoiceItemColMap().keySet();
         List<FieldKey> columns = new ArrayList<>();
@@ -428,6 +439,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
         TableResultSet invoiceTotalCost = getInvoiceTotalCost(billingRunContainer);
         Iterator<Map<String, Object>> iterator = invoiceTotalCost.iterator();
+        Map<String,BigDecimal> existingInvoiceAmounts = getExistingInvoiceAmounts();
 
         getJob().getLogger().info(invoiceTotalCost.getSize() + " rows to be updated");
 
@@ -436,17 +448,20 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Map<String, Object> row = iterator.next();
             String invoiceNumber = (String) row.get("invoiceNumber");
 
-            CaseInsensitiveHashMap toUpdate = new CaseInsensitiveHashMap();
-
-            for(String col : row.keySet())
+            if (null == existingInvoiceAmounts.get(invoiceNumber))
             {
-                if(col.equals("_row"))
-                    continue;
+                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
 
-                toUpdate.put(col, row.get(col));
+                for (String col : row.keySet())
+                {
+                    if (col.equals("_row"))
+                        continue;
+
+                    toUpdate.put(col, row.get(col));
+                }
+
+                Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
             }
-
-            Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
         }
         try
         {
@@ -461,13 +476,28 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         getJob().getLogger().info("Finished updating rows in ehr_billing.invoice table");
     }
 
+
+    private Map<String,BigDecimal> getExistingInvoiceAmounts()
+    {
+        SQLFragment sqlFragment = new SQLFragment();
+        sqlFragment.append("SELECT invoiceNumber, invoiceAmount ");
+        sqlFragment.append("FROM ").append(EHR_BILLING_SCHEMA.getName()).append(".invoice ");
+
+        SqlSelector selector = new SqlSelector(EHR_BILLING_SCHEMA, sqlFragment);
+        var rows = selector.getMapCollection();
+
+        Map<String,BigDecimal> existingInvoiceAmounts = new HashMap<>();
+        rows.forEach(row -> existingInvoiceAmounts.put(row.get("invoiceNumber").toString(), (BigDecimal) row.get("invoiceAmount")));
+        return existingInvoiceAmounts;
+    }
+
     private TableResultSet getInvoiceTotalCost(Container billingContainer)
     {
         SQLFragment sqlFragment = new SQLFragment();
         sqlFragment.append("SELECT\n");
         sqlFragment.append("invItm.invoiceNumber, sum(totalcost) as invoiceAmount\n");
-        sqlFragment.append("FROM " + EHR_BILLING_SCHEMA.getName() + ".invoicedItems invItm\n");
-        sqlFragment.append("INNER JOIN " + EHR_BILLING_SCHEMA.getName() + ".invoice inv\n");
+        sqlFragment.append("FROM ").append(EHR_BILLING_SCHEMA.getName()).append(".invoicedItems invItm\n");
+        sqlFragment.append("INNER JOIN ").append(EHR_BILLING_SCHEMA.getName()).append(".invoice inv\n");
         sqlFragment.append("ON invItm.invoiceNumber = inv.invoiceNumber\n");
         sqlFragment.append("WHERE invItm.container = ?\n");
         sqlFragment.add(billingContainer.getId());
