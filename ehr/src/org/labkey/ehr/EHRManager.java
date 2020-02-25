@@ -244,7 +244,7 @@ public class EHRManager
 
             if (!ti.hasTriggers(c))
             {
-                messages.add("Missing trigger script for: " + ds.getLabel());
+                messages.add("Missing trigger script for: " + ds.getName());
             }
 
             //TODO: query.xml file

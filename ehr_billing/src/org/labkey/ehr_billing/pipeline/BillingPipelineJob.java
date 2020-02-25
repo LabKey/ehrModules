@@ -27,6 +27,7 @@ import org.labkey.api.pipeline.TaskPipeline;
 import org.labkey.api.security.User;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.Pair;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
 
@@ -90,28 +91,38 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
         return PipelineJobService.get().getTaskPipeline(new TaskId(BillingPipelineJob.class));
     }
 
+    @Override
     public Date getStartDate()
     {
         return _form.getStartDate() == null ? null : DateUtils.truncate(_form.getStartDate(), Calendar.DATE);
     }
 
+    @Override
     public Date getEndDate()
     {
         return _form.getEndDate() == null ? null : DateUtils.truncate(_form.getEndDate(), Calendar.DATE);
     }
 
+    @Override
     public String getComment()
     {
         return _form.getComment();
     }
 
+    @Override
     public String getName()
     {
         return _form.getProtocolName();
     }
 
+    @Override
     public File getAnalysisDir()
     {
         return _analysisDir;
+    }
+
+    public Pair<String,String> getPreviousInvoice()
+    {
+        return _form.getPreviousInvoice();
     }
 }

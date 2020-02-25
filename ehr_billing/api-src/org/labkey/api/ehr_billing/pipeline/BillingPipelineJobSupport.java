@@ -15,6 +15,9 @@
  */
 package org.labkey.api.ehr_billing.pipeline;
 
+import org.jetbrains.annotations.Nullable;
+import org.labkey.api.util.Pair;
+
 import java.io.File;
 import java.util.Date;
 
@@ -29,4 +32,13 @@ public interface BillingPipelineJobSupport
     public String getName();
 
     public File getAnalysisDir();
+
+    /*
+     * Returns Pair of previous matching billing run's objectId and rowId
+     * */
+    @Nullable
+    default Pair<String,String> getPreviousInvoice()
+    {
+        return null;
+    }
 }
