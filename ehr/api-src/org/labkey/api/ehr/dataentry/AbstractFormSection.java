@@ -16,6 +16,7 @@
 package org.labkey.api.ehr.dataentry;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
@@ -37,9 +38,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * De-facto base class for implementations of @{link {@link FormSection}}
  * User: bimber
  * Date: 4/27/13
- * Time: 10:27 AM
  */
 abstract public class AbstractFormSection implements FormSection
 {
@@ -49,12 +50,11 @@ abstract public class AbstractFormSection implements FormSection
     private boolean _hidden = false;
     private String _clientModelClass = "EHR.model.DefaultClientModel";
     private String _clientStoreClass = "EHR.data.DataEntryClientStore";
-    private EHRService.FORM_SECTION_LOCATION _location = EHRService.FORM_SECTION_LOCATION.Body;
+    private EHRService.FORM_SECTION_LOCATION _location;
     private String _tabName = null;
     private TEMPLATE_MODE _templateMode = TEMPLATE_MODE.MULTI;
     private boolean _allowBulkAdd = true;
     private boolean _supportFormSort = true;
-    private Boolean _showSaveTemplateForAll = null;
     private Map<String, String> _extraProperties = new HashMap<>();
 
     /**
@@ -67,7 +67,7 @@ abstract public class AbstractFormSection implements FormSection
 
     private LinkedHashSet<ClientDependency> _clientDependencies = new LinkedHashSet<>();
 
-    protected static final Logger _log = Logger.getLogger(FormSection.class);
+    protected static final Logger _log = Logger.getLogger(AbstractFormSection.class);
 
     public AbstractFormSection(String name, String label, String xtype)
     {
@@ -84,6 +84,7 @@ abstract public class AbstractFormSection implements FormSection
         addClientDependency(ClientDependency.fromPath("ehr/window/CopyFromSectionWindow.js"));
     }
 
+    @Override
     public String getName()
     {
         return _name;
@@ -104,11 +105,13 @@ abstract public class AbstractFormSection implements FormSection
         _supportFormSort = supportFormSort;
     }
 
+    @Override
     public String getLabel()
     {
         return _label;
     }
 
+    @Override
     public String getXtype()
     {
         return _xtype;
@@ -139,6 +142,7 @@ abstract public class AbstractFormSection implements FormSection
         _location = location;
     }
 
+    @Override
     public String getClientModelClass()
     {
         return _clientModelClass;
@@ -164,22 +168,26 @@ abstract public class AbstractFormSection implements FormSection
         return _configSources;
     }
 
+    @Override
     public void setConfigSources(List<String> configSources)
     {
         _configSources = new ArrayList<>(configSources);
     }
 
+    @Override
     public void addConfigSource(String source)
     {
         _configSources.add(source);
     }
 
+    @Override
     public void setTemplateMode(TEMPLATE_MODE mode)
     {
         _templateMode = mode;
     }
 
-    public static enum TEMPLATE_MODE
+    /** Different modes of template behavior, based on which fields it should operate on and other factors */
+    public enum TEMPLATE_MODE
     {
         MULTI("TEMPLATE", "APPLYFORMTEMPLATE"),
         NO_ID("TEMPLATE_NO_ID", "APPLYFORMTEMPLATE_NO_ID"),
@@ -206,22 +214,22 @@ abstract public class AbstractFormSection implements FormSection
         }
     }
 
+    @Override
     public boolean hasPermission(DataEntryFormContext ctx, Class<? extends Permission> perm)
     {
-        Map<String, Dataset> datasetMap = ctx.getDatasetMap();
+        Map<String, Dataset<?>> datasetMap = ctx.getDatasetMap();
         for (Pair<String, String> pair : getTableNames())
         {
             //datasets can be tested directly
             if ("study".equalsIgnoreCase(pair.first) && datasetMap.containsKey(pair.second))
             {
-                Dataset ds = datasetMap.get(pair.second);
+                Dataset<?> ds = datasetMap.get(pair.second);
                 if (!ds.getPermissions(ctx.getUser()).contains(perm))
                     return false;
-
             }
             else
             {
-                // non-datasets are a little awkward.  unlikle datasets we cannot assign permissions directly,
+                // non-datasets are a little awkward.  unlike datasets we cannot assign permissions directly,
                 // so this is a best guess.  if this is an EHR-specific permission, like EHRInProgressInsertPermission, we default back to
                 // checking EHRDataEntryPermission at the container level.  otherwise we construct the table info and test it directly
                 // the latter is expensive and unfortunate, but it does allow CustomPermissionTable to function properly.
@@ -240,11 +248,13 @@ abstract public class AbstractFormSection implements FormSection
         return true;
     }
 
+    @Override
     public Set<Pair<String, String>> getTableNames()
     {
         return new HashSet<>();
     }
 
+    @Override
     public Set<TableInfo> getTables(DataEntryFormContext ctx)
     {
         Set<TableInfo> tables = new HashSet<>();
@@ -265,12 +275,10 @@ abstract public class AbstractFormSection implements FormSection
         return tables;
     }
 
-    // specific forms can opt-in to allowing the save template button to be shown using _showSaveTemplateForAll.
-    // alternately, subclasses can override this method for finer control
-    // null value or false will result in admins only
-    protected boolean canSaveTemplates(DataEntryFormContext ctx)
+    /** Subclasses can override this method for finer control of who can save templates - defaults to only allowing admins */
+    protected boolean canSaveTemplates(@NotNull DataEntryFormContext ctx)
     {
-        return _showSaveTemplateForAll != null && _showSaveTemplateForAll ? true : ctx.getContainer().hasPermission(ctx.getUser(), AdminPermission.class);
+        return ctx.getContainer().hasPermission(ctx.getUser(), AdminPermission.class);
     }
 
     @Override
@@ -313,6 +321,11 @@ abstract public class AbstractFormSection implements FormSection
         _allowBulkAdd = allowBulkAdd;
     }
 
+    /**
+     * @return the buttons that should be shown on the button bar for this form section. These are implemented in
+     * JavaScript code that must register the button via a call to EHR.DataEntryUtils.registerGridButton().
+     * The JS code must be included in the set of ClientDependencies for the form.
+     */
     public List<String> getTbarButtons()
     {
         List<String> defaultButtons = new ArrayList<>();
@@ -337,6 +350,10 @@ abstract public class AbstractFormSection implements FormSection
         return defaultButtons;
     }
 
+    /**
+     * @return the actions to be shown under the More Actions popup menu button.
+     * Must be registered on the client side with EHR.DataEntryUtils.registerGridButton()
+     */
     public List<String> getTbarMoreActionButtons()
     {
         List<String> defaultButtons = new ArrayList<>();
@@ -356,6 +373,7 @@ abstract public class AbstractFormSection implements FormSection
         return defaultButtons;
     }
 
+    /** @return metadata for each of the fields to be included in the generated UI */
     abstract protected List<FormElement> getFormElements(DataEntryFormContext ctx);
 
     private List<JSONObject> getFieldConfigs(DataEntryFormContext ctx)
@@ -369,28 +387,21 @@ abstract public class AbstractFormSection implements FormSection
         return ret;
     }
 
+    @Override
     public LinkedHashSet<ClientDependency> getClientDependencies()
     {
         return _clientDependencies;
     }
 
+    @Override
     public void addClientDependency(ClientDependency cd)
     {
         _clientDependencies.add(cd);
     }
 
-    public void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll)
-    {
-        _showSaveTemplateForAll = showSaveTemplateForAll;
-    }
-
+    /** Extra name/value pairs that are sent via JSON to JS UI for extra configuration info that doesn't fit anywhere else */
     public void addExtraProperty(String key, String value)
     {
         _extraProperties.put(key, value);
-    }
-
-    public String getExtraProperty(String key)
-    {
-        return _extraProperties.get(key);
     }
 }

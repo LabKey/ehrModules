@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-
+ * Base class for forms based on the ehr.tasks table, but which don't want to let the user save records in a draft state.
  */
 abstract public class UnsaveableTask extends TaskForm
 {
@@ -43,7 +43,7 @@ abstract public class UnsaveableTask extends TaskForm
     @Override
     protected List<String> getButtonConfigs()
     {
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("SUBMIT");
 
         return defaultButtons;
@@ -51,7 +51,7 @@ abstract public class UnsaveableTask extends TaskForm
 
     protected List<String> getMoreActionButtonConfigs()
     {
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("VALIDATEALL");
 
         defaultButtons.add("FORCESUBMIT");

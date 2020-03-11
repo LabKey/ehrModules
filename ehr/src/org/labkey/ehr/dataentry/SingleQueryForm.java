@@ -62,6 +62,7 @@ public class SingleQueryForm extends AbstractDataEntryForm
         return new SingleQueryForm(ctx, owner, ti.getPublicName(), ti.getTitle(), "Custom", ti, Arrays.asList(section));
     }
 
+    @Override
     public JSONObject toJSON()
     {
         JSONObject json = super.toJSON();

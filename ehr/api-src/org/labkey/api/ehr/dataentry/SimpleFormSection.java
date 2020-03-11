@@ -41,6 +41,7 @@ public class SimpleFormSection extends AbstractFormSection
     private String _queryName;
 
     protected boolean _showLocation = false;
+    /** Whether the grid has a button to edit the row in a popup dialog with a text label/form element layout for each field */
     protected boolean _allowRowEditing = true;
 
     public SimpleFormSection(String schemaName, String queryName, String label, String xtype)

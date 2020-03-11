@@ -72,6 +72,15 @@ EHR.model.DataModelManager = new function(){
             return meta;
         },
 
+        /**
+         * Registers metadata that will be overlaid on the default set of column metadata returned by the server.
+         * Can be used to wire up a custom renderer or editor to a field, such as using EHR.form.field.ProjectEntryField
+         * instead of a default combobox for a project field
+         * @param source name of the metadata, must match reference from Java org.labkey.api.ehr.dataentry.FormSection's
+         * setConfigSource() or addConfigSource() methods.
+         * @param object metadata to be applied to the ExtJS renderers and editors. See EHR.model.FieldMetadata for
+         * expected properties.
+         */
         registerMetadata: function(source, object){
             if (!metadata[source])
                 metadata[source] = {};

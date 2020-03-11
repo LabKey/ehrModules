@@ -531,6 +531,12 @@ EHR.DataEntryUtils = new function(){
             }
         },
 
+        /**
+         * Makes a button available to be added a form section, typically a grid. Registered buttons can be
+         * added to the section by including it in the list returned from the getTbarButtons()
+         * or getTbarMoreActionButtons() methods in the Java code in a subclass of
+         * org.labkey.api.ehr.dataentry.AbstractFormSection
+         */
         registerGridButton: function(name, btn){
             gridButtons[name] = btn;
         },
@@ -542,6 +548,11 @@ EHR.DataEntryUtils = new function(){
             }
         },
 
+        /**
+         * Makes a button available to be added to the top-level form. Registered buttons can be
+         * added to the section by including it in the list returned from the getButtonConfigs()
+         * methods in the Java code in a subclass of org.labkey.api.ehr.dataentry.AbstractDataEntryForm
+         */
         registerDataEntryFormButton: function(name, btn){
             dataEntryFormButtons[name] = btn;
         },

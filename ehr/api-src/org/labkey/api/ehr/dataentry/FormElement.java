@@ -29,13 +29,9 @@ import org.labkey.api.security.User;
  */
 public class FormElement
 {
-    private String _xtype;
     private ColumnInfo _boundCol;
 
-    private FormElement()
-    {
-
-    }
+    private FormElement() {}
 
     public static FormElement createForColumn(ColumnInfo col)
     {

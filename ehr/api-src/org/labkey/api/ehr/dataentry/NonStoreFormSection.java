@@ -22,7 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Form section that isn't bound to an ExtJS store for its data model.
+ * Form section that isn't bound to an ExtJS store for its data model. These are typically read-only views, and may
+ * present a summary of an animal's info, show the user instructions, etc.
  * User: bimber
  * Date: 1/11/14
  */

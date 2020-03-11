@@ -80,7 +80,7 @@ public class DataEntryManager
         _forms.add(fact);
     }
 
-    //designed to produce a non-redunant list of forms that are active in the provided container
+    //designed to produce a non-redundant list of forms that are active in the provided container
     private Map<String, DataEntryForm> getFormMap(Container c, User u)
     {
         DataEntryFormContext ctx = new DataEntryFormContextImpl(c, u);
@@ -202,13 +202,13 @@ public class DataEntryManager
         EHRSecurityManager.get().primeCache(c);
     }
 
-    public class DataEntryFormContextImpl implements DataEntryFormContext
+    public static class DataEntryFormContextImpl implements DataEntryFormContext
     {
         private User _user;
         private Container _container;
         private Map<String, TableInfo> _tableMap = new HashMap<>();
         private Map<String, UserSchema> _userSchemas = new HashMap<>();
-        private Map<String, Dataset> _datasetMap = null;
+        private Map<String, Dataset<?>> _datasetMap = null;
 
         public DataEntryFormContextImpl(Container c, User u)
         {
@@ -216,6 +216,7 @@ public class DataEntryManager
             _user = u;
         }
 
+        @Override
         public TableInfo getTable(String schemaName, String queryName)
         {
             String key = schemaName + "||" + queryName;
@@ -253,21 +254,24 @@ public class DataEntryManager
             return _userSchemas.get(schemaName);
         }
 
+        @Override
         public Container getContainer()
         {
             return _container;
         }
 
+        @Override
         public User getUser()
         {
             return _user;
         }
 
-        public Map<String, Dataset> getDatasetMap()
+        @Override
+        public Map<String, Dataset<?>> getDatasetMap()
         {
             if (_datasetMap == null)
             {
-                Map<String, Dataset> datasetMap = new HashMap<>();
+                Map<String, Dataset<?>> datasetMap = new HashMap<>();
                 Study s = StudyService.get().getStudy(getContainer());
                 if (s != null)
                 {
