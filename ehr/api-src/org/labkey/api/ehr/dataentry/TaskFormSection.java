@@ -18,7 +18,9 @@ package org.labkey.api.ehr.dataentry;
 import java.util.Collections;
 
 /**
- * Shows
+ * Shows a single-row view of the ehr.tasks table. Used as a parent to group together all of the rows in the other
+ * tables that are collected at once.
+ *
  * User: bimber
  * Date: 6/9/13
  */

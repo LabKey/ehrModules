@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * One section of a larger data entry form. Typically bound to a single underlying table, but might also
- * be instructions on usage, a read-only summary snapshot for the selected animal, etc.
+ * One section of a larger data entry form. Typically bound to a single underlying table to show an editable grid or
+ * single-row form with fields for each column, but might also be a simple HTML section with instructions on usage,
+ * a read-only summary snapshot for the selected animal, etc.
  * User: bimber
  * Date: 4/27/13
  */
@@ -35,30 +36,49 @@ public interface FormSection
 {
     String getName();
 
+    /** @return title to show for the section in the UI */
     String getLabel();
 
     /** @return the ExtJS type to use for the rendered component */
     String getXtype();
 
+    /**
+     * @return the JavaScript class name, typically "EHR.model.DefaultClientModel" or one of its subclasses, that
+     * ExtJS should use to represent the data elements in the store
+     */
     String getClientModelClass();
 
+    /**
+     * @return whether the user has permission to perform the requested type of operation on the underlying data storage
+     */
     boolean hasPermission(DataEntryFormContext ctx, Class<? extends Permission> perm);
 
+    /** @return schema/query name combination for the backing storage */
     Set<Pair<String, String>> getTableNames();
 
+    /** @return the TableInfos that represent the tables referenced by getTableNames() */
     Set<TableInfo> getTables(DataEntryFormContext ctx);
 
+    /** @return JSON representation of this section to be passed to the client to configure itself */
     JSONObject toJSON(DataEntryFormContext ctx, boolean includeFormElements);
 
+    /** @return the JavaScript and CSS resources needed to successfully render this section */
     LinkedHashSet<ClientDependency> getClientDependencies();
 
+    /**
+     * Adds a reference to a JS-supplied set of metadata to be used for configuring the form section. The JS file
+     * must be included in the set of ClientDependencies, and it should register its metadata with the same name using
+     * EHR.model.DataModelManager.registerMetadata()
+     */
     void setConfigSources(List<String> configSources);
 
+    /**
+     * @see FormSection#setConfigSources(List)
+     */
     void addConfigSource(String source);
 
+    /** Add another dependency reference, such as a JavaScript or CSS file */
     void addClientDependency(ClientDependency cd);
-
-    void setShowSaveTemplateForAll(Boolean showSaveTemplateForAll);
 
     void setTemplateMode(AbstractFormSection.TEMPLATE_MODE mode);
 }

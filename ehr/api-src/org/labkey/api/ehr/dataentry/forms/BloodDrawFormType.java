@@ -33,7 +33,6 @@ import java.util.List;
 /**
  * User: bimber
  * Date: 7/29/13
- * Time: 5:03 PM
  */
 public class BloodDrawFormType extends TaskForm
 {

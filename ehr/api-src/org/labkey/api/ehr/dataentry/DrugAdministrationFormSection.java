@@ -16,7 +16,6 @@
 package org.labkey.api.ehr.dataentry;
 
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.ehr.dataentry.SimpleFormSection;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.List;
 /**
  * User: bimber
  * Date: 7/7/13
- * Time: 10:36 AM
  */
 public class DrugAdministrationFormSection extends SimpleFormSection
 {

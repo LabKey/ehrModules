@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Subclass for data entry forms that are attached to row in ehr.tasks.
  * User: bimber
  * Date: 4/27/13
  */

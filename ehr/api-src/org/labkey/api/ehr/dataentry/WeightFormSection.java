@@ -20,9 +20,9 @@ import org.labkey.api.ehr.dataentry.SimpleGridPanel;
 import org.labkey.api.view.template.ClientDependency;
 
 /**
+ * Grid-based entry for the study.Weight table
  * User: bimber
  * Date: 7/7/13
- * Time: 10:36 AM
  */
 public class WeightFormSection extends SimpleGridPanel
 {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Single-row data entry panel of an underlying table, with a vertical label/entry field layout.
  * User: bimber
  * Date: 11/15/13
  */

@@ -28,6 +28,7 @@ public class BulkEditButton extends SimpleButtonConfigFactory
         setInsertPosition(-1);
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         return super.isAvailable(ti) && ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), EHRVeterinarianPermission.class);

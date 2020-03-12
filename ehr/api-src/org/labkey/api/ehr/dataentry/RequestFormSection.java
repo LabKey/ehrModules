@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Form section bound to the ehr.requests table that serves as a parent row to all of the other sections
+ * of the form, and tracks the assignee and status of the whole request.
  * User: bimber
  * Date: 6/9/13
  */

@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
-
+ * Grid-based form that lets users select multiple rows and edit their values in bulk (on a field-by-field basis).
  */
 public class BulkEditFormType extends AbstractDataEntryForm
 {

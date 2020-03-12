@@ -29,18 +29,6 @@ public class ArrivalFormType extends TaskForm
 {
     public static final String NAME = "arrival";
 
-    public ArrivalFormType(DataEntryFormContext ctx, Module owner)
-    {
-        this(ctx, owner, Arrays.asList(
-                new ArrivalInstructionsFormSection(),
-                new TaskFormSection(),
-                new DocumentArchiveFormSection(),
-                new AnimalDetailsFormSection(),
-                new NewAnimalFormSection("study", "arrival", "Arrivals", false),
-                new WeightFormSection()
-        ));
-    }
-
     public ArrivalFormType(DataEntryFormContext ctx, Module owner, List<FormSection> sections)
     {
         super(ctx, owner, NAME, "Arrival", "Colony Management", sections);

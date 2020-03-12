@@ -16,10 +16,14 @@
 package org.labkey.api.ehr.dataentry;
 
 /**
+ * Factories are registered with {@link org.labkey.api.ehr.EHRService} and are responsible for creating
+ * {@link DataEntryForm} instances that are bound to an HTTP request and its associated user and container.
+ *
  * User: bimber
  * Date: 12/3/13
  */
 public interface DataEntryFormFactory
 {
-    public DataEntryForm createForm(DataEntryFormContext ctx);
+    /** Create a form instance that's bound to the supplied context */
+    DataEntryForm createForm(DataEntryFormContext ctx);
 }

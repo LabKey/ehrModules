@@ -24,7 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Top-level data entry form that let users create requests for services, such as scheduled blood draws.
+ * Top-level data entry form that let users create requests for services, such as scheduled blood draws. The ehr.request
+ * acts as a parent for all of the rows being entered at the same time.
  *
  * User: bimber
  * Date: 4/27/13
@@ -45,7 +46,7 @@ public class RequestForm extends AbstractDataEntryForm
 
     public static RequestForm create(DataEntryFormContext ctx, Module owner, String category, String name, String label, List<FormSection> formSections)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         sections.add(new RequestFormSection());
         sections.add(new AnimalDetailsFormSection());
         sections.addAll(formSections);
@@ -56,10 +57,9 @@ public class RequestForm extends AbstractDataEntryForm
     @Override
     protected List<String> getButtonConfigs()
     {
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("DISCARD");
         defaultButtons.add("REQUEST");
-        //defaultButtons.add("APPROVE");
 
         return defaultButtons;
     }

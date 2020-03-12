@@ -29,11 +29,11 @@ import java.util.Map;
  */
 public interface DataEntryFormContext
 {
-    public TableInfo getTable(String schemaName, String queryName);
+    TableInfo getTable(String schemaName, String queryName);
 
-    public Map<String, Dataset> getDatasetMap();
+    Map<String, Dataset<?>> getDatasetMap();
 
-    public Container getContainer();
+    Container getContainer();
 
-    public User getUser();
+    User getUser();
 }

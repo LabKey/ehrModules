@@ -50,6 +50,7 @@ public class SimpleGridpanelForm extends AbstractDataEntryForm
         return new SimpleGridpanelForm(ctx, owner, queryName, label, category, sections);
     }
 
+    @Override
     public JSONObject toJSON()
     {
         JSONObject json = super.toJSON();

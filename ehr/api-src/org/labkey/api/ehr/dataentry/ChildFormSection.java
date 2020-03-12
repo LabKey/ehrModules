@@ -21,6 +21,10 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A FormSection that has a column that's a FK to another FormSection on the same DataEntryForm. Should be paired
+ * with a @{link {@link ParentFormPanelSection} on the same form.
+ */
 public class ChildFormSection extends SimpleFormSection
 {
     public ChildFormSection(String schemaName, String queryName, String label, String parentQueryName, String xtype, EHRService.FORM_SECTION_LOCATION location)

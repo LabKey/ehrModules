@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * User: bimber
  * Date: 4/27/13
- * Time: 12:45 PM
  */
 public class EncounterForm extends TaskForm
 {

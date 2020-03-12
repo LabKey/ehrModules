@@ -43,6 +43,7 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
         _datasets = datasets;
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))
@@ -61,7 +62,7 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
 
         for (String dataset : _datasets)
         {
-            Dataset ds = getDataset(s, dataset);
+            Dataset<?> ds = getDataset(s, dataset);
             if (ds == null)
                 return false;
 
@@ -72,9 +73,9 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
         return true;
     }
 
-    private Dataset getDataset(Study s, String name)
+    private Dataset<?> getDataset(Study s, String name)
     {
-        for (Dataset ds : s.getDatasets())
+        for (Dataset<?> ds : s.getDatasets())
         {
             if (ds.getName().equalsIgnoreCase(name) || ds.getLabel().equalsIgnoreCase(name))
                 return ds;

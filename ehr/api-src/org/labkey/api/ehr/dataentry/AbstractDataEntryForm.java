@@ -46,9 +46,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Base class for implementations of @{link DataEntryForm}.
  * User: bimber
  * Date: 4/27/13
- * Time: 8:38 AM
  */
 public class AbstractDataEntryForm implements DataEntryForm
 {
@@ -74,11 +74,13 @@ public class AbstractDataEntryForm implements DataEntryForm
         _sections = new ArrayList<>(sections);
     }
 
+    @Override
     public String getName()
     {
         return _name;
     }
 
+    @Override
     public String getLabel()
     {
         return _label;
@@ -104,27 +106,19 @@ public class AbstractDataEntryForm implements DataEntryForm
         return _ctx;
     }
 
+    @Override
     public List<FormSection> getFormSections()
     {
         return Collections.unmodifiableList(_sections);
     }
 
+    @Override
     public String getCategory()
     {
         return _category;
     }
 
-    public boolean hasPermission(Class<? extends Permission> clazz)
-    {
-        for (FormSection section : getFormSections())
-        {
-            if (!section.hasPermission(_ctx, clazz))
-                return false;
-        }
-
-        return true;
-    }
-
+    @Override
     public String getJavascriptClass()
     {
         return _javascriptClass;
@@ -135,6 +129,9 @@ public class AbstractDataEntryForm implements DataEntryForm
         _javascriptClass = javascriptClass;
     }
 
+    /** @return the ExtJS store implementation to use for the client-side storage of the data.
+     * Typically either "EHR.data.StoreCollection" or one of its subclasses. If using a custom implementation,
+     * use getClientDependencies() to include in the set of JS resources on the page */
     public String getStoreCollectionClass()
     {
         return _storeCollectionClass;
@@ -150,19 +147,19 @@ public class AbstractDataEntryForm implements DataEntryForm
         return Collections.singletonList(InsertPermission.class);
     }
 
+    @Override
     public boolean isAvailable()
     {
-        if (!_ctx.getContainer().getActiveModules().contains(_owner))
-            return false;
-
-        return true;
+        return _ctx.getContainer().getActiveModules().contains(_owner);
     }
 
+    @Override
     public JSONObject toJSON()
     {
         return toJSON(true);
     }
 
+    @Override
     public JSONObject toJSON(boolean includeFormElements)
     {
         JSONObject json = new JSONObject();
@@ -210,6 +207,7 @@ public class AbstractDataEntryForm implements DataEntryForm
         return null;
     }
 
+    /** @return whether the current user has permission to insert into all of the sections of this form */
     protected boolean canInsert()
     {
         boolean canInsert = true;
@@ -228,16 +226,14 @@ public class AbstractDataEntryForm implements DataEntryForm
         return canInsert;
     }
 
-    /**
-     * Typically let normal table-level security handle read.  This can be set false to complete turn off the ability to see details on some forms.
-     */
+    @Override
     public boolean canRead()
     {
         return true;
     }
 
     @Override
-    public HttpView createView()
+    public HttpView<?> createView()
     {
         JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", this);
         view.setTitle(getLabel());
@@ -256,9 +252,13 @@ public class AbstractDataEntryForm implements DataEntryForm
         return root;
     }
 
+    /**
+     * @return references to buttons to be shown at the bottom of the form. Implementations must be registered
+     * by calls to EHR.DataEntryUtils.registerDataEntryFormButton() in JavaScript code.
+     */
     protected List<String> getButtonConfigs()
     {
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("SAVEDRAFT");
         defaultButtons.add("CLOSE");
 
@@ -275,9 +275,12 @@ public class AbstractDataEntryForm implements DataEntryForm
         _templateMode = templateMode;
     }
 
+    /**
+     * Similar to {@link #getButtonConfigs()} but rendered as a menu under a parent More Actions button.
+     */
     protected List<String> getMoreActionButtonConfigs()
     {
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("VALIDATEALL");
 
         if (_templateMode.getFormBtn() != null)
@@ -296,7 +299,7 @@ public class AbstractDataEntryForm implements DataEntryForm
     private Map<String, Map<String, Map<String, String>>> getPermissionMap()
     {
         Map<String, Map<String, Map<String, String>>> permissionMap = new HashMap<>();
-        Map<String, Dataset> datasetMap = getCtx().getDatasetMap();
+        Map<String, Dataset<?>> datasetMap = getCtx().getDatasetMap();
 
         for (Pair<String, String> pair : getTableNames())
         {
@@ -311,7 +314,7 @@ public class AbstractDataEntryForm implements DataEntryForm
             if (queryPerms == null)
                 queryPerms = new HashMap<>();
 
-            SecurityPolicy policy = null;
+            SecurityPolicy policy;
 
             //test if this is a dataset
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
@@ -323,12 +326,9 @@ public class AbstractDataEntryForm implements DataEntryForm
                 policy = SecurityPolicyManager.getPolicy(_ctx.getContainer());
             }
 
-            if (policy != null)
+            for (Class<? extends Permission> p : policy.getPermissions(_ctx.getUser()))
             {
-                for (Class<? extends Permission> p : policy.getPermissions(_ctx.getUser()))
-                {
-                    queryPerms.put(p.getName(), p.getCanonicalName());
-                }
+                queryPerms.put(p.getName(), p.getCanonicalName());
             }
 
             schemaPerms.put(queryName, queryPerms);
@@ -338,6 +338,7 @@ public class AbstractDataEntryForm implements DataEntryForm
         return permissionMap;
     }
 
+    @Override
     public Set<TableInfo> getTables()
     {
         Set<TableInfo> tables = new HashSet<>();
@@ -358,10 +359,10 @@ public class AbstractDataEntryForm implements DataEntryForm
         return tables;
     }
 
+    @Override
     public LinkedHashSet<ClientDependency> getClientDependencies()
     {
-        LinkedHashSet<ClientDependency> cds = new LinkedHashSet<>();
-        cds.addAll(_clientDependencies);
+        LinkedHashSet<ClientDependency> cds = new LinkedHashSet<>(_clientDependencies);
 
         for (FormSection section : getFormSections())
         {
