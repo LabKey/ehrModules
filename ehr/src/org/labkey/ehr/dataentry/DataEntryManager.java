@@ -16,8 +16,8 @@
 package org.labkey.ehr.dataentry;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
-import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -58,7 +58,7 @@ public class DataEntryManager
     private List<DataEntryFormFactory> _forms = new ArrayList<>();
     private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
     private List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
-    private final StringKeyCache<Object> _cache;
+    private final Cache<String, Object> _cache;
 
     private DataEntryManager()
     {
@@ -70,7 +70,7 @@ public class DataEntryManager
         return _instance;
     }
 
-    public StringKeyCache getCache()
+    public Cache<String, Object> getCache()
     {
         return _cache;
     }

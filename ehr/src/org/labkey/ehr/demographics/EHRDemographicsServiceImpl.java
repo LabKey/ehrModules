@@ -20,8 +20,8 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
-import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -81,7 +81,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     private static final Logger _log = Logger.getLogger(EHRDemographicsServiceImpl.class);
     private static JobDetail _job = null;
 
-    private StringKeyCache<AnimalRecordImpl> _cache;
+    private Cache<String, AnimalRecordImpl> _cache;
 
 //    private static class DemographicsCacheLoader implements CacheLoader<String, AnimalRecord>
 //    {
