@@ -6606,8 +6606,6 @@ where unit = 'g/mL'
 
 /* EHR_Lookups-11.20-11.30.sql */
 
-/* EHR_Lookups-11.21-11.22.sql */
-
 DROP TABLE IF EXISTS ehr_lookups.restraint_duration;
 CREATE TABLE ehr_lookups.restraint_duration (
 duration varchar(200),
@@ -6630,8 +6628,6 @@ VALUES
 ('>12 hours', 4)
 ;
 
-/* EHR_Lookups-11.22-11.23.sql */
-
 alter table ehr_lookups.chemistry_tests
   add column aliases varchar(500)
   ;
@@ -6645,8 +6641,6 @@ UPDATE ehr_lookups.chemistry_tests set aliases = 'BIL' WHERE testid = 'TB';
 UPDATE ehr_lookups.chemistry_tests set aliases = 'ALT' WHERE testid = 'SGPT';
 UPDATE ehr_lookups.chemistry_tests set aliases = 'ALP' WHERE testid = 'ALKP';
 UPDATE ehr_lookups.chemistry_tests set aliases = 'PHO' WHERE testid = 'PHOS';
-
-/* EHR_Lookups-11.23-11.24.sql */
 
 DROP TABLE IF EXISTS ehr_lookups.drug_categories;
 CREATE TABLE ehr_lookups.drug_categories (
@@ -6797,8 +6791,6 @@ alter table ehr_lookups.clinpath_tests
   add column alertOnComplete bool default false
 ;
 
-/* EHR_Lookups-11.24-11.25.sql */
-
 alter table ehr_lookups.hematology_tests
   add column sort_order integer
 ;
@@ -6891,8 +6883,6 @@ update ehr_lookups.hematology_tests set sort_order = 21 where testid = 'RETICULO
 update ehr_lookups.hematology_tests set sort_order = 22 where testid = 'PRO MYELO';
 update ehr_lookups.hematology_tests set sort_order = 23 where testid = 'ATYL LYMPH';
 update ehr_lookups.hematology_tests set sort_order = 24 where testid = 'OTHER';
-
-/* EHR_Lookups-11.27-11.28.sql */
 
 DELETE FROM ehr_lookups.snomed_qualifiers where qualifier in (
 'right cranial lobe',
@@ -7096,13 +7086,7 @@ update ehr_lookups.urinalysis_tests set sort_order = 10, includeInPanel=true whe
 update ehr_lookups.urinalysis_tests set sort_order = 11, includeInPanel=true where testid = 'MICROSCOPIC';
 update ehr_lookups.urinalysis_tests set sort_order = 12, includeInPanel=true where testid = 'GLUCOSE';
 
-
-
-
-
 drop table if exists ehr_lookups.lab_tests;
-
-/* EHR_Lookups-11.29-11.291.sql */
 
 alter table ehr_lookups.lab_test_range
   add column type varchar(200)
@@ -7139,8 +7123,6 @@ update ehr_lookups.lab_test_range set type = 'Chemistry' where test = 'TP';
 update ehr_lookups.lab_test_range set type = 'Chemistry' where test = 'TRIG';
 update ehr_lookups.lab_test_range set type = 'Chemistry' where test = 'UA';
 update ehr_lookups.lab_test_range set type = 'Hematology' where test = 'WBC';
-
-/* EHR_Lookups-11.291-11.292.sql */
 
 delete from ehr.notificationtypes where notificationtype = 'Animal Death';
 insert into ehr.notificationtypes
@@ -7204,8 +7186,6 @@ INSERT INTO ehr_lookups.obs_remarks VALUES ('runny nose', 'runny nose');
 INSERT INTO ehr_lookups.obs_remarks VALUES ('6 clo', '6 clo');
 INSERT INTO ehr_lookups.obs_remarks VALUES ('3 clo', '3 clo');
 
-/* EHR_Lookups-11.292-11.293.sql */
-
 --NOTE: Fix for test failure after improperly editing EHR_lookups-11.2-11.21
 
 -- ----------------------------
@@ -7244,10 +7224,6 @@ INSERT INTO ehr_lookups.routes (route, meaning) VALUES ('IP', 'intraperitoneal')
 
 /* EHR_Lookups-11.30-12.10.sql */
 
-/* EHR_Lookups-11.30-11.33.sql */
-
-/* EHR_Lookups-11.30-11.32.sql */
-
 SELECT setval('ehr_lookups.treatment_frequency_rowid_seq', (select max(rowid) as maxVal from ehr_lookups.treatment_frequency));
 SELECT setval('ehr_lookups.ageclass_rowid_seq', (select max(rowid) as maxVal from ehr_lookups.ageclass));
 
@@ -7256,8 +7232,6 @@ ALTER table ehr_lookups.blood_draw_services
 
 update ehr_lookups.blood_draw_services
    set automaticrequestfromblooddraw = false where service = 'Viral Load';
-
-/* EHR_Lookups-11.32-11.33.sql */
 
 --drop/recreate table
 DROP TABLE IF EXISTS ehr_lookups.sample_types;
@@ -7297,8 +7271,6 @@ INSERT INTO ehr_lookups.stain_types
 ('Ziehl-Neelson')
 ;
 
-/* EHR_Lookups-11.33-11.34.sql */
-
 --drop/recreate table
 DROP TABLE IF EXISTS ehr_lookups.cytology_tests;
 CREATE TABLE ehr_lookups.cytology_tests (
@@ -7334,8 +7306,6 @@ INSERT INTO ehr_lookups.cytology_tests
 ('WBC', 'White Blood Cells', '10^3/uL', 1)
 ;
 
-/* EHR_Lookups-11.35-11.36.sql */
-
 --to drop:
 DROP TABLE ehr_lookups.vl_virus;
 DROP TABLE ehr_lookups.vl_technique;
@@ -7362,8 +7332,6 @@ alter table ehr_lookups.obs_mens alter column meaning TYPE varchar(200);
 alter table ehr_lookups.obs_other alter column meaning TYPE varchar(200);
 alter table ehr_lookups.obs_remarks alter column remark TYPE varchar(500);
 
-/* EHR_Lookups-11.37-11.38.sql */
-
 CREATE TABLE ehr_lookups.cage_type
 (
   cagetype varchar(100) not null,
@@ -7377,11 +7345,7 @@ CREATE TABLE ehr_lookups.cage_type
 
 /* EHR_Lookups-12.20-12.30.sql */
 
-/* EHR_Lookups-12.20-12.21.sql */
-
 ALTER TABLE ehr_lookups.snomed_subsets DROP container;
-
-/* EHR_Lookups-12.21-12.22.sql */
 
 CREATE TABLE ehr_lookups.charge_flags (
     rowid SERIAL NOT NULL,
@@ -7408,8 +7372,6 @@ CREATE TABLE ehr_lookups.account_tiers (
 
     CONSTRAINT PK_account_tiers PRIMARY KEY (rowid)
 );
-
-/* EHR_Lookups-12.22-12.23.sql */
 
 ALTER TABLE ehr_lookups.areas ADD column description varchar(500);
 
@@ -7483,9 +7445,8 @@ INSERT INTO ehr_lookups.birth_condition (meaning) VALUES ('Born Dead');
 INSERT INTO ehr_lookups.birth_condition (meaning) VALUES ('Terminated At Birth');
 INSERT INTO ehr_lookups.birth_condition (meaning) VALUES ('Incomplete Birth Info');
 
-/* EHR_Lookups-12.24-12.25.sql */
-
 DROP TABLE ehr_lookups.snomed_subsets;
+
 CREATE TABLE ehr_lookups.snomed_subsets(
   subset VARCHAR(255) NOT NULL,
   createdby userid,
@@ -7511,8 +7472,6 @@ INSERT INTO ehr_lookups.snomed_subsets (subset) VALUES ('Process/Disorder');
 INSERT INTO ehr_lookups.snomed_subsets (subset) VALUES ('Severity Codes');
 INSERT INTO ehr_lookups.snomed_subsets (subset) VALUES ('Treatment Codes');
 INSERT INTO ehr_lookups.snomed_subsets (subset) VALUES ('Viral Challenges');
-
-/* EHR_Lookups-12.26-12.27.sql */
 
 CREATE TABLE ehr_lookups.lookups (
   rowid serial,
@@ -7545,8 +7504,6 @@ CREATE TABLE ehr_lookups.note_types (
 
 INSERT INTO ehr_lookups.note_types (meaning) VALUES ('Clinical');
 INSERT INTO ehr_lookups.note_types (meaning) VALUES ('Assignments');
-
-/* EHR_Lookups-12.28-12.29.sql */
 
 CREATE TABLE ehr_lookups.treatment_frequency_times (
   rowid serial,
@@ -9895,3 +9852,56 @@ $$ LANGUAGE plpgsql;
 SELECT ehr.handleSpeciesUpgrade();
 
 DROP FUNCTION ehr.handleSpeciesUpgrade();
+
+/* ehr_lookups-17.30-18.10.sql */
+
+-- add some base table columns (i.e. description, dateDisabled, etc.)
+ALTER TABLE ehr_lookups.snomed ADD COLUMN description VARCHAR(4000);
+ALTER TABLE ehr_lookups.snomed ADD COLUMN dateDisabled TIMESTAMP;
+ALTER TABLE ehr_lookups.source ADD COLUMN description VARCHAR(4000);
+ALTER TABLE ehr_lookups.species_codes ADD COLUMN genus VARCHAR(255);
+ALTER TABLE ehr_lookups.species_codes ADD COLUMN species VARCHAR(255);
+ALTER TABLE ehr_lookups.species_codes ADD COLUMN description VARCHAR(4000);
+ALTER TABLE ehr_lookups.species_codes ADD COLUMN dateDisabled TIMESTAMP;
+ALTER TABLE ehr_lookups.calculated_status_codes ADD COLUMN description VARCHAR(4000);
+ALTER TABLE ehr_lookups.cage_type ADD COLUMN description VARCHAR(4000);
+ALTER TABLE ehr_lookups.cage_type ADD COLUMN dateDisabled TIMESTAMP;
+
+-- add Lsid column to ehr_lookups tables to allow them to be extensible
+ALTER TABLE ehr_lookups.geographic_origins ADD COLUMN Lsid LSIDtype;
+ALTER TABLE ehr_lookups.rooms ADD COLUMN Lsid LSIDtype;
+ALTER TABLE ehr_lookups.buildings ADD COLUMN Lsid LSIDtype;
+ALTER TABLE ehr_lookups.treatment_codes ADD COLUMN Lsid LSIDtype;
+
+-- add Container column to the same ehr_lookups tables (values to be populated in Java upgrade script)
+ALTER TABLE ehr_lookups.geographic_origins ADD COLUMN Container ENTITYID;
+ALTER TABLE ehr_lookups.rooms ADD COLUMN Container ENTITYID;
+ALTER TABLE ehr_lookups.buildings ADD COLUMN Container ENTITYID;
+ALTER TABLE ehr_lookups.treatment_codes ADD COLUMN Container ENTITYID;
+
+-- add the FK for those Container columns
+ALTER TABLE ehr_lookups.geographic_origins ADD CONSTRAINT FK_geographic_origins_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+ALTER TABLE ehr_lookups.rooms ADD CONSTRAINT FK_rooms_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+ALTER TABLE ehr_lookups.buildings ADD CONSTRAINT FK_buildings_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+ALTER TABLE ehr_lookups.treatment_codes ADD CONSTRAINT FK_treatment_codes_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
+
+-- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
+SELECT core.executeJavaUpgradeCode('setEhrLookupsContainerFirstSet');
+
+-- remove any NULL rows for Container
+DELETE FROM ehr_lookups.geographic_origins WHERE Container IS NULL;
+DELETE FROM ehr_lookups.rooms WHERE Container IS NULL;
+DELETE FROM ehr_lookups.buildings WHERE Container IS NULL;
+DELETE FROM ehr_lookups.treatment_codes WHERE Container IS NULL;
+
+--set NOT NULL constraint for the Container columns
+ALTER TABLE ehr_lookups.geographic_origins ALTER COLUMN Container SET NOT NULL;
+ALTER TABLE ehr_lookups.rooms ALTER COLUMN Container SET NOT NULL;
+ALTER TABLE ehr_lookups.buildings ALTER COLUMN Container SET NOT NULL;
+ALTER TABLE ehr_lookups.treatment_codes ALTER COLUMN Container SET NOT NULL;
+
+-- add the INDEX for those Container columns
+CREATE INDEX IX_geographic_origins_Container ON ehr_lookups.geographic_origins (Container);
+CREATE INDEX IX_rooms_Container ON ehr_lookups.rooms (Container);
+CREATE INDEX IX_buildings_Container ON ehr_lookups.buildings (Container);
+CREATE INDEX IX_treatment_codes_Container ON ehr_lookups.treatment_codes (Container);

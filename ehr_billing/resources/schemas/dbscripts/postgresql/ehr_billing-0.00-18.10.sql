@@ -1,19 +1,73 @@
 /*
- * Copyright (c) 2018-2019 LabKey Corporation
+ * Copyright (c) 2017 LabKey Corporation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-/* ehr_billing-17.30-17.31.sql */
+
+/* ehr_billing-17.20-17.30.sql */
+
+CREATE SCHEMA ehr_billing;
+
+CREATE TABLE ehr_billing.aliases (
+
+  rowid serial,
+  alias varchar(200),
+  aliasEnabled Varchar(100),
+  projectNumber varchar(200),
+  grantNumber varchar(200),
+  agencyAwardNumber varchar(200),
+  investigatorId int,
+  investigatorName varchar(200),
+  fiscalAuthority int,
+  fiscalAuthorityName varchar(200),
+  category varchar(100),
+  faRate double precision,
+  faSchedule varchar(200),
+  budgetStartDate timestamp,
+  budgetEndDate timestamp,
+  projectTitle varchar(1000),
+  projectDescription varchar(1000),
+  projectStatus varchar(200),
+  aliasType VARCHAR(100),
+
+  container ENTITYID NOT NULL,
+  createdBy USERID,
+  created timestamp,
+  modifiedBy USERID,
+  modified timestamp,
+
+  CONSTRAINT PK_aliases PRIMARY KEY (rowid),
+  CONSTRAINT FK_EHR_BILLING_ALIASES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+);
+
+CREATE INDEX EHR_BILLING_ALIASES_INDEX ON ehr_billing.aliases (container, alias);
+CREATE INDEX EHR_BILLING_ALIASES_CONTAINER_INDEX ON ehr_billing.aliases (Container);
+
+CREATE TABLE ehr_billing.chargeRates (
+
+  rowId SERIAL NOT NULL,
+  chargeId int,
+  unitcost double precision,
+  subsidy double precision,
+  startDate timestamp,
+  endDate timestamp,
+
+  container ENTITYID NOT NULL,
+  createdBy USERID,
+  created timestamp,
+  modifiedBy USERID,
+  modified timestamp,
+
+  CONSTRAINT PK_chargeRates PRIMARY KEY (rowId),
+  CONSTRAINT FK_EHR_BILLING_CHARGE_RATES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+);
+
+CREATE INDEX EHR_BILLING_CHARGE_RATES_CONTAINER_INDEX ON ehr_billing.chargeRates (Container);
+
+ALTER TABLE ehr_billing.aliases ADD COLUMN LSID LSIDtype;
+ALTER TABLE ehr_billing.chargeRates ADD COLUMN LSID LSIDtype;
+
+/* ehr_billing-17.30-18.10.sql */
 
 --this table contains records of misc charges that have happened that cannot otherwise be
 --automatically inferred from the record
@@ -125,8 +179,6 @@ CREATE TABLE ehr_billing.invoicedItems (
   CONSTRAINT PK_invoicedItems PRIMARY KEY (objectid)
 );
 
-/* ehr_billing-17.31-17.32.sql */
-
 CREATE TABLE ehr_billing.chargeableItems (
 
   rowId SERIAL NOT NULL,
@@ -152,11 +204,7 @@ CREATE TABLE ehr_billing.chargeableItems (
   CONSTRAINT PK_chargeableItems PRIMARY KEY (rowId)
 );
 
-/* ehr_billing-17.32-17.33.sql */
-
 ALTER TABLE ehr_billing.chargeableItems ADD COLUMN LSID LSIDtype;
-
-/* ehr_billing-17.33-17.34.sql */
 
 CREATE TABLE ehr_billing.chargeRateExemptions (
 
@@ -196,8 +244,6 @@ CREATE TABLE ehr_billing.chargeUnits (
   CONSTRAINT PK_chargeUnits PRIMARY KEY (chargetype)
 );
 
-/* ehr_billing-17.34-17.35.sql */
-
 ALTER TABLE ehr_billing.chargeRateExemptions ALTER remark TYPE TEXT;
 
 ALTER TABLE ehr_billing.chargeRateExemptions ADD CONSTRAINT FK_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
@@ -214,8 +260,6 @@ CREATE INDEX EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX ON ehr_billing.invoicedI
 
 ALTER TABLE ehr_billing.miscCharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
 CREATE INDEX EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX ON ehr_billing.miscCharges (Container);
-
-/* ehr_billing-17.35-17.36.sql */
 
 CREATE TABLE ehr_billing.invoice (
 
@@ -245,12 +289,8 @@ CREATE INDEX EHR_BILLING_INVOICE_CONTAINER_INDEX ON ehr_billing.invoice (Contain
 
 ALTER TABLE ehr_billing.invoiceRuns DROP invoiceNumber;
 
-/* ehr_billing-17.36-17.37.sql */
-
 ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber TYPE varchar(20);
 ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber TYPE varchar(20);
-
-/* ehr_billing-17.37-17.38.sql */
 
 ALTER TABLE ehr_billing.invoice DROP CONSTRAINT PK_EHR_BILLING_INVOICE;
 ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber SET NOT NULL;
