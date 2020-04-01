@@ -26,7 +26,6 @@ import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.ModuleLoader;
-import org.labkey.ehr.query.EHRLookupsUserSchema;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -93,24 +92,7 @@ public class EHRUpgradeCode implements UpgradeCode
     }
 
     /**
-     * called at ehr_lookups-17.30-18.10
-     */
-    @SuppressWarnings({"UnusedDeclaration"})
-    public void setEhrLookupsContainerFirstSet(final ModuleContext moduleContext)
-    {
-        List<String> ehrLookupsTableNames = Arrays.asList(
-                EHRLookupsUserSchema.TABLE_GEOGRAPHIC_ORIGINS,
-                EHRLookupsUserSchema.TABLE_ROOMS,
-                EHRLookupsUserSchema.TABLE_BUILDINGS,
-                EHRLookupsUserSchema.TABLE_TREATMENT_CODES);
-
-        DbSchema ehrLookupsSchema = EHRSchema.getInstance().getEHRLookupsSchema();
-        setContainerColumn(moduleContext, ehrLookupsTableNames, ehrLookupsSchema);
-    }
-
-
-    /**
-     * called at ehr_lookups-18.10-18.20
+     * called at ehr_lookups-18.10-18.20. safe to remove in 20.11, once 18.20 is the earliest upgrade version.
      */
     @SuppressWarnings({"UnusedDeclaration"})
     public void setEhrLookupsContainerSecondSet(final ModuleContext moduleContext)
@@ -174,7 +156,7 @@ public class EHRUpgradeCode implements UpgradeCode
     }
 
     /**
-     * called at ehr_lookups-18.10-18.20
+     * called at ehr_lookups-18.10-18.20. safe to remove in 20.11, once 18.20 is the earliest upgrade version.
      */
     @SuppressWarnings({"UnusedDeclaration"})
     public void setEhrContainerFirstSet(final ModuleContext moduleContext)
@@ -187,5 +169,4 @@ public class EHRUpgradeCode implements UpgradeCode
         DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
         setContainerColumn(moduleContext, ehrTableNames, ehrSchema);
     }
-
 }
