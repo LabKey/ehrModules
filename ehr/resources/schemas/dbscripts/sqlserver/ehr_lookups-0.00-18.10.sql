@@ -10268,10 +10268,6 @@ ALTER TABLE ehr_lookups.buildings ADD CONSTRAINT FK_buildings_Container FOREIGN 
 ALTER TABLE ehr_lookups.treatment_codes ADD CONSTRAINT FK_treatment_codes_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 GO
 
--- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-EXEC core.executeJavaUpgradeCode 'setEhrLookupsContainerFirstSet';
-GO
-
 -- remove any NULL rows for Container
 DELETE FROM ehr_lookups.geographic_origins WHERE Container IS NULL;
 DELETE FROM ehr_lookups.rooms WHERE Container IS NULL;
