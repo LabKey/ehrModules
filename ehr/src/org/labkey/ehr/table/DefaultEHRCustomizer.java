@@ -1015,9 +1015,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             existingBtnNames.add(newButton.getText());
 
             existingBtns.add(newButton);
-            for (Supplier<ClientDependency> cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+            for (ClientDependency cd : ClientDependency.getClientDependencySet(fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser())))
             {
-                addScriptInclude(cfg, cd.get().getScriptString());
+                addScriptInclude(cfg, cd.getScriptString());
             }
         }
 
@@ -1081,9 +1081,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     btnNameMap.put(newButton.getText(), newButton);
                     menuItems.add(newButton);
 
-                    for (Supplier<ClientDependency> cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+                    for (ClientDependency cd : ClientDependency.getClientDependencySet(fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser())))
                     {
-                        addScriptInclude(cfg, cd.get().getScriptString());
+                        addScriptInclude(cfg, cd.getScriptString());
                     }
                 }
             }

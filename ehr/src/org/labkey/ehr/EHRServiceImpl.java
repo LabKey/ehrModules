@@ -82,7 +82,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -291,18 +290,18 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
-    public Set<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
+    public List<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
     {
-        Set<Supplier<ClientDependency>> set = new LinkedHashSet<>();
+        List<Supplier<ClientDependency>> list = new ArrayList<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))
             {
-                set.addAll(_clientDependencies.get(m));
+                list.addAll(_clientDependencies.get(m));
             }
         }
 
-        return Collections.unmodifiableSet(set);
+        return Collections.unmodifiableList(list);
     }
 
     @Override

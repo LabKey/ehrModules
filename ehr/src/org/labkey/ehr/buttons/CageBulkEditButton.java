@@ -21,9 +21,7 @@ import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
 
@@ -34,10 +32,7 @@ public class CageBulkEditButton extends SimpleButtonConfigFactory
     {
         super(owner, "Bulk Edit Cage/Divider Types", "EHR.window.BulkEditCageTypeWindow.buttonHandler(dataRegionName);");
 
-        List<Supplier<ClientDependency>> cds = new ArrayList<>();
-        cds.add(ClientDependency.supplierFromModuleName("ehr"));
-        cds.add(ClientDependency.supplierFromPath("ehr/window/BulkEditCageTypeWindow.js"));
-        setClientDependencies(cds);
+        setClientDependencies(List.of(ClientDependency.supplierFromModuleName("ehr"), ClientDependency.supplierFromPath("ehr/window/BulkEditCageTypeWindow.js")));
     }
 
     @Override

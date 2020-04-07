@@ -108,7 +108,7 @@ abstract public class EHRService
      */
     abstract public void registerClientDependency(Supplier<ClientDependency> cd, Module owner);
 
-    abstract public Set<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c);
+    abstract public List<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c);
 
     /**
      * @return the user configured via the EHR module property, to be used when running queries to populate the
