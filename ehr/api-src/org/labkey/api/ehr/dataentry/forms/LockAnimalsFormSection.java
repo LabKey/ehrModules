@@ -29,7 +29,7 @@ public class LockAnimalsFormSection extends AbstractFormSection
     {
         super("LockAnimals", "Lock Animal Creation", "ehr-lockanimalspanel");
 
-        addClientDependency(ClientDependency.fromPath("ehr/panel/LockAnimalsPanel.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/panel/LockAnimalsPanel.js"));
     }
 
     @Override

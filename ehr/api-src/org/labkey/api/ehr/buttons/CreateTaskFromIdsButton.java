@@ -39,7 +39,7 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
     public CreateTaskFromIdsButton(Module owner, String btnLabel, String taskLabel, String formType, String[] datasets)
     {
         super(owner, btnLabel, "EHR.window.CreateTaskFromIdsWindow.createTaskFromIdsHandler(dataRegionName, '" + formType + "', '" + taskLabel + "', ['" + StringUtils.join(datasets, "', '") + "'])");
-        setClientDependencies(ClientDependency.fromPath("ehr/window/CreateTaskFromIdsWindow.js"));
+        setClientDependencies(ClientDependency.supplierFromPath("ehr/window/CreateTaskFromIdsWindow.js"));
         _datasets = datasets;
     }
 

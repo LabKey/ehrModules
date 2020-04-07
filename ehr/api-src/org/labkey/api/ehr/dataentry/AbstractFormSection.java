@@ -36,6 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * De-facto base class for implementations of @{link {@link FormSection}}
@@ -65,7 +66,7 @@ abstract public class AbstractFormSection implements FormSection
 
     private List<String> _configSources = new ArrayList<>();
 
-    private LinkedHashSet<ClientDependency> _clientDependencies = new LinkedHashSet<>();
+    private List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
 
     protected static final Logger _log = Logger.getLogger(AbstractFormSection.class);
 
@@ -81,7 +82,7 @@ abstract public class AbstractFormSection implements FormSection
         _xtype = xtype;
         _location = location;
 
-        addClientDependency(ClientDependency.fromPath("ehr/window/CopyFromSectionWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/CopyFromSectionWindow.js"));
     }
 
     @Override
@@ -388,13 +389,13 @@ abstract public class AbstractFormSection implements FormSection
     }
 
     @Override
-    public LinkedHashSet<ClientDependency> getClientDependencies()
+    public List<Supplier<ClientDependency>> getClientDependencies()
     {
         return _clientDependencies;
     }
 
     @Override
-    public void addClientDependency(ClientDependency cd)
+    public void addClientDependency(Supplier<ClientDependency> cd)
     {
         _clientDependencies.add(cd);
     }

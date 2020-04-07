@@ -26,10 +26,10 @@ public class HousingFormSection  extends SimpleFormSection
     {
         super(schema, query, label, "ehr-gridpanel",EHRService.FORM_SECTION_LOCATION.Body);
 
-        addClientDependency(ClientDependency.fromPath("ehr/window/RoomTransferWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/RoomTransferWindow.js"));
         setClientStoreClass("EHR.data.HousingClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/HousingClientStore.js"));
-        addClientDependency(ClientDependency.fromPath("ehr/buttons/housingButtons.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/HousingClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/buttons/housingButtons.js"));
         setTemplateMode(AbstractFormSection.TEMPLATE_MODE.NONE);
     }
 }

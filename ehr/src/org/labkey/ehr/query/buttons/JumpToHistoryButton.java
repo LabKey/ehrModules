@@ -31,7 +31,7 @@ public class JumpToHistoryButton extends SimpleButtonConfigFactory
     public JumpToHistoryButton(Module owner)
     {
         super(owner, "Jump To History", "EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName);");
-        setClientDependencies(ClientDependency.fromModuleName("ehr"));
+        setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
     }
 
     public boolean isAvailable(TableInfo ti)

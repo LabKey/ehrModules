@@ -74,6 +74,7 @@ import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -85,6 +86,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -97,7 +99,7 @@ public class EHRServiceImpl extends EHRService
     private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
     private MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
-    private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
+    private Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
@@ -116,26 +118,31 @@ public class EHRServiceImpl extends EHRService
         return (EHRServiceImpl)EHRService.get();
     }
 
+    @Override
     public void registerModule(Module module)
     {
         _registeredModules.add(module);
     }
 
+    @Override
     public Set<Module> getRegisteredModules()
     {
         return _registeredModules;
     }
 
+    @Override
     public void registerTriggerScript(Module owner, Resource script)
     {
         _extraTriggerScripts.add(Pair.of(owner, script));
     }
 
+    @Override
     public void registerLabworkType(LabworkType type)
     {
         LabworkManager.get().registerType(type);
     }
 
+    @Override
     public List<Resource> getExtraTriggerScripts(Container c)
     {
         List<Resource> resources = new ArrayList<>();
@@ -151,11 +158,13 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(resources);
     }
 
+    @Override
     public void registerDemographicsProvider(DemographicsProvider provider)
     {
         _demographicsProviders.add(provider);
     }
 
+    @Override
     public Collection<DemographicsProvider> getDemographicsProviders(Container c, User u)
     {
         Map<String, DemographicsProvider> providers = new HashMap<>();
@@ -168,22 +177,26 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableCollection(providers.values());
     }
 
+    @Override
     public void setProjectValidator(ProjectValidator projectValidator)
     {
         if (projectValidator != null)
             _projectValidator = projectValidator;
     }
 
+    @Override
     public ProjectValidator getProjectValidator()
     {
         return _projectValidator;
     }
 
+    @Override
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass)
     {
         registerTableCustomizer(owner, customizerClass, LDKService.ALL_SCHEMAS, LDKService.ALL_TABLES);
     }
 
+    @Override
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass, String schema, String query)
     {
         Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>> map = _tableCustomizers.get(schema);
@@ -200,6 +213,7 @@ public class EHRServiceImpl extends EHRService
         _tableCustomizers.put(schema, map);
     }
 
+    @Override
     public List<TableCustomizer> getCustomizers(Container c, String schema, String query)
     {
         List<TableCustomizer> list = new ArrayList<>();
@@ -254,9 +268,9 @@ public class EHRServiceImpl extends EHRService
     {
         try
         {
-            return customizerClass.newInstance();
+            return customizerClass.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e)
+        catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {
             _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
         }
@@ -264,9 +278,10 @@ public class EHRServiceImpl extends EHRService
         return null;
     }
 
-    public void registerClientDependency(ClientDependency cd, Module owner)
+    @Override
+    public void registerClientDependency(Supplier<ClientDependency> cd, Module owner)
     {
-        List<ClientDependency> list = _clientDependencies.get(owner);
+        List<Supplier<ClientDependency>> list = _clientDependencies.get(owner);
         if (list == null)
             list = new ArrayList<>();
 
@@ -275,9 +290,10 @@ public class EHRServiceImpl extends EHRService
         _clientDependencies.put(owner, list);
     }
 
-    public Set<ClientDependency> getRegisteredClientDependencies(Container c)
+    @Override
+    public Set<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
     {
-        Set<ClientDependency> set = new LinkedHashSet<>();
+        Set<Supplier<ClientDependency>> set = new LinkedHashSet<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))
@@ -289,11 +305,13 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableSet(set);
     }
 
+    @Override
     public User getEHRUser(Container c)
     {
         return EHRManager.get().getEHRUser(c);
     }
 
+    @Override
     public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category)
     {
         List<ReportLink> links = _reportLinks.get(type);
@@ -306,6 +324,7 @@ public class EHRServiceImpl extends EHRService
         _reportLinks.put(type, links);
     }
 
+    @Override
     public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category)
     {
         List<ReportLink> links = _reportLinks.get(type);
@@ -334,7 +353,7 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(ret);
     }
 
-    public class ReportLink
+    public static class ReportLink
     {
         private URLHelper _url = null;
         private DetailsURL _detailsURL = null;
@@ -407,13 +426,13 @@ public class EHRServiceImpl extends EHRService
         }
     }
 
+    @Override
     public void registerHistoryDataSource(HistoryDataSource source)
     {
         ClinicalHistoryManager.get().registerDataSource(source);
     }
 
     /**Adds a set of resources found to be common for ONPRC and WNPRC and not included by SNPRC.
-     * @param module
      */
     @Override
     public void registerOptionalClinicalHistoryResources(Module module)
@@ -445,6 +464,7 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerLabworkType(new SerologyLabworkType(module));
     }
 
+    @Override
     public void registerActionOverride(String actionName, Module owner, String resourcePath)
     {
         _actionOverrides.put(actionName, Pair.of(owner, Path.parse(resourcePath)));
@@ -471,6 +491,7 @@ public class EHRServiceImpl extends EHRService
         return null;
     }
 
+    @Override
     public Container getEHRStudyContainer(Container c)
     {
         Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
@@ -482,42 +503,50 @@ public class EHRServiceImpl extends EHRService
         return ContainerManager.getForPath(path);
     }
 
+    @Override
     @NotNull
     public Map<String, EHRQCState> getQCStates(Container c)
     {
         return EHRSecurityManager.get().getQCStateInfo(c);
     }
 
+    @Override
     public void registerFormType(DataEntryFormFactory fact)
     {
         DataEntryManager.get().registerFormType(fact);
     }
 
+    @Override
     public DataEntryForm getDataEntryForm(String name, Container c, User u)
     {
         return DataEntryManager.get().getFormByName(name, c, u);
     }
 
+    @Override
     public ActionURL getDataEntryFormActionURL(Container c)
     {
         return new ActionURL(EHRController.DataEntryFormAction.class, c);
     }
 
+    @Override
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
     {
         DataEntryManager.get().registerDefaultFieldKeys(schemaName, queryName, keys);
     }
 
+    @Override
     public List<FieldKey> getDefaultFieldKeys(TableInfo ti)
     {
         return DataEntryManager.get().getDefaultFieldKeys(ti);
     }
 
+    @Override
     public void registerTbarButton(ButtonConfigFactory btn, String schema, String query)
     {
         registerButton(btn, schema, query, _tbarButtons);
     }
 
+    @Override
     public void registerMoreActionsButton(ButtonConfigFactory btn, String schema, String query)
     {
         registerButton(btn, schema, query, _moreActionsButtons);
@@ -539,12 +568,14 @@ public class EHRServiceImpl extends EHRService
         map.put(schema, schemaMap);
     }
 
+    @Override
     @NotNull
     public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti)
     {
         return getButtons(ti, _moreActionsButtons);
     }
 
+    @Override
     @NotNull
     public List<ButtonConfigFactory> getTbarButtons(TableInfo ti)
     {
@@ -590,16 +621,19 @@ public class EHRServiceImpl extends EHRService
         return Collections.emptyList();
     }
 
+    @Override
     public boolean hasDataEntryPermission (String schemaName, String queryName, Container c, User u)
     {
         return hasPermission(schemaName, queryName, c, u, EHRDataEntryPermission.class);
     }
 
+    @Override
     public boolean hasDataEntryPermission (TableInfo ti)
     {
         return hasPermission(ti, EHRDataEntryPermission.class);
     }
 
+    @Override
     public boolean hasPermission (String schemaName, String queryName, Container c, User u, Class<? extends Permission> perm)
     {
         Container ehrContainer = EHRService.get().getEHRStudyContainer(c);
@@ -617,6 +651,7 @@ public class EHRServiceImpl extends EHRService
         return hasPermission(ti, perm);
     }
 
+    @Override
     public boolean hasPermission (TableInfo ti, Class<? extends Permission> perm)
     {
         SecurableResource sr;
@@ -633,6 +668,7 @@ public class EHRServiceImpl extends EHRService
         return policy.hasPermission(ti.getUserSchema().getUser(), perm);
     }
 
+    @Override
     public boolean hasPermission (String schemaName, String queryName, Container c, User u, Class<? extends Permission> perm, EHRQCState qcState)
     {
         SecurableResource sr = EHRSecurityManager.get().getSecurableResource(c, u, schemaName, queryName);
@@ -645,6 +681,7 @@ public class EHRServiceImpl extends EHRService
         return EHRSecurityManager.get().testPermission(u, sr, perm, qcState);
     }
 
+    @Override
     public void customizeDateColumn(AbstractTableInfo ti, String colName)
     {
         ColumnInfo dateCol = ti.getColumn(colName);
@@ -702,38 +739,47 @@ public class EHRServiceImpl extends EHRService
         }
     }
 
+    @Override
     public TableCustomizer getEHRCustomizer()
     {
         return new DefaultEHRCustomizer();
     }
 
+    @Override
     public void registerSingleFormOverride(SingleQueryFormProvider p)
     {
         DataEntryManager.get().registerSingleFormOverride(p);
     }
 
+    @Override
     public void appendCalculatedIdCols(AbstractTableInfo ti, String dateFieldName)
     {
         DefaultEHRCustomizer t = new DefaultEHRCustomizer();
         t.appendCalculatedCols(ti, dateFieldName);
     }
 
+    @NotNull
+    @Override
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
         return ensureFlagActive(u, c, flag, date, null, remark, animalIds, livingAnimalsOnly);
     }
 
+    @Override
     @NotNull
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, Date enddate, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
         return EHRManager.get().ensureFlagActive(u, c, flag, date, enddate, remark, animalIds, livingAnimalsOnly);
     }
 
+    @NotNull
+    @Override
     public Collection<String> terminateFlagsIfExists(User u, Container c, String flag, Date enddate, Collection<String> animalIds)
     {
         return EHRManager.get().terminateFlagsIfExists(u, c, flag, enddate, animalIds);
     }
 
+    @Override
     public String getEHRDefaultClinicalProjectName(Container c)
     {
         return EHRManager.get().getEHRDefaultClinicalProjectName(c);

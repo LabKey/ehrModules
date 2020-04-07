@@ -113,6 +113,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 public class EHRModule extends ExtendedSimpleModule
 {
@@ -363,10 +364,10 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    public @NotNull LinkedHashSet<ClientDependency> getClientDependencies(Container c)
+    public @NotNull LinkedHashSet<Supplier<ClientDependency>> getClientDependencies(Container c)
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
-        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
+        LinkedHashSet<Supplier<ClientDependency>> ret = new LinkedHashSet<>();
         ret.addAll(super.getClientDependencies(c));
         ret.addAll(EHRService.get().getRegisteredClientDependencies(c));
 

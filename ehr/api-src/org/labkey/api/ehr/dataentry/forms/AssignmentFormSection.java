@@ -27,7 +27,7 @@ public class AssignmentFormSection extends SimpleFormSection
         super("study", "assignment", "Assignments","ehr-gridpanel");
 
         setClientStoreClass("EHR.data.AssignmentClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/AssignmentClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/AssignmentClientStore.js"));
     }
 
     @Override

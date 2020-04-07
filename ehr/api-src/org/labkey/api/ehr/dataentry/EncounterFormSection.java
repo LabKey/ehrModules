@@ -37,7 +37,7 @@ public class EncounterFormSection extends SimpleFormSection
         sources.add("Encounter");
         setConfigSources(sources);
         setClientModelClass("EHR.data.ClinicalEncountersClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/ClinicalEncountersClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/ClinicalEncountersClientStore.js"));
 
         setTemplateMode(TEMPLATE_MODE.ENCOUNTER);
     }

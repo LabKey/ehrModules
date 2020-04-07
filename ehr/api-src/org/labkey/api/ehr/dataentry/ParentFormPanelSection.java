@@ -30,7 +30,7 @@ public class ParentFormPanelSection extends SimpleFormPanelSection
     public ParentFormPanelSection(String schemaName, String queryName, String label)
     {
         super(schemaName, queryName, label, true);
-        addClientDependency(ClientDependency.fromPath("ehr/data/ParentClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/ParentClientStore.js"));
         setClientStoreClass("EHR.data.ParentClientStore");
     }
 

@@ -52,7 +52,7 @@ public class BirthFormType  extends TaskForm
         {
             s.addConfigSource("Birth_Entry");
         }
-        addClientDependency(ClientDependency.fromPath("ehr/model/sources/Birth_Entry.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/model/sources/Birth_Entry.js"));
 
         setDisplayReviewRequired(true);
     }

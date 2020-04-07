@@ -31,7 +31,7 @@ public class ShowAuditHistoryButton extends SimpleButtonConfigFactory
     public ShowAuditHistoryButton(Module owner)
     {
         super(owner, "Show Record History", "EHR.DatasetButtons.showAuditHistoryHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromModuleName("ehr"));
+        setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
     }
 
     public boolean isAvailable(TableInfo ti)

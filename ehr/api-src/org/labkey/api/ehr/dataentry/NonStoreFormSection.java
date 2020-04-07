@@ -20,6 +20,7 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Form section that isn't bound to an ExtJS store for its data model. These are typically read-only views, and may
@@ -34,13 +35,13 @@ public class NonStoreFormSection extends AbstractFormSection
         super(name, label, xtype);
     }
 
-    public NonStoreFormSection(String name, String label, String xtype, List<ClientDependency> dependencies)
+    public NonStoreFormSection(String name, String label, String xtype, List<Supplier<ClientDependency>> dependencies)
     {
         super(name, label, xtype);
 
         if (dependencies != null)
         {
-            for (ClientDependency cd : dependencies)
+            for (Supplier<ClientDependency> cd : dependencies)
             {
                 addClientDependency(cd);
             }

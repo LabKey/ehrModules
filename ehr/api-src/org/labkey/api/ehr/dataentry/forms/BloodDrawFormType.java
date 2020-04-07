@@ -29,6 +29,7 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -54,9 +55,9 @@ public class BloodDrawFormType extends TaskForm
         super(ctx, owner, NAME, NAME, "Clinical", sections);
 
         addClientDependency(getAddScheduledTreatmentWindowDependency());
-        addClientDependency(ClientDependency.fromPath("ehr/form/field/SnomedTreatmentCombo.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/form/field/SnomedTreatmentCombo.js"));
 
-        addClientDependency(ClientDependency.fromPath("ehr/model/sources/BloodDraw.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/model/sources/BloodDraw.js"));
 
         for (FormSection s : getFormSections())
         {
@@ -64,8 +65,8 @@ public class BloodDrawFormType extends TaskForm
         }
     }
 
-    public ClientDependency getAddScheduledTreatmentWindowDependency()
+    public Supplier<ClientDependency> getAddScheduledTreatmentWindowDependency()
     {
-        return ClientDependency.fromPath("ehr/window/AddScheduledTreatmentWindow.js");
+        return ClientDependency.supplierFromPath("ehr/window/AddScheduledTreatmentWindow.js");
     }
 }

@@ -1372,7 +1372,7 @@ public class EHRController extends SpringActionController
             view.setFrame(WebPartView.FrameType.NONE);
 
             view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
-            view.addClientDependencies(def.getClientDependencies());
+            view.addClientDependencies(ClientDependency.getClientDependencySet(def.getClientDependencies()));
 
             return view;
         }
@@ -1411,7 +1411,7 @@ public class EHRController extends SpringActionController
 
             LinkedHashSet<ClientDependency> dependencies = new LinkedHashSet<>();
             dependencies.add(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
-            dependencies.addAll(def.getClientDependencies());
+            dependencies.addAll(ClientDependency.getClientDependencySet(def.getClientDependencies()));
             for (ClientDependency cd : dependencies)
             {
                 jsDependencyPaths.addAll(cd.getJsPaths(getContainer(), AppProps.getInstance().isDevMode()));

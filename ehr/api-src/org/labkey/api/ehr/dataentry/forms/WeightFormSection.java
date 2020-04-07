@@ -24,7 +24,7 @@ public class WeightFormSection extends SimpleFormSection
     {
         super("study", "Weight", "Weights", "ehr-gridpanel");
         setClientStoreClass("EHR.data.WeightClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/WeightClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/WeightClientStore.js"));
 
         _showLocation = true;
     }

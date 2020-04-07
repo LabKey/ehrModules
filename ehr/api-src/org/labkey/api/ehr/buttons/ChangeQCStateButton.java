@@ -25,7 +25,9 @@ import org.labkey.api.study.DatasetTable;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -36,15 +38,15 @@ public class ChangeQCStateButton extends SimpleButtonConfigFactory
 {
     public ChangeQCStateButton(Module owner)
     {
-        this(owner, "EHR.window.ChangeRequestStatusWindow", Collections.singleton(ClientDependency.fromPath("ehr/window/ChangeRequestStatusWindow.js")));
+        this(owner, "EHR.window.ChangeRequestStatusWindow", Collections.singletonList(ClientDependency.supplierFromPath("ehr/window/ChangeRequestStatusWindow.js")));
     }
 
-    public ChangeQCStateButton(Module owner, @Nullable String jsClass, @Nullable Set<ClientDependency> clientDependencies)
+    public ChangeQCStateButton(Module owner, @Nullable String jsClass, @Nullable List<Supplier<ClientDependency>> clientDependencies)
     {
         this(owner, "Change Request Status", jsClass, clientDependencies);
     }
 
-    public ChangeQCStateButton(Module owner, String text, @Nullable String jsClass, @Nullable Set<ClientDependency> clientDependencies)
+    public ChangeQCStateButton(Module owner, String text, @Nullable String jsClass, @Nullable List<Supplier<ClientDependency>> clientDependencies)
     {
         super(owner, text, "EHR.window.ChangeRequestStatusWindow.changeQCStateHandler(dataRegionName, '" + jsClass + "');");
 

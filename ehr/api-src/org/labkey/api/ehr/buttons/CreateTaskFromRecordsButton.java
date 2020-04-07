@@ -40,7 +40,7 @@ public class CreateTaskFromRecordsButton extends SimpleButtonConfigFactory
     public CreateTaskFromRecordsButton(Module owner, String btnLabel, String handler)
     {
         super(owner, btnLabel, handler);
-        setClientDependencies(ClientDependency.fromPath("ehr/window/CreateTaskFromRecordsWindow.js"));
+        setClientDependencies(ClientDependency.supplierFromPath("ehr/window/CreateTaskFromRecordsWindow.js"));
     }
 
     public boolean isAvailable(TableInfo ti)
