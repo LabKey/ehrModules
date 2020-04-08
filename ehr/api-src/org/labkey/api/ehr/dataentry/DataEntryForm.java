@@ -24,6 +24,7 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Top-level data entry form configuration, bound to a specific user via a {@link DataEntryFormContext},
@@ -78,7 +79,7 @@ public interface DataEntryForm
     /**
      * @return resources, typically .js and .css files, that are required for the browser to successfully render the form
      */
-    LinkedHashSet<ClientDependency> getClientDependencies();
+    List<Supplier<ClientDependency>> getClientDependencies();
 
     /**
      *  @return the tables that are backing the form's persistence. Used to validate that the user has permission

@@ -24,6 +24,7 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * One section of a larger data entry form. Typically bound to a single underlying table to show an editable grid or
@@ -63,7 +64,7 @@ public interface FormSection
     JSONObject toJSON(DataEntryFormContext ctx, boolean includeFormElements);
 
     /** @return the JavaScript and CSS resources needed to successfully render this section */
-    LinkedHashSet<ClientDependency> getClientDependencies();
+    List<Supplier<ClientDependency>> getClientDependencies();
 
     /**
      * Adds a reference to a JS-supplied set of metadata to be used for configuring the form section. The JS file
@@ -78,7 +79,7 @@ public interface FormSection
     void addConfigSource(String source);
 
     /** Add another dependency reference, such as a JavaScript or CSS file */
-    void addClientDependency(ClientDependency cd);
+    void addClientDependency(Supplier<ClientDependency> cd);
 
     void setTemplateMode(AbstractFormSection.TEMPLATE_MODE mode);
 }

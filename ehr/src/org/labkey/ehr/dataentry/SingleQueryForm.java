@@ -49,7 +49,7 @@ public class SingleQueryForm extends AbstractDataEntryForm
             s.addConfigSource("SingleQuery");
         }
 
-        addClientDependency(ClientDependency.fromPath("ehr/model/sources/SingleQuery.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/model/sources/SingleQuery.js"));
     }
 
     public static SingleQueryForm create(DataEntryFormContext ctx, Module owner, TableInfo ti)

@@ -43,7 +43,7 @@ public class ExcelImportButton extends SimpleButtonConfigFactory
     public ExcelImportButton(Module owner, String schemaName, String queryName, String label)
     {
         super(owner, label, DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&queryName=" + queryName));
-        setClientDependencies(ClientDependency.fromModuleName("ehr"));
+        setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
         _schemaName = schemaName;
         _queryName = queryName;
     }

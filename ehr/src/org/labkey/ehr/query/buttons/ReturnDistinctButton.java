@@ -31,7 +31,7 @@ public class ReturnDistinctButton extends SimpleButtonConfigFactory
     public ReturnDistinctButton(Module owner)
     {
         super(owner, "Return Distinct Values", "EHR.window.GetDistinctWindow.getDistinctHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromModuleName("ehr"));
+        setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
     }
 
     public boolean isAvailable(TableInfo ti)

@@ -29,7 +29,7 @@ public class DocumentArchiveFormSection extends AbstractFormSection
     {
         super("ArrivalInstructions", "Document Archive", "ehr-documentarchivepanel");
 
-        addClientDependency(ClientDependency.fromPath("ehr/panel/DocumentArchivePanel.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/panel/DocumentArchivePanel.js"));
     }
 
     @Override

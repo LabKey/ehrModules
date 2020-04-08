@@ -19,6 +19,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -49,27 +50,27 @@ public class DrugAdministrationFormSection extends SimpleFormSection
         this(EHRService.FORM_SECTION_LOCATION.Body, LABEL, includeAddScheduledTreatmentButton);
     }
 
-    public DrugAdministrationFormSection(ClientDependency addScheduledTreatmentWindowClientDependency)
+    public DrugAdministrationFormSection(Supplier<ClientDependency> addScheduledTreatmentWindowClientDependency)
     {
         this(EHRService.FORM_SECTION_LOCATION.Body, LABEL, addScheduledTreatmentWindowClientDependency);
     }
 
     public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label, boolean includeAddScheduledTreatmentButton)
     {
-        this(location, label, includeAddScheduledTreatmentButton ? ClientDependency.fromPath("ehr/window/AddScheduledTreatmentWindow.js") : null);
+        this(location, label, includeAddScheduledTreatmentButton ? ClientDependency.supplierFromPath("ehr/window/AddScheduledTreatmentWindow.js") : null);
     }
 
-    public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label, ClientDependency addScheduledTreatmentWindowClientDependency)
+    public DrugAdministrationFormSection(EHRService.FORM_SECTION_LOCATION location, String label, Supplier<ClientDependency> addScheduledTreatmentWindowClientDependency)
     {
         super("study", "Drug Administration", label, "ehr-gridpanel");
         setClientStoreClass("EHR.data.DrugAdministrationRunsClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/DrugAdministrationRunsClientStore.js"));
-        addClientDependency(ClientDependency.fromPath("ehr/window/SedationWindow.js"));
-        addClientDependency(ClientDependency.fromPath("ehr/window/RepeatSelectedWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/DrugAdministrationRunsClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/SedationWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/RepeatSelectedWindow.js"));
         if (addScheduledTreatmentWindowClientDependency != null)
         {
             addClientDependency(addScheduledTreatmentWindowClientDependency);
-            addClientDependency(ClientDependency.fromPath("ehr/form/field/SnomedTreatmentCombo.js"));
+            addClientDependency(ClientDependency.supplierFromPath("ehr/form/field/SnomedTreatmentCombo.js"));
         }
 
         setLocation(location);

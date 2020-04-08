@@ -29,7 +29,7 @@ public class ArrivalInstructionsFormSection extends AbstractFormSection
     {
         super("LabworkRequestInstructions", "Instructions", "ehr-arrivalinstructionspanel");
 
-        addClientDependency(ClientDependency.fromPath("ehr/panel/ArrivalInstructionsPanel.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/panel/ArrivalInstructionsPanel.js"));
     }
 
     @Override

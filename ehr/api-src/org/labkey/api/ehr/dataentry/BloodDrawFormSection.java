@@ -35,10 +35,10 @@ public class BloodDrawFormSection extends SimpleGridPanel
         _isRequest = isRequest;
 
         setClientStoreClass("EHR.data.BloodDrawClientStore");
-        addClientDependency(ClientDependency.fromPath("ehr/data/BloodDrawClientStore.js"));
-        addClientDependency(ClientDependency.fromPath("ehr/window/BloodBulkAddWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/BloodDrawClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/BloodBulkAddWindow.js"));
         if (!isRequest)
-            addClientDependency(ClientDependency.fromPath("ehr/window/AddScheduledBloodDrawsWindow.js"));
+            addClientDependency(ClientDependency.supplierFromPath("ehr/window/AddScheduledBloodDrawsWindow.js"));
     }
 
     @Override

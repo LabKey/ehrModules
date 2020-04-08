@@ -30,11 +30,11 @@ public class ChildFormSection extends SimpleFormSection
     public ChildFormSection(String schemaName, String queryName, String label, String parentQueryName, String xtype, EHRService.FORM_SECTION_LOCATION location)
     {
         super(schemaName, queryName, label, xtype, location);
-        addClientDependency(ClientDependency.fromPath("ehr/data/ChildClientStore.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/data/ChildClientStore.js"));
         setClientStoreClass("EHR.data.ChildClientStore");
         addExtraProperty("parentQueryName", parentQueryName);
 
-        addClientDependency(ClientDependency.fromPath("ehr/window/ParentChildAddRecord.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/ParentChildAddRecord.js"));
     }
 
     @Override

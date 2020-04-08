@@ -34,6 +34,7 @@ import org.labkey.api.view.HttpView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.WebPartView;
+import org.labkey.api.view.template.ClientDependencies;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Base class for implementations of @{link DataEntryForm}.
@@ -59,7 +61,7 @@ public class AbstractDataEntryForm implements DataEntryForm
     private String _javascriptClass = "EHR.panel.DataEntryPanel";
     private String _storeCollectionClass = "EHR.data.StoreCollection";
     private List<FormSection> _sections;
-    private LinkedHashSet<ClientDependency> _clientDependencies = new LinkedHashSet<>();
+    private List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
     private AbstractFormSection.TEMPLATE_MODE _templateMode = AbstractFormSection.TEMPLATE_MODE.MULTI;
     private Module _owner;
     private boolean _displayReviewRequired = false;
@@ -240,7 +242,7 @@ public class AbstractDataEntryForm implements DataEntryForm
         view.setFrame(WebPartView.FrameType.NONE);
 
         view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
-        view.addClientDependencies(getClientDependencies());
+        view.addClientDependencies(ClientDependency.getClientDependencySet(getClientDependencies()));
         return view;
     }
 
@@ -360,9 +362,9 @@ public class AbstractDataEntryForm implements DataEntryForm
     }
 
     @Override
-    public LinkedHashSet<ClientDependency> getClientDependencies()
+    public List<Supplier<ClientDependency>> getClientDependencies()
     {
-        LinkedHashSet<ClientDependency> cds = new LinkedHashSet<>(_clientDependencies);
+        List<Supplier<ClientDependency>> cds = new ArrayList<>(_clientDependencies);
 
         for (FormSection section : getFormSections())
         {
@@ -371,7 +373,7 @@ public class AbstractDataEntryForm implements DataEntryForm
         return cds;
     }
 
-    protected void addClientDependency(ClientDependency cd)
+    protected void addClientDependency(Supplier<ClientDependency> cd)
     {
         _clientDependencies.add(cd);
     }

@@ -32,7 +32,6 @@ import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
 import org.labkey.api.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.api.ehr.demographics.DeathsDemographicsProvider;
 import org.labkey.api.ehr.demographics.DepartureDemographicsProvider;
-import org.labkey.ehr.demographics.EHRProjectValidator;
 import org.labkey.api.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.api.ehr.demographics.MostRecentWeightDemographicsProvider;
 import org.labkey.api.ehr.demographics.WeightsDemographicsProvider;
@@ -69,16 +68,17 @@ import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
+import org.labkey.ehr.demographics.EHRProjectValidator;
 import org.labkey.ehr.history.DefaultAssignmentDataSource;
 import org.labkey.ehr.history.DefaultBloodDrawDataSource;
 import org.labkey.ehr.history.DefaultHousingDataSource;
 import org.labkey.ehr.history.DefaultLabworkDataSource;
 import org.labkey.ehr.history.DefaultWeightDataSource;
+import org.labkey.ehr.model.EHRDomainKind;
 import org.labkey.ehr.model.EHR_LookupsDomainKind;
 import org.labkey.ehr.notification.DataEntrySummary;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
-import org.labkey.ehr.model.EHRDomainKind;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.query.EHRUserSchema;
 import org.labkey.ehr.query.buttons.ExcelImportButton;
@@ -109,10 +109,12 @@ import javax.servlet.ServletContext;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 public class EHRModule extends ExtendedSimpleModule
 {
@@ -363,10 +365,10 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    public @NotNull LinkedHashSet<ClientDependency> getClientDependencies(Container c)
+    public @NotNull List<Supplier<ClientDependency>> getClientDependencies(Container c)
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
-        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
+        List<Supplier<ClientDependency>> ret = new LinkedList<>();
         ret.addAll(super.getClientDependencies(c));
         ret.addAll(EHRService.get().getRegisteredClientDependencies(c));
 

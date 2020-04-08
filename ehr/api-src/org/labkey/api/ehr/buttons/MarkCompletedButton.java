@@ -59,7 +59,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
     public MarkCompletedButton(Module owner, String schemaName, String queryName, String label, Class<? extends Permission> perm, boolean forceDateOnlyField)
     {
         super(owner, label, "");
-        setClientDependencies(ClientDependency.fromModuleName("ehr"));
+        setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
         _schemaName = schemaName;
         _queryName = queryName;
         _perm = perm;

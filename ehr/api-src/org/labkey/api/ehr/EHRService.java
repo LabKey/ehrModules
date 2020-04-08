@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Provides a variety of hooks for EHR customization in other modules, and services for external modules to use.
@@ -105,9 +106,9 @@ abstract public class EHRService
      * Allow modules to provide JS and other dependencies that will be loaded whenever
      * ehr.context is requested, assuming the supplying module is enabled in the current container
      */
-    abstract public void registerClientDependency(ClientDependency cd, Module owner);
+    abstract public void registerClientDependency(Supplier<ClientDependency> cd, Module owner);
 
-    abstract public Set<ClientDependency> getRegisteredClientDependencies(Container c);
+    abstract public List<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c);
 
     /**
      * @return the user configured via the EHR module property, to be used when running queries to populate the

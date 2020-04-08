@@ -37,9 +37,10 @@ public class ReassignRequestButton extends SimpleButtonConfigFactory
     {
         super(owner, "Reassign Requests", "EHR.window.ReassignRequestWindow.buttonHandler(dataRegionName, " + PageFlowUtil.jsString(queryName) + ");");
 
-        setClientDependencies(ClientDependency.fromPath("ehr/window/ReassignRequestWindow.js"));
+        setClientDependencies(ClientDependency.supplierFromPath("ehr/window/ReassignRequestWindow.js"));
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))

@@ -31,8 +31,8 @@ public class NewAnimalFormSection  extends SimpleFormSection
         super(schemaName, queryName, label, "ehr-gridpanel");
         _allowSetSpecies = allowSetSpecies;
 
-        addClientDependency(ClientDependency.fromPath("ehr/window/AnimalIdSeriesWindow.js"));
-        addClientDependency(ClientDependency.fromPath("ehr/form/field/AnimalIdGeneratorField.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/window/AnimalIdSeriesWindow.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/form/field/AnimalIdGeneratorField.js"));
     }
 
     @Override

@@ -79,6 +79,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -1014,7 +1015,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             existingBtnNames.add(newButton.getText());
 
             existingBtns.add(newButton);
-            for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+            for (ClientDependency cd : ClientDependency.getClientDependencySet(fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser())))
             {
                 addScriptInclude(cfg, cd.getScriptString());
             }
@@ -1080,7 +1081,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     btnNameMap.put(newButton.getText(), newButton);
                     menuItems.add(newButton);
 
-                    for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+                    for (ClientDependency cd : ClientDependency.getClientDependencySet(fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser())))
                     {
                         addScriptInclude(cfg, cd.getScriptString());
                     }

@@ -31,7 +31,7 @@ public class SingleQueryFormSection extends SimpleFormSection
     public SingleQueryFormSection(String schema, String query, String label)
     {
         super(schema, query, label, "ehr-simpledataentryformpanel");
-        addClientDependency(ClientDependency.fromPath("ehr/form/SimpleDataEntryFormPanel.js"));
+        addClientDependency(ClientDependency.supplierFromPath("ehr/form/SimpleDataEntryFormPanel.js"));
     }
 
     @Override
