@@ -19,6 +19,6 @@
         <dependency path="clientapi/ext4.lib.xml"/>
     </clientDependencies>
     <requiredModuleContext>
-        <requiredModule name="LDK" />
+        <module name="LDK" />
     </requiredModuleContext>
 </module>
