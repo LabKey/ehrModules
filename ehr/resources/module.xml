@@ -92,7 +92,7 @@
         </propertyDescriptor>
     </properties>
     <requiredModuleContext>
-        <requiredModule name="LDK"/>
+        <module name="LDK"/>
     </requiredModuleContext>
     <clientDependencies>
         <dependency path="ehr/ehr_api"/>
