@@ -278,7 +278,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     @Nullable
     private String getOrCreateInvoiceRecord(Map<String, Object> row, Date endDate) throws PipelineJobException
     {
-        String invoiceNumber = processingService.getInvoiceNum(row, endDate);
+        String invoiceNumber = processingService.getInvoiceNum(row, endDate, getJob().getLogger());
         if (null != invoiceNumber)
         {
             try
