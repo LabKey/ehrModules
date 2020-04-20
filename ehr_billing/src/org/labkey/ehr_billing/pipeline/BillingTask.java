@@ -17,6 +17,7 @@ package org.labkey.ehr_billing.pipeline;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -274,32 +275,37 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
+    @Nullable
     private String getOrCreateInvoiceRecord(Map<String, Object> row, Date endDate) throws PipelineJobException
     {
         String invoiceNumber = processingService.getInvoiceNum(row, endDate);
-        try
+        if (null != invoiceNumber)
         {
-            TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
-
-            TableSelector ts = new TableSelector(invoice, filter, null);
-            if(!ts.exists())
+            try
             {
-                getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
-                Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
-                toCreate.put("invoiceNumber", invoiceNumber);
-                toCreate.put("accountNumber", row.get("debitedAccount"));
-                toCreate.put("container", getJob().getContainer().getId());
-                toCreate.put("invoiceRunId", _invoiceId);
+                TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
 
-                Table.insert(getJob().getUser(), invoice, toCreate);
+                TableSelector ts = new TableSelector(invoice, filter, null);
+                if (!ts.exists())
+                {
+                    getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
+                    Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
+                    toCreate.put("invoiceNumber", invoiceNumber);
+                    toCreate.put("accountNumber", row.get("debitedAccount"));
+                    toCreate.put("container", getJob().getContainer().getId());
+                    toCreate.put("invoiceRunId", _invoiceId);
+
+                    Table.insert(getJob().getUser(), invoice, toCreate);
+                }
+                return invoiceNumber;
             }
-            return invoiceNumber;
+            catch (RuntimeSQLException e)
+            {
+                throw new PipelineJobException(e);
+            }
         }
-        catch (RuntimeSQLException e)
-        {
-            throw new PipelineJobException(e);
-        }
+        return null;
     }
 
     private void writeToInvoicedItems(BillingPipelineJobProcess process, Collection<Map<String, Object>> rows, BillingPipelineJobSupport support) throws PipelineJobException
@@ -313,12 +319,16 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
             {
+                String invoiceNumber = getOrCreateInvoiceRecord(row, support.getEndDate());
+                if (null == invoiceNumber)
+                    continue;
+
                 Map<String,Object> toInsert = new CaseInsensitiveHashMap<>();
                 toInsert.put("container", getJob().getContainer().getId());
                 toInsert.put("objectId", new GUID());
                 toInsert.put("invoiceId", invoiceId);
                 toInsert.put("transactionNumber", getNextTransactionNumber());
-                toInsert.put("invoiceNumber", getOrCreateInvoiceRecord(row, support.getEndDate()));
+                toInsert.put("invoiceNumber", invoiceNumber);
                 toInsert.put("category", process.getLabel());
 
                 for (String field : queryColNames)
