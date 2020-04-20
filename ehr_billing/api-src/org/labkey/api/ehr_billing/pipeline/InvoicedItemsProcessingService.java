@@ -64,7 +64,7 @@ public interface InvoicedItemsProcessingService
      * @return generated invoice num
      */
     @Nullable
-    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate, Logger logger);
+    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate, @Nullable Logger logger);
 
     /**
      * Process center specific billing columns, if any.
