@@ -60,11 +60,10 @@ public interface InvoicedItemsProcessingService
      * Generate invoice number for a billing task processed row and billing period date.
      * @param row the billing task processed row to get values from
      * @param billingPeriodDate a date within a billing period
-     * @param logger log4j logger for errors and warnings
      * @return generated invoice num
      */
     @Nullable
-    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate, @Nullable Logger logger);
+    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate) throws PipelineJobException;
 
     /**
      * Process center specific billing columns, if any.
