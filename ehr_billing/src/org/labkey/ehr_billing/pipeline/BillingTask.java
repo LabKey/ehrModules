@@ -44,8 +44,11 @@ import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.RecordedAction;
 import org.labkey.api.pipeline.RecordedActionSet;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
@@ -53,7 +56,6 @@ import org.labkey.api.util.GUID;
 import org.labkey.api.util.Pair;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
-import org.labkey.ehr_billing.EHR_BillingUserSchema;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -283,7 +285,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             try
             {
-                TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
+                TableInfo invoice = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(), "ehr_billing").getTable("invoice", null);
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
 
                 TableSelector ts = new TableSelector(invoice, filter, null);
@@ -295,12 +297,24 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     toCreate.put("accountNumber", row.get("debitedAccount"));
                     toCreate.put("container", getJob().getContainer().getId());
                     toCreate.put("invoiceRunId", _invoiceId);
+                    // the project and chargeCategoryId are not present by default in invoice table and can be added as extensible columns
+                    // the values are inserted in the billing re run as well in tnprc implementation
+                    toCreate.put("project", row.get("project"));
+                    toCreate.put("chargeCategoryId", row.get("chargeCategoryId"));
 
-                    Table.insert(getJob().getUser(), invoice, toCreate);
+                    QueryUpdateService invoiceTableQUS = invoice.getUpdateService();
+                    if (null != invoiceTableQUS)
+                    {
+                        invoice.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), List.of(toCreate), new BatchValidationException(), null, null);
+                    }
+                    else
+                    {
+                        Table.insert(getJob().getUser(), invoice, toCreate);
+                    }
                 }
                 return invoiceNumber;
             }
-            catch (RuntimeSQLException e)
+            catch (RuntimeSQLException | DuplicateKeyException | BatchValidationException | QueryUpdateServiceException | SQLException e)
             {
                 throw new PipelineJobException(e);
             }
