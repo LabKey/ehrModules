@@ -17,6 +17,7 @@ package org.labkey.ehr_billing.pipeline;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -43,8 +44,11 @@ import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.RecordedAction;
 import org.labkey.api.pipeline.RecordedActionSet;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
@@ -52,7 +56,6 @@ import org.labkey.api.util.GUID;
 import org.labkey.api.util.Pair;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
-import org.labkey.ehr_billing.EHR_BillingUserSchema;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -274,32 +277,49 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
     }
 
+    @Nullable
     private String getOrCreateInvoiceRecord(Map<String, Object> row, Date endDate) throws PipelineJobException
     {
         String invoiceNumber = processingService.getInvoiceNum(row, endDate);
-        try
+        if (null != invoiceNumber)
         {
-            TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
-
-            TableSelector ts = new TableSelector(invoice, filter, null);
-            if(!ts.exists())
+            try
             {
-                getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
-                Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
-                toCreate.put("invoiceNumber", invoiceNumber);
-                toCreate.put("accountNumber", row.get("debitedAccount"));
-                toCreate.put("container", getJob().getContainer().getId());
-                toCreate.put("invoiceRunId", _invoiceId);
+                TableInfo invoice = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(), "ehr_billing").getTable("invoice", null);
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
 
-                Table.insert(getJob().getUser(), invoice, toCreate);
+                TableSelector ts = new TableSelector(invoice, filter, null);
+                if (!ts.exists())
+                {
+                    getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
+                    Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
+                    toCreate.put("invoiceNumber", invoiceNumber);
+                    toCreate.put("accountNumber", row.get("debitedAccount"));
+                    toCreate.put("container", getJob().getContainer().getId());
+                    toCreate.put("invoiceRunId", _invoiceId);
+                    // the project and chargeCategoryId are not present by default in invoice table and can be added as extensible columns
+                    // the values are inserted in the billing re run as well in tnprc implementation
+                    toCreate.put("project", row.get("project"));
+                    toCreate.put("chargeCategoryId", row.get("chargeCategoryId"));
+
+                    QueryUpdateService invoiceTableQUS = invoice.getUpdateService();
+                    if (null != invoiceTableQUS)
+                    {
+                        invoice.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), List.of(toCreate), new BatchValidationException(), null, null);
+                    }
+                    else
+                    {
+                        Table.insert(getJob().getUser(), invoice, toCreate);
+                    }
+                }
+                return invoiceNumber;
             }
-            return invoiceNumber;
+            catch (RuntimeSQLException | DuplicateKeyException | BatchValidationException | QueryUpdateServiceException | SQLException e)
+            {
+                throw new PipelineJobException(e);
+            }
         }
-        catch (RuntimeSQLException e)
-        {
-            throw new PipelineJobException(e);
-        }
+        return null;
     }
 
     private void writeToInvoicedItems(BillingPipelineJobProcess process, Collection<Map<String, Object>> rows, BillingPipelineJobSupport support) throws PipelineJobException
@@ -313,12 +333,16 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICED_ITEMS);
             for (Map<String, Object> row : rows)
             {
+                String invoiceNumber = getOrCreateInvoiceRecord(row, support.getEndDate());
+                if (null == invoiceNumber)
+                    continue;
+
                 Map<String,Object> toInsert = new CaseInsensitiveHashMap<>();
                 toInsert.put("container", getJob().getContainer().getId());
                 toInsert.put("objectId", new GUID());
                 toInsert.put("invoiceId", invoiceId);
                 toInsert.put("transactionNumber", getNextTransactionNumber());
-                toInsert.put("invoiceNumber", getOrCreateInvoiceRecord(row, support.getEndDate()));
+                toInsert.put("invoiceNumber", invoiceNumber);
                 toInsert.put("category", process.getLabel());
 
                 for (String field : queryColNames)

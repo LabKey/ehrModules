@@ -62,7 +62,8 @@ public interface InvoicedItemsProcessingService
      * @param billingPeriodDate a date within a billing period
      * @return generated invoice num
      */
-    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate);
+    @Nullable
+    String getInvoiceNum(Map<String, Object> row, Date billingPeriodDate) throws PipelineJobException;
 
     /**
      * Process center specific billing columns, if any.
