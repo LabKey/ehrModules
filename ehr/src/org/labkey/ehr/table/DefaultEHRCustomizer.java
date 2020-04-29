@@ -30,6 +30,7 @@ import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
@@ -400,7 +401,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
     }
 
-    private void setConceptURI(BaseColumnInfo ci, String conceptURI)
+    private void setConceptURI(MutableColumnInfo ci, String conceptURI)
     {
         if (ci.isLocked())
         {
