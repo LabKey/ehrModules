@@ -410,7 +410,7 @@ public class EHRController extends SpringActionController
             return qwp;
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;
             try
@@ -423,7 +423,6 @@ public class EHRController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-            return root;
         }
 
         protected void ensureQueryExists(EHRQueryForm form)
@@ -1081,10 +1080,9 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
-        public NavTree appendNavTrail(NavTree tree)
+        public void addNavTrail(NavTree tree)
         {
-            return tree.addChild("Dataset Validation");
-
+            tree.addChild("Dataset Validation");
         }
     }
 
@@ -1093,7 +1091,6 @@ public class EHRController extends SpringActionController
     {
         public void validateCommand(Object form, Errors errors)
         {
-
         }
 
         public URLHelper getSuccessURL(Object form)
@@ -1117,7 +1114,6 @@ public class EHRController extends SpringActionController
     {
         public void validateCommand(Object form, Errors errors)
         {
-
         }
 
         public URLHelper getSuccessURL(Object form)
@@ -1335,13 +1331,12 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
             if (_def != null)
             {
-                root = _def.appendNavTrail(root, _title);
+                _def.addNavTrail(root, _title);
             }
-            return root;
         }
     }
 
@@ -1378,9 +1373,9 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Enter Data" + (_title == null ? "" : ": " + _title));
+            root.addChild("Enter Data" + (_title == null ? "" : ": " + _title));
         }
     }
 

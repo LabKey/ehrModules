@@ -233,7 +233,7 @@ public class EHR_BillingController extends SpringActionController
             return qwp;
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;
             try
@@ -246,7 +246,6 @@ public class EHR_BillingController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-            return root;
         }
 
         protected void ensureQueryExists(QueryForm form)
