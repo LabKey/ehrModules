@@ -61,6 +61,7 @@ public class AnimalRecordImpl implements AnimalRecord
         return new AnimalRecordImpl(c, id, props);
     }
 
+    @Override
     public AnimalRecord createCopy()
     {
         return new AnimalRecordImpl(getContainer(), getId(), _props);
@@ -80,52 +81,62 @@ public class AnimalRecordImpl implements AnimalRecord
         _props = Collections.unmodifiableMap(mergedProps);
     }
 
+    @Override
     public String getId()
     {
         return _id;
     }
 
+    @Override
     public Container getContainer()
     {
         return _container;
     }
 
+    @Override
     public Date getCreated()
     {
         return _created;
     }
 
+    @Override
     @NotNull
     public Map<String, Object> getProps()
     {
         return _props;
     }
 
+    @Override
     public String getGender()
     {
         return (String)_props.get("gender");
     }
 
+    @Override
     public String getGenderMeaning()
     {
         return (String)_props.get(FieldKey.fromString("gender/meaning").toString());
     }
 
+    @Override
     public String getOrigGender()
     {
         return (String)_props.get(FieldKey.fromString("gender/origGender").toString());
     }
 
+    @Override
     public String getAgeInYearsAndDays()
     {
         return (String)_props.get(FieldKey.fromString("Id/age/yearAndDays").toString());
     }
 
+    @Override
     public String getSpecies()
     {
         return (String)_props.get("species");
     }
 
+    @Override
     public String getCalculatedStatus()
     {
         return (String)_props.get("calculated_status");
@@ -136,11 +147,13 @@ public class AnimalRecordImpl implements AnimalRecord
         return (String)_props.get("calculated_status/meaning");
     }
 
+    @Override
     public Date getBirth()
     {
         return (Date)_props.get("birth");
     }
 
+    @Override
     public boolean hasBirthRecord()
     {
         return _props.containsKey("birthInfo") && !getListProperty("birthInfo").isEmpty();
@@ -151,11 +164,13 @@ public class AnimalRecordImpl implements AnimalRecord
         return _props.containsKey("arrivalInfo") && !getListProperty("arrivalInfo").isEmpty();
     }
 
+    @Override
     public Date getDeath()
     {
         return (Date)_props.get("death");
     }
 
+    @Override
     public String getGeographicOrigin()
     {
         return (String)_props.get("geographic_origin");
@@ -167,21 +182,25 @@ public class AnimalRecordImpl implements AnimalRecord
     }
 
     //used to determine whether this row exists in the demographics table
+    @Override
     public String getDemographicsObjectId()
     {
         return (String)_props.get("demographicsObjectId");
     }
 
+    @Override
     public List<Map<String, Object>> getActiveAssignments()
     {
         return getListProperty("activeAssignments");
     }
 
+    @Override
     public List<Map<String, Object>> getActiveTreatments()
     {
         return getListProperty("activeTreatments");
     }
 
+    @Override
     public List<Map<String, Object>> getActiveHousing()
     {
         return getListProperty("activeHousing");
@@ -195,6 +214,7 @@ public class AnimalRecordImpl implements AnimalRecord
         return null;
     }
 
+    @Override
     public String getCurrentRoom()
     {
         List<Map<String, Object>> housing = getActiveHousing();
@@ -204,6 +224,7 @@ public class AnimalRecordImpl implements AnimalRecord
         return null;
     }
 
+    @Override
     public String getCurrentCage()
     {
         List<Map<String, Object>> housing = getActiveHousing();
@@ -213,46 +234,55 @@ public class AnimalRecordImpl implements AnimalRecord
         return null;
     }
 
+    @Override
     public List<Map<String, Object>> getActiveFlags()
     {
         return getListProperty("activeFlags");
     }
 
+    @Override
     public List<Map<String, Object>> getActiveProblem()
     {
         return getListProperty("activeProblems");
     }
 
+    @Override
     public List<Map<String, Object>> getActiveCases()
     {
         return getListProperty("activeCases");
     }
 
+    @Override
     public List<Map<String, Object>> getParents()
     {
         return getListProperty("parents");
     }
 
+    @Override
     public List<Map<String, Object>> getWeights()
     {
         return getListProperty("weights");
     }
 
+    @Override
     public Double getMostRecentWeight()
     {
         return (Double)_props.get(FieldKey.fromString("mostRecentWeight").toString());
     }
 
+    @Override
     public Date getMostRecentWeightDate()
     {
         return (Date)_props.get(FieldKey.fromString("mostRecentWeightDate").toString());
     }
 
+    @Override
     public Date getMostRecentDeparture()
     {
         return (Date)_props.get(FieldKey.fromString("mostRecentDeparture").toString());
     }
 
+    @Override
     public Date getMostRecentArrival()
     {
         if (_props.containsKey("source"))
@@ -265,6 +295,7 @@ public class AnimalRecordImpl implements AnimalRecord
         return null;
     }
 
+    @Override
     public Integer getDaysSinceWeight()
     {
         return (Integer)_props.get(FieldKey.fromString("daysSinceWeight").toString());

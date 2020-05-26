@@ -66,6 +66,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
         _forceDateOnlyField = forceDateOnlyField;
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))

@@ -34,6 +34,7 @@ import org.labkey.ehr_compliancedb.EHR_ComplianceDBModule;
  */
 public class EHRComplianceTableCustomizer implements TableCustomizer
 {
+    @Override
     public void customize(TableInfo table)
     {
         LDKService.get().getDefaultTableCustomizer().customize(table);

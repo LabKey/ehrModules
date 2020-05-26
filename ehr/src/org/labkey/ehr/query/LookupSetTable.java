@@ -67,6 +67,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
             _titleColumn = VALUE_COL;
     }
 
+    @Override
     public LookupSetTable init()
     {
         super.init();

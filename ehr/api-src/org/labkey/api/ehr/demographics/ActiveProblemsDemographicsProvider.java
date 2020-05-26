@@ -37,6 +37,7 @@ public class ActiveProblemsDemographicsProvider extends AbstractListDemographics
         super(owner, "study", "Problem List", "activeProblems");
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<FieldKey>();

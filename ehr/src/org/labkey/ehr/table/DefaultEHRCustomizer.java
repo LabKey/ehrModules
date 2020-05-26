@@ -1517,6 +1517,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         final String ehrPath = ehrSchema.getContainer().getPath();
 
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_housingAtTime";
@@ -1635,6 +1636,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_survivorship";
@@ -1741,6 +1743,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_ageAtTime";

@@ -84,6 +84,7 @@ public class EHR_BillingController extends SpringActionController
     @RequiresPermission(UpdatePermission.class)
     public class RunBillingPipelineAction extends MutatingApiAction<BillingPipelineForm>
     {
+        @Override
         public ApiResponse execute(BillingPipelineForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -133,6 +134,7 @@ public class EHR_BillingController extends SpringActionController
     @RequiresPermission(EHR_BillingAdminPermission.class)
     public class DeleteBillingPeriodAction extends ConfirmAction<QueryForm>
     {
+        @Override
         public void validateCommand(QueryForm form, Errors errors)
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
@@ -158,6 +160,7 @@ public class EHR_BillingController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
+        @Override
         public boolean handlePost(QueryForm form, BindException errors) throws BatchValidationException, InvalidKeyException, QueryUpdateServiceException
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
@@ -166,6 +169,7 @@ public class EHR_BillingController extends SpringActionController
             return true;
         }
 
+        @Override
         public URLHelper getSuccessURL(QueryForm form)
         {
             URLHelper url = form.getReturnURLHelper();
@@ -178,6 +182,7 @@ public class EHR_BillingController extends SpringActionController
     {
         private QueryForm _form;
 
+        @Override
         public ModelAndView getView(QueryForm form, BindException errors)
         {
             ensureQueryExists(form);
@@ -233,6 +238,7 @@ public class EHR_BillingController extends SpringActionController
             return qwp;
         }
 
+        @Override
         public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;

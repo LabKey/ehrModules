@@ -69,6 +69,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         _queryName = queryName;
     }
 
+    @Override
     public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)
     {
         // if in debug, consider enabling debug logging on EHRDemographicsServiceImpl as well
@@ -174,6 +175,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         }
     }
 
+    @Override
     public Collection<String> getKeysToTest()
     {
         Set<String> ret = getKeys();
@@ -182,6 +184,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         return Collections.unmodifiableCollection(ret);
     }
 
+    @Override
     public Set<String> getIdsToUpdate(Container c, String id, Map<String, Object> originalProps, Map<String, Object> newProps)
     {
         // Most changes to an individual animal's data won't affect the information cached for other animals
@@ -225,6 +228,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 
     abstract protected Collection<FieldKey> getFieldKeys();
 
+    @Override
     public boolean requiresRecalc(String schema, String query)
     {
         return _schemaName.equalsIgnoreCase(schema) && _queryName.equalsIgnoreCase(query);

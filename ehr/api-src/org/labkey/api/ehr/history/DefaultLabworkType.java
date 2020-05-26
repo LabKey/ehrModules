@@ -105,6 +105,7 @@ public class DefaultLabworkType implements LabworkType
         return ti;
     }
 
+    @Override
     public String getName()
     {
         return _name;
@@ -116,6 +117,7 @@ public class DefaultLabworkType implements LabworkType
         return c.getActiveModules().contains(_declaringModule);
     }
 
+    @Override
     public List<String> getResults(Container c, User u, String runId, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_runIdField), runId, CompareType.EQUAL);
@@ -123,12 +125,14 @@ public class DefaultLabworkType implements LabworkType
         return rows == null ? null : rows.get(runId);
     }
 
+    @Override
     public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_runIdField), runIds, CompareType.IN);
         return getResults(c, u, filter, redacted);
     }
 
+    @Override
     public Map<String, List<String>> getResults(Container c, User u, String id, @Nullable Date minDate, @Nullable Date maxDate, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_idField), id, CompareType.EQUAL);

@@ -125,6 +125,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
      * Queries the cache for the animal record, creating if not found.
      * Always returns a copy of the original
      */
+    @Override
     public AnimalRecord getAnimal(Container c, String id)
     {
         List<AnimalRecord> ret = getAnimals(c, Collections.singletonList(id));
@@ -136,6 +137,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
      * Queries the cache for the animal record, creating if not found.
      * Always returns a copy of the original
      */
+    @Override
     public List<AnimalRecord> getAnimals(Container c, Collection<String> ids)
     {
         return getAnimals(c, ids, false);
@@ -240,6 +242,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         asyncCache(c, ids);
     }
 
+    @Override
     public void reportDataChange(Container c, String schema, String query, List<String> ids)
     {
         reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), ids, false);
@@ -657,6 +660,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         }
 
+        @Override
         public void execute(JobExecutionContext context)
         {
             EHRDemographicsServiceImpl.get().cacheLivingAnimalsForAllContainers(true);

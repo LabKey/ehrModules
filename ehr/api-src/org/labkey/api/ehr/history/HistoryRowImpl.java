@@ -70,6 +70,7 @@ public class HistoryRowImpl implements HistoryRow
         _objectId = objectId;
     }
 
+    @Override
     public JSONObject toJSON()
     {
         JSONObject json = new JSONObject();
@@ -107,6 +108,7 @@ public class HistoryRowImpl implements HistoryRow
         return json;
     }
 
+    @Override
     public String getSortDateString()
     {
         assert _date != null;
@@ -131,11 +133,13 @@ public class HistoryRowImpl implements HistoryRow
         }
     }
 
+    @Override
     public void setShowTime(Boolean showTime)
     {
         _showTime = showTime;
     }
 
+    @Override
     public String getSubjectId()
     {
         return _subjectId;

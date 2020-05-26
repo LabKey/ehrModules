@@ -35,6 +35,7 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
         super(EHRController.class);
     }
 
+    @Override
     protected SpringActionController.HTMLFileActionResolver getHTMLFileActionResolver()
     {
         return new EHRHTMLFileActionResolver();

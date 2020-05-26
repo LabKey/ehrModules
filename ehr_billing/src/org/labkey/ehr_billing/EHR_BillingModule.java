@@ -98,6 +98,7 @@ public class EHR_BillingModule extends SpringModule
         ContainerManager.addContainerListener(new EHR_BillingContainerListener());
         DefaultSchema.registerProvider(EHR_BillingSchema.NAME, new DefaultSchema.SchemaProvider(this)
         {
+            @Override
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
                 return new EHR_BillingUserSchema(EHR_BillingSchema.NAME, schema.getUser(), schema.getContainer());

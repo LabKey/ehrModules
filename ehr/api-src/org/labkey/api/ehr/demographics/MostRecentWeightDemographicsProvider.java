@@ -35,11 +35,13 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
         _supportsQCState = false;
     }
 
+    @Override
     public String getName()
     {
         return "Most Recent Weight";
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();

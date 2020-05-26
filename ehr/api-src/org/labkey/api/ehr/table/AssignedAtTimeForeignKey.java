@@ -44,6 +44,7 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
         _ehrSchema = ehrSchema;
     }
 
+    @Override
     public TableInfo getLookupTableInfo()
     {
         final String tableName = _tableInfo.getName();

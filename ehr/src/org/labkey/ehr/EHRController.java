@@ -132,6 +132,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDataEntryItemsAction extends ReadOnlyApiAction<GetDataEntryItemsForm>
     {
+        @Override
         public ApiResponse execute(GetDataEntryItemsForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -168,21 +169,25 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class CacheLivingAnimalsAction extends ConfirmAction<CacheLivingAnimalsForm>
     {
+        @Override
         public void validateCommand(CacheLivingAnimalsForm form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(CacheLivingAnimalsForm form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(CacheLivingAnimalsForm form, BindException errors)
         {
             return new HtmlView("This action will force the EHR to cache demographics data on all " + (form.isIncludeAll() ? "" : "living") + " animals, and log errors if there is an existing record that does not match the current record.  This can save significant time during data entry or other screens.  Do you want to do this?<br><br>");
         }
 
+        @Override
         public boolean handlePost(CacheLivingAnimalsForm form, BindException errors)
         {
             EHRDemographicsServiceImpl.get().cacheAnimals(getContainer(), getUser(), true, !form.isIncludeAll());
@@ -193,21 +198,25 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class PrimeDataEntryCacheAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This action will cause the EHR to populate several cached items used in data entry, such as reference tables.  Do you want to do this?<br><br>");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors)
         {
             DataEntryManager.get().primeCachesForContainer(getContainer(), getUser());
@@ -244,6 +253,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(DeletePermission.class)
     public class DiscardFormAction extends MutatingApiAction<DiscardFormForm>
     {
+        @Override
         public ApiResponse execute(DiscardFormForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -317,6 +327,7 @@ public class EHRController extends SpringActionController
     {
         private EHRQueryForm _form;
 
+        @Override
         public ModelAndView getView(EHRQueryForm form, BindException errors)
         {
             ensureQueryExists(form);
@@ -410,6 +421,7 @@ public class EHRController extends SpringActionController
             return qwp;
         }
 
+        @Override
         public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;
@@ -480,6 +492,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDemographicsAction extends ReadOnlyApiAction<GetDemographicsForm>
     {
+        @Override
         public ApiResponse execute(GetDemographicsForm form, BindException errors)
         {
             Map<String, Object> props = new HashMap<>();
@@ -513,6 +526,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class SetGeneticCalculationTaskSettingsAction extends MutatingApiAction<ScheduleGeneticCalculationForm>
     {
+        @Override
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
         {
             Container c;
@@ -561,6 +575,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class SetRecordDeleteSettingsAction extends MutatingApiAction<RecordDeleteForm>
     {
+        @Override
         public ApiResponse execute(RecordDeleteForm form, BindException errors)
         {
             RecordDeleteRunner.setProperties(getContainer(), form.isEnabled());
@@ -620,6 +635,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetAnimalDetailsAction extends ReadOnlyApiAction<AnimalDetailsForm>
     {
+        @Override
         public ApiResponse execute(AnimalDetailsForm form, BindException errors)
         {
             Map<String, Object> props = new HashMap<String, Object>();
@@ -677,6 +693,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class GetGeneticCalculationTaskSettingsAction extends ReadOnlyApiAction<ScheduleGeneticCalculationForm>
     {
+        @Override
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
         {
             Map<String, Object> ret = new HashMap<>();
@@ -696,6 +713,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class GetRecordDeleteSettingsAction extends ReadOnlyApiAction<Object>
     {
+        @Override
         public ApiResponse execute(Object form, BindException errors)
         {
             Map<String, Object> ret = new HashMap<>();
@@ -724,6 +742,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetLabResultSummary extends ReadOnlyApiAction<LabResultSummaryForm>
     {
+        @Override
         public ApiResponse execute(LabResultSummaryForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -839,6 +858,7 @@ public class EHRController extends SpringActionController
     //TODO: should enable @CSRF if we have SSRS updated to pass token.
     public class GetClinicalHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
+        @Override
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -882,6 +902,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetCaseHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
+        @Override
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -945,16 +966,19 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
+        @Override
         public void validateCommand(EnsureDatasetPropertiesForm form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(EnsureDatasetPropertiesForm form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
@@ -974,6 +998,7 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
+        @Override
         public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors)
         {
             List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(), getUser(), true, form.isRebuildIndexes());
@@ -984,16 +1009,19 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
             if (!getUser().hasSiteAdminPermission())
@@ -1004,6 +1032,7 @@ public class EHRController extends SpringActionController
             return new HtmlView("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors)
         {
             EHRManager.get().compressEHRSchemaIndexes();
@@ -1014,16 +1043,19 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class EnsureQcStatesAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
@@ -1043,6 +1075,7 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors)
         {
             List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(), getUser(), true);
@@ -1063,6 +1096,7 @@ public class EHRController extends SpringActionController
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getView(Object form, BindException errors)
         {
             StringBuilder msg = new StringBuilder();
@@ -1080,6 +1114,7 @@ public class EHRController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
+        @Override
         public void addNavTrail(NavTree tree)
         {
             tree.addChild("Dataset Validation");
@@ -1089,20 +1124,24 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class DoGeneticCalculationsAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
             return new GeneticCalculationsRunnable().run(getContainer(), true);
@@ -1112,20 +1151,24 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class DeletedRecordsRunnerAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
             return new HtmlView("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors)
         {
             new RecordDeleteRunner().run(getContainer());
@@ -1152,6 +1195,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetReportLinksAction extends ReadOnlyApiAction<ReportLinkForm>
     {
+        @Override
         public ApiResponse execute(ReportLinkForm form, BindException errors)
         {
             Map<String, Object> resultProperties = new HashMap<>();
@@ -1253,6 +1297,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDataEntryFormDetailsAction extends ReadOnlyApiAction<EnterDataForm>
     {
+        @Override
         public ApiResponse execute(EnterDataForm form, BindException errors)
         {
             Map<String, Object> props = new HashMap<String, Object>();
@@ -1504,6 +1549,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(UpdatePermission.class)
     public class ManageFlagsAction extends MutatingApiAction<ManageFlagsForm>
     {
+        @Override
         public ApiResponse execute(ManageFlagsForm form, BindException errors)
         {
             Map<String, Object> resp = new HashMap<>();
@@ -1666,16 +1712,19 @@ public class EHRController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class ValidateDatasetColsAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
             //NOTE: consider allowing moduleName as a URL param?
@@ -1712,6 +1761,7 @@ public class EHRController extends SpringActionController
             return new HtmlView("This action will compare the columns in the study datasets against those expected in the reference XML file.  " + (msgs.isEmpty() ? "No problems were found." : "The following discrepancies were found:<br><br> " + StringUtils.join(msgs, "<br>")));
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors)
         {
             //TODO: consider automatically fixing?
@@ -1724,6 +1774,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetAnimalLockAction extends ReadOnlyApiAction<Object>
     {
+        @Override
         public ApiResponse execute(Object form, BindException errors)
         {
             return new ApiSimpleResponse(EHRManager.get().getAnimalLockProperties(getContainer()));
@@ -1733,6 +1784,7 @@ public class EHRController extends SpringActionController
     @RequiresPermission(EHRDataEntryPermission.class)
     public class SetAnimalLockAction extends MutatingApiAction<LockAnimalForm>
     {
+        @Override
         public ApiResponse execute(LockAnimalForm form, BindException errors)
         {
             ///Added by Lakshmi on 02/26/2015: This is server side validation code to check if the Birth/Arrival screens are locked or not.

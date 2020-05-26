@@ -34,11 +34,13 @@ public class DepartureDemographicsProvider extends AbstractDemographicsProvider
         _supportsQCState = false;
     }
 
+    @Override
     public String getName()
     {
         return "Most Recent Departure";
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();
