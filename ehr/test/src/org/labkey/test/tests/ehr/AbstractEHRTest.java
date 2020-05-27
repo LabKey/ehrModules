@@ -173,11 +173,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return null;
     }
 
-    public String getExternalModulePath()
-    {
-        return "/externalModules/" + getModuleDirectory();
-    }
-
     public String getFolderName() { return FOLDER_NAME; }
 
     @Override
