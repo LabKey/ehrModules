@@ -64,21 +64,25 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
             setJoin(true);
         }
 
+        @Override
         public List<FileType> getInputTypes()
         {
             return Collections.singletonList(new FileType(".r"));
         }
 
+        @Override
         public String getStatusName()
         {
             return PipelineJob.TaskStatus.running.toString();
         }
 
+        @Override
         public List<String> getProtocolActionNames()
         {
             return Arrays.asList("Calculating Kinship");
         }
 
+        @Override
         public PipelineJob.Task createTask(PipelineJob job)
         {
             GeneticCalculationsRTask task = new GeneticCalculationsRTask(this, job);
@@ -87,12 +91,14 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
             return task;
         }
 
+        @Override
         public boolean isJobComplete(PipelineJob job)
         {
             return false;
         }
     }
 
+    @Override
     @NotNull
     public RecordedActionSet run() throws PipelineJobException
     {

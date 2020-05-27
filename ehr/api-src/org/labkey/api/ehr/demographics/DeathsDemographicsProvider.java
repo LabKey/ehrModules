@@ -37,6 +37,7 @@ public class DeathsDemographicsProvider extends AbstractListDemographicsProvider
         super(owner, "study", "Deaths", "deathInfo");
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();

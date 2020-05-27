@@ -32,6 +32,7 @@ public class DiscardTaskButton extends SimpleButtonConfigFactory
         super(owner, "Discard Tasks", "EHR.DatasetButtons.discardTasks(dataRegionName);");
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         return super.isAvailable(ti) && ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), DeletePermission.class);

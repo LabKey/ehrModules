@@ -57,6 +57,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
 
     protected enum Category {
         STD(){
+            @Override
             public void parseSampleName(Map<String, Object> row, String fieldName)
             {
                 String[] nameParts = StringUtils.split((String) row.get(fieldName), "_");
@@ -65,6 +66,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
             }
         },
         CTL(){
+            @Override
             public void parseSampleName(Map<String, Object> row, String fieldName)
             {
                 String[] nameParts = StringUtils.split((String)row.get(fieldName), "_");
@@ -89,6 +91,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
             }
         },
         Unknown(){
+            @Override
             public void parseSampleName(Map<String, Object> row, String fieldName) throws ValidationException
             {
                 try

@@ -121,6 +121,7 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
         return _analysisDir;
     }
 
+    @Override
     public Pair<String,String> getPreviousInvoice()
     {
         return _form.getPreviousInvoice();

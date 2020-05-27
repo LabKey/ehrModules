@@ -33,6 +33,7 @@ public class CompareWeightsButton extends SimpleButtonConfigFactory
         setClientDependencies(ClientDependency.supplierFromPath("ehr/window/CompareWeightsWindow.js"), ClientDependency.supplierFromPath("ehr/studyButtons.js"));
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))

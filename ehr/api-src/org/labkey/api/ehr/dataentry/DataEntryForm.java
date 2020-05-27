@@ -21,7 +21,6 @@ import org.labkey.api.view.HttpView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -98,8 +97,5 @@ public interface DataEntryForm
      */
     HttpView<?> createView();
 
-    /**
-     * @return Navigation trail with any ehr data entry form updates
-     */
-    NavTree appendNavTrail(NavTree root, String title);
+    void addNavTrail(NavTree root, String title);
 }

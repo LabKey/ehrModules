@@ -50,6 +50,7 @@ abstract public class AbstractEHRNotification extends AbstractNotification
         super(owner);
     }
 
+    @Override
     public boolean isAvailable(Container c)
     {
         if (getOwnerModule() != null)
@@ -89,11 +90,13 @@ abstract public class AbstractEHRNotification extends AbstractNotification
         return StudyService.get().getStudy(c);
     }
 
+    @Override
     public String getCategory()
     {
         return "EHR";
     }
 
+    @Override
     public String getCronString()
     {
         return null; //"0 0/5 * * * ?";

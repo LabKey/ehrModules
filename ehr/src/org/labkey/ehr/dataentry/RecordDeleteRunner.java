@@ -85,6 +85,7 @@ public class RecordDeleteRunner implements Job
         return false;
     }
 
+    @Override
     public void execute(JobExecutionContext context)
     {
         User rootUser = EHRManager.get().getEHRUser(ContainerManager.getRoot(), false);

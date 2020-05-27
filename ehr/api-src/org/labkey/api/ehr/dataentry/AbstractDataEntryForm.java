@@ -34,14 +34,12 @@ import org.labkey.api.view.HttpView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.WebPartView;
-import org.labkey.api.view.template.ClientDependencies;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,16 +52,17 @@ import java.util.function.Supplier;
  */
 public class AbstractDataEntryForm implements DataEntryForm
 {
-    private DataEntryFormContext _ctx;
-    private String _name;
+    private final DataEntryFormContext _ctx;
+    private final String _name;
+    private final String _category;
+    private final List<FormSection> _sections;
+    private final List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
+    private final Module _owner;
+
     private String _label;
-    private String _category;
     private String _javascriptClass = "EHR.panel.DataEntryPanel";
     private String _storeCollectionClass = "EHR.data.StoreCollection";
-    private List<FormSection> _sections;
-    private List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
     private AbstractFormSection.TEMPLATE_MODE _templateMode = AbstractFormSection.TEMPLATE_MODE.MULTI;
-    private Module _owner;
     private boolean _displayReviewRequired = false;
 
     public AbstractDataEntryForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, List<FormSection> sections)
@@ -247,11 +246,10 @@ public class AbstractDataEntryForm implements DataEntryForm
     }
 
     @Override
-    public NavTree appendNavTrail(NavTree root, String title)
+    public void addNavTrail(NavTree root, String title)
     {
         root.addChild("Enter Data Selection", DetailsURL.fromString("/ehr/enterData.view", getCtx().getContainer()).getActionURL());
         root.addChild(title == null ? "Enter Data" : title);
-        return root;
     }
 
     /**
@@ -383,5 +381,4 @@ public class AbstractDataEntryForm implements DataEntryForm
     {
         return true;
     }
-
 }

@@ -48,6 +48,7 @@ public class AssignmentAtTimeForeignKey extends LookupForeignKey
         _investLastNameCol = investLastNameCol;
     }
 
+    @Override
     public TableInfo getLookupTableInfo()
     {
         final String tableName = _tableInfo.getName();

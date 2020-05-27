@@ -37,6 +37,7 @@ public class EHRQCStateImpl implements EHRQCState
     private Boolean _isRequest;
     private Boolean _allowFutureDates;
 
+    @Override
     public int getRowId()
     {
         return _rowId;
@@ -47,6 +48,7 @@ public class EHRQCStateImpl implements EHRQCState
         _rowId = rowId;
     }
 
+    @Override
     public String getLabel()
     {
         return _label;
@@ -57,6 +59,7 @@ public class EHRQCStateImpl implements EHRQCState
         _label = label;
     }
 
+    @Override
     public Container getContainer()
     {
         return ContainerManager.getForId(_containerId);
@@ -67,6 +70,7 @@ public class EHRQCStateImpl implements EHRQCState
         _containerId = containerId;
     }
 
+    @Override
     public String getDescription()
     {
         return _description;
@@ -77,6 +81,7 @@ public class EHRQCStateImpl implements EHRQCState
         _description = description;
     }
 
+    @Override
     public Boolean isPublicData()
     {
         return _publicData;
@@ -87,6 +92,7 @@ public class EHRQCStateImpl implements EHRQCState
         _publicData = publicData;
     }
 
+    @Override
     public Boolean isDraftData()
     {
         return _draftData;
@@ -97,6 +103,7 @@ public class EHRQCStateImpl implements EHRQCState
         _draftData = draftData;
     }
 
+    @Override
     public Boolean isDeleted()
     {
         return _isDeleted;
@@ -107,6 +114,7 @@ public class EHRQCStateImpl implements EHRQCState
         _isDeleted = deleted;
     }
 
+    @Override
     public Boolean isRequest()
     {
         return _isRequest;
@@ -117,6 +125,7 @@ public class EHRQCStateImpl implements EHRQCState
         _isRequest = request;
     }
 
+    @Override
     public Boolean isAllowFutureDates()
     {
         return _allowFutureDates;
@@ -127,6 +136,7 @@ public class EHRQCStateImpl implements EHRQCState
         _allowFutureDates = allowFutureDates;
     }
 
+    @Override
     public JSONObject toJson()
     {
         JSONObject json = new JSONObject();

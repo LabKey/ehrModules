@@ -188,6 +188,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         {
             msg.append("<b>WARNING: The following animals do not have a weight:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+                @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
                     Results results = new ResultsImpl(rs, columns);

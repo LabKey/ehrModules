@@ -48,6 +48,7 @@ public class ExcelImportButton extends SimpleButtonConfigFactory
         _queryName = queryName;
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))

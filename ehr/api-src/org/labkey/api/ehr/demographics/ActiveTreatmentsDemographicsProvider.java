@@ -39,6 +39,7 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
         _supportsQCState = false;
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<FieldKey>();

@@ -58,6 +58,7 @@ public class DataEntrySummary implements NotificationSection
     {
     }
 
+    @Override
     public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
@@ -181,6 +182,7 @@ public class DataEntrySummary implements NotificationSection
         }
     }
 
+    @Override
     public boolean isAvailable(Container c, User u)
     {
         return true;

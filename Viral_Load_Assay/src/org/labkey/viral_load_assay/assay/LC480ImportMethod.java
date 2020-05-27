@@ -81,6 +81,7 @@ public class LC480ImportMethod extends DefaultVLImportMethod
         return "This is designed to accept the output directly from a Roche480 Light Cycler.  However, in order for the results to be recognized by the system, the sample names must be formatted in a specific manner.  This is: subject Id, undescore, sample date, underscore, plasma volume, underscore, comments.  An example is: 'patient123_2010-03-04_1_Sample Run for Jim'.  The comments and/or plasma volume can be ommited: 'patient123_2010-03-04'.  If no plasma volume is provided, it will assume 1mL was used.";
     }
 
+    @Override
     public AssayParser getFileParser(Container c, User u, int assayId)
     {
         return new Parser(this, c, u, assayId);

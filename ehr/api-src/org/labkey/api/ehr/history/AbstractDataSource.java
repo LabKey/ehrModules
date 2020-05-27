@@ -86,6 +86,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         _primaryGroup = primaryGroup;
     }
 
+    @Override
     public String getName()
     {
         return _name;
@@ -106,6 +107,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         _showTime = showTime;
     }
 
+    @Override
     @NotNull
     public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId, boolean redacted)
     {
@@ -122,6 +124,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         return getRows(c, u, filter, redacted);
     }
 
+    @Override
     @NotNull
     public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
@@ -223,6 +226,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         return null;
     }
 
+    @Override
     public Set<String> getAllowableCategoryGroups(Container c, User u)
     {
         return Collections.singleton(_primaryGroup);

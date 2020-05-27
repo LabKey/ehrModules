@@ -46,6 +46,7 @@ abstract public class AbstractListDemographicsProvider extends AbstractDemograph
         _propName = propName;
     }
 
+    @Override
     public String getName()
     {
         return _propName;

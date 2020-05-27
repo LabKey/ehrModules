@@ -161,6 +161,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         PROJECT_NAME = "VL_AssayVerifyProject" + TRICKY_CHARACTERS_FOR_PROJECT_NAMES;
     }
 
+    @Override
     @Test
     public void testSteps() throws Exception
     {

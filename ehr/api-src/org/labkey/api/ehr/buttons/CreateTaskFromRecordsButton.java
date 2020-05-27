@@ -43,6 +43,7 @@ public class CreateTaskFromRecordsButton extends SimpleButtonConfigFactory
         setClientDependencies(ClientDependency.supplierFromPath("ehr/window/CreateTaskFromRecordsWindow.js"));
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         if (!super.isAvailable(ti))

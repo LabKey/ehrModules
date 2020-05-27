@@ -34,6 +34,7 @@ public class ReturnDistinctButton extends SimpleButtonConfigFactory
         setClientDependencies(ClientDependency.supplierFromModuleName("ehr"));
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         return super.isAvailable(ti) && ti instanceof DatasetTable;

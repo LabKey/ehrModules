@@ -41,11 +41,13 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         super(owner, "study", "Demographics");
     }
 
+    @Override
     public String getName()
     {
         return "BasicDemographics";
     }
 
+    @Override
     protected Collection<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<>();

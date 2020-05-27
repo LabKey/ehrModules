@@ -46,6 +46,7 @@ public class WrappingTableCustomizer implements TableCustomizer
 
     }
 
+    @Override
     public void customize(TableInfo table)
     {
         addWrappedColumn(table);

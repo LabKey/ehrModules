@@ -1819,6 +1819,7 @@ public class TriggerScriptHelper
         }
 
         JobRunner.getDefault().execute(new Runnable(){
+            @Override
             public void run()
             {
                 final User user = getUser();

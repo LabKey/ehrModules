@@ -67,6 +67,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
+    @Override
     public String getModulePath()
     {
         return "server/modules/onprcEHRModules/" + getModuleDirectory();
@@ -84,11 +85,13 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         return getProjectName();
     }
 
+    @Override
     protected EHRClientAPIHelper getApiHelper()
     {
         return new EHRClientAPIHelper(this, getContainerPath());
     }
 
+    @Override
     protected void importStudy()
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
@@ -180,6 +183,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         return TestFileUtils.getSampleData("onprcEHRStudyPolicy.xml");
     }
 
+    @Override
     @LogMethod
     protected void createTestSubjects() throws Exception
     {
@@ -215,6 +219,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         return beforeInterval.getTime();
     }
 
+    @Override
     protected JSONObject getExtraContext()
     {
         JSONObject extraContext = getApiHelper().getExtraContext();

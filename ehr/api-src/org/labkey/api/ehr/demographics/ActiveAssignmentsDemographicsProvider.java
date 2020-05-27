@@ -36,6 +36,7 @@ public class ActiveAssignmentsDemographicsProvider extends AbstractListDemograph
         super(owner, "study", "Assignment", "activeAssignments");
     }
 
+    @Override
     protected Set<FieldKey> getFieldKeys()
     {
         Set<FieldKey> keys = new HashSet<FieldKey>();
