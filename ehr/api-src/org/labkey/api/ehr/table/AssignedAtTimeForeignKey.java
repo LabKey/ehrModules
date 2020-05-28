@@ -55,7 +55,7 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
         String name = tableName + "_assignedAtTime";
         QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
         qd.setSql("SELECT\n" +
-                "sd." + _pkCol.getSelectName() + ",\n" +
+                "sd." + _pkCol.getFieldKey().toSQLString() + ",\n" +
                 "CASE " +
                 " WHEN (sd.project IS NULL) THEN NULL " +
                 " WHEN (sd.project IN (SELECT a.project FROM \"" + _ehrSchema.getContainer().getPath() + "\".study.assignment a WHERE a.participantid = sd.participantid AND a.date <= sd.date AND (a.enddate IS NULL OR a.enddate >= sd.date))) THEN TRUE" +

@@ -59,7 +59,7 @@ public class AssignmentAtTimeForeignKey extends LookupForeignKey
         String name = tableName + "_assignmentsAtTime";
         QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, name);
         qd.setSql("SELECT\n" +
-                "sd." + _pkCol.getSelectName() + ",\n" +
+                "sd." + _pkCol.getFieldKey().toSQLString() + ",\n" +
                 "group_concat(DISTINCT h.project.displayName, chr(10)) as projectsAtTime,\n" +
                 "group_concat(DISTINCT h.project.protocol.displayName, chr(10)) as protocolsAtTime,\n" +
                 "group_concat(DISTINCT h.project." + _investLastNameCol + ", chr(10)) as investigatorsAtTime,\n" +
@@ -67,7 +67,7 @@ public class AssignmentAtTimeForeignKey extends LookupForeignKey
                 "FROM \"" + schemaName + "\".\"" + queryName + "\" sd\n" +
                 "JOIN \"" + _ehrSchema.getContainer().getPath() + "\".study.assignment h\n" +
                 "  ON (sd.id = h.id AND h.dateOnly <= CAST(sd." + _dateColName + " AS DATE) AND (CAST(sd." + _dateColName + " AS DATE) <= h.enddateCoalesced) AND h.qcstate.publicdata = true)\n" +
-                "group by sd." + _pkCol.getSelectName());
+                "group by sd." + _pkCol.getFieldKey().toSQLString());
         qd.setIsTemporary(true);
 
         List<QueryException> errors = new ArrayList<>();

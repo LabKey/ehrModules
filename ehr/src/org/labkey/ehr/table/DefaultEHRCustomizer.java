@@ -922,8 +922,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             if (ds.getColumn(name) == null)
             {
                 SQLFragment sql = new SQLFragment("CASE " +
-                        " WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName() + " IS NULL THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)" +
-                        " ELSE " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName()) +
+                        " WHEN ").append(unitCol.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" IS NULL THEN CAST(").append(col.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" AS VARCHAR)" +
+                        " ELSE ").append(ds.getSqlDialect().concatenate(ds.getSqlDialect().getVarcharCast(col.getValueSql(ExprColumn.STR_TABLE_ALIAS)), new SQLFragment("' '"), unitCol.getValueSql(ExprColumn.STR_TABLE_ALIAS))).append(
                         " END"
                 );
                 ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
@@ -945,23 +945,37 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
         if (amountCol != null && amountUnitCol != null && volumeCol != null && volumeUnitCol != null && ds.getColumn(name) == null)
         {
-            SQLFragment sql = new SQLFragment("CASE " +
-                    //when both are null, return null
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL) THEN NULL" +
+            SQLFragment amountSql = amountCol.getValueSql(ExprColumn.STR_TABLE_ALIAS);
+            SQLFragment castAmountSql = ds.getSqlDialect().getVarcharCast(amountSql);
+            SQLFragment amountUnitSql = amountUnitCol.getValueSql(ExprColumn.STR_TABLE_ALIAS);
+            SQLFragment volumeSql = volumeCol.getValueSql(ExprColumn.STR_TABLE_ALIAS);
+            SQLFragment castVolumeSql = ds.getSqlDialect().getVarcharCast(volumeSql);
+            SQLFragment volumeUnitSql = volumeUnitCol.getValueSql(ExprColumn.STR_TABLE_ALIAS);
+            
+            SQLFragment sql = new SQLFragment("CASE ").append(
+                    // when both are null, return null
+                    " WHEN (").append(volumeSql).append(" IS NULL AND ").append(amountSql).append(" IS NULL) THEN NULL").append(
 
-                    //when volume is null, show amount only.  behave differently depending on whether units are null
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + " IS NULL) THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)" +
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + " IS NOT NULL) THEN " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName()) +
+                    // when volume is null, show amount only.  behave differently depending on whether units are null
+                    " WHEN (").append(volumeSql).append(" IS NULL AND ").append(amountUnitSql).append(" IS NULL) THEN ").append(castAmountSql).append(
+                    " WHEN (").append(volumeSql).append(" IS NULL AND ").append(amountUnitSql).append(" IS NOT NULL) THEN ").append(ds.getSqlDialect().concatenate(castAmountSql, new SQLFragment("' '"), amountUnitSql)).append(
 
-                    //if volume is not null and amount is null
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NULL) THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)" +
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName()) +
+                    // if volume is not null and amount is null
+                    " WHEN (").append(amountSql).append(" IS NULL AND ").append(volumeUnitSql).append(" IS NULL) THEN ").append(castVolumeSql).append(
+                    " WHEN (").append(amountSql).append(" IS NULL AND ").append(volumeUnitSql).append(" IS NOT NULL) THEN ").append(ds.getSqlDialect().concatenate(castVolumeSql, new SQLFragment("' '"), volumeUnitSql)).append(
 
-                    //otherwise show both
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + " IS NOT NULL) THEN " +
-                        ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeCol.getSelectName() + " AS VARCHAR)", "' '", "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + volumeUnitCol.getSelectName() + ", '')", "' / '", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + amountCol.getSelectName() + " AS VARCHAR)", "' '", "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + amountUnitCol.getSelectName() + ", '')") +
+                    // otherwise show both
+                    " WHEN (").append(amountSql).append(" IS NOT NULL AND ").append(volumeUnitSql).append(" IS NOT NULL) THEN ").append(
+                        ds.getSqlDialect().concatenate(
+                            castVolumeSql,
+                            new SQLFragment("' '"),
+                            new SQLFragment("COALESCE(").append(volumeUnitSql).append(", '')"),
+                            new SQLFragment("' / '"),
+                            castAmountSql,
+                            new SQLFragment("' '"),
+                            new SQLFragment("COALESCE(").append(amountUnitSql).append(", '')")).append(
                     " END"
-            );
+                    ));
 
             ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, amountCol, amountUnitCol, volumeCol, volumeUnitCol);
             newCol.setLabel("Amount And Volume");
@@ -1524,7 +1538,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
                 QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 qd.setSql("SELECT\n" +
-                    "sd." + pkCol.getSelectName() + ",\n" +
+                    "sd." + pkCol.getFieldKey().toSQLString() + ",\n" +
                     "cast((\n" +
                     "  SELECT group_concat(DISTINCT h.room, chr(10)) as room FROM \"" + ehrPath + "\".study.Housing h\n" +
                     "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + " OR d.death = h.enddateTimeCoalesced" + ")\n" +
@@ -1622,7 +1636,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (idCol == null)
             return;
 
-        final String dateColName = dateCol.getSelectName();
+        final String dateColName = dateCol.getFieldKey().toSQLString();
         final String targetSchemaName = ds.getUserSchema().getName();
         final Container targetSchemaContainer = ds.getUserSchema().getContainer();
         final User u = ds.getUserSchema().getUser();
@@ -1643,7 +1657,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
                 QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 qd.setSql("SELECT\n" +
-                    "c." + pkCol.getSelectName() + ",\n" +
+                    "c." + pkCol.getFieldKey().toSQLString() + ",\n" +
                     "CASE\n" +
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
@@ -1658,7 +1672,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "END as survivorshipInDays,\n" +
                     "\n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
-                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")");
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getFieldKey().toSQLString() + ")");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
@@ -1694,9 +1708,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "daysElapsed";
         if (ti.getColumn(name, false) == null)
         {
-            var date = ti.getMutableColumn("date");
+            var date = ti.getColumn("date");
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
-            SQLFragment sql = new SQLFragment("(CASE WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " <= {fn now()} THEN (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "cast({fn curdate()} as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + " + 1) ELSE 0 END)");
+            SQLFragment sql = new SQLFragment("(CASE WHEN ").append(date.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" <= {fn now()} " +
+                    "THEN ").append(ti.getSqlDialect().getDateDiff(Calendar.DATE, new SQLFragment("CAST({fn curdate()} as " + type + ")"), new SQLFragment("CAST(").append(date.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" AS DATE)"))).append(" + 1 " +
+                    "ELSE 0 END)");
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.INTEGER, date);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -1751,7 +1767,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
-                    "c." + pkCol.getSelectName() + ",\n" +
+                    "c." + pkCol.getFieldKey().toSQLString() + ",\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
@@ -1801,7 +1817,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         "  (d.gender = ac.gender OR ac.gender IS NULL)\n" +
                         ") AS AgeClassAtTime \n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
-                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getSelectName() + ")"
+                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getFieldKey().toSQLString() + ")"
                 );
                 qd.setIsTemporary(true);
 
@@ -1870,7 +1886,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (date != null && enddate != null && ti.getColumn("duration", false) == null)
         {
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
-            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "(cast(COALESCE(CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + " as date), {fn curdate()}) as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + "))");
+            SQLFragment sql = ti.getSqlDialect().getDateDiff(
+                    Calendar.DATE,
+                    new SQLFragment("CAST(COALESCE(CAST(").append(enddate.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" as date), {fn curdate()}) as " + type + ")"),
+                    new SQLFragment("CAST(").append(date.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(" AS date)"));
             ExprColumn col = new ExprColumn(ti, "duration", sql, JdbcType.INTEGER);
             col.setCalculated(true);
             col.setUserEditable(false);
