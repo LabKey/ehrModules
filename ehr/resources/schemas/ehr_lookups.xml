@@ -588,7 +588,6 @@
             </column>
             <column columnName="meaning">
                 <nullable>true</nullable>
-                <displayWidth>50</displayWidth>
             </column>
             <column columnName="origGender">
                 <columnTitle>Original Gender</columnTitle>
@@ -2770,7 +2769,7 @@
                 <shownInUpdateView>false</shownInUpdateView>
                 <shownInInsertView>false</shownInInsertView>
             </column>
-            <column columnName="category">                               `
+            <column columnName="category">                               
                 <columnTitle>Category</columnTitle>
                 <fk>
                     <fkDbSchema>ehr_lookups</fkDbSchema>
