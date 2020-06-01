@@ -588,7 +588,7 @@
             </column>
             <column columnName="meaning">
                 <nullable>true</nullable>
-                <displayWidth>50</displayWidth>
+                <displayWidth>75</displayWidth>
             </column>
             <column columnName="origGender">
                 <columnTitle>Original Gender</columnTitle>
