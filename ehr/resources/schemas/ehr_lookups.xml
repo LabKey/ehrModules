@@ -2770,7 +2770,7 @@
                 <shownInUpdateView>false</shownInUpdateView>
                 <shownInInsertView>false</shownInInsertView>
             </column>
-            <column columnName="category">                               `
+            <column columnName="category">                               
                 <columnTitle>Category</columnTitle>
                 <fk>
                     <fkDbSchema>ehr_lookups</fkDbSchema>
