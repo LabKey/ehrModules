@@ -16,17 +16,6 @@ Ext4.namespace('EHR.reports');
  * the UI should be rendered.
  *
  */
-
-//function to directly add qwp to dom see ticket 38440
-addQueryWebPart = function(parentElement, config) {
-    var targetElement = parentElement.getEl().createChild({tag: 'div'});
-    config.renderTo = Ext4.id(targetElement, "queryWebPart");
-
-    new LABKEY.QueryWebPart(config);
-
-};
-
-
 EHR.reports['abstract'] = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
@@ -58,7 +47,11 @@ EHR.reports['abstract'] = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab,config)
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     config = panel.getQWPConfig({
         title: 'Active Assignments' + title,
@@ -70,8 +63,11 @@ EHR.reports['abstract'] = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-
-    addQueryWebPart(tab,config)
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     addQueryWebPart(tab,config)
 
@@ -86,7 +82,11 @@ EHR.reports['abstract'] = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab,config)
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     EHR.reports.weightGraph(panel, tab);
 };
@@ -95,25 +95,31 @@ EHR.reports.arrivalDeparture = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
 
-    var config =  panel.getQWPConfig({
-        title: 'Arrivals' + title,
-        schemaName: 'study',
-        queryName: 'arrival',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        frame: true
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: panel.getQWPConfig({
+            title: 'Arrivals' + title,
+            schemaName: 'study',
+            queryName: 'arrival',
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            frame: true
+        })
     });
-    addQueryWebPart(tab,config);
 
-    var config = panel.getQWPConfig({
-        title: 'Departures' + title,
-        schemaName: 'study',
-        queryName: 'departure',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        frame: true
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: panel.getQWPConfig({
+            title: 'Departures' + title,
+            schemaName: 'study',
+            queryName: 'departure',
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            frame: true
+        })
     });
-    addQueryWebPart(tab, config);
 };
 
 EHR.reports.pedigree = function(panel, tab){
@@ -201,7 +207,7 @@ EHR.reports.weightGraph = function(panel, tab){
             var filterArray = panel.getFilterArray(tab);
             var title = panel.getTitleSuffix();
             toAdd.push({
-                xtype: 'ldk-querypanel',
+                xtype: 'ldk-querycmp',
                 style: 'margin-bottom:20px;',
                 queryConfig: {
                     title: 'Overview' + title,
@@ -251,7 +257,11 @@ EHR.reports.bloodChemistry = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     config = panel.getQWPConfig({
         schemaName: 'study',
@@ -263,7 +273,11 @@ EHR.reports.bloodChemistry = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     config = panel.getQWPConfig({
         schemaName: 'study',
@@ -276,7 +290,11 @@ EHR.reports.bloodChemistry = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 }
 
 EHR.reports.urinalysisResults = function(panel, tab){
@@ -295,7 +313,11 @@ EHR.reports.urinalysisResults = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     config = panel.getQWPConfig({
         schemaName: 'study',
@@ -307,7 +329,11 @@ EHR.reports.urinalysisResults = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 
     config = panel.getQWPConfig({
         schemaName: 'study',
@@ -320,7 +346,11 @@ EHR.reports.urinalysisResults = function(panel, tab){
         removeableFilters: filterArray.removable
     });
 
-    addQueryWebPart(tab, config);
+    tab.add({
+        xtype: 'ldk-querycmp',
+        style: 'margin-bottom:20px;',
+        queryConfig: config
+    });
 }
 
 EHR.reports.treatmentSchedule = function(panel, tab){
@@ -340,7 +370,7 @@ EHR.reports.treatmentSchedule = function(panel, tab){
     });
 
     tab.add({
-        xtype: 'ldk-querypanel',
+        xtype: 'ldk-querycmp',
         style: 'margin-bottom:20px;',
         queryConfig: config
     });
@@ -355,7 +385,7 @@ EHR.reports.treatmentSchedule = function(panel, tab){
     });
 
     tab.add({
-        xtype: 'ldk-querypanel',
+        xtype: 'ldk-querycmp',
         style: 'margin-bottom:20px;',
         queryConfig: config
     });
@@ -370,7 +400,7 @@ EHR.reports.treatmentSchedule = function(panel, tab){
     });
 
     tab.add({
-        xtype: 'ldk-querypanel',
+        xtype: 'ldk-querycmp',
         style: 'margin-bottom:20px;',
         queryConfig: config
     });
@@ -426,7 +456,7 @@ EHR.reports.snapshot = function(panel, tab, showActionsBtn){
             var filterArray = panel.getFilterArray(tab);
             var title = panel.getTitleSuffix();
             toAdd.push({
-                xtype: 'ldk-querypanel',
+                xtype: 'ldk-querycmp',
                 style: 'margin-bottom:20px;',
                 queryConfig: {
                     title: 'Overview' + title,
@@ -471,7 +501,7 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
             var filterArray = panel.getFilterArray(tab);
             var title = panel.getTitleSuffix();
             tab.add({
-                xtype: 'ldk-querypanel',
+                xtype: 'ldk-querycmp',
                 style: 'margin-bottom:20px;',
                 queryConfig: {
                     title: 'Overview' + title,

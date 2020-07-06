@@ -393,6 +393,7 @@
             </column>
             <column columnName="investigator"/>
             <column columnName="chargeType"/>
+            <column columnName="chargeGroup"/>
             <column columnName="chargeId"/>
             <column columnName="item">
                 <columnTitle>Item</columnTitle>
@@ -678,7 +679,7 @@
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Charge Units</tableTitle>
         <columns>
-            <column columnName="chargetype">
+            <column columnName="groupName">
                 <columnTitle>Name</columnTitle>
             </column>
             <column columnName="servicecenter">

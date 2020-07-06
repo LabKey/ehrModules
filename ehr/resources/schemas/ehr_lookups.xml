@@ -63,7 +63,6 @@
                 <shownInDetailsView>false</shownInDetailsView>
                 <shownInInsertView>false</shownInInsertView>
                 <isHidden>true</isHidden>
-                <isKeyField>false</isKeyField>
             </column>
             <column columnName="requirementset">
                 <nullable>true</nullable>
@@ -997,7 +996,6 @@
             </column>
             <column columnName="rowid">
                 <isAutoInc>true</isAutoInc>
-                <isKeyField>false</isKeyField>
                 <shownInInsertView>false</shownInInsertView>
                 <shownInUpdateView>false</shownInUpdateView>
             </column>
@@ -1229,7 +1227,6 @@
         <columns>
             <column columnName="rowid">
                 <columnTitle>Row Id</columnTitle>
-                <isKeyField>false</isKeyField>
             </column>
             <column columnName="subset">
 
