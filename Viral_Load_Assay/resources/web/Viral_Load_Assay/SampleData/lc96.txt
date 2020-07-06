@@ -1,0 +1,31 @@
+Color	Position	Sample Name	Gene Name	Cq	Concentration	Call	Excluded	Sample Type	Standard	Cq Mean	Cq Error	Concentration Mean	Concentration Error	Replicate Group	Dye	Edited Call	Slope	EPF	Failure	Notes	Sample Prep Notes	Number
+255;132;197;238	A1	STD_500000000	None	14.61	3.81E+08	Positive	Unchecked	Standard	5.00E+08	14.57	0.06	3.93E+08	1.64E+07	A1	FAM	 	0.32	3.27	None			1
+255;103;103;103	A2	STD_50000000	None	17.56	5.47E+07	Positive	Unchecked	Standard	5.00E+07	17.63	0.1	5.23E+07	3.40E+06	A2	FAM	 	0.31	3.19	None			2
+255;242;138;21	A3	STD_5000000	None	20.83	6.35E+06	Positive	Unchecked	Standard	5.00E+06	20.84	0.01	6.33E+06	2.95E+04	A3	FAM	 	0.32	3.22	None			3
+255;250;215;15	A4	STD_500000	None	24.54	5.53E+05	Positive	Unchecked	Standard	5.00E+05	24.54	0.01	5.55E+05	2.58E+03	A4	FAM	 	0.31	3.07	None			4
+255;103;154;47	A5	STD_50000	None	28.12	5.24E+04	Positive	Unchecked	Standard	5.00E+04	28.27	0.21	4.79E+04	6.44E+03	A5	FAM	 	0.3	2.96	None			5
+255;180;73;149	A6	STD_5000	None	31.71	4.94E+03	Positive	Unchecked	Standard	5.00E+03	31.56	0.21	5.48E+03	7.62E+02	A6	FAM	 	0.31	2.89	None			6
+255;95;103;174	A7	STD_500	None	35.02	5.59E+02	Positive	Unchecked	Standard	5.00E+02	35.47	0.64	4.34E+02	1.77E+02	A7	FAM	 	0.31	2.74	None			7
+255;205;18;55	A8	STD_50	None	-	-	Negative	Unchecked	Standard	-	-	-	-	-	A8	FAM	 	0	0	Standard is negative, Replicate group contains positives and negatives.			8
+255;34;176;146	A9	STD_0	None	-	-	Negative	Unchecked	Unknown	-	-	-	-	-	A9	FAM	 	0	-0.01	None			9
+255;132;197;238	B1	STD_500000000	None	14.52	4.04E+08	Positive	Unchecked	Standard	5.00E+08	14.57	0.06	3.93E+08	1.64E+07	A1	FAM	 	0.34	3.38	None			10
+255;103;103;103	B2	STD_50000000	None	17.7	4.98E+07	Positive	Unchecked	Standard	5.00E+07	17.63	0.1	5.23E+07	3.40E+06	A2	FAM	 	0.32	3.21	None			11
+255;242;138;21	B3	STD_5000000	None	20.84	6.31E+06	Positive	Unchecked	Standard	5.00E+06	20.84	0.01	6.33E+06	2.95E+04	A3	FAM	 	0.31	3.18	None			12
+255;250;215;15	B4	STD_500000	None	24.53	5.57E+05	Positive	Unchecked	Standard	5.00E+05	24.54	0.01	5.55E+05	2.58E+03	A4	FAM	 	0.31	3.06	None			13
+255;103;154;47	B5	STD_50000	None	28.41	4.33E+04	Positive	Unchecked	Standard	5.00E+04	28.27	0.21	4.79E+04	6.44E+03	A5	FAM	 	0.3	2.91	None			14
+255;180;73;149	B6	STD_5000	None	31.41	6.01E+03	Positive	Unchecked	Standard	5.00E+03	31.56	0.21	5.48E+03	7.62E+02	A6	FAM	 	0.31	2.87	None			15
+255;95;103;174	B7	STD_500	None	35.92	3.09E+02	Positive	Unchecked	Standard	5.00E+02	35.47	0.64	4.34E+02	1.77E+02	A7	FAM	 	0.3	2.35	None			16
+255;205;18;55	B8	STD_50	None	38.67	5.06E+01	Positive	Unchecked	Standard	5.00E+01	38.67	0	5.06E+01	0.00E+00	A8	FAM	 	0.24	1.68	Replicate group contains positives and negatives.			17
+255;34;176;146	B9	STD_0	None	-	-	Negative	Unchecked	Unknown	-	-	-	-	-	A9	FAM	 	0	0.01	None			18
+255;234;79;79	C1	rh2503_2014.06.05_.3	None	30.99	7.93E+03	Positive	Unchecked	Unknown	-	30.85	0.2	8.73E+03	1.13E+03	C1	FAM	 	0.3	2.53	None			19
+255;66;41;24	C2	rh2503_2014.06.11_.3	None	32.9	2.26E+03	Positive	Unchecked	Unknown	-	32.8	0.15	2.42E+03	2.36E+02	C2	FAM	 	0.24	2.13	None			20
+255;132;197;238	C3	rh2503_2014.06.13_.3	None	-	-	Negative	Unchecked	Unknown	-	-	-	-	-	C3	FAM	 	0.01	0.14	Replicate group contains positives and negatives.			21
+255;103;103;103	C4	rh2499_2014.06.07	None	35.21	4.93E+02	Positive	Unchecked	Unknown	-	36.08	1.23	3.25E+02	2.38E+02	C4	FAM	 	0.15	1.3	None			22
+255;242;138;21	C5	rh2486_2017.06.13_.3	None	36.32	2.38E+02	Positive	Unchecked	Unknown	-	36.08	0.34	2.82E+02	6.24E+01	C5	FAM	 	0.11	1.13	None			23
+255;250;215;15	C6	rh2484_2014.06.15_.3	None	37.54	1.07E+02	Positive	Unchecked	Unknown	-	37.54	0	1.07E+02	0.00E+00	C6	FAM	 	0.22	1.71	Replicate group contains positives and negatives.			24
+255;234;79;79	D1	rh2503_2014.06.05_.3	None	30.71	9.53E+03	Positive	Unchecked	Unknown	-	30.85	0.2	8.73E+03	1.13E+03	C1	FAM	 	0.29	2.62	None			25
+255;66;41;24	D2	rh2503_2014.06.11_.3	None	32.69	2.59E+03	Positive	Unchecked	Unknown	-	32.8	0.15	2.42E+03	2.36E+02	C2	FAM	 	0.25	2.25	None			26
+255;132;197;238	D3	rh2503_2014.06.13_.3	None	35.76	3.44E+02	Positive	Unchecked	Unknown	-	35.76	0	3.44E+02	0.00E+00	C3	FAM	 	0.04	0.41	Replicate group contains positives and negatives.			27
+255;103;103;103	D4	rh2499_2014.06.07	None	36.95	1.57E+02	Positive	Unchecked	Unknown	-	36.08	1.23	3.25E+02	2.38E+02	C4	FAM	 	0.09	0.78	None			28
+255;242;138;21	D5	rh2486_2017.06.13_.3	None	35.84	3.26E+02	Positive	Unchecked	Unknown	-	36.08	0.34	2.82E+02	6.24E+01	C5	FAM	 	0.18	1.62	None			29
+255;250;215;15	D6	rh2484_2014.06.15_.3	None	-	-	Negative	Unchecked	Unknown	-	-	-	-	-	C6	FAM	 	0	0.03	Replicate group contains positives and negatives.			30

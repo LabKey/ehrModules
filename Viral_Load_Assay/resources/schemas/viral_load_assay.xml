@@ -150,4 +150,32 @@
             </column>
         </columns>
     </table>
+    <table tableName="nucleic_acid" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Nucleic Acid</tableTitle>
+        <columns>
+            <column columnName="rowid">
+            </column>
+            <column columnName="type">
+            </column>
+            <column columnName="container">
+            </column>
+        </columns>
+    </table>
+    <table tableName="source_material" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Source Material</tableTitle>
+        <columns>
+            <column columnName="rowid">
+            </column>
+            <column columnName="type">
+            </column>
+            <column columnName="liquid">
+            </column>
+            <column columnName="container">
+            </column>
+        </columns>
+    </table>
 </tables>

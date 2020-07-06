@@ -24,12 +24,15 @@ import org.labkey.api.laboratory.assay.AbstractAssayDataProvider;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 import org.labkey.api.view.ViewContext;
+import org.labkey.api.view.template.ClientDependency;
 import org.labkey.viral_load_assay.Viral_Load_AssayModule;
 import org.labkey.viral_load_assay.Viral_Load_Manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,6 +51,7 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
         _importMethods.add(new LC480ImportMethod(_providerName));
         _importMethods.add(new LightCyclerImportMethod(_providerName));
         _importMethods.add(new ABI7500ImportMethod(_providerName));
+        _importMethods.add(new LC96ImportMethod(_providerName));
     }
 
     @Override
@@ -119,5 +123,13 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
         }
 
         return items;
+    }
+
+    @Override
+    public Set<ClientDependency> getClientDependencies()
+    {
+        LinkedHashSet<ClientDependency> resources = new LinkedHashSet<>();
+        resources.add(ClientDependency.fromPath("Viral_Load_Assay/vl_utils.js"));
+        return resources;
     }
 }

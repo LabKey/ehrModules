@@ -628,15 +628,20 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         EHR.Server.Utils.addError(scriptErrors, 'project', 'Project must be numeric: ' + row.project, 'ERROR');
         delete row.project;
     }
+    //Make sure that the project is a number validateAssignment method is expecting a integer.
+    var intProject;
+    if (row.project){
+        intProject = parseInt(row.project);
+    }
 
     //skip if doing assignments
     if (!helper.isQuickValidation() &&
         !helper.isETL() &&
-        row.project && row.Id && row.date &&
-        !helper.getJavaHelper().isDefaultProject(row.project) &&
+        intProject && row.Id && row.date &&
+        !helper.getJavaHelper().isDefaultProject(intProject) &&
         !helper.isSkipAssignmentCheck()
     ){
-        var assignmentErrors = helper.getJavaHelper().validateAssignment(row.Id, row.project, row.date);
+        var assignmentErrors = helper.getJavaHelper().validateAssignment(row.Id, intProject, row.date);
         if (assignmentErrors){
             EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, helper.getErrorSeverityForImproperAssignment());
         }

@@ -6,7 +6,7 @@
                 <property name="columnTitle" value="Name"/>
             </properties>
         </column>
-        <column name="SOP_ID/PDF">
+        <column name="PDF">
             <properties>
                 <property name="columnTitle" value="PDF"/>
             </properties>

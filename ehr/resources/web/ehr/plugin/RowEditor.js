@@ -151,7 +151,8 @@ Ext4.define('EHR.plugin.RowEditor', {
     loadRecord: function(record){
         var win = this.getEditorWindow();
         win.down('#formPanel').bindRecord(record);
-        win.down('#detailsPanel').loadAnimal(record.get('Id'));
+        if (record.fields.containsKey('Id'))
+            win.down('#detailsPanel').loadAnimal(record.get('Id'));
 
         var sm = this.cmp.getSelectionModel();
         if (!sm.hasSelection()){

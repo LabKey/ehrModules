@@ -172,6 +172,13 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
         this.callParent(arguments);
 
+        this.addEvents('projectchange');
+        this.enableBubble('projectchange');
+
+        this.on('change', function(field, val, oldVal){
+            this.fireEvent('projectchange', val);
+        }, this, {buffer: 200});
+
         this.on('render', function(){
             this.triggerEl.set({'data-qtip': 'Click to recalculate allowable projects'});
         }, this);
@@ -214,7 +221,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname, false as fromClient, min(sort_order) as sort_order, max(isAssigned) as isAssigned FROM (";
+        var sql = "SELECT DISTINCT t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.title, t.shortname, false as fromClient, min(sort_order) as sort_order, max(isAssigned) as isAssigned FROM (";
 
         if (id){
             //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
@@ -247,7 +254,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                     " 0 as isAssigned FROM ehr.project p WHERE p.alwaysavailable = true"; //TODO: restore this: and p.enddateCoalesced >= curdate()
         }
 
-        sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.investigator, t.title, t.shortname";
+        sql+= " ) t GROUP BY t.project, t.displayName, t.account, t.protocolDisplayName, t.protocol, t.title, t.shortname";
 
         return sql;
     },

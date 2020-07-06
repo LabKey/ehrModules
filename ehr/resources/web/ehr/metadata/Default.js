@@ -320,6 +320,15 @@ EHR.Metadata.registerMetadata('Default', {
         }
         ,account: {
             shownInGrid: false
+        },
+        performing_lab: {
+            lookup: {
+                schemaName: 'wnprc',
+                queryName: 'external_labs',
+                displayColumn: 'lab_name',
+                keyColumn: 'code',
+                sort: 'lab_name'
+            }
         }
     },
     byQuery: {
@@ -779,7 +788,10 @@ EHR.Metadata.registerMetadata('Default', {
                 ,lookup:{ schemaName: 'ehr_lookups', queryName: 'housing_condition_codes', displayColumn: 'value', keyColumn: 'value'}
             }
             ,reason: {
-                shownInGrid: false
+                shownInGrid: false,
+                lookup:{
+                    filterArray: [LABKEY.Filter.create('date_disabled', null, LABKEY.Filter.Types.ISBLANK)]
+                }
             }
             ,restraintType: {
                 shownInGrid: false

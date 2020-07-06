@@ -14,6 +14,13 @@
             </editPermissions>
             <description>This is the default view to show on the employees table</description>
         </propertyDescriptor>
+        <propertyDescriptor name="PDFContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+            <description>This is the containerPath to the folder holding the list of PDFs shared between public and private folder. The PDF list has a Linked schema between both folders, the actual files have to reside in the public folder  Use of slashes is very important - it should be in the format '/myProject/compliance'</description>
+        </propertyDescriptor>
     </properties>
     <clientDependencies>
         <dependency path="clientapi/ext4.lib.xml"/>
