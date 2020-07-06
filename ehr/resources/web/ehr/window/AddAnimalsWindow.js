@@ -16,6 +16,8 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
     MAX_ANIMALS: 350,
 
+    bulkEditCheckDisabled: false,
+
     initComponent: function(){
         Ext4.apply(this, {
             title: 'Choose Animals',
@@ -67,7 +69,8 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 xtype: 'checkbox',
                 fieldLabel: 'Bulk Edit Before Applying',
                 helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
-                itemId: 'chooseValues'
+                itemId: 'chooseValues',
+                disabled: this.bulkEditCheckDisabled
             }],
             buttons: [{
                 text: 'Submit',

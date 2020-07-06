@@ -238,10 +238,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this);
     },
 
-    getFieldsToSet: function(id, demographicsMap) {
-        return {};
-    },
-
     onLoad: function(ids, resultMap){
         if (this.disableAnimalLoad){
             return;
@@ -264,8 +260,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             return;
         }
 
-        Ext4.apply(toSet, this.getFieldsToSet(id, results));
+        this.appendDataResults(toSet, results, id);
+        this.getForm().setValues(toSet);
+        this.afterLoad();
+    },
 
+    appendDataResults: function(toSet, results, id) {
         this.appendDemographicsResults(toSet, results, id);
         this.appendWeightResults(toSet, results.getRecentWeights());
 
