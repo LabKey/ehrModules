@@ -117,9 +117,4 @@ public class EHR_BillingSchema
     {
         return getSchema().getTable(TABLE_DATA_ACCESS);
     }
-
-    public TableInfo getChargeableItemCategories()
-    {
-        return getSchema().getTable(TABLE_CHARGEABLE_ITEM_CATEGORIES);
-    }
 }
