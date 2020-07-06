@@ -1812,7 +1812,7 @@ public class TriggerScriptHelper
 
     public void sendDeathNotification(final List<String> ids)
     {
-        if (!NotificationService.get().isServiceEnabled())
+        if (!NotificationService.get().isServiceEnabled() || !NotificationService.get().isActive(new DeathNotification(), _container))
         {
             _log.info("notification service is not enabled, will not send death notification.");
             return;

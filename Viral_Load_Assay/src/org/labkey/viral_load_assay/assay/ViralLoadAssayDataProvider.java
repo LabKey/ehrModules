@@ -47,10 +47,9 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
         _providerName = Viral_Load_Manager.VL_ASSAY_PROVIDER_NAME;
         _module = m;
 
+        _importMethods.add(new ABI7500ImportMethod(_providerName));
         _importMethods.add(new DefaultVLImportMethod(_providerName));
         _importMethods.add(new LC480ImportMethod(_providerName));
-        _importMethods.add(new LightCyclerImportMethod(_providerName));
-        _importMethods.add(new ABI7500ImportMethod(_providerName));
         _importMethods.add(new LC96ImportMethod(_providerName));
     }
 

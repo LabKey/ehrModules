@@ -256,7 +256,7 @@ EHR.reports.bloodChemistry = function(panel, tab){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
+        style: 'margin-bottom:20px;min-height:500px',
         queryConfig: config
     });
 
@@ -272,7 +272,7 @@ EHR.reports.bloodChemistry = function(panel, tab){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
+        style: 'margin-bottom:20px;min-height:500px',
         queryConfig: config
     });
 
@@ -289,7 +289,7 @@ EHR.reports.bloodChemistry = function(panel, tab){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
+        style: 'margin-bottom:20px;min-height:500px',
         queryConfig: config
     });
 }
@@ -328,7 +328,7 @@ EHR.reports.urinalysisResults = function(panel, tab){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
+        style: 'margin-bottom:20px;min-height:500px',
         queryConfig: config
     });
 
@@ -345,7 +345,7 @@ EHR.reports.urinalysisResults = function(panel, tab){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
+        style: 'margin-bottom:20px;min-height:500px',
         queryConfig: config
     });
 }

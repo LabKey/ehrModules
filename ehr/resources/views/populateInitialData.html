@@ -8072,9 +8072,9 @@
         }
 
         function makeObject(config, data, fields){
-            Ext.each(data, function(row){
+            Ext4.each(data, function(row){
                 var record = {};
-                Ext.each(fields, function(f, idx){
+                Ext4.each(fields, function(f, idx){
                     record[f] = row[idx];
                 }, this);
                 config.rows.push(record);

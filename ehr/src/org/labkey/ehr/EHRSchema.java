@@ -26,6 +26,7 @@ public class EHRSchema
 
     public static final String TABLE_FORMTYPES = "formtypes";
     public static final String TABLE_FORMPANELSECTIONS = "formpanelsections";
+    public static final String TABLE_FORM_FRAMEWORK_TYPES = "form_framework_types";
     public static final String TABLE_LOOKUPS = "lookups";
     public static final String TABLE_LOOKUP_SETS = "lookup_sets";
     public static final String TABLE_LABWORK_TYPES = "labwork_types";
@@ -59,7 +60,7 @@ public class EHRSchema
     {
         // private constructor to prevent instantiation from
         // outside this class: this singleton should only be
-        // accessed via org.labkey.ehr.EHRSchema.getInstance()
+        // accessed via org.labkey.ehr.EHRSchema.getInstance().
     }
 
     public DbSchema getSchema()
