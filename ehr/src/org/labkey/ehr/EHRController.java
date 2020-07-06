@@ -353,7 +353,7 @@ public class EHRController extends SpringActionController
             {
                 String detailsStr;
                 String importStr;
-                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()))
+                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
                     // Because the Ext3-based UI can rely on loading JS-based metadata that is keyed
                     // off table name, and because when this was originally written LK preferentially used label over title for
@@ -376,8 +376,32 @@ public class EHRController extends SpringActionController
                         url.addParameter("importURL", importUrl.toString());
                     }
                 }
-                else
+                //TODO implement this after view is set up for editable react form
+                else if (isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
+                    //weight is custom since it was introduced in its own controller
+                    if ("weight".equals(form.getQueryName())){
+                        detailsStr = "/enterweights/app.view?";
+                    }else{
+                        detailsStr = "/wnprc_ehr/" + queryName + ".view?";
+                    }
+                    importStr = "";
+                    for (String pkCol : ti.getPkColumnNames())
+                    {
+                        detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                        importStr += "&" + pkCol + "=";
+                    }
+                    detailsStr += "&" + "formtype=" + queryName;
+
+                    if (form.isShowImport())
+                    {
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/test.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        importUrl.setContainerContext(getContainer());
+
+                        url.addParameter("importURL", importUrl.toString());
+                    }
+                }
+                else {
                     detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
                     importStr = "";
                     for (String pkCol : ti.getPkColumnNames())
@@ -492,6 +516,28 @@ public class EHRController extends SpringActionController
             }
 
             return isExt4Form;
+        }
+
+        //Checks the form_framework_types table to see if there are any forms that should be rendered using react controller
+        // Currently just enterweights as of March 2020
+        protected boolean isReactForm(String schemaName, String queryName)
+        {
+            boolean isReactForm = false;
+            UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), EHRSchema.EHR_SCHEMANAME);
+            if (us == null) { return false; }
+
+            TableInfo ti = us.getTable(EHRSchema.TABLE_FORM_FRAMEWORK_TYPES);
+            if (ti == null) { return false; }
+
+            TableSelector ts = new TableSelector(ti, Collections.singleton("framework"), new SimpleFilter(FieldKey.fromString("schemaname"), schemaName).addCondition(FieldKey.fromString("queryname"), queryName), null);
+            String[] ret = ts.getArray(String.class);
+
+            if (ret.length > 0 && "reactjs".equalsIgnoreCase(ret[0]))
+            {
+                isReactForm = true;
+            }
+
+            return isReactForm;
         }
     }
 

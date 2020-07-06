@@ -139,7 +139,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT t.project, t.investigator, t.title,  " +
+        var sql = "SELECT DISTINCT t.project, t.investigator, t.title, t.account, " +
                 "false as fromClient, min(sort_order) as sort_order, max(isAssigned) as isAssigned FROM (";
 
         if (id){
@@ -148,6 +148,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
                     "p.inves as investigator, " +
                     "p.title,  " +
                     "1 as sort_order, " +
+                    "p.account, " +
                     "CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
                     " FROM ehr.project p JOIN study.assignment a ON (a.project = p.project) " +
                     " WHERE a.id='"+id+"' AND (a.project = p.project) ";
@@ -170,9 +171,10 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
                 sql += ' UNION ALL ';
 
             sql += " SELECT p.project," +
-                    "p.inves as investigator," +
                     "p.title, " +
+                    "p.inves as investigator," +
                     "3 as sort_order, " +
+                    "p.account, " +
                     "0 as isAssigned " +
                     "FROM ehr.project p ";
 
@@ -181,7 +183,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
             }
         }
 
-        sql+= " ) t GROUP BY t.project,t.investigator, t.title";
+        sql+= " ) t GROUP BY t.project,t.investigator, t.title, t.account";
 
         return sql;
     },

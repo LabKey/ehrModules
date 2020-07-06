@@ -13,12 +13,6 @@ EHR.model.DataModelManager.registerMetadata('Charges', {
                 allowBlank: true,
                 nullable: true
             },
-            unitcost: {
-                hidden: false,
-                editorConfig: {
-                    decimalPrecision: 2
-                }
-            },
             date: {
                 hidden: false,
                 columnConfig: {
