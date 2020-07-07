@@ -15,7 +15,8 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.module.Module;
 
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public class DefaultDataEntryFormFactory implements DataEntryFormFactory
 {
-    private Logger _log = Logger.getLogger(DefaultDataEntryFormFactory.class);
+    private Logger _log = LogManager.getLogger(DefaultDataEntryFormFactory.class);
     Class<? extends DataEntryForm> _clazz;
     Module _module;
 

@@ -15,7 +15,8 @@
  */
 package org.labkey.api.ehr.table;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class AssignmentAtTimeForeignKey extends LookupForeignKey
 {
-    private static final Logger _log = Logger.getLogger(AssignmentAtTimeForeignKey.class);
+    private static final Logger _log = LogManager.getLogger(AssignmentAtTimeForeignKey.class);
 
     private AbstractTableInfo _tableInfo;
     private ColumnInfo _pkCol;

@@ -15,7 +15,8 @@
  */
 package org.labkey.api.ehr.history;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +50,7 @@ public class HistoryRowImpl implements HistoryRow
     private String _objectId;
     private String _html;
 
-    protected static final Logger _log = Logger.getLogger(HistoryRowImpl.class);
+    protected static final Logger _log = LogManager.getLogger(HistoryRowImpl.class);
 
     protected final SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 

@@ -15,7 +15,8 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
@@ -68,7 +69,7 @@ abstract public class AbstractFormSection implements FormSection
 
     private List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
 
-    protected static final Logger _log = Logger.getLogger(AbstractFormSection.class);
+    protected static final Logger _log = LogManager.getLogger(AbstractFormSection.class);
 
     public AbstractFormSection(String name, String label, String xtype)
     {

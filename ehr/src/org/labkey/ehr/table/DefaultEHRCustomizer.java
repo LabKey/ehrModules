@@ -15,7 +15,8 @@
  */
 package org.labkey.ehr.table;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -92,7 +93,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     public static final String ID_COL = "Id";
     public static final String PARTICIPANT_CONCEPT_URI = "http://cpas.labkey.com/Study#ParticipantId";
 
-    private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
+    private static final Logger _log = LogManager.getLogger(DefaultEHRCustomizer.class);
     private boolean _addLinkDisablers = true;
     private static final String MORE_ACTIONS = "More Actions";
 

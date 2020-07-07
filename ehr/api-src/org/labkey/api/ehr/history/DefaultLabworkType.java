@@ -16,7 +16,8 @@
 package org.labkey.api.ehr.history;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -74,7 +75,7 @@ public class DefaultLabworkType implements LabworkType
     protected String _normalRangeField = null;
     protected String _normalRangeStatusField = null;
 
-    private static final Logger _log = Logger.getLogger(DefaultLabworkType.class);
+    private static final Logger _log = LogManager.getLogger(DefaultLabworkType.class);
     @NotNull
     private final Module _declaringModule;
 

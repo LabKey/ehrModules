@@ -18,7 +18,8 @@ package org.labkey.ehr.utils;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -125,7 +126,7 @@ public class TriggerScriptHelper
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
     private Map<Integer, String> _cachedAccounts = new HashMap<>();
 
-    private static final Logger _log = Logger.getLogger(TriggerScriptHelper.class);
+    private static final Logger _log = LogManager.getLogger(TriggerScriptHelper.class);
 
     private TriggerScriptHelper(int userId, String containerId)
     {
