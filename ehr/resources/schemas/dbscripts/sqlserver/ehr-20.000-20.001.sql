@@ -1,7 +1,5 @@
---ehr-17.20-17.21.sql script is getting skipped on teamcity, so adding the contents of this script below:
-
---Merged script from conflicting ehr-12.425-12.426.sql scripts authored in different branches, trunk and modules15.2
-
+--ehr-17.20-17.21.sql
+-- contents of ehr-17.20-17.21.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup, so including it below
 ALTER TABLE ehr.protocol ADD contacts VARCHAR(200);
 
 -- Merging upgrade scripts, ensure that we end up with rows for 'Started' in both tables
@@ -17,8 +15,8 @@ INSERT INTO ehr.status
 VALUES
        ('Started', 'Record has started, but not completed',1,0,0,0,0);
 
--- ehr-17.21-17.22.sql script is getting skipped on teamcity, so adding the contents of this script below:
-
+-- ehr-17.21-17.22.sql
+-- contents of ehr-17.21-17.22.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup, so including it below
 CREATE TABLE ehr.form_framework_types (
   RowId INT IDENTITY(1,1) NOT NULL,
 

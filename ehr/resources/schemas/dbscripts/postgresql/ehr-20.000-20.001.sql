@@ -1,17 +1,14 @@
 /*
- * Copyright (c) 2019 LabKey Corporation
+ * Copyright (c) 2020 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
--- ehr-17.20-17.21.sql script is getting skipped on teamcity since it got merged to this (wnprc18.3) branch after rolled up scripts ehr-17.20-17.30, and its siblings ehr-17.21-17.30 & ehr-17.22-17.30 were created.
--- So adding the contents of ehr-17.20-17.21.sql script below:
 
---Merged script from conflicting ehr-12.425-12.426.sql scripts authored in different branches, trunk and modules15.2
-
--- Ensure column length is changed as expected
+-- ehr-17.20-17.21.sql
+-- contents of ehr-17.20-17.21.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup.
+-- So, including it below with a slight variation - add cols only if it doesn't exist since it probably exists on wnprc's postgres db
 ALTER TABLE ehr.project ALTER COLUMN Title TYPE VARCHAR(400);
 
--- Make sure the ehr.protocol table has a contact column
 CREATE FUNCTION ehr.handleAddContactToProtocol() RETURNS VOID AS $$
 DECLARE
 BEGIN
@@ -30,7 +27,6 @@ SELECT ehr.handleAddContactToProtocol();
 
 DROP FUNCTION ehr.handleAddContactToProtocol();
 
--- Merging upgrade scripts, ensure that we end up with rows for 'Started' in both tables
 DELETE FROM ehr.qcStateMetadata WHERE QCStateLabel = 'Started';
 DELETE FROM ehr.status WHERE Label = 'Started';
 
@@ -44,9 +40,9 @@ VALUES
        ('Started', 'Record has started, but not completed',TRUE,FALSE,FALSE,FALSE,FALSE);
 
 
--- ehr-17.21-17.22.sql script is getting skipped on teamcity (same reason as mentioned above).
--- So adding the contents of ehr-17.21-17.22.sql script below with a slight variation - i.e. create table only if it doesn't exist:
-
+-- ehr-17.21-17.22.sql
+-- contents of ehr-17.21-17.22.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup.
+-- So, including it below with a slight variation - create table only if it doesn't exist since it probably exists on wnprc's postgres db
 CREATE FUNCTION ehr.createTable_form_framework_types() RETURNS VOID AS $$
 DECLARE
 BEGIN

@@ -87,34 +87,8 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
                   win.close();
                 }
-            })],
-            validationDelay: 500,
-            //NOTE: unless i have this empty store an error is thrown
-            store: {
-                type: 'labkey-store',
-                schemaName: 'study',
-                sql: this.makeSql(),
-                sort: 'sort_order,project',
-                autoLoad: false,
-                loading: true,
-                listeners: {
-                    scope: this,
-                    delay: 50,
-                    load: function(store){
-                        // allow for auto-select of the project, if not already selected, for quick data entry
-                        if (this.autoSelectFirstProjectOnLoad && !this.getValue()) {
-                            var storeProjects = Ext4.Array.filter(store.collect('project'), function(proj) {
-                                return LABKEY.Utils.isNumber(proj);
-                            });
-
-                            if (storeProjects.length > 0) {
-                                this.setValue(storeProjects[0]);
-                            }
-                        }
-
-                        this.resolveProjectFromStore();
-                        this.getPicker().refresh();
-                    }
+                else {
+                  Ext4.Msg.alert('Error', 'Unknown Project');
                 }
               }
             },{
@@ -149,6 +123,14 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
           scope: this,
           delay: 50,
           load: function(store){
+                if (this.autoSelectFirstProjectOnLoad && !this.getValue()) {
+                    var storeProjects = Ext4.Array.filter(store.collect('project'), function(proj) {
+                        return LABKEY.Utils.isNumber(proj);
+                    });
+                    if (storeProjects.length > 0) {
+                        this.setValue(storeProjects[0]);
+                    }
+                }
             this.resolveProjectFromStore();
             this.getPicker().refresh();
           }
@@ -193,12 +175,16 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
       this.fireEvent('projectchange', val);
     }, this, {buffer: 200});
 
-    getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[LABKEY.Utils.encodeHtml(values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : "")))]}&nbsp;</span>'];
-    },
+    this.on('render', function(){
+      Ext4.QuickTips.register({
+        target: this.triggerEl.elements[0],
+        text: 'Click to recalculate allowable projects'
+      });
+    }, this);
+  },
 
   getInnerTpl: function(){
-    return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : ""))]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;{[values["isAssigned"] ? "font-weight:bold;" : ""]}">{[LABKEY.Utils.encodeHtml(values["displayName"] + " " + (values["shortname"] ? ("(" + values["shortname"] + ")") : (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["investigator"] ? ")" : "")))]}&nbsp;</span>'];
   },
 
   trigger1Cls: 'x4-form-search-trigger',
