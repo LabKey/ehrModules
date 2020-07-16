@@ -226,7 +226,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     if (id){
       //NOTE: show any actively assigned projects, or projects under the same protocol.  we also only show projects if either the animal is assigned, or that project is active
       sql += "SELECT p.project as project, p.displayName as displayName, p.account as account, p.protocol.displayName as protocolDisplayName, " +
-              "p.protocol as protocol, p.title, p.shortname, p.investigatorId." + this.invesLastNameCol +  "as investigator, " +
+              "p.protocol as protocol, p.title, p.shortname, p.investigatorId." + this.invesLastNameCol +  " as investigator, " +
               "CASE WHEN (a.project = p.project AND p.use_category = 'Research') THEN 0 WHEN (a.project = p.project) THEN 1 ELSE 2 END as sort_order, CASE WHEN (a.project = p.project) THEN 1 ELSE 0 END as isAssigned " +
         " FROM ehr.project p JOIN study.assignment a ON (a.project.protocol = p.protocol) " +
         " WHERE a.id='"+id+"' AND (a.project = p.project) "; //TODO: restore this OR p.enddate IS NULL OR p.enddate >= curdate()
