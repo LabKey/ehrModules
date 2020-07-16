@@ -51,11 +51,6 @@ Ext4.define('EHR.grid.Panel', {
 
         this.getSelectionModel().on('selectionchange', this.handleSectionChangeEvent, this);
 
-            //checks the extra property for a non dataset that does not have Id column
-            var byPassId = models[0].store.sectionCfg.extraProperties.BY_PASS_ANIMAL_ID;
-            if (byPassId || byPassId === 'true')
-                return;
-
         // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
         // single row changes, or more importantly single row changes that only involve validation/tooltip error message differences
         this.on('storevalidationcomplete', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
@@ -87,6 +82,11 @@ Ext4.define('EHR.grid.Panel', {
 
     handleSectionChangeEvent: function(sm, models){
         if (models.length != 1)
+            return;
+
+        //checks the extra property for a non dataset that does not have Id column
+        var byPassId = models[0].store.sectionCfg.extraProperties.BY_PASS_ANIMAL_ID;
+        if (byPassId || byPassId === 'true')
             return;
 
         var id = models[0].get('Id');

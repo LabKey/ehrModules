@@ -34,6 +34,7 @@ public class EHRCustomPermissionsTable<SchemaType extends UserSchema> extends Cu
         return EHRDomainKind.getDomainContainer(getContainer());
     }
 
+    @Override
     public QueryUpdateService getUpdateService()
     {
         TableInfo table = getRealTable();
