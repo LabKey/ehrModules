@@ -9671,9 +9671,6 @@ ALTER TABLE ehr.scheduled_task_types ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr.protocolProcedures ADD CONSTRAINT FK_ehr_protocolProcedures_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT FK_ehr_scheduled_task_types_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 
--- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-SELECT core.executeJavaUpgradeCode('setEhrContainerFirstSet');
-
 ALTER TABLE ehr_lookups.ageclass ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr_lookups.amount_units ADD COLUMN Container ENTITYID;
 ALTER TABLE ehr_lookups.areas ADD COLUMN Container ENTITYID;
@@ -9778,9 +9775,6 @@ ALTER TABLE ehr_lookups.usda_codes ADD CONSTRAINT FK_ehr_lookups_usda_codes_Cont
 ALTER TABLE ehr_lookups.usda_levels ADD CONSTRAINT FK_ehr_lookups_usda_levels_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.volume_units ADD CONSTRAINT FK_ehr_lookups_volume_units_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
 ALTER TABLE ehr_lookups.weight_ranges ADD CONSTRAINT FK_ehr_lookups_weight_ranges_Container FOREIGN KEY (Container) REFERENCES core.Containers(EntityId);
-
--- Java upgrade script to populate the Container column from site-level EHRStudyContainer module property
-SELECT core.executeJavaUpgradeCode('setEhrLookupsContainerSecondSet');
 
 -- remove any NULL rows for Container
 DELETE FROM ehr.protocolProcedures WHERE Container IS NULL;
