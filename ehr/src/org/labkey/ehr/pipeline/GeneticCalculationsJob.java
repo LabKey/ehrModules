@@ -15,7 +15,8 @@
  */
 package org.labkey.ehr.pipeline;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
@@ -48,7 +49,7 @@ import java.util.Map;
 public class GeneticCalculationsJob implements Job
 {
     public final static String GENETICCALCULATIONS_PROPERTY_DOMAIN = "org.labkey.ehr.geneticcalculations";
-    private static final Logger _log = Logger.getLogger(GeneticCalculationsJob.class);
+    private static final Logger _log = LogManager.getLogger(GeneticCalculationsJob.class);
     private static TriggerKey _jobKey = null;
 
     public GeneticCalculationsJob()

@@ -16,7 +16,8 @@
 package org.labkey.api.ehr.demographics;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -56,7 +57,7 @@ import java.util.TreeMap;
  */
 abstract public class AbstractDemographicsProvider extends EHROwnable implements DemographicsProvider
 {
-    protected static final Logger _log = Logger.getLogger(AbstractDemographicsProvider.class);
+    protected static final Logger _log = LogManager.getLogger(AbstractDemographicsProvider.class);
 
     private String _schemaName;
     private String _queryName;

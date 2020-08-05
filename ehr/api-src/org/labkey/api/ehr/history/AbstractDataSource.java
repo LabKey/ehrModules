@@ -16,7 +16,8 @@
 package org.labkey.api.ehr.history;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
@@ -64,7 +65,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     private String _name;
     private boolean _showTime = false;
     protected String _subjectIdField = "Id";
-    protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
+    protected static final Logger _log = LogManager.getLogger(HistoryDataSource.class);
 
     public AbstractDataSource(String schema, String query, Module module)
     {

@@ -15,7 +15,8 @@
  */
 package org.labkey.ehr.dataentry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -65,7 +66,7 @@ public class RecordDeleteRunner implements Job
 {
     public static final String PROPERTY_DOMAIN = "org.labkey.ehr.recorddeletion";
     public static final String ENABLED_PROP = "isEnabled";
-    private static final Logger _log = Logger.getLogger(RecordDeleteRunner.class);
+    private static final Logger _log = LogManager.getLogger(RecordDeleteRunner.class);
     private static final int _hour = 23;
     private static final int _minute = 30;
 

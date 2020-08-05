@@ -18,7 +18,8 @@ package org.labkey.ehr.demographics;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
@@ -78,7 +79,7 @@ import java.util.TreeSet;
  */
 public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
-    private static final Logger _log = Logger.getLogger(EHRDemographicsServiceImpl.class);
+    private static final Logger _log = LogManager.getLogger(EHRDemographicsServiceImpl.class);
     private static JobDetail _job = null;
 
     private Cache<String, AnimalRecordImpl> _cache;

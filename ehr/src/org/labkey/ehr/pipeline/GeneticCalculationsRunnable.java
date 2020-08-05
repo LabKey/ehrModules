@@ -15,7 +15,8 @@
  */
 package org.labkey.ehr.pipeline;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineJobException;
@@ -53,7 +54,7 @@ import java.util.Date;
 public class GeneticCalculationsRunnable
 {
     private final String KINSHIP_PIPELINE_NAME = "kinshipPipeline";
-    private final Logger _log = Logger.getLogger(GeneticCalculationsRunnable.class);
+    private final Logger _log = LogManager.getLogger(GeneticCalculationsRunnable.class);
 
     public boolean run(Container c, boolean allowRunningDuringDay) throws PipelineJobException
     {

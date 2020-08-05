@@ -29,7 +29,7 @@ public class Viral_Load_Manager
 
     public static String VL_ASSAY_PROVIDER_NAME = "Viral Loads";
 
-    //private static final Logger _log = Logger.getLogger(Viral_Load_Manager.class);
+    //private static final Logger _log = LogManager.getLogger(Viral_Load_Manager.class);
 
     private Viral_Load_Manager()
     {

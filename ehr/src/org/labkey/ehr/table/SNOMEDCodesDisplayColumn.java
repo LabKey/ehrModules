@@ -16,7 +16,8 @@
 package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
@@ -38,7 +39,7 @@ import java.util.TreeMap;
  */
 public class SNOMEDCodesDisplayColumn extends DataColumn
 {
-    private static final Logger _log = Logger.getLogger(SNOMEDCodesDisplayColumn.class);
+    private static final Logger _log = LogManager.getLogger(SNOMEDCodesDisplayColumn.class);
 
     public SNOMEDCodesDisplayColumn(ColumnInfo col)
     {

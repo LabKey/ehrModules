@@ -15,7 +15,8 @@
  */
 package org.labkey.ehr_compliancedb;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.action.SpringActionController;
 
 /**
@@ -26,7 +27,7 @@ import org.labkey.api.action.SpringActionController;
 public class EHR_ComplianceDBController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(EHR_ComplianceDBController.class);
-    private static final Logger _log = Logger.getLogger(EHR_ComplianceDBController.class);
+    private static final Logger _log = LogManager.getLogger(EHR_ComplianceDBController.class);
 
     public EHR_ComplianceDBController()
     {

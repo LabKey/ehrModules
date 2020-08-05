@@ -17,7 +17,8 @@ package org.labkey.ehr;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.xmlbeans.XmlException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -125,7 +126,7 @@ public class EHRManager
     @Queryable
     public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
 
-    private static final Logger _log = Logger.getLogger(EHRManager.class);
+    private static final Logger _log = LogManager.getLogger(EHRManager.class);
 
     private EHRManager()
     {
