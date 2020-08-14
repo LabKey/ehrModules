@@ -557,7 +557,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
     }
 
     //trim spaces around fields that may contain Ids
-    var fieldNames = ['Id', 'dam', 'sire'];
+    var fieldNames = ['Id', 'dam', 'sire', 'subjectId'];
     for (var fieldIndex = 0; fieldIndex < fieldNames.length; fieldIndex++) {
         var field = fieldNames[fieldIndex];
         if (row[field]) {
