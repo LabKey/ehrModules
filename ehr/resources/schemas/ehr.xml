@@ -1684,6 +1684,7 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
+            <column columnName="species" />
         </columns>
     </table>
     <table tableName="kinship" tableDbType="TABLE" useColumnOrder="true">

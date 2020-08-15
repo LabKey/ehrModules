@@ -28,7 +28,7 @@ BEGIN
     IF EXISTS (
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name='chargeUnits' and table_schema='ehr_billing' and column_name='chargetype'
+            WHERE table_name='chargeunits' and table_schema='ehr_billing' and column_name='chargetype'
         )
     THEN
         ALTER TABLE ehr_billing.chargeUnits DROP CONSTRAINT PK_chargeUnits;
@@ -50,7 +50,7 @@ BEGIN
     IF NOT EXISTS (
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name='miscCharges' and table_schema='ehr_billing' and column_name='totalCost'
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='totalcost'
         )
     THEN
         ALTER TABLE ehr_billing.miscCharges ADD totalCost double precision;

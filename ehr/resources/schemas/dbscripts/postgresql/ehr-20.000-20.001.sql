@@ -70,3 +70,21 @@ $$ LANGUAGE plpgsql;
 SELECT ehr.createTable_form_framework_types();
 
 DROP FUNCTION ehr.createTable_form_framework_types();
+
+CREATE FUNCTION ehr.handleAddSpeciesToSupplementalPedigree() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF NOT EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='supplemental_pedigree' and table_schema='ehr' and column_name='spcies'
+        )
+    THEN
+        ALTER TABLE ehr.supplemental_pedigree ADD species VARCHAR(4000);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr.handleAddSpeciesToSupplementalPedigree();
+
+DROP FUNCTION ehr.handleAddSpeciesToSupplementalPedigree();
