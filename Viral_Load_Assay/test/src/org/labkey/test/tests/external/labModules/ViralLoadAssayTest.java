@@ -33,10 +33,13 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
+import org.labkey.test.components.domain.DomainFormPanel;
+import org.labkey.test.pages.ReactAssayDesignerPage;
 import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.TextSearcher;
+import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
@@ -297,7 +300,37 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         Map<String, FieldDefinition.ColumnType> resultFields = new HashMap<>();
         resultFields.put("uniqueSample", FieldDefinition.ColumnType.String);
         resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
-        _helper.defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, null, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, null, resultFields);
+    }
+
+    public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
+    {
+        log("Defining a test assay at the project level");
+        //define a new assay at the project level
+        //the pipeline must already be setup
+        goToProjectHome();
+
+        //copied from old test
+        goToManageAssays();
+        ReactAssayDesignerPage designerPage = new UIAssayHelper(this).createAssayDesign(provider, label);
+
+        addViralAssayFields(batchFields, designerPage.goToBatchFields());
+        addViralAssayFields(runFields, designerPage.goToRunFields());
+        // This assay uses "Result" instead of "Results" for its domain name
+        addViralAssayFields(resultFields, designerPage.expandFieldsPanel("Result"));
+
+        designerPage.clickFinish();
+    }
+
+    private void addViralAssayFields(Map<String, FieldDefinition.ColumnType> fields, DomainFormPanel section)
+    {
+        if (fields != null)
+        {
+            for (Map.Entry<String, FieldDefinition.ColumnType> entry : fields.entrySet())
+            {
+                section.addField(new FieldDefinition(entry.getKey(), entry.getValue()));
+            }
+        }
     }
 
     private void setUpLC96Assay()
@@ -323,7 +356,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         resultFields.put("samplePrepNotes", FieldDefinition.ColumnType.String);
         resultFields.put("number", FieldDefinition.ColumnType.Integer);
 
-        _helper.defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, null, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, null, resultFields);
     }
 
     private void ensureABI7500Records() throws CommandException, IOException
