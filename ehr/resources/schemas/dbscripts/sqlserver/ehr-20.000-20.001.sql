@@ -33,4 +33,4 @@ CREATE TABLE ehr.form_framework_types (
   CONSTRAINT PK_form_framework_types PRIMARY KEY (schemaname, queryname)
 );
 
-ALTER TABLE ehr.supplemental_pedigree ADD COLUMN species NVARCHAR(4000);
+ALTER TABLE ehr.supplemental_pedigree ADD species NVARCHAR(4000);
