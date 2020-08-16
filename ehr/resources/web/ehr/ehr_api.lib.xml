@@ -5,6 +5,8 @@
         <script path="ehr/DemographicsRecord.js"/>
         <script path="ehr/DemographicsCache.js"/>
         <script path="ehr/Security.js"/>
+        <script path="ehr/navMenu.js"/>
+
 
         <!--Misc Ext4 components-->
         <script path="ehr/panel/WeightGraphPanel.js"/>
