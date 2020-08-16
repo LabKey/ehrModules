@@ -33,6 +33,7 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
+import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.TextSearcher;
@@ -293,34 +294,34 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
     private void setUpLC480Assay() throws Exception
     {
-        Map<String, String> resultFields = new HashMap<>();
-        resultFields.put("uniqueSample", "Text (String)");
-        resultFields.put("nucleicAcidVol", "Number (Double)");
+        Map<String, FieldDefinition.ColumnType> resultFields = new HashMap<>();
+        resultFields.put("uniqueSample", FieldDefinition.ColumnType.String);
+        resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
         _helper.defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, null, resultFields);
     }
 
     private void setUpLC96Assay()
     {
-        Map<String, String> resultFields = new HashMap<>();
-        resultFields.put("uniqueSample", "Text (String)");
-        resultFields.put("nucleicAcidVol", "Number (Double)");
-        resultFields.put("color", "Text (String)");
-        resultFields.put("geneName", "Text (String)");
-        resultFields.put("call", "Text (String)");
-        resultFields.put("excluded", "Text (String)");
-        resultFields.put("cqMean", "Number (Double)");
-        resultFields.put("cqError", "Number (Double)");
-        resultFields.put("concentrationMean", "Number (Double)");
-        resultFields.put("concentrationError", "Number (Double)");
-        resultFields.put("replicateGroup", "Text (String)");
-        resultFields.put("dye", "Text (String)");
-        resultFields.put("editedCall", "Text (String)");
-        resultFields.put("slope", "Number (Double)");
-        resultFields.put("epf", "Number (Double)");
-        resultFields.put("failure", "Text (String)");
-        resultFields.put("notes", "Text (String)");
-        resultFields.put("samplePrepNotes", "Text (String)");
-        resultFields.put("number", "Integer");
+        Map<String, FieldDefinition.ColumnType> resultFields = new HashMap<>();
+        resultFields.put("uniqueSample", FieldDefinition.ColumnType.String);
+        resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("color", FieldDefinition.ColumnType.String);
+        resultFields.put("geneName", FieldDefinition.ColumnType.String);
+        resultFields.put("call", FieldDefinition.ColumnType.String);
+        resultFields.put("excluded", FieldDefinition.ColumnType.String);
+        resultFields.put("cqMean", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("cqError", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("concentrationMean", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("concentrationError", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("replicateGroup", FieldDefinition.ColumnType.String);
+        resultFields.put("dye", FieldDefinition.ColumnType.String);
+        resultFields.put("editedCall", FieldDefinition.ColumnType.String);
+        resultFields.put("slope", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("epf", FieldDefinition.ColumnType.Decimal);
+        resultFields.put("failure", FieldDefinition.ColumnType.String);
+        resultFields.put("notes", FieldDefinition.ColumnType.String);
+        resultFields.put("samplePrepNotes", FieldDefinition.ColumnType.String);
+        resultFields.put("number", FieldDefinition.ColumnType.Integer);
 
         _helper.defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, null, resultFields);
     }

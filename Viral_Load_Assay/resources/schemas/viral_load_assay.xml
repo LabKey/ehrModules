@@ -151,7 +151,7 @@
         </columns>
     </table>
     <table tableName="nucleic_acid" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer"/>
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Nucleic Acid</tableTitle>
         <columns>
@@ -164,7 +164,7 @@
         </columns>
     </table>
     <table tableName="source_material" tableDbType="TABLE" useColumnOrder="true">
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Source Material</tableTitle>
         <columns>
