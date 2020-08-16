@@ -433,7 +433,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 animals = row.animals.replace(/( )*,( )*/g, ',');
                 animals = animals.split(',');
                 animals.sort();
-                animals = animals.remove(id);
+                var index = animals.indexOf(id);
+                if (index !== -1) {
+                    animals = animals.splice(index, 1);
+                }
             }
 
             pairingType = row.category;
