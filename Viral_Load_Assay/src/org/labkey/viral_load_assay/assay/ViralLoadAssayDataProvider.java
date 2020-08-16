@@ -71,7 +71,7 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
         domainMeta.put("Run", runMeta);
 
         JSONObject resultMeta = getJsonObject(domainMeta, "Results");
-        String[] hiddenResultFields = new String[]{"viralLoad", "viralLoadScientific", "copiesPerRxn", "cp", "qcflag", "requestid", "dilutionFactor", "Run", "sampleType", "eluateVol", "volPerRxn", "sourceMaterial"};
+        String[] hiddenResultFields = new String[]{"viralLoad", "viralloadoorindicator", "viralLoadScientific", "copiesPerRxn", "cp", "qcflag", "requestid", "dilutionFactor", "Run", "sampleType", "eluateVol", "volPerRxn", "sourceMaterial"};
         for (String field : hiddenResultFields)
         {
             JSONObject json = getJsonObject(resultMeta, field);
