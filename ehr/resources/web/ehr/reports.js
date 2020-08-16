@@ -69,8 +69,6 @@ EHR.reports['abstract'] = function(panel, tab){
         queryConfig: config
     });
 
-    addQueryWebPart(tab,config)
-
     config = panel.getQWPConfig({
         title: 'Problem List' + title,
         frame: true,
@@ -138,7 +136,6 @@ EHR.reports.pedigree = function(panel, tab){
         titleField: 'Id',
         multiToGrid: true
     });
-    addQueryWebPart(tab,config);
 
     var configOffspring = panel.getQWPConfig({
         title: 'Offspring' + title,
