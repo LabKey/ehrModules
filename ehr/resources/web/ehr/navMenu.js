@@ -20,8 +20,8 @@ Ext4.namespace('EHR.ext');
  * <li>items: An array of objects describing the items in the section.  Each item is usually one link or row of links.  The item objects can contain any properties that will be interpreted by the renderer function.  If the default renderer is used, the item objects only need to contain name and url properties.
  *
  * @example &lt;script type="text/javascript"&gt;
-    Ext.onReady(function(){
-        var panel = new EHR.ext.NavMenu({
+    Ext4.onReady(function(){
+        var panel = Ext4.create('EHR.NavMenu', {
             renderTo: 'targetDiv',
             width: 800,
             autoHeight: true,
@@ -51,7 +51,9 @@ Ext4.namespace('EHR.ext');
 &lt;/script&gt;
 &lt;div id='targetDiv'/&gt;
  */
-EHR.ext.NavMenu = Ext4.extend(Ext4.Panel, {
+Ext4.define('EHR.NavMenu', {
+    extend: 'Ext.panel.Panel',
+
     initComponent: function() {
         var self = this;
         //calculate size
@@ -77,7 +79,7 @@ EHR.ext.NavMenu = Ext4.extend(Ext4.Panel, {
             }
         });
 
-        EHR.ext.NavMenu.superclass.initComponent.call(this);
+        this.callParent(arguments);
 
         for (var i=0;i<this.sections.length;i++){
             var tmp = this.sections[i];

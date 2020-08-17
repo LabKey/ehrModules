@@ -3,11 +3,6 @@
 Ext4.onReady(createNavMenu);
 
 function createNavMenu(){
-    if (!window.EHR || !window.EHR.ext || !window.EHR.ext.NavMenu){
-        Ext4.defer(createNavMenu, 10);
-        return;
-    }
-
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
 
@@ -34,7 +29,7 @@ function createNavMenu(){
         '</table>'
     );
 
-    new EHR.ext.NavMenu({
+    Ext4.create('EHR.NavMenu',{
         width: 270,
         renderTo: 'ehrMenu1_'+webpart.wrapperDivId,
         sections: [
@@ -71,7 +66,7 @@ function createNavMenu(){
     });
 
 
-    new EHR.ext.NavMenu({
+    Ext4.create('EHR.NavMenu', {
         width: 270,
         renderTo: 'ehrMenu2_'+webpart.wrapperDivId,
         sections: [
@@ -121,7 +116,7 @@ function createNavMenu(){
 
     }
 
-    new EHR.ext.NavMenu(menuCfg);
+    Ext4.create('EHR.NavMenu', menuCfg);
 
 }
 
