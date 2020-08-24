@@ -190,7 +190,7 @@ Ext4.define('EHR.window.AddProcedureDefaultsWindow', {
                 width: 60
             });
             toAdd.push({
-                html: r.get('date').format(LABKEY.extDefaultDateFormat),
+                html: Ext4.Date.format(r.get('date'), LABKEY.extDefaultDateFormat),
                 width: 110
             });
 

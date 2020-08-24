@@ -89,7 +89,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
         //we handle date
         if (report.dateFieldName && report.todayOnly){
-            filterArray.removable.push(LABKEY.Filter.create(report.dateFieldName, (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+            filterArray.removable.push(LABKEY.Filter.create(report.dateFieldName, Ext4.Date.format(new Date(), 'Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         }
 
         tab.filterArray = filterArray;

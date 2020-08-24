@@ -96,7 +96,7 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
         }
         var filterArray = [];
 
-        filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('date', Ext4.Date.format(date, 'Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         filterArray.push(LABKEY.Filter.create('taskId', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('QCState/label', 'Request: Approved', LABKEY.Filter.Types.STARTS_WITH));
 

@@ -274,7 +274,7 @@ Ext4.define('EHR.window.LabworkPanelEditWindow', {
             },{
                 xtype: 'displayfield',
                 fieldLabel: 'Date',
-                value: clinpathRunRec.get('date') ? clinpathRunRec.get('date').format(LABKEY.extDefaultDateFormat) : null
+                value: clinpathRunRec.get('date') ? Ext4.Date.format(clinpathRunRec.get('date'), LABKEY.extDefaultDateFormat) : null
             },{
                 xtype: 'displayfield',
                 fieldLabel: 'Service/Panel',

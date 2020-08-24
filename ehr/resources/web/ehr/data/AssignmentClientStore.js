@@ -21,7 +21,7 @@ Ext4.define('EHR.data.AssignmentClientStore', {
             if (!id || !date || !project)
                 continue;
 
-            date = date.format(LABKEY.extDefaultDateFormat);
+            date = Ext4.Date.format(date, LABKEY.extDefaultDateFormat);
 
             rows.push({
                 Id: id,
