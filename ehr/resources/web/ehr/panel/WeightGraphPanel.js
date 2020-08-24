@@ -89,7 +89,7 @@ Ext4.define('EHR.panel.WeightGraphPanel', {
                         lines.push('Weight: ' + row.weight + ' kg');
                         lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
                         if(row.LatestWeightDate)
-                            lines.push('Latest Weight Date: ' + row.LatestWeightDate.format(LABKEY.extDefaultDateFormat));
+                            lines.push('Latest Weight Date: ' + Ext4.util.Format.date(row.LatestWeightDate, LABKEY.extDefaultDateFormat));
                         if(row.PctChange)
                             lines.push('% Change From Current: '+row.PctChange + '%');
                         lines.push('Interval (Months): ' + row.IntervalInMonths);
