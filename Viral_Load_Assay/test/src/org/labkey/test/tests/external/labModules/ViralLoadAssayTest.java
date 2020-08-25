@@ -598,7 +598,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         click(Ext4Helper.Locators.menuItem("View Planned Runs"));
 
         log("Reopening saved run plan");
-        waitForElement(Locator.tagContainingText("span", "Planned Assay Runs"), WAIT_FOR_PAGE);
+        waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
         DataRegionTable dr = new DataRegionTable("query", this);
         clickAndWait(dr.link(0, 0));
 
@@ -807,7 +807,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         click(Ext4Helper.Locators.menuItem("View Planned Runs"));
 
         log("Entering results for saved run");
-        waitForElement(Locator.tagContainingText("span", "Planned Assay Runs"), WAIT_FOR_PAGE);
+        waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
         DataRegionTable templates = new DataRegionTable("query", this);
         clickAndWait(templates.link(0, 1));
 
