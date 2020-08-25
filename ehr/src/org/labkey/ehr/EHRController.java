@@ -378,7 +378,23 @@ public class EHRController extends SpringActionController
                 }
                 else if (isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
-                    detailsStr = getReactFormFrameworkURL(form.getSchemaName(), form.getQueryName());
+                    detailsStr = getReactFormFrameworkURL(form.getSchemaName(), form.getQueryName()) + "?";
+
+                    importStr = "";
+                    for (String pkCol : ti.getPkColumnNames())
+                    {
+                        detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                        importStr += "&" + pkCol + "=";
+                    }
+                    detailsStr += "&" + "formtype=" + queryName;
+
+                    if (form.isShowImport())
+                    {
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/test.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        importUrl.setContainerContext(getContainer());
+
+                        url.addParameter("importURL", importUrl.toString());
+                    }
                 }
                 else {
                     detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
