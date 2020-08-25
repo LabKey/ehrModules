@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests.onprc_ehr;
+package org.labkey.test.tests.ehr;
 
 import org.json.simple.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
@@ -32,17 +31,12 @@ import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.WebTestHelper;
-import org.labkey.test.categories.CustomModules;
-import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
-import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
-import org.labkey.test.util.external.labModules.LabModuleHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,12 +49,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Category({CustomModules.class, EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 5)
-public class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest, SqlserverOnlyTest
+public abstract class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/modules/ehrModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
-    private LabModuleHelper _helper = new LabModuleHelper(this);
 
     @Override
     protected String getProjectName()
@@ -343,51 +335,6 @@ public class ComplianceTrainingTest extends BaseWebDriverTest implements Advance
         waitForElement(Locator.tagContainingText("span", "Categories/Units That Must Complete This Requirement"));
         waitForElement(Locator.tagContainingText("span", "Individual Employees That Must Complete This Requirement (beyond their category/unit)"));
         waitForElement(Locator.tagContainingText("span", "Individual Employees Exempt From This Requirement"));
-    }
-
-    @Test
-    public void testSopSubmission()
-    {
-        beginAt("/ehr_compliancedb/" + getProjectName() + "/SOP_submission.view");
-        reloadPage();
-
-        assertTrue("Submit button not disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
-
-        DataRegionTable dr1 = DataRegionTable.findDataRegionWithinWebpart(this, "Unread SOPs (Less Than 10 Months Until Renewal)");
-        DataRegionTable dr2 = DataRegionTable.findDataRegionWithinWebpart(this, "Dates SOPs Were Last Read");
-        assertEquals("Incorrect row count found", 1, dr1.getDataRowCount());
-        assertEquals("Incorrect row count found", 0, dr2.getDataRowCount());
-
-        dr1.checkAllOnPage();
-        clickButton("Mark Read");
-        reloadPage();
-
-
-        dr1 = DataRegionTable.findDataRegionWithinWebpart(this, "Unread SOPs (Less Than 10 Months Until Renewal)");
-        dr2 = DataRegionTable.findDataRegionWithinWebpart(this, "Dates SOPs Were Last Read");
-        assertEquals("Incorrect row count found", 0, dr1.getDataRowCount());
-        assertEquals("Incorrect row count found", 1, dr2.getDataRowCount());
-
-        assertFalse("Submit button is still disabled", isElementPresent(Locator.xpath("//button[@id='SOPsubmitButton' and @disabled]")));
-
-        dr2.checkAllOnPage();
-        clickButton("Mark Reread");
-        reloadPage();
-
-        waitForElement(Locator.xpath("//button[@id='SOPsubmitButton' and not(@disabled)]"));
-        click(Locator.id("SOPsubmitButton"));
-        assertAlert("You must check the box above the submit button to certify you have read your SOPs");
-
-        checkCheckbox(Locator.id("sopCheck"));
-        click(Locator.button("Submit"));
-        waitForElement(Ext4Helper.Locators.window("SOPs Complete"));
-        click(Ext4Helper.Locators.ext4Button("OK"));
-    }
-
-    private void reloadPage()
-    {
-        waitForText("Mark Read");
-        waitForText("Mark Reread");
     }
 
     protected void setUpTest()
