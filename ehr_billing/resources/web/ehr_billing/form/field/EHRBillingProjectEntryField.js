@@ -155,7 +155,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectEntryField', {
 
             //NOTE: if the date is in the future, we assume active projects
             if (date){
-                sql += "AND cast(a.date as date) <= '"+Ext4.Date.format(date, 'Y-m-d')+"' AND ((a.enddateCoalesced >= '"+Ext4.Date.format(date, 'Y-m-d')+"') OR ('"+date.format('Y-m-d')+"' >= now() and a.enddate IS NULL))";
+                sql += "AND cast(a.date as date) <= '"+Ext4.Date.format(date, 'Y-m-d')+"' AND ((a.enddateCoalesced >= '"+Ext4.Date.format(date, 'Y-m-d')+"') OR ('"+Ext4.Date.format(date, 'Y-m-d')+"' >= now() and a.enddate IS NULL))";
             }
             else {
                 sql += "AND a.isActive = true ";
