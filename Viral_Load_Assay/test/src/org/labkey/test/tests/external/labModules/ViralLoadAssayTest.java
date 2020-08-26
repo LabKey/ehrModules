@@ -600,7 +600,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         log("Reopening saved run plan");
         waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
         DataRegionTable dr = new DataRegionTable("query", this);
-        clickAndWait(dr.link(0, 0));
+
+        dr.clickEditRow(0);
 
         //ensure previous run loads correctly
         waitForElement(_helper.getAssayWell("G1", LabModuleHelper.NEG_COLOR), WAIT_FOR_PAGE);
@@ -809,7 +810,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         log("Entering results for saved run");
         waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
         DataRegionTable templates = new DataRegionTable("query", this);
-        clickAndWait(templates.link(0, 1));
+        clickAndWait(Locator.linkWithText("Enter Results"));
 
         //use the same data included with this assay
         Locator btn = Locator.linkContainingText("Download Example Data");
