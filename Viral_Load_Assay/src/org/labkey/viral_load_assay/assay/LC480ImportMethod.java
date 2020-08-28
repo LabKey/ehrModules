@@ -60,7 +60,7 @@ public class LC480ImportMethod extends AbstractWNPRCImportMethod
     @Override
     public String getTooltip()
     {
-        return "Choose this option to upload data from the output of a Roche LC480.  Please see instructions above the reuslts section";
+        return "Choose this option to upload data from the output of a Roche LC480.  Please see instructions above the results section";
     }
 
     @Override
