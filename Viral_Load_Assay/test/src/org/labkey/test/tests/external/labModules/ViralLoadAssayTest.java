@@ -280,16 +280,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
     @Override
     protected void setUpTest() throws Exception
     {
-        //super.setUpTest();
-        goToHome();
-        beginAt("/project/shared/begin.view");
-        _containerHelper.enableModule("Laboratory");
-        goToHome();
+        super.setUpTest();
 
-        _containerHelper.createProject(getProjectName(), "Laboratory Folder");
-        _containerHelper.enableModules(getEnabledModules());
-
-        setupAssays();
         ensureABI7500Records();
         setUpLC480Assay();
         setUpLC96Assay();
@@ -414,7 +406,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         try
         {
             //this page fails to load on team city windows/sqlserver agents only?
-            waitForElement(Locator.xpath("//span[contains(text(), 'Subject Id') and contains(@class, 'x4-column-header-text')]"), WAIT_FOR_JAVASCRIPT * 2); //ensure grid loaded
+            waitForElement(Locator.xpath("//span[contains(text(), 'Freezer Id') and contains(@class, 'x4-column-header-text')]"), WAIT_FOR_JAVASCRIPT * 2); //ensure grid loaded
         }
         catch (NoSuchElementException e)
         {
@@ -799,6 +791,151 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         assertEquals("Run plan not marked completed", 0, dr2.getDataRowCount());
     }
 
+////    private void importWNPRCResults(String instrument) throws Exception
+////    {
+////        String fullAssayName = instrument + " " + ASSAY_NAME;
+////        log("Verifying " + instrument + " Import");
+////        _helper.goToLabHome();
+////        _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
+////        click(Ext4Helper.Locators.menuItem("View Planned Runs"));
+////
+////        log("Entering results for saved run");
+////        waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
+////        DataRegionTable templates = new DataRegionTable("query", this);
+////        clickAndWait(Locator.linkWithText("Enter Results"));
+////
+////        //use the same data included with this assay
+////        Locator btn = Locator.linkContainingText("Download Example Data");
+////        waitForElement(btn);
+////
+////        assertEquals("Incorrect value for field", instrument, Ext4FieldRef.getForLabel(this, "Instrument").getValue());
+////        assertEquals("Incorrect value for field", Long.valueOf(50), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
+////        assertEquals("Incorrect value for field", Long.valueOf(5), Ext4FieldRef.getForLabel(this, "Sample Vol Per Rxn").getValue());
+////        waitAndClick(btn);
+////
+////        Ext4FieldRef textarea = _ext4Helper.queryOne("#fileContent", Ext4FieldRef.class);
+////        String text = _helper.getExampleData();
+////
+////        log("Trying to save invalid data");
+////        String errorText = text.replace("NTmiKt6kg3i0f4dB2VuZ3H", "NTmiKt6kg3i0f4dB2VuZ3I");
+////        errorText = errorText.replace("nCmYQbLEikiQ73iDxmY33Y", "");
+////        textarea.setValue(errorText);
+////        waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
+////        waitForElement(Ext4Helper.Locators.window("Upload Failed"));
+////        click(Ext4Helper.Locators.ext4Button("OK"));
+////        assertTextPresent("There were errors in the upload", "Missing sample name for row: 17");
+////
+////        log("Saving valid data");
+////        textarea.setValue(text);
+////        waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
+////        waitForElement(Ext4Helper.Locators.window("Success"));
+////        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
+////        waitForText("Import Samples");
+////
+////        log("Verifying results");
+////        _helper.clickNavPanelItemAndWait(ASSAY_NAME + " Runs:", 1);
+////        waitAndClickAndWait(Locator.linkContainingText("view results"));
+////
+////        DataRegionTable results = new DataRegionTable("Data", this);
+////
+////        int totalRows = 38;
+////        Map<String, String[]> expected = new HashMap<>();
+////        expected.put("STD_15000000", new String[]{"STD_15000000", "Standard", "", "176000000"});
+////        expected.put("STD_5", new String[]{"STD_5", "Standard", "", "56.5"});
+////        expected.put("STD_3", new String[]{"STD_3", "Standard", "", "30"});
+////        expected.put("STD_0", new String[]{"STD_0", "Standard", "", "0"});
+////        expected.put("sd0159", new String[]{"sd0159", "Unknown", "2010-04-19", "793000"});
+////        expected.put("sd0160", new String[]{"sd0160", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0338", new String[]{"sd0338", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0339", new String[]{"sd0339", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0340", new String[]{"sd0340", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0341", new String[]{"sd0341", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0345", new String[]{"sd0345", "Unknown", "2010-04-19", "0"});
+////        expected.put("sd0346", new String[]{"sd0346", "Unknown", "2010-04-19", "0"});
+////        expected.put("deAJ11", new String[]{"deAJ11", "Unknown", "2010-04-21", "0"});
+////        expected.put("d90480", new String[]{"d90480", "Unknown", "2010-04-21", "0"});
+////        expected.put("d95149", new String[]{"d95149", "Unknown", "2010-04-21", "12000"});
+////        expected.put("d96061", new String[]{"d96061", "Unknown", "2010-04-21", "0"});
+////        expected.put("d56053", new String[]{"d56053", "Unknown", "2010-04-21", "560000"});
+////        expected.put("d28016", new String[]{"d28016", "Unknown", "2010-04-21", "4150"});
+////        expected.put("d98037", new String[]{"d98037", "Unknown", "2010-04-21", "17300"});
+////        expected.put("d96006", new String[]{"d96006", "Unknown", "2010-04-21", "301"});
+////        expected.put("d95019", new String[]{"d95019", "Unknown", "2010-04-21", "396000"});
+////        expected.put("d04032", new String[]{"d04032", "Unknown", "2010-04-21", "194000"});
+////        expected.put("d03019", new String[]{"d03019", "Unknown", "2010-04-21", "0"});
+////        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
+////        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
+////        expected.put("CTL_d02507", new String[]{"CTL_d02507", "Control", "", "10220"});
+////        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
+////        expected.put("CTL_r02007", new String[]{"CTL_r02007", "Control", "", "46600"});
+////        expected.put("d02056", new String[]{"d02056", "Unknown", "2010-04-19", "102000"});
+////        expected.put("d03830", new String[]{"d03830", "Unknown", "2010-04-19", "8500"});
+////        expected.put("d04291", new String[]{"d04291", "Unknown", "2010-04-19", "252000"});
+////        expected.put("d03504", new String[]{"d03504", "Unknown", "2010-04-19", "171000"});
+////        expected.put("dh6U10", new String[]{"dh6U10", "Unknown", "2010-04-20", "1300"});
+////        expected.put("d95067", new String[]{"d95067", "Unknown", "2010-04-20", "39.04"});
+////        expected.put("d02088", new String[]{"d02088", "Unknown", "2010-04-20", "1200000"});
+////        expected.put("d03037", new String[]{"d03037", "Unknown", "2010-04-20", "143.3"});
+////        expected.put("d04145", new String[]{"d04145", "Unknown", "2010-04-20", "0"});
+////        expected.put("d01599", new String[]{"d01599", "Unknown", "2010-04-20", "36.64"});
+////
+////        verifyImportedVLs(totalRows, expected, results, new String[]{"Subject Id"});
+////    }
+////
+//    private void verifyImportedVLs(int totalRows, Map<String, String[]> expected, DataRegionTable results, @Nullable String[] keyFields) throws Exception
+//    {
+//        assertEquals("Incorrect row count", totalRows, results.getDataRowCount());
+//        waitForText("SIVmac239-Gag"); //proxy for DR load
+//
+//        log("DataRegion column count was: " + results.getColumnCount());
+//
+//        //recreate the DR to see if this removes intermittent test failures
+//        results = new DataRegionTable(results.getDataRegionName(), this);
+//
+//        log("DataRegion column count was: " + results.getColumnCount());
+//
+//        //recreate the DR to see if this removes intermittent test failures
+//        results = new DataRegionTable(results.getDataRegionName(), this);
+//
+//        DecimalFormat formatter = new DecimalFormat("0.#E00");
+//        int i = 0;
+//        while (i < totalRows)
+//        {
+//            String subjectId = results.getDataAsText(i, "Subject Id");
+//            String vl = results.getDataAsText(i, "Viral Load");
+//            String dateString = StringUtils.trimToNull(results.getDataAsText(i, "Sample Date"));
+//            String date = dateString == null ? null : _dateFormat.format(_dateTimeFormat.parse(dateString));
+//            String category = results.getDataAsText(i, "Category");
+//            String[] expectedVals;
+//            StringBuilder sb = new StringBuilder();
+//            if (keyFields == null)
+//            {
+//                expectedVals = expected.get(String.valueOf(i));
+//            }
+//            else
+//            {
+//                String delim = "";
+//                for (String field : keyFields)
+//                {
+//                    sb.append(delim).append(results.getDataAsText(i, field));
+//                    delim = "_";
+//                }
+//                expectedVals = expected.get(sb.toString());
+//            }
+//            assertNotNull("Unable to find expected values: " + sb.toString(), expectedVals);
+//
+//            assertEquals("Incorrect subjectId on row: " + i, expectedVals[0], subjectId);
+//            assertEquals("Incorrect category on row: " + i, expectedVals[1], category);
+//            assertEquals("Incorrect sample date on row: " + i, StringUtils.trimToNull(expectedVals[2]), date);
+//
+//            Double vl1 = Double.parseDouble(expectedVals[3]);
+//            String vlFormatted = formatter.format(vl1);
+//            assertEquals("Incorrect VL on row: " + i, vlFormatted, StringUtils.trimToNull(vl));
+//
+//            i++;
+//        }
+//    }
+
     private void importWNPRCResults(String instrument) throws Exception
     {
         String fullAssayName = instrument + " " + ASSAY_NAME;
@@ -831,63 +968,131 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         waitAndClick(WAIT_FOR_PAGE, Ext4Helper.Locators.ext4Button("Upload"), 0);
         waitForElement(Ext4Helper.Locators.window("Upload Failed"));
         click(Ext4Helper.Locators.ext4Button("OK"));
-        assertTextPresent("There were errors in the upload", "Missing sample name for row: 17");
+        assertTextPresent(
+                "There were errors in the upload",
+                "Missing sample name for row: 2",
+                "Unable to find sample information to match well: NTmiKt6kg3i0f4dB2VuZ3I",
+                "Template row with key NTmiKt6kg3i0f4dB2VuZ3H does not have a result",
+                "Template row with key nCmYQbLEikiQ73iDxmY33Y does not have a result");
 
         log("Saving valid data");
         textarea.setValue(text);
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
         waitForElement(Ext4Helper.Locators.window("Success"));
-        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
+        clickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitForText("Import Samples");
 
         log("Verifying results");
-        _helper.clickNavPanelItemAndWait(ASSAY_NAME + " Runs:", 1);
+        _helper.clickNavPanelItemAndWait(fullAssayName + " Runs:", 1);
         waitAndClickAndWait(Locator.linkContainingText("view results"));
 
         DataRegionTable results = new DataRegionTable("Data", this);
 
-        int totalRows = 38;
-        Map<String, String[]> expected = new HashMap<>();
-        expected.put("STD_15000000", new String[]{"STD_15000000", "Standard", "", "176000000"});
-        expected.put("STD_5", new String[]{"STD_5", "Standard", "", "56.5"});
-        expected.put("STD_3", new String[]{"STD_3", "Standard", "", "30"});
-        expected.put("STD_0", new String[]{"STD_0", "Standard", "", "0"});
-        expected.put("sd0159", new String[]{"sd0159", "Unknown", "2010-04-19", "793000"});
-        expected.put("sd0160", new String[]{"sd0160", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0338", new String[]{"sd0338", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0339", new String[]{"sd0339", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0340", new String[]{"sd0340", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0341", new String[]{"sd0341", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0345", new String[]{"sd0345", "Unknown", "2010-04-19", "0"});
-        expected.put("sd0346", new String[]{"sd0346", "Unknown", "2010-04-19", "0"});
-        expected.put("deAJ11", new String[]{"deAJ11", "Unknown", "2010-04-21", "0"});
-        expected.put("d90480", new String[]{"d90480", "Unknown", "2010-04-21", "0"});
-        expected.put("d95149", new String[]{"d95149", "Unknown", "2010-04-21", "12000"});
-        expected.put("d96061", new String[]{"d96061", "Unknown", "2010-04-21", "0"});
-        expected.put("d56053", new String[]{"d56053", "Unknown", "2010-04-21", "560000"});
-        expected.put("d28016", new String[]{"d28016", "Unknown", "2010-04-21", "4150"});
-        expected.put("d98037", new String[]{"d98037", "Unknown", "2010-04-21", "17300"});
-        expected.put("d96006", new String[]{"d96006", "Unknown", "2010-04-21", "301"});
-        expected.put("d95019", new String[]{"d95019", "Unknown", "2010-04-21", "396000"});
-        expected.put("d04032", new String[]{"d04032", "Unknown", "2010-04-21", "194000"});
-        expected.put("d03019", new String[]{"d03019", "Unknown", "2010-04-21", "0"});
-        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
-        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
-        expected.put("CTL_d02507", new String[]{"CTL_d02507", "Control", "", "10220"});
-        expected.put("CTL_negative", new String[]{"CTL_negative", "Control", "", "0"});
-        expected.put("CTL_r02007", new String[]{"CTL_r02007", "Control", "", "46600"});
-        expected.put("d02056", new String[]{"d02056", "Unknown", "2010-04-19", "102000"});
-        expected.put("d03830", new String[]{"d03830", "Unknown", "2010-04-19", "8500"});
-        expected.put("d04291", new String[]{"d04291", "Unknown", "2010-04-19", "252000"});
-        expected.put("d03504", new String[]{"d03504", "Unknown", "2010-04-19", "171000"});
-        expected.put("dh6U10", new String[]{"dh6U10", "Unknown", "2010-04-20", "1300"});
-        expected.put("d95067", new String[]{"d95067", "Unknown", "2010-04-20", "39.04"});
-        expected.put("d02088", new String[]{"d02088", "Unknown", "2010-04-20", "1200000"});
-        expected.put("d03037", new String[]{"d03037", "Unknown", "2010-04-20", "143.3"});
-        expected.put("d04145", new String[]{"d04145", "Unknown", "2010-04-20", "0"});
-        expected.put("d01599", new String[]{"d01599", "Unknown", "2010-04-20", "36.64"});
+        int totalRows = 92;
+        Map<String, String[]> expected = new LinkedHashMap<>();
+        expected.put("0", new String[]{"LowQual1", "Unknown", "2018-02-20", "5.E+08"});
+        expected.put("1", new String[]{"LowQual1", "Unknown", "2018-02-20", "5.3E+07"});
+        expected.put("2", new String[]{"LowQual2", "Unknown", "2018-02-20", "5.2E+06"});
+        expected.put("3", new String[]{"LowQual2", "Unknown", "2018-02-20", "4.9E+05"});
+        expected.put("4", new String[]{"NTC", "Neg Control", "2018-02-20", "9.2E+05"});
+        expected.put("5", new String[]{"NTC", "Neg Control", "2018-02-20", "9.5E+05"});
+        expected.put("6", new String[]{"Positive Control-1", "Pos Control", "2018-02-20", "4.4E+04"});
+        expected.put("7", new String[]{"Positive Control-1", "Pos Control", "2018-02-20", "3.4E+03"});
+        expected.put("8", new String[]{"Positive Control-2", "Pos Control", "2018-02-20", "7.6E+02"});
+        expected.put("9", new String[]{"Positive Control-2", "Pos Control", "2018-02-20", "6.2E+01"});
+        expected.put("10", new String[]{"STD_10", "Standard", "2018-02-20", "4.4E+04"});
+        expected.put("11", new String[]{"STD_10", "Standard", "2018-02-20", "3.4E+03"});
+        expected.put("12", new String[]{"STD_32", "Standard", "2018-02-20", "5.E+06"});
+        expected.put("13", new String[]{"STD_32", "Standard", "2018-02-20", "5.E+05"});
+        expected.put("14", new String[]{"STD_100", "Standard", "2018-02-20", "5.3E+08"});
+        expected.put("15", new String[]{"STD_100", "Standard", "2018-02-20", "5.E+07"});
+        expected.put("16", new String[]{"STD_320", "Standard", "2018-02-20", "4.E+02"});
+        expected.put("17", new String[]{"STD_320", "Standard", "2018-02-20", "1.9E+02"});
+        expected.put("18", new String[]{"STD_1000", "Standard", "2018-02-20", "5.1E+04"});
+        expected.put("19", new String[]{"STD_1000", "Standard", "2018-02-20", "5.1E+03"});
+        expected.put("20", new String[]{"STD_3200", "Standard", "2018-02-20", "5.2E+06"});
+        expected.put("21", new String[]{"STD_3200", "Standard", "2018-02-20", "4.9E+05"});
+        expected.put("22", new String[]{"STD_10000", "Standard", "2018-02-20", "5.E+08"});
+        expected.put("23", new String[]{"STD_10000", "Standard", "2018-02-20", "5.3E+07"});
+        expected.put("24", new String[]{"STD_32000", "Standard", "2018-02-20", "1.E+06"});
+        expected.put("25", new String[]{"STD_32000", "Standard", "2018-02-20", "1.7E+04"});
+        expected.put("26", new String[]{"STD_100000", "Standard", "2018-02-20", "1.E+06"});
+        expected.put("27", new String[]{"STD_100000", "Standard", "2018-02-20", "9.5E+05"});
+        expected.put("28", new String[]{"STD_320000", "Standard", "2018-02-20", "1.3E+06"});
+        expected.put("29", new String[]{"STD_320000", "Standard", "2018-02-20", "6.5E+05"});
+        expected.put("30", new String[]{"STD_1000000", "Standard", "2018-02-20", "9.7E+05"});
+        expected.put("31", new String[]{"STD_1000000", "Standard", "2018-02-20", "1.E+03"});
+        expected.put("32", new String[]{"Subject1", "Unknown", "2018-02-20", "5.1E+04"});
+        expected.put("33", new String[]{"Subject1", "Unknown", "2018-02-20", "5.1E+03"});
+        expected.put("34", new String[]{"Subject2", "Unknown", "2018-02-20", "4.E+02"});
+        expected.put("35", new String[]{"Subject2", "Unknown", "2018-02-20", "1.9E+02"});
+        expected.put("36", new String[]{"Subject3", "Unknown", "2018-02-20", "5.3E+08"});
+        expected.put("37", new String[]{"Subject3", "Unknown", "2018-02-20", "5.E+07"});
+        expected.put("38", new String[]{"Subject4", "Unknown", "2018-02-20", "5.E+06"});
+        expected.put("39", new String[]{"Subject4", "Unknown", "2018-02-20", "5.E+05"});
+        expected.put("40", new String[]{"Subject5", "Unknown", "2018-02-20", "4.4E+04"});
+        expected.put("41", new String[]{"Subject5", "Unknown", "2018-02-20", "3.4E+03"});
+        expected.put("42", new String[]{"Subject6", "Unknown", "2018-02-20", "7.6E+02"});
+        expected.put("43", new String[]{"Subject6", "Unknown", "2018-02-20", "6.2E+01"});
+        expected.put("44", new String[]{"Subject7", "Unknown", "2018-02-20", "9.2E+05"});
+        expected.put("45", new String[]{"Subject7", "Unknown", "2018-02-20", "9.5E+05"});
+        expected.put("46", new String[]{"Subject8", "Unknown", "2018-02-20", "9.7E+05"});
+        expected.put("47", new String[]{"Subject8", "Unknown", "2018-02-20", "1.E+03"});
+        expected.put("48", new String[]{"Subject9", "Unknown", "2018-02-20", "1.3E+06"});
+        expected.put("49", new String[]{"Subject9", "Unknown", "2018-02-20", "6.5E+05"});
+        expected.put("50", new String[]{"Subject10", "Unknown", "2018-02-20", "1.E+06"});
+        expected.put("51", new String[]{"Subject10", "Unknown", "2018-02-20", "9.5E+05"});
+        expected.put("52", new String[]{"Subject11", "Unknown", "2018-02-20", "1.E+06"});
+        expected.put("53", new String[]{"Subject11", "Unknown", "2018-02-20", "1.7E+04"});
+        expected.put("54", new String[]{"Subject12", "Unknown", "2018-02-20", "5.E+08"});
+        expected.put("55", new String[]{"Subject12", "Unknown", "2018-02-20", "5.3E+07"});
+        expected.put("56", new String[]{"Subject13", "Unknown", "2018-02-20", "5.2E+06"});
+        expected.put("57", new String[]{"Subject13", "Unknown", "2018-02-20", "4.9E+05"});
+        expected.put("58", new String[]{"Subject14", "Unknown", "2018-02-20", "5.1E+04"});
+        expected.put("59", new String[]{"Subject14", "Unknown", "2018-02-20", "5.1E+03"});
+        expected.put("60", new String[]{"Subject15", "Unknown", "2018-02-20", "4.E+02"});
+        expected.put("61", new String[]{"Subject15", "Unknown", "2018-02-20", "1.9E+02"});
+        expected.put("62", new String[]{"Subject16", "Unknown", "2018-02-20", "5.3E+08"});
+        expected.put("63", new String[]{"Subject16", "Unknown", "2018-02-20", "5.E+07"});
+        expected.put("64", new String[]{"Subject17", "Unknown", "2018-02-20", "5.E+06"});
+        expected.put("65", new String[]{"Subject17", "Unknown", "2018-02-20", "5.E+05"});
+        expected.put("66", new String[]{"Subject18", "Unknown", "2018-02-20", "4.4E+04"});
+        expected.put("67", new String[]{"Subject18", "Unknown", "2018-02-20", "3.4E+03"});
+        expected.put("68", new String[]{"Subject19", "Unknown", "2018-02-20", "7.6E+02"});
+        expected.put("69", new String[]{"Subject19", "Unknown", "2018-02-20", "6.2E+01"});
+        expected.put("70", new String[]{"Subject20", "Unknown", "2018-02-20", "9.2E+05"});
+        expected.put("71", new String[]{"Subject20", "Unknown", "2018-02-20", "9.5E+05"});
+        expected.put("72", new String[]{"Subject21", "Unknown", "2018-02-20", "9.7E+05"});
+        expected.put("73", new String[]{"Subject21", "Unknown", "2018-02-20", "1.E+03"});
+        expected.put("74", new String[]{"Subject22", "Unknown", "2018-02-20", "1.3E+06"});
+        expected.put("75", new String[]{"Subject22", "Unknown", "2018-02-20", "6.5E+05"});
+        expected.put("76", new String[]{"Subject23", "Unknown", "2018-02-20", "1.E+06"});
+        expected.put("77", new String[]{"Subject23", "Unknown", "2018-02-20", "9.5E+05"});
+        expected.put("78", new String[]{"Subject24", "Unknown", "2018-02-20", "1.E+06"});
+        expected.put("79", new String[]{"Subject24", "Unknown", "2018-02-20", "1.7E+04"});
+        expected.put("80", new String[]{"Subject25", "Unknown", "2018-02-20", "5.E+08"});
+        expected.put("81", new String[]{"Subject25", "Unknown", "2018-02-20", "5.3E+07"});
+        expected.put("82", new String[]{"Subject26", "Unknown", "2018-02-20", "5.2E+06"});
+        expected.put("83", new String[]{"Subject26", "Unknown", "2018-02-20", "4.9E+05"});
+        expected.put("84", new String[]{"Subject27", "Unknown", "2018-02-20", "5.1E+04"});
+        expected.put("85", new String[]{"Subject27", "Unknown", "2018-02-20", "5.1E+03"});
+        expected.put("86", new String[]{"Subject28", "Unknown", "2018-02-20", "4.E+02"});
+        expected.put("87", new String[]{"Subject28", "Unknown", "2018-02-20", "1.9E+02"});
+        expected.put("88", new String[]{"Subject29", "Unknown", "2018-02-20", "5.3E+08"});
+        expected.put("89", new String[]{"Subject29", "Unknown", "2018-02-20", "5.E+07"});
+        expected.put("90", new String[]{"Subject30", "Unknown", "2018-02-20", "5.E+06"});
+        expected.put("91", new String[]{"Subject30", "Unknown", "2018-02-20", "5.E+05"});
 
-        verifyImportedVLs(totalRows, expected, results, new String[]{"Subject Id"});
+        verifyImportedVLs(totalRows, expected, results, null);
+
+        log("verifying run plan marked as complete");
+        _helper.goToLabHome();
+        _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
+        click(Ext4Helper.Locators.menuItem("View Planned Runs"));
+        waitForElement(Locator.tagContainingText("h3", "Planned Assay Runs"), WAIT_FOR_PAGE);
+
+        DataRegionTable dr2 = new DataRegionTable("query", this);
+        assertEquals("Run plan not marked completed", 0, dr2.getDataRowCount());
     }
 
     private void verifyImportedVLs(int totalRows, Map<String, String[]> expected, DataRegionTable results, @Nullable String[] keyFields) throws Exception
