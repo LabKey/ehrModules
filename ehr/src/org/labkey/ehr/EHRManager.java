@@ -287,7 +287,8 @@ public class EHRManager
             {"Request: Cancelled", "Request has been cancelled", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
             {"Review Required", "Review is required prior to public release", false},
-            {"Scheduled", "Record is scheduled, but not performed", false}
+            {"Scheduled", "Record is scheduled, but not performed", false},
+            {"Started", "Record has started, but not completed",true}
         };
 
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())

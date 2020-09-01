@@ -22,14 +22,13 @@ SELECT
   T2.id,
 --   T2.id.dataset.demographics.species,
   'Arrivals' AS Category,
-  max(T2.date),
-  convert(year(max(T2.date)), INTEGER) AS Year,
+  T2.date,
+  convert(year(T2.date), INTEGER) AS Year,
 
 FROM study.Arrival T2
 WHERE T2.date IS NOT NULL
 AND T2.qcstate.publicdata = true
 and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T2.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T2.date as date)
-group by id
 
 UNION ALL
 
@@ -37,14 +36,13 @@ SELECT
   T3.id,
 --   T3.id.dataset.demographics.species,
   'Departures' AS Category,
-  max(T3.Date),
-  convert(year(max(T3.date)), INTEGER) AS Year,
+  T3.date,
+  convert(year(T3.date), INTEGER) AS Year,
 
 FROM study.Departure T3
 WHERE T3.date IS NOT NULL
 AND T3.qcstate.publicdata = true
 and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T3.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T3.date as date)
-group by id
 
 UNION ALL
 

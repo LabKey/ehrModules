@@ -65,7 +65,7 @@ EHR_Billing.BillingUtils = new function(){
             if (!ctx || !ctx.EHR_BillingContainerInfo || !ctx.EHR_BillingContainerInfo.effectivePermissions || ctx.EHR_BillingContainerInfo.effectivePermissions.length == 0)
                 return false;
 
-            return ctx.EHR_BillingContainerInfo.effectivePermissions.indexOf('org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission') > -1;
+            return ctx.EHR_BillingContainerInfo.effectivePermissions.indexOf('org.labkey.api.ehr.security.EHR_BillingAdminPermission') > -1;
         }
     }
 };

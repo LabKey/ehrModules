@@ -24,7 +24,11 @@ Ext4.define('EHR.panel.NarrowSnapshotPanel', {
         var firstCol = items[0].items[1].items[0];
         var secondCol = items[0].items[1].items[1];
         var thirdCol = items[0].items[1].items[2];
-        items[0].items[1].items.remove(secondCol);
+
+        var index = items[0].items[1].items.indexOf(secondCol);
+        if (index !== -1) {
+            items[0].items[1].items = items[0].items[1].items.splice(index, 1);
+        }
 
         firstCol.columnWidth = 0.45;
         thirdCol.columnWidth = 0.55;

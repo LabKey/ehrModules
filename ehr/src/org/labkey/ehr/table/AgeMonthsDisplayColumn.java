@@ -31,7 +31,7 @@ public class AgeMonthsDisplayColumn extends DurationColumn
 {
     public AgeMonthsDisplayColumn(ColumnInfo col)
     {
-        super(col, "birth", "death");
+        super(col, "birth", "lastDayAtCenter");
     }
 
     @Override

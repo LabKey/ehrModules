@@ -35,7 +35,7 @@ Ext4.define('EHR.data.BloodDrawClientStore', {
                 if (!id || !date)
                     continue;
 
-                date = date.format(LABKEY.extDefaultDateFormat);
+                date = Ext4.util.Format.date(date, LABKEY.extDefaultDateFormat);
 
                 if (!bloodDrawMap[id])
                     bloodDrawMap[id] = [];

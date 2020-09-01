@@ -198,7 +198,7 @@ Ext4.define('EHR.window.SedationWindow', {
                 if (!minDate || date < minDate)
                     minDate = date;
 
-                dates.push(date.format(LABKEY.extDefaultDateTimeFormat));
+                dates.push(Ext4.Date.format(date, LABKEY.extDefaultDateTimeFormat));
             }, this);
 
             items.push({

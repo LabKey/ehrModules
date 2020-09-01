@@ -93,6 +93,11 @@ public class EHR_BillingSchema
         return getSchema().getTable(TABLE_CHARGEABLE_ITEMS);
     }
 
+    public TableInfo getChargeableItemCategories()
+    {
+        return getSchema().getTable(TABLE_CHARGEABLE_ITEM_CATEGORIES);
+    }
+
     public TableInfo getChargeUnits()
     {
         return getSchema().getTable(TABLE_CHARGE_UNITS);
@@ -111,10 +116,5 @@ public class EHR_BillingSchema
     public TableInfo getDataAccessTable()
     {
         return getSchema().getTable(TABLE_DATA_ACCESS);
-    }
-
-    public TableInfo getChargeableItemCategories()
-    {
-        return getSchema().getTable(TABLE_CHARGEABLE_ITEM_CATEGORIES);
     }
 }

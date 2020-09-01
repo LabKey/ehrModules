@@ -24,7 +24,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
-import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
+import org.labkey.api.ehr.security.EHR_BillingAdminPermission;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;

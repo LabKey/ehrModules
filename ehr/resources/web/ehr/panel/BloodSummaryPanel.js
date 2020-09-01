@@ -143,7 +143,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                                 //TODO: Remove this if we're happy not displaying dead animal data
                                 if(row.death.value) {
                                     var dDate = new Date(row.death.value);
-                                    if (dDate && rDate && rDate.format(LABKEY.extDefaultDateFormat) == dDate.format(LABKEY.extDefaultDateFormat)) {
+                                    if (dDate && rDate && Ext4.Date.format(rDate, LABKEY.extDefaultDateFormat) == Ext4.Date.format(dDate, LABKEY.extDefaultDateFormat)) {
                                         row.isDeath = {value: true};
                                     }
                                     if (dDate && rDate && rDate > dDate) {
@@ -151,7 +151,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                                     }
                                 }
                                 //End TODO
-                                if (rDate && rDate.format(LABKEY.extDefaultDateFormat) == (new Date()).format(LABKEY.extDefaultDateFormat)) {
+                                if (rDate && Ext4.Date.format(rDate, LABKEY.extDefaultDateFormat) == Ext4.Date.format(new Date(), LABKEY.extDefaultDateFormat)) {
                                     row.isToday = {value: true};
                                 }
                             }
@@ -346,7 +346,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
         Ext4.each(results.rows, function(row, idx){
             //capture the current day's amount
             var rowDate = new Date(row.date.value);
-            if (rowDate && rowDate.format(LABKEY.extDefaultDateFormat) == (new Date()).format(LABKEY.extDefaultDateFormat)){
+            if (rowDate && Ext4.Date.format(rowDate, LABKEY.extDefaultDateFormat) == Ext4.Date.format(new Date(), LABKEY.extDefaultDateFormat)){
                 currentRow = row;
             }
 
@@ -373,7 +373,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                 newRow.isHidden = {value: true};
                 var date = LDK.ConvertUtils.parseDate(row.date.value);
                 date = Ext4.Date.add(date, Ext4.Date.DAY, 1);
-                newRow.date.value = date.format('Y/m/d H:i:s');
+                newRow.date.value = Ext4.Date.format(date, 'Y/m/d H:i:s');
                 newRows.push(newRow);
             }
         }, this);
@@ -436,11 +436,11 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                             if(row.isDeath) {
                                 lines.push('DEATH');
                             }
-                            lines.push('Date: ' + row.date.format(LABKEY.extDefaultDateFormat));
+                            lines.push('Date: ' + Ext4.Date.format(row.date, LABKEY.extDefaultDateFormat));
                             lines.push('Drawn on this Date: ' + row.quantity);
                             lines.push('Volume Available on this Date: ' + LABKEY.Utils.roundNumber(row.allowableDisplay, 1) + ' mL');
 
-                            lines.push('Current Weight: ' + row.mostRecentWeight + ' kg (' + row.mostRecentWeightDate.format(LABKEY.extDefaultDateFormat) + ')');
+                            lines.push('Current Weight: ' + row.mostRecentWeight + ' kg (' + Ext4.Date.format(row.mostRecentWeightDate, LABKEY.extDefaultDateFormat) + ')');
 
                             lines.push('Drawn in Previous ' + row.blood_draw_interval + ' days: ' + LABKEY.Utils.roundNumber(row.bloodPrevious, 1));
 

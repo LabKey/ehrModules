@@ -49,7 +49,7 @@ public class Viral_Load_AssayModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 12.25;
+        return 12.28;
     }
 
     @Override

@@ -15,7 +15,6 @@
                         </fk>
                     </column>
                     <column columnName="room">
-                        <displayWidth>40</displayWidth>
                         <!--<fk>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                           <!--<fkTable>rooms</fkTable>-->
@@ -23,7 +22,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="cage">
-                        <displayWidth>40</displayWidth>
                     </column>
                     <column columnName="cond">
                         <url>/query/executeQuery.view?schemaName=study&amp;

@@ -47,30 +47,29 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
         store.each(function(rec){
             var report = {
-                id: rec.get('reportname'),
-                name: rec.get('reportname'),
-                reportStatus: rec.get('reportstatus'),
-                description: rec.get('description'),
-                label: rec.get('reporttitle'),
-                category: rec.get('category'),
-                reportType: rec.get('reporttype'),
+                id:               rec.get('reportname'),
+                name:             rec.get('reportname'),
+                reportStatus:     rec.get('reportstatus'),
+                description:      rec.get('description'),
+                label:            rec.get('reporttitle'),
+                category:         rec.get('category'),
+                reportType:       rec.get('reporttype'),
                 subjectFieldName: rec.get('subjectIdFieldName') || 'Id',
-                containerPath: rec.get('containerpath'),
-                schemaName: rec.get('schemaname'),
-                queryName: rec.get('queryname'),
-                jsHandler: rec.get('queryname'),
-                viewName: rec.get('viewname'),
-                reportId: rec.get("report"),
-                dateFieldName: rec.get("datefieldname"),
-                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
-                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
-                cageFieldName: rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
-                todayOnly: rec.get('todayonly')
-            }
+                containerPath:    rec.get('containerpath'),
+                schemaName:       rec.get('schemaname'),
+                queryName:        rec.get('queryname'),
+                jsHandler:        rec.get('queryname'),
+                viewName:         rec.get('viewname'),
+                reportId:         rec.get("report"),
+                dateFieldName:    rec.get("datefieldname"),
+                areaFieldName:    rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
+                roomFieldName:    rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
+                cageFieldName:    rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
+                todayOnly:        rec.get('todayonly')
+            };
 
-            if (rec.get('jsonconfig')){
-                console.log(rec.get('jsonconfig'));
-                var json = Ext4.decode(rec.get('jsonconfig'));
+            if (rec.get('jsonConfig')){
+                var json = Ext4.decode(rec.get('jsonConfig'));
                 Ext4.apply(report, json);
             }
 
@@ -90,7 +89,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
         //we handle date
         if (report.dateFieldName && report.todayOnly){
-            filterArray.removable.push(LABKEY.Filter.create(report.dateFieldName, (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+            filterArray.removable.push(LABKEY.Filter.create(report.dateFieldName, Ext4.Date.format(new Date(), 'Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         }
 
         tab.filterArray = filterArray;

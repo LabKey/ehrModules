@@ -17,7 +17,7 @@ Ext.onReady(function(){
             queryName: LABKEY.ActionURL.getParameter('queryName'),
             keyField: LABKEY.ActionURL.getParameter('keyField'),
             keyValue: Ext.util.Format.htmlDecode(LABKEY.ActionURL.getParameter('key')),
-            title: LABKEY.ActionURL.getParameter('queryName'),
+            title: (LABKEY.ActionURL.getParameter('title') || EHR.Utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName'))),
             metadata: EHR.Metadata.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources)
         }]
     });
