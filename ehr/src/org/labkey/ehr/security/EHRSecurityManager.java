@@ -20,6 +20,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.security.EHRSecurityEscalator;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
@@ -121,6 +122,10 @@ public class EHRSecurityManager
 
     public boolean hasPermission(Container c, User u, String schemaName, String queryName, EVENT_TYPE event, String originalQCState, String targetQCState)
     {
+        if (EHRSecurityEscalator.isEscalated()) {
+            return true;
+        }
+
         Map<String, EHRQCState> qcStates = getQCStateInfo(c);
 
         SecurableResource sr = getSecurableResource(c, u, schemaName, queryName);

@@ -386,7 +386,8 @@ Ext4.define('EHR.data.StoreCollection', {
             storeId: this.collectionId + '-' + section.name,
             model: modelName,
             sectionCfg: section,
-            loaded: false
+            loaded: false,
+            slaveFieldsToInclude: section.slaveFieldsToInclude
         });
 
         this.addClientStore(store);

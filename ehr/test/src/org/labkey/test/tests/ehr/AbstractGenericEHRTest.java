@@ -357,7 +357,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         animalHistoryPage.searchSingleAnimal(animalId);
         animalHistoryPage.clickCategoryTab("Clinical");
         animalHistoryPage.clickReportTab("Clinical History");
-        waitForTextToDisappear("Loading...", 70000);
+        _ext4Helper.waitForMaskToDisappear(70000);
     }
 
     protected void beginAtAnimalHistoryTab()

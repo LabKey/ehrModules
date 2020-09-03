@@ -1,5 +1,5 @@
 <module xmlns="http://labkey.org/moduleProperties/xml/">
-    <requiredModuleContext>
-
-    </requiredModuleContext>
+    <clientDependencies>
+        <dependency path="Viral_Load_Assay/vl_utils.js"/>
+    </clientDependencies>
 </module>

@@ -300,7 +300,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             var row = results[0];
 
             if (!Ext4.isEmpty(row.MostRecentTBDate)){
-                value = LDK.ConvertUtils.parseDate(row.MostRecentTBDate).format(LABKEY.extDefaultDateFormat);
+                value = Ext4.Date.format(LDK.ConvertUtils.parseDate(row.MostRecentTBDate), LABKEY.extDefaultDateFormat);
                 var months = row.MonthsSinceLastTB;
                 if (months)
                     value += ' (' + LABKEY.Utils.encodeHtml(months) + ' month' + (months == 1 ? '' : 's') + ' ago)';
@@ -355,7 +355,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (this.showLocationDuration && housingRow.date){
                     var date = LDK.ConvertUtils.parseDate(housingRow.date);
                     if (date)
-                        location += ' (' + date.format(LABKEY.extDefaultDateFormat) + ')';
+                        location += ' (' + Ext4.Date.format(date, LABKEY.extDefaultDateFormat) + ')';
                 }
             }
         }
@@ -375,7 +375,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (text){
                     var date = LDK.ConvertUtils.parseDate(row.date);
                     if (date)
-                        text = text + ' (' + date.format(LABKEY.extDefaultDateFormat) + ')';
+                        text = text + ' (' + Ext4.Date.format(date, LABKEY.extDefaultDateFormat) + ')';
 
                     values.push(text);
                 }
@@ -414,7 +414,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.each(rows, function(r){
                 text.push('<tr><td nowrap>' + LABKEY.Utils.encodeHtml(r.weight) + ' kg' +
                         '</td><td style="padding-left: 5px;" nowrap>' +
-                        Ext4.util.Format.date(r.date,LABKEY.extDefaultDateFormat) +
+                        Ext4.Date.format(r.date,LABKEY.extDefaultDateFormat) +
                         '</td><td style="padding-left: 5px;" nowrap>' +
                         (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
@@ -433,7 +433,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 animals = row.animals.replace(/( )*,( )*/g, ',');
                 animals = animals.split(',');
                 animals.sort();
-                animals = animals.remove(id);
+                var index = animals.indexOf(id);
+                if (index !== -1) {
+                    animals = animals.splice(index, 1);
+                }
             }
 
             pairingType = row.category;
@@ -512,12 +515,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     if (date && (!enddate || enddate.getTime() > (new Date()).getTime())){
                         var reviewdate = row.reviewdate ? LDK.ConvertUtils.parseDate(row.reviewdate) : null;
                         if (!reviewdate || Ext4.Date.clearTime(reviewdate).getTime() <= Ext4.Date.clearTime(new Date()).getTime()){
-                            text = text + ' (' + date.format(LABKEY.extDefaultDateFormat) + ')';
+                            text = text + ' (' + Ext4.Date.format(date, LABKEY.extDefaultDateFormat) + ')';
 
                             values.push(text);
                         }
                         else if (reviewdate && Ext4.Date.clearTime(reviewdate).getTime() > Ext4.Date.clearTime(new Date()).getTime()){
-                            text = text + ' - None (Reopens: '  + reviewdate.format(LABKEY.extDefaultDateFormat) + ')';
+                            text = text + ' - None (Reopens: '  + Ext4.Date.format(reviewdate, LABKEY.extDefaultDateFormat) + ')';
                             values.push(text);
                         }
                     }
@@ -710,7 +713,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (results && results.length){
             var row = results[0];
             var date = LDK.ConvertUtils.parseDate(row.date || birth);
-            var text = date ?  date.format(LABKEY.extDefaultDateFormat) : null;
+            var text = date ?  Ext4.Date.format(date, LABKEY.extDefaultDateFormat) : null;
             if (text){
                 var type = row.type;
                 if (type)
@@ -723,7 +726,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         else if (birth){
             var date = LDK.ConvertUtils.parseDate(birth);
             if (date){
-                toSet['birth'] = date.format(LABKEY.extDefaultDateFormat);
+                toSet['birth'] = Ext4.Date.format(date, LABKEY.extDefaultDateFormat);
             }
         }
         else {
@@ -735,7 +738,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         if (results && results.length){
             var row = results[0];
             var date = LDK.ConvertUtils.parseDate(row.date);
-            var text = date ? date.format(LABKEY.extDefaultDateFormat) : null;
+            var text = date ? Ext4.Date.format(date, LABKEY.extDefaultDateFormat) : null;
             if (text){
                 var type = row.cause;
                 if (type)

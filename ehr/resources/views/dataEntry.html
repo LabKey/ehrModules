@@ -202,7 +202,7 @@ Ext.onReady(function(){
         if(sec5.items.length)
             menuCfg.sections.push(sec5);
 
-        new EHR.ext.NavMenu(menuCfg).render();
+        Ext4.create('EHR.NavMenu', menuCfg);
 
         //only give a task manager if they have access to at least 1 form
         if(menuCfg.sections.length){

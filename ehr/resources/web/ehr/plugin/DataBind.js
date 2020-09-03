@@ -165,6 +165,15 @@ Ext4.define('EHR.plugin.Databind', {
             this.unbindRecord();
         }
 
+        // Split multi-values into arrays before it's bound into the field
+        for (var fieldName in record.data) {
+            var value = record.data[fieldName];
+            var field = form.findField(fieldName);
+            if (value && field && field.multiSelect) {
+                record.data[fieldName] = value.split(',');
+            }
+        }
+
         form.suspendEvents();
         form.loadRecord(record);
         form.resumeEvents();
@@ -289,8 +298,10 @@ Ext4.define('EHR.plugin.Databind', {
 
         var fieldVal = field.getValue();
         if (!field.isEqual(fieldVal, val)) {
-            if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal)){
+            if (Ext4.isObject(fieldVal)) {
                 console.error(fieldVal);
+            } else if (Ext4.isArray(fieldVal)) {
+                val = fieldVal;
             }
 
             //TODO: combos and other multi-valued fields represent data differently in the store vs the field.  need to reconcile here

@@ -161,7 +161,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         text: 'Scheduled Today',
                         linkCls: 'labkey-text-link',
                         style: 'padding-left: 5px;',
-                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': Ext4.Date.format(new Date(), 'Y-m-d')})
                     }]
                 }
             },
@@ -201,7 +201,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         text: 'Scheduled Today',
                         linkCls: 'labkey-text-link',
                         style: 'padding-left: 5px;',
-                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'drug', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': Ext4.Date.format(new Date(), 'Y-m-d')})
                     }]
                 }
             },
@@ -241,7 +241,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         text: 'Scheduled Today',
                         linkCls: 'labkey-text-link',
                         style: 'padding-left: 5px;',
-                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': (new Date()).format('Y-m-d')})
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.viewName': 'Requests', 'query.QCState/Label~eq': 'Request: Approved', 'query.chargetype~eq': item.chargeType, 'query.date~dateeq': Ext4.Date.format(new Date(), 'Y-m-d')})
                     }]
                 }
             },
@@ -322,7 +322,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                         xtype: 'ldk-linkbutton',
                         text: 'Transfers Today',
                         linkCls: 'labkey-text-link',
-                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': (new Date()).format('Y-m-d')}, item.areaFilter))
+                        href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, Ext4.apply({schemaName: 'onprc_ehr', 'query.queryName': 'housing_transfer_requests', 'query.viewName': 'Approved Requests', 'query.date~dateeq': Ext4.Date.format(new Date(), 'Y-m-d')}, item.areaFilter))
                     }]
                 }
             },

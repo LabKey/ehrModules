@@ -342,7 +342,7 @@ public class BillingNotification extends AbstractNotification
                     projectDisplay = "None";
                 }
 
-                String financialAnalyst = rs.getString(FieldKey.fromString("investigatorLastName"));
+                String financialAnalyst = rs.getString(FieldKey.fromString("investigator"));
                 if (financialAnalyst == null)
                 {
                     financialAnalyst = "Not Assigned";

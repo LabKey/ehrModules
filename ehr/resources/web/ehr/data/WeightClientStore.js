@@ -23,7 +23,7 @@ Ext4.define('EHR.data.WeightClientStore', {
                 if (!id || !date)
                     continue;
 
-                date = date.format(LABKEY.extDefaultDateFormat);
+                date = Ext4.Date.format(date, LABKEY.extDefaultDateFormat);
 
                 if (!weightMap[id])
                     weightMap[id] = [];
