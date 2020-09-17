@@ -9,7 +9,6 @@
                         <displayWidth>50</displayWidth>
                     </column>
                     <column columnName="Label">
-                        <displayWidth>80</displayWidth>
                         <shownInDetailsView>true</shownInDetailsView>
                         <isHidden>false</isHidden>
                     </column>

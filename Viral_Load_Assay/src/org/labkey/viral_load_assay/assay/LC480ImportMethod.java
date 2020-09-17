@@ -15,26 +15,19 @@
  */
 package org.labkey.viral_load_assay.assay;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.laboratory.assay.AssayParser;
-import org.labkey.api.laboratory.assay.DefaultAssayParser;
-import org.labkey.api.laboratory.assay.ImportContext;
-import org.labkey.api.laboratory.assay.ParserErrors;
-import org.labkey.api.query.BatchValidationException;
-import org.labkey.api.query.ValidationException;
+import org.labkey.api.reader.ColumnDescriptor;
+import org.labkey.api.reader.TabLoader;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.view.ViewContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,9 +35,10 @@ import java.util.Map;
  * Date: 9/15/12
  * Time: 7:29 AM
  */
-public class LC480ImportMethod extends DefaultVLImportMethod
+public class LC480ImportMethod extends AbstractWNPRCImportMethod
 {
     public static final String NAME = "LC480";
+    public static final int RESULTS_COLUMN_COUNT = 7;
 
     public LC480ImportMethod(String providerName)
     {
@@ -64,21 +58,15 @@ public class LC480ImportMethod extends DefaultVLImportMethod
     }
 
     @Override
-    public boolean hideTemplateDownload()
-    {
-        return true;
-    }
-
-    @Override
     public String getTooltip()
     {
-        return "Choose this option to upload data directly from the output of a Roche LC480.  NOTE: this expects the sample names to be formatted in a specific manner.  Please see instructions above the reuslts section";
+        return "Choose this option to upload data from the output of a Roche LC480.  Please see instructions above the results section";
     }
 
     @Override
     public String getTemplateInstructions()
     {
-        return "This is designed to accept the output directly from a Roche480 Light Cycler.  However, in order for the results to be recognized by the system, the sample names must be formatted in a specific manner.  This is: subject Id, undescore, sample date, underscore, plasma volume, underscore, comments.  An example is: 'patient123_2010-03-04_1_Sample Run for Jim'.  The comments and/or plasma volume can be ommited: 'patient123_2010-03-04'.  If no plasma volume is provided, it will assume 1mL was used.";
+        return "This is designed to accept the output directly from a Roche480 Light Cycler.  If using the Copy/Paste method be sure to copy all data, including the column headers.";
     }
 
     @Override
@@ -102,89 +90,35 @@ public class LC480ImportMethod extends DefaultVLImportMethod
         runMeta.put("instrument", new JSONObject().put("defaultValue", "LC480"));
         meta.put("Run", runMeta);
 
-        JSONObject resultsMeta = meta.getJSONObject("Results");
-        JSONObject eluateMap = getJsonObject(resultsMeta, "eluateVol");
-        eluateMap.put("defaultValue", 50);
-        eluateMap.put("setGlobally", true);
-        resultsMeta.put("eluateVol", eluateMap);
-
-        meta.put("Results", resultsMeta);
         return meta;
     }
 
-    private class Parser extends DefaultAssayParser
+    private class Parser extends AbstractWNPRCImportMethod.Parser
     {
         private static final String NAME_FIELD = "Name";
 
         public Parser(AssayImportMethod method, Container c, User u, int assayId)
         {
-            super(method, c, u, assayId);
+            super(method, c, u, assayId, LC480ImportMethod.RESULTS_COLUMN_COUNT);
         }
 
         @Override
-        protected List<Map<String, Object>> processRowsFromFile(List<Map<String, Object>> rows, ImportContext context) throws BatchValidationException
+        protected TabLoader getTabLoader(String contents) throws IOException
         {
-            ParserErrors errors = context.getErrors();
-            List<Map<String, Object>> newRows = new ArrayList<Map<String, Object>>();
-            ListIterator<Map<String, Object>> rowsIter = rows.listIterator();
-            int rowIdx = 0;
-            while (rowsIter.hasNext())
-            {
-                rowIdx++;
-                Map<String, Object> row = rowsIter.next();
-                Map<String, Object> map = new CaseInsensitiveHashMap<Object>(row);
+            TabLoader loader = new TabLoader(new StringReader(contents), false);
+            //These are the expected columns (in order) of the LC480 import data
+            ColumnDescriptor[] cols = new ColumnDescriptor[]{
+                    new ColumnDescriptor("Include", String.class),
+                    new ColumnDescriptor("Pos", String.class),
+                    new ColumnDescriptor("uniqueSample", String.class),
+                    new ColumnDescriptor("Cp", Double.class),
+                    new ColumnDescriptor("Concentration", Double.class),
+                    new ColumnDescriptor("Standard", Integer.class),
+                    new ColumnDescriptor("Status", String.class)
+            };
 
-                if (row.size() < 6)
-                {
-                    errors.addError("Improperly formatted row on line " + rowIdx);
-                    continue;
-                }
-                appendPromotedResultFields(map, context);
-
-                if (!map.containsKey("Name") || map.get("Name") == null)
-                {
-                    errors.addError("Missing sample name for row: " + rowIdx);
-                    continue;
-                }
-
-                //these are not used
-                map.remove("Include");
-                map.remove("Status");
-
-                //this is a slightly funny way to pass sample info, but it needs to be supported for legacy installs
-                //they name the samples using a specific format, which gets parsed here.  If first token either matches the enum,
-                //then it is a standard or control otherwise we treat it as a general experimental sample.
-                String[] nameParts = StringUtils.split((String)map.get("Name"), "_");
-                Category cat;
-                try
-                {
-                    try
-                    {
-                        cat = Category.valueOf(nameParts[0]);
-                        cat.parseSampleName(map, NAME_FIELD);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        Category.Unknown.parseSampleName(map, NAME_FIELD);
-                    }
-                }
-                catch (ValidationException e)
-                {
-                    errors.addError(e.getMessage());
-                    continue;
-                }
-
-                map.put("well", map.get("Pos"));
-                map.remove("Pos");
-
-                calculateViralLoadForRoche(map);
-
-                newRows.add(map);
-            }
-
-            errors.confirmNoErrors();
-
-            return newRows;
+            loader.setColumns(cols);
+            return loader;
         }
     }
 }

@@ -62,6 +62,8 @@ import org.openqa.selenium.WebElement;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2187,12 +2189,14 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         setNecropsYFormElement("chargetype", chargeType);
         _ext4Helper.selectComboBoxItem("Procedure:", Ext4Helper.TextMatchTechnique.CONTAINS, procedureid);
 
+        LocalDateTime tomorrow = now.plus(1, ChronoUnit.DAYS);
+
         log("Entering values for Tissue Samples");
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Tissue Samples");
         _helper.addRecordToGrid(grid);
         int index = grid.getRowCount();
         grid.setGridCell(index, "Id", animalId);
-        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "date", tomorrow.format(formatter));
         grid.setGridCell(index, "tissue", tissue);
 
         log("Entering values for Organ Weights");
@@ -2200,7 +2204,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         _helper.addRecordToGrid(grid);
         index = grid.getRowCount();
         grid.setGridCell(index, "Id", animalId);
-        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "date", tomorrow.format(formatter));
         grid.setGridCell(index, "tissue", tissue);
 
         log("Submit the request and approve");

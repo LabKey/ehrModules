@@ -57,7 +57,6 @@
                         <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                     </column>
                     <column columnName="account">
-                        <displayWidth>60</displayWidth>
                         <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
                     </column>
                     <column columnName="userid">

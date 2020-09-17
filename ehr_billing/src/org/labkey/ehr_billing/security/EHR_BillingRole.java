@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr_billing.security;
 
-import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
+import org.labkey.api.ehr.security.EHR_BillingAdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;

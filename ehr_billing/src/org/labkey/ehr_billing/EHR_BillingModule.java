@@ -21,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Table;
 import org.labkey.api.ehr_billing.EHR_BillingDomainKind;
 import org.labkey.api.ehr_billing.EHR_BillingService;
 import org.labkey.api.ehr_billing.notification.BillingNotificationProvider;
@@ -31,7 +33,10 @@ import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QuerySchema;
+import org.labkey.api.security.User;
+import org.labkey.api.security.UserManager;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.writer.ContainerUser;
@@ -39,6 +44,7 @@ import org.labkey.ehr_billing.notification.BillingNotification;
 import org.labkey.ehr_billing.notification.BillingNotificationServiceImpl;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,7 +64,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 20.000;
+        return 20.001;
     }
 
     @Override
@@ -103,6 +109,27 @@ public class EHR_BillingModule extends SpringModule
             {
                 return new EHR_BillingUserSchema(EHR_BillingSchema.NAME, schema.getUser(), schema.getContainer());
             }
+        });
+
+        UserManager.addUserListener(new UserManager.UserListener()
+        {
+            @Override
+            public void userAddedToSite(User user) {}
+
+            @Override
+            public void userDeletedFromSite(User user)
+            {
+                Table.delete(EHR_BillingSchema.getInstance().getDataAccessTable(), new SimpleFilter(FieldKey.fromParts("UserId"), user.getUserId()));
+            }
+
+            @Override
+            public void userAccountDisabled(User user) {}
+
+            @Override
+            public void userAccountEnabled(User user) {}
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {}
         });
     }
 

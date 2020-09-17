@@ -18,6 +18,7 @@ package org.labkey.ehr;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.UpgradeCode;
@@ -39,6 +40,7 @@ import org.labkey.api.ehr.history.DefaultCasesCloseDataSource;
 import org.labkey.api.ehr.history.DefaultCasesDataSource;
 import org.labkey.api.ehr.history.DefaultTreatmentOrdersDataSource;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
+import org.labkey.api.ehr.security.EHRSecurityEscalatorAuditProvider;
 import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
@@ -130,7 +132,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 20.000;
+        return 20.001;
     }
 
     @Override
@@ -285,6 +287,9 @@ public class EHRModule extends ExtendedSimpleModule
         //this is not a true PK, but we want to enforce uniqueness
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROJECT, "name");
         LDKService.get().registerContainerScopedTable(EHRSchema.EHR_SCHEMANAME, EHRSchema.TABLE_PROTOCOL, "protocol");
+
+        // Register the Security Escalation Audit Log
+        AuditLogService.get().registerAuditType(new EHRSecurityEscalatorAuditProvider());
     }
 
     @Override

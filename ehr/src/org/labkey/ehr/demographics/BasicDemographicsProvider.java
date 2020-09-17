@@ -64,6 +64,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         keys.add(FieldKey.fromString("calculated_status/meaning"));
         keys.add(FieldKey.fromString("birth"));
         keys.add(FieldKey.fromString("death"));
+        keys.add(FieldKey.fromString("lastDayAtCenter"));
         keys.add(FieldKey.fromString("geographic_origin"));
         keys.add(FieldKey.fromString("geographic_origin/description"));
         keys.add(FieldKey.fromString("origin"));
@@ -100,7 +101,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
         // it's a slight hack, but in order to keep consistency, we poke that calculated value in here
         FieldKey fk = FieldKey.fromString("Id/age/yearAndDays");
         AgeDisplayColumn ageDisplayColumn = new AgeDisplayColumn(cols.get(fk));
-        map.put(fk.toString(), ageDisplayColumn.getFormattedDuration((Date)map.get("birth"), (Date)map.get("death")));
+        map.put(fk.toString(), ageDisplayColumn.getFormattedDuration((Date)map.get("birth"), (Date)map.get("lastDayAtCenter")));
         map.put("demographicsObjectId", map.get("objectid"));
     }
 }
