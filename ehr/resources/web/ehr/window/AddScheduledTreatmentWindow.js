@@ -99,8 +99,8 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
 
         var filterArray = [];
 
-        filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
-        filterArray.push(LABKEY.Filter.create('date', (new Date()).format('Y-m-d H:i'), LABKEY.Filter.Types.LTE));  //exclude treatments in the future
+        filterArray.push(LABKEY.Filter.create('date', Ext4.Date.format(date, 'Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('date', Ext4.Date.format(new Date(), 'Y-m-d H:i'), LABKEY.Filter.Types.LTE));  //exclude treatments in the future
         filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('treatmentStatus', null, LABKEY.Filter.Types.ISBLANK));
 
@@ -136,7 +136,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             queryName: 'treatmentSchedule',
             parameters: {
                 NumDays: 1,
-                StartDate: date.format(LABKEY.extDefaultDateFormat)
+                StartDate: Ext4.Date.format(date, LABKEY.extDefaultDateFormat)
             },
             sort: 'date,Id/curlocation/room_sortValue,Id/curlocation/cage_sortValue,Id',
             columns: 'primaryKey,lsid,treatmentid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category,chargetype',

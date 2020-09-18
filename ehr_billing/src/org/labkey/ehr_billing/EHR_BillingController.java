@@ -28,7 +28,7 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr_billing.pipeline.InvoicedItemsProcessingService;
-import org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission;
+import org.labkey.api.ehr.security.EHR_BillingAdminPermission;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;

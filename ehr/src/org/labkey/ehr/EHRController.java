@@ -97,6 +97,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -352,7 +353,7 @@ public class EHRController extends SpringActionController
             {
                 String detailsStr;
                 String importStr;
-                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()))
+                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
                     // Because the Ext3-based UI can rely on loading JS-based metadata that is keyed
                     // off table name, and because when this was originally written LK preferentially used label over title for
@@ -375,8 +376,27 @@ public class EHRController extends SpringActionController
                         url.addParameter("importURL", importUrl.toString());
                     }
                 }
-                else
+                else if (isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
+                    detailsStr = getReactFormFrameworkURL(form.getSchemaName(), form.getQueryName()) + "?";
+
+                    importStr = "";
+                    for (String pkCol : ti.getPkColumnNames())
+                    {
+                        detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                        importStr += "&" + pkCol + "=";
+                    }
+                    detailsStr += "&" + "formtype=" + queryName;
+
+                    if (form.isShowImport())
+                    {
+                        DetailsURL importUrl = DetailsURL.fromString("/ehr/test.view?schemaName=" + schemaName + "&queryName=" + queryName + importStr);
+                        importUrl.setContainerContext(getContainer());
+
+                        url.addParameter("importURL", importUrl.toString());
+                    }
+                }
+                else {
                     detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
                     importStr = "";
                     for (String pkCol : ti.getPkColumnNames())
@@ -471,6 +491,62 @@ public class EHRController extends SpringActionController
                 // exists with errors
                 return true;
             }
+        }
+
+        protected boolean isExt4Form(String schemaName, String queryName)
+        {
+            boolean isExt4Form = false;
+            UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), EHRSchema.EHR_SCHEMANAME);
+            if (us == null) { return false; }
+
+            TableInfo ti = us.getTable(EHRSchema.TABLE_FORM_FRAMEWORK_TYPES);
+            if (ti == null) { return false; }
+
+            TableSelector ts = new TableSelector(ti, Collections.singleton("framework"), new SimpleFilter(FieldKey.fromString("schemaname"), schemaName).addCondition(FieldKey.fromString("queryname"), queryName), null);
+            String[] ret = ts.getArray(String.class);
+
+            if (ret.length > 0 && "extjs4".equalsIgnoreCase(ret[0]))
+            {
+                isExt4Form = true;
+            }
+
+            return isExt4Form;
+        }
+
+        //Checks the TABLE_FORM_FRAMEWORK_TYPES table to see if there are any forms that should be rendered using react view
+        protected boolean isReactForm(String schemaName, String queryName)
+        {
+            boolean isReactForm = false;
+            UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), EHRSchema.EHR_SCHEMANAME);
+            if (us == null) { return false; }
+
+            TableInfo ti = us.getTable(EHRSchema.TABLE_FORM_FRAMEWORK_TYPES);
+            if (ti == null) { return false; }
+
+            TableSelector ts = new TableSelector(ti, Collections.singleton("framework"), new SimpleFilter(FieldKey.fromString("schemaname"), schemaName).addCondition(FieldKey.fromString("queryname"), queryName), null);
+            String[] ret = ts.getArray(String.class);
+
+            if (ret.length > 0 && "reactjs".equalsIgnoreCase(ret[0]))
+            {
+                isReactForm = true;
+            }
+
+            return isReactForm;
+        }
+
+        protected String getReactFormFrameworkURL(String schemaName, String queryName)
+        {
+            String reactFormURL = null;
+            UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), EHRSchema.EHR_SCHEMANAME);
+            if (us == null) { return null; }
+
+            TableInfo ti = us.getTable(EHRSchema.TABLE_FORM_FRAMEWORK_TYPES);
+            if (ti == null) { return null; }
+
+            TableSelector ts = new TableSelector(ti, Collections.singleton("url"), new SimpleFilter(FieldKey.fromString("schemaname"), schemaName).addCondition(FieldKey.fromString("queryname"), queryName), null);
+            Map<String, Object> mp = ts.getMap();
+            return (String) mp.get("url");
+
         }
     }
 

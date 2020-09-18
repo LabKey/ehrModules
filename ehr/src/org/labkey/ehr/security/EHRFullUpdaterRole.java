@@ -71,7 +71,11 @@ public class EHRFullUpdaterRole extends AbstractEHRDatasetRole
                 EHRReviewRequiredUpdatePermission.class,
                 EHRScheduledDeletePermission.class,
                 EHRScheduledInsertPermission.class,
-                EHRScheduledUpdatePermission.class
+                EHRScheduledUpdatePermission.class,
+
+                EHRStartedDeletePermission.class,
+                EHRStartedInsertPermission.class,
+                EHRStartedUpdatePermission.class
         );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));

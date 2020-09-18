@@ -15,8 +15,6 @@ library(Rlabkey)
 
 labkey.acceptSelfSignedCerts();
 
-#NOTE: to run directly in R instead of through labkey, uncomment this:
-#labkey.url.base = "http://localhost:8080/labkey/"
 
 if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
     png(filename="${imgout:myscatterplot}", width = 650, height = 150);

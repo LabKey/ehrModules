@@ -62,6 +62,8 @@ import org.openqa.selenium.WebElement;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2163,7 +2165,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     public void testNecropsyRequestFlow()
     {
         String animalId = "12345";
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
         String projectId = "640991";
         String type = "Necropsy";
         String chargeType = "1";
@@ -2177,22 +2179,24 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitForElement(Locator.pageHeader("Necropsy Request"));
 
         log("Setting the Necropsy details");
-        setNecropsYFormElement("Id", animalId);
-        setNecropsYFormElement("date", now.format(formatter));
+        setNecropsyFormElement("Id", animalId);
+        setNecropsyFormElement("date", tomorrow.format(formatter));
         click(Locator.tagWithClassContaining("div","x4-trigger-index-1"));
         _ext4Helper.selectComboBoxItem("Center Project:",Ext4Helper.TextMatchTechnique.CONTAINS,"Other");
         _ext4Helper.selectComboBoxItem("Project:",Ext4Helper.TextMatchTechnique.CONTAINS,projectId);
         clickButton("Submit",0);
         _ext4Helper.selectComboBoxItem("Type:", Ext4Helper.TextMatchTechnique.CONTAINS,type);
-        setNecropsYFormElement("chargetype", chargeType);
+        setNecropsyFormElement("chargetype", chargeType);
         _ext4Helper.selectComboBoxItem("Procedure:", Ext4Helper.TextMatchTechnique.CONTAINS, procedureid);
+
+        LocalDateTime tomorrow = now.plus(1, ChronoUnit.DAYS);
 
         log("Entering values for Tissue Samples");
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Tissue Samples");
         _helper.addRecordToGrid(grid);
         int index = grid.getRowCount();
         grid.setGridCell(index, "Id", animalId);
-        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "date", tomorrow.format(formatter));
         grid.setGridCell(index, "tissue", tissue);
 
         log("Entering values for Organ Weights");
@@ -2200,7 +2204,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         _helper.addRecordToGrid(grid);
         index = grid.getRowCount();
         grid.setGridCell(index, "Id", animalId);
-        grid.setGridCell(index, "date", now.format(formatter));
+        grid.setGridCell(index, "date", tomorrow.format(formatter));
         grid.setGridCell(index, "tissue", tissue);
 
         log("Submit the request and approve");
@@ -2217,7 +2221,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         //code to add for the remaining flow
     }
 
-    private void setNecropsYFormElement(String id, String value)
+    private void setNecropsyFormElement(String id, String value)
     {
         Locator loc = Locator.name(id);
         waitForElement(loc);

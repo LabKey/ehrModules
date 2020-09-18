@@ -1,0 +1,93 @@
+Color	Position	Sample Name	Gene Name	Cq	Concentration	Call	Excluded	Sample Type	Standard	Cq Mean	Cq Error	Concentration Mean	Concentration Error	Replicate Group	Dye	Edited Call	Slope	EPF	Failure	Notes	Sample Prep Notes	Number
+255;132;197;238	A5	PcYABMw4iIW4wS57qORr1Z	None	15.31	1.50E+07	Positive	Unchecked	Unknown	1.50E+07	29.19	0.17	1.42E+03	1.61E+02	A5	FAM	 	0.09	0.58	None			1
+255;103;103;103	A6	nCmYQbLEikiQ73iDxmY33Y	None	18.66	1.60E+06	Positive	Unchecked	Unknown	1.60E+06	32.82	0.43	1.28E+02	3.65E+01	A6	FAM	 	0.09	0.57	None			2
+255;242;138;21	A7	R9xM.9TriuaExOpndyGo2X	None	22.16	1.55E+05	Positive	Unchecked	Unknown	1.55E+05	35.86	0.69	1.74E+01	7.76E+00	A7	FAM	 	0.08	0.5	None			3
+255;250;215;15	A8	J5gXlHcYh1WqFKXNp3,j0o	None	25.7	1.46E+04	Negative	Unchecked	Unknown	1.46E+04	-	-	-	-	A8	FAM	 	0	0	Standard is negative			4
+255;103;154;47	A9	NTmiKt6kg3i0f4dB2VuZ3H	None	29.07	1.53E+03	Positive	Unchecked	Unknown	1.53E+03	38.29	1.19	3.77E+00	2.72E+00	A9	FAM	 	0.09	0.56	None			5
+255;180;73;149	A10	ERMObpbGgJ,NIB4RV9Uk2v	None	32.51	1.54E+02	Negative	Unchecked	Unknown	1.54E+02	-	-	-	-	A10	FAM	 	0	0.01	None			6
+255;95;103;174	A11	GVv2wR90hyyWrWmlYHZQ1C	None	36.35	1.19E+01			Unknown	1.19E+01													7
+255;205;18;55	A12	qSuSKy5.guyeUO2Qgb5K1M	None	37.45	5.69E+00			Unknown	5.69E+00													8
+255;34;176;146	B1	fg2aEmoaic,ykvyNBTcA3H	None	15.23	1.58E+07	Positive	Unchecked	Unknown	1.58E+07	15.27	0.06	1.54E+07	5.83E+05	A1	FAM	 	0.09	0.57	None			9
+255;47;73;113	B2	EjGJbY7OisCA6mgJ8Tuv02	None	18.76	1.50E+06	Positive	Unchecked	Unknown	1.50E+06	18.71	0.07	1.55E+06	7.32E+04	A2	FAM	 	0.09	0.58	None			10
+255;132;197;238	B3	zvkVnRFuhkWAa2QvLZXz2G	None	22.21	1.50E+05	Positive	Unchecked	Unknown	1.50E+05	22.19	0.04	1.52E+05	3.60E+03	A3	FAM	 	0.09	0.58	None			11
+255;103;103;103	B4	ahMiyqLBiduSCJQ,Ehvf3Z	None	25.66	1.50E+04	Positive	Unchecked	Unknown	1.50E+04	25.68	0.03	1.48E+04	2.79E+02	A4	FAM	 	0.09	0.58	None			12
+255;242;138;21	B5	U4zP.ntYjPOQ4BLo73jQ0B	None	29.31	1.31E+03	Positive	Unchecked	Unknown	1.31E+03	29.19	0.17	1.42E+03	1.61E+02	A5	FAM	 	0.09	0.58	None			13
+255;250;215;15	B6	.sXZMhnmhG6pQ2DT,szM24	None	33.12	1.03E+02	Positive	Unchecked	Unknown	1.03E+02	32.82	0.43	1.28E+02	3.65E+01	A6	FAM	 	0.09	0.56	None			14
+255;103;154;47	B7	5jgf,BCJikupRYPZPjhZ2b	None	35.37	2.28E+01	Positive	Unchecked	Unknown	2.28E+01	35.86	0.69	1.74E+01	7.76E+00	A7	FAM	 	0.09	0.55	None			15
+255;180;73;149	B8	W,jAOvAGg7aScyq6H9jM2m	None	39.13	1.85E+00	Negative	Unchecked	Unknown	1.85E+00	-	-	-	-	A8	FAM	 	0	0.01	Standard is negative			16
+255;95;103;174	B9	ZlRXVQiihbGVVOGc0loj1L	None	24.75	2.75E+04	Positive	Unchecked	Unknown	2.75E+04	38.29	1.19	3.77E+00	2.72E+00	A9	FAM	 	0.09	0.53	None			17
+255;205;18;55	B10	9cnm2nmRgyi9bAwqTcKR0j	None	24.7	2.84E+04	Negative	Unchecked	Unknown	2.84E+04	-	-	-	-	A10	FAM	 	0	0	None			18
+255;34;176;146	B11	UmLWM2r2gAuu8chpTLos3D	None	24.67	2.90E+04			Unknown	2.90E+04													19
+255;47;73;113	B12	15I4KsOFiTakzH0pEer10y	None	35.85	3.01E+01			Unknown	3.01E+01													20
+255;234;79;79	C1	S413KTjZgz6whm2qrMPb16	None	25.49	3.96E+04	Positive	Unchecked	Unknown	3.96E+04	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.58	None			21
+255;66;41;24	C2	9fDACvZmiiawEJ1jqIxG12	None	26.52	1.94E+04	Positive	Unchecked	Unknown	1.94E+04	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			22
+255;66;41;24	C3	vGh29D5EhqmtFoI5Xuwp29	None	24.62	3.00E+04	Positive	Unchecked	Unknown	3.00E+04	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			23
+255;103;103;103	C4	rb65ZtanjGyIQexsQURK0z	None	24.7	2.84E+04	Negative	Unchecked	Unknown	2.84E+04	-	-	-	-	C4	FAM	 	0	0.01	None			24
+255;242;138;21	C5	MvZpL,0sjKSoG8yshMBz2y	None	24.61	3.02E+04	Negative	Unchecked	Unknown	3.02E+04	-	-	-	-	C5	FAM	 	0	0	None			25
+255;250;215;15	C6	VFb4BbLnh0iTRH2rpWfS0.	None	31.77	5.11E+02	Negative	Unchecked	Unknown	5.11E+02	-	-	-	-	C6	FAM	 	0	0	None			26
+255;234;79;79	C7	SG1zaeXmj9WuXk0J.0t52H	None	15.31	1.50E+07			Unknown	1.50E+07	15.27	0.06	1.54E+07	5.83E+05	A1	FAM	 	0.09	0.57	None			27
+255;66;41;24	C8	iAJncCq8htifqllq2oSW1p	None	18.66	1.60E+06			Unknown	1.60E+06	18.71	0.07	1.55E+06	7.32E+04	A2	FAM	 	0.09	0.58	None			28
+255;66;41;24	C9	Hz.uBSS0jda0zvDBO,Ne05	None	22.16	1.55E+05			Unknown	1.55E+05	22.19	0.04	1.52E+05	3.60E+03	A3	FAM	 	0.09	0.58	None			29
+255;103;103;103	C10	Joj43YcejVy9R9yQbjbd1a	None	25.7	1.46E+04			Unknown	1.46E+04	25.68	0.03	1.48E+04	2.79E+02	A4	FAM	 	0.09	0.58	None			30
+255;242;138;21	C11	FFhmfuRegiOyv0fvAfGV0h	None	29.07	1.53E+03			Unknown	1.53E+03	29.19	0.17	1.42E+03	1.61E+02	A5	FAM	 	0.09	0.58	None			31
+255;250;215;15	C12	jlairkLYgmyfD2,xS3t92r	None	32.51	1.54E+02			Unknown	1.54E+02	32.82	0.43	1.28E+02	3.65E+01	A6	FAM	 	0.09	0.56	None			32
+255;132;197;238	D1	zL54,4JAgDusizgAY2TN31	None	36.35	1.19E+01	Positive	Unchecked	Unknown	1.19E+01	35.86	0.69	1.74E+01	7.76E+00	A7	FAM	 	0.09	0.55	None			33
+255;103;103;103	D2	ODw7ggxfhGe9cVYhk4rZ0.	None	37.45	5.69E+00	Positive	Unchecked	Unknown	5.69E+00	-	-	-	-	A8	FAM	 	0	0.01	Standard is negative			34
+255;242;138;21	D3	9lNedv4JjcudaVd5mox83k	None	15.23	1.58E+07	Positive	Unchecked	Unknown	1.58E+07	38.29	1.19	3.77E+00	2.72E+00	A9	FAM	 	0.09	0.53	None			35
+255;250;215;15	D4	RC6Nkl2Agribusk3rzSg13	None	18.76	1.50E+06	Negative	Unchecked	Unknown	1.50E+06	-	-	-	-	A10	FAM	 	0	0	None			36
+255;103;154;47	D5	Fgc9kM8FhjifV1dBH7u114	None	22.21	1.50E+05	Negative	Unchecked	Unknown	1.50E+05													37
+255;180;73;149	D6	VlN0TAQFjGmvoejWpbXh1C	None	25.66	1.50E+04	Negative	Unchecked	Unknown	1.50E+04													38
+255;95;103;174	D7	SQOe,ooGhaK1LllIBMNo3,	None	29.31	1.31E+03			Unknown	1.31E+03	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.58	None			39
+255;205;18;55	D8	VtEwkC,2hvKw,zkd4z3N1H	None	33.12	1.03E+02			Unknown	1.03E+02	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			40
+255;34;176;146	D9	bGDfZMoMi1,IzuN,T7hI18	None	35.37	2.28E+01			Unknown	2.28E+01	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			41
+255;47;73;113	D10	tokW.oLsjzOsJOPx,qfm3s	None	39.13	1.85E+00			Unknown	1.85E+00	-	-	-	-	C6	FAM	 	0	0	None			42
+255;132;197;238	D11	h8F3yj7viwO6l5IaHNzD1l	None	24.75	2.75E+04			Unknown	2.75E+04													43
+255;103;103;103	D12	NUgvOzGSgsyngjTB.2.n1u	None	24.7	2.84E+04			Unknown	2.84E+04													44
+255;242;138;21	E1	5cJ9wzBmhYi0ZQYWHpge20	None	24.67	2.90E+04			Unknown	2.90E+04													45
+255;250;215;15	E2	ouSpnxnugyaHWWrGibR43E	None	35.85	3.01E+01			Unknown	3.01E+01													46
+255;103;154;47	E3	TaVdU,q1gsabUki,t8fS0L	None	25.49	3.96E+04			Unknown	3.96E+04	15.27	0.06	1.54E+07	5.83E+05	A1	FAM	 	0.09	0.57	None			47
+255;180;73;149	E4	fgSWPr3,gmyy0tv1gfSL2t	None	26.52	1.94E+04			Unknown	1.94E+04	18.71	0.07	1.55E+06	7.32E+04	A2	FAM	 	0.09	0.58	None			48
+255;95;103;174	E5	uF5NiJx7ieidyTcftw,D1C	None	24.62	3.00E+04			Unknown	3.00E+04	22.19	0.04	1.52E+05	3.60E+03	A3	FAM	 	0.09	0.58	None			49
+255;205;18;55	E6	vzeLEWw,ifmF9.GBUIyX3W	None	24.7	2.84E+04			Unknown	2.84E+04	25.68	0.03	1.48E+04	2.79E+02	A4	FAM	 	0.09	0.58	None			50
+255;34;176;146	E7	BX07u8FKjuenFXD1w7c51O	None	24.61	3.02E+04			Unknown	3.02E+04	29.19	0.17	1.42E+03	1.61E+02	A5	FAM	 	0.09	0.58	None			51
+255;47;73;113	E8	38u0EUMgihyOm.o811qu2b	None	31.77	5.11E+02			Unknown	5.11E+02	32.82	0.43	1.28E+02	3.65E+01	A6	FAM	 	0.09	0.56	None			52
+255;234;79;79	E9	IGb9Rh0Ki12.cZtE78xF1T	None	15.31	1.50E+07			Unknown	1.50E+07	35.86	0.69	1.74E+01	7.76E+00	A7	FAM	 	0.09	0.55	None			53
+255;66;41;24	E10	xseeKjrPgkSBagv.I4nT2f	None	18.66	1.60E+06			Unknown	1.60E+06	-	-	-	-	A8	FAM	 	0	0.01	Standard is negative			54
+255;66;41;24	E11	irLzykuTi1GrIuVFislQ1P	None	22.16	1.55E+05			Unknown	1.55E+05	38.29	1.19	3.77E+00	2.72E+00	A9	FAM	 	0.09	0.53	None			55
+255;103;103;103	E12	wDMKC.nYhd,OCyZJv7.20E	None	25.7	1.46E+04			Unknown	1.46E+04	-	-	-	-	A10	FAM	 	0	0	None			56
+255;242;138;21	F1	I7S7yF.sidekqOA5WRw.2q	None	29.07	1.53E+03			Unknown	1.53E+03													57
+255;250;215;15	F2	kgAtvMSvhZqbgY4uRNlN1J	None	32.51	1.54E+02			Unknown	1.54E+02													58
+255;234;79;79	F3	CL5KMUsIhKqe4f8k6mQo1W	None	36.35	1.19E+01			Unknown	1.19E+01	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.58	None			59
+255;66;41;24	F4	hXT2dz6widKRxPClPgj52N	None	37.45	5.69E+00			Unknown	5.69E+00	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			60
+255;66;41;24	F5	Gu70UnuzgruOXVz51pBD0H	None	15.23	1.58E+07			Unknown	1.58E+07	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			61
+255;103;103;103	F6	3KzBTqvLgu2aU.UWBO0Q1l	None	18.76	1.50E+06			Unknown	1.50E+06													62
+255;242;138;21	F7	JA0WvgUrhxWD2pu9rc1q0H	None	22.21	1.50E+05			Unknown	1.50E+05													63
+255;250;215;15	F8	LXqodPBpjDme2MZ.TIDG2X	None	25.66	1.50E+04			Unknown	1.50E+04	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.59	None			64
+255;132;197;238	F9	0f7BlbOkh5SopKJ4BL4,05	None	29.31	1.31E+03			Pos Control	1.31E+03	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.58	None			65
+255;103;103;103	F10	YRL,Oec8iducoKOB1lOd3C	None	33.12	1.03E+02			Pos Control	1.03E+02	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.58	None			66
+255;242;138;21	F11	Rk1oO4cjgoiCTYhCui3z2x	None	35.37	2.28E+01			Pos Control	2.28E+01	-	-	-	-	C4	FAM	 	0	0.01	None			67
+255;250;215;15	F12	1Uwe6MtZhYS78IFiKfc12F	None	39.13	1.85E+00			Pos Control	1.85E+00	-	-	-	-	C5	FAM	 	0	0.01	None			68
+255;103;154;47	G1	mucqgx5xiBO8H5WTFmXm2v	None	24.75	2.75E+04			Neg Control	2.75E+04	15.27	0.06	1.54E+07	5.83E+05	A1	FAM	 	0.09	0.57	None			69
+255;180;73;149	G2	qhPwle6DidKxz5yw03aM1a	None	24.7	2.84E+04			Neg Control	2.84E+04	18.71	0.07	1.55E+06	7.32E+04	A2	FAM	 	0.09	0.58	None			70
+255;95;103;174	G3	oe8u73LVjqi4gJbPKtLz2d	None	24.67	2.90E+04			Standard	2.90E+04	22.19	0.04	1.52E+05	3.60E+03	A3	FAM	 	0.09	0.58	None			71
+255;205;18;55	G4	T3isWmEPjZOzyJDC,lba25	None	35.85	3.01E+01			Standard	3.01E+01	25.68	0.03	1.48E+04	2.79E+02	A4	FAM	 	0.09	0.58	None			72
+255;34;176;146	G5	6Cr3r9KuimKZKoONeDe71s	None	25.49	3.96E+04			Standard	3.96E+04	29.19	0.17	1.42E+03	1.61E+02	A5	FAM	 	0.09	0.58	None			73
+255;47;73;113	G6	fyjFvEWhhR,TYxmL0kWV0S	None	26.52	1.94E+04			Standard	1.94E+04	32.82	0.43	1.28E+02	3.65E+01	A6	FAM	 	0.09	0.56	None			74
+255;132;197;238	G7	fZ.q9Y.FhCaR9JIdDTVR3I	None	24.62	3.00E+04			Standard	3.00E+04	35.86	0.69	1.74E+01	7.76E+00	A7	FAM	 	0.09	0.55	None			75
+255;103;103;103	G8	Fsn74,wqjCeBwA5WLx,D1,	None	24.7	2.84E+04			Standard	2.84E+04	-	-	-	-	A8	FAM	 	0	0.01	Standard is negative			76
+255;242;138;21	G9	CdvGPxK2hFSuBFc7oHZw08	None	24.61	3.02E+04			Standard	3.02E+04	38.29	1.19	3.77E+00	2.72E+00	A9	FAM	 	0.09	0.53	None			77
+255;250;215;15	G10	ZA1sM7aagR,uYt5mpXPL3E	None	31.77	5.11E+02			Standard	5.11E+02	-	-	-	-	A10	FAM	 	0	0	None			78
+255;103;154;47	G11	QtbNbZGkiQOhV7Y3GQeM3T	None	15.31	1.50E+07			Standard	1.50E+07													79
+255;180;73;149	G12	nll3Z5XIhNWAYpDNj.oP1M	None	18.66	1.60E+06			Standard	1.60E+06													80
+255;95;103;174	H1	N4gjMYkjhtCjO.Pxd.Rg0E	None	22.16	1.55E+05			Standard	1.55E+05	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.58	None			81
+255;205;18;55	H2	112X8WV5gdWwUT5j6Ijh1m	None	25.7	1.46E+04			Standard	1.46E+04	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			82
+255;34;176;146	H3	kd6PdK1zjvuDsTabA24x3v	None	29.07	1.53E+03			Standard	1.53E+03	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			83
+255;47;73;113	H4	3N04G0esjUmQzkm40hBC2N	None	32.51	1.54E+02			Standard	1.54E+02	24.69	0.09	2.87E+04	1.76E+03	C1	FAM	 	0.09	0.59	None			84
+255;234;79;79	H5	URDcemJIiR6HwFWLxo,g0E	None	36.35	1.19E+01			Standard	1.19E+01	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.58	None			85
+255;66;41;24	H6	S8I,CajEjM6Wds7vJAX824	None	37.45	5.69E+00			Standard	5.69E+00	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.58	None			86
+255;95;103;174	H7	pY1ISFpNhE,YaS.DSzTQ1Q	None	15.23	1.58E+07			Standard	1.58E+07	-	-	-	-	C4	FAM	 	0	0.01	None			87
+255;205;18;55	H8	7f8Xvcqhj0,1ZJ1dcQC01K	None	18.76	1.50E+06			Standard	1.50E+06	-	-	-	-	C5	FAM	 	0	0.01	None			88
+255;34;176;146	H9	5UdLi8bbhjCS3CLiYGkW3m	None	22.21	1.50E+05			Standard	1.50E+05	24.67	0.04	2.90E+04	8.29E+02	C2	FAM	 	0.09	0.57	None			89
+255;47;73;113	H10	EkzrU7hehnSYUMYhDDSc2G	None	25.66	1.50E+04			Standard	1.50E+04	-	-	-	-	C4	FAM	 	0	0.01	None			90
+255;234;79;79	H11	wUPszeEXiCCrnRpEtIbX3t	None	29.31	1.31E+03			Standard	1.31E+03	-	-	-	-	C5	FAM	 	0	0	None			91
+255;66;41;24	H12	u5OSfw3MjtqgWLbwhdhk3o	None	33.12	1.03E+02			Standard	1.03E+02	-	-	-	-	C6	FAM	 	0	0	None			92

@@ -127,6 +127,12 @@
                                 </filters>
                                 <backgroundColor>FBEC5D</backgroundColor>
                             </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Started"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
                         </conditionalFormats>
                     </column>
                     <column columnName="title">

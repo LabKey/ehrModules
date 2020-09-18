@@ -359,7 +359,7 @@
         <!--<buttonBarOptions includeStandardButtons="true">-->
             <!--<includeScript>ehr.context</includeScript>-->
             <!--&lt;!&ndash;TODO: <includeScript>/ehr_billing/window/ReverseChargeWindow.js</includeScript>&ndash;&gt;-->
-            <!--<item insertPosition="end" text="More Actions" permissionClass="org.labkey.api.ehr_billing.security.EHR_BillingAdminPermission">-->
+            <!--<item insertPosition="end" text="More Actions" permissionClass="org.labkey.api.ehr.security.EHR_BillingAdminPermission">-->
                 <!--<item text="Reverse/Adjust Selected Charges">-->
                     <!--<onClick>ehr_Billing.window.ReverseChargeWindow.buttonHandler(dataRegionName);</onClick>-->
                 <!--</item>-->
@@ -393,6 +393,7 @@
             </column>
             <column columnName="investigator"/>
             <column columnName="chargeType"/>
+            <column columnName="chargeGroup"/>
             <column columnName="chargeId"/>
             <column columnName="item">
                 <columnTitle>Item</columnTitle>
@@ -403,6 +404,10 @@
             </column>
             <column columnName="unitCost">
                 <columnTitle>Unit Cost</columnTitle>
+                <formatString>$###,##0.00</formatString>
+            </column>
+            <column columnName="totalCost">
+                <columnTitle>Total Cost</columnTitle>
                 <formatString>$###,##0.00</formatString>
             </column>
             <column columnName="creditedaccount">
@@ -678,7 +683,7 @@
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Charge Units</tableTitle>
         <columns>
-            <column columnName="chargetype">
+            <column columnName="groupName">
                 <columnTitle>Name</columnTitle>
             </column>
             <column columnName="servicecenter">

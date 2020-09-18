@@ -26,7 +26,7 @@ EHR.Server.Validation = {
      */
     checkRestraint: function(row, scriptErrors){
         if (row.restraint && !LABKEY.ExtAdapter.isDefined(row.restraintDuration))
-            EHR.Server.Utils.scriptErrors(errors, 'restraintDuration', 'Must enter time restrained', 'INFO');
+            EHR.Server.Utils.addError(scriptErrors, 'restraintDuration', 'Must enter time restrained', 'INFO');
 
     },
 

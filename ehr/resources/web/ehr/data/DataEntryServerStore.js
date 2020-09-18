@@ -264,9 +264,9 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         // The code below is being left in place for now, but may be unnecessary.  if there are no changes to apply, no edits should be made
         this.callParent(arguments);
 
-        if (command.command != 'delete'){
+        if (!command || command.command != 'delete'){
             var idProp = this.proxy.reader.getIdProperty();
-            Ext4.Array.forEach(command.rows, function(row){
+            Ext4.Array.forEach(records, function(row){
                 var record;
                 if (row.oldKeys){
                     //NOTE: always test both upper and lower case.  somewhat ugly, but the DB can alter the case of GUIDs

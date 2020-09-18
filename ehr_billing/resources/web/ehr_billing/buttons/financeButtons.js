@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2018-2019 LabKey Corporation
- *
- * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
- */
 /**
  * A button specific to the charges form
  */
@@ -14,13 +9,39 @@ EHR.DataEntryUtils.registerDataEntryFormButton('FINANCESUBMIT', {
     requiredQC: 'Completed',
     targetQC: 'Completed',
     errorThreshold: 'ERROR',
-    successURL: LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.buildURL('project', 'begin.view', (ctx ? ctx['BillingContainer'] : null), null),
+    successURL: LABKEY.ActionURL.buildURL('project', 'begin.view', (ctx ? ctx['BillingContainer'] : null), null),
     itemId: 'submitBtn',
     handler: function(btn){
         var panel = btn.up('ehr-dataentrypanel');
         Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
-            if(v == 'yes')
+            if(v === 'yes')
+            {
                 this.onSubmit(btn);
+                panel.disable();
+            }
+
+        }, this);
+    },
+    disableOn: 'ERROR'
+});
+
+EHR.DataEntryUtils.registerDataEntryFormButton('SUBMITANDRELOAD', {
+    text: 'Submit And Reload',
+    name: 'submitAndReload',
+    requiredQC: 'Completed',
+    targetQC: 'Completed',
+    errorThreshold: 'ERROR',
+    successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
+    itemId: 'submitAndReloadBtn',
+    handler: function(btn){
+        var panel = btn.up('ehr-dataentrypanel');
+        Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+            if(v === 'yes')
+            {
+                this.onSubmit(btn);
+                panel.disable();
+            }
+
         }, this);
     },
     disableOn: 'ERROR'

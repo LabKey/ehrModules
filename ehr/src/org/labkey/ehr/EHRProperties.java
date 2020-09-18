@@ -37,6 +37,7 @@ public class EHRProperties
             pd.setName("remark");
             pd.setStorageColumnName("remark");
             pd.setInputType("textarea");
+            pd.setScale(-1);
             return pd;
         }
     };

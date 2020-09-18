@@ -1813,7 +1813,7 @@ public class TriggerScriptHelper
 
     public void sendDeathNotification(final List<String> ids)
     {
-        if (!NotificationService.get().isServiceEnabled())
+        if (!NotificationService.get().isServiceEnabled() || !NotificationService.get().isActive(new DeathNotification(), _container))
         {
             _log.info("notification service is not enabled, will not send death notification.");
             return;
@@ -1872,7 +1872,8 @@ public class TriggerScriptHelper
 
                     //find assignments overlapping date of death
                     TableInfo assignment = getTableInfo("study", "assignment");
-                    final Map<FieldKey, ColumnInfo> assignmentCols = QueryService.get().getColumns(assignment, PageFlowUtil.set(FieldKey.fromString("project/displayName"), FieldKey.fromString("project/investigatorId/lastName")));
+                    final FieldKey piLastNameFieldKey = FieldKey.fromString("project/investigatorId/lastName");
+                    final Map<FieldKey, ColumnInfo> assignmentCols = QueryService.get().getColumns(assignment, PageFlowUtil.set(FieldKey.fromString("project/displayName"), piLastNameFieldKey));
                     SimpleFilter assignmentFilter = new SimpleFilter(FieldKey.fromString("Id"), id);
                     assignmentFilter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
                     TableSelector assignmentTs = new TableSelector(assignment, assignmentCols.values(), assignmentFilter, null);
@@ -1892,7 +1893,7 @@ public class TriggerScriptHelper
 
                                     if (rs.hasColumn(FieldKey.fromString("project/investigatorId/lastName")))
                                     {
-                                        html.append(" (").append(rs.getString(FieldKey.fromString("project/investigatorId/lastName"))).append(")");
+                                        html.append(" (").append(rs.getString(piLastNameFieldKey)).append(")");
                                     }
 
                                     html.append("<br>");

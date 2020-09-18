@@ -20,7 +20,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columns: 'project'
             }
         },
-        chargetype: {
+        chargeGroup: {
             shownInGrid: true,
             isAutoExpandColumn: true,
             useNull: true

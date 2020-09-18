@@ -104,8 +104,12 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
                 EHRScheduledAdminPermission.class,
                 EHRScheduledDeletePermission.class,
                 EHRScheduledInsertPermission.class,
-                EHRScheduledUpdatePermission.class
+                EHRScheduledUpdatePermission.class,
 
+                EHRStartedAdminPermission.class,
+                EHRStartedDeletePermission.class,
+                EHRStartedInsertPermission.class,
+                EHRStartedUpdatePermission.class
         );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));

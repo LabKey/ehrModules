@@ -24,6 +24,7 @@ import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.ehr_compliancedb.notification.EmployeeComplianceNotification;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.ehr_compliancedb.api.EHR_ComplianceService;
 
 import java.util.Collections;
 import java.util.Set;
@@ -61,6 +62,8 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     protected void init()
     {
         addController(CONTROLLER_NAME, EHR_ComplianceDBController.class);
+
+        EHR_ComplianceService.setInstance(new EHR_ComplianceServiceImpl());
     }
 
     @Override
