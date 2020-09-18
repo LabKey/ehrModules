@@ -62,8 +62,6 @@ import org.openqa.selenium.WebElement;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2188,8 +2186,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         _ext4Helper.selectComboBoxItem("Type:", Ext4Helper.TextMatchTechnique.CONTAINS,type);
         setNecropsyFormElement("chargetype", chargeType);
         _ext4Helper.selectComboBoxItem("Procedure:", Ext4Helper.TextMatchTechnique.CONTAINS, procedureid);
-
-        LocalDateTime tomorrow = now.plus(1, ChronoUnit.DAYS);
 
         log("Entering values for Tissue Samples");
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Tissue Samples");
