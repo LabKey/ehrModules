@@ -2189,8 +2189,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         setNecropsyFormElement("chargetype", chargeType);
         _ext4Helper.selectComboBoxItem("Procedure:", Ext4Helper.TextMatchTechnique.CONTAINS, procedureid);
 
-        LocalDateTime tomorrow = now.plus(1, ChronoUnit.DAYS);
-
         log("Entering values for Tissue Samples");
         Ext4GridRef grid = _helper.getExt4GridForFormSection("Tissue Samples");
         _helper.addRecordToGrid(grid);
