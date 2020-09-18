@@ -18,9 +18,9 @@ package org.labkey.api.ehr.dataentry;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.module.Module;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -42,7 +42,8 @@ public class DefaultDataEntryFormFactory implements DataEntryFormFactory
         _module = module;
     }
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public DataEntryForm createForm(DataEntryFormContext ctx)
     {
         try
