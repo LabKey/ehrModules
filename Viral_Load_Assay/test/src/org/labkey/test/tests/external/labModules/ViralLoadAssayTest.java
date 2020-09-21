@@ -635,6 +635,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         DataRegionTable templates = new DataRegionTable("query", this);
         clickAndWait(templates.link(0, 0)); // the 'enter results' link
 
+        _ext4Helper.waitForMaskToDisappear();
+
         //use the same data included with this assay
         Locator btn = Locator.linkContainingText("Download Example Data");
         waitForElement(btn);

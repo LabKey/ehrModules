@@ -24,8 +24,6 @@ import org.labkey.test.pages.LabKeyPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -386,14 +384,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             {
                 log("Selecting Report: " + getLabel());
                 scrollIntoView(_el);
-                try
-                {
-                    doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(2));
-                }
-                catch (StaleElementReferenceException | TimeoutException ignore) // Tab signal might fire more than once
-                {
-                    _el.isDisplayed(); // Make sure it was actually the signal that was stale
-                }
+                doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(2));
                 _ext4Helper.waitForMaskToDisappear(30000);
                 activeReportPanelContainer.waitForElement(getDriver(), 10000);
                 sleep(5000);
