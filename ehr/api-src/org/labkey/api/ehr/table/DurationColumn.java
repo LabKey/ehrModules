@@ -21,6 +21,7 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.HtmlString;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -88,10 +89,10 @@ public class DurationColumn extends DataColumn
     }
 
     @Override @NotNull
-    public String getFormattedValue(RenderContext ctx)
+    public HtmlString getFormattedHtml(RenderContext ctx)
     {
         Object val = getDisplayValue(ctx);
-        return val == null ? "" : val.toString();
+        return val == null ? HtmlString.EMPTY_STRING : HtmlString.of(val.toString());
     }
 
     @Override
