@@ -93,18 +93,15 @@
             </column>
             <column columnName="lastName">
                 <columnTitle>Last Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="firstName">
                 <nullable>true</nullable>
                 <columnTitle>First Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="middleName">
                 <columnTitle>Middle Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="email">
