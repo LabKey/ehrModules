@@ -1798,6 +1798,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "  ROUND(CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
+
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
@@ -1818,6 +1819,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "  floor(age(d.birth, CAST(c." + dateColName + " as DATE)))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
+                    //Added 'Age at time Days' by kollil on 02/15/2019
+                    "CAST(\n" +
+                    "CASE\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
+                    "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, d.lastDayAtCenter), INTEGER)\n" +
+                    "ELSE\n" +
+                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
+                    "END AS float) as AgeAtTimeDays,\n" +
+                    "\n" +
+                    //
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +

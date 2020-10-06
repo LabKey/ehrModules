@@ -2710,6 +2710,9 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
         </columns>
     </table>
     <table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">

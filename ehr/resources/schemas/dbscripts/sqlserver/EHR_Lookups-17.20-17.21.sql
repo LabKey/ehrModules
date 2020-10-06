@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.flag_categories ADD datedisabled DATETIME;
