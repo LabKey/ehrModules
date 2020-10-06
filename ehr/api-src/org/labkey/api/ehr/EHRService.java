@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -26,12 +28,12 @@ import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.demographics.ProjectValidator;
-import org.labkey.api.ehr.history.HistoryDataSource;
-import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.ehr.history.*;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
@@ -125,6 +127,32 @@ abstract public class EHRService
 
     /** @return the project validator set by the EHR module, note a center specific module may have overridden the default */
     abstract public ProjectValidator getProjectValidator();
+
+    public enum EndingOption
+    {
+        /** end date is not set, or any day in the future */
+        activeAfterMidnightTonight(new SQLFragment(" WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
+        /** ends anytime today */
+        endsToday(new SQLFragment("WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
+        /** consider records that start/stop on today's date to be active */
+        allowSameDay(new SQLFragment(" WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
+        /** end time must be before right now */
+        endingBeforeNow(new SQLFragment(" WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate >= {fn now()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE()));
+
+        private final SQLFragment _sql;
+
+        EndingOption(SQLFragment sql)
+        {
+            _sql = sql;
+        }
+
+        public SQLFragment getSql()
+        {
+            return _sql;
+        }
+    }
+
+    public abstract void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EndingOption... endOptions);
 
     /** Categories where pre-configured reports can be offered to the user */
     public enum REPORT_LINK_TYPE

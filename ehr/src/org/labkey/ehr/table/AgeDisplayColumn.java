@@ -16,8 +16,8 @@
 package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.ehr.table.DurationColumn;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -27,7 +27,7 @@ import java.util.Date;
  * Date: 10/23/13
  * Time: 3:49 PM
  */
-public class AgeDisplayColumn extends DurationColumn
+public class AgeDisplayColumn extends AbstractAgeDisplayColumn
 {
     public AgeDisplayColumn(ColumnInfo col)
     {
@@ -35,17 +35,8 @@ public class AgeDisplayColumn extends DurationColumn
     }
 
     @Override
-    public String getFormattedDuration(Date startDate, Date endDate)
+    public String getFormattedDuration(@NotNull Calendar birthCal, @NotNull Calendar deathCal)
     {
-        if (startDate == null)
-            return null;
-
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
-
-        Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
-
         String yearMonthPartFromUtil;
         String yearDayPartFromUtil;
         try

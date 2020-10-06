@@ -41,6 +41,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.exp.api.StorageProvisioner;
+import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -454,7 +455,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             if (matches(ti, "study", "Treatment Orders"))
             {
-                addIsActiveColWithTime(ti);
+                addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
             }
         }
         else if (matches(ti, "study", "Clinical Encounters") || matches(ti, "study", "Encounters"))
@@ -479,7 +480,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "housing"))
         {
-            addIsActiveColWithTime(ti);
+            addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
         }
         else if (matches(ti, "study", "blood") || matches(ti, "study", "Blood Draws"))
         {
@@ -503,15 +504,19 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "flags") || matches(ti, "study", "Animal Record Flags"))
         {
-            addIsActiveCol(ti, false);
+            addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight);
         }
         else if (matches(ti, "study", "diet"))
         {
             addIsActiveCol(ti);
         }
-        else if (matches(ti, "study", "parentage"))
+        else if (matches(ti, "study", "geneticAncestry"))
         {
             addIsActiveCol(ti, false);
+        }
+        else if (matches(ti, "study", "parentage"))
+        {
+            addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight);
         }
         else if (matches(ti, "study", "demographics"))
         {
@@ -531,15 +536,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void addIsActiveCol(AbstractTableInfo ti)
     {
-        addIsActiveCol(ti, true);
+        addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight, EHRService.EndingOption.allowSameDay);
     }
 
-    private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay)
-    {
-        addIsActiveCol(ti, allowSameDay, false);
-    }
 
-    private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
+    private void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EHRService.EndingOption... endOptions)
     {
         if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
         {
@@ -638,6 +639,21 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         customizeButtonBar(ti);
     }
 
+    private void expandRemarksColumn(final AbstractTableInfo ti)
+    {
+        Dataset dataset = ((DatasetTable) ti).getDataset();
+        Domain domain = dataset.getDomain();
+
+        // Hack the metadata for the length of the remark column, which has
+        // been altered in the DB so that it doesn't match with the standard
+        // "remark" property. See ONPRC ticket 33848 and EHRManager.ensureDatasetPropertyDescriptors()
+        TableInfo realTable = StorageProvisioner.getSchemaTableInfo(domain);
+        ColumnInfo remarkCol = realTable.getColumn("remark");
+        remarkCol.setLocked(false);
+        remarkCol.setScale(1000000);
+        remarkCol.setLocked(true);
+    }
+
     private void customizeEncountersTable(final AbstractTableInfo ti)
     {
         appendEncountersCol(ti, "participants", "Participants", "encounter_participants_summary");
@@ -645,11 +661,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         appendEncountersCol(ti, "flags", "Flags", "encounter_flags_summary");
 
         appendSNOMEDCol(ti);
+
+        expandRemarksColumn(ti);
     }
 
     private void customizeGrossFindings(final AbstractTableInfo ti)
     {
         appendSNOMEDCol(ti);
+        expandRemarksColumn(ti);
     }
 
     private void customizeHistology(final AbstractTableInfo ti)
@@ -1300,7 +1319,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         doSharedCustomization(ti);
         addUnitColumns(ti);
-        addIsActiveColWithTime(ti);
+        addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
     }
 
     private void customizeTasks(AbstractTableInfo ti)

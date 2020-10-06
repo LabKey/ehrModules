@@ -908,9 +908,16 @@ EHR.DataEntryUtils = new function(){
         calculateDrugVolume: function(valMap, rounding, fixedAmount){
             var vol;
             if (!fixedAmount){
-                // vol = dosage * weight / conc (ie. mg/kg * kg / mg/ml)
                 if (valMap.concentration && valMap.dosage && valMap.weight){
-                    vol = valMap.dosage * valMap.weight / valMap.concentration;
+                    if (valMap.dosage_units === 'ml/kg') {
+                        // Some drugs are in ml/kg instead of mg/kg. In those cases, concentration is irrelevant.
+                        vol = valMap.dosage * valMap.weight;
+
+                    }
+                    else {
+                        // vol = dosage * weight / conc (ie. mg/kg * kg / mg/ml)
+                        vol = valMap.dosage * valMap.weight / valMap.concentration;
+                    }
                 }
             }
             else {

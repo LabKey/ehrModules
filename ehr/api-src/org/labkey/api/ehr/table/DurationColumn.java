@@ -17,6 +17,7 @@ package org.labkey.api.ehr.table;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
@@ -32,9 +33,11 @@ import java.util.Set;
 public class DurationColumn extends DataColumn
 {
 
-    String _startDateColumn;
-    String _endDateColumn;
-    private String _durationFormat;
+    protected final String _startDateColumn;
+    protected final String _endDateColumn;
+    private final String _durationFormat;
+
+    private boolean _dropTime;
 
     public DurationColumn(ColumnInfo col, String startDateColumn, String endDateColumn)
     {
@@ -49,6 +52,12 @@ public class DurationColumn extends DataColumn
         _durationFormat = durationFormat;
     }
 
+    /** Treat all times as if they were at midnight of the same day */
+    public void setDropTime(boolean dropTime)
+    {
+        _dropTime = dropTime;
+    }
+
     @Override
     public Class getDisplayValueClass()
     {
@@ -60,12 +69,24 @@ public class DurationColumn extends DataColumn
     @Override
     public Object getDisplayValue(RenderContext ctx)
     {
-        return getFormattedDuration((Date)ctx.get(getMappedFieldKey(_startDateColumn)), (Date)ctx.get(getMappedFieldKey(_endDateColumn)));
+        Date startDate = (Date)ctx.get(getMappedFieldKey(_startDateColumn));
+        Date endDate = (Date)ctx.get(getMappedFieldKey(_endDateColumn));
+
+        return getFormattedDuration(startDate, endDate);
     }
 
-    protected String getFormattedDuration(Date startDate, Date endDate)
+    private void dropTime(@NotNull Calendar cal)
     {
-        if (startDate == null || _durationFormat == null)
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+    }
+
+    /** Convert from dates to calendars, dealing with nulls */
+    public final String getFormattedDuration(@Nullable Date startDate, @Nullable Date endDate)
+    {
+        if (startDate == null)
             return null;
 
         Calendar startCal = Calendar.getInstance();
@@ -73,6 +94,20 @@ public class DurationColumn extends DataColumn
 
         Calendar endCal = Calendar.getInstance();
         endCal.setTime(endDate == null ? new Date() : endDate);
+
+        if (_dropTime)
+        {
+            // Snap to midnight so that days work based on calendar day instead of 24-hour periods
+            dropTime(startCal);
+            dropTime(endCal);
+        }
+        return getFormattedDuration(startCal, endCal);
+    }
+
+    protected String getFormattedDuration(@NotNull Calendar startCal, @NotNull Calendar endCal)
+    {
+        if (_durationFormat == null)
+            return null;
 
         String formattedDuration;
         try
@@ -112,25 +147,5 @@ public class DurationColumn extends DataColumn
     protected FieldKey getMappedFieldKey(String colName)
     {
         return new FieldKey(getBoundColumn().getFieldKey().getParent(), colName);
-    }
-
-    public String getStartDateColumn()
-    {
-        return _startDateColumn;
-    }
-
-    public void setStartDateColumn(String startDateColumn)
-    {
-        _startDateColumn = startDateColumn;
-    }
-
-    public String getEndDateColumn()
-    {
-        return _endDateColumn;
-    }
-
-    public void setEndDateColumn(String endDateColumn)
-    {
-        _endDateColumn = endDateColumn;
     }
 }

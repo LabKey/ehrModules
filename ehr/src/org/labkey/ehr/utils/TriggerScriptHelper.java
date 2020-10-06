@@ -1576,14 +1576,40 @@ public class TriggerScriptHelper
             // NOTE: this behavior around live births is an imperfect way to mesh WNPRC/ONPRC rules.  ONPRC records records in the birth table,
             // including dead infants.  all records in the WNPRC table are of live births.  checking for the column 'birth_condition' column is a crude proxy for this
             TableInfo birthTable = getTableInfo("study", "birth");
+            TableInfo arrivalTable = getTableInfo("study", "Arrival");
             //note: allow draft records to count
             SimpleFilter deadBirthFilter = new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false);
             deadBirthFilter.addCondition(FieldKey.fromString("birth_condition"), null, CompareType.NONBLANK);
-            Date lastDeadBirth = birthTable.getColumnNameSet().contains("birth_condition") ? findMostRecentDate(id, getMostRecentDate(id, birthTable, deadBirthFilter), null) : null;
-            Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, birthTable, (birthTable.getColumnNameSet().contains("birth_condition") ? new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false, CompareType.NEQ_OR_NULL) : null)), liveBirths);
+            boolean hasBirthConditionCol = birthTable.getColumnNameSet().contains("birth_condition");
+            boolean hasArrivalAcquiTypeCol = arrivalTable.getColumnNameSet().contains("acquisitionType");
+            Date lastDeadBirth = hasBirthConditionCol ? findMostRecentDate(id, getMostRecentDate(id, birthTable, deadBirthFilter), null) : null;
+            Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, birthTable, (hasBirthConditionCol ? new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false, CompareType.NEQ_OR_NULL) : null)), liveBirths);
 
-            String status = null;
-            if (lastDeath != null || lastDeadBirth != null)
+            String birthCondition = null;
+            String acquitype = null;
+            if (hasBirthConditionCol)
+            {
+                TableSelector ts = new TableSelector(birthTable, Collections.singleton("birth_condition"), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
+                birthCondition = ts.getObject(String.class);
+            }
+            if (hasArrivalAcquiTypeCol)
+            {
+                FieldKey acquisitionFieldKey = FieldKey.fromParts("acquisitionType", "value");
+                Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(arrivalTable, Collections.singleton(acquisitionFieldKey));
+                ColumnInfo acquisitionColumn = columns.get(acquisitionFieldKey);
+                TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
+                acquitype = ts.getObject(String.class);
+            }
+            String status;
+            if ("Fetus - Prenatal".equalsIgnoreCase(birthCondition) )
+             {
+                status = "Fetus";
+             }
+            else if ("Pending Arrival".equalsIgnoreCase(acquitype))
+            {
+                status = "Pending";
+            }
+            else if (lastDeath != null || lastDeadBirth != null)
             {
                 status = "Dead";
             }

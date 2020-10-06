@@ -443,7 +443,7 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerHistoryDataSource(new DefaultArrivalDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentEndDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultBirthDataSource(module));
-        EHRService.get().registerHistoryDataSource(new DefaultClinicalRemarksDataSource(module));
+       // EHRService.get().registerHistoryDataSource(new DefaultClinicalRemarksDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDeathsDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDepartureDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDrugsDataSource(module));
@@ -456,7 +456,6 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(module));
         EHRService.get().registerLabworkType(new ChemistryLabworkType(module));
         EHRService.get().registerLabworkType(new HematologyLabworkType(module));
-        EHRService.get().registerLabworkType(new iStatLabworkType(module));
         EHRService.get().registerLabworkType(new MicrobiologyLabworkType(module));
         EHRService.get().registerLabworkType(new MiscTestsLabworkType(module));
         EHRService.get().registerLabworkType(new ParasitologyLabworkType(module));

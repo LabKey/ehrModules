@@ -16,13 +16,13 @@
 package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.ehr.table.DurationColumn;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class AgeYearsMonthsDaysDisplayColumn extends DurationColumn
+public class AgeYearsMonthsDaysDisplayColumn extends AbstractAgeDisplayColumn
 {
     public AgeYearsMonthsDaysDisplayColumn(ColumnInfo col)
     {
@@ -30,17 +30,8 @@ public class AgeYearsMonthsDaysDisplayColumn extends DurationColumn
     }
 
     @Override
-    protected String getFormattedDuration(Date startDate, Date endDate)
+    protected String getFormattedDuration(@NotNull Calendar birthCal, @NotNull Calendar deathCal)
     {
-        if (startDate == null)
-            return null;
-
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(startDate);
-
-        Calendar deathCal = Calendar.getInstance();
-        deathCal.setTime(endDate == null ? new Date() : endDate);
-
         String formattedAge;
         try
         {
