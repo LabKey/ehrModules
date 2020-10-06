@@ -2757,6 +2757,9 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
         </columns>
     </table>
     <table tableName="flag_values" tableDbType="TABLE" useColumnOrder="true">
