@@ -17,7 +17,7 @@ Ext4.define('EHR.panel.HousingDataEntryPanel', {
         LDK.Assert.assertNotEmpty('Unable to find housing store in HousingDataEntryPanel', store);
 
         if (extraContext && extraContext.successURL  && store.getCount() > 0){
-            Ext4.Msg.confirm('Success', 'Do you want to view to room layout now?  This will allow you to verify and/or change dividers', function(val){
+            Ext4.Msg.confirm('Success', 'Do you want to view the room layout now?  This will allow you to verify and/or change dividers', function(val){
                 window.onbeforeunload = Ext4.emptyFn;
                 if (val == 'yes'){
 

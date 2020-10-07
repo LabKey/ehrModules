@@ -13,7 +13,7 @@ library(Rlabkey)
 #str(labkey.data);
 #warnings();
 
-labkey.acceptSelfSignedCerts();
+labkey.setCurlOptions(ssl_verifypeer = FALSE, ssl_verifyhost = FALSE)
 
 
 if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){

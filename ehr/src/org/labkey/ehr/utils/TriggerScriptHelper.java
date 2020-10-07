@@ -367,8 +367,21 @@ public class TriggerScriptHelper
         if (protocol == null)
             return "This project is not associated with a valid protocol";
 
-        ProjectValidator validator = EHRService.get().getProjectValidator();
-        return validator != null ? validator.validateAssignment(id, projectId, date, _user, getContainer(), protocol) : null;
+        TableInfo ti = getTableInfo("study", "Assignment");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
+        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("project"), CompareType.EQUAL, projectId), new CompareType.CompareClause(FieldKey.fromString("project/protocol"), CompareType.EQUAL, protocol)));
+        filter.addClause(new SimpleFilter.OrClause(CompareType.DATE_GTE.createFilterClause(FieldKey.fromString("enddate"), date), new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)));
+        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
+        if (!ts.exists())
+        {
+            return "Not assigned to the protocol on this date";
+        }
+
+        return null;
     }
 
     public String getAccountForProject(int projectId)
