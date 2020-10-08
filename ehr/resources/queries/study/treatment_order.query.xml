@@ -60,7 +60,7 @@
                         <columnTitle>Frequency</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>treatment_frequency</fkTable>
+                            <fkTable>Treatment_Frequencies_Active</fkTable>
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
