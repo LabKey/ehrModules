@@ -552,15 +552,23 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             //transfer values
                             var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
                             var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
-                            if (serverVal != clientVal){
-                                changedData = true;
+
+                            // See if the server and client disagree on the values at this point
+                            var needToSetModel = serverVal !== clientVal;
+                            // The client may already match if its value happens to be set by getInitialValue() and
+                            // we're loading an existing record. If so, we still may need to push it into the raw part
+                            // of the record
+                            var needToSetRawModel = clientModel.raw && (needToSetModel || !clientModel.raw[clientFieldName]);
+
+                            if (needToSetModel){
+                                 changedData = true;
                                 clientModel.set(clientFieldName, serverVal);
-                                if (serverModel.raw && serverModel.raw[serverFieldName]){
-                                    clientModel.raw[clientFieldName] = clientModel.raw[clientFieldName] || {};
-                                    Ext4.apply(clientModel.raw[clientFieldName], serverModel.raw[serverFieldName]);
-                                    delete clientModel.raw[clientFieldName].url;
-                                }
                                 changedStoreIDs[clientStore.storeId] = true;
+                            }
+                            if (needToSetRawModel && serverModel.raw && serverModel.raw[serverFieldName]){
+                                clientModel.raw[clientFieldName] = clientModel.raw[clientFieldName] || {};
+                                Ext4.apply(clientModel.raw[clientFieldName], serverModel.raw[serverFieldName]);
+                                delete clientModel.raw[clientFieldName].url;
                             }
                         }
 
