@@ -542,31 +542,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EHRService.EndingOption... endOptions)
     {
-        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
-        {
-            return;
-        }
-
-        String name = "isActive";
-        if (ti.getColumn(name, false) == null)
-        {
-            SQLFragment sql = new SQLFragment("(CASE " +
-                    // when the start is in the future, using whole-day increments, it is not active
-                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                    // when enddate is null, it is active
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
-                    // if allowSameDay=true, then consider records that start/stop on today's date to be active
-                    (allowSameDay ? " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() : "") +
-                    // if enddate is in the future (whole-day increments), then it is active
-                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
-                    //(allowDateOfDeath ? " WHEN " + ExprColumn.STR_TABLE_ALIAS : "") +
-                    " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
-                    " END)");
-
-            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
-            col.setLabel("Is Active?");
-            ti.addColumn(col);
-        }
+        EHRService.get().addIsActiveCol(ti, includeExpired, endOptions);
     }
 
     //note: intended specially for treatment orders, but also used for housing.  note slightly unusual behavior around start date
@@ -648,7 +624,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         // been altered in the DB so that it doesn't match with the standard
         // "remark" property. See ONPRC ticket 33848 and EHRManager.ensureDatasetPropertyDescriptors()
         TableInfo realTable = StorageProvisioner.getSchemaTableInfo(domain);
-        ColumnInfo remarkCol = realTable.getColumn("remark");
+        MutableColumnInfo remarkCol = (MutableColumnInfo) realTable.getColumn("remark");
         remarkCol.setLocked(false);
         remarkCol.setScale(1000000);
         remarkCol.setLocked(true);
