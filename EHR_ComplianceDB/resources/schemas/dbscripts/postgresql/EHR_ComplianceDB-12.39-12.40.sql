@@ -1,1 +1,1 @@
-ALTER TABLE ehr_compliancedb.Employees ALTER COLUMN Notes TYPE NVARCHAR (4000);
+ALTER TABLE ehr_compliancedb.Employees ALTER COLUMN Notes TYPE VARCHAR (4000);
