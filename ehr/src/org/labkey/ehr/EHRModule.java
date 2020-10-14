@@ -256,7 +256,6 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "parentage", "End Selected Calls", true), "study", "parentage");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "parentage", "Import Data"), "study", "parentage");
 
-        EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "geneticAncestry", "End/Disable Selected", true), "study", "geneticAncestry");
         EHRService.get().registerMoreActionsButton(new ExcelImportButton(this, "study", "geneticAncestry", "Import Data"), "study", "geneticAncestry");
 
         EHRService.get().registerMoreActionsButton(new ProtocolEditButton(this, "ehr", "protocol"), "ehr", "protocol");
