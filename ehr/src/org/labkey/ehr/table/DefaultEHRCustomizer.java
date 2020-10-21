@@ -615,21 +615,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         customizeButtonBar(ti);
     }
 
-    private void expandRemarksColumn(final AbstractTableInfo ti)
-    {
-        Dataset dataset = ((DatasetTable) ti).getDataset();
-        Domain domain = dataset.getDomain();
-
-        // Hack the metadata for the length of the remark column, which has
-        // been altered in the DB so that it doesn't match with the standard
-        // "remark" property. See ONPRC ticket 33848 and EHRManager.ensureDatasetPropertyDescriptors()
-        TableInfo realTable = StorageProvisioner.getSchemaTableInfo(domain);
-        MutableColumnInfo remarkCol = (MutableColumnInfo) realTable.getColumn("remark");
-        remarkCol.setLocked(false);
-        remarkCol.setScale(1000000);
-        remarkCol.setLocked(true);
-    }
-
     private void customizeEncountersTable(final AbstractTableInfo ti)
     {
         appendEncountersCol(ti, "participants", "Participants", "encounter_participants_summary");
@@ -637,14 +622,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         appendEncountersCol(ti, "flags", "Flags", "encounter_flags_summary");
 
         appendSNOMEDCol(ti);
-
-        expandRemarksColumn(ti);
     }
 
     private void customizeGrossFindings(final AbstractTableInfo ti)
     {
         appendSNOMEDCol(ti);
-        expandRemarksColumn(ti);
     }
 
     private void customizeHistology(final AbstractTableInfo ti)
