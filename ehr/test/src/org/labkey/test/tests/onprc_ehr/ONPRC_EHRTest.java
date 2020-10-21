@@ -50,6 +50,7 @@ import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
+import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -106,14 +107,22 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         ONPRC_EHRTest initTest = (ONPRC_EHRTest)getCurrentTest();
 
         initTest.initProject();
+        SchemaHelper schemaHelper = new SchemaHelper(initTest);
+        schemaHelper.createLinkedSchema(initTest.getProjectName(), null, "onprc_billing_public", "/" + initTest.getContainerPath(), "onprc_billing_public", null, null, null);
+
         initTest.createTestSubjects();
         new RReportHelper(initTest).ensureRConfig();
 
-        initTest._containerHelper.enableModule("SLA");
     }
 
     @Override
     protected boolean doSetUserPasswords()
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean skipStudyImportQueryValidation()
     {
         return true;
     }
