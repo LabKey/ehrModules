@@ -90,6 +90,8 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
 
         }
 
+        var btn = this.down('#lockBtn');
+
         //If the screen is locked by some one: display the Locked details
         if (results.locked)  {
 
@@ -99,9 +101,11 @@ Ext4.define('EHR.panel.LockAnimalsPanel', {
                 style: 'padding-bottom: 10px;',
                 border: false
             });
+            btn.setText("Unlock Entry");
         }
         else {
             this.locked_person = null;
+            btn.setText("Lock Entry");
         }
 
         this.togglePanel(!!results.locked);
