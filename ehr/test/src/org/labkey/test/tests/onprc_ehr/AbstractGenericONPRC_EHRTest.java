@@ -15,6 +15,7 @@
  */
 package org.labkey.test.tests.onprc_ehr;
 
+import com.sun.jdi.connect.ListeningConnector;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
@@ -26,10 +27,13 @@ import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
+import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.SqlserverOnlyTest;
@@ -67,6 +71,8 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected static String[] CAGES = {"A1", "B2", "A3"};
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
+    public ListHelper _listHelper;
+
     @Override
     public String getModulePath()
     {
@@ -89,6 +95,20 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected EHRClientAPIHelper getApiHelper()
     {
         return new EHRClientAPIHelper(this, getContainerPath());
+    }
+
+    @Override
+    protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
+    {
+        log("Setting EHR Module Properties");
+        clickProject(getProjectName());
+        super._containerHelper.enableModule("ONPRC_Billing");
+        super._containerHelper.enableModule("ONPRC_BillingPublic");
+        super._containerHelper.enableModule("SLA");
+        super.setEHRModuleProperties(
+                new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath()),
+                new ModulePropertyValue("SLA", "/" + getProjectName(), "SLAContainer", "/" + getContainerPath())
+        );
     }
 
     @Override
@@ -124,6 +144,8 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     {
         super.initProject("ONPRC EHR");
 
+        createLabfeeNoChargeProjectsList();
+
         //this applies the standard property descriptors, creates indexes, etc.
         // NOTE: this currently will log an error from DatasetDefinition whenever we create a new column.  This really isnt a bug, so ignore
         checkErrors();
@@ -135,6 +157,17 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         resetErrors();
 
         cacheIds(Arrays.asList(MORE_ANIMAL_IDS));
+    }
+
+    private void createLabfeeNoChargeProjectsList()
+    {
+        _listHelper = new ListHelper(this);
+        ListHelper.ListColumn projectCol= new ListHelper.ListColumn("project", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn startDateCol= new ListHelper.ListColumn("startDate", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn dateDisabledCol= new ListHelper.ListColumn("dateDisabled", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn createdDbCol= new ListHelper.ListColumn("Createdb", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn notesCol= new ListHelper.ListColumn("Notes", ListHelper.ListColumnType.String);
+        _listHelper.createList(getProjectName(), "Labfee_NoChargeProjects", ListHelper.ListColumnType.Integer, "key", projectCol, startDateCol, dateDisabledCol, createdDbCol, notesCol);
     }
 
     protected void cacheIds(Collection<String> ids)

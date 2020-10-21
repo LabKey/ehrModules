@@ -108,6 +108,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         initTest.initProject();
         initTest.createTestSubjects();
         new RReportHelper(initTest).ensureRConfig();
+
+        initTest._containerHelper.enableModule("SLA");
     }
 
     @Override
