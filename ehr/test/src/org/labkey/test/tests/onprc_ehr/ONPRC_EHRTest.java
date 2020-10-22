@@ -86,6 +86,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
+    private int AvailableBloodVolume_rowId_starter = 100;
 
 
     @Override
@@ -141,9 +142,38 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "primeDataEntryCache"));
         waitAndClickAndWait(Locator.lkButton("OK"));
 
+        addAvailableBloodVolumeData(SUBJECTS[0], SUBJECTS[1], SUBJECTS[2]);
+
         testBloodDrawForAnimal(SUBJECTS[0]);
         testBloodDrawForAnimal(SUBJECTS[1]);
         testBloodDrawForAnimal(SUBJECTS[2]);
+    }
+
+    private void addAvailableBloodVolumeData(String animalId1, String animalId2, String animalId3) throws Exception
+    {
+        goToProjectHome();
+
+        goToSchemaBrowser();
+        viewQueryData("onprc_ehr", "AvailableBloodVolume");
+        DataRegionTable availableBloodVolumeTable = new DataRegionTable("query", this);
+
+        availableBloodVolumeTable.clickInsertNewRow();
+        setFormElement(Locator.name("quf_id"), animalId1);
+        setFormElement(Locator.name("quf_dsrowid"), String.valueOf(++AvailableBloodVolume_rowId_starter));
+        setFormElement(Locator.name("quf_ABV"), String.valueOf(5.5));
+        clickButton("Submit");
+
+        availableBloodVolumeTable.clickInsertNewRow();
+        setFormElement(Locator.name("quf_id"), animalId2);
+        setFormElement(Locator.name("quf_dsrowid"), String.valueOf(++AvailableBloodVolume_rowId_starter));
+        setFormElement(Locator.name("quf_ABV"), String.valueOf(6.5));
+        clickButton("Submit");
+
+        availableBloodVolumeTable.clickInsertNewRow();
+        setFormElement(Locator.name("quf_id"), animalId3);
+        setFormElement(Locator.name("quf_dsrowid"), String.valueOf(++AvailableBloodVolume_rowId_starter));
+        setFormElement(Locator.name("quf_ABV"), String.valueOf(7.5));
+        clickButton("Submit");
     }
 
     @Test
@@ -195,28 +225,28 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         startCal.add(Calendar.DATE, -15);
         startCal.add(Calendar.HOUR, 12);
         Object[][] bloodData = new Object[][]{
-                {animalId, prepareDate(startCal.getTime(), -1, 0), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 0, 0), 1.5, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 1, -4), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 1, 0), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 1, 4), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 2, 0), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 3, 1), 1.5, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 4, 0), 2.0, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 5, 4), 1.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 4, -2), 2.0, EHRQCState.COMPLETED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 5, 2), 1.0, EHRQCState.IN_PROGRESS.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, EHRQCState.IN_PROGRESS.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval - 1, 0), 1.5, EHRQCState.REQUEST_PENDING.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_PENDING.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), -1, 0), 1.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 0, 0), 1.5, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, -4), 2.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, 0), 2.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 1, 4), 2.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 2, 0), 1.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 3, 1), 1.5, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 4, 0), 2.0, 1, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 4), 1.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 4, -2), 2.0, 1, EHRQCState.COMPLETED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, 1, EHRQCState.REVIEW_REQUIRED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 2), 1.0, 1, EHRQCState.IN_PROGRESS.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), 5, 0), 1.0, 1, EHRQCState.IN_PROGRESS.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval - 1, 0), 1.5, 1, EHRQCState.REQUEST_PENDING.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval, 0), 2.0, 1, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + 1, 0), 2.0, 1, EHRQCState.REQUEST_PENDING.label, generateGUID()},
                 //add draw far in future
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval - 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
-                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval + 1, 0), 2.0, EHRQCState.REQUEST_APPROVED.label, generateGUID()}
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval - 1, 0), 2.0, 1, EHRQCState.REQUEST_APPROVED.label, generateGUID()},
+                {animalId, prepareDate(startCal.getTime(), bloodDrawInterval + bloodDrawInterval + 1, 0), 2.0, 1, EHRQCState.REQUEST_APPROVED.label, generateGUID()}
         };
 
-        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "QCStateLabel", "objectid"}, bloodData);
+        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "blood", "lsid", new String[]{"Id", "date", "quantity", "num_tubes", "QCStateLabel", "objectid"}, bloodData);
         getApiHelper().deleteAllRecords("study", "blood", new Filter("Id", animalId, Filter.Operator.EQUAL));
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
 
@@ -243,7 +273,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         for (Object[] row : bloodData)
         {
             Date d = DateUtils.truncate(row[1], Calendar.DATE);
-            String qcLabel = (String) row[3];
             Double vol = bloodByDay.containsKey(d) ? bloodByDay.get(d) : 0.0;
 
             //NOTE: we are including all QCStates
@@ -846,14 +875,21 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         String quarrantineFlagId = ensureFlagExists("Surveillance", "Quarantine", null);
         String nonRestrictedFlagId = ensureFlagExists("Condition", "Nonrestricted", null);
 
+        log("Get AcquistionType rowid");
+        SelectRowsCommand acquisitionTypeCmd = new SelectRowsCommand("ehr_lookups", "AcquistionType");
+        acquisitionTypeCmd.setColumns(Arrays.asList("rowid", "value"));
+        acquisitionTypeCmd.addFilter(new Filter("value", "Acquired"));
+        Map<String, Object> acquisitionTypeResult= acquisitionTypeCmd.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0);
+        Integer acqType = (Integer) acquisitionTypeResult.get("rowid");
+
         //insert into arrival
         log("Creating Ids");
         Date birth = new Date();
         Date arrivalDate = prepareDate(new Date(), -3, 0);
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), getApiHelper().prepareInsertCommand("study", "arrival", "lsid",
-                new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel"},
+                new String[]{"Id", "Date", "gender", "species", "geographic_origin", "birth", "initialRoom", "initialCage", "QCStateLabel", "acquisitionType"},
                 new Object[][]{
-                        {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, birth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label}
+                        {arrivalId1, arrivalDate, "f", RHESUS, INDIAN, birth, ROOMS[0], CAGES[0], EHRQCState.COMPLETED.label, acqType}
                 }
         ), getExtraContext());
 
