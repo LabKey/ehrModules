@@ -91,12 +91,6 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         return true;
     }
 
-    @Override
-    protected boolean skipStudyImportQueryValidation()
-    {
-        return true;
-    }
-
     @Test
     public void testBirthStatusApi() throws Exception
     {

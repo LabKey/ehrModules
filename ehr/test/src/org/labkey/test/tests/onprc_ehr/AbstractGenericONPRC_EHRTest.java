@@ -97,6 +97,13 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
         return new EHRClientAPIHelper(this, getContainerPath());
     }
 
+
+    @Override
+    protected boolean skipStudyImportQueryValidation()
+    {
+        return true;
+    }
+
     @Override
     protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
     {
