@@ -86,8 +86,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
     private boolean _hasCreatedBirthRecords = false;
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
-    private int AvailableBloodVolume_rowId_starter = 100;
-
 
     @Override
     protected String getProjectName()
@@ -118,12 +116,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
     @Override
     protected boolean doSetUserPasswords()
-    {
-        return true;
-    }
-
-    @Override
-    protected boolean skipStudyImportQueryValidation()
     {
         return true;
     }
@@ -373,7 +365,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
                 {null, projectName}
         }, Maps.of(
                 "name", Arrays.asList(
-                        "ERROR: There is already a project with the name: " + projectName
+                        "ERROR: There is already an old project with the name in ehr: " + projectName
                 )
         ));
     }

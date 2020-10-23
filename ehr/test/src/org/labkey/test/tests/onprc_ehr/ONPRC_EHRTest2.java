@@ -37,6 +37,7 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -77,11 +78,21 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         initTest.doCleanup(false);
 
         initTest.initProject();
+
+        SchemaHelper schemaHelper = new SchemaHelper(initTest);
+        schemaHelper.createLinkedSchema(initTest.getProjectName(), null, "onprc_billing_public", "/" + initTest.getContainerPath(), "onprc_billing_public", null, null, null);
+
         initTest.createTestSubjects();
     }
 
     @Override
     protected boolean doSetUserPasswords()
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean skipStudyImportQueryValidation()
     {
         return true;
     }
