@@ -32,10 +32,10 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
     },
 
     onRecordUpdate: function(record, modifiedFieldNames){
+        var store = EHR.DataEntryUtils.getLabworkServicesStore();
         if (record.get('servicerequested')){
             modifiedFieldNames = modifiedFieldNames || [];
 
-            var store = EHR.DataEntryUtils.getLabworkServicesStore();
             if (!store){
                 LDK.Utils.logToServer({
                     message: 'Unable to find lookup store in ClinpathRunsClientStore'
