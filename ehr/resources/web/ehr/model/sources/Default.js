@@ -2649,9 +2649,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'ehr_lookups.drug_defaults': {
-            editorConfig: {
-                xtype: 'ehr-snomedcombo',
-                defaultSubset: 'All'
+            code: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'All'
+                }
             },
             category: {
                 defaultValue: 'Standard'

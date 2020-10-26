@@ -1274,7 +1274,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         //iterate all notifications and run them.
         log("running all notifications");
-        List<String> skippedNotifications = Arrays.asList("ETL Validation Notification", "Billing Validation Notification"); //Skip "Billing Validation Notification" - this is broken on the server and not been run successfully by the client.
+        List<String> skippedNotifications = Arrays.asList("ETL Validation Notification", "Billing Validation Notification", "Pregnant NHPs Gestation Notification"); //Skip "Billing Validation Notification" - this is broken on the server and not been run successfully by the client.
 
         int count = Locator.tagContainingText("a", "Run Report In Browser").findElements(getDriver()).size();
         for (int i = 0; i < count; i++)
