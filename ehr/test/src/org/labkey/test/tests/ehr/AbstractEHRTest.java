@@ -36,10 +36,12 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
+import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
+import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
@@ -363,6 +365,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
         if(type.equals("CNPRC EHR") || type.equals("TNPRC EHR"))
             _setupHelper.loadEHRTableDefinitions();
+        if(type.equals("ONPRC EHR"))
+            onprcSetupBeforeStudyUpload(); //this needs to happen before import study() below so that 'Validation Queries' step doesn't fail since the queries depend on setup in this method.
+
         populateInitialData();
         importStudy();
         disableMiniProfiler();
@@ -371,6 +376,24 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         defineQCStates();
         populateHardTableRecords();
         primeCaches();
+    }
+
+    private void onprcSetupBeforeStudyUpload()
+    {
+        //create onprc_billing_public linked schema
+        beginAt(getProjectName());
+        SchemaHelper schemaHelper = new SchemaHelper(this);
+        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
+
+        //create Labfee_NoChargeProjects
+        beginAt(getProjectName());
+        ListHelper _listHelper = new ListHelper(this);
+        ListHelper.ListColumn projectCol= new ListHelper.ListColumn("project", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn startDateCol= new ListHelper.ListColumn("startDate", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn dateDisabledCol= new ListHelper.ListColumn("dateDisabled", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn createdDbCol= new ListHelper.ListColumn("Createdb", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn notesCol= new ListHelper.ListColumn("Notes", ListHelper.ListColumnType.String);
+        _listHelper.createList(getProjectName(), "Labfee_NoChargeProjects", ListHelper.ListColumnType.Integer, "key", projectCol, startDateCol, dateDisabledCol, createdDbCol, notesCol);
     }
 
     @LogMethod(quiet = true)

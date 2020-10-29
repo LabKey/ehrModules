@@ -78,10 +78,6 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         initTest.doCleanup(false);
 
         initTest.initProject();
-
-        SchemaHelper schemaHelper = new SchemaHelper(initTest);
-        schemaHelper.createLinkedSchema(initTest.getProjectName(), null, "onprc_billing_public", "/" + initTest.getContainerPath(), "onprc_billing_public", null, null, null);
-
         initTest.createTestSubjects();
     }
 

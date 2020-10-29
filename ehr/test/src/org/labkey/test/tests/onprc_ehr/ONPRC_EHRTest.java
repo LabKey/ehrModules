@@ -19,15 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
@@ -46,7 +43,6 @@ import org.labkey.test.pages.ehr.EnterDataPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
@@ -64,7 +60,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -75,7 +70,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -106,9 +100,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         ONPRC_EHRTest initTest = (ONPRC_EHRTest)getCurrentTest();
 
         initTest.initProject();
-        SchemaHelper schemaHelper = new SchemaHelper(initTest);
-        schemaHelper.createLinkedSchema(initTest.getProjectName(), null, "onprc_billing_public", "/" + initTest.getContainerPath(), "onprc_billing_public", null, null, null);
-
         initTest.createTestSubjects();
         new RReportHelper(initTest).ensureRConfig();
 
