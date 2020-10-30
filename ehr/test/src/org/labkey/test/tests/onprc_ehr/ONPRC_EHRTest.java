@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
@@ -57,6 +58,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -131,7 +133,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     private Pair<String, Integer> generateProtocolAndProject() throws Exception
     {
             //create project
-                    String protocolTitle = generateGUID();
+            String protocolTitle = generateGUID();
             InsertRowsCommand protocolCommand = new InsertRowsCommand("ehr", "protocol");
             protocolCommand.addRow(Maps.of("protocol", null, "title", protocolTitle));
             protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
@@ -1768,7 +1770,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
     }
 
     @Test
-    public void testNecropsyRequestFlow()
+    public void testNecropsyRequestFlow() throws IOException, CommandException
     {
         String animalId = "12345";
         LocalDateTime now = LocalDateTime.now();
@@ -1778,6 +1780,11 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         String procedureid = "Necropsy Grade 2: Standard";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String tissue = "AMNION (T-88300)";
+
+        // Insert a row so we can select a charge unit in the form
+        InsertRowsCommand protocolCommand = new InsertRowsCommand("onprc_billing", "chargeUnits");
+        protocolCommand.addRow(Maps.of("chargetype", "ChargeUnit1", "servicecenter", "ServiceCenter1", "shownInProcedures", true, "active", true));
+        protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         log("Begin the test with entry data page");
         EnterDataPage enterData = EnterDataPage.beginAt(this, getContainerPath());
@@ -1793,6 +1800,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         clickButton("Submit",0);
         _ext4Helper.selectComboBoxItem("Type:", Ext4Helper.TextMatchTechnique.CONTAINS,type);
         setNecropsYFormElement("chargetype", chargeType);
+        _ext4Helper.selectComboBoxItem("Charge Unit:", Ext4Helper.TextMatchTechnique.CONTAINS, "ChargeUnit1");
         _ext4Helper.selectComboBoxItem("Procedure:", Ext4Helper.TextMatchTechnique.CONTAINS, procedureid);
 
         LocalDateTime tomorrow = now.plus(1, ChronoUnit.DAYS);
