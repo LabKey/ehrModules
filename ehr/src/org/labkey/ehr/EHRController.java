@@ -1447,7 +1447,7 @@ public class EHRController extends SpringActionController
             }
 
             _title = _def.getLabel();
-
+            getPageConfig().setIncludePostParameters(true);
             return _def.createView();
         }
 

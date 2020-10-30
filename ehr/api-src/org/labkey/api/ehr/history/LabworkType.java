@@ -39,4 +39,9 @@ public interface LabworkType
     Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted);
 
     Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
+
+    default boolean showPerformedBy()
+    {
+        return true;
+    }
 }

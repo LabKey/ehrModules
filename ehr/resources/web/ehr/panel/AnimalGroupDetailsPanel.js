@@ -70,7 +70,7 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
                     value: this.groupRow.getDisplayValue('purpose')
                 },{
                     fieldLabel: 'Comments',
-                    value: this.groupRow.getDisplayValue('comments')
+                    value: this.groupRow.getDisplayValue('comment')
                 }]
             }]
         });

@@ -2637,7 +2637,9 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
-            <column columnName="datedisabled" />
+            <column columnName="datedisabled">
+                <columnTitle>Date Disabled</columnTitle>
+            </column>
         </columns>
     </table>
     <table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">

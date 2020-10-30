@@ -157,19 +157,6 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     }
 
     @Override
-    protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
-    {
-        clickProject(PROJECT_NAME);
-        super._containerHelper.enableModule("ONPRC_Billing");
-        super._containerHelper.enableModule("ONPRC_BillingPublic");
-        super._containerHelper.enableModule("SLA");
-        super.setEHRModuleProperties(
-                new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath()),
-                new ModulePropertyValue("SLA", "/" + getProjectName(), "SLAContainer", "/" + getContainerPath())
-        );
-    }
-
-    @Override
     protected void populateInitialData()
     {
         super.populateInitialData();

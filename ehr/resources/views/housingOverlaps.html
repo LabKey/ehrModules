@@ -200,7 +200,7 @@ Ext4.onReady(function(){
             if (!LABKEY.Utils.isEmptyObj(params))
                 config.parameters = params;
 
-            LDK.Utils.getReadOnlyQWP(config).render(this.qwpDiv.id);
+            LDK.Utils.getReadOnlyQWP(config);
         }
 
     }).render(webpart.wrapperDivId);

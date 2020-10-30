@@ -443,7 +443,6 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerHistoryDataSource(new DefaultArrivalDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentEndDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultBirthDataSource(module));
-        EHRService.get().registerHistoryDataSource(new DefaultClinicalRemarksDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDeathsDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDepartureDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDrugsDataSource(module));
@@ -456,7 +455,6 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(module));
         EHRService.get().registerLabworkType(new ChemistryLabworkType(module));
         EHRService.get().registerLabworkType(new HematologyLabworkType(module));
-        EHRService.get().registerLabworkType(new iStatLabworkType(module));
         EHRService.get().registerLabworkType(new MicrobiologyLabworkType(module));
         EHRService.get().registerLabworkType(new MiscTestsLabworkType(module));
         EHRService.get().registerLabworkType(new ParasitologyLabworkType(module));
@@ -680,6 +678,55 @@ public class EHRServiceImpl extends EHRService
         return EHRSecurityManager.get().testPermission(u, sr, perm, qcState);
     }
 
+    @Override
+    public void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EndingOption... endOptions)
+    {
+        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
+        {
+            return;
+        }
+
+        String name = "isActive";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE " +
+                    // when the start is in the future, using whole-day increments, it is not active
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    // when enddate is null, it is active
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE());
+            for (EHRService.EndingOption endOption : endOptions)
+            {
+                sql.append(endOption.getSql());
+            }
+            sql.append(
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                            " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                            " END)");
+
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
+            col.setLabel("Is Active?");
+            ti.addColumn(col);
+        }
+
+        if (includeExpired)
+        {
+            String expired = "isExpired";
+            if (ti.getColumn(expired) == null)
+            {
+                SQLFragment sql = new SQLFragment("(CASE " +
+                        // any record with a null or future enddate (considering time) is active
+                        " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                        " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate < {fn now()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                        " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                        " END)");
+
+                ExprColumn col = new ExprColumn(ti, expired, sql, JdbcType.BOOLEAN, ti.getColumn("enddate"));
+                col.setLabel("Is Expired?");
+                ti.addColumn(col);
+            }
+        }
+    }
+    
     @Override
     public void customizeDateColumn(AbstractTableInfo ti, String colName)
     {

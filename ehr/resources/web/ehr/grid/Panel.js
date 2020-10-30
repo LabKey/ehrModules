@@ -20,6 +20,19 @@ Ext4.define('EHR.grid.Panel', {
         this.configureColumns();
         this.sortColumns();
 
+        var dockedItems = [{
+            xtype: 'toolbar',
+            dock: 'top',
+            items: this.getTbarButtons()
+        }];
+        if (this.formConfig.topAndBottomButtons) {
+            dockedItems.push({
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: this.getTbarButtons()
+            })
+        }
+
         Ext4.apply(this, {
             cls: 'ldk-grid',
             clicksToEdit: 1,
@@ -29,11 +42,7 @@ Ext4.define('EHR.grid.Panel', {
             defaults: {
                 border: false
             },
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                items: this.getTbarButtons()
-            }]
+            dockedItems: dockedItems
         });
 
         if (this.allowDragDropReorder) {

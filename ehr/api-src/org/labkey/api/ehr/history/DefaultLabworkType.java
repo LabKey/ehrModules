@@ -230,6 +230,10 @@ public class DefaultLabworkType implements LabworkType
         StringBuilder sb = new StringBuilder();
         String testId = getTestId(rs);
         Double result = _resultField == null ?  null : rs.getDouble(FieldKey.fromString(_resultField));
+        if (rs.wasNull())
+        {
+            result = null;
+        }
         String units = _unitsField == null ?  null : rs.getString(FieldKey.fromString(_unitsField));
         String qualResult = _qualResultField == null ?  null : rs.getString(FieldKey.fromString(_qualResultField));
 

@@ -162,8 +162,11 @@ Ext4.onReady(function(){
                 return;
             }
 
+            // By Kollil, 3/22/2018 : In 17.2 the filter is not working. Removed the the line 168 and added the filterArray at line 169.
+            // The Animal group search is working fine now after this change.
             if (groupName)
-                config.removeableFilters = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
+                //config.removeableFilters = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
+                config.filterArray = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
 
             var params = {
                 StartDate: start,
@@ -172,7 +175,8 @@ Ext4.onReady(function(){
 
             config.parameters = params;
 
-            LDK.Utils.getReadOnlyQWP(config).render(this.qwpDiv.id);
+            LDK.Utils.getReadOnlyQWP(config);
+
         }
 
     });

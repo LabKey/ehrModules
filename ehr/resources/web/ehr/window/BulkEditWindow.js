@@ -30,7 +30,7 @@ Ext4.define('EHR.window.BulkEditWindow', {
                 beforerender: function(win){
                     var cols = win.down('#formPanel').items.get(0).items.getCount();
                     if (cols > 1){
-                        win.setWidth(cols * (EHR.form.Panel.defaultFieldWidth + 20));
+                        win.setWidth(cols * (EHR.form.Panel.defaultFieldWidth + 30));
                     }
                 }
             }

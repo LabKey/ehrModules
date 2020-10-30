@@ -27,6 +27,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * User: bimber
  * Date: 1/17/13
  * Time: 7:42 PM
+*  3/31/2017 jonesga removed ProjectEDit Permissions /// approved by j Eckels 3/30/2017
  */
 public class EHRProtocolManagementRole extends AbstractEHRRole
 {
@@ -38,7 +39,7 @@ public class EHRProtocolManagementRole extends AbstractEHRRole
             UpdatePermission.class,
             DeletePermission.class,
             EHRDataEntryPermission.class,
-            EHRProjectEditPermission.class,
+
             EHRProtocolEditPermission.class
         );
     }

@@ -13,10 +13,10 @@ library(Rlabkey)
 #str(labkey.data);
 #warnings();
 
-labkey.acceptSelfSignedCerts();
+labkey.setCurlOptions(ssl_verifypeer = FALSE, ssl_verifyhost = FALSE)
 
 
-if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
+if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.data$sire))) {
     png(filename="${imgout:myscatterplot}", width = 650, height = 150);
     plot(0, 0, type='n', xaxt='n', yaxt='n', bty='n', ann=FALSE  )
     title(main = "No pedigree data found for selected animal(s).", sub = NULL, xlab = NULL, ylab = NULL,
@@ -200,8 +200,8 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
         if (length(damIndex) == 0) damIndex <- which(allPed$Id == ped$Dam[i]);
         if (length(sireIndex) == 0) sireIndex <- which(allPed$Id == ped$Sire[i]);
 
-        if((is.na(ped$Sire[i]))& (!is.na(ped$Dam[i]))){
-            xt <- sample (1:30,1)
+        if(is.na(ped$Sire[i])){
+            xt <- sample (1:99,1)
             #typeof(ped$Sire);
             #typeof(xt);
             ped$Sire[i] <- paste('xxs',xt)
@@ -209,8 +209,8 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
             #print(ped$Dam[i])
             #print(ped$Sire[i])
         }
-        if((is.na(ped$Dam[i]))& (!is.na(ped$Sire[i]))){
-                xt <- sample (1:30,1)
+        if(is.na(ped$Dam[i])){
+                xt <- sample (1:99,1)
                 #typeof(ped$Sire);
                 #typeof(xt);
                 ped$Dam[i] <- paste ('xxd',xt);

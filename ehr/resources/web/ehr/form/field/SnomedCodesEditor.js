@@ -174,7 +174,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
             items: [{
                 xtype: 'button',
                 style: 'margin-right: 5px;',
-                width: 20,
+                width: 28,
                 testLocator: 'snomedUpArrow',
                 icon: LABKEY.ActionURL.getContextPath() + '/_images/uparrow.gif',
                 //text: 'Up',
@@ -195,7 +195,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
             },{
                 xtype: 'button',
                 style: 'margin-right: 5px;',
-                width: 20,
+                width: 28,
                 testLocator: 'snomedDownArrow',
                 icon: LABKEY.ActionURL.getContextPath() + '/_images/downarrow.gif',
                 handler: function(btn){
@@ -215,7 +215,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
             },{
                 xtype: 'button',
                 style: 'margin-right: 5px;',
-                width: 20,
+                width: 28,
                 testLocator: 'snomedDelete',
                 icon: LABKEY.ActionURL.getContextPath() + '/_images/delete.gif',
                 handler: function(btn){

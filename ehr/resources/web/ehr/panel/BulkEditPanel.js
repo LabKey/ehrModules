@@ -38,6 +38,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
             formConfig: this.formConfig,
             store: this.getStoreCopy(),
             textareaFieldWidth: EHR.form.Panel.defaultFieldWidth,
+            maxFieldWidth: EHR.form.Panel.defaultFieldWidth,
             bindConfig: {
                 createRecordOnLoad: true
             }

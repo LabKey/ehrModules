@@ -32,19 +32,10 @@ Ext4.define('EHR.data.ClinpathRunsClientStore', {
     },
 
     onRecordUpdate: function(record, modifiedFieldNames){
+        var store = EHR.DataEntryUtils.getLabworkServicesStore();
         if (record.get('servicerequested')){
             modifiedFieldNames = modifiedFieldNames || [];
 
-            var storeId = LABKEY.ext4.Util.getLookupStoreId({
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'labwork_services',
-                    keyColumn: 'servicename',
-                    displayColumn: 'servicename'
-                }
-            });
-
-            var store = Ext4.StoreMgr.get(storeId);
             if (!store){
                 LDK.Utils.logToServer({
                     message: 'Unable to find lookup store in ClinpathRunsClientStore'

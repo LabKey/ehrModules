@@ -86,6 +86,15 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                         defaultValue: animalId,
                         editable: false
                     },
+                    //Added: 7-10-2019  R.Blasa
+                    frequency: {
+                        allowBlank: false,
+                        lookup: {
+                            sort: 'sort_order',
+                            filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
+                            columns: '*'
+                        }
+                    },
                     category: {
                         defaultValue: category
                     }

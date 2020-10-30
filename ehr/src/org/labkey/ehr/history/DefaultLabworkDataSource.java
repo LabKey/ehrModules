@@ -63,14 +63,15 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
-        if (!redacted)
+        if (!redacted && LabworkManager.get().showPerformedBy(c, rs.hasColumn(FieldKey.fromString("type")) ? rs.getString("type") : null))
+        {
             sb.append(safeAppend(rs, "Performed By", "performedby"));
+            //Modified 10-13-2017 Blasa
+            sb.append(safeAppend(rs, "Testing Performed by", "createdby/DisplayName"));
+        }
 
-        //sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Service/Panel", "servicerequested"));
 
-        //Modified 9-9-2015 Blasa
-        sb.append(safeAppend(rs, "Testing Performed by", "chargetype"));
 
         sb.append(safeAppend(rs, "Sample Type", "sampletype"));
 
@@ -109,9 +110,8 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        //return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "remark");
-            //Modified 9-9-2015  Added chargetype
-        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "chargetype","remark");
+        //Modified: 5-17-2017  R.Blasa
+        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "tissue/meaning", "tissue", "collectionmethod", "method", "servicerequested", "createdby/DisplayName","remark");
     }
 
     @Override
