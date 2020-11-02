@@ -73,6 +73,7 @@ import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
+import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -849,5 +850,54 @@ public class EHRServiceImpl extends EHRService
         }
 
         return false;
+    }
+
+    @Override
+    public void appendSNOMEDCols(AbstractTableInfo ti, String displayColumnName, String title, @Nullable String codeFilter)
+    {
+        var existing = ti.getMutableColumn(displayColumnName);
+        if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
+        {
+            //display version of the column
+            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
+            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
+            SQLFragment displaySQL = new SQLFragment("(SELECT ");
+            displaySQL.append(groupConcatSQL);
+            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) ");
+            displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            if (codeFilter != null)
+            {
+                displaySQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            displaySQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            displaySQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "' \n");
+            displaySQL.append(" GROUP BY t.recordid)");
+
+            ExprColumn displayCol = new ExprColumn(ti, displayColumnName, displaySQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            displayCol.setLabel(title);
+            displayCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            displayCol.setDisplayColumnFactory(SNOMEDCodesDisplayColumn::new);
+            displayCol.setDisplayWidth("250");
+            ti.addColumn(displayCol);
+
+            //programmatic version
+            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence());
+            rawSQL.append("FROM ehr.snomed_tags t ");
+            rawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            rawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            if (codeFilter != null)
+            {
+                rawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            rawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            rawSQL.append("GROUP BY t.recordid)");
+
+            ExprColumn rawCol = new ExprColumn(ti, displayColumnName + "Raw", rawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            rawCol.setLabel(title + " raw values");
+            rawCol.setHidden(true);
+            rawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            rawCol.setDisplayWidth("250");
+            ti.addColumn(rawCol);
+        }
     }
 }

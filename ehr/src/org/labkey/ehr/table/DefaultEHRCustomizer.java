@@ -41,7 +41,6 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.exp.api.StorageProvisioner;
-import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -81,7 +80,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -727,51 +725,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void appendSNOMEDCol(AbstractTableInfo ti)
     {
-        String name = "codes";
-        var existing = ti.getMutableColumn(name);
-        if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
-        {
-            //display version of the column
-            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
-            SQLFragment sql = new SQLFragment("(SELECT ");
-            sql.append(groupConcatSQL);
-            sql.append(
-                " FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
-                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
-                " GROUP BY t.recordid " +
-                " )");
-
-            ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("objectid"));
-            newCol.setLabel("SNOMED Codes");
-            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            newCol.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new SNOMEDCodesDisplayColumn(colInfo);
-                }
-            });
-            newCol.setDisplayWidth("250");
-            ti.addColumn(newCol);
-
-
-            //programmatic version
-            String name2 = "codesRaw";
-            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence() +
-                    "FROM ehr.snomed_tags t " +
-                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
-                    " GROUP BY t.recordid " +
-                    " )");
-
-            ExprColumn newCol2 = new ExprColumn(ti, name2, sql2, JdbcType.VARCHAR, ti.getColumn("objectid"));
-            newCol2.setLabel("SNOMED Codes");
-            newCol2.setHidden(true);
-            newCol2.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            newCol2.setDisplayWidth("250");
-            ti.addColumn(newCol2);
-        }
+        EHRService.get().appendSNOMEDCols(ti, "codes", "SNOMED Codes", null);
     }
 
     private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName)
