@@ -234,7 +234,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
         var type = this.down('#type').getValue().type;
         if (type == 'createNew'){
             return {
-                date: this.down('#date').getValue(),
+                duedate: this.down('#date').getValue(),
                 assignedTo: this.down('#assignedTo').getValue(),
                 title: this.down('#titleField').getValue(),
                 category: 'task',

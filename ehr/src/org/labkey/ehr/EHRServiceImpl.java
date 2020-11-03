@@ -74,6 +74,7 @@ import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
+import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -444,7 +445,6 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerHistoryDataSource(new DefaultArrivalDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultAssignmentEndDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultBirthDataSource(module));
-        EHRService.get().registerHistoryDataSource(new DefaultClinicalRemarksDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDeathsDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDepartureDataSource(module));
         EHRService.get().registerHistoryDataSource(new DefaultDrugsDataSource(module));
@@ -457,7 +457,6 @@ public class EHRServiceImpl extends EHRService
         EHRService.get().registerLabworkType(new AntibioticSensitivityLabworkType(module));
         EHRService.get().registerLabworkType(new ChemistryLabworkType(module));
         EHRService.get().registerLabworkType(new HematologyLabworkType(module));
-        EHRService.get().registerLabworkType(new iStatLabworkType(module));
         EHRService.get().registerLabworkType(new MicrobiologyLabworkType(module));
         EHRService.get().registerLabworkType(new MiscTestsLabworkType(module));
         EHRService.get().registerLabworkType(new ParasitologyLabworkType(module));
@@ -682,6 +681,55 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EndingOption... endOptions)
+    {
+        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
+        {
+            return;
+        }
+
+        String name = "isActive";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE " +
+                    // when the start is in the future, using whole-day increments, it is not active
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    // when enddate is null, it is active
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE());
+            for (EHRService.EndingOption endOption : endOptions)
+            {
+                sql.append(endOption.getSql());
+            }
+            sql.append(
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                            " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                            " END)");
+
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
+            col.setLabel("Is Active?");
+            ti.addColumn(col);
+        }
+
+        if (includeExpired)
+        {
+            String expired = "isExpired";
+            if (ti.getColumn(expired) == null)
+            {
+                SQLFragment sql = new SQLFragment("(CASE " +
+                        // any record with a null or future enddate (considering time) is active
+                        " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                        " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate < {fn now()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                        " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                        " END)");
+
+                ExprColumn col = new ExprColumn(ti, expired, sql, JdbcType.BOOLEAN, ti.getColumn("enddate"));
+                col.setLabel("Is Expired?");
+                ti.addColumn(col);
+            }
+        }
+    }
+    
+    @Override
     public void customizeDateColumn(AbstractTableInfo ti, String colName)
     {
         ColumnInfo dateCol = ti.getColumn(colName);
@@ -803,5 +851,54 @@ public class EHRServiceImpl extends EHRService
         }
 
         return false;
+    }
+
+    @Override
+    public void appendSNOMEDCols(AbstractTableInfo ti, String displayColumnName, String title, @Nullable String codeFilter)
+    {
+        var existing = ti.getMutableColumn(displayColumnName);
+        if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
+        {
+            //display version of the column
+            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
+            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
+            SQLFragment displaySQL = new SQLFragment("(SELECT ");
+            displaySQL.append(groupConcatSQL);
+            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) ");
+            displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            if (codeFilter != null)
+            {
+                displaySQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            displaySQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            displaySQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "' \n");
+            displaySQL.append(" GROUP BY t.recordid)");
+
+            ExprColumn displayCol = new ExprColumn(ti, displayColumnName, displaySQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            displayCol.setLabel(title);
+            displayCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            displayCol.setDisplayColumnFactory(SNOMEDCodesDisplayColumn::new);
+            displayCol.setDisplayWidth("250");
+            ti.addColumn(displayCol);
+
+            //programmatic version
+            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence());
+            rawSQL.append("FROM ehr.snomed_tags t ");
+            rawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            rawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            if (codeFilter != null)
+            {
+                rawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            rawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            rawSQL.append("GROUP BY t.recordid)");
+
+            ExprColumn rawCol = new ExprColumn(ti, displayColumnName + "Raw", rawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            rawCol.setLabel(title + " raw values");
+            rawCol.setHidden(true);
+            rawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            rawCol.setDisplayWidth("250");
+            ti.addColumn(rawCol);
+        }
     }
 }

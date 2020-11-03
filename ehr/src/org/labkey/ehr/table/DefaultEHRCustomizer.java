@@ -81,7 +81,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -455,7 +454,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
             if (matches(ti, "study", "Treatment Orders"))
             {
-                addIsActiveColWithTime(ti);
+                addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
             }
         }
         else if (matches(ti, "study", "Clinical Encounters") || matches(ti, "study", "Encounters"))
@@ -480,7 +479,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "housing"))
         {
-            addIsActiveColWithTime(ti);
+            addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
         }
         else if (matches(ti, "study", "blood") || matches(ti, "study", "Blood Draws"))
         {
@@ -504,15 +503,19 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
         else if (matches(ti, "study", "flags") || matches(ti, "study", "Animal Record Flags"))
         {
-            addIsActiveCol(ti, false);
+            addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight);
         }
         else if (matches(ti, "study", "diet"))
         {
             addIsActiveCol(ti);
         }
-        else if (matches(ti, "study", "parentage"))
+        else if (matches(ti, "study", "geneticAncestry"))
         {
             addIsActiveCol(ti, false);
+        }
+        else if (matches(ti, "study", "parentage"))
+        {
+            addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight);
         }
         else if (matches(ti, "study", "demographics"))
         {
@@ -532,41 +535,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void addIsActiveCol(AbstractTableInfo ti)
     {
-        addIsActiveCol(ti, true);
+        addIsActiveCol(ti, false, EHRService.EndingOption.activeAfterMidnightTonight, EHRService.EndingOption.allowSameDay);
     }
 
-    private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay)
+
+    private void addIsActiveCol(AbstractTableInfo ti, boolean includeExpired, EHRService.EndingOption... endOptions)
     {
-        addIsActiveCol(ti, allowSameDay, false);
-    }
-
-    private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
-    {
-        if (ti.getColumn("date") == null || ti.getColumn("enddate") == null)
-        {
-            return;
-        }
-
-        String name = "isActive";
-        if (ti.getColumn(name, false) == null)
-        {
-            SQLFragment sql = new SQLFragment("(CASE " +
-                    // when the start is in the future, using whole-day increments, it is not active
-                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                    // when enddate is null, it is active
-                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
-                    // if allowSameDay=true, then consider records that start/stop on today's date to be active
-                    (allowSameDay ? " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() : "") +
-                    // if enddate is in the future (whole-day increments), then it is active
-                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
-                    //(allowDateOfDeath ? " WHEN " + ExprColumn.STR_TABLE_ALIAS : "") +
-                    " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
-                    " END)");
-
-            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
-            col.setLabel("Is Active?");
-            ti.addColumn(col);
-        }
+        EHRService.get().addIsActiveCol(ti, includeExpired, endOptions);
     }
 
     //note: intended specially for treatment orders, but also used for housing.  note slightly unusual behavior around start date
@@ -751,51 +726,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void appendSNOMEDCol(AbstractTableInfo ti)
     {
-        String name = "codes";
-        var existing = ti.getMutableColumn(name);
-        if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
-        {
-            //display version of the column
-            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
-            SQLFragment sql = new SQLFragment("(SELECT ");
-            sql.append(groupConcatSQL);
-            sql.append(
-                " FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
-                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
-                " GROUP BY t.recordid " +
-                " )");
-
-            ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("objectid"));
-            newCol.setLabel("SNOMED Codes");
-            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            newCol.setDisplayColumnFactory(new DisplayColumnFactory()
-            {
-                @Override
-                public DisplayColumn createRenderer(ColumnInfo colInfo)
-                {
-                    return new SNOMEDCodesDisplayColumn(colInfo);
-                }
-            });
-            newCol.setDisplayWidth("250");
-            ti.addColumn(newCol);
-
-
-            //programmatic version
-            String name2 = "codesRaw";
-            SQLFragment sql2 = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence() +
-                    "FROM ehr.snomed_tags t " +
-                    " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND t.container = '" + ti.getUserSchema().getContainer().getId() + "' " +
-                    " GROUP BY t.recordid " +
-                    " )");
-
-            ExprColumn newCol2 = new ExprColumn(ti, name2, sql2, JdbcType.VARCHAR, ti.getColumn("objectid"));
-            newCol2.setLabel("SNOMED Codes");
-            newCol2.setHidden(true);
-            newCol2.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
-            newCol2.setDisplayWidth("250");
-            ti.addColumn(newCol2);
-        }
+        EHRService.get().appendSNOMEDCols(ti, "codes", "SNOMED Codes", null);
     }
 
     private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName)
@@ -1301,7 +1232,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     {
         doSharedCustomization(ti);
         addUnitColumns(ti);
-        addIsActiveColWithTime(ti);
+        addIsActiveCol(ti, true, EHRService.EndingOption.endingBeforeNow);
     }
 
     private void customizeTasks(AbstractTableInfo ti)
@@ -1780,6 +1711,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "  ROUND(CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 12, 1)\n" +
                     "END AS float) as AgeAtTime,\n" +
                     "\n" +
+
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
@@ -1800,6 +1732,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "  floor(age(d.birth, CAST(c." + dateColName + " as DATE)))\n" +
                     "END AS float) as AgeAtTimeYearsRounded,\n" +
                     "\n" +
+                    //Added 'Age at time Days' by kollil on 02/15/2019
+                    "CAST(\n" +
+                    "CASE\n" +
+                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
+                    "  THEN null\n" +
+                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
+                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, d.lastDayAtCenter), INTEGER)\n" +
+                    "ELSE\n" +
+                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
+                    "END AS float) as AgeAtTimeDays,\n" +
+                    "\n" +
+                    //
                     "CAST(\n" +
                     "CASE\n" +
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +

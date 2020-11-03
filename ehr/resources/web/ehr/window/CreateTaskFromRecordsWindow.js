@@ -346,7 +346,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
         EHR.Utils.createTask({
             initialQCState: 'Scheduled',
             existingRecords: existingRecords,
-            taskRecord: {date: date, assignedTo: assignedTo, category: 'task', title: title, formType: this.formType},
+            taskRecord: {duedate: date, assignedTo: assignedTo, category: 'task', title: title, formType: this.formType},
             scope: this,
             success: this.createTaskSuccess,
             failure: LDK.Utils.getErrorCallback()

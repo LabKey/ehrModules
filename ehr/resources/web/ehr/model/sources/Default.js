@@ -655,6 +655,24 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 columnConfig: {
                     width: 160
                 }
+            },
+            QCState: {
+                getInitialValue: function(v){
+                    var qc;
+                    if (!v && EHR.Security.getQCStateByLabel('Completed'))
+                        qc = EHR.Security.getQCStateByLabel('Completed').RowId;
+                    return v || qc;
+                }
+            }
+        },
+        'study.geneticAncestry': {
+            QCState: {
+                getInitialValue: function(v){
+                    var qc;
+                    if (!v && EHR.Security.getQCStateByLabel('Completed'))
+                        qc = EHR.Security.getQCStateByLabel('Completed').RowId;
+                    return v || qc;
+                }
             }
         },
         'study.Demographics': {
@@ -2631,9 +2649,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'ehr_lookups.drug_defaults': {
-            editorConfig: {
-                xtype: 'ehr-snomedcombo',
-                defaultSubset: 'All'
+            code: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'All'
+                }
             },
             category: {
                 defaultValue: 'Standard'

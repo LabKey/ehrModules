@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.CompletionDates ADD COLUMN FileName varchar(500);

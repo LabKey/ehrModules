@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.history;
 
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.security.User;
@@ -109,5 +110,17 @@ public class LabworkManager
 
             map.put(runId, existing);
         }
+    }
+
+    public boolean showPerformedBy(Container c, @Nullable String type)
+    {
+        for (LabworkType labworkType : _types)
+        {
+            if (labworkType.isEnabled(c) && labworkType.getName().equalsIgnoreCase(type))
+            {
+                return labworkType.showPerformedBy();
+            }
+        }
+        return true;
     }
 }

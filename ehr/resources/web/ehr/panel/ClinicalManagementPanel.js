@@ -270,7 +270,8 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
             menu.floating = true;
 
             var owner = Ext4.create('Ext.panel.Panel', {
-                border: false
+                border: false,
+                width: 0
             });
             owner.render(el);
             menu.setFloatParent(owner);

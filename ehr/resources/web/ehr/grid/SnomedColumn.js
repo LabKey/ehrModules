@@ -24,6 +24,11 @@ Ext4.define('EHR.grid.column.SnomedColumn', {
 
     defaultRenderer: function(value, meta, record, rowIdx, colIdx, store, view){
         if (this.snomedStore && value){
+            if (this.snomedStore.getCount() == 0)
+            {
+                // refresh when the store is loaded and we can show the meanings of the codes
+                this.snomedStore.addListener('load', function() { view.refresh(); });
+            }
             var display = [];
             value = value.split(';');
             var rec, recIdx;

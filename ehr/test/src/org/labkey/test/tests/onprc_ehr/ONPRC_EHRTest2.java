@@ -37,6 +37,7 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -500,7 +501,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     {
         _helper.goToTaskForm("Arrival", "Submit Final", false);
 
-        waitAndClick(Ext4Helper.Locators.ext4Button("Lock Entry"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Enable the form for data entry"));
 
         waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();
@@ -534,6 +535,13 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         Ext4ComboRef sourceField = _ext4Helper.queryOne("window field[fieldLabel=Source]", Ext4ComboRef.class);
         sourceField.waitForStoreLoad();
         sourceField.setComboByDisplayValue(source);
+
+        String acquisitionType = "Acquired";
+        _helper.toggleBulkEditField("Acquisition Type");
+
+        Ext4ComboRef acquisitionTypeField = _ext4Helper.queryOne("window field[fieldLabel='Acquisition Type']", Ext4ComboRef.class);
+        acquisitionTypeField.waitForStoreLoad();
+        acquisitionTypeField.setComboByDisplayValue(acquisitionType);
 
         String gender = "female";
         _helper.toggleBulkEditField("Gender");
@@ -572,12 +580,16 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         waitAndClick(_helper.getDataEntryButton("Submit Final"));
         waitForElement(Ext4Helper.Locators.window("Finalize Birth/Arrival Form"));
-        waitAndClick(WAIT_FOR_JAVASCRIPT, Ext4Helper.Locators.window("Finalize Birth/Arrival Form").append(Ext4Helper.Locators.ext4Button("Yes")), WAIT_FOR_PAGE * 2);
+        Locator finalizeOKButton = Ext4Helper.Locators.window("Finalize Birth/Arrival Form").append(Ext4Helper.Locators.ext4Button("Yes"));
+        waitForElement(finalizeOKButton, WAIT_FOR_JAVASCRIPT);
+        click(finalizeOKButton);
+
+        waitAndClick(WAIT_FOR_JAVASCRIPT * 2, Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4Button("No")), WAIT_FOR_PAGE);
 
         waitForElement(Locator.tagWithText("a", "Enter New Data"));
 
         _helper.goToTaskForm("Arrival", "Submit Final", false);
-        waitAndClick(Ext4Helper.Locators.ext4Button("Lock Entry"));
+        waitAndClick(Ext4Helper.Locators.ext4Button("Enable the form for data entry"));
 
         waitForElement(Ext4Helper.Locators.ext4Button("Submit Final"), WAIT_FOR_PAGE * 2);
         _ext4Helper.queryOne("button[text='Submit Final']", Ext4CmpRef.class).waitForEnabled();

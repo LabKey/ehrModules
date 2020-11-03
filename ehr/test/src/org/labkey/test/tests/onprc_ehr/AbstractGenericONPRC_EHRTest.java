@@ -26,6 +26,7 @@ import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
+import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
@@ -89,6 +90,22 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected EHRClientAPIHelper getApiHelper()
     {
         return new EHRClientAPIHelper(this, getContainerPath());
+    }
+
+    @Override
+    protected void setEHRModuleProperties(ModulePropertyValue... extraProps)
+    {
+        log("Setting EHR Module Properties");
+        clickProject(getProjectName());
+        super._containerHelper.enableModule("ONPRC_Billing");
+        super._containerHelper.enableModule("ONPRC_BillingPublic");
+        super._containerHelper.enableModule("SLA");
+        super.setEHRModuleProperties(
+                new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath()),
+                new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer_Public", "/" + getContainerPath()),
+                new ModulePropertyValue("SLA", "/" + getProjectName(), "SLAContainer", "/" + getContainerPath()),
+                new ModulePropertyValue("ONPRC_EHR", "/" + getProjectName(), "DCM_NHP_Resources_Container", "/" + getContainerPath())
+        );
     }
 
     @Override

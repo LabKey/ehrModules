@@ -22,6 +22,7 @@
         <column name="comment"/>
         <column name="trainer"/>
         <column name="employeeid/enddate"/>
+        <column name="FileName"/>
     </columns>
     <sorts>
         <sort column="employeeid/lastName" descending="false"/>
