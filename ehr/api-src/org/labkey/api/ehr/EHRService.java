@@ -272,6 +272,9 @@ abstract public class EHRService
 
     abstract public void customizeDateColumn(AbstractTableInfo ti, String colName);
 
+    /** Adds both a display-oriented column with a custom DisplayColumnFactory and an API-oriented "raw" column to the table */
+   abstract public void appendSNOMEDCols(AbstractTableInfo ti, String displayColumnName, String title, @Nullable String codeFilter);
+
     /**
      * @return the customizer that merges the core EHR table customizer with any center-specific customizers that have also been registered via registerTableCustomizer()
      */
