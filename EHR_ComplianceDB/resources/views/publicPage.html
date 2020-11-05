@@ -19,7 +19,13 @@
                 xtype: 'ldk-linkbutton',
                 text: '<li>View Employee List</li>',
                 href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'EmployeeData', 'query.queryName': 'Employees'})
-            },{
+            },
+//                {
+//                xtype: 'ldk-linkbutton',
+//                text: '<li>View Respirator Protection Quarantine Report</li>',
+//                href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'EmployeeData', 'query.queryName': 'RespiratorProtectionQuarantine'})
+//            },
+                {
                 xtype: 'ldk-linkbutton',
                 text: '<li>View Private Section (authorized users only)</li>',
                 href: LABKEY.ActionURL.buildURL('project', 'start', container),

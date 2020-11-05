@@ -93,18 +93,15 @@
             </column>
             <column columnName="lastName">
                 <columnTitle>Last Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="firstName">
                 <nullable>true</nullable>
                 <columnTitle>First Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="middleName">
                 <columnTitle>Middle Name</columnTitle>
-                <displayWidth>100</displayWidth>
                 <facetingBehavior>ALWAYS_OFF</facetingBehavior>
             </column>
             <column columnName="email">
@@ -201,10 +198,12 @@
             <column columnName="startdate">
                 <nullable>true</nullable>
                 <columnTitle>Start Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="enddate">
                 <nullable>true</nullable>
                 <columnTitle>End Date</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="notes">
                 <nullable>true</nullable>
@@ -511,6 +510,7 @@
             <column columnName="date">
                 <nullable>false</nullable>
                 <columnTitle>Date Completed</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="result">
                 <nullable>true</nullable>
@@ -528,6 +528,10 @@
             <column columnName="comment">
                 <nullable>true</nullable>
                 <columnTitle>Comment</columnTitle>
+            </column>
+            <column columnName="FileName">
+                <columnTitle>FileName</columnTitle>
+                <isHidden>false</isHidden>
             </column>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>
@@ -709,6 +713,7 @@
             <column columnName="date">
                 <nullable>true</nullable>
                 <columnTitle>Date Completed</columnTitle>
+                <formatString>Date</formatString>
             </column>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>

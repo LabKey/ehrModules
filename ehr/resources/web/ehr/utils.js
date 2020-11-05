@@ -529,8 +529,8 @@ EHR.Utils = new function(){
                 }
 
                 //append non-removeable filters
-                if (LABKEY.DataRegions[dataRegionName].getBaseFilters().length){
-                    var array = LABKEY.DataRegions[dataRegionName].getBaseFilters();
+                if (LABKEY.DataRegions[dataRegionName].filters && LABKEY.DataRegions[dataRegionName].filters){
+                    var array = LABKEY.DataRegions[dataRegionName].filters;
                     for (var i=0;i<array.length;i++){
                         var filter = array[i];
                         params[filter.getURLParameterName()] = filter.getURLParameterValue();
