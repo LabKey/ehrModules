@@ -67,7 +67,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
         {
             sb.append(safeAppend(rs, "Performed By", "performedby"));
             //Modified 10-13-2017 Blasa
-            sb.append(safeAppend(rs, "Testing Performed by", "createdby/DisplayName"));
+//            sb.append(safeAppend(rs, "Testing Performed by", "createdby/DisplayName"));
         }
 
         sb.append(safeAppend(rs, "Service/Panel", "servicerequested"));
