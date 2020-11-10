@@ -39,6 +39,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.DateUtil;
 import org.labkey.api.util.Formats;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -358,11 +359,13 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     protected String safeAppend(Results rs, String label, String field, String suffix) throws SQLException
     {
         FieldKey fk = FieldKey.fromString(field);
+        String result = "";
         if (rs.hasColumn(fk) && rs.getObject(fk) != null)
         {
-            return (label == null ? "" : label + ": ") + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
+            result = (label == null ? "" : label + ": ") + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
         }
-        return "";
+
+        return PageFlowUtil.filter(result);
     }
 
     protected void addDateField(Container c, Results rs, StringBuilder sb, String columnName, String displayLabel) throws SQLException
