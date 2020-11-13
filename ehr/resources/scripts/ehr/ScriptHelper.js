@@ -559,7 +559,6 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         },
 
         setCenterCustomProps: function(opts){
-            console.log("opts", opts);
             this.getJavaHelper().setCenterCustomProps(opts);
         },
 
