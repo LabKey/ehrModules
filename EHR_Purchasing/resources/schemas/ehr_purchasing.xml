@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables xmlns="http://labkey.org/data/xml">
+    <table tableName="vendor" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Vendor</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl/>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="vendorName"/>
+            <column columnName="city"/>
+            <column columnName="state"/>
+            <column columnName="country"/>
+            <column columnName="zip"/>
+            <column columnName="phoneNumber"/>
+            <column columnName="email"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="shippingInfo" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Shipping Info</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="unit"/>
+            <column columnName="unitDescription"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="units" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Units</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="unit"/>
+            <column columnName="unitDescription"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="userAccountAssociations" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Units</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="userId"/>
+            <column columnName="account"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="lineItemStatus" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Line Item Status</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="status"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="lineItems" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Line Items</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="requestId"/>
+            <column columnName="item"/>
+            <column columnName="unitCost"/>
+            <column columnName="itemStatus"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="purchasingRequests" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Purchasing Requests</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowId"/>
+            <column columnName="requestId"/>
+            <column columnName="vendorId"/>
+            <column columnName="account"/>
+            <column columnName="controlSubstance"/>
+            <column columnName="shippingInfoId"/>
+            <column columnName="justification"/>
+            <column columnName="comments"/>
+            <column columnName="qcStatus"/>
+            <column columnName="LSID"/>
+            <column columnName="container"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+</tables>
