@@ -117,7 +117,7 @@ CREATE TABLE ehr_purchasing.lineItemStatus
     modifiedBy USERID,
     modified   timestamp,
 
-    CONSTRAINT PK_EHR_PURCHASING_LINE_ITEMS PRIMARY KEY (rowId),
+    CONSTRAINT PK_EHR_PURCHASING_LINE_ITEM_STATUS PRIMARY KEY (rowId),
     CONSTRAINT FK_EHR_PURCHASING_LINE_ITEM_STATUS FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
@@ -139,11 +139,11 @@ CREATE TABLE ehr_purchasing.lineItems
     modifiedBy USERID,
     modified   timestamp,
 
-    CONSTRAINT PK_EHR_PURCHASING_ITEMS PRIMARY KEY (rowId),
-    CONSTRAINT FK_EHR_PURCHASING_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_EHR_PURCHASING_LINE_ITEMS PRIMARY KEY (rowId),
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
-CREATE INDEX EHR_PURCHASING_ITEMS_CONTAINER_INDEX ON ehr_purchasing.items (Container);
+CREATE INDEX EHR_PURCHASING_ITEMS_CONTAINER_INDEX ON ehr_purchasing.lineItems (Container);
 
 -- one row per request. connected to lineItems via requestId
 CREATE TABLE ehr_purchasing.purchasingRequests

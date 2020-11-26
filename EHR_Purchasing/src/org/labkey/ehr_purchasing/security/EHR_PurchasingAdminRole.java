@@ -26,7 +26,7 @@ public class EHR_PurchasingAdminRole extends AbstractModuleScopedRole
 {
     public EHR_PurchasingAdminRole()
     {
-        super("EHR Purchasing Admin", "This role is required in order approve purchasing requests.",
+        super("Purchasing Admin", "This role is required in order approve purchasing requests.",
             EHR_PurchasingModule.class,
             ReadPermission.class,
             InsertPermission.class,

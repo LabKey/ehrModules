@@ -20,15 +20,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.module.Module;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.query.DefaultSchema;
+import org.labkey.api.query.QuerySchema;
+import org.labkey.api.exp.property.PropertyService;
+import org.labkey.api.module.SpringModule;
+import org.labkey.api.query.DefaultSchema;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QuerySchema;
+import org.labkey.api.security.User;
+import org.labkey.api.security.UserManager;
+import org.labkey.api.security.roles.RoleManager;
+import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.writer.ContainerUser;
+import org.labkey.api.ehr_purchasing.EHR_PurchasingDomainKind;
+import org.labkey.ehr_purchasing.security.EHR_PurchasingAdminRole;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class EHR_PurchasingModule extends DefaultModule
+public class EHR_PurchasingModule extends SpringModule
 {
     public static final String NAME = "EHR_Purchasing";
 
@@ -41,7 +56,7 @@ public class EHR_PurchasingModule extends DefaultModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 20.000;
+        return 20.001;
     }
 
     @Override
@@ -60,14 +75,25 @@ public class EHR_PurchasingModule extends DefaultModule
     @Override
     protected void init()
     {
-        addController(EHR_PurchasingController.NAME, EHR_PurchasingController.class);
+        addController(org.labkey.ehr_purchasing.EHR_PurchasingController.NAME, EHR_PurchasingController.class);
+        PropertyService.get().registerDomainKind(new EHR_PurchasingDomainKind());
+        RoleManager.registerRole(new EHR_PurchasingAdminRole());
     }
 
     @Override
-    public void doStartup(ModuleContext moduleContext)
+    protected void startupAfterSpringConfig(ModuleContext moduleContext)
     {
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHR_PurchasingContainerListener());
+
+        DefaultSchema.registerProvider(EHR_PurchasingSchema.NAME, new DefaultSchema.SchemaProvider(this)
+        {
+            @Override
+            public QuerySchema createSchema(final DefaultSchema schema, Module module)
+            {
+                return new EHR_PurchasingUserSchema(EHR_PurchasingSchema.NAME, schema.getUser(), schema.getContainer());
+            }
+        });
     }
 
     @Override
