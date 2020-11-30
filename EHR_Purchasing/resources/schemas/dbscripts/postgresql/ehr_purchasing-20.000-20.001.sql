@@ -129,6 +129,7 @@ CREATE TABLE ehr_purchasing.lineItems
     rowId      serial,
     requestId  entityid,
     item       varchar(500),
+    controlSubstance boolean default false,
     unitCost   double precision,
     itemStatus int,
 
@@ -152,7 +153,6 @@ CREATE TABLE ehr_purchasing.purchasingRequests
     requestId        entityid,
     vendorId         int,
     account          varchar(200),
-    controlSubstance boolean default false,
     shippingInfoId   int,
     justification    varchar(1000),
     comments         varchar(1000),
