@@ -89,8 +89,8 @@ CREATE INDEX IDX_EHR_PURCHASING_ITEM_UNITS_CONTAINER ON ehr_purchasing.itemUnits
 -- users associated with ehr_billing.aliases account
 CREATE TABLE ehr_purchasing.userAccountAssociations
 (
-    userId     varchar(20),
-    account    varchar(200),
+    userId     int NOT NULL,
+    account    varchar(200) NOT NULL,
 
     LSID       LSIDtype,
     container  ENTITYID NOT NULL,
