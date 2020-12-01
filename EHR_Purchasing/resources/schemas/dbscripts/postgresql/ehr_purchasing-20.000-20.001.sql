@@ -70,7 +70,7 @@ CREATE INDEX IDX_EHR_PURCHASING_SHIPPINGINFO_CONTAINER ON ehr_purchasing.shippin
 CREATE TABLE ehr_purchasing.itemUnits
 (
     rowId           serial,
-    itemUnit            varchar(20),
+    itemUnit        varchar(20),
     unitDescription varchar(200),
 
     LSID            LSIDtype,
@@ -89,16 +89,18 @@ CREATE INDEX IDX_EHR_PURCHASING_ITEM_UNITS_CONTAINER ON ehr_purchasing.itemUnits
 -- users associated with ehr_billing.aliases account
 CREATE TABLE ehr_purchasing.userAccountAssociations
 (
-    userId     int NOT NULL,
+    rowId      serial,
+    userId     int          NOT NULL,
     account    varchar(200) NOT NULL,
 
     LSID       LSIDtype,
-    container  ENTITYID NOT NULL,
+    container  ENTITYID     NOT NULL,
     createdBy  USERID,
     created    timestamp,
     modifiedBy USERID,
     modified   timestamp,
 
+    CONSTRAINT PK_EHR_PURCHASING_USER_ACCT_ASSOCIATIONS PRIMARY KEY (rowId),
     CONSTRAINT UQ_EHR_PURCHASING_USER_ACCT_ASSOCIATIONS UNIQUE (userId, account),
     CONSTRAINT FK_EHR_PURCHASING_USER_ACCT_ASSOCIATIONS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
@@ -126,21 +128,21 @@ CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEM_STATUS_CONTAINER ON ehr_purchasing.lin
 
 CREATE TABLE ehr_purchasing.purchasingRequests
 (
-    rowId            serial,
-    requestId        entityid,
-    vendorId         int,
-    account          varchar(200),
-    shippingInfoId   int,
-    justification    varchar,
-    comments         varchar,
-    qcStatus         int,
+    rowId          serial,
+    requestId      entityid,
+    vendorId       int,
+    account        varchar(200),
+    shippingInfoId int,
+    justification  varchar,
+    comments       varchar,
+    qcStatus       int,
 
-    LSID             LSIDtype,
-    container        ENTITYID NOT NULL,
-    createdBy        USERID,
-    created          timestamp,
-    modifiedBy       USERID,
-    modified         timestamp,
+    LSID           LSIDtype,
+    container      ENTITYID NOT NULL,
+    createdBy      USERID,
+    created        timestamp,
+    modifiedBy     USERID,
+    modified       timestamp,
 
     CONSTRAINT PK_EHR_PURCHASING_REQUESTS PRIMARY KEY (rowId),
     CONSTRAINT FK_EHR_PURCHASING_REQUESTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
@@ -152,27 +154,27 @@ CREATE INDEX IDX_EHR_PURCHASING_REQUESTS_CONTAINER ON ehr_purchasing.purchasingR
 -- multiple line items per request. connected to purchasingRequests via requestId
 CREATE TABLE ehr_purchasing.lineItems
 (
-    rowId      serial,
-    requestId  entityid,
-    item       varchar(500),
-    itemUnitId   int,
+    rowId            serial,
+    requestId        entityid,
+    item             varchar(500),
+    itemUnitId       int,
     controlSubstance boolean default false,
-    unitCost   double precision,
-    itemStatusId int,
+    unitCost         double precision,
+    itemStatusId     int,
 
-    LSID       LSIDtype,
-    container  ENTITYID NOT NULL,
-    createdBy  USERID,
-    created    timestamp,
-    modifiedBy USERID,
-    modified   timestamp,
+    LSID             LSIDtype,
+    container        ENTITYID NOT NULL,
+    createdBy        USERID,
+    created          timestamp,
+    modifiedBy       USERID,
+    modified         timestamp,
 
     CONSTRAINT PK_EHR_PURCHASING_LINE_ITEMS PRIMARY KEY (rowId),
     CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
 
-    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_REQUEST_ID FOREIGN KEY (requestId) REFERENCES ehr_purchasing.purchasingRequests(requestId),
-    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMUNIT_ID FOREIGN KEY (itemUnitId) REFERENCES ehr_purchasing.itemUnits(rowId),
-    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMSTATUS_ID FOREIGN KEY (itemStatusId) REFERENCES ehr_purchasing.lineItemStatus(rowId)
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_REQUEST_ID FOREIGN KEY (requestId) REFERENCES ehr_purchasing.purchasingRequests (requestId),
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMUNIT_ID FOREIGN KEY (itemUnitId) REFERENCES ehr_purchasing.itemUnits (rowId),
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMSTATUS_ID FOREIGN KEY (itemStatusId) REFERENCES ehr_purchasing.lineItemStatus (rowId)
 );
 
 CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEMS_CONTAINER ON ehr_purchasing.lineItems (Container);
