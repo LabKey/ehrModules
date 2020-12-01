@@ -131,8 +131,8 @@ CREATE TABLE ehr_purchasing.purchasingRequests
     vendorId         int,
     account          varchar(200),
     shippingInfoId   int,
-    justification    varchar(1000),
-    comments         varchar(1000),
+    justification    varchar,
+    comments         varchar,
     qcStatus         int,
 
     LSID             LSIDtype,
@@ -169,8 +169,13 @@ CREATE TABLE ehr_purchasing.lineItems
 
     CONSTRAINT PK_EHR_PURCHASING_LINE_ITEMS PRIMARY KEY (rowId),
     CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
-    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_REQUEST_ID FOREIGN KEY (requestId) REFERENCES ehr_purchasing.purchasingRequests(requestId)
+
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_REQUEST_ID FOREIGN KEY (requestId) REFERENCES ehr_purchasing.purchasingRequests(requestId),
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMUNIT_ID FOREIGN KEY (itemUnitId) REFERENCES ehr_purchasing.itemUnits(rowId),
+    CONSTRAINT FK_EHR_PURCHASING_LINE_ITEMS_ITEMSTATUS_ID FOREIGN KEY (itemStatusId) REFERENCES ehr_purchasing.lineItemStatus(rowId)
 );
 
 CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEMS_CONTAINER ON ehr_purchasing.lineItems (Container);
 CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEMS_REQUEST_ID ON ehr_purchasing.lineItems (requestId);
+CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEMS_ITEMUNIT_ID ON ehr_purchasing.lineItems (itemUnitId);
+CREATE INDEX IDX_EHR_PURCHASING_LINE_ITEMS_ITEMSTATUS_ID ON ehr_purchasing.lineItems (itemStatusId);

@@ -9,8 +9,6 @@
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>itemUnits</fkTable>
-                            <fkColumnName>rowId</fkColumnName>
-                            <fkDisplayColumnName>itemUnit</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="itemStatusId">
@@ -18,8 +16,6 @@
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>lineItemStatus</fkTable>
-                            <fkColumnName>rowId</fkColumnName>
-                            <fkDisplayColumnName>status</fkDisplayColumnName>
                         </fk>
                     </column>
                 </columns>

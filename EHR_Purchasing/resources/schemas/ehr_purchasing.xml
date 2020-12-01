@@ -2,6 +2,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="vendor" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Vendor</tableTitle>
+        <titleColumn>vendorName</titleColumn>
         <auditLogging>DETAILED</auditLogging>
         <insertUrl/>
         <columns>
@@ -43,6 +44,7 @@
     </table>
     <table tableName="itemUnits" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Item Units</tableTitle>
+        <titleColumn>itemUnit</titleColumn>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
@@ -72,6 +74,7 @@
     </table>
     <table tableName="lineItemStatus" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>Line Item Status</tableTitle>
+        <titleColumn>status</titleColumn>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>

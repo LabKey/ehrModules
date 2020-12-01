@@ -9,8 +9,6 @@
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>vendor</fkTable>
-                            <fkColumnName>rowId</fkColumnName>
-                            <fkDisplayColumnName>vendorName</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="account">
@@ -24,7 +22,6 @@
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>shippingInfo</fkTable>
-                            <fkColumnName>rowId</fkColumnName>
                         </fk>
                     </column>
                 </columns>

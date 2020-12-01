@@ -46,32 +46,25 @@ public class EHR_PurchasingContainerListener implements ContainerListener
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
             TableInfo vendorTable = EHR_PurchasingSchema.getInstance().getVendorTable();
-            if (vendorTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(vendorTable, containerFilter);
+            Table.delete(vendorTable, containerFilter);
 
             TableInfo shippingInfoTable = EHR_PurchasingSchema.getInstance().getShippingInfoTable();
-            if (shippingInfoTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(shippingInfoTable, containerFilter);
+            Table.delete(shippingInfoTable, containerFilter);
 
             TableInfo unitsTable = EHR_PurchasingSchema.getInstance().getItemUnitsTable();
-            if (unitsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(unitsTable, containerFilter);
+            Table.delete(unitsTable, containerFilter);
 
             TableInfo userAccountAssociationsTable = EHR_PurchasingSchema.getInstance().getUserAccountAssociationsTable();
-            if (userAccountAssociationsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(userAccountAssociationsTable, containerFilter);
+            Table.delete(userAccountAssociationsTable, containerFilter);
 
             TableInfo lineItemStatusTable = EHR_PurchasingSchema.getInstance().getLineItemStatusTable();
-            if (lineItemStatusTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(lineItemStatusTable, containerFilter);
+            Table.delete(lineItemStatusTable, containerFilter);
 
             TableInfo lineItemsTable = EHR_PurchasingSchema.getInstance().getLineItemsTable();
-            if (lineItemsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(lineItemsTable, containerFilter);
+            Table.delete(lineItemsTable, containerFilter);
 
             TableInfo purchasingRequestsTable = EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable();
-            if (purchasingRequestsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(purchasingRequestsTable, containerFilter);
+            Table.delete(purchasingRequestsTable, containerFilter);
 
             transaction.commit();
         }
