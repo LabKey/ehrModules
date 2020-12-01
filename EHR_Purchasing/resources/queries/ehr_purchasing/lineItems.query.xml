@@ -1,0 +1,29 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="lineItems" tableDbType="TABLE" useColumnOrder="true">
+                <tableTitle>Line Items</tableTitle>
+                <columns>
+                    <column columnName="itemUnitId">
+                        <columnTitle>Item Unit</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_purchasing</fkDbSchema>
+                            <fkTable>itemUnits</fkTable>
+                            <fkColumnName>rowId</fkColumnName>
+                            <fkDisplayColumnName>itemUnit</fkDisplayColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="itemStatusId">
+                        <columnTitle>Item Status</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_purchasing</fkDbSchema>
+                            <fkTable>lineItemStatus</fkTable>
+                            <fkColumnName>rowId</fkColumnName>
+                            <fkDisplayColumnName>status</fkDisplayColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

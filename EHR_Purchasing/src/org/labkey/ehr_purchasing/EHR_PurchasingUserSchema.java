@@ -66,7 +66,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             {
                 SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getUnitsTable(), cf).init();
+                                schema, EHR_PurchasingSchema.getInstance().getItemUnitsTable(), cf).init();
                 return table;
             }
         },

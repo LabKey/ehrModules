@@ -26,8 +26,13 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="unit"/>
-            <column columnName="unitDescription"/>
+            <column columnName="attentionTo"/>
+            <column columnName="city"/>
+            <column columnName="state"/>
+            <column columnName="country"/>
+            <column columnName="zip"/>
+            <column columnName="phoneNumber"/>
+            <column columnName="email"/>
             <column columnName="LSID"/>
             <column columnName="container"/>
             <column columnName="createdBy"/>
@@ -36,12 +41,12 @@
             <column columnName="modified"/>
         </columns>
     </table>
-    <table tableName="units" tableDbType="TABLE" useColumnOrder="true">
-        <tableTitle>Units</tableTitle>
+    <table tableName="itemUnits" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Item Units</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="unit"/>
+            <column columnName="itemUnit"/>
             <column columnName="unitDescription"/>
             <column columnName="LSID"/>
             <column columnName="container"/>
@@ -52,7 +57,7 @@
         </columns>
     </table>
     <table tableName="userAccountAssociations" tableDbType="TABLE" useColumnOrder="true">
-        <tableTitle>Units</tableTitle>
+        <tableTitle>User Account Associations</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="userId"/>
@@ -86,8 +91,10 @@
             <column columnName="rowId"/>
             <column columnName="requestId"/>
             <column columnName="item"/>
+            <column columnName="itemUnitId"/>
+            <column columnName="controlSubstance"/>
             <column columnName="unitCost"/>
-            <column columnName="itemStatus"/>
+            <column columnName="itemStatusId"/>
             <column columnName="LSID"/>
             <column columnName="container"/>
             <column columnName="createdBy"/>
@@ -104,7 +111,6 @@
             <column columnName="requestId"/>
             <column columnName="vendorId"/>
             <column columnName="account"/>
-            <column columnName="controlSubstance"/>
             <column columnName="shippingInfoId"/>
             <column columnName="justification"/>
             <column columnName="comments"/>

@@ -53,7 +53,7 @@ public class EHR_PurchasingContainerListener implements ContainerListener
             if (shippingInfoTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(shippingInfoTable, containerFilter);
 
-            TableInfo unitsTable = EHR_PurchasingSchema.getInstance().getUnitsTable();
+            TableInfo unitsTable = EHR_PurchasingSchema.getInstance().getItemUnitsTable();
             if (unitsTable.getTableType() == DatabaseTableType.TABLE)
                 Table.delete(unitsTable, containerFilter);
 

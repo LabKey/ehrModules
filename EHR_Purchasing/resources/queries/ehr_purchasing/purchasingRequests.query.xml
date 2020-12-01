@@ -1,0 +1,34 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="purchasingRequests" tableDbType="TABLE" useColumnOrder="true">
+                <tableTitle>Purchasing Requests</tableTitle>
+                <columns>
+                    <column columnName="vendorId">
+                        <columnTitle>Vendor</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_purchasing</fkDbSchema>
+                            <fkTable>vendor</fkTable>
+                            <fkColumnName>rowId</fkColumnName>
+                            <fkDisplayColumnName>vendorName</fkDisplayColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="account">
+                        <fk>
+                            <fkDbSchema>ehr_billing</fkDbSchema>
+                            <fkTable>aliases</fkTable>
+                            <fkColumnName>alias</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="shippingInfoId">
+                        <fk>
+                            <fkDbSchema>ehr_purchasing</fkDbSchema>
+                            <fkTable>shippingInfo</fkTable>
+                            <fkColumnName>rowId</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

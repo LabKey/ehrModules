@@ -30,7 +30,7 @@ public class EHR_PurchasingSchema
     //ehr_purchasing tables
     public static final String VENDOR_TABLE = "vendor";
     public static final String SHIPPINGINFO_TABLE = "shippingInfo";
-    public static final String UNITS_TABLE = "units";
+    public static final String ITEM_UNITS_TABLE = "itemUnits";
     public static final String USER_ACCOUNT_ASSOCIATIONS_TABLE = "userAccountAssociations";
     public static final String LINE_ITEM_STATUS_TABLE = "lineItemStatus";
     public static final String LINE_ITEMS_TABLE = "lineItems";
@@ -69,9 +69,9 @@ public class EHR_PurchasingSchema
         return getSchema().getTable(SHIPPINGINFO_TABLE);
     }
 
-    public TableInfo getUnitsTable()
+    public TableInfo getItemUnitsTable()
     {
-        return getSchema().getTable(UNITS_TABLE);
+        return getSchema().getTable(ITEM_UNITS_TABLE);
     }
 
     public TableInfo getUserAccountAssociationsTable()
