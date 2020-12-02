@@ -62,6 +62,7 @@
         <tableTitle>User Account Associations</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
+            <column columnName="rowId"/>
             <column columnName="userId"/>
             <column columnName="account"/>
             <column columnName="LSID"/>
