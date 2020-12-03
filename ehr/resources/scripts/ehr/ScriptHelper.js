@@ -558,6 +558,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return cachedValues['housing'];
         },
 
+        setCenterCustomProps: function(opts){
+            this.getJavaHelper().setCenterCustomProps(opts);
+        },
+
         /**
          * When an animal dies or leaves the center, this will close any open records (ie. the death/depart time inserted into the enddate field) for any records in assignment, housing, problem list and treatment orders.
          * @param participant The Id of the participant
