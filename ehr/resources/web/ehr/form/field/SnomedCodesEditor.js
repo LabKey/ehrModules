@@ -38,6 +38,10 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
             var rec, recIdx;
             Ext4.Array.forEach(value, function(code){
                 recIdx = this.snomedStore.findExact('code', code);
+                if (recIdx === -1 && code && code.indexOf('<>') !== -1) {
+                    code = code.substring(code.indexOf('<>') + 2);
+                    recIdx = this.snomedStore.findExact('code', code);
+                }
                 rec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
 
                 if (rec && rec.get('meaning')){
@@ -51,7 +55,7 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
             return display.join('<br>');
         }
 
-        return '';
+        return '<em style="cursor:pointer;">No SNOMED codes entered - click to edit</em>';
     }
 });
 
