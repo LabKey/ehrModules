@@ -125,6 +125,16 @@ public class TriggerScriptHelper
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
     private Map<Integer, String> _cachedAccounts = new HashMap<>();
+    /**
+     *  Options that can be set in modules using EHR trigger scripts to opt in/out of or alter the behavior
+     *  of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
+     *  are problematic for a center, creating additional properties to modify or skip core behaviors is sometimes a good option.
+     *
+     *  Supported keys or options by the map,
+     *  <li>departureStatus - center specific custom status for animal departures</li>
+     */
+    @NotNull
+    private static Map<String, String> _centerCustomProps = new HashMap<>();
 
     private static final Logger _log = LogManager.getLogger(TriggerScriptHelper.class);
 
@@ -165,6 +175,11 @@ public class TriggerScriptHelper
         TriggerScriptHelper helper = new TriggerScriptHelper(userId, containerId);
 
         return helper;
+    }
+
+    public void setCenterCustomProps(@NotNull Map<String, String> centerCustomProps)
+    {
+        _centerCustomProps.putAll(centerCustomProps);
     }
 
     public String closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
@@ -1596,6 +1611,7 @@ public class TriggerScriptHelper
             deadBirthFilter.addCondition(FieldKey.fromString("birth_condition"), null, CompareType.NONBLANK);
             boolean hasBirthConditionCol = birthTable.getColumnNameSet().contains("birth_condition");
             boolean hasArrivalAcquiTypeCol = arrivalTable.getColumnNameSet().contains("acquisitionType");
+            boolean hasCustomDepartureStatus = _centerCustomProps.containsKey("departureStatus");
             Date lastDeadBirth = hasBirthConditionCol ? findMostRecentDate(id, getMostRecentDate(id, birthTable, deadBirthFilter), null) : null;
             Date lastLiveBirth = findMostRecentDate(id, getMostRecentDate(id, birthTable, (hasBirthConditionCol ? new SimpleFilter(FieldKey.fromString("birth_condition/alive"), false, CompareType.NEQ_OR_NULL) : null)), liveBirths);
 
@@ -1632,6 +1648,10 @@ public class TriggerScriptHelper
                 if (lastArrival != null && lastArrival.after(lastDeparture))
                 {
                     status = "Alive";
+                }
+                else if (hasCustomDepartureStatus)
+                {
+                    status = _centerCustomProps.get("departureStatus");
                 }
                 else
                 {
