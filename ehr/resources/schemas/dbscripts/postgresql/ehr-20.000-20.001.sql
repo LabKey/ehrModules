@@ -77,7 +77,7 @@ BEGIN
     IF NOT EXISTS (
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name='supplemental_pedigree' and table_schema='ehr' and column_name='spcies'
+            WHERE table_name='supplemental_pedigree' and table_schema='ehr' and column_name='species'
         )
     THEN
         ALTER TABLE ehr.supplemental_pedigree ADD species VARCHAR(4000);
