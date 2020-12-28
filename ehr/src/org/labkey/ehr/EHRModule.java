@@ -108,7 +108,6 @@ import org.labkey.ehr.security.EHRTemplateCreatorRole;
 import org.labkey.ehr.security.EHRVeterinarianRole;
 
 import javax.servlet.ServletContext;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -132,7 +131,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 20.001;
+        return 21.000;
     }
 
     @Override
@@ -320,7 +319,7 @@ public class EHRModule extends ExtendedSimpleModule
     @NotNull
     public Collection<String> getSchemaNames()
     {
-        return Arrays.asList(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
+        return List.of(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
     }
 
     @Override
