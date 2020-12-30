@@ -761,6 +761,19 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
+    if (row && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
+        var newCodes = [];
+        for (var i = 0; i < helper.getSNOMEDSubsetCodeFieldNames().length; i++) {
+            var fieldName =  helper.getSNOMEDSubsetCodeFieldNames()[i];
+            if (row[fieldName]) {
+                newCodes.push(row[fieldName]);
+            }
+            row.codesRaw = newCodes.join(';');
+            console.log('new codes: ' + row.codesRaw);
+        }
+    }
+
+
     //update SNOMED tags if necessary.  note: this must occur prior to actual insert, since LK strips out properties that do not match actual fields
     if (!helper.isETL() && helper.getSNOMEDCodeFieldName() && !helper.isValidateOnly()){
         if (row && oldRow && row.codesRaw === oldRow.codesRaw){
