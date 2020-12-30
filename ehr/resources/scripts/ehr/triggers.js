@@ -769,7 +769,6 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
                 newCodes.push(row[fieldName]);
             }
             row.codesRaw = newCodes.join(';');
-            console.log('new codes: ' + row.codesRaw);
         }
     }
 
