@@ -77,7 +77,7 @@ Ext4.define('EHR.grid.column.SnomedColumn', {
     handler: function(view, rowIndex, colIndex, item, e, rec) {
         Ext4.create('EHR.window.SnomedCodeWindow', {
             defaultSubset: this.defaultSubset,
-            boundColumn: this.boundColumn,
+            boundColumn: this.boundColumn ? this.boundColumn : 'codesRaw',
             boundRec: rec
         }).show();
     }
