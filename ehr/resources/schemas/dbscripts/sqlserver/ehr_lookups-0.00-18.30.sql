@@ -10541,3 +10541,9 @@ ALTER TABLE ehr_lookups.cage_type DROP CONSTRAINT PK_cage_type;
 ALTER TABLE ehr_lookups.cage_type ADD CONSTRAINT PK_cage_type PRIMARY KEY (RowId);
 ALTER TABLE ehr_lookups.cage_type ADD CONSTRAINT UQ_cage_type UNIQUE (Container,CageType);
 GO
+
+/* ehr_lookups-18.20-18.30.sql */
+
+-- add LSID column to tables to allow them to be extensible
+ALTER TABLE ehr_lookups.species_codes ADD lsid LsidType;
+GO
