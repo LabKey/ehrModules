@@ -3,10 +3,16 @@ ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN requestId SET NOT NULL;
 ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN item SET NOT NULL;
 ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN itemUnitId SET NOT NULL;
 ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN unitCost SET NOT NULL;
+ALTER TABLE ehr_purchasing.lineItems DROP controlSubstance;
+ALTER TABLE ehr_purchasing.lineItems ADD controlledSubstance boolean default false;
 
+ALTER TABLE ehr_purchasing.purchasingRequests DROP COLUMN qcStatus;
+ALTER TABLE ehr_purchasing.purchasingRequests ADD COLUMN qcState int;
+ALTER TABLE ehr_purchasing.purchasingRequests DROP COLUMN account;
+ALTER TABLE ehr_purchasing.purchasingRequests ADD account int;
 ALTER TABLE ehr_purchasing.purchasingRequests ADD assignedTo USERID NOT NULL;
 ALTER TABLE ehr_purchasing.purchasingRequests ADD confirmation varchar;
-ALTER TABLE ehr_purchasing.purchasingRequests ADD shippingAttentionTo varchar;  --this is different per request
+ALTER TABLE ehr_purchasing.purchasingRequests ADD shippingAttentionTo varchar;  --this value is different per request
 
 ALTER TABLE ehr_purchasing.shippingInfo DROP attentionTo; --this changes per request, so dropping from shippingInfo table and is now added to purchasingRequest table above
 ALTER TABLE ehr_purchasing.shippingInfo ADD shippingAlias varchar;
@@ -17,6 +23,7 @@ ALTER TABLE ehr_purchasing.shippingInfo ALTER COLUMN state SET NOT NULL;
 ALTER TABLE ehr_purchasing.shippingInfo ALTER COLUMN country SET NOT NULL;
 ALTER TABLE ehr_purchasing.shippingInfo ALTER COLUMN zip SET NOT NULL;
 
+ALTER TABLE ehr_purchasing.vendor ADD COLUMN qcState int;
 ALTER TABLE ehr_purchasing.vendor ADD faxNumber varchar(50);
 ALTER TABLE ehr_purchasing.vendor ADD url varchar;
 ALTER TABLE ehr_purchasing.vendor ADD notes varchar;

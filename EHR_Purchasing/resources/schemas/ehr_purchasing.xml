@@ -18,6 +18,7 @@
             <column columnName="email"/>
             <column columnName="url"/>
             <column columnName="notes"/>
+            <column columnName="qcState"/>
             <column columnName="isValidVendor"/>
             <column columnName="LSID">
                 <datatype>lsidtype</datatype>
@@ -160,7 +161,7 @@
             <column columnName="requestId"/>
             <column columnName="item"/>
             <column columnName="itemUnitId"/>
-            <column columnName="controlSubstance"/>
+            <column columnName="controlledSubstance"/>
             <column columnName="quantity"/>
             <column columnName="unitCost"/>
             <column columnName="itemStatusId"/>
@@ -197,7 +198,7 @@
             <column columnName="shippingAttentionTo"/>
             <column columnName="justification"/>
             <column columnName="comments"/>
-            <column columnName="qcStatus"/>
+            <column columnName="qcState"/>
             <column columnName="LSID">
                 <datatype>lsidtype</datatype>
                 <isReadOnly>true</isReadOnly>

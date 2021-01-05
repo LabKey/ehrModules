@@ -15,13 +15,18 @@
                         <fk>
                             <fkDbSchema>ehr_billing</fkDbSchema>
                             <fkTable>aliases</fkTable>
-                            <fkColumnName>alias</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="shippingInfoId">
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>shippingInfo</fkTable>
+                        </fk>
+                    </column>
+                    <column columnName="qcState">
+                        <fk>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>QCState</fkTable>
                         </fk>
                     </column>
                 </columns>
