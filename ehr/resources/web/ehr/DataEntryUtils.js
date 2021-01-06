@@ -729,7 +729,7 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'drug_defaults',
-                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,amount_rounding,volume,vol_units,volume_rounding,route,frequency,duration,offset',
+                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,amount_rounding,volume,vol_units,volume_rounding,route,frequency,duration,remark,offset',
                 sort: 'code',
                 storeId: storeId,
                 autoLoad: true,
