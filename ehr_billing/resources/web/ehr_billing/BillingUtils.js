@@ -55,7 +55,7 @@ EHR_Billing.BillingUtils = new function(){
             window.location = LABKEY.ActionURL.buildURL('ehr_billing', 'deleteBillingPeriod', null, {
                 dataRegionSelectionKey: dataRegion.name,
                 '.select': checked,
-                returnURL: window.location.pathname + window.location.search
+                returnUrl: window.location.pathname + window.location.search
             });
         },
 
