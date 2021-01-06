@@ -45,26 +45,26 @@ public class EHR_PurchasingContainerListener implements ContainerListener
         SimpleFilter containerFilter = SimpleFilter.createContainerFilter(c);
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
+            TableInfo userAccountAssociationsTable = EHR_PurchasingSchema.getInstance().getUserAccountAssociationsTable();
+            Table.delete(userAccountAssociationsTable, containerFilter);
+
+            TableInfo lineItemsTable = EHR_PurchasingSchema.getInstance().getLineItemsTable();
+            Table.delete(lineItemsTable, containerFilter);
+
+            TableInfo lineItemStatusTable = EHR_PurchasingSchema.getInstance().getLineItemStatusTable();
+            Table.delete(lineItemStatusTable, containerFilter);
+
+            TableInfo purchasingRequestsTable = EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable();
+            Table.delete(purchasingRequestsTable, containerFilter);
+
+            TableInfo unitsTable = EHR_PurchasingSchema.getInstance().getItemUnitsTable();
+            Table.delete(unitsTable, containerFilter);
+
             TableInfo vendorTable = EHR_PurchasingSchema.getInstance().getVendorTable();
             Table.delete(vendorTable, containerFilter);
 
             TableInfo shippingInfoTable = EHR_PurchasingSchema.getInstance().getShippingInfoTable();
             Table.delete(shippingInfoTable, containerFilter);
-
-            TableInfo unitsTable = EHR_PurchasingSchema.getInstance().getItemUnitsTable();
-            Table.delete(unitsTable, containerFilter);
-
-            TableInfo userAccountAssociationsTable = EHR_PurchasingSchema.getInstance().getUserAccountAssociationsTable();
-            Table.delete(userAccountAssociationsTable, containerFilter);
-
-            TableInfo lineItemStatusTable = EHR_PurchasingSchema.getInstance().getLineItemStatusTable();
-            Table.delete(lineItemStatusTable, containerFilter);
-
-            TableInfo lineItemsTable = EHR_PurchasingSchema.getInstance().getLineItemsTable();
-            Table.delete(lineItemsTable, containerFilter);
-
-            TableInfo purchasingRequestsTable = EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable();
-            Table.delete(purchasingRequestsTable, containerFilter);
 
             transaction.commit();
         }
