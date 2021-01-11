@@ -12,7 +12,7 @@
 
             var config = {
                 formType: redirectObject.name || formName,
-                returnURL: LABKEY.ActionURL.buildURL("wnprc_ehr", "dataEntry")
+                returnUrl: LABKEY.ActionURL.buildURL("wnprc_ehr", "dataEntry")
             };
 
             var newURL = LABKEY.ActionURL.buildURL("ehr", "dataEntryForm.view", null, config);
