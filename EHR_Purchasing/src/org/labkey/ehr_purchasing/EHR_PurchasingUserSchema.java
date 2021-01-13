@@ -18,7 +18,6 @@ package org.labkey.ehr_purchasing;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
-import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
