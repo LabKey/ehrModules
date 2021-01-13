@@ -4,12 +4,32 @@
             <table tableName="lineItems" tableDbType="TABLE" useColumnOrder="true">
                 <tableTitle>Line Items</tableTitle>
                 <columns>
+                    <column columnName="rowId">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="requestId">
+                        <columnTitle>Request No.</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_purchasing</fkDbSchema>
+                            <fkTable>purchasingRequests</fkTable>
+                            <fkColumnName>requestId</fkColumnName>
+                            <fkDisplayColumnName>rowId</fkDisplayColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="item"/>
                     <column columnName="itemUnitId">
                         <columnTitle>Item Unit</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_purchasing</fkDbSchema>
                             <fkTable>itemUnits</fkTable>
                         </fk>
+                    </column>
+                    <column columnName="controlledSubstance"/>
+                    <column columnName="quantity">
+                        <formatString>###,##0.00</formatString>
+                    </column>
+                    <column columnName="unitCost">
+                        <formatString>$###,##0.00</formatString>
                     </column>
                     <column columnName="itemStatusId">
                         <columnTitle>Item Status</columnTitle>

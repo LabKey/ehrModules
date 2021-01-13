@@ -8,13 +8,30 @@
         <columns>
             <column columnName="rowId"/>
             <column columnName="vendorName"/>
+            <column columnName="streetAddress"/>
             <column columnName="city"/>
             <column columnName="state"/>
             <column columnName="country"/>
             <column columnName="zip"/>
             <column columnName="phoneNumber"/>
+            <column columnName="faxNumber"/>
             <column columnName="email"/>
-            <column columnName="LSID"/>
+            <column columnName="url"/>
+            <column columnName="notes"/>
+            <column columnName="qcState"/>
+            <column columnName="isValidVendor"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -27,14 +44,29 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="attentionTo"/>
+            <column columnName="shippingAlias">
+                <description>A nick name of the shipping destination, ex. bldg name</description>
+            </column>
+            <column columnName="streetAddress"/>
             <column columnName="city"/>
             <column columnName="state"/>
             <column columnName="country"/>
             <column columnName="zip"/>
             <column columnName="phoneNumber"/>
             <column columnName="email"/>
-            <column columnName="LSID"/>
+            <column columnName="notes"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -50,7 +82,18 @@
             <column columnName="rowId"/>
             <column columnName="itemUnit"/>
             <column columnName="unitDescription"/>
-            <column columnName="LSID"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -65,7 +108,18 @@
             <column columnName="rowId"/>
             <column columnName="userId"/>
             <column columnName="account"/>
-            <column columnName="LSID"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -80,7 +134,18 @@
         <columns>
             <column columnName="rowId"/>
             <column columnName="status"/>
-            <column columnName="LSID"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -96,10 +161,22 @@
             <column columnName="requestId"/>
             <column columnName="item"/>
             <column columnName="itemUnitId"/>
-            <column columnName="controlSubstance"/>
+            <column columnName="controlledSubstance"/>
+            <column columnName="quantity"/>
             <column columnName="unitCost"/>
             <column columnName="itemStatusId"/>
-            <column columnName="LSID"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
@@ -113,13 +190,27 @@
         <columns>
             <column columnName="rowId"/>
             <column columnName="requestId"/>
+            <column columnName="assignedTo"/>
+            <column columnName="confirmation"/>
             <column columnName="vendorId"/>
             <column columnName="account"/>
             <column columnName="shippingInfoId"/>
+            <column columnName="shippingAttentionTo"/>
             <column columnName="justification"/>
             <column columnName="comments"/>
-            <column columnName="qcStatus"/>
-            <column columnName="LSID"/>
+            <column columnName="qcState"/>
+            <column columnName="LSID">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
