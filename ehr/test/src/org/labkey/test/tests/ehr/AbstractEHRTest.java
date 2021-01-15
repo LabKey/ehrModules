@@ -363,17 +363,17 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
-        if(type.equals("CNPRC EHR") || type.equals("TNPRC EHR"))
+        if(type.equals("TNPRC EHR"))
             _setupHelper.loadEHRTableDefinitions();
         if(type.equals("ONPRC EHR"))
             onprcSetupBeforeStudyUpload(); //this needs to happen before import study() below so that 'Validation Queries' step doesn't fail since the queries depend on setup in this method.
 
         populateInitialData();
+        defineQCStates();
         importStudy();
         disableMiniProfiler();
         //note: these expect the study to exist
         setupStudyPermissions();
-        defineQCStates();
         populateHardTableRecords();
         primeCaches();
     }
@@ -671,7 +671,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         log("Define QC states for EHR study");
 
-        beginAt("/ehr/" + getContainerPath() + "/ensureQCStates.view");
+        beginAt(getContainerPath() + "/ehr-ensureQCStates.view");
         clickButton("OK");
     }
 
