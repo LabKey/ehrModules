@@ -1632,8 +1632,11 @@ public class TriggerScriptHelper
                 FieldKey acquisitionFieldKey = FieldKey.fromParts("acquisitionType", "value");
                 Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(arrivalTable, Collections.singleton(acquisitionFieldKey));
                 ColumnInfo acquisitionColumn = columns.get(acquisitionFieldKey);
-                TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
-                acquitype = ts.getObject(String.class);
+                if (acquisitionColumn != null)
+                {
+                    TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
+                    acquitype = ts.getObject(String.class);
+                }
             }
             String status;
             if ("Fetus - Prenatal".equalsIgnoreCase(birthCondition) )
