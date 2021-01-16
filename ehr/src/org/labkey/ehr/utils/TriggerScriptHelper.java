@@ -2392,7 +2392,7 @@ public class TriggerScriptHelper
             if (date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
