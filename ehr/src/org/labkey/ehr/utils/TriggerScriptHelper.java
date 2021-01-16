@@ -1432,10 +1432,15 @@ public class TriggerScriptHelper
                 if (requestState != null)
                 {
                     _log.info("Updating request status since all children agree");
-                    Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-                    toUpdate.put("qcstate", requestState);
-                    toUpdate.put("requestid", requestId);
-                    Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestId);
+                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                            new SQLFragment("UPDATE ").
+                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                    add(requestState).
+                                    add(new Date()).
+                                    add(getUser().getUserId()).
+                                    add(requestId));
                 }
             }
         });
