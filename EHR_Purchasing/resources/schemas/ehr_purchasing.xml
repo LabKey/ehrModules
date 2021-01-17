@@ -158,7 +158,7 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="requestId"/>
+            <column columnName="requestRowId"/>
             <column columnName="item"/>
             <column columnName="itemUnitId"/>
             <column columnName="controlledSubstance"/>
@@ -189,7 +189,6 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="requestId"/>
             <column columnName="assignedTo"/>
             <column columnName="confirmation"/>
             <column columnName="vendorId"/>
