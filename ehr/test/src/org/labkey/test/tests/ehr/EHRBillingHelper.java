@@ -142,7 +142,7 @@ public class EHRBillingHelper
             }
 
             SelectRowsResponse resp = sr.execute(cn, _projectName + "/" + _billingFolder);
-            assertEquals("Wrong row count for " + item.getCategory() + item._animalId, item.getRowCount(), resp.getRowCount().intValue());
+            assertEquals("Wrong row count for " + item.getCategory() + " for animal " + item._animalId, item.getRowCount(), resp.getRowCount().intValue());
 
             if (item.getTotalQuantity() != null)
             {

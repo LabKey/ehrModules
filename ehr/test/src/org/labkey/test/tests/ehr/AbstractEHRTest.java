@@ -70,8 +70,6 @@ import static org.labkey.test.WebTestHelper.buildURL;
 abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     protected static String FOLDER_NAME = "EHR";
-    protected static final File STUDY_ZIP = TestFileUtils.getSampleData("EHR Study Anon.zip");
-    protected static final File STUDY_ZIP_NO_DATA = TestFileUtils.getSampleData("EHR Study Anon Small.zip");
 
     protected static final int POPULATE_TIMEOUT_MS = 300000;
 
@@ -340,6 +338,33 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected abstract void importStudy();
 
+    protected void importStudyFromPath(int jobCount)
+    {
+        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
+        setPipelineRoot(path.getPath());
+
+        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
+        clickButton("Process and Import Data", defaultWaitForPage);
+
+        _fileBrowserHelper.expandFileBrowserRootNode();
+        _fileBrowserHelper.checkFileBrowserFileCheckbox("study.xml");
+
+        if (isTextPresent("Reload Study"))
+            _fileBrowserHelper.selectImportDataAction("Reload Study");
+        else
+            _fileBrowserHelper.selectImportDataAction("Import Study");
+
+        if (skipStudyImportQueryValidation())
+        {
+            Locator cb = Locator.checkboxByName("validateQueries");
+            waitForElement(cb);
+            uncheckCheckbox(cb);
+        }
+
+        clickButton("Start Import"); // Validate queries page
+        waitForPipelineJobsToComplete(jobCount, "Study import", false, MAX_WAIT_SECONDS * 2500);
+    }
+
     protected boolean skipStudyImportQueryValidation()
     {
         return false;
@@ -363,17 +388,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
-        if(type.equals("CNPRC EHR") || type.equals("TNPRC EHR"))
+        if(type.equals("TNPRC EHR"))
             _setupHelper.loadEHRTableDefinitions();
         if(type.equals("ONPRC EHR"))
             onprcSetupBeforeStudyUpload(); //this needs to happen before import study() below so that 'Validation Queries' step doesn't fail since the queries depend on setup in this method.
 
         populateInitialData();
+        defineQCStates();
+        // Do this first to establish the QC states before importing
         importStudy();
         disableMiniProfiler();
         //note: these expect the study to exist
-        setupStudyPermissions();
+        // Do this a second time to set the default QC states on the study
         defineQCStates();
+        setupStudyPermissions();
         populateHardTableRecords();
         primeCaches();
     }
@@ -671,7 +699,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         log("Define QC states for EHR study");
 
-        beginAt("/ehr/" + getContainerPath() + "/ensureQCStates.view");
+        beginAt(getContainerPath() + "/ehr-ensureQCStates.view");
         clickButton("OK");
     }
 

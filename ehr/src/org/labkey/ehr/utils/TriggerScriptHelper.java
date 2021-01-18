@@ -1432,10 +1432,15 @@ public class TriggerScriptHelper
                 if (requestState != null)
                 {
                     _log.info("Updating request status since all children agree");
-                    Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-                    toUpdate.put("qcstate", requestState);
-                    toUpdate.put("requestid", requestId);
-                    Table.update(getUser(), EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS), toUpdate, requestId);
+                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                            new SQLFragment("UPDATE ").
+                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                    add(requestState).
+                                    add(new Date()).
+                                    add(getUser().getUserId()).
+                                    add(requestId));
                 }
             }
         });
@@ -1627,8 +1632,11 @@ public class TriggerScriptHelper
                 FieldKey acquisitionFieldKey = FieldKey.fromParts("acquisitionType", "value");
                 Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(arrivalTable, Collections.singleton(acquisitionFieldKey));
                 ColumnInfo acquisitionColumn = columns.get(acquisitionFieldKey);
-                TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
-                acquitype = ts.getObject(String.class);
+                if (acquisitionColumn != null)
+                {
+                    TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
+                    acquitype = ts.getObject(String.class);
+                }
             }
             String status;
             if ("Fetus - Prenatal".equalsIgnoreCase(birthCondition) )
@@ -2392,7 +2400,7 @@ public class TriggerScriptHelper
             if (date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.error("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));

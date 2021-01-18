@@ -257,19 +257,10 @@ public class EHRManager
     /**
      * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
      * missing columns and make sure the columns point to the correct propertyURI
-     * @param c
-     * @param u
-     * @param commitChanges
-     * @return
      */
     public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
     {
         final List<String> messages = new ArrayList<>();
-        final Study s = StudyService.get().getStudy(c);
-        if (s == null){
-            messages.add("There is no study in container: " + c.getPath());
-            return messages;
-        }
 
         boolean shouldClearCache = false;
 
@@ -326,52 +317,55 @@ public class EHRManager
             }
 
             //then check general properties
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("entityid"), s.getEntityId());
-            TableSelector studySelector = new TableSelector(studyTable, filter, null);
-            Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
-            Integer completedQCState = qcMap.get("Completed");
-
-            try (ResultSet rs = studySelector.getResultSet())
+            final Study s = StudyService.get().getStudy(c);
+            if (s != null)
             {
-                rs.next();
-                if (!qcMap.containsKey("Completed"))
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("entityid"), s.getEntityId());
+                TableSelector studySelector = new TableSelector(studyTable, filter, null);
+                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                Integer completedQCState = qcMap.get("Completed");
+
+                try (ResultSet rs = studySelector.getResultSet())
                 {
-                    messages.add("There was an error locating QCState Completed");
+                    rs.next();
+                    if (!qcMap.containsKey("Completed"))
+                    {
+                        messages.add("There was an error locating QCState Completed");
+                    }
+                    else
+                    {
+                        if (rs.getInt("DefaultAssayQCState") != completedQCState)
+                        {
+                            messages.add("Set DefaultAssayQCState to Completed");
+                            toUpdate.put("DefaultAssayQCState", completedQCState);
+                        }
+
+                        if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
+                        {
+                            messages.add("Set DefaultDirectEntryQCState to Completed");
+                            toUpdate.put("DefaultDirectEntryQCState", completedQCState);
+                        }
+
+                        if (rs.getInt("DefaultPipelineQCState") != completedQCState)
+                        {
+                            messages.add("Set DefaultPipelineQCState to Completed");
+                            toUpdate.put("DefaultPipelineQCState", completedQCState);
+                        }
+
+                        if (!rs.getBoolean("ShowPrivateDataByDefault"))
+                        {
+                            messages.add("Set ShowPrivateDataByDefault to true");
+                            toUpdate.put("ShowPrivateDataByDefault", true);
+                        }
+                    }
                 }
-                else
+
+                if (commitChanges && toUpdate.size() > 0)
                 {
-                    if (rs.getInt("DefaultAssayQCState") != completedQCState)
-                    {
-                        messages.add("Set DefaultAssayQCState to Completed");
-                        toUpdate.put("DefaultAssayQCState", completedQCState);
-                    }
-
-                    if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
-                    {
-                        messages.add("Set DefaultDirectEntryQCState to Completed");
-                        toUpdate.put("DefaultDirectEntryQCState", completedQCState);
-                    }
-
-                    if (rs.getInt("DefaultPipelineQCState") != completedQCState)
-                    {
-                        messages.add("Set DefaultPipelineQCState to Completed");
-                        toUpdate.put("DefaultPipelineQCState", completedQCState);
-                    }
-
-                    if (!rs.getBoolean("ShowPrivateDataByDefault"))
-                    {
-                        messages.add("Set ShowPrivateDataByDefault to true");
-                        toUpdate.put("ShowPrivateDataByDefault", true);
-                    }
+                    Table.update(u, studyTable, toUpdate, s.getContainer().getId());
+                    shouldClearCache = true;
                 }
             }
-
-            if (commitChanges && toUpdate.size() > 0)
-            {
-                Table.update(u, studyTable, toUpdate, s.getContainer().getId());
-                shouldClearCache = true;
-            }
-
             transaction.commit();
         }
         catch (SQLException e)
