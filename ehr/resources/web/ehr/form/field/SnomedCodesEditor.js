@@ -27,7 +27,8 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
 
         Ext4.create('EHR.window.SnomedCodeWindow', {
             boundRec: boundRec,
-            boundColumn: this.dataIndex
+            boundColumn: this.dataIndex,
+            defaultSubset: this.initialConfig && this.initialConfig.originalConfig && this.initialConfig.originalConfig.columnConfig ? this.initialConfig.originalConfig.columnConfig.defaultSubset : null
         }).show();
     },
 
