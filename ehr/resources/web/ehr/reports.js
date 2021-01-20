@@ -465,8 +465,12 @@ EHR.reports.snapshot = function(panel, tab, showActionsBtn){
             });
         }
 
-        if (toAdd.length)
+        if (toAdd.length) {
             tab.add(toAdd);
+            if (tab.getWidth() < 1000) {
+                tab.setWidth(1000);
+            }
+        }
     }
 
 };
