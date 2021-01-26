@@ -19,8 +19,7 @@ function onInit(event, helper){
 
     helper.decodeExtraContextProperty('birthsInTransaction');
 }
-
-function onUpsert(helper, scriptErrors, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'birth', function(helper, scriptErrors, row, oldRow){
     if (row.weight && !row.wdate){
         EHR.Server.Utils.addError(scriptErrors, 'wdate', 'This field is required when supplying a weight', 'WARN');
     }
@@ -37,7 +36,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             EHR.Server.Utils.addError(scriptErrors, 'weight', msg, 'WARN');
         }
     }
-}
+});
 
 EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, 'study', 'birth', function(scriptErrors, helper, row, oldRow) {
     var isLiving = EHR.Server.Utils.isLiveBirth(row.birth_condition);
