@@ -1489,8 +1489,9 @@ public class EHRController extends SpringActionController
 
             view.addClientDependency(ClientDependency.fromPath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(ClientDependency.getClientDependencySet(def.getClientDependencies()));
-
+            getPageConfig().setIncludePostParameters(true);
             return view;
+
         }
 
         @Override
