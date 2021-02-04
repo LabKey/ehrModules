@@ -46,7 +46,8 @@ Ext4.define('EHR.data.DrugAdministrationRunsClientStore', {
         amount: 'amount',
         amount_units: 'amount_units',
         frequency: 'frequency',
-        route: 'route'
+        route: 'route',
+        remark: 'remark'
     },
 
     onRecordUpdate: function(record, modifiedFieldNames){

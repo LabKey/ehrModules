@@ -5,6 +5,7 @@
  */
 
 require("ehr/triggers").initScript(this);
+EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
 function onInit(event, helper){
     helper.setScriptOptions({
@@ -47,6 +48,8 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
     if (!helper.isETL()){
         //if a weight is provided, we insert into the weight table:
         if (row.weight && row.wdate){
+            row.wdate = EHR.Server.Utils.normalizeDate(row.wdate);
+            row.weight = parseFloat(row.weight);
             helper.getJavaHelper().insertWeight(row.Id, row.wdate, row.weight);
         }
 

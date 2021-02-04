@@ -111,28 +111,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     @Override
     protected void importStudy()
     {
-        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
-        setPipelineRoot(path.getPath());
-
-        beginAt(getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
-        clickButton("Process and Import Data", defaultWaitForPage);
-
-        _fileBrowserHelper.expandFileBrowserRootNode();
-        _fileBrowserHelper.checkFileBrowserFileCheckbox("study.xml");
-
-        if (isTextPresent("Reload Study"))
-            _fileBrowserHelper.selectImportDataAction("Reload Study");
-        else
-            _fileBrowserHelper.selectImportDataAction("Import Study");
-
-        if (skipStudyImportQueryValidation())
-        {
-            WebElement cb = waitForElement(Locator.checkboxByName("validateQueries"));
-            uncheckCheckbox(cb);
-        }
-
-        clickButton("Start Import"); // Validate queries page
-        waitForPipelineJobsToComplete(1, "Study import", false, MAX_WAIT_SECONDS * 2500); //onprc_billing test has a lot of queries
+        importStudyFromPath(1);
     }
 
     @Override
