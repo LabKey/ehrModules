@@ -828,6 +828,15 @@ public class EHRManager
                         }
                     }
 
+                    for (String col : includedCols)
+                    {
+                        if (realTable.getColumn(col) == null)
+                        {
+                            //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
+                            missingCols = true;
+                        }
+                    }
+
                     if (missingCols)
                         continue;
 
@@ -864,20 +873,7 @@ public class EHRManager
 
                     if (!exists)
                     {
-                        Set<String> missing = new HashSet<>();
-                        for (String name : cols)
-                        {
-                            if (realTable.getColumn(name) == null)
-                            {
-                                missing.add(name);
-                            }
-                        }
-
-                        if (!missing.isEmpty())
-                        {
-                            messages.add("Columns mising on table " + d.getLabel() + ": " + StringUtils.join(missing, ",")+ ".  Will not add index for: " + StringUtils.join(indexCols, ", ") + " for dataset: " + d.getLabel());
-                        }
-                        else if (commitChanges)
+                        if (commitChanges)
                         {
                             List<String> columns = new ArrayList<>();
                             for (String name : cols)
