@@ -818,7 +818,6 @@ public class EHRManager
                     {
                         if (realTable.getColumn(col) == null)
                         {
-                            //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
                             missingCols = true;
                         }
                     }
@@ -829,7 +828,6 @@ public class EHRManager
                         {
                             if (realTable.getColumn(col) == null)
                             {
-                                //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
                                 missingCols = true;
                             }
                         }
