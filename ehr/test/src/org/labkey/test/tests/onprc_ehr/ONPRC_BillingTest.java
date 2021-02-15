@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests.external.onprc;
+package org.labkey.test.tests.onprc_ehr;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,21 +21,17 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
-import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
-import org.labkey.test.categories.External;
 import org.labkey.test.categories.ONPRC;
-import org.labkey.test.tests.onprc_ehr.AbstractONPRC_EHRTest;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Category({External.class, EHR.class, ONPRC.class})
+@Category({EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 10)
 public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
 {
