@@ -2,3 +2,4 @@ ehr/.project
 ehr/resources/web/ehr/backup
 /hidra
 /hidra_uw_intake
+**/dependencies.txt
