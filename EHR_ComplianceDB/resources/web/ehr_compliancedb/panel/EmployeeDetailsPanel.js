@@ -34,7 +34,7 @@ Ext4.define('EHR_ComplianceDB.panel.EmployeeDetailsPanel', {
                 queryConfig: {
                     title: 'Training / Requirement Summary',
                     schemaName: this.schemaName,
-                    queryName: 'complianceRecentTests',
+                    queryName: 'ComplianceRecentTests',
                     filterArray: filterArray,
                     failure: LDK.Utils.getErrorCallback()
                 }

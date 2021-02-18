@@ -58,7 +58,7 @@ function onInit(event, helper){
     });
 }
 
-function onUpsert(helper, scriptErrors, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'blood', function (helper, scriptErrors, row, oldRow) {
     if (!helper.isETL() && row.date && !row.daterequested){
         if (!oldRow || !oldRow.daterequested){
             row.daterequested = row.date;
@@ -136,4 +136,4 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             }
         }
     }
-}
+});
