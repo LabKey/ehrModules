@@ -224,7 +224,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
     }
 
-    private void testUserAgainstAllStates(@LoggedParam EHRUser user)
+    protected void testUserAgainstAllStates(@LoggedParam EHRUser user)
     {
         JSONObject extraContext = new JSONObject();
         extraContext.put("errorThreshold", "ERROR");
@@ -318,7 +318,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         assertEquals("Calculated ages are incorrect", Arrays.asList("3.9", "3.0", "47.0"), row.subList(columnCount - 3, columnCount));
     }
 
-    private void calculateAverage()
+    protected void calculateAverage()
     {
         if (_saveRowsTimes.size() == 0)
             return;
@@ -335,13 +335,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         _saveRowsTimes = new ArrayList<>();
     }
 
-    private boolean successExpected(EHRRole role, EHRQCState qcState, String permission)
+    protected boolean successExpected(EHRRole role, EHRQCState qcState, String permission)
     {
         // Expand to other request types once we start testing them. Insert only for now.
         return allowedActions.contains(new Permission(role, qcState, permission));
     }
 
-    private String getLsidFromResponse(CommandResponse response)
+    protected String getLsidFromResponse(CommandResponse response)
     {
         if (response.getProperty("exception") != null)
         {
