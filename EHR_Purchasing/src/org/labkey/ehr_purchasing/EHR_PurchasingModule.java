@@ -27,9 +27,7 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
-import org.labkey.ehr_purchasing.security.EHR_PurchasingAdminRole;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +46,7 @@ public class EHR_PurchasingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.001;
+        return 21.002;
     }
 
     @Override
@@ -69,7 +67,6 @@ public class EHR_PurchasingModule extends SpringModule
     {
         addController(org.labkey.ehr_purchasing.EHR_PurchasingController.NAME, EHR_PurchasingController.class);
         PropertyService.get().registerDomainKind(new EHR_PurchasingDomainKind());
-        RoleManager.registerRole(new EHR_PurchasingAdminRole());
     }
 
     @Override

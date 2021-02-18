@@ -18,10 +18,12 @@ package org.labkey.ehr_purchasing;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
-import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.AdminPermission;
 
 /**
  * Exposes tables to be viewed from a schema browser (including extended tables).
@@ -100,7 +102,8 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
                 SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
                                 schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf).init();
-                return table;
+
+                return getPermissionFilteredTable(table);
             }
         },
         purchasingRequests
@@ -111,11 +114,25 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
                 SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
                         new SimpleUserSchema.SimpleTable<>(
                                 schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf).init();
-                return table;
+
+                return getPermissionFilteredTable(table);
             }
         };
 
         public abstract TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf);
+
+        private static SimpleTable<EHR_PurchasingUserSchema> getPermissionFilteredTable(SimpleTable<EHR_PurchasingUserSchema> table)
+        {
+            //Admins can see all the rows
+            if (table.getContainer().hasPermission(table.getUserSchema().getUser(), AdminPermission.class))
+                return table;
+
+            //Non-admins can only see rows created by them
+            SimpleFilter filter = SimpleFilter.createContainerFilter(table.getContainer());
+            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
+            table.addCondition(filter);
+            return table;
+        }
     }
 
     @Override
