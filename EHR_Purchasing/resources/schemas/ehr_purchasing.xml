@@ -108,6 +108,7 @@
             <column columnName="rowId"/>
             <column columnName="userId"/>
             <column columnName="account"/>
+            <column columnName="accessToAllAccounts"/>
             <column columnName="LSID">
                 <datatype>lsidtype</datatype>
                 <isReadOnly>true</isReadOnly>
@@ -158,7 +159,7 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="requestId"/>
+            <column columnName="requestRowId"/>
             <column columnName="item"/>
             <column columnName="itemUnitId"/>
             <column columnName="controlledSubstance"/>
@@ -189,7 +190,6 @@
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowId"/>
-            <column columnName="requestId"/>
             <column columnName="assignedTo"/>
             <column columnName="confirmation"/>
             <column columnName="vendorId"/>
