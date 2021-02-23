@@ -249,8 +249,8 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             date: date
         };
 
-        if (this.down('#subjectIds')){
-            var subjectArray = LDK.Utils.splitIds(this.down('#subjectIds').getValue());
+        if   (this.down('#subjectIds')){
+            var   subjectArray = LDK.Utils.splitIds(this.down('#subjectIds').getValue(),true);
             Ext4.Array.each(subjectArray, function(subj){
                 ret.push(Ext4.apply({
                     Id: subj
@@ -333,7 +333,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             targetStore: this.targetGrid.store,
             formConfig: this.targetGrid.formConfig
         }).show();
-        
+
         this.close();
     },
 
@@ -488,7 +488,7 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
             xtype: 'menu',
             ignoreParentClicks: true,
             items: [{
-                text: 'Save As Template',               
+                text: 'Save As Template',
                 // NOTE: in the java config, we can specify canSaveTemplates.
                 // it might make more sense to use this here, which lets specific forms
                 // turn this on/off.  similar permissions could be tested server-side
