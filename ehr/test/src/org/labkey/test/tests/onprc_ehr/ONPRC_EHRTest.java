@@ -47,7 +47,6 @@ import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.RReportHelper;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -61,7 +60,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -74,6 +72,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 60)
@@ -464,7 +463,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         ), getExtraContext());
 
         //expect to find demographics record.
-        Assert.assertTrue("demographics row was not created for arrival", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", arrivalId1, Filter.Operator.EQUAL)));
+        assertTrue("demographics row was not created for arrival", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", arrivalId1, Filter.Operator.EQUAL)));
 
         //and birth
         SelectRowsCommand birthSelect = new SelectRowsCommand("study", "birth");
@@ -669,7 +668,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         waitForElement(Locator.tagContainingText("span", "Pedigree Plot - " + id), WAIT_FOR_JAVASCRIPT * 3);
         assertTextNotPresent("Error executing command");
-        Assert.assertTrue(isTextPresent("Console output"));
+        assertTrue(isTextPresent("Console output"));
     }
 
     @Test
@@ -1220,6 +1219,35 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Run Now"));
         waitAndClickAndWait(Locator.lkButton("OK"));
         waitForPipelineJobsToComplete(2, "genetics pipeline", false);
+
+        /*
+        Test coverage for : https://www.labkey.org/ONPRC/Support%20Tickets/issues-details.view?issueId=41231
+        */
+
+        goToProjectHome();
+        beginAtAnimalHistoryTab();
+        AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver());
+        animalHistoryPage =  animalHistoryPage
+                .selectMultiAnimalSearch()
+                .addSubjects("99991")
+                .addSubjects("99991011")
+                .addSubjects(("99991041"))
+                .addSubjects("99991080")
+                .addSubjects("99998")
+                .refreshReport();
+
+        animalHistoryPage.clickCategoryTab("Genetics")
+                .clickReportTab("Kinship");
+
+        assertTrue(isElementPresent(Locator.linkWithText("CLICK HERE TO LIMIT TO ANIMALS IN SELECTION")));
+
+        DataRegionTable kinshipTable = animalHistoryPage.getActiveReportDataRegion();
+        assertEquals("Incorrect number of rows before the limiting animal selection", 3, kinshipTable.getDataRowCount());
+
+        Locator.linkWithText("CLICK HERE TO LIMIT TO ANIMALS IN SELECTION").findElement(getDriver()).click();
+        kinshipTable = animalHistoryPage.getActiveReportDataRegion();
+
+        assertEquals("Incorrect number of rows before the limiting animal selection", 2, kinshipTable.getDataRowCount());
     }
 
     @Test
@@ -1373,7 +1401,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         final String caseNoBase = "2013A00";
         waitFor(() -> Ext4FieldRef.getForLabel(ONPRC_EHRTest.this, "Case Number").getValue().toString().startsWith(caseNoBase),
                 "Case Number field was not set", WAIT_FOR_JAVASCRIPT);
-        Assert.assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNoBase));
+        assertTrue(Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString().startsWith(caseNoBase));
         String caseNo = Ext4FieldRef.getForLabel(this, "Case Number").getValue().toString();
 
         // apply form template
@@ -1427,14 +1455,14 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         visible.get(0).sendKeys(Keys.ENTER);
         String code2 = "APEX OF HEART (T-32040)";
         waitForElement(Locator.tagContainingText("div", "2: " + code2),20000);
-        Assert.assertTrue(isTextBefore(code1, code2));
+        assertTrue(isTextBefore(code1, code2));
 
         visible.get(0).sendKeys("disease");
         sleep(2000);
         visible.get(0).sendKeys(Keys.ENTER);
         String code3 = "ALEUTIAN DISEASE (D-03550)";
         waitForElement(Locator.tagContainingText("div", "3: " + code3),20000);
-        Assert.assertTrue(isTextBefore(code2, code3));
+        assertTrue(isTextBefore(code2, code3));
 
         //move first code down
         click(Locator.id(_ext4Helper.componentQuery("button[testLocator=snomedDownArrow]", Ext4CmpRef.class).get(0).getId()));
@@ -1459,7 +1487,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
 
         waitAndClick(Ext4Helper.Locators.window("Manage SNOMED Codes").append(Ext4Helper.Locators.ext4Button("Submit")));
         Assert.assertEquals("1<>D-03550;2<>E-70590", histologyGrid.getFieldValue(1, "codesRaw").toString());
-        Assert.assertTrue(isTextBefore("1: " + code3, "2: " + code1));
+        assertTrue(isTextBefore("1: " + code3, "2: " + code1));
 
         //enter death
         waitAndClick(Ext4Helper.Locators.ext4ButtonEnabled("Enter/Manage Death"));
