@@ -24,10 +24,13 @@ import org.labkey.test.Locator;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
+import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,8 +38,18 @@ import java.util.Set;
 @BaseWebDriverTest.ClassTimeout(minutes = 10)
 public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
 {
-    protected String PROJECT_NAME = "ONPRC_Billing_TestProject";
+    protected static String PROJECT_NAME = "ONPRC_Billing_TestProject";
+    private static final String BILLING_FOLDER_PATH = "/" + PROJECT_NAME + "/" + BILLING_FOLDER;
+    private static final String EHR_FOLDER_PATH = "/" + PROJECT_NAME + "/" + FOLDER_NAME;
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
+
+    @BeforeClass
+    @LogMethod
+    public static void setupProject() throws Exception
+    {
+//        ONPRC_BillingTest initTest = (ONPRC_BillingTest)getCurrentTest();
+//        initTest.doSetUp();
+    }
 
     @Override
     protected String getProjectName()
@@ -50,12 +63,16 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         return "onprc_ehr";
     }
 
-    @BeforeClass
-    @LogMethod
-    public static void doSetup() throws Exception
+    private void doSetUp() throws Exception
     {
-        ONPRC_BillingTest initTest = (ONPRC_BillingTest)getCurrentTest();
-        initTest.initProject();
+        initProject();
+        _containerHelper.createSubfolder(getProjectName(), getProjectName(), BILLING_FOLDER, "Collaboration", null);
+        clickFolder(BILLING_FOLDER);
+        _containerHelper.enableModules(Arrays.asList("ONPRC_EHR", "EHR_Billing", "ONPRC_Billing", "ONPRC_BillingPublic"));
+
+        PortalHelper _portalHelper = new PortalHelper(getDriver());
+        _portalHelper.addWebPart("ONPRC Finance");
+
     }
 
     @Test
@@ -124,6 +141,47 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
     {
 
     }
+
+    /*
+        Test coverage for https://www.labkey.org/ONPRC/Support%20Tickets/issues-details.view?issueId=41146
+     */
+
+    @Test
+    public void testProtocolProjectCreation()
+    {
+        String protocolTitle = "Test Protocol";
+        String projectName = "Test Project";
+        navigateToFolder(PROJECT_NAME, BILLING_FOLDER);
+
+        clickAndWait(Locator.linkWithText("IACUC Protocols"));
+        DataRegionTable protocolTable = new DataRegionTable("query", getDriver());
+        protocolTable.clickHeaderMenu("More Actions", false, "Edit Records");
+        protocolTable.clickImportBulkData();
+
+        setFormElement(Locator.textarea("title"), protocolTitle);
+        clickButton("Submit");
+
+        protocolTable.setFilter("title", "Equals", protocolTitle);
+        String protocolId = protocolTable.getDataAsText(0, "protocol");
+
+        checker().verifyEquals("Adding new protocol was not successful", 1, protocolTable.getDataRowCount());
+
+        navigateToFolder(PROJECT_NAME, BILLING_FOLDER);
+        clickAndWait(Locator.linkWithText("ONPRC Projects"));
+
+        DataRegionTable projectTable = new DataRegionTable("query", getDriver());
+        projectTable.clickHeaderMenu("More Actions", false, "Edit Records");
+        projectTable.clickImportBulkData();
+
+        setFormElement(Locator.name("name"), projectName);
+        setFormElement(Locator.name("protocol"), protocolId);
+        clickButton("Submit");
+
+        projectTable.setFilter("name", "Equals", projectName);
+
+        checker().verifyEquals("Adding new project was not successful", 1, projectTable.getDataRowCount());
+    }
+
 
     @Override
     public void validateQueries(boolean validateSubfolders)

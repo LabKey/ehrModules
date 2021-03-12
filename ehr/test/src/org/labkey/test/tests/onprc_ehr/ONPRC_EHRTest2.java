@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -33,16 +34,19 @@ import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
+import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -58,6 +62,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
+    protected DateTimeFormatter _dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @Override
     protected String getModuleDirectory()
     {
@@ -973,22 +979,65 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         //TODO: weight form, bulk upload
     }
 
-    //TODO: @Test
-    public void bloodRequestTest()
+    @Test
+    public void bloodRequestTest() throws IOException, CommandException
     {
-        // make request
+        LocalDateTime now = LocalDateTime.now();
+        String animalId = "12345";
 
-        // check queue
+        log("Inserting the charge unit necessary for blood draw request");
+        InsertRowsCommand chargeUnitCommand = new InsertRowsCommand("onprc_billing", "chargeUnits");
+        chargeUnitCommand.addRow(Map.of("chargetype", "ChargeUnit2", "servicecenter", "ServiceCenter2", "shownInBlood", true, "active", true));
+        chargeUnitCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
-        // create task, save
+        log("Inserting the data in available blood volume");
+        goToProjectHome();
+        goToSchemaBrowser();
+        DataRegionTable ABVTable = viewQueryData("onprc_ehr", "AvailableBloodVolume");
+        ABVTable.clickInsertNewRow();
+        setFormElement(Locator.name("quf_datecreated"), now.toString());
+        setFormElement(Locator.name("quf_id"), animalId);
+        setFormElement(Locator.name("quf_ABV"), "10");
+        setFormElement(Locator.name("quf_dsrowid"), "1");
+        clickButton("Submit");
 
-        // open, delete record.
 
-        // save.  make sure deleted record back in queue
+        log("Creating the blood draw request");
+        goToProjectHome();
+        clickAndWait(Locator.linkWithText("Manage Requests"));
+        waitAndClickAndWait(Locator.linkWithText("ASB SERVICES REQUEST"));
+        addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 12);
+        clickButton("Request");
 
-        // use copy previous request
+        checker().verifyTrue("Error is not present",true);
 
-        // test repeat selected helper, including save
+        addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 8);
+        clickButton("Request");
+
+        checker().verifyTrue("Error is present",true);
+
+     }
+
+    private void addBloodDrawRequest(String animalId, LocalDateTime date, String project, String charge_type, String tube_type, Integer quantity)
+    {
+        Ext4GridRef bloodDraw = _helper.getExt4GridForFormSection("Blood Draws");
+        _helper.addRecordToGrid(bloodDraw);
+        scrollIntoView(Locator.tagWithText("span", "Blood Draws"));
+        int index = bloodDraw.getRowCount();
+
+        bloodDraw.setGridCellJS(index, "date", date.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_STRING)));
+        bloodDraw.setGridCell(index, "Id", animalId);
+
+        bloodDraw.setGridCell(index, "quantity", quantity.toString());
+        bloodDraw.setGridCell(index, "chargetype", charge_type);
+        bloodDraw.setGridCell(index, "tube_type", tube_type);
+
+        getFieldInWindow("project", Ext4FieldRef.class).getEval("expand()");
+        waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
+        waitForElement(Ext4Helper.Locators.window("Choose Project"));
+        _ext4Helper.queryOne("window[title=Choose Project] [fieldLabel='Project']", Ext4ComboRef.class).setComboByDisplayValue(project);
+        waitAndClick(Ext4Helper.Locators.window("Choose Project").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
+
     }
 
     //TODO: @Test

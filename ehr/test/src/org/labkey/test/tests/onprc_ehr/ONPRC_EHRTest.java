@@ -1810,9 +1810,9 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         String tissue = "AMNION (T-88300)";
 
         // Insert a row so we can select a charge unit in the form
-        InsertRowsCommand protocolCommand = new InsertRowsCommand("onprc_billing", "chargeUnits");
-        protocolCommand.addRow(Maps.of("chargetype", "ChargeUnit1", "servicecenter", "ServiceCenter1", "shownInProcedures", true, "active", true));
-        protocolCommand.execute(getApiHelper().getConnection(), getContainerPath());
+        InsertRowsCommand chargeUnitCommand = new InsertRowsCommand("onprc_billing", "chargeUnits");
+        chargeUnitCommand.addRow(Maps.of("chargetype", "ChargeUnit1", "servicecenter", "ServiceCenter1", "shownInProcedures", true, "active", true));
+        chargeUnitCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         log("Begin the test with entry data page");
         EnterDataPage enterData = EnterDataPage.beginAt(this, getContainerPath());
