@@ -768,6 +768,7 @@
             <column columnName="schemaname"/>
             <column columnName="queryname"/>
             <column columnName="framework"/>
+            <column columnName="url"/>
             <column columnName="container"/>
             <column columnName="createdby"/>
             <column columnName="created"/>

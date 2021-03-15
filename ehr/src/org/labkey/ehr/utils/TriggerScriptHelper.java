@@ -18,8 +18,8 @@ package org.labkey.ehr.utils;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -47,7 +47,6 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
-import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -2600,11 +2599,10 @@ public class TriggerScriptHelper
         return ts.getObject(String.class);
     }
 
-    public void clearLabworkServicesCache(){
-
-        String cacheKey = this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices";
-        DataEntryManager.get().getCache().remove(cacheKey);
-
+    /** When the ehr_lookups.blood_draw_services table is changed, we need to clear the caches so that we validate against the new data */
+    public void clearBloodDrawServicesCaches(){
+        DataEntryManager.get().getCache().remove(this.getClass().getName() + "||" + getContainer().getId() + "||" + "bloodDrawServices");
+        DataEntryManager.get().getCache().remove(this.getClass().getName() + "||" + getContainer().getId() + "||" + "labworkServices");
     }
 
     public String formatDate(String value, @Nullable String format, boolean dateTime) throws ParseException

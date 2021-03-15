@@ -30,6 +30,7 @@ dental_tartar	Dental Tartar Field Values	value
 dental_teeth	Dental Teeth Field Values	value	
 drug_categories	Drug Category Field Values	value	
 encounter_types	Encounter Types Field Values	value	
+feeding_types	Feeding Types Field Values	value	
 hematology_method	Hematology Method Field Values	value	
 hematology_morphology	Hematology Morphology Field Values	value	
 hematology_score	Hematology Score	value	
