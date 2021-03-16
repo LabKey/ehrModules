@@ -31,9 +31,14 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
 import org.labkey.test.TestProperties;
 import org.labkey.test.categories.CustomModules;
+import org.labkey.test.categories.Data;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
+import org.labkey.test.tests.di.ETLHelper;
+import org.labkey.test.util.APIContainerHelper;
+import org.labkey.test.util.AbstractContainerHelper;
+import org.labkey.test.util.DataRegion;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
@@ -43,6 +48,7 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -62,7 +68,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
-    protected DateTimeFormatter _dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public ETLHelper _etlHelper = new ETLHelper(this, getProjectName());
+    public AbstractContainerHelper _containerHelper = new APIContainerHelper(this);
 
     @Override
     protected String getModuleDirectory()
@@ -78,13 +85,21 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
     @BeforeClass
     @LogMethod
-    public static void doSetup() throws Exception
+    public static void setupProject() throws Exception
     {
         ONPRC_EHRTest2 initTest = new ONPRC_EHRTest2();
         initTest.doCleanup(false);
 
-        initTest.initProject();
-        initTest.createTestSubjects();
+        initTest.doSetUp();
+    }
+
+    private void doSetUp() throws Exception
+    {
+        initProject();
+        createTestSubjects();
+
+        //treatmentToDrug ETL is part of this module.
+        _containerHelper.enableModule("TreatmentETL");
     }
 
     @Override
@@ -980,6 +995,34 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
+    public void testTreatmentToDrugETL()
+    {
+        LocalDateTime endDate = LocalDateTime.now().plusDays(2);
+        String animalId = "12345";
+
+        goToProjectHome();
+        clickAndWait(Locator.linkWithText("Enter Data / Task Review"));
+        clickAndWait(Locator.linkWithText("Medications/Diet"));
+
+        addTreatmentOrder(animalId, endDate, "640991", "ACETAMINOPHEN (80mg) (E-77510)",
+                "BID - AM/Night","PO","tablet(s)" ,10, "mg");
+
+        shortWait().until(ExpectedConditions.elementToBeClickable(Locator.tagWithText("span","Submit Final")));
+        clickButton("Submit Final",0);
+
+        _billingHelper.checkMessageWindow("Finalize Form", "You are about to finalize this form. Do you want to do this?", "Yes");
+
+        goToSchemaBrowser();
+        DataRegionTable table = viewQueryData("study","treatment_order");
+        checker().verifyEquals("Treatment order is not placed", 1, table.getDataRowCount());
+
+        goToModule("DataIntegration");
+        _etlHelper.runETL("treatmentToDrug");
+
+
+    }
+
+    @Test
     public void bloodRequestTest() throws IOException, CommandException
     {
         LocalDateTime now = LocalDateTime.now();
@@ -1007,16 +1050,20 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         clickAndWait(Locator.linkWithText("Manage Requests"));
         waitAndClickAndWait(Locator.linkWithText("ASB SERVICES REQUEST"));
         addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 12);
+
+        checker().verifyTrue("Expected error is not present",isAnyTextPresent(
+                "Row 1, # of Tubes: ERROR: The quantity requested, 12.0ml exceeds the available blood volume, 8.0ml for AnimalId: 12345"));
+
+        //Updating the total volume below the the available blood volume.
+        updateTotalVolume(8);
+
+        shortWait().until(ExpectedConditions.elementToBeClickable(Locator.tagWithText("span","Request")));
         clickButton("Request");
 
-        checker().verifyTrue("Error is not present",true);
+        DataRegionTable table = new DataRegionTable("study|blood",getDriver());
+        checker().verifyEquals("New blood draw request is not created", 1 , table.getDataRowCount());
 
-        addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 8);
-        clickButton("Request");
-
-        checker().verifyTrue("Error is present",true);
-
-     }
+    }
 
     private void addBloodDrawRequest(String animalId, LocalDateTime date, String project, String charge_type, String tube_type, Integer quantity)
     {
@@ -1031,13 +1078,44 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         bloodDraw.setGridCell(index, "quantity", quantity.toString());
         bloodDraw.setGridCell(index, "chargetype", charge_type);
         bloodDraw.setGridCell(index, "tube_type", tube_type);
+        addProjectToTheRow(bloodDraw,index,project);
 
-        getFieldInWindow("project", Ext4FieldRef.class).getEval("expand()");
+    }
+
+    private void addTreatmentOrder(String animalId, LocalDateTime endDate, String project, String treatment, String frequency, String route,
+                                   String volUnits, Integer amount, String amountUnits)
+    {
+        Ext4GridRef treatmentOrder = _helper.getExt4GridForFormSection("Medication/Treatment Orders");
+        _helper.addRecordToGrid(treatmentOrder);
+        scrollIntoView(Locator.tagWithText("span", "Medication/Treatment Orders"));
+        int index = treatmentOrder.getRowCount();
+
+        treatmentOrder.setGridCell(index, "Id", animalId);
+        treatmentOrder.setGridCellJS(index, "enddate", endDate.toString());
+        treatmentOrder.setGridCell(index, "code", treatment);
+        treatmentOrder.setGridCell(index, "frequency", frequency);
+        treatmentOrder.setGridCell(index, "route", route);
+        treatmentOrder.setGridCell(index, "vol_units", volUnits);
+        treatmentOrder.setGridCell(index, "amount", amount.toString());
+        treatmentOrder.setGridCell(index, "amount_units", amountUnits);
+
+        addProjectToTheRow(treatmentOrder, index, project);
+    }
+
+    private void updateTotalVolume(Integer quantity)
+    {
+        Ext4GridRef bloodDraw = _helper.getExt4GridForFormSection("Blood Draws");
+        int index = bloodDraw.getRowCount();
+        bloodDraw.setGridCell(index, "quantity", quantity.toString());
+    }
+
+    private void addProjectToTheRow(Ext4GridRef gridRef, int index, String project)
+    {
+        gridRef.clickDownArrowOnGrid(index,"project");
         waitAndClick(Locator.tag("li").append(Locator.tagContainingText("span", "Other")));
         waitForElement(Ext4Helper.Locators.window("Choose Project"));
         _ext4Helper.queryOne("window[title=Choose Project] [fieldLabel='Project']", Ext4ComboRef.class).setComboByDisplayValue(project);
         waitAndClick(Ext4Helper.Locators.window("Choose Project").append(Ext4Helper.Locators.ext4ButtonEnabled("Submit")));
-
     }
 
     //TODO: @Test
