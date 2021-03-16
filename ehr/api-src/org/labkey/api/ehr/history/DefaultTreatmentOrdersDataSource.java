@@ -20,6 +20,7 @@ import org.labkey.api.data.Results;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.DateUtil;
+import org.labkey.api.util.Formats;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
@@ -82,7 +83,8 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
 
         if (rs.hasColumn(FieldKey.fromString("amount")) && rs.getObject("amount") != null)
         {
-            sb.append("Amount: " + rs.getString("amount"));
+            double serverAmount = rs.getDouble("amount");
+            sb.append("Amount: " + Formats.f3.format(serverAmount));
 
             if (rs.hasColumn(FieldKey.fromString("amount_units")) && rs.getObject("amount_units") != null)
                 sb.append(" " + rs.getString("amount_units"));
