@@ -178,7 +178,6 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         clickButton("Submit");
 
         projectTable.setFilter("name", "Equals", projectName);
-
         checker().verifyEquals("Adding new project was not successful", 1, projectTable.getDataRowCount());
     }
 

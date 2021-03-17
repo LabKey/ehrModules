@@ -1227,15 +1227,8 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         goToProjectHome();
         beginAtAnimalHistoryTab();
         AnimalHistoryPage animalHistoryPage = new AnimalHistoryPage(getDriver());
-        animalHistoryPage =  animalHistoryPage
-                .selectMultiAnimalSearch()
-                .addSubjects("99991")
-                .addSubjects("99991011")
-                .addSubjects(("99991041"))
-                .addSubjects("99991080")
-                .addSubjects("99998")
-                .refreshReport();
-
+        animalHistoryPage.searchSingleAnimal("99991,99991011,99991041,99991080,99998");
+        animalHistoryPage.refreshReport();
         animalHistoryPage.clickCategoryTab("Genetics")
                 .clickReportTab("Kinship");
 
@@ -1245,6 +1238,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         assertEquals("Incorrect number of rows before the limiting animal selection", 3, kinshipTable.getDataRowCount());
 
         Locator.linkWithText("CLICK HERE TO LIMIT TO ANIMALS IN SELECTION").findElement(getDriver()).click();
+        waitForText("coefficient");
         kinshipTable = animalHistoryPage.getActiveReportDataRegion();
 
         assertEquals("Incorrect number of rows before the limiting animal selection", 2, kinshipTable.getDataRowCount());
@@ -1677,7 +1671,6 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         waitForElementToDisappear(caseWindow);
         waitForElement(Ext4Helper.Locators.window("Success").append(Locator.tagWithText("div", "Surgical cases opened")));
         waitAndClick(Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4ButtonEnabled("OK")));
-
         _helper.discardForm();
     }
 
