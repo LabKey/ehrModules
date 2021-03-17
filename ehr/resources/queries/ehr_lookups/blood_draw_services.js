@@ -10,19 +10,14 @@ var LABKEY = require("labkey");
 
 var triggerHelper = org.labkey.ehr.utils.TriggerScriptHelper.create(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id);
 
-function beforeUpdate(row, oldRow, errors) {
-    console.log ("calling beforeUpdate");
-    triggerHelper.clearLabworkServicesCache();
-}
 function afterUpdate(row){
-    console.log ("calling afterUpdate");
-    triggerHelper.clearLabworkServicesCache();
+    triggerHelper.clearBloodDrawServicesCaches();
 }
 
 function afterInsert(row){
-    triggerHelper.clearLabworkServicesCache();
+    triggerHelper.clearBloodDrawServicesCaches();
 }
 
 function afterDelete(row){
-    triggerHelper.clearLabworkServicesCache();
+    triggerHelper.clearBloodDrawServicesCaches();
 }

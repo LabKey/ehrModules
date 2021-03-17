@@ -130,6 +130,12 @@
             queryName: 'dosage_units',
             pk: 'rowid'
         },{
+            label: 'Feeding Types',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr_lookups',
+            queryName: 'feeding_types',
+            pk: 'rowid'
+        },{
             label: 'Flag Categories',
             populateFn: 'populateFromFile',
             schemaName: 'ehr_lookups',
