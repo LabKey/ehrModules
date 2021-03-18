@@ -63,7 +63,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
-@BaseWebDriverTest.ClassTimeout(minutes = 6)
+@BaseWebDriverTest.ClassTimeout(minutes = 10)
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     public AbstractContainerHelper _containerHelper = new APIContainerHelper(this);
