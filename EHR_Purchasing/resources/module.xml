@@ -1,0 +1,11 @@
+<module xmlns="http://labkey.org/moduleProperties/xml/">
+    <properties>
+        <propertyDescriptor name="EHRPurchasingContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>The is the path to the container holding purchasing data.  Use of slashes is very important - it should be in the format '/myProject/My Purchasing Admin Folder'</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
+    </properties>
+</module>
