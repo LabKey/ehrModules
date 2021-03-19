@@ -1002,8 +1002,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     @Test
     public void testTreatmentToDrugETL()
     {
-        LocalDateTime beginDate = LocalDateTime.now();
-        LocalDateTime endDate = LocalDateTime.now().plusDays(2);
+        LocalDateTime beginDate = LocalDateTime.now().withHour(0).withMinute(0);
+        LocalDateTime endDate = LocalDateTime.now().withHour(0).withMinute(0).plusDays(2);
         String animalId = "12345";
 
         log("Creating the Treatment order request");
@@ -1033,7 +1033,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         goToSchemaBrowser();
         table = viewQueryData("study", "drug");
         table.setFilter("Id", "Equals", animalId);
-        checker().verifyEquals("ETL did not populate the study.drug", 1, table.getDataRowCount());
+        checker().verifyEquals("ETL did not populate the study.drug", 2, table.getDataRowCount());
     }
 
     @Test
@@ -1064,7 +1064,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitAndClickAndWait(Locator.linkWithText("ASB SERVICES REQUEST"));
         addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 12);
 
-        checker().verifyTrue("Expected error is not present", isAnyTextPresent(
+        checker().withScreenshot("Blood request").verifyTrue("Expected error is not present", isAnyTextPresent(
                 "Row 1, # of Tubes: ERROR: The quantity requested, 12.0ml exceeds the available blood volume, 8.0ml for AnimalId: 12345"));
 
         //Updating the total volume below the the available blood volume.
