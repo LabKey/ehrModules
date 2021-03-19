@@ -33,7 +33,6 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -219,13 +218,13 @@ abstract public class AbstractFormSection implements FormSection
     @Override
     public boolean hasPermission(DataEntryFormContext ctx, Class<? extends Permission> perm)
     {
-        Map<String, Dataset<?>> datasetMap = ctx.getDatasetMap();
+        Map<String, Dataset> datasetMap = ctx.getDatasetMap();
         for (Pair<String, String> pair : getTableNames())
         {
             //datasets can be tested directly
             if ("study".equalsIgnoreCase(pair.first) && datasetMap.containsKey(pair.second))
             {
-                Dataset<?> ds = datasetMap.get(pair.second);
+                Dataset ds = datasetMap.get(pair.second);
                 if (!ds.getPermissions(ctx.getUser()).contains(perm))
                     return false;
             }
