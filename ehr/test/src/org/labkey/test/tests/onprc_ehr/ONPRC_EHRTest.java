@@ -1237,8 +1237,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         DataRegionTable kinshipTable = animalHistoryPage.getActiveReportDataRegion();
         assertEquals("Incorrect number of rows before limiting animal selection", 3, kinshipTable.getDataRowCount());
 
-        Locator.linkWithText("CLICK HERE TO LIMIT TO ANIMALS IN SELECTION").findElement(getDriver()).click();
-        waitForText("coefficient");
+        kinshipTable.doAndWaitForUpdate(() -> Locator.linkWithText("CLICK HERE TO LIMIT TO ANIMALS IN SELECTION").findElement(getDriver()).click());
 
         kinshipTable = animalHistoryPage.getActiveReportDataRegion();
         assertEquals("Incorrect number of rows after limiting animal selection", 2, kinshipTable.getDataRowCount());
