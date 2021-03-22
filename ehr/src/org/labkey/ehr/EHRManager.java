@@ -334,10 +334,10 @@ public class EHRManager
                     }
                     else
                     {
-                        if (rs.getInt("DefaultAssayQCState") != completedQCState)
+                        if (rs.getInt("DefaultPublishDataQCState") != completedQCState)
                         {
-                            messages.add("Set DefaultAssayQCState to Completed");
-                            toUpdate.put("DefaultAssayQCState", completedQCState);
+                            messages.add("Set DefaultPublishDataQCState to Completed");
+                            toUpdate.put("DefaultPublishDataQCState", completedQCState);
                         }
 
                         if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
