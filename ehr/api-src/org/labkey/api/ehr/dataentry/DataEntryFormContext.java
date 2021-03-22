@@ -31,7 +31,7 @@ public interface DataEntryFormContext
 {
     TableInfo getTable(String schemaName, String queryName);
 
-    Map<String, Dataset<?>> getDatasetMap();
+    Map<String, Dataset> getDatasetMap();
 
     Container getContainer();
 

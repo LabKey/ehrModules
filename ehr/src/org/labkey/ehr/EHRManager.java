@@ -631,11 +631,6 @@ public class EHRManager
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
-                if (realTable == null)
-                {
-                    _log.error("Table not found for dataset: " + d.getLabel() + " / " + d.getTypeURI());
-                    continue;
-                }
 
                 List<String[]> toAdd = new ArrayList<>();
                 Collections.addAll(toAdd, toIndex);
@@ -817,8 +812,18 @@ public class EHRManager
                     {
                         if (realTable.getColumn(col) == null)
                         {
-                            //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
                             missingCols = true;
+                        }
+                    }
+
+                    if (includedCols != null)
+                    {
+                        for (String col : includedCols)
+                        {
+                            if (realTable.getColumn(col) == null)
+                            {
+                                missingCols = true;
+                            }
                         }
                     }
 
