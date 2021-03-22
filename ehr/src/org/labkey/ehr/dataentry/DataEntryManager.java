@@ -209,7 +209,7 @@ public class DataEntryManager
         private Container _container;
         private Map<String, TableInfo> _tableMap = new HashMap<>();
         private Map<String, UserSchema> _userSchemas = new HashMap<>();
-        private Map<String, Dataset<?>> _datasetMap = null;
+        private Map<String, Dataset> _datasetMap = null;
 
         public DataEntryFormContextImpl(Container c, User u)
         {
@@ -268,11 +268,11 @@ public class DataEntryManager
         }
 
         @Override
-        public Map<String, Dataset<?>> getDatasetMap()
+        public Map<String, Dataset> getDatasetMap()
         {
             if (_datasetMap == null)
             {
-                Map<String, Dataset<?>> datasetMap = new HashMap<>();
+                Map<String, Dataset> datasetMap = new HashMap<>();
                 Study s = StudyService.get().getStudy(getContainer());
                 if (s != null)
                 {

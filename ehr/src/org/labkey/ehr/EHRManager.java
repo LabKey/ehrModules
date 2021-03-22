@@ -627,7 +627,7 @@ public class EHRManager
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             Set<String> distinctIndexes = new HashSet<>();
-            for (Dataset<?> d : study.getDatasets())
+            for (Dataset d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
