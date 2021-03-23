@@ -299,7 +299,7 @@ public class AbstractDataEntryForm implements DataEntryForm
     private Map<String, Map<String, Map<String, String>>> getPermissionMap()
     {
         Map<String, Map<String, Map<String, String>>> permissionMap = new HashMap<>();
-        Map<String, Dataset<?>> datasetMap = getCtx().getDatasetMap();
+        Map<String, Dataset> datasetMap = getCtx().getDatasetMap();
 
         for (Pair<String, String> pair : getTableNames())
         {

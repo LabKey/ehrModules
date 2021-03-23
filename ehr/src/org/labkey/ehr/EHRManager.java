@@ -334,10 +334,10 @@ public class EHRManager
                     }
                     else
                     {
-                        if (rs.getInt("DefaultAssayQCState") != completedQCState)
+                        if (rs.getInt("DefaultPublishDataQCState") != completedQCState)
                         {
-                            messages.add("Set DefaultAssayQCState to Completed");
-                            toUpdate.put("DefaultAssayQCState", completedQCState);
+                            messages.add("Set DefaultPublishDataQCState to Completed");
+                            toUpdate.put("DefaultPublishDataQCState", completedQCState);
                         }
 
                         if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
@@ -627,7 +627,7 @@ public class EHRManager
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             Set<String> distinctIndexes = new HashSet<>();
-            for (Dataset<?> d : study.getDatasets())
+            for (Dataset d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
