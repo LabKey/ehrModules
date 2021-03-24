@@ -1027,7 +1027,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         log("Running the treatment to drug ETL");
         goToModule("DataIntegration");
-        _etlHelper.runETL("{ONPRC_EHR}/treatmentToDrug");
+        _etlHelper.runETL("{ONPRC_EHR}/TreatmentToDrug");
 
         log("Verifying the drug table was populated");
         goToSchemaBrowser();
@@ -1070,8 +1070,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         //Updating the total volume below the the available blood volume.
         updateTotalVolume(8);
 
-        shortWait().until(ExpectedConditions.elementToBeClickable(Locator.tagWithText("span", "Request")));
-        clickButton("Request");
+        shortWait().until(ExpectedConditions.elementToBeClickable(Locator.tagWithText("span", "Request"))).click();
+        clickButton("Request","My Pending Requests");
 
         DataRegionTable table = new DataRegionTable("study|blood", getDriver());
         checker().verifyEquals("New blood draw request is not created", 1, table.getDataRowCount());
