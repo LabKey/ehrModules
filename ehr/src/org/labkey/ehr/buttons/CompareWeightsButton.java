@@ -30,7 +30,7 @@ public class CompareWeightsButton extends SimpleButtonConfigFactory
     public CompareWeightsButton(Module owner)
     {
         super(owner, "Compare Weights", "EHR.DatasetButtons.compareWeightsHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.supplierFromPath("ehr/window/CompareWeightsWindow.js"), ClientDependency.supplierFromPath("ehr/studyButtons.js"));
+        setClientDependencies(ClientDependency.supplierFromPath("Ext4"), ClientDependency.supplierFromPath("ehr/window/CompareWeightsWindow.js"), ClientDependency.supplierFromPath("ehr/studyButtons.js"));
     }
 
     @Override
