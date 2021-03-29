@@ -76,7 +76,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
         if (rs.hasColumn(FieldKey.fromString("amount")) && rs.getObject("amount") != null)
         {
             double serverAmount = rs.getDouble("amount");
-            sb.append("Amount: " + Formats.f2.format(serverAmount));
+            sb.append("Amount: " + Formats.f3.format(serverAmount));
 
             if (rs.hasColumn(FieldKey.fromString("amount_units")) && rs.getObject("amount_units") != null)
                 sb.append(" " + rs.getString("amount_units"));
