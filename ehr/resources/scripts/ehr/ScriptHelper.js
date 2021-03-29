@@ -616,6 +616,14 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.snomedCodeFieldName;
         },
 
+        /**
+         * Some EHR implementations split the entry of SNOMED codes into separate virtual fields.
+         * They may configure an array of fields that should be combined to represent the full set of SNOMED values.
+         */
+        getSNOMEDSubsetCodeFieldNames: function(){
+            return scriptOptions.snomedSubsetCodeFieldNames;
+        },
+
         doCacheAccount: function(){
             return scriptOptions.cacheAccount;
         },

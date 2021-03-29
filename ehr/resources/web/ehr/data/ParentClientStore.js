@@ -23,6 +23,24 @@ Ext4.define('EHR.data.ParentClientStore', {
         this.callParent(arguments);
     },
 
+    isParentOf: function(childStore) {
+        var parentQueryName = childStore.sectionCfg.extraProperties.parentQueryName;
+        if (!parentQueryName) {
+            return true;
+        }
+        var result = false;
+        Ext4.each(this.sectionCfg.queries, function(queryInfo) {
+            if (queryInfo.queryName === parentQueryName) {
+                result = true;
+            }
+        });
+        return result;
+    },
+
+    shouldSetParentId: function(childRecord, parentFieldName, parentId) {
+        return childRecord.get(parentFieldName) == null;
+    },
+
     onRecordUpdate: function(parentRecord, modifiedFieldNames){
         var parentObjectId = parentRecord.get('objectid');
         if (parentObjectId && Ext4.isArray(modifiedFieldNames)) {
@@ -30,7 +48,9 @@ Ext4.define('EHR.data.ParentClientStore', {
             this.storeCollection.clientStores.each(function(childStore) {
 
                 // find the client stores which are set to track ParentChild relationships
-                var isParentChild = childStore.model.prototype.sectionCfg.configSources && childStore.model.prototype.sectionCfg.configSources.indexOf('ParentChild') > -1;
+                var isParentChild = childStore.model.prototype.sectionCfg.configSources &&
+                        childStore.model.prototype.sectionCfg.configSources.indexOf('ParentChild') > -1 &&
+                        this.isParentOf(childStore);
                 if (isParentChild) {
                     var parentFieldName = this.getParentFieldName(childStore);
                     var hasParentField = childStore.getFields().get(parentFieldName) != null;
@@ -42,7 +62,7 @@ Ext4.define('EHR.data.ParentClientStore', {
                     var hasChanges = false;
                     Ext4.Array.each(childStore.getRange(), function(childRecord) {
                         // if the child record does not currently have a parent id, set it now
-                        if (childRecord.get(parentFieldName) == null) {
+                        if (this.shouldSetParentId(childRecord, parentFieldName, parentObjectId)) {
                             childRecord.set(parentFieldName, parentObjectId);
                             hasChanges = true;
                         }
