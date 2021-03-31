@@ -26,7 +26,9 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
         LDK.Assert.assertNotEmpty('Unable to find bound record in SnomedCodesEditor.js', boundRec);
 
         Ext4.create('EHR.window.SnomedCodeWindow', {
-            boundRec: boundRec
+            boundRec: boundRec,
+            boundColumn: this.dataIndex,
+            defaultSubset: this.initialConfig && this.initialConfig.originalConfig && this.initialConfig.originalConfig.columnConfig ? this.initialConfig.originalConfig.columnConfig.defaultSubset : null
         }).show();
     },
 
@@ -38,6 +40,10 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
             var rec, recIdx;
             Ext4.Array.forEach(value, function(code){
                 recIdx = this.snomedStore.findExact('code', code);
+                if (recIdx === -1 && code && code.indexOf('<>') !== -1) {
+                    code = code.substring(code.indexOf('<>') + 2);
+                    recIdx = this.snomedStore.findExact('code', code);
+                }
                 rec = recIdx != -1 ? this.snomedStore.getAt(recIdx) : null;
 
                 if (rec && rec.get('meaning')){
@@ -51,7 +57,7 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
             return display.join('<br>');
         }
 
-        return '';
+        return '<em style="cursor:pointer;">No SNOMED codes entered - click to edit</em>';
     }
 });
 
@@ -60,6 +66,9 @@ Ext4.define('EHR.form.field.SnomedCodesEditor', {
  */
 Ext4.define('EHR.window.SnomedCodeWindow', {
     extend: 'Ext.window.Window',
+
+    // Default to codesRaw as our backing column, but allow config to point at an alternative
+    boundColumn : 'codesRaw',
 
     initComponent: function(){
         this.snomedStore = EHR.DataEntryUtils.getSnomedStore();
@@ -98,7 +107,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
                         }
                     }
 
-                    win.boundRec.set('codesRaw', codes.length ? codes.join(';') : null);
+                    win.boundRec.set(win.boundColumn, codes.length ? codes.join(';') : null);
                     win.close();
                 }
             },{
@@ -111,7 +120,7 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
 
         this.callParent(arguments);
 
-        this.applyCodes(this.boundRec.get('codesRaw'));
+        this.applyCodes(this.boundRec.get(this.boundColumn));
 
         this.on('show', function(win){
             win.down('ehr-snomedcombo').focus();
