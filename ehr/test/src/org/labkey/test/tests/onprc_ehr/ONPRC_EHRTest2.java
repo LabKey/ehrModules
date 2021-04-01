@@ -1065,7 +1065,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 12);
 
         checker().withScreenshot("Blood request").verifyTrue("Expected error is not present", isAnyTextPresent(
-                "Row 1, # of Tubes: ERROR: The quantity requested, 12.0ml exceeds the available blood volume, 8.0ml for AnimalId: 12345"));
+                "Row 1, # of Tubes: ERROR: The quantity requested, 12.0ml exceeds the available blood volume, 10.0ml for AnimalId: 12345"));
 
         //Updating the total volume below the the available blood volume.
         updateTotalVolume(8);
