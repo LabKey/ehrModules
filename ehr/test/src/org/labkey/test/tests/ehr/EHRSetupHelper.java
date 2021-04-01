@@ -47,10 +47,8 @@ public class EHRSetupHelper
             _test.clickFolder(_folderName);
         else
             _test.clickFolder(_projectName);
-        if (_projectName.equalsIgnoreCase("CNPRC"))
-            _test.beginAt(_test.getCurrentContainerPath() + "/cnprc_ehr-ehrSettings.view?");
-        else
-            _test.beginAt(_test.getCurrentContainerPath() + "/tnprc_ehr-ehrSettings.view?");
+
+        _test.beginAt(_test.getCurrentContainerPath() + "/tnprc_ehr-ehrSettings.view?");
         _test.clickButton("Load EHR table definitions", 0);
         _test.waitForElement(Locator.tagWithClass("span", "x4-window-header-text").withText("Success"));
         _test.assertExt4MsgBox("EHR tables updated successfully.", "OK");

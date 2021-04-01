@@ -173,7 +173,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     this.enableBubble('projectchange');
 
     this.on('change', function(field, val, oldVal){
-      this.fireEvent('projectchange', val);
+      this.fireEvent('projectchange', val, field);
     }, this, {buffer: 200});
 
     this.on('render', function(){
