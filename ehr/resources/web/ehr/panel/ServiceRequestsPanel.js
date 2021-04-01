@@ -25,7 +25,7 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
     onLoad: function(results){
         var formMap = {};
         Ext4.each(results.forms, function(form){
-            if (form.canInsert && form.category == 'Requests'){
+            if (form.canInsert && form.category == 'Requests' && form.isVisible){
                 formMap[form.category] = formMap[form.category] || [];
                 formMap[form.category].push({
                     name: form.label,

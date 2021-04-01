@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.treatment_codes ALTER COLUMN dosage TYPE DECIMAL(13,2);
