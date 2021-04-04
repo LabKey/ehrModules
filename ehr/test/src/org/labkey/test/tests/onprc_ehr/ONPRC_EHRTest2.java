@@ -35,7 +35,6 @@ import org.labkey.test.categories.CustomModules;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.ONPRC;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
-import org.labkey.test.tests.di.ETLHelper;
 import org.labkey.test.util.APIContainerHelper;
 import org.labkey.test.util.AbstractContainerHelper;
 import org.labkey.test.util.DataRegionTable;
@@ -43,6 +42,7 @@ import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.di.DataIntegrationHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -68,7 +68,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     public AbstractContainerHelper _containerHelper = new APIContainerHelper(this);
     private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
-    public ETLHelper _etlHelper = new ETLHelper(this, getProjectName());
+    public DataIntegrationHelper _etlHelper = new DataIntegrationHelper(PROJECT_NAME);
     private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
 
     @BeforeClass
@@ -1000,7 +1000,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
     }
 
     @Test
-    public void testTreatmentToDrugETL()
+    public void testTreatmentToDrugETL() throws IOException, CommandException
     {
         LocalDateTime beginDate = LocalDateTime.now().withHour(0).withMinute(0);
         LocalDateTime endDate = LocalDateTime.now().withHour(0).withMinute(0).plusDays(2);
@@ -1027,7 +1027,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         log("Running the treatment to drug ETL");
         goToModule("DataIntegration");
-        _etlHelper.runETL("{ONPRC_EHR}/TreatmentToDrug");
+        _etlHelper.runTransformAndWait("{ONPRC_EHR}/TreatmentToDrug", BaseWebDriverTest.MAX_WAIT_SECONDS * 1000);
 
         log("Verifying the drug table was populated");
         goToSchemaBrowser();
