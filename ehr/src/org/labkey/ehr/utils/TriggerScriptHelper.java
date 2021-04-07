@@ -1513,10 +1513,7 @@ public class TriggerScriptHelper
         demographicsProps.put("calculated_status", "Alive");
         if (extraDemographicsFieldMappings != null)
         {
-            for (String fieldName : extraDemographicsFieldMappings.keySet())
-            {
-                demographicsProps.put(fieldName, row.get(extraDemographicsFieldMappings.get(fieldName)));
-            }
+            extraDemographicsFieldMappings.forEach(demographicsProps::put);
         }
         createDemographicsRecord(id, demographicsProps);
 

@@ -48,8 +48,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         quickValidation: false,
         errorThreshold: null,
         newIdsAdded: {},
-        extraBirthFieldMappings: {},
-        extraDemographicsFieldMappings: {}
+        extraBirthFieldMappings: {}
     };
 
     //test to see if GUID persisted across tables
@@ -81,6 +80,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      *                  to update cached records.
      * @param {Boolean} doStandardProtocolCountValidation Validate animals in protocol using ehr.protocolTotalAnimalsBySpecies
      * @param {Boolean} errorSeverityForBloodDrawsWithoutWeight Error level for blood draw requests for animals without weight
+     * @param {Map} key extraDemographicsFieldMappings Object of extra demographics fields used in TriggerScriptHelper.onAnimalArrival
      */
 
     var scriptOptions = {
@@ -105,7 +105,8 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         announceAllModifiedParticipants: false,
         doStandardProtocolCountValidation: true,
         errorSeverityForBloodDrawsWithoutWeight: 'ERROR',
-        defaultAllowedDaysForFutureRequest: 30
+        defaultAllowedDaysForFutureRequest: 30,
+        extraDemographicsFieldMappings: {}
     };
 
     var cachedValues = {
