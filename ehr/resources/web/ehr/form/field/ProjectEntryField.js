@@ -128,7 +128,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                     var storeProjects = Ext4.Array.filter(store.collect('project'), function(proj) {
                         return LABKEY.Utils.isNumber(proj);
                     });
-                    if (storeProjects.length > 0) {
+                    if (storeProjects.length === 1) {
                         this.setValue(storeProjects[0]);
                     }
                 }
@@ -318,19 +318,19 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     this.callParent([val]);
   },
 
-  resolveProjectFromStore: function(){
+  resolveProjectFromStore: function () {
     var val = this.getValue();
     if (!val || this.isDestroyed)
       return;
 
     LDK.Assert.assertNotEmpty('Unable to find store in ProjectEntryField', this.store);
     var rec = this.store ? this.store.findRecord('project', val) : null;
-    if (rec){
+    if (rec) {
       return;
     }
 
     rec = this.allProjectStore.findRecord('project', val);
-    if (rec){
+    if (rec) {
       var newRec = this.store.createModel({});
       newRec.set({
         project: rec.data.project,
@@ -344,11 +344,9 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         fromClient: true
       });
 
-      this.store.insert(0, newRec);
-
-            return newRec;
-        }
-    },
+      return newRec;
+    }
+  },
 
   resolveProject: function(val){
     if (this.allProjectStore.isLoading()){
