@@ -129,10 +129,17 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                         return LABKEY.Utils.isNumber(proj);
                     });
                     if (storeProjects.length > 0) {
-                        this.setValue(storeProjects[0]);
+                      var project = storeProjects[0];
+                        this.setValue(project);
+                        var grid = this.up('grid');
+                        // Push into the grid model because the combobox may not be visible at the moment, meaning
+                        // its value is liable to be stomped over when the user clicks to edit the cell
+                        if (grid && grid.getSelectionModel().getSelection().length === 1) {
+                          grid.getSelectionModel().getSelection()[0].set('project', project);
+                        }
                     }
                 }
-            this.resolveProjectFromStore();
+            this.resolveProjectFromStore(this.getValue());
             this.getPicker().refresh();
           }
         }
@@ -141,8 +148,19 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         scope: this,
         beforerender: function(field){
           var target = field.up('form');
-          if (!target)
+          if (!target) {
             target = field.up('grid');
+            // When used in a grid, ExtJS won't push the current row's value into the combobox until the user clicks
+            // to edit. We want to know the value earlier, so that we can pre-query for the animal's assignments even
+            // before they click to edit.
+            target.getSelectionModel().on('selectionchange', function(x, selected) {
+              var project = null;
+              if (selected.length === 1) {
+                project = selected[0].get('project');
+              }
+              this.setValue(project);
+            }, this)
+          }
 
           LDK.Assert.assertNotEmpty('Unable to find form or grid', target);
           if (target) {
@@ -318,8 +336,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     this.callParent([val]);
   },
 
-  resolveProjectFromStore: function(){
-    var val = this.getValue();
+  resolveProjectFromStore: function(val){
     if (!val || this.isDestroyed)
       return;
 
@@ -353,13 +370,13 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
   resolveProject: function(val){
     if (this.allProjectStore.isLoading()){
       this.allProjectStore.on('load', function(store){
-        var newRec = this.resolveProjectFromStore();
+        var newRec = this.resolveProjectFromStore(val);
         if (newRec)
           this.setValue(val);
       }, this, {single: true});
     }
     else {
-      this.resolveProjectFromStore();
+      this.resolveProjectFromStore(val);
     }
   }
 });
