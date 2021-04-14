@@ -640,6 +640,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         //use the same data included with this assay
         Locator btn = Locator.linkContainingText("Download Example Data");
         waitForElement(btn);
+        
+        Ext4FieldRef.waitForField(this, "Instrument");
 
         assertEquals("Incorrect value for field", "ABI 7500", Ext4FieldRef.getForLabel(this, "Instrument").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(60), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
