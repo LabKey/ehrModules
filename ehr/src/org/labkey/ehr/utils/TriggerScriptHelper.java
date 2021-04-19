@@ -32,6 +32,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -90,6 +91,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -103,6 +105,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -869,9 +873,23 @@ public class TriggerScriptHelper
             }
         }
 
-        ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
-
-        EHRDemographicsService.get().getAnimals(getContainer(), ids);
+        DbScope scope = ti.getSchema().getScope();
+        try (DbScope.Transaction transaction = scope.ensureTransaction())
+        {
+            transaction.addCommitTask(() ->
+            {
+                try
+                {
+                    ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+                    EHRDemographicsService.get().getAnimals(getContainer(), ids);
+                }
+                catch (InvalidKeyException | BatchValidationException | QueryUpdateServiceException | SQLException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }, DbScope.CommitTaskOption.POSTCOMMIT);
+            transaction.commit();
+        }
     }
 
     public Map<String, Object> getExtraContext()
