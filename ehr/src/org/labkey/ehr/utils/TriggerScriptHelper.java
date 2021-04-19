@@ -884,7 +884,7 @@ public class TriggerScriptHelper
                 {
                     throw new RuntimeException(e);
                 }
-            }, DbScope.CommitTaskOption.POSTCOMMIT);
+            }, DbScope.CommitTaskOption.PRECOMMIT);
             transaction.commit();
         }
     }
