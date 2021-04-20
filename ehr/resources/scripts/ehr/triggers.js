@@ -149,7 +149,8 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
         }
 
         var daysAllowed = helper.getDefaultAllowedDaysForFutureRequest();
-        if(daysAllowed != null) {
+
+        if(daysAllowed != null && !helper.shouldAllowRequestsInDistantFuture()) {
             if ((-1 * timeDiffMills) > (1000 * 60 * 60 * 24 * daysAllowed)) //30 days by default
                 EHR.Server.Utils.addError(scriptErrors, 'date', 'Cannot place a request more than '+ daysAllowed + ' days in the future', 'ERROR');
         }
