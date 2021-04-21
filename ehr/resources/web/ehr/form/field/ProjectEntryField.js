@@ -21,7 +21,6 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
   matchFieldWidth: false,
   includeDefaultProjects: true,
   invesLastNameCol: 'lastName',
-  autoSelectFirstProjectOnLoad: false,
 
   initComponent: function(){
     this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
@@ -124,21 +123,6 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
           scope: this,
           delay: 50,
           load: function(store){
-                if (this.autoSelectFirstProjectOnLoad && !this.getValue()) {
-                    var storeProjects = Ext4.Array.filter(store.collect('project'), function(proj) {
-                        return LABKEY.Utils.isNumber(proj);
-                    });
-                    if (storeProjects.length > 0) {
-                      var project = storeProjects[0];
-                        this.setValue(project);
-                        var grid = this.up('grid');
-                        // Push into the grid model because the combobox may not be visible at the moment, meaning
-                        // its value is liable to be stomped over when the user clicks to edit the cell
-                        if (grid && grid.getSelectionModel().getSelection().length === 1) {
-                          grid.getSelectionModel().getSelection()[0].set('project', project);
-                        }
-                    }
-                }
             this.resolveProjectFromStore(this.getValue());
             this.getPicker().refresh();
           }
