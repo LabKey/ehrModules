@@ -9,7 +9,7 @@ BEGIN
     IF NOT EXISTS (
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name='miscCharges' and table_schema='ehr_billing' and column_name='chargeGroup'
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='chargegroup'
         )
     THEN
         ALTER TABLE ehr_billing.miscCharges ADD chargeGroup VARCHAR(200);
