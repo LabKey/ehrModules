@@ -9,6 +9,8 @@ EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
 var demographicsUpdates = [];
 var validIds = [];
+var totalDemographicsAnimalsUpdated = 0;
+var batchSize = 1000;
 
 function onInit(event, helper){
     helper.setScriptOptions({
@@ -61,6 +63,15 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                     death: row.date
                 });
             }
+
+            if (demographicsUpdates.length >= batchSize)
+            {
+                console.log('updating demographics death date for ' + demographicsUpdates.length + " animals");
+                helper.getJavaHelper().updateDemographicsRecord(demographicsUpdates);
+                totalDemographicsAnimalsUpdated += demographicsUpdates.length;
+                console.log('updated demographics death date for ' + totalDemographicsAnimalsUpdated + " animals");
+                demographicsUpdates  = [];
+            }
         }
         else {
             console.log(row.id + " is not a valid id");
@@ -77,9 +88,12 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 
 function onComplete(event, errors, helper){
 
+    // remaining updates to demographics
     if (demographicsUpdates.length > 0) {
         console.log('updating demographics death date for ' + demographicsUpdates.length + " animals");
         helper.getJavaHelper().updateDemographicsRecord(demographicsUpdates);
+        totalDemographicsAnimalsUpdated += demographicsUpdates.length;
+        console.log('updated demographics death date for ' + totalDemographicsAnimalsUpdated + " animals");
     }
 
     var deaths = helper.getDeaths();
