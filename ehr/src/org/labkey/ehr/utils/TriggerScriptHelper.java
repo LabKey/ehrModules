@@ -32,7 +32,6 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -870,23 +869,9 @@ public class TriggerScriptHelper
             }
         }
 
-        DbScope scope = ti.getSchema().getScope();
-        try (DbScope.Transaction transaction = scope.ensureTransaction())
-        {
-            transaction.addCommitTask(() ->
-            {
-                try
-                {
-                    ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
-                    EHRDemographicsService.get().getAnimals(getContainer(), ids);
-                }
-                catch (InvalidKeyException | BatchValidationException | QueryUpdateServiceException | SQLException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }, DbScope.CommitTaskOption.PRECOMMIT);
-            transaction.commit();
-        }
+        ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+
+        EHRDemographicsService.get().getAnimals(getContainer(), ids);
     }
 
     public Map<String, Object> getExtraContext()
