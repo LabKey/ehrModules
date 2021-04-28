@@ -23,7 +23,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.UpdatePermission;
 
 /**
  * Exposes tables to be viewed from a schema browser (including extended tables).
@@ -123,11 +123,11 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
 
         private static SimpleTable<EHR_PurchasingUserSchema> getPermissionFilteredTable(SimpleTable<EHR_PurchasingUserSchema> table)
         {
-            //Admins can see all the rows
-            if (table.getContainer().hasPermission(table.getUserSchema().getUser(), AdminPermission.class))
+            //Updaters can see all the rows
+            if (table.getContainer().hasPermission(table.getUserSchema().getUser(), UpdatePermission.class))
                 return table;
 
-            //Non-admins can only see rows created by them
+            //Non-updaters can only see rows created by them
             SimpleFilter filter = SimpleFilter.createContainerFilter(table.getContainer());
             filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
             table.addCondition(filter);

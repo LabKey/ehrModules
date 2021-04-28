@@ -164,6 +164,7 @@
             <column columnName="itemUnitId"/>
             <column columnName="controlledSubstance"/>
             <column columnName="quantity"/>
+            <column columnName="quantityReceived"/>
             <column columnName="unitCost"/>
             <column columnName="itemStatusId"/>
             <column columnName="LSID">
