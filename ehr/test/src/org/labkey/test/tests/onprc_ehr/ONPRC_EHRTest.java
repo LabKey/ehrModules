@@ -215,7 +215,7 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         }
 
         // Then try again with the problem corrected
-        protocolCountsRow.put("end", prepareDate(new Date(), 370, 0));
+        protocolCountsRow.put("enddate", prepareDate(new Date(), 370, 0));
         InsertRowsCommand protocolCountsCommand = new InsertRowsCommand("ehr", "protocol_counts");
         protocolCountsCommand.addRow(protocolCountsRow);
         protocolCountsCommand.execute(getApiHelper().getConnection(), getContainerPath());
