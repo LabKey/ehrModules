@@ -74,6 +74,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 60)
@@ -195,15 +196,28 @@ public class ONPRC_EHRTest extends AbstractGenericONPRC_EHRTest
         projectSelect.addFilter(new Filter("protocol", protocolId));
         final Integer projectId = (Integer)projectSelect.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("project");
 
+        // Try with a row that doesn't pass validation
+        Map<String, Object> protocolCountsRow = new HashMap<>();
+        protocolCountsRow.put("protocol", protocolId);
+        protocolCountsRow.put("species", "Cynomolgus");
+        protocolCountsRow.put("allowed", 2);
+        protocolCountsRow.put("start", prepareDate(new Date(), -10, 0));
+        try
+        {
+            InsertRowsCommand protocolCountsCommand = new InsertRowsCommand("ehr", "protocol_counts");
+            protocolCountsCommand.addRow(protocolCountsRow);
+            protocolCountsCommand.execute(getApiHelper().getConnection(), getContainerPath());
+            fail("Should have gotten an exception due to missing end date");
+        }
+        catch (CommandException e)
+        {
+            assertEquals("Wrong failure message", "ERROR: Must enter Start and End dates", e.getMessage());
+        }
+
+        // Then try again with the problem corrected
+        protocolCountsRow.put("end", prepareDate(new Date(), 370, 0));
         InsertRowsCommand protocolCountsCommand = new InsertRowsCommand("ehr", "protocol_counts");
-        protocolCountsCommand.addRow(new HashMap<String, Object>(){
-            {
-                put("protocol", protocolId);
-                put("species", "Cynomolgus");
-                put("allowed", 2);
-                put("start", prepareDate(new Date(), -10, 0));
-                put("end", prepareDate(new Date(), 370, 0));
-            }});
+        protocolCountsCommand.addRow(protocolCountsRow);
         protocolCountsCommand.execute(getApiHelper().getConnection(), getContainerPath());
 
         //create assignment
