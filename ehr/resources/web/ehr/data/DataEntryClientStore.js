@@ -298,7 +298,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             }
 
             if (idsNeeded.length){
-                this.ensureProjects(idsNeeded);
+                this.retrieveProjects(idsNeeded);
             }
         }
 
