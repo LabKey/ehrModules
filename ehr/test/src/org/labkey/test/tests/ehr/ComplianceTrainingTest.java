@@ -32,8 +32,8 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.TestTimeoutException;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.util.AdvancedSqlTest;
+import org.labkey.test.util.Crawler;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @BaseWebDriverTest.ClassTimeout(minutes = 5)
 public abstract class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
@@ -439,5 +437,13 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
     @Override public BrowserType bestBrowser()
     {
         return BrowserType.CHROME;
+    }
+
+    // Since this is part of the EHR tests with all PRC modules, but not doing a full EHR setup, there may be some
+    // broken links.
+    @Override
+    protected List<Crawler.ControllerActionId> getUncrawlableActions()
+    {
+        return Arrays.asList(new Crawler.ControllerActionId("snprc_scheduler", "begin"));
     }
 }
