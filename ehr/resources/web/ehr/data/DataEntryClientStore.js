@@ -31,6 +31,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         }
 
         this.addEvents('validation');
+        this.addEvents('projectchange');
 
         if (this.hasFormSortField){
             this.on('datachanged', this.updateFormSortField, this);
@@ -121,6 +122,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                                 rec.beginEdit();
                                 rec.set('project', assignments[0].project);
                                 rec.endEdit(true);
+                                this.fireEvent('projectchange', assignments[0].project, null);
                                 this.fireEvent('validation', this, rec);
                             }
                         }, this);
