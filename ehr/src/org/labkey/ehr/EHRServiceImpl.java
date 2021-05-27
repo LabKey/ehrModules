@@ -864,7 +864,7 @@ public class EHRServiceImpl extends EHRService
             SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
             SQLFragment displaySQL = new SQLFragment("(SELECT ");
             displaySQL.append(groupConcatSQL);
-            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) ");
+            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");
             displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             if (codeFilter != null)
             {
