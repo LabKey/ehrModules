@@ -899,6 +899,25 @@ public class EHRServiceImpl extends EHRService
             rawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             rawCol.setDisplayWidth("250");
             ti.addColumn(rawCol);
+
+            // Variant that's just the codes concatenated, without the sort index
+            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'").getSqlCharSequence());
+            simpleRawSQL.append("FROM ehr.snomed_tags t ");
+            simpleRawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            simpleRawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            if (codeFilter != null)
+            {
+                simpleRawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            simpleRawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            simpleRawSQL.append("GROUP BY t.recordid)");
+
+            ExprColumn simpleRawCol = new ExprColumn(ti, displayColumnName + "RawSimple", simpleRawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            simpleRawCol.setLabel(title + " simple raw values");
+            simpleRawCol.setHidden(true);
+            simpleRawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            simpleRawCol.setDisplayWidth("250");
+            ti.addColumn(simpleRawCol);
         }
     }
 }
