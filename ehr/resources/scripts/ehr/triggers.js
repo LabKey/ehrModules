@@ -761,12 +761,20 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         }
     }
 
+    var incrementSnomedIndex = true;
+
     if (row && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
         var newCodes = [];
         for (var i = 0; i < helper.getSNOMEDSubsetCodeFieldNames().length; i++) {
             var fieldName =  helper.getSNOMEDSubsetCodeFieldNames()[i];
             if (row[fieldName]) {
                 newCodes.push(row[fieldName]);
+            }
+            else if (row[fieldName + 'Simple']) {
+                // Handle forms that divide SNOMED by category but only allow a single selection, so they don't
+                // include an index when they submit
+                incrementSnomedIndex = false;
+                newCodes.push('1<>' + row[fieldName + 'Simple']);
             }
             row.codesRaw = newCodes.join(';');
         }
@@ -781,7 +789,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
         if (row.objectid){
             console.log('updating snomed tags: ' + row.codesRaw);
-            helper.getJavaHelper().updateSNOMEDTags(row.Id, row.objectid, (row.codesRaw ? row.codesRaw : null));
+            helper.getJavaHelper().updateSNOMEDTags(row.Id, row.objectid, (row.codesRaw ? row.codesRaw : null), incrementSnomedIndex);
         }
     }
 
