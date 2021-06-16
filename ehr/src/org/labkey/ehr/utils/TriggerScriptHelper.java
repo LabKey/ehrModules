@@ -2271,7 +2271,7 @@ public class TriggerScriptHelper
         }
     }
 
-    public void updateSNOMEDTags(String id, String objectid, String codes)
+    public void updateSNOMEDTags(String id, String objectid, String codes, boolean incrementIndex)
     {
         codes = StringUtils.trimToNull(codes);
         objectid = StringUtils.trimToNull(objectid);
@@ -2288,12 +2288,11 @@ public class TriggerScriptHelper
         {
             TableInfo snomedTags = EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_SNOMED_TAGS);
             String[] codeList = StringUtils.split(codes, ";");
-            int sort = 0;
+            int sort = 1;
 
             _log.info("adding " + codeList.length + " SNOMED tags for: " + objectid);
             for (String code : codeList)
             {
-                sort++;
                 String[] tokens = code.split("<>");
                 if (tokens.length != 2)
                 {
@@ -2315,6 +2314,9 @@ public class TriggerScriptHelper
                 toInsert.put("modifiedby", getUser().getUserId());
 
                 Table.insert(getUser(), snomedTags, toInsert);
+                if (incrementIndex) {
+                    sort++;
+                }
             }
         }
     }

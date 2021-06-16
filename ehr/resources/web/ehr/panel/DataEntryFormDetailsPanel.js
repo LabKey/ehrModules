@@ -108,35 +108,31 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
         LDK.Assert.assertTrue('No filter array applied in DataEntryFormDetailsPanel', filterArray.length > 0);
         LABKEY.NavTrail.setTrail(navTitle, null, navTitle, true, false);
 
-        var toAdd = [];
-        Ext4.Array.forEach(queries, function(q){
+        Ext4.Array.forEach(queries, function(q) {
             var id = LABKEY.Utils.id();
             var isPrimaryCmp = q.schemaName === 'ehr' && (q.queryName === 'requests' || q.queryName === 'tasks');
 
-            toAdd.push({
-                xtype: 'ldk-querycmp',
-                id: 'ldk-querycmp-' + id,
-                style: 'margin-bottom: 20px;',
-                queryConfig: {
-                    id: id,
-                    title: LABKEY.Utils.encodeHtml(q.label),
-                    frame: isPrimaryCmp ? 'portal' : 'dialog',
-                    schemaName: q.schemaName,
-                    queryName: q.queryName,
-                    viewName: viewName,
-                    filters: filterArray,
-                    //note: changed to removeableSort so it will take priority over any view-based sorts
-                    removeableSort: viewName === undefined ? q.serverStoreSort : undefined,
-                    success: this.onDataRegionLoad,
-                    scope: this
-                }
+            Ext4.get('detailsParent').createChild({id: id, tag: 'div', style: 'margin-bottom: 20px;'});
+
+            var qwp = new LABKEY.QueryWebPart({
+                renderTo: id,
+                title: LABKEY.Utils.encodeHtml(q.label),
+                frame: isPrimaryCmp ? 'portal' : 'dialog',
+                schemaName: q.schemaName,
+                queryName: q.queryName,
+                viewName: viewName,
+                filters: filterArray,
+                //note: changed to removeableSort so it will take priority over any view-based sorts
+                removeableSort: viewName === undefined ? q.serverStoreSort : undefined,
+                success: this.onDataRegionLoad,
+                scope: this
             });
+            qwp.render();
         }, this);
 
         this.showEditBtn('Completed', results.form.permissions);
 
         this.removeAll();
-        this.add(toAdd);
     },
 
     getParentRequestStatus: function(callback) {
@@ -166,18 +162,10 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
     },
 
     onDataRegionLoad: function(dr){
-        var drEl = Ext4.get(dr.domId);
-        LDK.Assert.assertNotEmpty('Unable to find dataRegion element in DataEntryFormDetailsPanel', drEl);
-
-        if (drEl) {
-            if (dr.totalRows > 0) {
-                var itemWidth = drEl.getSize().width + 100;
-                if (itemWidth > this.getWidth()){
-                    this.setWidth(itemWidth + 20);
-                }
-            }
-            else {
-                Ext4.getCmp('ldk-querycmp-' + dr.id).hide();
+        if (dr.totalRows === 0) {
+            var el = document.getElementById(dr.renderTo);
+            if (el) {
+                el.style.display = 'none';
             }
         }
     }
