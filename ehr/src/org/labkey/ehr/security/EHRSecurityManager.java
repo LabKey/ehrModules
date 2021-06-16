@@ -21,6 +21,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.security.EHRSecurityEscalator;
+import org.labkey.api.security.HasPermission;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
@@ -88,28 +89,7 @@ public class EHRSecurityManager
 
     public boolean testPermission (User u, SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)
     {
-        Collection<Class<? extends Permission>> permissions;
-        String className = getPermissionClassName(perm, qcState);
-
-        //NOTE: See getResourceProps() in SecurityApiActions for notes on this hack
-        if (resource instanceof Dataset)
-        {
-            Dataset ds = (Dataset)resource;
-            permissions = ds.getPermissions(u);
-        }
-        else
-        {
-            SecurityPolicy policy = SecurityPolicyManager.getPolicy(resource);
-            permissions = policy.getPermissions(u);
-        }
-
-        for (Class<? extends Permission> p : permissions)
-        {
-            if (p.getName().equals(className))
-                return true;
-        }
-
-        return false;
+        return resource.hasPermission(u, perm);
     }
 
     public String getPermissionClassName(Class<? extends Permission> perm, EHRQCState qc)
