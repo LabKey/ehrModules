@@ -89,7 +89,15 @@ public class EHRSecurityManager
 
     public boolean testPermission (User u, SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)
     {
-        return resource.hasPermission(u, perm);
+        try
+        {
+            Class qcPerm = Class.forName(getPermissionClassName(perm, qcState));
+            return resource.hasPermission(u, qcPerm);
+        }
+        catch (ClassNotFoundException x)
+        {
+            return false;
+        }
     }
 
     public String getPermissionClassName(Class<? extends Permission> perm, EHRQCState qc)
