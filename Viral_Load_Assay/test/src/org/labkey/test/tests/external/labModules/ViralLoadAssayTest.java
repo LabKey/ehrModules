@@ -669,7 +669,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
         waitForElement(Ext4Helper.Locators.window("Success"));
         clickAndWait(Ext4Helper.Locators.ext4Button("OK"));
-        waitForText("Import Samples");
+        waitForElement(Locator.tagWithText("div", "Import Samples"));
 
         log("Verifying results");
         _helper.clickNavPanelItemAndWait(ASSAY_NAME + " Runs:", 1);
@@ -841,7 +841,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
         waitForElement(Ext4Helper.Locators.window("Success"));
         clickAndWait(Ext4Helper.Locators.ext4Button("OK"));
-        waitForText("Import Samples");
+        waitForElement(Locator.tagWithText("div", "Import Samples"));
 
         log("Verifying results");
         _helper.clickNavPanelItemAndWait(fullAssayName + " Runs:", 1);
