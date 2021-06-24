@@ -9,7 +9,7 @@ EHR.DataEntryUtils.registerDataEntryFormButton('FINANCESUBMIT', {
     requiredQC: 'Completed',
     targetQC: 'Completed',
     errorThreshold: 'ERROR',
-    successURL: LABKEY.ActionURL.buildURL('project', 'begin.view', (ctx ? ctx['BillingContainer'] : null), null),
+    successURL: LABKEY.ActionURL.getParameter('returnUrl') ? LABKEY.ActionURL.getParameter('returnUrl') : LABKEY.ActionURL.buildURL('project', 'begin.view', (ctx ? ctx['BillingContainer'] : null), null),
     itemId: 'submitBtn',
     handler: function(btn){
         var panel = btn.up('ehr-dataentrypanel');
