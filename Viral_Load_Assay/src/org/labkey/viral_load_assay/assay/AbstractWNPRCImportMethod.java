@@ -393,8 +393,8 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
         Double copiesPerRxn = map.get("Concentration") == null ? null : ((Number)map.get("Concentration")).doubleValue();
         map.put("copiesPerRxn", copiesPerRxn);
 
-        Double eluateVol = new Double((Integer)map.get("eluateVol"));
-        Double volPerRxn = new Double((Integer)map.get("volPerRxn"));
+        Double eluateVol = Double.valueOf((Integer)map.get("eluateVol"));
+        Double volPerRxn = Double.valueOf((Integer)map.get("volPerRxn"));
         if (!map.containsKey("sampleVol"))
             map.put("sampleVol", 1.0);
 
