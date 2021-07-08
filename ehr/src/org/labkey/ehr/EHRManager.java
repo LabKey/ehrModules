@@ -278,6 +278,7 @@ public class EHRManager
             {"Request: Denied", "Request has been denied", false},
             {"Request: Cancelled", "Request has been cancelled", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
+            {"Request: On Hold", "Request has been put on hold", false},
             {"Review Required", "Review is required prior to public release", false},
             {"Scheduled", "Record is scheduled, but not performed", false},
             {"Started", "Record has started, but not completed",true}
