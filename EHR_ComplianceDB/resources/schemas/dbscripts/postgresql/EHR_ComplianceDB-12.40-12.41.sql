@@ -1,1 +1,1 @@
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add TrackingFlag nvarchar(100);
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add TrackingFlag varchar(100);
