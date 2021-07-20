@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.Employees add objectid entityid;
