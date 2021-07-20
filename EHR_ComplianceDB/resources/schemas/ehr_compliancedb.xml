@@ -273,6 +273,12 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="taskid">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+
         </columns>
     </table>
     <table tableName="requirements" tableDbType="TABLE">
@@ -416,6 +422,11 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="taskid">
                 <isUserEditable>false</isUserEditable>
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
@@ -566,6 +577,12 @@
                 <columnTitle>Employee Id</columnTitle>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="taskid">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+
         </columns>
     </table>
     <table tableName="employeerequirementexemptions" tableDbType="TABLE">
