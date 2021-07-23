@@ -114,22 +114,10 @@ public class EHR_BillingModule extends SpringModule
         UserManager.addUserListener(new UserManager.UserListener()
         {
             @Override
-            public void userAddedToSite(User user) {}
-
-            @Override
             public void userDeletedFromSite(User user)
             {
                 Table.delete(EHR_BillingSchema.getInstance().getDataAccessTable(), new SimpleFilter(FieldKey.fromParts("UserId"), user.getUserId()));
             }
-
-            @Override
-            public void userAccountDisabled(User user) {}
-
-            @Override
-            public void userAccountEnabled(User user) {}
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {}
         });
     }
 
