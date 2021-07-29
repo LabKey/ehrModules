@@ -38,10 +38,12 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -300,4 +302,7 @@ abstract public class EHRService
 
     /** Used to register EHR modules that use the ExtJS 3-based data entry UI */
     abstract public void addModuleRequiringLegacyExt3EditUI(Module m);
+
+    /** Extracts the study definition from a module resource to the pipeline root and queues a study import job */
+    abstract public void importStudyDefinition(Container container, User user, Module m, Path studyFolderPath) throws IOException;
 }
