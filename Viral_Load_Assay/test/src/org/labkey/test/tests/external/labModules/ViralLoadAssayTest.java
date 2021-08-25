@@ -648,12 +648,12 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         assertEquals("Incorrect value for field", Long.valueOf(20), Ext4FieldRef.getForLabel(this, "Sample Vol Per Rxn").getValue());
         waitAndClick(btn);
 
-        Ext4FieldRef textarea = _ext4Helper.queryOne("#fileContent", Ext4FieldRef.class);
         String text = _helper.getExampleData();
 
         log("Trying to save invalid data");
         String errorText = text.replaceAll("Subject1", "");
         errorText = errorText.replaceAll("Subject2\tDETECTOR1", "Subject2\tDETECTOR2");
+        Ext4FieldRef textarea = _ext4Helper.queryOne("#fileContent", Ext4FieldRef.class);
         textarea.setValue(errorText);
         waitAndClick(WAIT_FOR_PAGE, Ext4Helper.Locators.ext4Button("Upload"), 0);
         waitForElement(Ext4Helper.Locators.window("Upload Failed"));
@@ -811,20 +811,18 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         _ext4Helper.waitForMaskToDisappear();
 
         //use the same data included with this assay
-        Locator btn = Locator.linkContainingText("Download Example Data");
-        waitForElement(btn);
+        waitForElement(Locator.linkContainingText("Download Example Data"));
 
         assertEquals("Incorrect value for field", instrument, Ext4FieldRef.getForLabel(this, "Instrument").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(50), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(5), Ext4FieldRef.getForLabel(this, "Sample Vol Per Rxn").getValue());
-        waitAndClick(btn);
 
-        Ext4FieldRef textarea = _ext4Helper.queryOne("#fileContent", Ext4FieldRef.class);
-        String text = _helper.getExampleData();
+        String text = _helper.clickAndGetExampleData();
 
         log("Trying to save invalid data");
         String errorText = text.replace("NTmiKt6kg3i0f4dB2VuZ3H", "NTmiKt6kg3i0f4dB2VuZ3I");
         errorText = errorText.replace("nCmYQbLEikiQ73iDxmY33Y", "");
+        Ext4FieldRef textarea = _ext4Helper.queryOne("#fileContent", Ext4FieldRef.class);
         textarea.setValue(errorText);
         waitAndClick(WAIT_FOR_PAGE, Ext4Helper.Locators.ext4Button("Upload"), 0);
         waitForElement(Ext4Helper.Locators.window("Upload Failed"));
