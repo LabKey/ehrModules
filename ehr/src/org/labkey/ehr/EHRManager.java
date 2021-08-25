@@ -278,6 +278,7 @@ public class EHRManager
             {"Request: Denied", "Request has been denied", false},
             {"Request: Cancelled", "Request has been cancelled", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
+            {"Request: On Hold", "Request has been put on hold", false},
             {"Review Required", "Review is required prior to public release", false},
             {"Scheduled", "Record is scheduled, but not performed", false},
             {"Started", "Record has started, but not completed",true}
@@ -334,10 +335,10 @@ public class EHRManager
                     }
                     else
                     {
-                        if (rs.getInt("DefaultAssayQCState") != completedQCState)
+                        if (rs.getInt("DefaultPublishDataQCState") != completedQCState)
                         {
-                            messages.add("Set DefaultAssayQCState to Completed");
-                            toUpdate.put("DefaultAssayQCState", completedQCState);
+                            messages.add("Set DefaultPublishDataQCState to Completed");
+                            toUpdate.put("DefaultPublishDataQCState", completedQCState);
                         }
 
                         if (rs.getInt("DefaultDirectEntryQCState") != completedQCState)
@@ -482,21 +483,20 @@ public class EHRManager
 
             List<? extends Dataset> datasets = study.getDatasets();
 
+            // Hack - adding a shared EHR property to a domain ends up reparenting it to the EHR folder. They
+            // need to keep living in the /Shared project. Rather than introducing a brand new API for adding a shared
+            // PD to an existing domain, we'll directly update the owning container afterwards
+            Set<PropertyDescriptor> pdsToReparentInShared = new HashSet<>();
+
             for (Dataset dataset : datasets)
             {
                 Domain domain = dataset.getDomain();
                 List<? extends DomainProperty> dprops = domain.getProperties();
-                if (dprops == null)
-                {
-                    _log.error("domain.getProperties() was null for: " + domain.getName());
-                    continue;
-                }
 
                 boolean changed = false;
                 List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
-                List<PropertyDescriptor> props = new ArrayList<>();
-                props.addAll(properties);
+                List<PropertyDescriptor> props = new ArrayList<>(properties);
                 if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
                     String propertyURI = EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI();
@@ -549,11 +549,6 @@ public class EHRManager
                                 }
                             }
 
-//                            if (!pd.getContainer().equals(dp.getContainer()) && !pd.getProject().equals(ContainerManager.getSharedContainer()))
-//                            {
-//                                messages.add("Containers do not match for: " + dp.getName() + ".  Expected: " + dp.getContainer().getPath() + ", but was: " + pd.getContainer().getPath() + ".");
-//                            }
-
                             if (!dp.getName().equals(pd.getName()))
                             {
                                 messages.add("Case mismatch for property in dataset: " + dataset.getName() + ".  Expected: " + pd.getName() + ", but was: " + dp.getName() + ". This has not been automatically changed");
@@ -570,6 +565,7 @@ public class EHRManager
                             d.setPropertyURI(pd.getPropertyURI());
                             d.setRangeURI(pd.getRangeURI());
                             d.setName(pd.getName());
+                            pdsToReparentInShared.add(pd);
                             changed = true;
                         }
                     }
@@ -605,19 +601,27 @@ public class EHRManager
                 }
             }
 
+            if (commitChanges)
+            {
+                for (PropertyDescriptor sharedPD : pdsToReparentInShared)
+                {
+                    sharedPD.setContainer(ContainerManager.getSharedContainer());
+                    sharedPD.setProject(ContainerManager.getSharedContainer());
+                    OntologyManager.updatePropertyDescriptor(sharedPD);
+                }
+            }
+
             //ensure keymanagement type
             if (commitChanges)
             {
-                DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
-                long total = new SqlExecutor(studySchema).execute(sql);
+                long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 messages.add("Non-demographics datasets updated to use objectId as a managed key: "+ total);
             }
             else
             {
-                DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE keymanagementtype!=? AND demographicdata=? AND container=?", "GUID", false, c.getEntityId());
-                long total = new SqlExecutor(studySchema).execute(sql);
+                long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 if (total > 0)
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
@@ -627,7 +631,7 @@ public class EHRManager
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             Set<String> distinctIndexes = new HashSet<>();
-            for (Dataset<?> d : study.getDatasets())
+            for (Dataset d : study.getDatasets())
             {
                 String tableName = d.getDomain().getStorageTableName();
                 TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
@@ -1121,8 +1125,7 @@ public class EHRManager
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
     {
-        DbSchema expSchema = DbSchema.get(ExpSchema.SCHEMA_NAME);
-        TableInfo propertyDomain = expSchema.getTable("propertydomain");
+        DbSchema expSchema = ExperimentService.get().getSchema();
         TableInfo propertyDescriptor = expSchema.getTable("propertydescriptor");
 
         //find propertyId
@@ -1273,22 +1276,22 @@ public class EHRManager
                 @Override
                 public void exec(Map<String, Object> map)
                 {
-                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                    row.putAll(map);
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.putAll(map);
 
-                    if (row.containsKey("requestid") && row.get("requestid") != null)
-                    {
-                        row.put("requestid", null);
-                        row.put("qcstate", null);
-                        row.put("taskid", null);
-                        row.put("qcstateLabel", "Request: Approved");
+                if (row.containsKey("requestid") && row.get("requestid") != null)
+                {
+                    row.put("requestid", null);
+                    row.put("qcstate", null);
+                    row.put("taskid", null);
+                    row.put("qcstateLabel", "Request: Approved");
 
-                        requestsToQueue.add(row);
-                    }
-                    else
-                    {
-                        keysToDelete.add(row);
-                    }
+                    requestsToQueue.add(row);
+                }
+                else
+                {
+                    keysToDelete.add(row);
+                }
                 }
             });
 
@@ -1296,24 +1299,16 @@ public class EHRManager
             {
                 if (!keysToDelete.isEmpty())
                 {
-                    ti.getUpdateService().deleteRows(u, c, keysToDelete, null, new HashMap<String, Object>());
+                    ti.getUpdateService().deleteRows(u, c, keysToDelete, null, new HashMap<>());
                 }
 
 
                 if (!requestsToQueue.isEmpty())
                 {
-                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<String, Object>());
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<>());
                 }
             }
-            catch (InvalidKeyException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (QueryUpdateServiceException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (BatchValidationException e)
+            catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
             {
                 throw new RuntimeException(e);
             }

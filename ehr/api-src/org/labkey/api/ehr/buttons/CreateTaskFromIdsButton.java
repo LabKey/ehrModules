@@ -34,7 +34,7 @@ import org.labkey.api.view.template.ClientDependency;
  */
 public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
 {
-    private String[] _datasets;
+    private final String[] _datasets;
 
     public CreateTaskFromIdsButton(Module owner, String btnLabel, String taskLabel, String formType, String[] datasets)
     {
@@ -62,7 +62,7 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
 
         for (String dataset : _datasets)
         {
-            Dataset<?> ds = getDataset(s, dataset);
+            Dataset ds = getDataset(s, dataset);
             if (ds == null)
                 return false;
 
@@ -73,9 +73,9 @@ public class CreateTaskFromIdsButton extends SimpleButtonConfigFactory
         return true;
     }
 
-    private Dataset<?> getDataset(Study s, String name)
+    private Dataset getDataset(Study s, String name)
     {
-        for (Dataset<?> ds : s.getDatasets())
+        for (Dataset ds : s.getDatasets())
         {
             if (ds.getName().equalsIgnoreCase(name) || ds.getLabel().equalsIgnoreCase(name))
                 return ds;
