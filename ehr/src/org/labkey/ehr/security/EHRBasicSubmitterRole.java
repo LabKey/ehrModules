@@ -50,6 +50,8 @@ public class EHRBasicSubmitterRole extends AbstractEHRDatasetRole
 //                EHRRequestDeniedDeletePermission.class,
                 EHRRequestDeniedInsertPermission.class,
                 EHRRequestDeniedUpdatePermission.class,
+                EHRRequestOnHoldInsertPermission.class,
+                EHRRequestOnHoldUpdatePermission.class,
 //                EHRRequestCancelledDeletePermission.class,
                 EHRRequestCancelledInsertPermission.class,
                 EHRRequestCancelledUpdatePermission.class,
