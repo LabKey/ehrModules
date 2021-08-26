@@ -855,7 +855,7 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
-    public void addModuleRequiringFormEditUI(Module m)
+    public void addModulePreferringTaskFormEditUI(Module m)
     {
         _modulesRequiringFormEditUI.add(m);
     }
