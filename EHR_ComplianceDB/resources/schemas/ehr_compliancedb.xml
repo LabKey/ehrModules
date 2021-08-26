@@ -283,6 +283,9 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="qcstate" >
+                <isHidden>true</isHidden>
+            </column>
 
         </columns>
     </table>
@@ -492,6 +495,14 @@
             <column columnName="modified">
                 <isUserEditable>false</isUserEditable>
                 <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="taskid">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="qcstate" >
                 <isHidden>true</isHidden>
             </column>
         </columns>
