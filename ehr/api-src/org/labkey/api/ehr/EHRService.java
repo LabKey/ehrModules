@@ -305,4 +305,7 @@ abstract public class EHRService
 
     /** Extracts the study definition from a module resource to the pipeline root and queues a study import job */
     abstract public void importStudyDefinition(Container container, User user, Module m, Path studyFolderPath) throws IOException;
+
+    /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
+    abstract public void addModuleRequiringFormEditUI(Module m);
 }
