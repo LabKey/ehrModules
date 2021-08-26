@@ -332,10 +332,6 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getView(EHRQueryForm form, BindException errors)
         {
-
-            // if the modules can opt in - look into isUseLegagyExt3EditUI
-            // find task id and form type
-            // send it to edit form url
             ensureQueryExists(form);
 
             _form = form;
