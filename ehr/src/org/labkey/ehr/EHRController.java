@@ -354,7 +354,7 @@ public class EHRController extends SpringActionController
             {
                 String detailsStr;
                 String importStr;
-                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
+                if (EHRServiceImpl.get().isUseLegacyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
                     // Because the Ext3-based UI can rely on loading JS-based metadata that is keyed
                     // off table name, and because when this was originally written LK preferentially used label over title for
@@ -397,7 +397,8 @@ public class EHRController extends SpringActionController
                         url.addParameter("importURL", importUrl.toString());
                     }
                 }
-                else {
+                else
+                {
                     detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
                     importStr = "";
                     for (String pkCol : ti.getPkColumnNames())
@@ -415,7 +416,15 @@ public class EHRController extends SpringActionController
                     }
                 }
 
-                DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
+                DetailsURL updateUrl;
+                if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
+                {
+                    updateUrl = DetailsURL.fromString("/ehr/dataEntryForm.view?taskid=${taskid}&formType=${taskid/formType}");
+                }
+                else
+                {
+                    updateUrl = DetailsURL.fromString(detailsStr);
+                }
                 updateUrl.setContainerContext(getContainer());
 
                 String deleteQueryName = ti.getName();
