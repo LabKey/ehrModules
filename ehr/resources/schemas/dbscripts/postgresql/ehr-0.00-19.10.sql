@@ -1841,3 +1841,7 @@ CREATE TABLE ehr.investigators (
 );
 
 CREATE INDEX IX_EHR_INVESTIGATORS_CONTAINER ON ehr.investigators (Container);
+
+/* ehr-18.30-19.10.sql */
+
+ALTER TABLE ehr.investigators ADD financialanalyst int;

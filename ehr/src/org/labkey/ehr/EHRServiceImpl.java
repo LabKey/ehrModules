@@ -17,11 +17,14 @@ package org.labkey.ehr;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+import org.labkey.api.action.NullSafeBindException;
+import org.labkey.api.admin.ImportOptions;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
@@ -47,6 +50,8 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
@@ -60,6 +65,8 @@ import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.DatasetTable;
+import org.labkey.api.study.StudyService;
+import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
@@ -75,8 +82,15 @@ import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
+import org.springframework.validation.BindException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -837,6 +851,51 @@ public class EHRServiceImpl extends EHRService
     public void addModuleRequiringLegacyExt3EditUI(Module m)
     {
         _modulesRequiringLegacyExt3UI.add(m);
+    }
+
+    @Override
+    public void importStudyDefinition(Container container, User user, Module m, Path sourceStudyDirPath) throws IOException
+    {
+        Resource root = m.getModuleResource(sourceStudyDirPath);
+        PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(container);
+        java.nio.file.Path pipeRootPath = pipeRoot.getRootNioPath();
+        java.nio.file.Path studyPath = pipeRootPath.resolve("upgradeStudyImport");
+        if (Files.exists(studyPath))
+        {
+            FileUtil.deleteDir(studyPath);
+        }
+        copyResourceToPath(root, studyPath);
+        java.nio.file.Path studyXmlPath = studyPath.resolve("study.xml");
+        if (!Files.exists(studyXmlPath))
+        {
+            throw new FileNotFoundException("Couldn't find an extracted " + studyPath);
+        }
+        ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
+        options.setSkipQueryValidation(true);
+
+        BindException errors = new NullSafeBindException(new Object(), "reload");
+        StudyService.get().runStudyImportJob(container, user, null, studyXmlPath.toFile(), "study.xml", errors, pipeRoot, options);
+    }
+
+    private void copyResourceToPath(Resource resource, java.nio.file.Path target) throws IOException
+    {
+        if (resource.isCollection())
+        {
+            Files.createDirectory(target);
+            for (Resource child : resource.list())
+            {
+                java.nio.file.Path childTarget = target.resolve(child.getName());
+                copyResourceToPath(child, childTarget);
+            }
+        }
+        else
+        {
+            try (InputStream in = resource.getInputStream();
+                OutputStream out = Files.newOutputStream(target))
+            {
+                FileUtil.copyData(in, out);
+            }
+        }
     }
 
     public boolean isUseLegagyExt3EditUI(Container c)

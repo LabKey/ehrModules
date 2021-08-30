@@ -350,7 +350,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void customizeRoomCol(AbstractTableInfo ti, BaseColumnInfo room, Container ehrContainer)
+    private void customizeRoomCol(AbstractTableInfo ti, MutableColumnInfo room, Container ehrContainer)
     {
         ensureSortColumn(ti, room);
 
@@ -393,7 +393,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private void customizeCageCol(AbstractTableInfo ti, BaseColumnInfo cage)
+    private void customizeCageCol(AbstractTableInfo ti, MutableColumnInfo cage)
     {
         ensureSortColumn(ti, cage);
 
