@@ -27,7 +27,7 @@ function beforeUpdate(row, oldRow, errors){
 }
 
 function beforeUpsert(row, errors){
-    var lookupFields = ['type', 'title', 'unit', 'location'];
+    var lookupFields = ['type', 'title', 'category', 'location'];
     for (var i=0;i<lookupFields.length;i++){
         var f = lookupFields[i];
         var val = row[f];
@@ -40,21 +40,21 @@ function beforeUpsert(row, errors){
                 row[f] = normalizedVal;  //cache value for purpose of normalizing case
         }
     }
-    var categories = row['category'];
+    var categories = row['unit'];
     if (categories) {
         var catdata = categories.split(",");
         var normalizedCategories = [];
         for (var j = 0; j < catdata.length; ++j) {
             if (!LABKEY.ExtAdapter.isEmpty(catdata[j])) {
-                var normalizedCategory = helper.getLookupValue(catdata[j], 'category');
+                var normalizedCategory = helper.getLookupValue(catdata[j], 'unit');
                 if (LABKEY.ExtAdapter.isEmpty(normalizedCategory))
-                    errors['category'] = 'Unknown value for category. Value was: ' + catdata[j];
+                    errors['unit'] = 'Unknown value for category. Value was: ' + catdata[j];
                 else
                     normalizedCategories.push(normalizedCategory);
             }
         }
         if (normalizedCategories.length > 0) {
-            row['category'] = normalizedCategories.join(','); //cache value for purpose of normalizing case
+            row['unit'] = normalizedCategories.join(','); //cache value for purpose of normalizing case
         }
     }
 
