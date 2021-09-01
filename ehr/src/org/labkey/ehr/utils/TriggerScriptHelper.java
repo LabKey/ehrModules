@@ -831,9 +831,10 @@ public class TriggerScriptHelper
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
-        updatedRows = new ArrayList<>(updatedRows);
         if (updatedRows == null || updatedRows.isEmpty())
             return;
+
+        updatedRows = new ArrayList<>(updatedRows);
 
         Set<String> ids = new HashSet<>(updatedRows.size());
         List<Map<String, Object>> newRows = new ArrayList<>(updatedRows.size());
@@ -869,9 +870,12 @@ public class TriggerScriptHelper
             }
         }
 
-        ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
-
-        EHRDemographicsService.get().getAnimals(getContainer(), ids);
+        if (!newRows.isEmpty())
+        {
+            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+            // Prime the cache for the updated IDs
+            EHRDemographicsService.get().getAnimals(getContainer(), ids);
+        }
     }
 
     public Map<String, Object> getExtraContext()
