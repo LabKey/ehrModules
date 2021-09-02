@@ -27,7 +27,7 @@ function beforeUpdate(row, oldRow, errors){
 }
 
 function beforeUpsert(row, errors){
-    var lookupFields = ['requirementname', 'unit'];
+    var lookupFields = ['requirementname', 'category', 'unit'];
     for (var i=0;i<lookupFields.length;i++){
         var f = lookupFields[i];
         var val = row[f];
@@ -38,26 +38,6 @@ function beforeUpsert(row, errors){
                 errors[f] = 'Unknown value for field: ' + f + '. Value was: ' + val;
             else
                 row[f] = normalizedVal;  //cache value for purpose of normalizing case
-        }
-    }
-    var lookupFieldsother = ['category'];
-    var g = lookupFieldsother[i];
-    var valt = row[g];
-    var catdata= [];
-    if (valt) {
-        var catdata = valt.split(",");
-        console.log("catdate:  " + catdata);
-        console.log("valt:  " + valt);
-        for (var j = 0; j < catdata.length; ++j) {
-            if (!LABKEY.ExtAdapter.isEmpty(catdata[j])) {
-                console.log("catdata[j]:  " + catdata[j]);
-                var normalizedValt = helper.getLookupValue(catdata[j], g);
-                console.log("g:  " + g);
-                if (LABKEY.ExtAdapter.isEmpty(normalizedValt))
-                    errors[g] = 'Unknown value for field3: ' + g + '. Value was: ' + catdata[j];
-                else
-                    row[g] = normalizedValt;  //cache value for purpose of normalizing case
-            }
         }
     }
 }
