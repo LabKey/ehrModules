@@ -205,7 +205,7 @@
                 <columnTitle>End Date</columnTitle>
                 <formatString>Date</formatString>
             </column>
-            <column columnName="notes">
+            <column columnName="Notes">
                 <nullable>true</nullable>
                 <columnTitle>Notes</columnTitle>
             </column>
@@ -283,7 +283,7 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
-            <column columnName="qcstate" >
+            <column columnName="QCState" >
                 <isHidden>true</isHidden>
             </column>
 
@@ -439,6 +439,9 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="QCState" >
+                <isHidden>true</isHidden>
+            </column>
         </columns>
     </table>
     <table tableName="requirementsperemployee" tableDbType="TABLE">
@@ -495,14 +498,6 @@
             <column columnName="modified">
                 <isUserEditable>false</isUserEditable>
                 <nullable>true</nullable>
-                <isHidden>true</isHidden>
-            </column>
-            <column columnName="taskid">
-                <isUserEditable>false</isUserEditable>
-                <nullable>true</nullable>
-                <isHidden>true</isHidden>
-            </column>
-            <column columnName="qcstate" >
                 <isHidden>true</isHidden>
             </column>
         </columns>
