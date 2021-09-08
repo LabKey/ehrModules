@@ -17,9 +17,8 @@ package org.labkey.ehr;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -84,7 +83,6 @@ import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 import org.springframework.validation.BindException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -874,7 +872,7 @@ public class EHRServiceImpl extends EHRService
         options.setSkipQueryValidation(true);
 
         BindException errors = new NullSafeBindException(new Object(), "reload");
-        StudyService.get().runStudyImportJob(container, user, null, studyXmlPath.toFile(), "study.xml", errors, pipeRoot, options);
+        StudyService.get().runStudyImportJob(container, user, null, studyXmlPath, "study.xml", errors, pipeRoot, options);
     }
 
     private void copyResourceToPath(Resource resource, java.nio.file.Path target) throws IOException
