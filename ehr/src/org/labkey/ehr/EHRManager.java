@@ -28,6 +28,7 @@ import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
@@ -266,7 +267,7 @@ public class EHRManager
 
         //NOTE: there is no public API to set a study, so hit the DB directly.
         final TableInfo studyTable = DbSchema.get("study").getTable("study");
-        TableInfo ti = DbSchema.get("core").getTable("qcstate");
+        TableInfo ti = CoreSchema.getInstance().getTableInfoQCState();
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
