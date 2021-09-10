@@ -10,7 +10,7 @@ EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 var demographicsUpdates = [];
 var validIds = [];
 var totalDemographicsAnimalsUpdated = 0;
-var batchSize = 250;
+var batchSize = 125;
 
 function onInit(event, helper){
     helper.setScriptOptions({
