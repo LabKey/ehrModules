@@ -19,7 +19,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
@@ -47,6 +46,7 @@ import org.labkey.api.util.CPUTimer;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.Pair;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 import org.quartz.CronScheduleBuilder;
@@ -79,25 +79,10 @@ import java.util.TreeSet;
  */
 public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
-    private static final Logger _log = LogManager.getLogger(EHRDemographicsServiceImpl.class);
+    private static final Logger _log = LogHelper.getLogger(EHRDemographicsServiceImpl.class, "Demographics caching, refreshing, and consistency checking");
     private static JobDetail _job = null;
 
     private Cache<String, AnimalRecordImpl> _cache;
-
-//    private static class DemographicsCacheLoader implements CacheLoader<String, AnimalRecord>
-//    {
-//        @Override
-//        public AnimalRecord load(String key, Object argument)
-//        {
-//            //expects: container, animalId
-//            Pair<Container, String> pair = (Pair)argument;
-//
-//            _log.info("loading animal: " + pair.second);
-//            List<AnimalRecord> ret = EHRDemographicsServiceImpl.get().createRecords(pair.first, Collections.singleton(pair.second));
-//
-//            return ret.isEmpty() ? null : ret.get(0);
-//        }
-//    }
 
     public EHRDemographicsServiceImpl()
     {
