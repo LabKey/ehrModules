@@ -283,9 +283,7 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
-            <column columnName="QCState" >
-                <isHidden>true</isHidden>
-            </column>
+
 
         </columns>
     </table>
@@ -439,9 +437,17 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
-            <column columnName="QCState" >
+            <column columnName="objectid">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="trackingflag">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+
         </columns>
     </table>
     <table tableName="requirementsperemployee" tableDbType="TABLE">
