@@ -18,7 +18,6 @@ package org.labkey.ehr.utils;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +76,7 @@ import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.StringExpression;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -123,7 +123,7 @@ public class TriggerScriptHelper
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
-    private Map<Integer, String> _cachedAccounts = new HashMap<>();
+    private final Map<Integer, String> _cachedAccounts = new HashMap<>();
     /**
      *  Options that can be set in modules using EHR trigger scripts to opt in/out of or alter the behavior
      *  of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
@@ -133,9 +133,9 @@ public class TriggerScriptHelper
      *  <li>departureStatus - center specific custom status for animal departures</li>
      */
     @NotNull
-    private static Map<String, String> _centerCustomProps = new HashMap<>();
+    private static final Map<String, String> _centerCustomProps = new HashMap<>();
 
-    private static final Logger _log = LogManager.getLogger(TriggerScriptHelper.class);
+    private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
     private TriggerScriptHelper(int userId, String containerId)
     {

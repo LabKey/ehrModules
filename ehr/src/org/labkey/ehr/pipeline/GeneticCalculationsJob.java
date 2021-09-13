@@ -16,29 +16,23 @@
 package org.labkey.ehr.pipeline;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.pipeline.PipelineJobException;
-import org.labkey.api.security.User;
+import org.labkey.api.util.logging.LogHelper;
 import org.quartz.CronScheduleBuilder;
-import org.quartz.DailyTimeIntervalScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
-import org.quartz.TimeOfDay;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.scheduling.SchedulingException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,7 +43,7 @@ import java.util.Map;
 public class GeneticCalculationsJob implements Job
 {
     public final static String GENETICCALCULATIONS_PROPERTY_DOMAIN = "org.labkey.ehr.geneticcalculations";
-    private static final Logger _log = LogManager.getLogger(GeneticCalculationsJob.class);
+    private static final Logger _log = LogHelper.getLogger(GeneticCalculationsJob.class, "Management and scheduling of genetic calculation pipeline jobs");
     private static TriggerKey _jobKey = null;
 
     public GeneticCalculationsJob()
