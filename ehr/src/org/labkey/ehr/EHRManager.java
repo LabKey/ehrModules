@@ -267,7 +267,7 @@ public class EHRManager
 
         //NOTE: there is no public API to set a study, so hit the DB directly.
         final TableInfo studyTable = DbSchema.get("study").getTable("study");
-        TableInfo ti = CoreSchema.getInstance().getTableInfoQCState();
+        TableInfo ti = CoreSchema.getInstance().getTableInfoDataStates();
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
