@@ -117,6 +117,7 @@ public class EHRServiceImpl extends EHRService
     private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
+    private Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
     private ProjectValidator _projectValidator = null;
 
     private static final Logger _log = LogManager.getLogger(EHRServiceImpl.class);
@@ -852,6 +853,12 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public void addModulePreferringTaskFormEditUI(Module m)
+    {
+        _modulesRequiringFormEditUI.add(m);
+    }
+
+    @Override
     public void importStudyDefinition(Container container, User user, Module m, Path sourceStudyDirPath) throws IOException
     {
         Resource root = m.getModuleResource(sourceStudyDirPath);
@@ -896,10 +903,20 @@ public class EHRServiceImpl extends EHRService
         }
     }
 
-    public boolean isUseLegagyExt3EditUI(Container c)
+    public boolean isUseLegacyExt3EditUI(Container c)
+    {
+        return isRegisteredUI(_modulesRequiringLegacyExt3UI, c);
+    }
+
+    public boolean isUseFormEditUI(Container c)
+    {
+        return isRegisteredUI(_modulesRequiringFormEditUI, c);
+    }
+
+    private boolean isRegisteredUI(Set<Module> modules, Container c)
     {
         Set<Module> am = c.getActiveModules();
-        for (Module m : _modulesRequiringLegacyExt3UI)
+        for (Module m : modules)
         {
             if (am.contains(m))
             {
