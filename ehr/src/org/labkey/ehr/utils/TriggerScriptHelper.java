@@ -863,6 +863,7 @@ public class TriggerScriptHelper
                 newRows.add(row);
                 keyRows.add(keyRow);
                 ids.add(id);
+                _log.info("Attempting to update demographics for " + id + ": " + row);
             }
             else
             {
