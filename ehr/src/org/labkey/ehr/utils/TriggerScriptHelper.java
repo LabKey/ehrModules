@@ -831,7 +831,8 @@ public class TriggerScriptHelper
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
-        if (updatedRows == null || updatedRows.isEmpty())
+        // updatedRows object may be a JS array where isEmpty() isn't reliable, so use size() == 0 instead
+        if (updatedRows == null || updatedRows.size() == 0)
             return;
 
         updatedRows = new ArrayList<>(updatedRows);
@@ -863,6 +864,7 @@ public class TriggerScriptHelper
                 newRows.add(row);
                 keyRows.add(keyRow);
                 ids.add(id);
+                _log.debug("Attempting to update demographics for " + id + ": " + row);
             }
             else
             {
