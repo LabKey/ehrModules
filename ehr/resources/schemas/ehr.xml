@@ -1499,7 +1499,7 @@
         </columns>
     </table>
     <table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
-        <description>Additional EHR-specific information associated with the core.qcstate table</description>
+        <description>Additional EHR-specific information associated with the core.datastates table</description>
         <tableTitle>QCState Metadata</tableTitle>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>

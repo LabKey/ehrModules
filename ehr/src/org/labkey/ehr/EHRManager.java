@@ -1392,7 +1392,7 @@ public class EHRManager
 
     public EHRQCState[] getQCStates(Container c)
     {
-        SQLFragment sql = new SQLFragment("SELECT * FROM core.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
+        SQLFragment sql = new SQLFragment("SELECT * FROM core.datastates qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }

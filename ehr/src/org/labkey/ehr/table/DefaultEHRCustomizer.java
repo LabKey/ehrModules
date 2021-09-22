@@ -1181,7 +1181,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn(countsAgainstVolume) == null)
         {
             SQLFragment sql = new SQLFragment("CASE " +
-                " WHEN EXISTS (SELECT md.draftdata FROM core.qcstate q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " WHEN EXISTS (SELECT md.draftdata FROM core.datastates q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                 " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
                 " END", ti.getUserSchema().getContainer().getId());
             ExprColumn col = new ExprColumn(ti, countsAgainstVolume, sql, JdbcType.BOOLEAN, ti.getColumn("qcstate"));
