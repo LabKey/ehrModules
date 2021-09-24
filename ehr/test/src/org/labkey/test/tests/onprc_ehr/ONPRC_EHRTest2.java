@@ -613,7 +613,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(finalizeOKButton, WAIT_FOR_JAVASCRIPT);
         click(finalizeOKButton);
 
-        waitAndClick(WAIT_FOR_JAVASCRIPT * 2, Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4Button("No")), WAIT_FOR_PAGE);
+        waitAndClick(WAIT_FOR_JAVASCRIPT * 5, Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4Button("No")), WAIT_FOR_PAGE);
 
         waitForElement(Locator.tagWithText("a", "Enter New Data"));
 
