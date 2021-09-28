@@ -27,6 +27,7 @@ import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
@@ -265,7 +266,7 @@ public class EHRManager
 
         //NOTE: there is no public API to set a study, so hit the DB directly.
         final TableInfo studyTable = DbSchema.get("study").getTable("study");
-        TableInfo ti = DbSchema.get("core").getTable("qcstate");
+        TableInfo ti = CoreSchema.getInstance().getTableInfoDataStates();
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
@@ -1391,7 +1392,7 @@ public class EHRManager
 
     public EHRQCState[] getQCStates(Container c)
     {
-        SQLFragment sql = new SQLFragment("SELECT * FROM core.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
+        SQLFragment sql = new SQLFragment("SELECT * FROM core.datastates qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }
