@@ -610,7 +610,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         waitForElement(finalizeOKButton, WAIT_FOR_JAVASCRIPT);
         click(finalizeOKButton);
 
-        waitAndClick(WAIT_FOR_JAVASCRIPT * 2, Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4Button("No")), WAIT_FOR_PAGE);
+        waitAndClick(WAIT_FOR_JAVASCRIPT * 5, Ext4Helper.Locators.window("Success").append(Ext4Helper.Locators.ext4Button("No")), WAIT_FOR_PAGE);
 
         waitForElement(Locator.tagWithText("a", "Enter New Data"));
 
@@ -1009,7 +1009,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         log("Creating the Treatment order request");
         goToProjectHome();
         clickAndWait(Locator.linkWithText("Enter Data / Task Review"));
-        clickAndWait(Locator.linkWithText("Medications/Diet"));
+        waitAndClickAndWait(Locator.linkWithText("Medications/Diet"));
 
         addTreatmentOrder(animalId, beginDate, endDate, "640991", "ACETAMINOPHEN (80mg) (E-77510)",
                 "BID - AM/Night", "PO", "tablet(s)", 10, "mg");
