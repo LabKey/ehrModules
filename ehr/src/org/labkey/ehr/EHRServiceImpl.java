@@ -58,6 +58,7 @@ import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.resource.DirectoryResource;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
@@ -870,7 +871,7 @@ public class EHRServiceImpl extends EHRService
 
         java.nio.file.Path studyXmlPath;
 
-        if (root instanceof FileResource && ((FileResource)root).getFile().equals(pipeRootPath.toFile()))
+        if (root instanceof DirectoryResource && ((DirectoryResource)root).getDir().equals(pipeRootPath.toFile()))
         {
             // The pipeline root is already pointed at the study definition's folder, like it might be on a dev machine.
             // No need to copy, especially since copying can cause infinite recursion when the paths are nested
