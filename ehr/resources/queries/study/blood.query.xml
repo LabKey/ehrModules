@@ -19,11 +19,12 @@
                     <column columnName="billedby">
                         <columnTitle>Billed By</columnTitle>
                         <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
+                        <isUnselectable>false</isUnselectable>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>blood_billed_by</fkTable>
                             <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName>title</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="chargetype">
