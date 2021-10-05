@@ -1,16 +1,13 @@
 
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag varchar(100);
-GO
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add COLUMN trackingflag varchar(100);
 
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add objectid ENTITYID;
-GO
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add COLUMN objectid ENTITYID;
 
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add taskid ENTITYID;
-GO
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add COLUMN taskid ENTITYID;
 
 CREATE TABLE ehr_compliancedb.EmployeePerUnit
 (
-    RowId INT IDENTITY(1,1) NOT NULL,
+    RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     unit varchar(255) null,
     category varchar(255) null,
@@ -20,8 +17,7 @@ CREATE TABLE ehr_compliancedb.EmployeePerUnit
     ModifiedBy USERID,
     Modified timestamp,
     taskid entityid,
-    objectid entityid
+    objectid entityid,
 
         CONSTRAINT PK_EmployeePerUnits PRIMARY KEY (RowId)
 );
-GO
