@@ -30,11 +30,21 @@ Ext4.define('EHR_ComplianceDB.panel.EmployeeDetailsPanel', {
                 showBackBtn: false,
                 title: 'Employee Details'
             },{
+            //     xtype: 'ldk-querypanel',
+            //     queryConfig: {
+            //         title: 'Training / Requirement Summary',
+            //         schemaName: this.schemaName,
+            //         queryName: 'ComplianceRecentTests',
+            //         filterArray: filterArray,
+            //         failure: LDK.Utils.getErrorCallback()
+            //     }
+            // },{
+            //
                 xtype: 'ldk-querypanel',
                 queryConfig: {
-                    title: 'Training / Requirement Summary',
+                    title: 'Training / Requirement Unit/Category Summary',
                     schemaName: this.schemaName,
-                    queryName: 'ComplianceRecentTests',
+                    queryName: 'EmployeeSummaryReport',
                     filterArray: filterArray,
                     failure: LDK.Utils.getErrorCallback()
                 }
