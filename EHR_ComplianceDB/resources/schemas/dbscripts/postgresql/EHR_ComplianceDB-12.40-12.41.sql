@@ -1,5 +1,5 @@
 
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag nvarchar(100);
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag varchar(100);
 GO
 
 ALTER TABLE ehr_compliancedb.RequirementsPerCategory add objectid ENTITYID;
@@ -12,8 +12,8 @@ CREATE TABLE ehr_compliancedb.EmployeePerUnit
 (
     RowId INT IDENTITY(1,1) NOT NULL,
     EmployeeId varchar(255) not null,
-    unit nvarchar(255) null,
-    category nvarchar(255) null,
+    unit varchar(255) null,
+    category varchar(255) null,
     Container ENTITYID NOT NULL,
     CreatedBy USERID,
     Created timestamp,
