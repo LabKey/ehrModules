@@ -819,7 +819,7 @@
             </column>
         </columns>
     </table>
-    <table tableName="employeeperUnit" tableDbType="TABLE">
+    <table tableName="employeePerUnit" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <tableTitle>Requirements Per Employee</tableTitle>
