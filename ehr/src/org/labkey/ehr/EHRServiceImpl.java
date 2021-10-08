@@ -57,6 +57,8 @@ import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.resource.DirectoryResource;
+import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
@@ -864,16 +866,29 @@ public class EHRServiceImpl extends EHRService
         Resource root = m.getModuleResource(sourceStudyDirPath);
         PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(container);
         java.nio.file.Path pipeRootPath = pipeRoot.getRootNioPath();
-        java.nio.file.Path studyPath = pipeRootPath.resolve("upgradeStudyImport");
-        if (Files.exists(studyPath))
+
+        java.nio.file.Path studyXmlPath;
+
+        if (root instanceof DirectoryResource && ((DirectoryResource)root).getDir().equals(pipeRootPath.toFile()))
         {
-            FileUtil.deleteDir(studyPath);
+            // The pipeline root is already pointed at the study definition's folder, like it might be on a dev machine.
+            // No need to copy, especially since copying can cause infinite recursion when the paths are nested
+            studyXmlPath = pipeRootPath.resolve("study.xml");
         }
-        copyResourceToPath(root, studyPath);
-        java.nio.file.Path studyXmlPath = studyPath.resolve("study.xml");
+        else
+        {
+            java.nio.file.Path studyPath = pipeRootPath.resolve("moduleStudyImport");
+            studyXmlPath = studyPath.resolve("study.xml");
+            if (Files.exists(studyPath))
+            {
+                FileUtil.deleteDir(studyPath);
+            }
+            copyResourceToPath(root, studyPath);
+        }
+
         if (!Files.exists(studyXmlPath))
         {
-            throw new FileNotFoundException("Couldn't find an extracted " + studyPath);
+            throw new FileNotFoundException("Couldn't find an extracted " + studyXmlPath);
         }
         ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
         options.setSkipQueryValidation(true);

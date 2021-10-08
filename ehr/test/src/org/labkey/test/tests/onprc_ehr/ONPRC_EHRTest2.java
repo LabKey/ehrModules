@@ -1012,7 +1012,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         log("Creating the Treatment order request");
         goToProjectHome();
         clickAndWait(Locator.linkWithText("Enter Data / Task Review"));
-        clickAndWait(Locator.linkWithText("Medications/Diet"));
+        waitAndClickAndWait(Locator.linkWithText("Medications/Diet"));
 
         addTreatmentOrder(animalId, beginDate, endDate, "640991", "ACETAMINOPHEN (80mg) (E-77510)",
                 "BID - AM/Night", "PO", "tablet(s)", 10, "mg");
