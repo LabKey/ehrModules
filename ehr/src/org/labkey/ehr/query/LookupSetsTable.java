@@ -5,6 +5,7 @@ import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.SimpleUserSchema;
@@ -13,6 +14,7 @@ import org.labkey.api.security.User;
 import org.labkey.ehr.dataentry.DataEntryManager;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * This TableInfo is for the actual ehr.lookupsets table. It is not a duplicate of LookupSetTable which
@@ -42,6 +44,14 @@ public class LookupSetsTable<SchemaType extends UserSchema> extends ContainerSco
         protected void afterInsertUpdate(int count, BatchValidationException errors)
         {
             DataEntryManager.get().getCache().clear();
+        }
+
+        @Override
+        protected Map<String, Object> deleteRow(User user, Container container, Map<String, Object> oldRowMap) throws QueryUpdateServiceException, SQLException, InvalidKeyException
+        {
+            Map<String, Object> row = super.deleteRow(user, container, oldRowMap);
+            DataEntryManager.get().getCache().clear();
+            return row;
         }
 
         @Override
