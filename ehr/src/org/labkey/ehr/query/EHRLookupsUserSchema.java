@@ -29,9 +29,9 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRHousingTransferPermission;
-import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
+import org.labkey.api.ehr.security.EHRSnomedEditPermission;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
@@ -204,7 +204,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             return createVeterinariansTable(name, cf);
         else if (EHRSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
-            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), cf, "setname");
+            ContainerScopedTable<SimpleUserSchema> ret = new LookupSetsTable<>(this, createSourceTable(name), cf, "setname");
             ret.addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
             ret.addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
