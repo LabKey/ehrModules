@@ -31,13 +31,14 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.PasswordUtil;
+import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
-import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -112,6 +113,68 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected void importStudy()
     {
         importStudyFromPath(1);
+    }
+
+    @Override
+    protected void doExtraPreStudyImportSetup()
+    {
+        //create onprc_billing_public linked schema
+        beginAt(getProjectName());
+        _containerHelper.enableModule(getContainerPath(), "GeneticsCore");
+        SchemaHelper schemaHelper = new SchemaHelper(this);
+        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
+
+        //create Labfee_NoChargeProjects
+        beginAt(getProjectName());
+
+        ListHelper.ListColumn projectCol= new ListHelper.ListColumn("project", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn startDateCol= new ListHelper.ListColumn("startDate", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn dateDisabledCol= new ListHelper.ListColumn("dateDisabled", ListHelper.ListColumnType.DateAndTime);
+        ListHelper.ListColumn createdDbCol= new ListHelper.ListColumn("Createdb", ListHelper.ListColumnType.Integer);
+        ListHelper.ListColumn notesCol= new ListHelper.ListColumn("Notes", ListHelper.ListColumnType.String);
+        _listHelper.createList(getProjectName(), "Labfee_NoChargeProjects", ListHelper.ListColumnType.Integer, "key", projectCol, startDateCol, dateDisabledCol, createdDbCol, notesCol);
+
+        _listHelper.createList(getProjectName(), "GeneticValue", ListHelper.ListColumnType.String, "Id",
+                new ListHelper.ListColumn("meanKinship", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("zscore", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("genomeUniqueness", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("totalOffspring", ListHelper.ListColumnType.Integer),
+                new ListHelper.ListColumn("livingOffspring", ListHelper.ListColumnType.Integer),
+                new ListHelper.ListColumn("assignments", ListHelper.ListColumnType.Integer),
+                new ListHelper.ListColumn("condition", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("import", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("value", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("rank", ListHelper.ListColumnType.Integer)
+        );
+
+        _listHelper.createList(getProjectName(), "Special_Aliases", ListHelper.ListColumnType.AutoInteger, "Key",
+                new ListHelper.ListColumn("Category", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("Alias", ListHelper.ListColumnType.String));
+
+        // Fake up an external schema connection for "dbo" via a list and a linked schema
+        _listHelper.createList(getProjectName(), "Rpt_ChargesProjection", ListHelper.ListColumnType.AutoInteger, "RowId",
+                new ListHelper.ListColumn("ChargeId", ListHelper.ListColumnType.Integer),
+                new ListHelper.ListColumn("UnitCost", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year1", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year2", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year3", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year4", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year5", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year6", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year7", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("year8", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate1", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate2", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate3", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate4", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate5", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate6", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate7", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate8", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("Aprate9", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("PostedDate", ListHelper.ListColumnType.DateAndTime)
+        );
+        schemaHelper.createLinkedSchema(this.getProjectName(), null, "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
     }
 
     @Override
