@@ -120,7 +120,6 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     {
         //create onprc_billing_public linked schema
         beginAt(getProjectName());
-        _containerHelper.enableModule(getContainerPath(), "GeneticsCore");
         SchemaHelper schemaHelper = new SchemaHelper(this);
         schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
 
@@ -174,7 +173,19 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
                 new ListHelper.ListColumn("Aprate9", ListHelper.ListColumnType.Decimal),
                 new ListHelper.ListColumn("PostedDate", ListHelper.ListColumnType.DateAndTime)
         );
-        schemaHelper.createLinkedSchema(this.getProjectName(), null, "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
+
+        // Mock up a table in the geneticscore schema instead of needing to mock up all of the geneticscore dependencies too
+        _listHelper.createList(getProjectName(), "mhc_data", ListHelper.ListColumnType.AutoInteger, "RowId",
+                new ListHelper.ListColumn("subjectId", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("datatype", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("marker", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("result", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("score", ListHelper.ListColumnType.Decimal),
+                new ListHelper.ListColumn("assaytype", ListHelper.ListColumnType.String),
+                new ListHelper.ListColumn("totalTests", ListHelper.ListColumnType.Integer));
+
+                schemaHelper.createLinkedSchema(this.getProjectName(), null, "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
+                schemaHelper.createLinkedSchema(this.getProjectName(), null, "geneticscore", "/" + this.getContainerPath(), null, "lists", null, null);
     }
 
     @Override
