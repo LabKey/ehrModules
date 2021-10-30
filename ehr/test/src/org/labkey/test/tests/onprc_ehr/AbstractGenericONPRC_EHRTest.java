@@ -25,7 +25,6 @@ import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
@@ -184,8 +183,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
                 new ListHelper.ListColumn("assaytype", ListHelper.ListColumnType.String),
                 new ListHelper.ListColumn("totalTests", ListHelper.ListColumnType.Integer));
 
-                schemaHelper.createLinkedSchema(this.getProjectName(), null, "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
-                schemaHelper.createLinkedSchema(this.getProjectName(), null, "geneticscore", "/" + this.getContainerPath(), null, "lists", null, null);
+        schemaHelper.createLinkedSchema(this.getProjectName(), "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
     }
 
     @Override
