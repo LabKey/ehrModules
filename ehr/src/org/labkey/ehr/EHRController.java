@@ -312,6 +312,7 @@ public class EHRController extends SpringActionController
     public static class EHRQueryForm extends QueryForm
     {
         private boolean _showImport = false;
+        private boolean _queryUpdateURL = false;
 
         public boolean isShowImport()
         {
@@ -321,6 +322,16 @@ public class EHRController extends SpringActionController
         public void setShowImport(boolean showImport)
         {
             _showImport = showImport;
+        }
+
+        public boolean isQueryUpdateURL()
+        {
+            return _queryUpdateURL;
+        }
+
+        public void setQueryUpdateURL(boolean queryUpdateURL)
+        {
+            _queryUpdateURL = queryUpdateURL;
         }
     }
 
@@ -417,7 +428,12 @@ public class EHRController extends SpringActionController
                 }
 
                 DetailsURL updateUrl;
-                if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
+                if (form.isQueryUpdateURL())
+                {
+                    // Send to the query controller's basic row-level update form
+                    updateUrl = DetailsURL.fromString("query-updateQueryRow.view?schemaName=" + ti.getUserSchema().getName() + "&queryName=" + ti.getName() + "&lsid=${lsid}");
+                }
+                else if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
                 {
                     updateUrl = DetailsURL.fromString("/ehr/dataEntryForm.view?taskid=${taskid}&formType=${taskid/formType}");
                 }
