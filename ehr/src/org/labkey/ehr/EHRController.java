@@ -312,6 +312,7 @@ public class EHRController extends SpringActionController
     public static class EHRQueryForm extends QueryForm
     {
         private boolean _showImport = false;
+        private boolean _queryUpdateURL = false;
 
         public boolean isShowImport()
         {
@@ -321,6 +322,16 @@ public class EHRController extends SpringActionController
         public void setShowImport(boolean showImport)
         {
             _showImport = showImport;
+        }
+
+        public boolean isQueryUpdateURL()
+        {
+            return _queryUpdateURL;
+        }
+
+        public void setQueryUpdateURL(boolean queryUpdateURL)
+        {
+            _queryUpdateURL = queryUpdateURL;
         }
     }
 
@@ -417,7 +428,24 @@ public class EHRController extends SpringActionController
                 }
 
                 DetailsURL updateUrl;
-                if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
+                if (form.isQueryUpdateURL())
+                {
+                    // Send to the query controller's basic row-level update form
+                    StringBuilder sb = new StringBuilder("query-updateQueryRow.view?schemaName=");
+                    sb.append(ti.getUserSchema().getName());
+                    sb.append("&queryName=");
+                    sb.append(ti.getName());
+                    for (String pk : pks)
+                    {
+                        sb.append("&");
+                        sb.append(pk);
+                        sb.append("=${");
+                        sb.append(pk);
+                        sb.append("}");
+                    }
+                    updateUrl = DetailsURL.fromString(sb.toString());
+                }
+                else if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
                 {
                     updateUrl = DetailsURL.fromString("/ehr/dataEntryForm.view?taskid=${taskid}&formType=${taskid/formType}");
                 }
@@ -1445,8 +1473,8 @@ public class EHRController extends SpringActionController
         {
             if (form.getFormType() == null)
             {
-                errors.reject(ERROR_MSG, "Must provide either the form type");
-                return null;
+                errors.reject(ERROR_MSG, "Must provide a form type");
+                return new SimpleErrorView(errors);
             }
 
             _def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());

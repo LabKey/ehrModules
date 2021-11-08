@@ -221,7 +221,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         recallLocation();
         List<String> submenuItems = dr.getHeaderMenuOptions("More Actions");
         List<String> expectedSubmenu = Arrays.asList("Jump To History", "Return Distinct Values","Show Record History","Compare Weights","Edit Records");
-        Assert.assertEquals("More actions menu did not contain expected options",expectedSubmenu, submenuItems);
+        Assert.assertTrue("More actions menu did not contain expected options. Expected: " + expectedSubmenu + ", but found: " + submenuItems, submenuItems.containsAll(expectedSubmenu));
     }
 
     private void testUserAgainstAllStates(@LoggedParam EHRUser user)
