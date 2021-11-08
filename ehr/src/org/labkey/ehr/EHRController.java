@@ -1473,8 +1473,8 @@ public class EHRController extends SpringActionController
         {
             if (form.getFormType() == null)
             {
-                errors.reject(ERROR_MSG, "Must provide either the form type");
-                return null;
+                errors.reject(ERROR_MSG, "Must provide a form type");
+                return new SimpleErrorView(errors);
             }
 
             _def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
