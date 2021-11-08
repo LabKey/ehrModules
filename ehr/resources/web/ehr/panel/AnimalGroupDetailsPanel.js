@@ -100,7 +100,7 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
             xtype: 'ldk-webpartpanel',
             title: 'Group Overview',
             items: [{
-                xtype: 'ehr-populationpanel',
+                xtype: 'onprc_ehr-populationpanel',
                 filterArray: [
                     LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create(fieldKey, 'yes', LABKEY.Filter.Types.EQUAL)
