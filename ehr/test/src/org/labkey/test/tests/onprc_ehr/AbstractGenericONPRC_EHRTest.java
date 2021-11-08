@@ -104,7 +104,8 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
                 new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer", "/" + getContainerPath()),
                 new ModulePropertyValue("ONPRC_Billing", "/" + getProjectName(), "BillingContainer_Public", "/" + getContainerPath()),
                 new ModulePropertyValue("SLA", "/" + getProjectName(), "SLAContainer", "/" + getContainerPath()),
-                new ModulePropertyValue("ONPRC_EHR", "/" + getProjectName(), "DCM_NHP_Resources_Container", "/" + getContainerPath())
+                new ModulePropertyValue("ONPRC_EHR", "/" + getProjectName(), "DCM_NHP_Resources_Container", "/" + getContainerPath()),
+                new ModulePropertyValue("ONPRC_EHR", "/" + getProjectName(), "MHC_Container", "/" + getContainerPath())
         );
     }
 
@@ -184,6 +185,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
                 new ListHelper.ListColumn("totalTests", ListHelper.ListColumnType.Integer));
 
         schemaHelper.createLinkedSchema(this.getProjectName(), "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
+        schemaHelper.createLinkedSchema(this.getProjectName(), "geneticscore", "/" + this.getContainerPath(), null, "lists", null, null);
     }
 
     @Override
