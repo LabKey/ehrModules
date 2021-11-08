@@ -431,7 +431,19 @@ public class EHRController extends SpringActionController
                 if (form.isQueryUpdateURL())
                 {
                     // Send to the query controller's basic row-level update form
-                    updateUrl = DetailsURL.fromString("query-updateQueryRow.view?schemaName=" + ti.getUserSchema().getName() + "&queryName=" + ti.getName() + "&lsid=${lsid}");
+                    StringBuilder sb = new StringBuilder("query-updateQueryRow.view?schemaName=");
+                    sb.append(ti.getUserSchema().getName());
+                    sb.append("&queryName=");
+                    sb.append(ti.getName());
+                    for (String pk : pks)
+                    {
+                        sb.append("&");
+                        sb.append(pk);
+                        sb.append("=${");
+                        sb.append(pk);
+                        sb.append("}");
+                    }
+                    updateUrl = DetailsURL.fromString(sb.toString());
                 }
                 else if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
                 {
