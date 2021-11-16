@@ -20,5 +20,11 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     if (!row.calculated_status && !helper.isETL()){
         row.calculated_status = helper.getJavaHelper().getCalculatedStatusValue(row.Id);
     }
+    if (!oldRow) {
+        // If we're doing inserts in demographics (where we don't have an old row), don't fire the normal notifications
+        // of changes to refresh the demographics cache, as we have to do a special clearing after study has done its
+        // bookkeeping. See ticket 44283 and the clearing in TriggerScriptHelper.createDemographicsRecord()
+        helper.getExtraContext().skipAnnounceChangedParticipants = true;
+    }
 
 }
