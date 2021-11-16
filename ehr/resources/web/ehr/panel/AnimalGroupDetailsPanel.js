@@ -94,13 +94,13 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
             html: '',
             style: 'padding-bottom: 20px;'
         });
-
+        //Modified: 11-26-2021  R.Blasa
         var fieldKey = 'Id/animalGroupsPivoted/' + this.groupRow.getDisplayValue('name') + '::valueField';
         toAdd.push({
             xtype: 'ldk-webpartpanel',
             title: 'Group Overview',
             items: [{
-                xtype: 'ehr-populationpanel',
+                xtype: 'onprc_ehr-populationpanel',
                 filterArray: [
                     LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create(fieldKey, 'yes', LABKEY.Filter.Types.EQUAL)
