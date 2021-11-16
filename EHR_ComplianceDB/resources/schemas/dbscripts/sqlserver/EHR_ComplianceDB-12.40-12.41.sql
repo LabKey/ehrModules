@@ -1,5 +1,5 @@
 
-ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag varchar(100);
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag nvarchar(100);
 
 ALTER TABLE ehr_compliancedb.RequirementsPerCategory add objectid ENTITYID;
 
