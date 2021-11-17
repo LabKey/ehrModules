@@ -131,7 +131,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.005;
+        return 21.006;
     }
 
     @Override
