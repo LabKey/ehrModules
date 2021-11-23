@@ -218,7 +218,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         _cache.put(key, record);
     }
 
-    private void recacheRecords(Container c, List<String> ids)
+    public void recacheRecords(Container c, List<String> ids)
     {
         for (String id : ids)
         {
