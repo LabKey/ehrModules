@@ -143,6 +143,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 LOG.warn("No EHR study container. Unable to perform upgrade steps for " + _module.getName());
                 return;
             }
+            if (!container.getActiveModules().contains(_module))
+            {
+                LOG.warn("EHR container does not have module " + _module.getName() + " enabled. Skipping upgrade work.");
+            }
+
             User user = EHRService.get().getEHRUser(ContainerManager.getRoot());
             if (user == null || !user.isActive())
             {
