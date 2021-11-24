@@ -32,6 +32,7 @@ import org.labkey.api.util.logging.LogHelper;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -59,7 +60,14 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     private final Map<String, Boolean> _etls = new LinkedHashMap<>();
     private final Set<TsvImport> _tsvImports = new LinkedHashSet<>();
 
-    public SharedEHRUpgradeCode(Module module)
+    private static final Map<Module, SharedEHRUpgradeCode> _instances = new HashMap<>();
+
+    public static SharedEHRUpgradeCode getInstance(Module module)
+    {
+        return _instances.computeIfAbsent(module, SharedEHRUpgradeCode::new);
+    }
+
+    private SharedEHRUpgradeCode(Module module)
     {
         _module = module;
         // After startup has completed and pipelines and ETLs have been registered, kick off the work that was
