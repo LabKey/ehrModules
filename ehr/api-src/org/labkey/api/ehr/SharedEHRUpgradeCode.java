@@ -23,6 +23,7 @@ import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.ContextListener;
+import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.StartupListener;
 import org.labkey.api.util.UnexpectedException;
@@ -162,8 +163,14 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             {
                 if (etlInfo.getValue().booleanValue())
                 {
-                    DataIntegrationService.get().truncateTargets(container, user, etlInfo.getKey());
+                    Pair<Long, String> result = DataIntegrationService.get().truncateTargets(container, user, etlInfo.getKey());
+                    if (result.second != null)
+                    {
+                        LOG.error("Failed to truncate ETL " + etlInfo.getKey() + ", continuing without queuing a run. Details: " + result.second);
+                        continue;
+                    }
                 }
+
                 try
                 {
                     DataIntegrationService.get().runTransformNow(container, user, etlInfo.getKey());
