@@ -14,9 +14,6 @@ function onUpsert(helper, scriptErrors, row, oldRow) {
     row.location = row.room;
     if (row.cage)
         row.location += '-' + row.cage;
-    if (row.location.length > 24) {
-        console.log("Location is longer than allowed length: ", row.location);
-    }
 
     //remove whitespace, normalize punctuation and pad digits
     if (row.joinToCage){
