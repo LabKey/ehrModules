@@ -67,9 +67,9 @@ import java.util.regex.Pattern;
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 {
     public AbstractContainerHelper _containerHelper = new APIContainerHelper(this);
-    private String PROJECT_NAME = "ONPRC_EHR_TestProject2";
+    private final String PROJECT_NAME = "ONPRC_EHR_TestProject2";
     public DataIntegrationHelper _etlHelper = new DataIntegrationHelper(PROJECT_NAME);
-    private String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
+    private final String ANIMAL_HISTORY_URL = "/ehr/" + getProjectName() + "/animalHistory.view?";
 
     @BeforeClass
     @LogMethod
@@ -146,7 +146,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         SelectRowsCommand select1 = new SelectRowsCommand("study", "birth");
         select1.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
         final String damLsid = (String) select1.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("lsid");
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {{
             put("lsid", damLsid);
             put("QCStateLabel", "Completed");
@@ -154,7 +154,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         org.junit.Assert.assertTrue("demographics row was not created for dam1", getApiHelper().doesRowExist("study", "demographics", new Filter("Id", damId1, Filter.Operator.EQUAL)));
 
         //update record to get a geographic_origin, which we expect to get entered into demographics
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", damLsid);
@@ -165,16 +165,19 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         SelectRowsCommand select2 = new SelectRowsCommand("study", "demographics");
         select2.addFilter(new Filter("Id", damId1, Filter.Operator.EQUAL));
-        org.junit.Assert.assertEquals("geographic_origin was not updated", INDIAN, select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("geographic_origin"));
-        org.junit.Assert.assertEquals("species was not updated", RHESUS, select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("species"));
-        org.junit.Assert.assertEquals("gender was not updated", "f", select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("gender"));
-        org.junit.Assert.assertEquals("calculated_status was not set properly", "Alive", select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows().get(0).get("calculated_status"));
+        List<Map<String, Object>> selectRows2 = select2.execute(getApiHelper().getConnection(), getContainerPath()).getRows();
+        org.junit.Assert.assertEquals("Wrong number of demographics rows", 1, selectRows2.size());
+        Map<String, Object> selectRow2 = selectRows2.get(0);
+        org.junit.Assert.assertEquals("geographic_origin was not updated. Row: " + selectRow2, INDIAN, selectRow2.get("geographic_origin"));
+        org.junit.Assert.assertEquals("species was not updated. Row: " + selectRow2, RHESUS, selectRow2.get("species"));
+        org.junit.Assert.assertEquals("gender was not updated. Row: " + selectRow2, "f", selectRow2.get("gender"));
+        org.junit.Assert.assertEquals("calculated_status was not set properly. Row: " + selectRow2, "Alive", selectRow2.get("calculated_status"));
 
         //now add SPF status + group for dam.
         String spfStatus = "SPF 9";
         final String spfFlag = getOrCreateSpfFlag(spfStatus);
         InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "flags");
-        insertRowsCommand.addRow(new HashMap<String, Object>()
+        insertRowsCommand.addRow(new HashMap<>()
         {
             {
                 put("Id", damId1);
@@ -187,7 +190,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         String groupName = "TestGroup1";
         final Integer groupId = getOrCreateGroup(groupName);
         InsertRowsCommand insertRowsCommand2 = new InsertRowsCommand("study", "animal_group_members");
-        insertRowsCommand2.addRow(new HashMap<String, Object>()
+        insertRowsCommand2.addRow(new HashMap<>()
         {
             {
                 put("Id", damId1);
@@ -218,7 +221,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         // offspring 7, same as 1, except we leave species/geographic origin blank and expect dam's demographics to be copied to child
         // offspring 8, same as 1, except we leave species/geographic origin blank and and expect dam's demographics to be copied to child
         Date birthDate = new Date();
-        Double weight = 2.3;
+        double weight = 2.3;
         String room1 = "Room1";
         String cage1 = "A1";
         String bornDead = "Born Dead/Not Born";
@@ -261,7 +264,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //do updates:
         log("updating records");
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId1));
@@ -270,7 +273,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         }, false);
         testBirthRecordStatus(offspringId1);
 
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId3));
@@ -279,7 +282,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         }, false);
         testBirthRecordStatus(offspringId3);
 
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId5));
@@ -294,7 +297,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
                 {offspringId5, prepareDate(new Date(), 10, 0), "Clinical", "recordID"}
         }, Collections.emptyMap(), additionalContext);
 
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId6));
@@ -304,7 +307,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         }, false);
         testBirthRecordStatus(offspringId6);
 
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId7));
@@ -317,7 +320,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         final Calendar newBirth = Calendar.getInstance();
         newBirth.setTime(birthDate);
         newBirth.add(Calendar.DATE, -4);
-        getApiHelper().updateRow("study", "birth", new HashMap<String, Object>()
+        getApiHelper().updateRow("study", "birth", new HashMap<>()
         {
             {
                 put("lsid", lsidMap.get(offspringId7));
@@ -407,7 +410,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
             else
             {
                 //in our test scenario, death date always matches birth
-                org.junit.Assert.assertEquals("demographics death date should be null", null, demographicsRow.get("death"));
+                Assert.assertNull("demographics death date should be null", demographicsRow.get("death"));
             }
 
             org.junit.Assert.assertEquals("demographics birth date not set properly", birthDate, demographicsRow.get("birth"));
@@ -473,7 +476,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         final Date date = new Date();
         InsertRowsCommand insertRowsCommand = new InsertRowsCommand("study", "flags");
-        insertRowsCommand.addRow(new HashMap<String, Object>()
+        insertRowsCommand.addRow(new HashMap<>()
         {
             {
                 put("Id", SUBJECTS[0]);
@@ -485,7 +488,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //expect success
         InsertRowsCommand insertRowsCommand2 = new InsertRowsCommand("study", "flags");
-        insertRowsCommand2.addRow(new HashMap<String, Object>()
+        insertRowsCommand2.addRow(new HashMap<>()
         {
             {
                 put("Id", SUBJECTS[0]);
@@ -728,7 +731,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
         //create records
         log("Creating test subjects");
-        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
+        PostCommand<?> insertCommand = getApiHelper().prepareInsertCommand("study", "demographics", "lsid", new String[]{"Id", "Species", "Birth", "Gender", "date", "calculated_status"}, new Object[][]{
                 {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date(), "Alive"}
         });
         getApiHelper().doSaveRows(PasswordUtil.getUsername(), insertCommand, getExtraContext());

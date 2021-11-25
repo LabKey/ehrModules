@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.cage ALTER COLUMN location TYPE varchar(100);

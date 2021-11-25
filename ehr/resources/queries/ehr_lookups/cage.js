@@ -15,6 +15,10 @@ function onUpsert(helper, scriptErrors, row, oldRow) {
     if (row.cage)
         row.location += '-' + row.cage;
 
+    if (row.location.length > 100) {
+        console.log("Location is longer than allowed length: ", row.location);
+    }
+
     //remove whitespace, normalize punctuation and pad digits
     if (row.joinToCage){
         row.joinToCage = row.joinToCage.replace(/\s/g, '');

@@ -16,7 +16,6 @@
 package org.labkey.ehr.table;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -63,6 +62,7 @@ import org.labkey.api.study.Dataset;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRModule;
@@ -92,7 +92,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     public static final String ID_COL = "Id";
     public static final String PARTICIPANT_CONCEPT_URI = "http://cpas.labkey.com/Study#ParticipantId";
 
-    private static final Logger _log = LogManager.getLogger(DefaultEHRCustomizer.class);
+    private static final Logger _log = LogHelper.getLogger(DefaultEHRCustomizer.class, "Setup and configuration of EHR data tables, including calculated columns and special lookups");
     private boolean _addLinkDisablers = true;
     private static final String MORE_ACTIONS = "More Actions";
 
@@ -1181,7 +1181,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ti.getColumn(countsAgainstVolume) == null)
         {
             SQLFragment sql = new SQLFragment("CASE " +
-                " WHEN EXISTS (SELECT md.draftdata FROM core.qcstate q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " WHEN EXISTS (SELECT md.draftdata FROM core.datastates q LEFT JOIN ehr.qcStateMetadata md ON (q.label = md.qcstatelabel) WHERE q.container = ? AND q.rowid = " + ExprColumn.STR_TABLE_ALIAS + ".qcstate AND (md.draftdata = " + ti.getSqlDialect().getBooleanTRUE() + " OR q.publicdata = " + ti.getSqlDialect().getBooleanTRUE() + ")) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                 " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
                 " END", ti.getUserSchema().getContainer().getId());
             ExprColumn col = new ExprColumn(ti, countsAgainstVolume, sql, JdbcType.BOOLEAN, ti.getColumn("qcstate"));
