@@ -826,7 +826,11 @@ public class TriggerScriptHelper
         if (errors.hasErrors())
             throw errors;
 
-        EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
+        // The normal (re)caching of demographics providers runs before the study module has done its bookkeeping and
+        // inserted a row into study.participant, which means that calculated lookup values like the animal's current
+        // age won't resolve until AFTER the call to insertRows() has completed. Thus, refresh the cache for this new
+        // animal an extra time. See ticket 44283.
+        EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
     }
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
