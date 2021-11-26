@@ -182,6 +182,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                         LOG.error("Failed to truncate ETL " + etlInfo.getKey() + ", continuing without queuing a run. Details: " + result.second);
                         continue;
                     }
+                    if (!DataIntegrationService.get().resetTransformState(container, user, etlInfo.getKey()))
+                    {
+                        LOG.error("Failed to reset state of ETL " + etlInfo.getKey() + ", continuing without queuing a run.");
+                        continue;
+                    }
                 }
 
                 try
