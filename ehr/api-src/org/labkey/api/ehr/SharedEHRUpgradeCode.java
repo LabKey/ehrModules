@@ -1,25 +1,45 @@
 package org.labkey.api.ehr;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.labkey.api.audit.TransactionAuditProvider;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.di.DataIntegrationService;
+import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.pipeline.PipelineJobException;
+import org.labkey.api.query.AbstractQueryImportAction;
+import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.reader.DataLoader;
+import org.labkey.api.reader.TabLoader;
+import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.ContextListener;
+import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.StartupListener;
 import org.labkey.api.util.UnexpectedException;
+import org.labkey.api.util.logging.LogHelper;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionAuditEvent;
 
 /**
  * Allows upgrade scripts to prescribe study reloads and ETL executions (including truncates). Will look at the
@@ -29,16 +49,25 @@ import java.util.Map;
  */
 public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 {
-    private static final Logger LOG = LogManager.getLogger(SharedEHRUpgradeCode.class);
+    private static final Logger LOG = LogHelper.getLogger(SharedEHRUpgradeCode.class, "Automated imports for EHR data changes");
     private final Module _module;
 
     private static final String ETL_PREFIX = "etl;";
+    private static final String IMPORT_FROM_TSV_PREFIX = "importFromTsv;";
 
     private boolean _reloadStudy;
     /** ETL name -> whether to truncate before running */
     private final Map<String, Boolean> _etls = new LinkedHashMap<>();
+    private final Set<TsvImport> _tsvImports = new LinkedHashSet<>();
 
-    public SharedEHRUpgradeCode(Module module)
+    private static final Map<Module, SharedEHRUpgradeCode> _instances = new HashMap<>();
+
+    public static SharedEHRUpgradeCode getInstance(Module module)
+    {
+        return _instances.computeIfAbsent(module, SharedEHRUpgradeCode::new);
+    }
+
+    private SharedEHRUpgradeCode(Module module)
     {
         _module = module;
         // After startup has completed and pipelines and ETLs have been registered, kick off the work that was
@@ -78,6 +107,19 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             }
             _etls.put(etlName, truncate);
         }
+        else if (methodName.startsWith(IMPORT_FROM_TSV_PREFIX))
+        {
+            String[] tsvArguments = methodName.split(";");
+            if (tsvArguments.length != 4)
+            {
+                throw new UnsupportedOperationException("Expected three arguments for importFromTsv but got " + (tsvArguments.length - 1));
+            }
+            String schemaName = tsvArguments[1];
+            String queryName = tsvArguments[2];
+            String tsvPath = tsvArguments[3];
+
+            _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+        }
         else
         {
             UpgradeCode.super.fallthroughHandler(methodName);
@@ -93,7 +135,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     @Override
     public void moduleStartupComplete(ServletContext servletContext)
     {
-        if (_reloadStudy || !_etls.isEmpty())
+        if (_reloadStudy || !_etls.isEmpty() || !_tsvImports.isEmpty())
         {
             Container container = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
             if (container == null)
@@ -101,6 +143,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 LOG.warn("No EHR study container. Unable to perform upgrade steps for " + _module.getName());
                 return;
             }
+            if (!container.getActiveModules().contains(_module))
+            {
+                LOG.warn("EHR container does not have module " + _module.getName() + " enabled. Skipping upgrade work.");
+            }
+
             User user = EHRService.get().getEHRUser(ContainerManager.getRoot());
             if (user == null || !user.isActive())
             {
@@ -108,24 +155,40 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 return;
             }
 
-            if (_reloadStudy)
+            try
             {
-                try
+                for (TsvImport tsvImport : _tsvImports)
+                {
+                    importFile(tsvImport, container, user);
+                }
+
+                if (_reloadStudy)
                 {
                     EHRService.get().importStudyDefinition(container, user, _module, new Path("referenceStudy"));
                 }
-                catch (IOException e)
-                {
-                    throw UnexpectedException.wrap(e);
-                }
+            }
+            catch (IOException | SQLException | BatchValidationException | QueryUpdateServiceException e)
+            {
+                throw UnexpectedException.wrap(e);
             }
 
             for (Map.Entry<String, Boolean> etlInfo : _etls.entrySet())
             {
                 if (etlInfo.getValue().booleanValue())
                 {
-                    DataIntegrationService.get().truncateTargets(container, user, etlInfo.getKey());
+                    Pair<Long, String> result = DataIntegrationService.get().truncateTargets(container, user, etlInfo.getKey());
+                    if (result.second != null)
+                    {
+                        LOG.error("Failed to truncate ETL " + etlInfo.getKey() + ", continuing without queuing a run. Details: " + result.second);
+                        continue;
+                    }
+                    if (!DataIntegrationService.get().resetTransformState(container, user, etlInfo.getKey()))
+                    {
+                        LOG.error("Failed to reset state of ETL " + etlInfo.getKey() + ", continuing without queuing a run.");
+                        continue;
+                    }
                 }
+
                 try
                 {
                     DataIntegrationService.get().runTransformNow(container, user, etlInfo.getKey());
@@ -135,6 +198,76 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                     LOG.error("Failed to launch ETL " + etlInfo.getKey(), e);
                 }
             }
+        }
+    }
+
+    private void importFile(TsvImport tsvImport, Container container, User user) throws IOException, SQLException, BatchValidationException, QueryUpdateServiceException
+    {
+        Resource r = _module.getModuleResource(Path.parse(tsvImport._tsvPath));
+        if (r == null || !r.isFile())
+        {
+            throw new IllegalArgumentException("Could not resolve module resource " + tsvImport._tsvPath + " in module " + _module.getName());
+        }
+
+        DataLoader loader = DataLoader.get().createLoader(r, true, null, TabLoader.TSV_FILE_TYPE);
+
+        UserSchema schema = QueryService.get().getUserSchema(user, container, tsvImport._schemaName);
+        if (schema == null)
+        {
+            throw new IllegalArgumentException("Could not find schema " + schema + " in " + container.getPath());
+        }
+        TableInfo table = schema.getTable(tsvImport._queryName);
+        if (table == null)
+        {
+            throw new IllegalArgumentException("Could not find table " + tsvImport._queryName + " in schema " + tsvImport._schemaName + " in " + container.getPath());
+        }
+        QueryUpdateService updateService = table.getUpdateService();
+        if (updateService == null)
+        {
+            throw new IllegalArgumentException("No query update service for " + tsvImport._schemaName + "." + tsvImport._queryName);
+        }
+
+        LOG.info("Importing " + tsvImport._tsvPath + " to " + tsvImport._schemaName + "." + tsvImport._queryName);
+
+        // Delete the current rows
+        updateService.truncateRows(user, container, null, null);
+
+        BatchValidationException errors = new BatchValidationException();
+        AuditBehaviorType behaviorType = table.getAuditBehavior();
+        TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
+        if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+            auditEvent = createTransactionAuditEvent(container, QueryService.AuditAction.INSERT);
+
+        AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
+                false, false, errors, behaviorType, auditEvent, user, container);
+    }
+
+    private static class TsvImport
+    {
+        private final String _schemaName;
+        private final String _queryName;
+        private final String _tsvPath;
+
+        public TsvImport(String schemaName, String queryName, String tsvPath)
+        {
+            _schemaName = schemaName;
+            _queryName = queryName;
+            _tsvPath = tsvPath;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TsvImport tsvImport = (TsvImport) o;
+            return _schemaName.equals(tsvImport._schemaName) && _queryName.equals(tsvImport._queryName) && _tsvPath.equals(tsvImport._tsvPath);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(_schemaName, _queryName, _tsvPath);
         }
     }
 }

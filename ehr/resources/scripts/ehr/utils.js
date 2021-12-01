@@ -181,7 +181,6 @@ EHR.Server.Utils = new function(){
                 }
             }
             else {
-                console.log('EHR trigger script is being passed a date with value: ' + val);
                 if (!isNaN(val)) {
                     // NOTE: i'm not sure if we should really attempt this.  this should really never happen,
                     // and it's probably an error if it does
