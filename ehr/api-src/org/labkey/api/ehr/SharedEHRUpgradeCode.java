@@ -184,8 +184,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                     }
                     if (!DataIntegrationService.get().resetTransformState(container, user, etlInfo.getKey()))
                     {
-                        LOG.error("Failed to reset state of ETL " + etlInfo.getKey() + ", continuing without queuing a run.");
-                        continue;
+                        LOG.info("No saved state for " + etlInfo.getKey() + " found, starting ETL.");
                     }
                 }
 
