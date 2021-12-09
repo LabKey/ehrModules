@@ -60,7 +60,7 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected static final SimpleDateFormat _tf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     protected static final SimpleDateFormat _df = new SimpleDateFormat("yyyy-MM-dd");
 
-    protected final String RHESUS = "RHESUS MACAQUE";
+    protected final String RHESUS = "Rhesus";
     protected final String INDIAN = "INDIA";
 
     protected static String[] SUBJECTS = {"12345", "23456", "34567", "45678", "56789"};
