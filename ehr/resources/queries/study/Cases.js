@@ -7,15 +7,16 @@
 require("ehr/triggers").initScript(this);
 
 EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.AFTER_UPSERT, 'study', 'Cases', function(helper, errors, row, oldRow){
-    if (!helper.isValidateOnly() && !helper.isETL() && row.enddate && row.caseId){
+    if (!helper.isValidateOnly() && !helper.isETL() && row.enddate && row.objectid){
         //we want to capture newly inserted records that are ended, or updates that set an enddate
+        //Modified to capture case objectid instead of caseid to edit problem lists entries.
         if (!oldRow || !oldRow.enddate){
-            helper.getJavaHelper().closeActiveProblemsForCase(row.id, row.enddate, row.caseId);
+            helper.getJavaHelper().closeActiveProblemsForCase(row.id, row.enddate, row.objectid);
         }
 
         //cascade update linked problems if ID changes:
-        if (oldRow && oldRow.Id != row.Id && row.caseId){
-            helper.getJavaHelper().updateProblemsFromCase(row.Id, oldRow.Id, row.caseId);
+        if (oldRow && oldRow.Id != row.Id && row.objectid){
+            helper.getJavaHelper().updateProblemsFromCase(row.Id, oldRow.Id, row.objectid);
         }
     }
 });
