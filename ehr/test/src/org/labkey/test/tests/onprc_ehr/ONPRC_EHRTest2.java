@@ -62,6 +62,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.labkey.test.util.Ext4Helper.Locators.ext4Button;
+import static org.labkey.test.util.Ext4Helper.elementIfEnabled;
+
 @Category({CustomModules.class, EHR.class, ONPRC.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 18)
 public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
@@ -1073,8 +1076,8 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         //Updating the total volume below the the available blood volume.
         updateTotalVolume(8);
 
-        shortWait().until(ExpectedConditions.elementToBeClickable(Locator.tagWithText("span", "Request"))).click();
-        clickButton("Request","My Pending Requests");
+        shortWait().until(wd -> elementIfEnabled(ext4Button("Request").findElement(getDriver()))).click();
+        waitForText("My Pending Requests");
 
         DataRegionTable table = new DataRegionTable("study|blood", getDriver());
         checker().verifyEquals("New blood draw request is not created", 1, table.getDataRowCount());
