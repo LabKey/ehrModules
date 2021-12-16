@@ -112,8 +112,10 @@ if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$
 
     #start the script
 
-    #the dataframe labkey.data is supplied by labkey. it will contain one row per initial animal
-    ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status, Display=labkey.data$display);
+    # the dataframe labkey.data is supplied by labkey. it will contain one row per initial animal. NA in labkey.data display
+    # column needs to be blank to prevent duplicate unique rows
+    ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status,
+        Display=replace(labkey.data$display, is.na(labkey.data$display), ""));
 
     #these will allow you to test the script
     #this will work
