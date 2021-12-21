@@ -48,15 +48,15 @@ public class EHRUpgradeCode implements UpgradeCode
         {
             while (cal.get(Calendar.YEAR) < 2030)
             {
-                stmt.setDate(1, new Date(cal.getTime().getTime()));
-                stmt.setDate(2, new Date(cal.getTime().getTime()));
+                stmt.setDate(1, new Date(cal.getTimeInMillis()));
+                stmt.setDate(2, new Date(cal.getTimeInMillis()));
                 stmt.setInt(3, cal.get(Calendar.YEAR));
                 // java.util.Calendar months are 0-based
                 stmt.setInt(4, cal.get(Calendar.MONTH) + 1);
                 stmt.setInt(5, cal.get(Calendar.DAY_OF_MONTH));
 
                 cal.add(Calendar.DATE, 1);
-                stmt.setDate(6, new Date(cal.getTime().getTime()));
+                stmt.setDate(6, new Date(cal.getTimeInMillis()));
 
                 stmt.addBatch();
             }
