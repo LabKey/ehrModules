@@ -1467,7 +1467,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_housingAtTime";
-                UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
+                UserSchema targetSchema = ds.getUserSchema().getDefaultSchema().getUserSchema(targetSchemaName);
                 QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 qd.setSql("SELECT\n" +
                     "sd." + pkCol.getFieldKey().toSQLString() + ",\n" +
@@ -1695,7 +1695,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 String name = queryName + "_ageAtTime";
-                UserSchema targetSchema = QueryService.get().getUserSchema(u, targetSchemaContainer, targetSchemaName);
+                UserSchema targetSchema = ds.getUserSchema().getDefaultSchema().getUserSchema(targetSchemaName);
                 QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
