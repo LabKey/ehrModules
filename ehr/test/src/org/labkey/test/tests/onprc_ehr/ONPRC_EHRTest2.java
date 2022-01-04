@@ -1062,7 +1062,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         goToProjectHome();
         clickAndWait(Locator.linkWithText("Manage Requests"));
         waitAndClickAndWait(Locator.linkWithText("ASB SERVICES REQUEST"));
-        addBloodDrawRequest(animalId, now, "795644", "ChargeUnit2", "Heparin", 12);
+        addBloodDrawRequest(animalId, now, "795644", "Heparin", 12);
 
         checker().withScreenshot("Blood request").verifyTrue("Expected error is not present", isAnyTextPresent(
                 "Row 1, # of Tubes: ERROR: The quantity requested, 12.0ml exceeds the available blood volume, 10.0ml for AnimalId: 12345"));
@@ -1078,7 +1078,7 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
 
     }
 
-    private void addBloodDrawRequest(String animalId, LocalDateTime date, String project, String charge_type, String tube_type, Integer quantity)
+    private void addBloodDrawRequest(String animalId, LocalDateTime date, String project, String tube_type, Integer quantity)
     {
         Ext4GridRef bloodDraw = _helper.getExt4GridForFormSection("Blood Draws");
         _helper.addRecordToGrid(bloodDraw);
@@ -1089,7 +1089,6 @@ public class ONPRC_EHRTest2 extends AbstractONPRC_EHRTest
         bloodDraw.setGridCell(index, "Id", animalId);
 
         bloodDraw.setGridCell(index, "quantity", quantity.toString());
-        bloodDraw.setGridCell(index, "chargetype", charge_type);
         bloodDraw.setGridCell(index, "tube_type", tube_type);
         addProjectToTheRow(bloodDraw, index, project);
     }
