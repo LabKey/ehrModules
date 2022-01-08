@@ -36,12 +36,10 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
-import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
@@ -337,6 +335,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected abstract void importStudy();
 
+    @Deprecated // study archives are going away... use importFolderFromPath() instead
     protected void importStudyFromPath(int jobCount)
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
@@ -362,6 +361,29 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         clickButton("Start Import"); // Validate queries page
         waitForPipelineJobsToComplete(jobCount, "Study import", false, MAX_WAIT_SECONDS * 2500);
+    }
+
+    protected void importFolderFromPath(int jobCount)
+    {
+        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
+        setPipelineRoot(path.getPath());
+
+        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
+        clickButton("Process and Import Data", defaultWaitForPage);
+
+        _fileBrowserHelper.expandFileBrowserRootNode();
+        _fileBrowserHelper.checkFileBrowserFileCheckbox("folder.xml");
+        _fileBrowserHelper.selectImportDataAction("Import Folder");
+
+        if (skipStudyImportQueryValidation())
+        {
+            Locator cb = Locator.checkboxByName("validateQueries");
+            waitForElement(cb);
+            uncheckCheckbox(cb);
+        }
+
+        clickButton("Start Import"); // Validate queries page
+        waitForPipelineJobsToComplete(jobCount, "Folder import", false, MAX_WAIT_SECONDS * 2500);
     }
 
     protected boolean skipStudyImportQueryValidation()
