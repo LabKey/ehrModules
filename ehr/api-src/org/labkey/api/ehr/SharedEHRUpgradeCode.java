@@ -42,10 +42,10 @@ import java.util.Set;
 import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionAuditEvent;
 
 /**
- * Allows upgrade scripts to prescribe study reloads and ETL executions (including truncates). Will look at the
+ * Allows upgrade scripts to prescribe folder reloads and ETL executions (including truncates). Will look at the
  * site-wide ehrStudyContainer and ehrAdminUser module properties to decide where and as whom to run the jobs.
  *
- * Supports 'reloadStudy' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
+ * Supports 'reloadFolder' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
  */
 public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 {
@@ -55,7 +55,9 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     private static final String ETL_PREFIX = "etl;";
     private static final String IMPORT_FROM_TSV_PREFIX = "importFromTsv;";
 
+    @Deprecated // migrate all modules to use reloadFolder and delete this
     private boolean _reloadStudy;
+    private boolean _reloadFolder;
     /** ETL name -> whether to truncate before running */
     private final Map<String, Boolean> _etls = new LinkedHashMap<>();
     private final Set<TsvImport> _tsvImports = new LinkedHashSet<>();
@@ -79,6 +81,12 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     public void reloadStudy(ModuleContext context)
     {
         _reloadStudy = true;
+    }
+
+    @SuppressWarnings("unused")
+    public void reloadFolder(ModuleContext context)
+    {
+        _reloadFolder = true;
     }
 
     @Override
@@ -135,7 +143,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     @Override
     public void moduleStartupComplete(ServletContext servletContext)
     {
-        if (_reloadStudy || !_etls.isEmpty() || !_tsvImports.isEmpty())
+        if (_reloadStudy || _reloadFolder || !_etls.isEmpty() || !_tsvImports.isEmpty())
         {
             Container container = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
             if (container == null)
@@ -165,6 +173,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 if (_reloadStudy)
                 {
                     EHRService.get().importStudyDefinition(container, user, _module, new Path("referenceStudy"));
+                }
+
+                if (_reloadFolder)
+                {
+                    EHRService.get().importFolderDefinition(container, user, _module, new Path("referenceStudy"));
                 }
             }
             catch (IOException | SQLException | BatchValidationException | QueryUpdateServiceException e)

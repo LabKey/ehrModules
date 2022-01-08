@@ -58,7 +58,6 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.DirectoryResource;
-import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
@@ -895,6 +894,43 @@ public class EHRServiceImpl extends EHRService
 
         BindException errors = new NullSafeBindException(new Object(), "reload");
         StudyService.get().runStudyImportJob(container, user, null, studyXmlPath, "study.xml", errors, pipeRoot, options);
+    }
+
+    @Override
+    public void importFolderDefinition(Container container, User user, Module m, Path sourceFolderDirPath) throws IOException
+    {
+        Resource root = m.getModuleResource(sourceFolderDirPath);
+        PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(container);
+        java.nio.file.Path pipeRootPath = pipeRoot.getRootNioPath();
+
+        java.nio.file.Path folderXmlPath;
+
+        if (root instanceof DirectoryResource && ((DirectoryResource)root).getDir().equals(pipeRootPath.toFile()))
+        {
+            // The pipeline root is already pointed at the folder definition, like it might be on a dev machine.
+            // No need to copy, especially since copying can cause infinite recursion when the paths are nested
+            folderXmlPath = pipeRootPath.resolve("folder.xml");
+        }
+        else
+        {
+            java.nio.file.Path folderPath = pipeRootPath.resolve("moduleFolderImport");
+            folderXmlPath = folderPath.resolve("folder.xml");
+            if (Files.exists(folderPath))
+            {
+                FileUtil.deleteDir(folderPath);
+            }
+            copyResourceToPath(root, folderPath);
+        }
+
+        if (!Files.exists(folderXmlPath))
+        {
+            throw new FileNotFoundException("Couldn't find an extracted " + folderXmlPath);
+        }
+        ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
+        options.setSkipQueryValidation(true);
+
+        BindException errors = new NullSafeBindException(new Object(), "reload");
+        PipelineService.get().runFolderImportJob(container, user, null, folderXmlPath, "folder.xml", errors, pipeRoot, options);
     }
 
     private void copyResourceToPath(Resource resource, java.nio.file.Path target) throws IOException
