@@ -42,10 +42,10 @@ import java.util.Set;
 import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionAuditEvent;
 
 /**
- * Allows upgrade scripts to prescribe study reloads and ETL executions (including truncates). Will look at the
+ * Allows upgrade scripts to prescribe folder reloads and ETL executions (including truncates). Will look at the
  * site-wide ehrStudyContainer and ehrAdminUser module properties to decide where and as whom to run the jobs.
  *
- * Supports 'reloadStudy' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
+ * Supports 'reloadFolder' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
  */
 public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 {
