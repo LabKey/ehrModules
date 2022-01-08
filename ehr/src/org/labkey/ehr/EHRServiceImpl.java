@@ -65,7 +65,6 @@ import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.DatasetTable;
-import org.labkey.api.study.StudyService;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
@@ -108,24 +107,24 @@ import java.util.function.Supplier;
  */
 public class EHRServiceImpl extends EHRService
 {
-    private Set<Module> _registeredModules = new HashSet<>();
-    private List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
-    private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
-    private MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
-    private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
-    private Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
-    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
-    private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
-    private Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
+    private final Set<Module> _registeredModules = new HashSet<>();
+    private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
+    private final Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
+    private final MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
+    private final List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
+    private final Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
+    private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
+    private final Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
+    private final Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
+
     private ProjectValidator _projectValidator = null;
 
     private static final Logger _log = LogManager.getLogger(EHRServiceImpl.class);
 
     public EHRServiceImpl()
     {
-
     }
 
     public static EHRServiceImpl get()
@@ -370,11 +369,12 @@ public class EHRServiceImpl extends EHRService
 
     public static class ReportLink
     {
+        private final String _label;
+        private final Module _owner;
+        private final String _category;
+
         private URLHelper _url = null;
         private DetailsURL _detailsURL = null;
-        private String _label;
-        private Module _owner;
-        private String _category;
 
         public ReportLink(String label, Module owner, DetailsURL url, @Nullable String category)
         {
@@ -857,43 +857,6 @@ public class EHRServiceImpl extends EHRService
     public void addModulePreferringTaskFormEditUI(Module m)
     {
         _modulesRequiringFormEditUI.add(m);
-    }
-
-    @Override
-    public void importStudyDefinition(Container container, User user, Module m, Path sourceStudyDirPath) throws IOException
-    {
-        Resource root = m.getModuleResource(sourceStudyDirPath);
-        PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(container);
-        java.nio.file.Path pipeRootPath = pipeRoot.getRootNioPath();
-
-        java.nio.file.Path studyXmlPath;
-
-        if (root instanceof DirectoryResource && ((DirectoryResource)root).getDir().equals(pipeRootPath.toFile()))
-        {
-            // The pipeline root is already pointed at the study definition's folder, like it might be on a dev machine.
-            // No need to copy, especially since copying can cause infinite recursion when the paths are nested
-            studyXmlPath = pipeRootPath.resolve("study.xml");
-        }
-        else
-        {
-            java.nio.file.Path studyPath = pipeRootPath.resolve("moduleStudyImport");
-            studyXmlPath = studyPath.resolve("study.xml");
-            if (Files.exists(studyPath))
-            {
-                FileUtil.deleteDir(studyPath);
-            }
-            copyResourceToPath(root, studyPath);
-        }
-
-        if (!Files.exists(studyXmlPath))
-        {
-            throw new FileNotFoundException("Couldn't find an extracted " + studyXmlPath);
-        }
-        ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
-        options.setSkipQueryValidation(true);
-
-        BindException errors = new NullSafeBindException(new Object(), "reload");
-        StudyService.get().runStudyImportJob(container, user, null, studyXmlPath, "study.xml", errors, pipeRoot, options);
     }
 
     @Override
