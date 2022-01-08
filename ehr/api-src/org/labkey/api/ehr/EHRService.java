@@ -304,7 +304,12 @@ abstract public class EHRService
     abstract public void addModuleRequiringLegacyExt3EditUI(Module m);
 
     /** Extracts the study definition from a module resource to the pipeline root and queues a study import job */
+    @Deprecated
     abstract public void importStudyDefinition(Container container, User user, Module m, Path studyFolderPath) throws IOException;
+
+    /** Extracts the folder archive containing the study from a module resource to the pipeline root and queues a folder import job */
+    @Deprecated
+    abstract public void importFolderDefinition(Container container, User user, Module m, Path studyFolderPath) throws IOException;
 
     /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
     abstract public void addModulePreferringTaskFormEditUI(Module m);
