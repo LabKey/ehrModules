@@ -55,8 +55,6 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     private static final String ETL_PREFIX = "etl;";
     private static final String IMPORT_FROM_TSV_PREFIX = "importFromTsv;";
 
-    @Deprecated // migrate all modules to use reloadFolder and delete this
-    private boolean _reloadStudy;
     private boolean _reloadFolder;
     /** ETL name -> whether to truncate before running */
     private final Map<String, Boolean> _etls = new LinkedHashMap<>();
@@ -80,7 +78,6 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     @SuppressWarnings("unused")
     public void reloadStudy(ModuleContext context)
     {
-        _reloadStudy = true;
     }
 
     @SuppressWarnings("unused")
@@ -143,7 +140,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     @Override
     public void moduleStartupComplete(ServletContext servletContext)
     {
-        if (_reloadStudy || _reloadFolder || !_etls.isEmpty() || !_tsvImports.isEmpty())
+        if (_reloadFolder || !_etls.isEmpty() || !_tsvImports.isEmpty())
         {
             Container container = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
             if (container == null)
@@ -168,11 +165,6 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 for (TsvImport tsvImport : _tsvImports)
                 {
                     importFile(tsvImport, container, user);
-                }
-
-                if (_reloadStudy)
-                {
-                    EHRService.get().importStudyDefinition(container, user, _module, new Path("referenceStudy"));
                 }
 
                 if (_reloadFolder)
