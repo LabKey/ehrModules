@@ -76,6 +76,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
     }
 
     @SuppressWarnings("unused")
+    public void reloadStudy(ModuleContext context)
+    {
+    }
+
+    @SuppressWarnings("unused")
     public void reloadFolder(ModuleContext context)
     {
         _reloadFolder = true;
