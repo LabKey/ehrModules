@@ -636,10 +636,11 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         clickAndWait(templates.link(0, 0)); // the 'enter results' link
 
         _ext4Helper.waitForMaskToDisappear();
+        waitForElement(Ext4Helper.Locators.getGridRow("A10"));
 
         //use the same data included with this assay
-        waitForElement(Locator.linkContainingText("Download Example Data"));
-        
+        waitForElement(Ext4Helper.Locators.ext4ButtonEnabled("Download Example Data"));
+
         Ext4FieldRef.waitForField(this, "Instrument");
 
         assertEquals("Incorrect value for field", "ABI 7500", Ext4FieldRef.getForLabel(this, "Instrument").getValue());
