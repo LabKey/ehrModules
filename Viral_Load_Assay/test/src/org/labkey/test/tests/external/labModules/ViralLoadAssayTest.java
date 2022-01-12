@@ -34,6 +34,7 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
 import org.labkey.test.components.domain.DomainFormPanel;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ReactAssayDesignerPage;
 import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.util.DataRegionTable;
@@ -619,6 +620,18 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         goToProjectHome();
     }
 
+    private void waitForViralLoadAssayPageWithSavedTemplate()
+    {
+        waitForElement(Locator.tagWithText("span", "Sample Records"));
+        _ext4Helper.waitForMaskToDisappear();
+        waitForElement(Ext4Helper.Locators.getGridRow("A10"));
+        waitForElement(Ext4Helper.Locators.getGridRow("B2"));
+
+        waitForElement(Ext4Helper.Locators.ext4ButtonEnabled("Download Example Data"));
+        Ext4FieldRef.waitForField(this, "Instrument");
+        Ext4FieldRef.waitForField(this, "Eluate Volume");
+    }
+
     /**
      * Imports results for the run created using createPlateTemplate().
      * Also verifies error messages and VL calculations
@@ -635,12 +648,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         DataRegionTable templates = new DataRegionTable("query", this);
         clickAndWait(templates.link(0, 0)); // the 'enter results' link
 
-        _ext4Helper.waitForMaskToDisappear();
-
-        //use the same data included with this assay
-        waitForElement(Locator.linkContainingText("Download Example Data"));
-        
-        Ext4FieldRef.waitForField(this, "Instrument");
+        waitForViralLoadAssayPageWithSavedTemplate();
 
         assertEquals("Incorrect value for field", "ABI 7500", Ext4FieldRef.getForLabel(this, "Instrument").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(60), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
@@ -665,7 +673,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         log("Saving valid data");
         textarea.setValue(text);
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
-        waitForElement(Ext4Helper.Locators.window("Success"));
+        new Window.WindowFinder(getDriver()).withTitle("Success").timeout(WAIT_FOR_JAVASCRIPT * 2).waitFor();
         clickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitForElement(Locator.tagWithText("div", "Import Samples"));
 
@@ -806,13 +814,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         DataRegionTable templates = new DataRegionTable("query", this);
         clickAndWait(Locator.linkWithText("Enter Results"));
 
-        _ext4Helper.waitForMaskToDisappear();
+        waitForViralLoadAssayPageWithSavedTemplate();
 
-        //use the same data included with this assay
-        waitForElement(Locator.linkContainingText("Download Example Data"));
-        Ext4FieldRef.waitForField(this, "Instrument");
-
-        Ext4FieldRef.waitForField(this, "Instrument");
         assertEquals("Incorrect value for field", instrument, Ext4FieldRef.getForLabel(this, "Instrument").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(50), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(5), Ext4FieldRef.getForLabel(this, "Sample Vol Per Rxn").getValue());
