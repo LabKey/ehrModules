@@ -177,7 +177,7 @@ public class ONPRC_BillingTest extends AbstractONPRC_EHRTest
         setFormElement(Locator.name("protocol"), protocolId);
         // Wait for client-side validation to catch up. No good way to check prior to the click, aside from clicking
         // the button and having it pop up a warning dialog
-        wait(2500);
+        Thread.sleep(2500);
 
         clickButton("Submit");
         projectTable.setFilter("name", "Equals", projectName);
