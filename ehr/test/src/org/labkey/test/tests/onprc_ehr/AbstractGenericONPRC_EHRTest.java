@@ -69,12 +69,6 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
     @Override
-    public String getModulePath()
-    {
-        return "server/modules/onprcEHRModules/" + getModuleDirectory();
-    }
-
-    @Override
     public List<String> getAssociatedModules()
     {
         return Arrays.asList("ehr", "onprc_ehr");
@@ -110,9 +104,15 @@ public abstract class AbstractGenericONPRC_EHRTest extends AbstractGenericEHRTes
     }
 
     @Override
+    public String getModulePath()
+    {
+        return "server/modules/onprcEHRModules/" + getModuleDirectory();
+    }
+
+    @Override
     protected void importStudy()
     {
-        importStudyFromPath(1);
+        importFolderFromPath(1);
     }
 
     @Override
