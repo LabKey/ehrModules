@@ -335,34 +335,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected abstract void importStudy();
 
-    @Deprecated // study archives are going away... use importFolderFromPath() instead
-    protected void importStudyFromPath(int jobCount)
-    {
-        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
-        setPipelineRoot(path.getPath());
-
-        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
-        clickButton("Process and Import Data", defaultWaitForPage);
-
-        _fileBrowserHelper.expandFileBrowserRootNode();
-        _fileBrowserHelper.checkFileBrowserFileCheckbox("study.xml");
-
-        if (isTextPresent("Reload Study"))
-            _fileBrowserHelper.selectImportDataAction("Reload Study");
-        else
-            _fileBrowserHelper.selectImportDataAction("Import Study");
-
-        if (skipStudyImportQueryValidation())
-        {
-            Locator cb = Locator.checkboxByName("validateQueries");
-            waitForElement(cb);
-            uncheckCheckbox(cb);
-        }
-
-        clickButton("Start Import"); // Validate queries page
-        waitForPipelineJobsToComplete(jobCount, "Study import", false, MAX_WAIT_SECONDS * 2500);
-    }
-
     protected void importFolderFromPath(int jobCount)
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
