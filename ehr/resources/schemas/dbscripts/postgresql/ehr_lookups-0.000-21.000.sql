@@ -10097,3 +10097,18 @@ ALTER TABLE ehr_lookups.cage_type
 
 -- add LSID column to tables to allow them to be extensible
 ALTER TABLE ehr_lookups.species_codes ADD COLUMN lsid LSIDtype;
+
+/* ehr_lookups-19.20-19.30.sql */
+
+-- Handle upgrade for ONPRC which had a 17.20-17.21 script to do this change
+
+DO $$
+BEGIN
+
+  IF (SELECT NOT EXISTS (select * from pg_attribute a inner join pg_class c on (a.attrelid = c.oid) inner join pg_namespace n on (n.oid = c.relnamespace) where lower(a.attname)='datedisabled' and lower(c.relname)='flag_categories' and lower(n.nspname) = 'ehr_lookups')) THEN
+    ALTER TABLE ehr_lookups.flag_categories ADD COLUMN datedisabled TIMESTAMP;
+  END IF;
+
+END $$;
+
+ALTER TABLE ehr_lookups.treatment_codes ALTER COLUMN dosage TYPE DECIMAL(13,2);
