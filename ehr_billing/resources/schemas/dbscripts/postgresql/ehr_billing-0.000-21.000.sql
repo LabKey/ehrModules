@@ -638,3 +638,72 @@ CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICENUMBER ON ehr_billing.invoice (invoic
 ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_INVOICEDITEMS_INVOICENUM FOREIGN KEY (invoiceNumber) REFERENCES ehr_billing.invoice (invoiceNumber);
 
 ALTER TABLE ehr_billing.chargeableItemCategories ADD COLUMN LSID LSIDtype;
+
+-- ehr_billing-18.33-18.34.sql
+ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceSentComment TYPE varchar(500);
+ALTER TABLE ehr_billing.invoice ALTER COLUMN paymentReceivedComment TYPE varchar(500);
+
+-- ehr_billing-18.34-18.35.sql - modified to add if column doesn't already exists
+CREATE FUNCTION ehr_billing.addChargeGroupToMiscCharges() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF NOT EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='chargegroup'
+        )
+    THEN
+        ALTER TABLE ehr_billing.miscCharges ADD chargeGroup VARCHAR(200);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.addChargeGroupToMiscCharges();
+
+DROP FUNCTION ehr_billing.addChargeGroupToMiscCharges();
+
+--rename column chargetype to groupName - modified to rename if column exists/not renamed already
+CREATE FUNCTION ehr_billing.renameChargeTypeToGroupName() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='chargeunits' and table_schema='ehr_billing' and column_name='chargetype'
+        )
+    THEN
+        ALTER TABLE ehr_billing.chargeUnits DROP CONSTRAINT PK_chargeUnits;
+        ALTER TABLE ehr_billing.chargeUnits RENAME COLUMN chargetype TO groupName;
+        ALTER TABLE ehr_billing.chargeUnits ADD CONSTRAINT PK_chargeUnits PRIMARY KEY (groupName);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.renameChargeTypeToGroupName();
+
+DROP FUNCTION ehr_billing.renameChargeTypeToGroupName();
+
+
+-- ehr_billing-18.35-18.36.sql - modified to add if column doesn't already exists
+CREATE FUNCTION ehr_billing.addTotalCostToMiscCharges() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF NOT EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='totalcost'
+        )
+    THEN
+        ALTER TABLE ehr_billing.miscCharges ADD totalCost double precision;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.addTotalCostToMiscCharges();
+
+DROP FUNCTION ehr_billing.addTotalCostToMiscCharges();
+
+-- Convert from a plain index to a unique constraint
+SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'EHR_BILLING_ALIASES_INDEX');
+
+ALTER TABLE ehr_billing.aliases ADD CONSTRAINT UNIQUE_ALIAS UNIQUE (Container, alias);
