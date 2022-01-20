@@ -181,6 +181,21 @@ public class TriggerScriptHelper
         _centerCustomProps.putAll(centerCustomProps);
     }
 
+    private int getDatasetByLabelOrName(Container container, String queryName)
+    {
+        StudyService ss = StudyService.get();
+        if (null == ss)
+            return -1;
+
+        int datasetId = ss.getDatasetIdByLabel(container, queryName);
+        if (datasetId == -1)
+        {
+            datasetId = ss.getDatasetIdByName(container, queryName);
+        }
+
+        return datasetId;
+    }
+
     public String closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
     {
         Container container = getContainer();
@@ -189,7 +204,7 @@ public class TriggerScriptHelper
         List<String> changedTables = new ArrayList<>();
         for (String queryName : queryNames)
         {
-            int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
+            int datasetId = getDatasetByLabelOrName(container, queryName);
             Dataset dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
                 _log.info("Non existent table: study." + queryName);
@@ -214,7 +229,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
@@ -233,7 +248,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
@@ -252,7 +267,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
