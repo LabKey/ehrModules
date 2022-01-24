@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.admin.ImportOptions;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
@@ -81,7 +80,6 @@ import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
-import org.springframework.validation.BindException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -892,8 +890,7 @@ public class EHRServiceImpl extends EHRService
         ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
         options.setSkipQueryValidation(true);
 
-        BindException errors = new NullSafeBindException(new Object(), "reload");
-        PipelineService.get().runFolderImportJob(container, user, null, folderXmlPath, "folder.xml", errors, pipeRoot, options);
+        PipelineService.get().runFolderImportJob(container, user, null, folderXmlPath, "folder.xml", pipeRoot, options);
     }
 
     private void copyResourceToPath(Resource resource, java.nio.file.Path target) throws IOException

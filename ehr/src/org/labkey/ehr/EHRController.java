@@ -17,6 +17,7 @@
 package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
@@ -178,7 +179,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(CacheLivingAnimalsForm form)
+        public @NotNull URLHelper getSuccessURL(CacheLivingAnimalsForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -207,7 +208,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1087,7 +1088,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
+        public @NotNull URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1130,7 +1131,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1164,7 +1165,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1244,7 +1245,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
@@ -1271,7 +1272,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1834,7 +1835,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
