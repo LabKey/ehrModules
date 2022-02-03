@@ -3,10 +3,10 @@ ALTER TABLE ehr_lookups.areas ADD Lsid LSIDtype;
 
 CREATE TABLE ehr_lookups.floors (
     rowId int identity(1,1),
-    floor varchar(100),
-    building varchar(100),
-    name varchar(100),
-    description varchar(100),
+    floor NVARCHAR(100),
+    building NVARCHAR(100),
+    name NVARCHAR(100),
+    description NVARCHAR(100),
     created datetime,
     createdby integer,
     modified datetime,
