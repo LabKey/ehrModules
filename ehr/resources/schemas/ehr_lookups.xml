@@ -253,6 +253,18 @@
                     <fkColumnName>entityid</fkColumnName>
                 </fk>
             </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
@@ -333,7 +345,7 @@
         </columns>
     </table>
     <table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
-        <description>The most general categorization for animal housing, one level up from rooms</description>
+        <description>The most general categorization for animal housing</description>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <tableTitle>Areas</tableTitle>
@@ -359,6 +371,71 @@
                     <fkDbSchema>core</fkDbSchema>
                     <fkTable>containers</fkTable>
                     <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="floors" tableDbType="TABLE" useColumnOrder="true">
+        <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
+        <auditLogging>DETAILED</auditLogging>
+        <tableTitle>Floors</tableTitle>
+        <importUrl></importUrl>
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <deleteUrl></deleteUrl>
+        <pkColumnName>floor</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <isKeyField>false</isKeyField> <!-- EHRContainerScopedTable will lookup the rowid for updateRows -->
+            </column>
+            <column columnName="floor">
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="building">
+                <columnTitle>Building</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
+                    <fkTable>buildings</fkTable>
+                    <fkColumnName>name</fkColumnName>
+                    <fkDisplayColumnName useRawValue="true"/>
+                </fk>
+            </column>
+            <column columnName="description"/>
+            <column columnName="name"/>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <isUnselectable>true</isUnselectable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
                 </fk>
             </column>
         </columns>
