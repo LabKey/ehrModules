@@ -52,6 +52,7 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QuerySchema;
+import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.ContextListener;
@@ -131,7 +132,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.006;
+        return 22.001;
     }
 
     @Override
@@ -200,6 +201,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         PropertyService.get().registerDomainKind(new EHRDomainKind());
         PropertyService.get().registerDomainKind(new EHR_LookupsDomainKind());
+        PropertyService.get().registerDomainKind(new SimpleTableDomainKind());
     }
 
     @Nullable
