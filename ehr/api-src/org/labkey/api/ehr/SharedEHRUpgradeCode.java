@@ -127,14 +127,27 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         }
         else if (methodName.startsWith(IMPORT_DOMAIN_TEMPLATE))
         {
-            String[] tsvArguments = methodName.split(";");
-            if (tsvArguments.length != 3)
+            String[] templateArguments = methodName.split(";");
+            if (templateArguments.length != 3)
             {
-                throw new UnsupportedOperationException("Expected three arguments for importTemplate but got " + (tsvArguments.length - 1));
+                throw new UnsupportedOperationException("Expected three arguments for importTemplate but got " + (templateArguments.length - 1));
             }
 
-            String moduleName = tsvArguments[1];
-            String domainGroup = tsvArguments[2];
+            Container ehrStudyContainer = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
+            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot());
+
+            if (ehrStudyContainer == null)
+            {
+                throw new UnsupportedOperationException("EHR Study Container module property not found for extensible column import");
+            }
+
+            if (ehrUser == null)
+            {
+                throw new UnsupportedOperationException("EHR Admin User module property not found for extensible column import");
+            }
+
+            String moduleName = templateArguments[1];
+            String domainGroup = templateArguments[2];
 
             Module module = ModuleLoader.getInstance().getModule(moduleName);
             if (module == null)
@@ -149,7 +162,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 }
                 try
                 {
-                    templateGroup.createAndImport(EHRService.get().getEHRStudyContainer(ContainerManager.getRoot()), EHRService.get().getEHRUser(ContainerManager.getRoot()), true, false);
+                    templateGroup.createAndImport(ehrStudyContainer, ehrUser, true, false);
                 }
                 catch (BatchValidationException e)
                 {
