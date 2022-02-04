@@ -138,40 +138,43 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 
             if (ehrStudyContainer == null)
             {
-                throw new UnsupportedOperationException("EHR Study Container module property not found for extensible column import");
+                LOG.warn("EHR Study Container module property not found for extensible column import. Skipping import.");
             }
 
             if (ehrUser == null)
             {
-                throw new UnsupportedOperationException("EHR Admin User module property not found for extensible column import");
+                LOG.warn("EHR Admin User module property not found for extensible column import. Skipping import.");
             }
 
-            String moduleName = templateArguments[1];
-            String domainGroup = templateArguments[2];
-
-            Module module = ModuleLoader.getInstance().getModule(moduleName);
-            if (module == null)
-                throw new NotFoundException("Module '" + moduleName + "' for domain template import not found");
-
-            DomainTemplateGroup templateGroup = DomainTemplateGroup.get(module, domainGroup);
-            if (templateGroup != null)
+            if (ehrStudyContainer != null && ehrUser != null)
             {
-                if (templateGroup.hasErrors())
+                String moduleName = templateArguments[1];
+                String domainGroup = templateArguments[2];
+
+                Module module = ModuleLoader.getInstance().getModule(moduleName);
+                if (module == null)
+                    throw new NotFoundException("Module '" + moduleName + "' for domain template import not found");
+
+                DomainTemplateGroup templateGroup = DomainTemplateGroup.get(module, domainGroup);
+                if (templateGroup != null)
                 {
-                    throw new UnsupportedOperationException("Domain template group '" + domainGroup + "' has errors: " + StringUtils.join(templateGroup.getErrors(), "\n"));
+                    if (templateGroup.hasErrors())
+                    {
+                        throw new UnsupportedOperationException("Domain template group '" + domainGroup + "' has errors: " + StringUtils.join(templateGroup.getErrors(), "\n"));
+                    }
+                    try
+                    {
+                        templateGroup.createAndImport(ehrStudyContainer, ehrUser, true, false);
+                    }
+                    catch (BatchValidationException e)
+                    {
+                        throw UnexpectedException.wrap(e);
+                    }
                 }
-                try
+                else
                 {
-                    templateGroup.createAndImport(ehrStudyContainer, ehrUser, true, false);
+                    LOG.error("Domain template '" + domainGroup + "' not found for module '" + moduleName + "'");
                 }
-                catch (BatchValidationException e)
-                {
-                    throw UnexpectedException.wrap(e);
-                }
-            }
-            else
-            {
-                LOG.error("Domain template '" + domainGroup + "' not found for module '" + moduleName + "'");
             }
         }
         else
