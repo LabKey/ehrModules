@@ -35,6 +35,7 @@ import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -258,6 +259,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             return;
         }
 
+        // Copy the list as it may be backed by a JavaScript array (via a trigger script) that ends up holding
+        // onto a lot of additional scope
+        List<String> copiedIds = new ArrayList<>(ids);
+
         if (async)
         {
             for (String id : ids)
@@ -271,7 +276,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, u);
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    doUpdateRecords(c, u, changed, ids);
+                    doUpdateRecords(c, u, changed, copiedIds);
                 }
                 finally
                 {
@@ -281,7 +286,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
         else
         {
-            doUpdateRecords(c, u, changed, ids);
+            doUpdateRecords(c, u, changed, copiedIds);
         }
     }
 
@@ -374,7 +379,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             List<String> sublist = uniqueIds.subList(start, Math.min(uniqueIds.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
-            Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+            Map<String, Map<String, Object>> props = p.getProperties(u, sublist);
             Set<String> idsToUpdate = new TreeSet<>();
 
             Set<String> uncachedIds = new HashSet<>();
@@ -426,6 +431,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         _log.info("Perform async cache for " + ids.size() + " animals");
 
+        // Copy the list as it may be backed by a JavaScript array (via a trigger script) that ends up holding
+        // onto a lot of additional scope and memory
+        final List<String> copiedIds = new ArrayList<>(ids);
+
         JobRunner.getDefault().execute(() -> {
             try
             {
@@ -434,7 +443,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    EHRDemographicsServiceImpl.get().createRecords(c, ids, false);
+                    EHRDemographicsServiceImpl.get().createRecords(c, copiedIds, false);
                 }
                 finally
                 {
@@ -485,9 +494,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             _log.info("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
+            DefaultSchema defaultSchema = DefaultSchema.get(u, c);
+
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c, u))
             {
-                Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+                Map<String, Map<String, Object>> props = p.getProperties(defaultSchema, sublist);
                 for (String id : props.keySet())
                 {
                     Map<String, Object> perId = ret.get(id);
