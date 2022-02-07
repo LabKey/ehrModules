@@ -265,7 +265,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         if (async)
         {
-            for (String id : ids)
+            for (String id : copiedIds)
             {
                 _cache.remove(getCacheKey(c, id));
             }
