@@ -143,13 +143,13 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         UserSchema us = defaultSchema.getUserSchema(_schemaName);
         if (us == null)
         {
-            throw new IllegalArgumentException("Schema " + _schemaName + " not found in the container: " + c.getPath());
+            throw new IllegalArgumentException("Schema " + _schemaName + " not found in the container: " + defaultSchema.getContainer().getPath());
         }
 
         final TableInfo ti = us.getTable(_queryName, null);
         if (ti == null)
         {
-            throw new IllegalArgumentException("Table: " + _schemaName + "." + _queryName + " not found in the container: " + c.getPath());
+            throw new IllegalArgumentException("Table: " + _schemaName + "." + _queryName + " not found in the container: " + defaultSchema.getContainer().getPath());
         }
 
         return ti;
