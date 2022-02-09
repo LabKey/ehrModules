@@ -310,6 +310,7 @@ abstract public class EHRService
     /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
     abstract public void addModulePreferringTaskFormEditUI(Module m);
 
+    /** Used to restrict data entry forms for users in a group **/
     abstract public void registerDataEntryFormAccess(Map<Module, Map<String, Set<Class<? extends DataEntryForm>>>> permittedForms);
 
     abstract public Map<String, Set<Class<? extends DataEntryForm>>> getDataEntryFormAccess(Container container);
