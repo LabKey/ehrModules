@@ -28,7 +28,8 @@ import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.demographics.ProjectValidator;
-import org.labkey.api.ehr.history.*;
+import org.labkey.api.ehr.history.HistoryDataSource;
+import org.labkey.api.ehr.history.LabworkType;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.BatchValidationException;
@@ -308,4 +309,8 @@ abstract public class EHRService
 
     /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
     abstract public void addModulePreferringTaskFormEditUI(Module m);
+
+    abstract public void registerDataEntryFormAccess(Map<Module, Map<String, Set<Class<? extends DataEntryForm>>>> permittedForms);
+
+    abstract public Map<String, Set<Class<? extends DataEntryForm>>> getDataEntryFormAccess(Container container);
 }

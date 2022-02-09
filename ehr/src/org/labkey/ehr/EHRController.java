@@ -61,7 +61,9 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.resource.FileResource;
+import org.labkey.api.security.Group;
 import org.labkey.api.security.RequiresPermission;
+import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -141,9 +143,46 @@ public class EHRController extends SpringActionController
 
             Collection<DataEntryForm> forms = DataEntryManager.get().getForms(getContainer(), getUser());
             List<JSONObject> formJson = new ArrayList<>();
-            for (DataEntryForm def : forms)
+
+            // restrict forms if the user is in the restricted group
+            var userGroups = SecurityManager.getGroups(getContainer(), getUser());
+            var permittedForms = EHRService.get().getDataEntryFormAccess(getContainer());
+            var isUserInRestrictedGroup = false;
+            String restrictedGroupName = null;
+
+            for (var entry : permittedForms.entrySet())
             {
-                formJson.add(def.toJSON(form.isIncludeFormElements()));
+                for (Group g : userGroups)
+                {
+                    if (g.getName().equalsIgnoreCase(entry.getKey()))
+                    {
+                        // assuming user is present in at most 1 restricted group
+                        isUserInRestrictedGroup = true;
+                        restrictedGroupName = entry.getKey();
+                        break;
+                    }
+                }
+            }
+
+            if (isUserInRestrictedGroup)
+            {
+                for (DataEntryForm f : forms)
+                {
+                    permittedForms.get(restrictedGroupName).forEach(permForm -> {
+                        if (f.getClass().getName().equalsIgnoreCase(permForm.getName()))
+                        {
+                            formJson.add(f.toJSON(form.isIncludeFormElements()));
+                        }
+                    });
+                }
+            }
+
+            else
+            {
+                for (DataEntryForm def : forms)
+                {
+                    formJson.add(def.toJSON(form.isIncludeFormElements()));
+                }
             }
 
             resultProperties.put("forms", formJson);

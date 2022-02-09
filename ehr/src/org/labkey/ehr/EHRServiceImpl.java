@@ -17,9 +17,8 @@ package org.labkey.ehr;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -41,7 +40,25 @@ import org.labkey.api.ehr.dataentry.DataEntryFormFactory;
 import org.labkey.api.ehr.dataentry.SingleQueryFormProvider;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.demographics.ProjectValidator;
-import org.labkey.api.ehr.history.*;
+import org.labkey.api.ehr.history.AntibioticSensitivityLabworkType;
+import org.labkey.api.ehr.history.ChemistryLabworkType;
+import org.labkey.api.ehr.history.DefaultAnimalRecordFlagDataSource;
+import org.labkey.api.ehr.history.DefaultArrivalDataSource;
+import org.labkey.api.ehr.history.DefaultAssignmentEndDataSource;
+import org.labkey.api.ehr.history.DefaultBirthDataSource;
+import org.labkey.api.ehr.history.DefaultDeathsDataSource;
+import org.labkey.api.ehr.history.DefaultDepartureDataSource;
+import org.labkey.api.ehr.history.DefaultDrugsDataSource;
+import org.labkey.api.ehr.history.DefaultProblemListCloseDataSource;
+import org.labkey.api.ehr.history.DefaultProblemListDataSource;
+import org.labkey.api.ehr.history.DefaultTreatmentEndDataSource;
+import org.labkey.api.ehr.history.HematologyLabworkType;
+import org.labkey.api.ehr.history.HistoryDataSource;
+import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.ehr.history.MicrobiologyLabworkType;
+import org.labkey.api.ehr.history.MiscTestsLabworkType;
+import org.labkey.api.ehr.history.ParasitologyLabworkType;
+import org.labkey.api.ehr.history.SerologyLabworkType;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
@@ -59,7 +76,6 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.DirectoryResource;
-import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
@@ -86,7 +102,6 @@ import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 import org.springframework.validation.BindException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,6 +138,7 @@ public class EHRServiceImpl extends EHRService
     private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
     private Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
     private ProjectValidator _projectValidator = null;
+    private Map<Module, Map<String, Set<Class<? extends DataEntryForm>>>>_permittedForms = new HashMap<>();
 
     private static final Logger _log = LogManager.getLogger(EHRServiceImpl.class);
 
@@ -1010,5 +1026,26 @@ public class EHRServiceImpl extends EHRService
             simpleRawCol.setDisplayWidth("250");
             ti.addColumn(simpleRawCol);
         }
+    }
+
+    @Override
+    public void registerDataEntryFormAccess(Map<Module, Map<String, Set<Class<? extends DataEntryForm>>>> permittedForms)
+    {
+        _permittedForms.putAll(permittedForms);
+    }
+
+    @Override
+    public Map<String, Set<Class<? extends DataEntryForm>>> getDataEntryFormAccess(Container container)
+    {
+        var forms = new HashMap<String, Set<Class<? extends DataEntryForm>>>();
+        Set<Module> modules = container.getActiveModules();
+        _permittedForms.forEach((module, permFomrs) -> {
+            if (modules.contains(module))
+            {
+                forms.putAll(permFomrs);
+            }
+        });
+
+        return forms;
     }
 }
