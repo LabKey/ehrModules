@@ -35,6 +35,7 @@ import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
@@ -82,7 +83,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     private static final Logger _log = LogManager.getLogger(EHRDemographicsServiceImpl.class);
     private static JobDetail _job = null;
 
-    private Cache<String, AnimalRecordImpl> _cache;
+    private final Cache<String, AnimalRecordImpl> _cache;
 
 //    private static class DemographicsCacheLoader implements CacheLoader<String, AnimalRecord>
 //    {
@@ -207,11 +208,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                         }
                     }
 
-                    MapDifference diff = Maps.difference(props1, props2);
+                    MapDifference<String, Object> diff = Maps.difference(props1, props2);
                     if (!diff.areEqual())
                     {
                         _log.error("mismatch for cached record for animal: " + record.getId());
-                        Map<String, MapDifference.ValueDifference> diffEntries = diff.entriesDiffering();
+                        Map<String, MapDifference.ValueDifference<Object>> diffEntries = diff.entriesDiffering();
                         if (diffEntries.isEmpty())
                         {
                             _log.error("No differences found in the maps");
@@ -258,9 +259,13 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             return;
         }
 
+        // Copy the list as it may be backed by a JavaScript array (via a trigger script) that ends up holding
+        // onto a lot of additional scope
+        List<String> copiedIds = new ArrayList<>(ids);
+
         if (async)
         {
-            for (String id : ids)
+            for (String id : copiedIds)
             {
                 _cache.remove(getCacheKey(c, id));
             }
@@ -271,7 +276,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, u);
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    doUpdateRecords(c, u, changed, ids);
+                    doUpdateRecords(c, u, changed, copiedIds);
                 }
                 finally
                 {
@@ -281,20 +286,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
         else
         {
-            doUpdateRecords(c, u, changed, ids);
+            doUpdateRecords(c, u, changed, copiedIds);
         }
-    }
-
-    private void reportDataChangeForProvider(Container c, DemographicsProvider p, Collection<String> ids)
-    {
-        final User u = EHRService.get().getEHRUser(c);
-        if (u == null)
-        {
-            _log.error("EHRUser not configured, cannot run demographics service");
-            return;
-        }
-
-        updateForProvider(c, u, p, ids, false);
     }
 
     private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids)
@@ -349,9 +342,12 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 _log.info("updating demographics providers: [" + StringUtils.join(providerNames, ";") + "] for " + ids.size() + " ids.  " + (ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]"));
             }
 
+
+            DefaultSchema defaultSchema = DefaultSchema.get(u, c);
+
             for (DemographicsProvider p : needsUpdate)
             {
-                updateForProvider(c, u, p, ids, true);
+                updateForProvider(defaultSchema, p, ids, true);
             }
         }
         catch (Exception e)
@@ -361,10 +357,12 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
     }
 
-    private void updateForProvider(Container c, User u, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
+    private void updateForProvider(DefaultSchema defaultSchema, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
     {
         CPUTimer timer = new CPUTimer(p.getName());
         timer.start();
+
+        Container c = defaultSchema.getContainer();
 
         int start = 0;
         // Use a set to be sure there are no duplicates
@@ -374,7 +372,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             List<String> sublist = uniqueIds.subList(start, Math.min(uniqueIds.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
-            Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+            Map<String, Map<String, Object>> props = p.getProperties(defaultSchema, sublist);
             Set<String> idsToUpdate = new TreeSet<>();
 
             Set<String> uncachedIds = new HashSet<>();
@@ -413,7 +411,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             if (!idsToUpdate.isEmpty())
             {
                 _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
-                reportDataChangeForProvider(c, p, idsToUpdate);
+                updateForProvider(defaultSchema, p, idsToUpdate, false);
             }
         }
 
@@ -426,6 +424,10 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         _log.info("Perform async cache for " + ids.size() + " animals");
 
+        // Copy the list as it may be backed by a JavaScript array (via a trigger script) that ends up holding
+        // onto a lot of additional scope and memory
+        final List<String> copiedIds = new ArrayList<>(ids);
+
         JobRunner.getDefault().execute(() -> {
             try
             {
@@ -434,7 +436,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    EHRDemographicsServiceImpl.get().createRecords(c, ids, false);
+                    EHRDemographicsServiceImpl.get().createRecords(c, copiedIds, false);
                 }
                 finally
                 {
@@ -485,9 +487,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             _log.info("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
+            DefaultSchema defaultSchema = DefaultSchema.get(u, c);
+
             for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c, u))
             {
-                Map<String, Map<String, Object>> props = p.getProperties(c, u, sublist);
+                Map<String, Map<String, Object>> props = p.getProperties(defaultSchema, sublist);
                 for (String id : props.keySet())
                 {
                     Map<String, Object> perId = ret.get(id);
@@ -507,7 +511,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         for (String id : allIds)
         {
             if (!ret.containsKey(id))
-                ret.put(id, new HashMap<String, Object>());
+                ret.put(id, new HashMap<>());
         }
 
         List<AnimalRecord> records = new ArrayList<>();
@@ -592,7 +596,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             String value = shouldCache.getEffectiveValue(s.getContainer());
             if (value != null)
             {
-                Boolean val = Boolean.parseBoolean(value);
+                boolean val = Boolean.parseBoolean(value);
                 if (val)
                 {
                     User u = EHRService.get().getEHRUser(s.getContainer());
