@@ -156,7 +156,7 @@ public class EHRManager
             if (emailAddress == null)
             {
                 if (logOnError)
-                    _log.error("Attempted to access EHR email module property from container: " + (c == null ? null : c.getPath()) + ", but it was null.  Some code may not work as expected.", new Exception());
+                    _log.warn("Attempted to access EHR email module property from container: " + (c == null ? null : c.getPath()) + ", but it was null.  Some code may not work as expected.", new Exception());
                 return null;
             }
 

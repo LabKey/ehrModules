@@ -1,5 +1,6 @@
 package org.labkey.api.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.audit.TransactionAuditProvider;
 import org.labkey.api.data.Container;
@@ -7,9 +8,11 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.di.DataIntegrationService;
+import org.labkey.api.exp.property.DomainTemplateGroup;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.query.AbstractQueryImportAction;
 import org.labkey.api.query.BatchValidationException;
@@ -28,6 +31,7 @@ import org.labkey.api.util.Path;
 import org.labkey.api.util.StartupListener;
 import org.labkey.api.util.UnexpectedException;
 import org.labkey.api.util.logging.LogHelper;
+import org.labkey.api.view.NotFoundException;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
@@ -54,6 +58,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 
     private static final String ETL_PREFIX = "etl;";
     private static final String IMPORT_FROM_TSV_PREFIX = "importFromTsv;";
+    private static final String IMPORT_DOMAIN_TEMPLATE = "importTemplate;";
 
     private boolean _reloadFolder;
     /** ETL name -> whether to truncate before running */
@@ -119,6 +124,58 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             String tsvPath = tsvArguments[3];
 
             _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+        }
+        else if (methodName.startsWith(IMPORT_DOMAIN_TEMPLATE))
+        {
+            String[] templateArguments = methodName.split(";");
+            if (templateArguments.length != 3)
+            {
+                throw new UnsupportedOperationException("Expected three arguments for importTemplate but got " + (templateArguments.length - 1));
+            }
+
+            Container ehrStudyContainer = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
+            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot());
+
+            if (ehrStudyContainer == null)
+            {
+                LOG.warn("EHR Study Container module property not found for extensible column import. Skipping import.");
+            }
+
+            if (ehrUser == null)
+            {
+                LOG.warn("EHR Admin User module property not found for extensible column import. Skipping import.");
+            }
+
+            if (ehrStudyContainer != null && ehrUser != null)
+            {
+                String moduleName = templateArguments[1];
+                String domainGroup = templateArguments[2];
+
+                Module module = ModuleLoader.getInstance().getModule(moduleName);
+                if (module == null)
+                    throw new NotFoundException("Module '" + moduleName + "' for domain template import not found");
+
+                DomainTemplateGroup templateGroup = DomainTemplateGroup.get(module, domainGroup);
+                if (templateGroup != null)
+                {
+                    if (templateGroup.hasErrors())
+                    {
+                        throw new UnsupportedOperationException("Domain template group '" + domainGroup + "' has errors: " + StringUtils.join(templateGroup.getErrors(), "\n"));
+                    }
+                    try
+                    {
+                        templateGroup.createAndImport(ehrStudyContainer, ehrUser, true, false);
+                    }
+                    catch (BatchValidationException e)
+                    {
+                        throw UnexpectedException.wrap(e);
+                    }
+                }
+                else
+                {
+                    LOG.error("Domain template '" + domainGroup + "' not found for module '" + moduleName + "'");
+                }
+            }
         }
         else
         {

@@ -63,9 +63,9 @@ public class EHRDomainKind extends ExtendedTableDomainKind
     }
 
     @Override
-    public Set<String> getReservedPropertyNames(Domain domain)
+    public Set<String> getReservedPropertyNames(Domain domain, User user)
     {
-        return super.getReservedPropertyNames(domain);
+        return super.getReservedPropertyNames(domain, user);
     }
 
     @Override
