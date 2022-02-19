@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<etl xmlns="http://labkey.org/etl/xml">
+    <name>Animal</name>
+    <description>Animal Source Data</description>
+    <transforms>
+        <transform id="step1" type="org.labkey.di.pipeline.TransformTask">
+            <description>Copy Animal Data to Animal Source</description>
+            <source schemaName="animal" queryName="animal_source"/>
+            <destination schemaName="exp.data" queryName="Animal" targetOption="merge" />
+        </transform>
+    </transforms>
+    <schedule>
+        <poll interval="1d"/>
+    </schedule>
+</etl>
