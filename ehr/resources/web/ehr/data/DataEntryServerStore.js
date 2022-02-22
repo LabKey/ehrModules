@@ -111,7 +111,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     recMap.create.push(r);
                 }
                 else if (forceUpdate || !LABKEY.Utils.isEmptyObj(r.modified)){
-                    var v = r.get(this.proxy.reader.getIdProperty());
+                    var v = r.get(this.getKeyField());
                     LDK.Assert.assertNotEmpty('Record passed as update which lacks keyfield for store: ' + this.storeId + '/' + this.proxy.reader.idProperty + '/' + Ext4.encode(r.modified), v);
                     if (v){
                         recMap.update.push(r);
@@ -139,7 +139,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
         //NOTE: this is debugging code designed to track down the 'row not found' error.  ultimately we should fix this underlying issue and remove this
         if (recMap.update.length){
-            var key = this.proxy.reader.getIdProperty();
+            var key = this.getKeyField();
             LDK.Assert.assertNotEmpty('Unable to find key field for: ' + this.storeId, key);
             var toRemove = [];
             Ext4.Array.forEach(recMap.update, function(r){
@@ -253,6 +253,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         }, true);
     },
 
+    getKeyField: function() {
+        return this.proxy.reader.getIdProperty();
+    },
+
     processResponse: function(records, command){
         //clear server errors
         Ext4.Array.forEach(records, function(record){
@@ -265,7 +269,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         this.callParent(arguments);
 
         if (!command || command.command != 'delete'){
-            var idProp = this.proxy.reader.getIdProperty();
+            var idProp = this.getKeyField();
             Ext4.Array.forEach(records, function(row){
                 var record;
                 if (row.oldKeys){
@@ -339,7 +343,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 var record = records[rowError.rowNumber];
                 if (rowError.row){
                     var found;
-                    var idProp = this.proxy.reader.getIdProperty();
+                    var idProp = this.getKeyField();
                     if (idProp && rowError.row[idProp]){
                         found = this.findRecord(idProp, rowError.row[idProp]);
                         // this is a hack to deal w/ SQLServer converting GUIDs into uppercase, even if generated initially as lowercase
