@@ -2,6 +2,9 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Animal" tableDbType="TABLE" useColumnOrder="true">
+                <insertUrl></insertUrl>
+                <importUrl></importUrl>
+                <updateUrl></updateUrl>
                 <javaCustomizer class="org.labkey.ehr_sm.EHR_SMCustomizer" />
             </table>
         </tables>
