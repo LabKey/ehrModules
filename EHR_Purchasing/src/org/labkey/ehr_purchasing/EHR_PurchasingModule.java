@@ -46,7 +46,7 @@ public class EHR_PurchasingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.006;
+        return 21.007;
     }
 
     @Override
