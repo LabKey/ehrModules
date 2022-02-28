@@ -213,7 +213,9 @@ Ext4.define('EHR.grid.Panel', {
 
             var colCfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(cfg, this);
             if (colCfg){
-                if (cfg.jsonType == 'date' && cfg.extFormat){
+                // don't override xtype for date for custom components
+                if (cfg.jsonType === 'date' && cfg.extFormat &&
+                        (cfg.xtype === undefined || cfg.xtype === 'xdate')) {
                     if (Ext4.Date.formatContainsHourInfo(cfg.extFormat)){
                         if(colCfg.editor)
                             colCfg.editor.xtype = 'xdatetime';

@@ -16,6 +16,7 @@
 package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.security.User;
 
 import java.util.Collection;
@@ -38,7 +39,7 @@ public interface DemographicsProvider
 
     boolean isAvailable(Container c, User u);
 
-    Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids);
+    Map<String, Map<String, Object>> getProperties(DefaultSchema defaultSchema, Collection<String> ids);
 
     /**
      * report whether this provider requires calculation of cached data when a row in this passed table has changed
