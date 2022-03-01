@@ -94,7 +94,7 @@ public class EmployeeComplianceNotification extends AbstractNotification
     @Override
     public String getDescription()
     {
-        return "The report sends an alert whenever Employee Compliance records are created.";
+        return "The report sends an alert whenever Employee Compliance records are created/modified.";
     }
 
     @Override
@@ -126,8 +126,8 @@ public class EmployeeComplianceNotification extends AbstractNotification
         }
         TableInfo ti = schema.getTable("employees");
 
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("created"), roundedMax, CompareType.DATE_EQUAL);
-        filter.addCondition(FieldKey.fromString("created"), maxDate, CompareType.LTE);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("modified"), roundedMax, CompareType.DATE_EQUAL);
+        filter.addCondition(FieldKey.fromString("modified"), maxDate, CompareType.LTE);
 
 
         Set<FieldKey> columns = new HashSet<>();
@@ -138,6 +138,10 @@ public class EmployeeComplianceNotification extends AbstractNotification
         columns.add(FieldKey.fromString("unit"));
         columns.add(FieldKey.fromString("supervisor"));
         columns.add(FieldKey.fromString("location"));
+        columns.add(FieldKey.fromString("created"));
+        columns.add(FieldKey.fromString("createdby"));
+        columns.add(FieldKey.fromString("modified"));
+        columns.add(FieldKey.fromString("modifiedby"));
 
         final Map<FieldKey, ColumnInfo> colMap = QueryService.get().getColumns(ti, columns);
         TableSelector ts = new TableSelector(ti, colMap.values(), filter, new Sort("lastName"));
@@ -150,7 +154,14 @@ public class EmployeeComplianceNotification extends AbstractNotification
         {
                  //Create header information on this report
             msg.append("<table border=1 style='border-collapse: collapse;'>");
-            msg.append("<tr style='font-weight: bold;'><td>Employee ID</td><td>First Name</td><td>Last Name</td><td>Category</td><td>Unit</td><td>Supervisor</td><td>Location</td></tr>\n");
+            msg.append("<tr style='font-weight: bold;'><td>Employee ID</td><td>First Name</td><td>Last Name</td>" +
+                    "<td>Category</td><td>Unit</td>" +
+                    "<td>Supervisor</td>" +
+                    "<td>created</td>" +
+                    "<td>createdby</td>" +
+                    "<td>modified</td>" +
+                    "<td>modifiedby</td>" +
+                    "<td>Location</td></tr>\n");
 
 
             ts.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -158,7 +169,14 @@ public class EmployeeComplianceNotification extends AbstractNotification
                 @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td><td>" + rs.getString("firstName") + "</td><td>" + rs.getString("lastName")  + "</td><td>" + rs.getString("category")  + "</td><td>" + rs.getString("unit")  + "</td><td>" + rs.getString("supervisor") + "</td><td>" + rs.getString("location")+ "</td></tr>\n");
+                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td><td>" + rs.getString("firstName") + "</td><td>" + rs.getString("lastName")  + "</td><td>" +
+                            rs.getString("category")  + "</td><td>" + rs.getString("unit")  + "</td>" +
+                            "<td>" + rs.getString("supervisor") + "</td><td>" +
+                            "<td>" + rs.getString("created") + "</td><td>" +
+                            "<td>" + rs.getString("createdby") + "</td><td>" +
+                            "<td>" + rs.getString("modified") + "</td><td>" +
+                            "<td>" + rs.getString("modifiedby") + "</td><td>" +
+                            rs.getString("location")+ "</td></tr>\n");
 
                 }
             });
