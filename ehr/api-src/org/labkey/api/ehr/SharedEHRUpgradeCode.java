@@ -141,16 +141,16 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             }
 
             Container ehrStudyContainer = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
-            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot());
+            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot(), false);
 
             if (ehrStudyContainer == null)
             {
-                LOG.warn("EHR Study Container module property not found for extensible column import. Skipping import.");
+                LOG.info("EHR Study Container module property not found for extensible column import. Skipping import.");
             }
 
             if (ehrUser == null)
             {
-                LOG.warn("EHR Admin User module property not found for extensible column import. Skipping import.");
+                LOG.info("EHR Admin User module property not found for extensible column import. Skipping import.");
             }
 
             if (ehrStudyContainer != null && ehrUser != null)
