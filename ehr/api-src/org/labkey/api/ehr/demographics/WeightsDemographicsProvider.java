@@ -17,7 +17,6 @@ package org.labkey.api.ehr.demographics;
 
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
@@ -25,10 +24,9 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.demographics.AbstractListDemographicsProvider;
 import org.labkey.api.module.Module;
+import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.FieldKey;
-import org.labkey.api.security.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,10 +63,10 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
     }
 
     @Override
-    public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)
+    public Map<String, Map<String, Object>> getProperties(DefaultSchema defaultSchema, Collection<String> ids)
     {
         final Map<String, Map<String, Object>> ret = new HashMap<>();
-        final TableInfo ti = getTableInfo(c, u);
+        final TableInfo ti = getTableInfo(defaultSchema);
         final Map<FieldKey, ColumnInfo> cols = getColumns(ti);
         Sort sort = getSort();
 
