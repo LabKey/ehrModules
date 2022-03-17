@@ -18,7 +18,6 @@ package org.labkey.ehr.utils;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +76,7 @@ import org.labkey.api.util.MailHelper;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.StringExpression;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -123,7 +123,7 @@ public class TriggerScriptHelper
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
-    private Map<Integer, String> _cachedAccounts = new HashMap<>();
+    private final Map<Integer, String> _cachedAccounts = new HashMap<>();
     /**
      *  Options that can be set in modules using EHR trigger scripts to opt in/out of or alter the behavior
      *  of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
@@ -133,9 +133,9 @@ public class TriggerScriptHelper
      *  <li>departureStatus - center specific custom status for animal departures</li>
      */
     @NotNull
-    private static Map<String, String> _centerCustomProps = new HashMap<>();
+    private static final Map<String, String> _centerCustomProps = new HashMap<>();
 
-    private static final Logger _log = LogManager.getLogger(TriggerScriptHelper.class);
+    private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
     private TriggerScriptHelper(int userId, String containerId)
     {
@@ -181,6 +181,21 @@ public class TriggerScriptHelper
         _centerCustomProps.putAll(centerCustomProps);
     }
 
+    private int getDatasetByLabelOrName(Container container, String queryName)
+    {
+        StudyService ss = StudyService.get();
+        if (null == ss)
+            return -1;
+
+        int datasetId = ss.getDatasetIdByLabel(container, queryName);
+        if (datasetId == -1)
+        {
+            datasetId = ss.getDatasetIdByName(container, queryName);
+        }
+
+        return datasetId;
+    }
+
     public String closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
     {
         Container container = getContainer();
@@ -189,7 +204,7 @@ public class TriggerScriptHelper
         List<String> changedTables = new ArrayList<>();
         for (String queryName : queryNames)
         {
-            int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
+            int datasetId = getDatasetByLabelOrName(container, queryName);
             Dataset dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
                 _log.info("Non existent table: study." + queryName);
@@ -214,7 +229,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
@@ -233,7 +248,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
@@ -252,7 +267,7 @@ public class TriggerScriptHelper
         Container container = getContainer();
         User user = getUser();
 
-        int datasetId = StudyService.get().getDatasetIdByLabel(container, "Problem List");
+        int datasetId = getDatasetByLabelOrName(container, "Problem List");
         Dataset dataset = StudyService.get().getDataset(container, datasetId);
         if (dataset == null){
             _log.info("Unable to find problem list dataset");
@@ -826,14 +841,20 @@ public class TriggerScriptHelper
         if (errors.hasErrors())
             throw errors;
 
-        EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
+        // The normal (re)caching of demographics providers runs before the study module has done its bookkeeping and
+        // inserted a row into study.participant, which means that calculated lookup values like the animal's current
+        // age won't resolve until AFTER the call to insertRows() has completed. Thus, refresh the cache for this new
+        // animal an extra time. See ticket 44283.
+        EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
     }
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
-        updatedRows = new ArrayList<>(updatedRows);
-        if (updatedRows == null || updatedRows.isEmpty())
+        // updatedRows object may be a JS array where isEmpty() isn't reliable, so use size() == 0 instead
+        if (updatedRows == null || updatedRows.size() == 0)
             return;
+
+        updatedRows = new ArrayList<>(updatedRows);
 
         Set<String> ids = new HashSet<>(updatedRows.size());
         List<Map<String, Object>> newRows = new ArrayList<>(updatedRows.size());
@@ -862,6 +883,7 @@ public class TriggerScriptHelper
                 newRows.add(row);
                 keyRows.add(keyRow);
                 ids.add(id);
+                _log.debug("Attempting to update demographics for " + id + ": " + row);
             }
             else
             {
@@ -869,9 +891,12 @@ public class TriggerScriptHelper
             }
         }
 
-        ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
-
-        EHRDemographicsService.get().getAnimals(getContainer(), ids);
+        if (!newRows.isEmpty())
+        {
+            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+            // Prime the cache for the updated IDs
+            EHRDemographicsService.get().getAnimals(getContainer(), ids);
+        }
     }
 
     public Map<String, Object> getExtraContext()
@@ -1513,10 +1538,7 @@ public class TriggerScriptHelper
         demographicsProps.put("calculated_status", "Alive");
         if (extraDemographicsFieldMappings != null)
         {
-            for (String fieldName : extraDemographicsFieldMappings.keySet())
-            {
-                demographicsProps.put(fieldName, row.get(extraDemographicsFieldMappings.get(fieldName)));
-            }
+            extraDemographicsFieldMappings.forEach(demographicsProps::put);
         }
         createDemographicsRecord(id, demographicsProps);
 
@@ -2274,7 +2296,7 @@ public class TriggerScriptHelper
         }
     }
 
-    public void updateSNOMEDTags(String id, String objectid, String codes)
+    public void updateSNOMEDTags(String id, String objectid, String codes, boolean incrementIndex)
     {
         codes = StringUtils.trimToNull(codes);
         objectid = StringUtils.trimToNull(objectid);
@@ -2291,12 +2313,11 @@ public class TriggerScriptHelper
         {
             TableInfo snomedTags = EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_SNOMED_TAGS);
             String[] codeList = StringUtils.split(codes, ";");
-            int sort = 0;
+            int sort = 1;
 
             _log.info("adding " + codeList.length + " SNOMED tags for: " + objectid);
             for (String code : codeList)
             {
-                sort++;
                 String[] tokens = code.split("<>");
                 if (tokens.length != 2)
                 {
@@ -2318,6 +2339,9 @@ public class TriggerScriptHelper
                 toInsert.put("modifiedby", getUser().getUserId());
 
                 Table.insert(getUser(), snomedTags, toInsert);
+                if (incrementIndex) {
+                    sort++;
+                }
             }
         }
     }

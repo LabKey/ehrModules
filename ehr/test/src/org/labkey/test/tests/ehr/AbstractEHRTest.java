@@ -36,12 +36,10 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
-import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
-import org.labkey.test.util.SchemaHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
@@ -142,7 +140,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected List<Long> _saveRowsTimes;
 
     protected abstract String getModuleDirectory();
-    private EHRSetupHelper _setupHelper = new EHRSetupHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath());
     protected EHRBillingHelper _billingHelper = new EHRBillingHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath(),BILLING_FOLDER);
 
     //xpath fragment
@@ -221,7 +218,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         String[] fields;
         Object[][] data;
-        PostCommand insertCommand;
+        PostCommand<?> insertCommand;
 
         //insert into demographics
         log("Creating test subjects");
@@ -338,7 +335,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     protected abstract void importStudy();
 
-    protected void importStudyFromPath(int jobCount)
+    protected void importFolderFromPath(int jobCount)
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
         setPipelineRoot(path.getPath());
@@ -347,12 +344,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
-        _fileBrowserHelper.checkFileBrowserFileCheckbox("study.xml");
-
-        if (isTextPresent("Reload Study"))
-            _fileBrowserHelper.selectImportDataAction("Reload Study");
-        else
-            _fileBrowserHelper.selectImportDataAction("Import Study");
+        _fileBrowserHelper.checkFileBrowserFileCheckbox("folder.xml");
+        _fileBrowserHelper.selectImportDataAction("Import Folder");
 
         if (skipStudyImportQueryValidation())
         {
@@ -362,7 +355,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         }
 
         clickButton("Start Import"); // Validate queries page
-        waitForPipelineJobsToComplete(jobCount, "Study import", false, MAX_WAIT_SECONDS * 2500);
+        waitForPipelineJobsToComplete(jobCount, "Folder import", false, MAX_WAIT_SECONDS * 2500);
     }
 
     protected boolean skipStudyImportQueryValidation()
@@ -376,22 +369,26 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _containerHelper.createSubfolder(getProjectName(), getProjectName(), FOLDER_NAME, type, null);
     }
 
+    /** Hook for center-specific setup that needs to happen after the containers are created but before the study is imported */
+    protected void doExtraPreStudyImportSetup()
+    {
+
+    }
+
+    @LogMethod
     protected void initProject() throws Exception
     {
         initProject("EHR");
     }
 
-    @LogMethod
     protected void initProject(String type) throws Exception
     {
         createProjectAndFolders(type);
         setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
-        if(type.equals("TNPRC EHR"))
-            _setupHelper.loadEHRTableDefinitions();
-        if(type.equals("ONPRC EHR"))
-            onprcSetupBeforeStudyUpload(); //this needs to happen before import study() below so that 'Validation Queries' step doesn't fail since the queries depend on setup in this method.
+
+        doExtraPreStudyImportSetup();
 
         populateInitialData();
         defineQCStates();
@@ -404,67 +401,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setupStudyPermissions();
         populateHardTableRecords();
         primeCaches();
-    }
-
-    private void onprcSetupBeforeStudyUpload()
-    {
-        //create onprc_billing_public linked schema
-        beginAt(getProjectName());
-        SchemaHelper schemaHelper = new SchemaHelper(this);
-        schemaHelper.createLinkedSchema(this.getProjectName(), null, "onprc_billing_public", "/" + this.getContainerPath(), "onprc_billing_public", null, null, null);
-
-        //create Labfee_NoChargeProjects
-        beginAt(getProjectName());
-
-        ListHelper.ListColumn projectCol= new ListHelper.ListColumn("project", ListHelper.ListColumnType.Integer);
-        ListHelper.ListColumn startDateCol= new ListHelper.ListColumn("startDate", ListHelper.ListColumnType.DateAndTime);
-        ListHelper.ListColumn dateDisabledCol= new ListHelper.ListColumn("dateDisabled", ListHelper.ListColumnType.DateAndTime);
-        ListHelper.ListColumn createdDbCol= new ListHelper.ListColumn("Createdb", ListHelper.ListColumnType.Integer);
-        ListHelper.ListColumn notesCol= new ListHelper.ListColumn("Notes", ListHelper.ListColumnType.String);
-        _listHelper.createList(getProjectName(), "Labfee_NoChargeProjects", ListHelper.ListColumnType.Integer, "key", projectCol, startDateCol, dateDisabledCol, createdDbCol, notesCol);
-
-        _listHelper.createList(getProjectName(), "GeneticValue", ListHelper.ListColumnType.String, "Id",
-                new ListHelper.ListColumn("meanKinship", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("zscore", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("genomeUniqueness", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("totalOffspring", ListHelper.ListColumnType.Integer),
-                new ListHelper.ListColumn("livingOffspring", ListHelper.ListColumnType.Integer),
-                new ListHelper.ListColumn("assignments", ListHelper.ListColumnType.Integer),
-                new ListHelper.ListColumn("condition", ListHelper.ListColumnType.String),
-                new ListHelper.ListColumn("import", ListHelper.ListColumnType.String),
-                new ListHelper.ListColumn("value", ListHelper.ListColumnType.String),
-                new ListHelper.ListColumn("rank", ListHelper.ListColumnType.Integer)
-        );
-
-        _listHelper.createList(getProjectName(), "Special_Aliases", ListHelper.ListColumnType.AutoInteger, "Key",
-                new ListHelper.ListColumn("Category", ListHelper.ListColumnType.String),
-                new ListHelper.ListColumn("Alias", ListHelper.ListColumnType.String));
-
-        // Fake up an external schema connection for "dbo" via a list and a linked schema
-        _listHelper.createList(getProjectName(), "Rpt_ChargesProjection", ListHelper.ListColumnType.AutoInteger, "RowId",
-                new ListHelper.ListColumn("ChargeId", ListHelper.ListColumnType.Integer),
-                new ListHelper.ListColumn("UnitCost", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year1", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year2", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year3", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year4", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year5", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year6", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year7", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("year8", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate1", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate2", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate3", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate4", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate5", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate6", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate7", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate8", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("Aprate9", ListHelper.ListColumnType.Decimal),
-                new ListHelper.ListColumn("PostedDate", ListHelper.ListColumnType.DateAndTime)
-        );
-        schemaHelper.createLinkedSchema(this.getProjectName(), null, "dbo", "/" + this.getContainerPath(), null, "lists", null, null);
-
     }
 
     @LogMethod(quiet = true)

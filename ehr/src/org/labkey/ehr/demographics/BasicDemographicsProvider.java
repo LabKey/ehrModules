@@ -54,7 +54,6 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
 
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("Id"));
-        keys.add(FieldKey.fromString("Id/numRoommates/NumRoommates"));
         keys.add(FieldKey.fromString("gender"));
         keys.add(FieldKey.fromString("gender/meaning"));
         keys.add(FieldKey.fromString("gender/origGender"));

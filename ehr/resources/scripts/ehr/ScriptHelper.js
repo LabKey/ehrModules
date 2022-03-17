@@ -48,8 +48,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         quickValidation: false,
         errorThreshold: null,
         newIdsAdded: {},
-        extraBirthFieldMappings: {},
-        extraDemographicsFieldMappings: {}
+        extraBirthFieldMappings: {}
     };
 
     //test to see if GUID persisted across tables
@@ -81,6 +80,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      *                  to update cached records.
      * @param {Boolean} doStandardProtocolCountValidation Validate animals in protocol using ehr.protocolTotalAnimalsBySpecies
      * @param {Boolean} errorSeverityForBloodDrawsWithoutWeight Error level for blood draw requests for animals without weight
+     * @param {Map} key extraDemographicsFieldMappings Object of extra demographics fields used in TriggerScriptHelper.onAnimalArrival
      */
 
     var scriptOptions = {
@@ -89,6 +89,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
         allowRequestsInPast: false,
+        // deprecated - use defaultAllowedDaysForFutureRequest to set an explicit date cutoff
         allowRequestsInDistantFuture: false,
         allowDeadIds: false,
         allowAnyId: false,
@@ -105,7 +106,9 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         announceAllModifiedParticipants: false,
         doStandardProtocolCountValidation: true,
         errorSeverityForBloodDrawsWithoutWeight: 'ERROR',
-        defaultAllowedDaysForFutureRequest: 30
+        // Use null to indicate any date in the future is acceptable
+        defaultAllowedDaysForFutureRequest: 30,
+        extraDemographicsFieldMappings: {}
     };
 
     var cachedValues = {
@@ -128,7 +131,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             cachedValues[type][id].push(date);
         }
         else {
-            console.log('aready exists');
+            console.log('already exists');
         }
     }
 
@@ -138,7 +141,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
     //we allow the client to pass limited options using extraContext
     //this function is where all processing of client JSON -> server options should reside
     function setScriptOptionsFromExtraContext(){
-        LABKEY.ExtAdapter.each(['skipIdFormatCheck', 'allowAnyId', 'allowDatesInDistantPast', 'allowRequestsInDistantFuture'], function(name){
+        LABKEY.ExtAdapter.each(['skipIdFormatCheck', 'allowAnyId', 'allowDatesInDistantPast', 'allowRequestsInDistantFuture', 'defaultAllowedDaysForFutureRequest'], function(name){
             if (extraContext[name])
                 scriptOptions[name] = extraContext[name];
         }, this);
@@ -633,7 +636,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         },
 
         getDefaultAllowedDaysForFutureRequest: function(){
-            return scriptOptions.defaultAllowedDaysForFutureRequest;
+            return scriptOptions.allowRequestsInDistantFuture ? null : scriptOptions.defaultAllowedDaysForFutureRequest;
         },
 
         // itemName is that item's name in the db row, itemLabel is the human-readable name, and itemValue is the actual value of the item

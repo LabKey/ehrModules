@@ -17,6 +17,7 @@
 package org.labkey.ehr_billing;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
@@ -170,7 +171,7 @@ public class EHR_BillingController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(QueryForm form)
+        public @NotNull URLHelper getSuccessURL(QueryForm form)
         {
             URLHelper url = form.getReturnURLHelper();
             return url != null ? url : QueryService.get().urlFor(getUser(), getContainer(), QueryAction.executeQuery, EHR_BillingSchema.NAME, EHR_BillingSchema.TABLE_INVOICE_RUNS);

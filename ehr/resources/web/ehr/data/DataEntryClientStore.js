@@ -10,6 +10,10 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     hasLocationField: false,
     hasFormSortField: false,
+    // Set to true to automatically assign project field based on the demographics record if there's a single assignment
+    autoSelectProjectOnLoad: false,
+    // Whether we have a project field to set, and if autoSelectProjectOnLoad
+    hasProjectFieldToPopulate: false,
 
     constructor: function(){
         this.callParent(arguments);
@@ -18,11 +22,16 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             this.hasLocationField = true;
         }
 
+        if (this.getFields().get('project') && this.autoSelectProjectOnLoad){
+            this.hasProjectFieldToPopulate = true;
+        }
+
         if (this.getFields().get('formSort')){
             this.hasFormSortField = true;
         }
 
         this.addEvents('validation');
+        this.addEvents('projectchange');
 
         if (this.hasFormSortField){
             this.on('datachanged', this.updateFormSortField, this);
@@ -63,6 +72,27 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         return true; //no action needed
     },
 
+    ensureProjects: function(record){
+        var id = record.get('Id');
+        if (id && !record.get('project')){
+            var cached = EHR.DemographicsCache.getDemographicsSynchronously(id);
+            if (cached && cached[id]){
+                record.suspendEvents();
+                var assignments = cached[id].getActiveAssignments();
+                if (assignments && assignments.length === 1)
+                    record.set('project', assignments[0].project);
+                record.resumeEvents();
+
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        return true; //no action needed
+    },
+
     retrieveLocation: function(ids){
         EHR.DemographicsCache.getDemographics(ids, function(idArr, idMap){
             if (idMap){
@@ -76,6 +106,27 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                             this.fireEvent('validation', this, rec);
                         }
                     }, this);
+                }
+            }
+        }, this, -1);
+    },
+
+    retrieveProjects: function(ids){
+        EHR.DemographicsCache.getDemographics(ids, function(idArr, idMap){
+            if (idMap){
+                for (var id in idMap){
+                    var assignments = idMap[id].getActiveAssignments();
+                    if (assignments && assignments.length === 1) {
+                        this.each(function (rec) {
+                            if (rec.get('Id') === id) {
+                                rec.beginEdit();
+                                rec.set('project', assignments[0].project);
+                                rec.endEdit(true);
+                                this.fireEvent('projectchange', assignments[0].project, null);
+                                this.fireEvent('validation', this, rec);
+                            }
+                        }, this);
+                    }
                 }
             }
         }, this, -1);
@@ -207,6 +258,11 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                 this.retrieveLocation(record.get('Id'));
             }
         }
+        if (this.hasProjectFieldToPopulate && !record.get('project')){
+            if (!this.ensureProjects(record)){
+                this.retrieveProjects(record.get('Id'));
+            }
+        }
 
         this.callParent(arguments);
     },
@@ -229,10 +285,22 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                 if (!this.ensureLocation(records[i])){
                     idsNeeded.push(records[i].get('Id'));
                 }
-            };
+            }
 
             if (idsNeeded.length){
                 this.retrieveLocation(idsNeeded);
+            }
+        }
+        if (this.hasProjectFieldToPopulate && records && records.length){
+            var idsNeeded = [];
+            for (var i=0;i< records.length;i++){
+                if (!this.ensureProjects(records[i])){
+                    idsNeeded.push(records[i].get('Id'));
+                }
+            }
+
+            if (idsNeeded.length){
+                this.retrieveProjects(idsNeeded);
             }
         }
 

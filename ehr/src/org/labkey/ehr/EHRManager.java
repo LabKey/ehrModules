@@ -18,7 +18,6 @@ package org.labkey.ehr;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.apache.xmlbeans.XmlException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +27,7 @@ import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
@@ -55,7 +55,6 @@ import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.exp.property.PropertyService;
-import org.labkey.api.exp.query.ExpSchema;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
@@ -79,6 +78,7 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.data.xml.ColumnType;
 import org.labkey.data.xml.TableType;
 import org.labkey.data.xml.TablesDocument;
@@ -126,7 +126,7 @@ public class EHRManager
     @Queryable
     public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
 
-    private static final Logger _log = LogManager.getLogger(EHRManager.class);
+    private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
 
     private EHRManager()
     {
@@ -156,7 +156,7 @@ public class EHRManager
             if (emailAddress == null)
             {
                 if (logOnError)
-                    _log.error("Attempted to access EHR email module property from container: " + (c == null ? null : c.getPath()) + ", but it was null.  Some code may not work as expected.", new Exception());
+                    _log.warn("Attempted to access EHR email module property from container: " + (c == null ? null : c.getPath()) + ", but it was null.  Some code may not work as expected.", new Exception());
                 return null;
             }
 
@@ -266,7 +266,7 @@ public class EHRManager
 
         //NOTE: there is no public API to set a study, so hit the DB directly.
         final TableInfo studyTable = DbSchema.get("study").getTable("study");
-        TableInfo ti = DbSchema.get("core").getTable("qcstate");
+        TableInfo ti = CoreSchema.getInstance().getTableInfoDataStates();
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
@@ -278,6 +278,7 @@ public class EHRManager
             {"Request: Denied", "Request has been denied", false},
             {"Request: Cancelled", "Request has been cancelled", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
+            {"Request: On Hold", "Request has been put on hold", false},
             {"Review Required", "Review is required prior to public release", false},
             {"Scheduled", "Record is scheduled, but not performed", false},
             {"Started", "Record has started, but not completed",true}
@@ -482,21 +483,20 @@ public class EHRManager
 
             List<? extends Dataset> datasets = study.getDatasets();
 
+            // Hack - adding a shared EHR property to a domain ends up reparenting it to the EHR folder. They
+            // need to keep living in the /Shared project. Rather than introducing a brand new API for adding a shared
+            // PD to an existing domain, we'll directly update the owning container afterwards
+            Set<PropertyDescriptor> pdsToReparentInShared = new HashSet<>();
+
             for (Dataset dataset : datasets)
             {
                 Domain domain = dataset.getDomain();
                 List<? extends DomainProperty> dprops = domain.getProperties();
-                if (dprops == null)
-                {
-                    _log.error("domain.getProperties() was null for: " + domain.getName());
-                    continue;
-                }
 
                 boolean changed = false;
                 List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
-                List<PropertyDescriptor> props = new ArrayList<>();
-                props.addAll(properties);
+                List<PropertyDescriptor> props = new ArrayList<>(properties);
                 if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
                     String propertyURI = EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI();
@@ -549,11 +549,6 @@ public class EHRManager
                                 }
                             }
 
-//                            if (!pd.getContainer().equals(dp.getContainer()) && !pd.getProject().equals(ContainerManager.getSharedContainer()))
-//                            {
-//                                messages.add("Containers do not match for: " + dp.getName() + ".  Expected: " + dp.getContainer().getPath() + ", but was: " + pd.getContainer().getPath() + ".");
-//                            }
-
                             if (!dp.getName().equals(pd.getName()))
                             {
                                 messages.add("Case mismatch for property in dataset: " + dataset.getName() + ".  Expected: " + pd.getName() + ", but was: " + dp.getName() + ". This has not been automatically changed");
@@ -570,6 +565,7 @@ public class EHRManager
                             d.setPropertyURI(pd.getPropertyURI());
                             d.setRangeURI(pd.getRangeURI());
                             d.setName(pd.getName());
+                            pdsToReparentInShared.add(pd);
                             changed = true;
                         }
                     }
@@ -605,19 +601,27 @@ public class EHRManager
                 }
             }
 
+            if (commitChanges)
+            {
+                for (PropertyDescriptor sharedPD : pdsToReparentInShared)
+                {
+                    sharedPD.setContainer(ContainerManager.getSharedContainer());
+                    sharedPD.setProject(ContainerManager.getSharedContainer());
+                    OntologyManager.updatePropertyDescriptor(sharedPD);
+                }
+            }
+
             //ensure keymanagement type
             if (commitChanges)
             {
-                DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
-                long total = new SqlExecutor(studySchema).execute(sql);
+                long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 messages.add("Non-demographics datasets updated to use objectId as a managed key: "+ total);
             }
             else
             {
-                DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE keymanagementtype!=? AND demographicdata=? AND container=?", "GUID", false, c.getEntityId());
-                long total = new SqlExecutor(studySchema).execute(sql);
+                long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 if (total > 0)
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
@@ -1121,8 +1125,7 @@ public class EHRManager
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
     {
-        DbSchema expSchema = DbSchema.get(ExpSchema.SCHEMA_NAME);
-        TableInfo propertyDomain = expSchema.getTable("propertydomain");
+        DbSchema expSchema = ExperimentService.get().getSchema();
         TableInfo propertyDescriptor = expSchema.getTable("propertydescriptor");
 
         //find propertyId
@@ -1273,22 +1276,22 @@ public class EHRManager
                 @Override
                 public void exec(Map<String, Object> map)
                 {
-                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                    row.putAll(map);
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.putAll(map);
 
-                    if (row.containsKey("requestid") && row.get("requestid") != null)
-                    {
-                        row.put("requestid", null);
-                        row.put("qcstate", null);
-                        row.put("taskid", null);
-                        row.put("qcstateLabel", "Request: Approved");
+                if (row.containsKey("requestid") && row.get("requestid") != null)
+                {
+                    row.put("requestid", null);
+                    row.put("qcstate", null);
+                    row.put("taskid", null);
+                    row.put("qcstateLabel", "Request: Approved");
 
-                        requestsToQueue.add(row);
-                    }
-                    else
-                    {
-                        keysToDelete.add(row);
-                    }
+                    requestsToQueue.add(row);
+                }
+                else
+                {
+                    keysToDelete.add(row);
+                }
                 }
             });
 
@@ -1296,24 +1299,16 @@ public class EHRManager
             {
                 if (!keysToDelete.isEmpty())
                 {
-                    ti.getUpdateService().deleteRows(u, c, keysToDelete, null, new HashMap<String, Object>());
+                    ti.getUpdateService().deleteRows(u, c, keysToDelete, null, new HashMap<>());
                 }
 
 
                 if (!requestsToQueue.isEmpty())
                 {
-                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<String, Object>());
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<>());
                 }
             }
-            catch (InvalidKeyException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (QueryUpdateServiceException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (BatchValidationException e)
+            catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -1397,7 +1392,7 @@ public class EHRManager
 
     public EHRQCState[] getQCStates(Container c)
     {
-        SQLFragment sql = new SQLFragment("SELECT * FROM core.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
+        SQLFragment sql = new SQLFragment("SELECT * FROM core.datastates qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
         DbSchema db = DbSchema.get("study");
         return new SqlSelector(db, sql).getArray(EHRQCStateImpl.class);
     }

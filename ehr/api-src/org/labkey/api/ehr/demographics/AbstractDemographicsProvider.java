@@ -31,11 +31,13 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHROwnable;
 import org.labkey.api.module.Module;
+import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 
+import javax.validation.groups.Default;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,7 +73,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     }
 
     @Override
-    public Map<String, Map<String, Object>> getProperties(Container c, User u, Collection<String> ids)
+    public Map<String, Map<String, Object>> getProperties(DefaultSchema defaultSchema, Collection<String> ids)
     {
         // if in debug, consider enabling debug logging on EHRDemographicsServiceImpl as well
         _log.debug("Running DemographicsProvider named: " + this.getName());
@@ -90,7 +92,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         if (debugEnabled)
             startTableInfo = LocalDateTime.now();
 
-        final TableInfo ti = getTableInfo(c, u);
+        final TableInfo ti = getTableInfo(defaultSchema);
         String tiName = null;
 
         if (debugEnabled)
@@ -136,18 +138,18 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         return ret;
     }
 
-    protected TableInfo getTableInfo(Container c, User u)
+    protected TableInfo getTableInfo(DefaultSchema defaultSchema)
     {
-        UserSchema us = QueryService.get().getUserSchema(u, c, _schemaName);
+        UserSchema us = defaultSchema.getUserSchema(_schemaName);
         if (us == null)
         {
-            throw new IllegalArgumentException("Schema " + _schemaName + " not found in the container: " + c.getPath());
+            throw new IllegalArgumentException("Schema " + _schemaName + " not found in the container: " + defaultSchema.getContainer().getPath());
         }
 
         final TableInfo ti = us.getTable(_queryName, null);
         if (ti == null)
         {
-            throw new IllegalArgumentException("Table: " + _schemaName + "." + _queryName + " not found in the container: " + c.getPath());
+            throw new IllegalArgumentException("Table: " + _schemaName + "." + _queryName + " not found in the container: " + defaultSchema.getContainer().getPath());
         }
 
         return ti;

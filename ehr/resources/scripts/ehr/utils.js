@@ -180,18 +180,20 @@ EHR.Server.Utils = new function(){
                     console.error('Unable to parse date string: ' + val);
                 }
             }
-            else if (!isNaN(val)){
-                // NOTE: i'm not sure if we should really attempt this.  this should really never happen,
-                // and it's probably an error if it does
-                normalizedVal = new Date(val);
-            }
             else {
-                if (val['getTime']){
-                    normalizedVal = new Date(val.getTime());
+                if (!isNaN(val)) {
+                    // NOTE: i'm not sure if we should really attempt this.  this should really never happen,
+                    // and it's probably an error if it does
+                    normalizedVal = new Date(val);
                 }
                 else {
-                    if (!supppressErrors)
-                        console.error('Unknown datatype for date value.  Type was: ' + (typeof val) + ' and value was: ' + val);
+                    if (val['getTime']) {
+                        normalizedVal = new Date(val.getTime());
+                    }
+                    else {
+                        if (!supppressErrors)
+                            console.error('Unknown datatype for date value.  Type was: ' + (typeof val) + ' and value was: ' + val);
+                    }
                 }
             }
 

@@ -16,11 +16,11 @@
 package org.labkey.ehr.history;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.history.HistoryDataSource;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.security.User;
+import org.labkey.api.util.logging.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +40,7 @@ import java.util.Set;
 public class ClinicalHistoryManager
 {
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
-    private static final Logger _log = LogManager.getLogger(ClinicalHistoryManager.class);
+    private static final Logger _log = LogHelper.getLogger(ClinicalHistoryManager.class, "Management of clinical history data providers");
 
     private List<HistoryDataSource> _dataSources = new ArrayList<>();
 

@@ -54,7 +54,9 @@ Ext4.define('EHR.form.Panel', {
         var items = [];
         var fields = EHR.model.DefaultClientModel.getFieldConfigs(this.formConfig.fieldConfigs, this.formConfig.configSources, this.extraMetaData);
         Ext4.Array.forEach(fields, function(field){
-            if (field.jsonType == 'date' && field.extFormat){
+            // don't override xtype for date for custom components
+            if (field.jsonType === 'date' && field.extFormat &&
+                    (field.xtype === undefined || field.xtype === 'xdate')) {
                 if (Ext4.Date.formatContainsHourInfo(field.extFormat)){
                     field.xtype = 'xdatetime';
                 }

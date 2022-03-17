@@ -522,3 +522,188 @@ ALTER TABLE ehr_billing.aliases ADD isAcceptingCharges boolean DEFAULT true;
 
 ALTER TABLE ehr_billing.invoice ADD balanceDue DECIMAL(13,2);
 ALTER TABLE ehr_billing.miscCharges ADD investigator varchar(100);
+
+/* ehr_billing-19.10-19.20.sql */
+
+-- dropping to avoid duplicate index, EHR_BILLING_ALIASES_INDEX includes index to container
+SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'ehr_billing_aliases_container_index');
+
+-- constraint and index in chargeRates table
+SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_CHARGE_RATES_CHARGEID');
+ALTER TABLE ehr_billing.chargeRates ADD CONSTRAINT FK_EHR_BILLING_CHARGE_RATES_CHARGEID FOREIGN KEY (chargeId) REFERENCES ehr_billing.chargeableItems (rowid);
+
+SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATES_CHARGEID');
+CREATE INDEX IX_EHR_BILLING_CHARGE_RATES_CHARGEID ON ehr_billing.chargeRates (chargeId);
+
+-- constraint and index in dataaccess table
+SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_DATA_ACCESS_PROJECT');
+CREATE INDEX IX_EHR_BILLING_DATA_ACCESS_PROJECT ON ehr_billing.dataaccess (project);
+
+SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_DATA_ACCESS_USERID');
+ALTER TABLE ehr_billing.dataaccess ADD CONSTRAINT FK_EHR_BILLING_DATA_ACCESS_USERID FOREIGN KEY (userid) REFERENCES core.Usersdata (UserId);
+
+SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_DATA_ACCESS_USERID');
+CREATE INDEX IX_EHR_BILLING_DATA_ACCESS_USERID ON ehr_billing.dataaccess (userid);
+
+-- constraint and index in invoice table
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICE_INVOICERUNID');
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT FK_EHR_BILLING_INVOICE_INVOICERUNID FOREIGN KEY (invoicerunid) REFERENCES ehr_billing.invoiceRuns (objectid);
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICERUNID');
+CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICERUNID ON ehr_billing.invoice (invoicerunid);
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER');
+CREATE INDEX IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER ON ehr_billing.invoice (accountnumber);
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UQ_EHR_BILLING_INVOICE_INVOICENUMBER');
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UQ_EHR_BILLING_INVOICE_INVOICENUMBER UNIQUE (invoicenumber);
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICENUMBER');
+CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICENUMBER ON ehr_billing.invoice (invoicenumber);
+
+-- constraint and index in invoicedItems
+SELECT core.fn_dropifexists ('invoiceditems', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICED_ITEMS_CHARGEID');
+ALTER TABLE ehr_billing.invoiceditems ADD CONSTRAINT FK_EHR_BILLING_INVOICED_ITEMS_CHARGEID FOREIGN KEY (chargeid) REFERENCES ehr_billing.chargeableItems (rowid);
+
+SELECT core.fn_dropifexists ('invoiceditems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICED_ITEMS_CHARGEID');
+CREATE INDEX IX_EHR_BILLING_INVOICED_ITEMS_CHARGEID ON ehr_billing.invoiceditems (chargeid);
+
+-- constraint and index in miscCharges
+SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_MISC_CHARGES_CHARGEID');
+ALTER TABLE ehr_billing.misccharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CHARGEID FOREIGN KEY (chargeid) REFERENCES ehr_billing.chargeableItems (rowid);
+
+SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_CHARGEID');
+CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_CHARGEID ON ehr_billing.misccharges (chargeid);
+
+SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_PROJECT');
+CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_PROJECT ON ehr_billing.misccharges (project);
+
+-- index on lsid col in extensible tables
+SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_ALIASES_LSID');
+CREATE INDEX IX_EHR_BILLING_ALIASES_LSID ON ehr_billing.aliases (lsid);
+
+SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATES_LSID');
+CREATE INDEX IX_EHR_BILLING_CHARGE_RATES_LSID ON ehr_billing.chargeRates (lsid);
+
+SELECT core.fn_dropifexists ('chargeableItems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGEABLE_ITEMS_LSID');
+CREATE INDEX IX_EHR_BILLING_CHARGEABLE_ITEMS_LSID ON ehr_billing.chargeableItems (lsid);
+
+SELECT core.fn_dropifexists ('invoiceRuns', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_RUNS_LSID');
+CREATE INDEX IX_EHR_BILLING_INVOICE_RUNS_LSID ON ehr_billing.invoiceRuns (lsid);
+
+SELECT core.fn_dropifexists ('invoicedItems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICED_ITEMS_LSID');
+CREATE INDEX IX_EHR_BILLING_INVOICED_ITEMS_LSID ON ehr_billing.invoicedItems (lsid);
+
+SELECT core.fn_dropifexists ('miscCharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_LSID');
+CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_LSID ON ehr_billing.miscCharges (lsid);
+
+SELECT core.fn_dropifexists ('chargeUnits', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_UNITS_LSID');
+CREATE INDEX IX_EHR_BILLING_CHARGE_UNITS_LSID ON ehr_billing.chargeUnits (lsid);
+
+SELECT core.fn_dropifexists ('chargeRateExemptions', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_LSID');
+CREATE INDEX IX_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_LSID ON ehr_billing.chargeRateExemptions (lsid);
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_LSID');
+CREATE INDEX IX_EHR_BILLING_INVOICE_LSID ON ehr_billing.invoice (lsid);
+
+-- drop Index and Constraints
+SELECT core.fn_dropifexists ('invoicedItems', 'ehr_billing', 'INDEX', 'EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX');
+
+SELECT core.fn_dropifexists ('invoicedItems', 'ehr_billing', 'CONSTRAINT', 'FK_INVOICEDITEMS_INVOICENUM');
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'PK_EHR_BILLING_INVOICE_INVNUM');
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UNIQUE_INVOICE_NUM');
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UQ_EHR_BILLING_INVOICE_INVOICENUMBER');
+
+SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICENUMBER');
+
+-- Modify invoiceNumber
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber TYPE varchar(100);
+
+ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber TYPE varchar(100);
+
+-- Add Index and Constraints back
+CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
+
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT PK_EHR_BILLING_INVOICE_INVNUM PRIMARY KEY (invoiceNumber);
+
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UNIQUE_INVOICE_NUM UNIQUE (invoiceNumber);
+
+ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UQ_EHR_BILLING_INVOICE_INVOICENUMBER UNIQUE (invoicenumber);
+
+CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICENUMBER ON ehr_billing.invoice (invoicenumber);
+
+ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_INVOICEDITEMS_INVOICENUM FOREIGN KEY (invoiceNumber) REFERENCES ehr_billing.invoice (invoiceNumber);
+
+ALTER TABLE ehr_billing.chargeableItemCategories ADD COLUMN LSID LSIDtype;
+
+-- ehr_billing-18.33-18.34.sql
+ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceSentComment TYPE varchar(500);
+ALTER TABLE ehr_billing.invoice ALTER COLUMN paymentReceivedComment TYPE varchar(500);
+
+-- ehr_billing-18.34-18.35.sql - modified to add if column doesn't already exists
+CREATE FUNCTION ehr_billing.addChargeGroupToMiscCharges() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF NOT EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='chargegroup'
+        )
+    THEN
+        ALTER TABLE ehr_billing.miscCharges ADD chargeGroup VARCHAR(200);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.addChargeGroupToMiscCharges();
+
+DROP FUNCTION ehr_billing.addChargeGroupToMiscCharges();
+
+--rename column chargetype to groupName - modified to rename if column exists/not renamed already
+CREATE FUNCTION ehr_billing.renameChargeTypeToGroupName() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='chargeunits' and table_schema='ehr_billing' and column_name='chargetype'
+        )
+    THEN
+        ALTER TABLE ehr_billing.chargeUnits DROP CONSTRAINT PK_chargeUnits;
+        ALTER TABLE ehr_billing.chargeUnits RENAME COLUMN chargetype TO groupName;
+        ALTER TABLE ehr_billing.chargeUnits ADD CONSTRAINT PK_chargeUnits PRIMARY KEY (groupName);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.renameChargeTypeToGroupName();
+
+DROP FUNCTION ehr_billing.renameChargeTypeToGroupName();
+
+
+-- ehr_billing-18.35-18.36.sql - modified to add if column doesn't already exists
+CREATE FUNCTION ehr_billing.addTotalCostToMiscCharges() RETURNS VOID AS $$
+DECLARE
+BEGIN
+    IF NOT EXISTS (
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name='misccharges' and table_schema='ehr_billing' and column_name='totalcost'
+        )
+    THEN
+        ALTER TABLE ehr_billing.miscCharges ADD totalCost double precision;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT ehr_billing.addTotalCostToMiscCharges();
+
+DROP FUNCTION ehr_billing.addTotalCostToMiscCharges();
+
+-- Convert from a plain index to a unique constraint
+SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'EHR_BILLING_ALIASES_INDEX');
+
+ALTER TABLE ehr_billing.aliases ADD CONSTRAINT UNIQUE_ALIAS UNIQUE (Container, alias);

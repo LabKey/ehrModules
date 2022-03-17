@@ -4,7 +4,6 @@
         <tableTitle>Vendor</tableTitle>
         <titleColumn>vendorName</titleColumn>
         <auditLogging>DETAILED</auditLogging>
-        <insertUrl/>
         <columns>
             <column columnName="rowId"/>
             <column columnName="vendorName"/>
@@ -164,6 +163,7 @@
             <column columnName="itemUnitId"/>
             <column columnName="controlledSubstance"/>
             <column columnName="quantity"/>
+            <column columnName="quantityReceived"/>
             <column columnName="unitCost"/>
             <column columnName="itemStatusId"/>
             <column columnName="LSID">

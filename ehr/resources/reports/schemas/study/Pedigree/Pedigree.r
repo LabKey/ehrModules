@@ -15,8 +15,7 @@ library(Rlabkey)
 
 labkey.setCurlOptions(ssl_verifypeer = FALSE, ssl_verifyhost = FALSE)
 
-
-if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.data$sire))) {
+if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
     png(filename="${imgout:myscatterplot}", width = 650, height = 150);
     plot(0, 0, type='n', xaxt='n', yaxt='n', bty='n', ann=FALSE  )
     title(main = "No pedigree data found for selected animal(s).", sub = NULL, xlab = NULL, ylab = NULL,
@@ -113,8 +112,10 @@ if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.d
 
     #start the script
 
-    #the dataframe labkey.data is supplied by labkey. it will contain one row per initial animal
-    ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status, Display=labkey.data$display);
+    # the dataframe labkey.data is supplied by labkey. it will contain one row per initial animal. NA in labkey.data display
+    # column needs to be blank to prevent duplicate unique rows
+    ped = data.frame(Id=labkey.data$id, Sire=labkey.data$sire, Dam=labkey.data$dam, Gender=labkey.data$gender, Status=labkey.data$status,
+        Display=replace(labkey.data$display, is.na(labkey.data$display), ""));
 
     #these will allow you to test the script
     #this will work
@@ -185,6 +186,8 @@ if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.d
         return (substr(lineNL, 1, nchar(lineNL) - 1));
      };
 
+    unknownIdIndex = 1
+
     #[Quoc: remove ]
     #The pedigree program expects all individuals to have either 2 parents or 1.
     #Sometimes the father is not known. For missing parents we give them a unique id and
@@ -200,8 +203,9 @@ if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.d
         if (length(damIndex) == 0) damIndex <- which(allPed$Id == ped$Dam[i]);
         if (length(sireIndex) == 0) sireIndex <- which(allPed$Id == ped$Sire[i]);
 
-        if(is.na(ped$Sire[i])){
-            xt <- sample (1:99,1)
+        if((is.na(ped$Sire[i]))& (!is.na(ped$Dam[i]))){
+            xt <- unknownIdIndex
+            unknownIdIndex <- unknownIdIndex + 1
             #typeof(ped$Sire);
             #typeof(xt);
             ped$Sire[i] <- paste('xxs',xt)
@@ -209,8 +213,9 @@ if ((length(labkey.data$id) == 0) || all(is.na(labkey.data$dam) & is.na(labkey.d
             #print(ped$Dam[i])
             #print(ped$Sire[i])
         }
-        if(is.na(ped$Dam[i])){
-                xt <- sample (1:99,1)
+        if((is.na(ped$Dam[i]))& (!is.na(ped$Sire[i]))){
+                xt <- unknownIdIndex
+                unknownIdIndex <- unknownIdIndex + 1
                 #typeof(ped$Sire);
                 #typeof(xt);
                 ped$Dam[i] <- paste ('xxd',xt);

@@ -138,7 +138,7 @@ EHR.Server.Security = new function(){
             if (!hasLoaded)
                 throw 'EHR.Security.init() has not been called or returned prior to this call';
 
-           var qc = _qcByRowId[rowid];
+           var qc = _qcByRowId[parseInt(rowid)];
            if (!qc){
                 console.error('ERROR: QC State associated with the rowId ' + rowid + ' not found');
                 return null;

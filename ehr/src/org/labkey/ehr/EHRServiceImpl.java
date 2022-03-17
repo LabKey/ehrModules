@@ -17,11 +17,12 @@ package org.labkey.ehr;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+import org.labkey.api.admin.ImportOptions;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
@@ -47,12 +48,15 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.resource.DirectoryResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
@@ -60,6 +64,7 @@ import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.DatasetTable;
+import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
@@ -76,7 +81,12 @@ import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -95,23 +105,24 @@ import java.util.function.Supplier;
  */
 public class EHRServiceImpl extends EHRService
 {
-    private Set<Module> _registeredModules = new HashSet<>();
-    private List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
-    private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
-    private MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
-    private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
-    private Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
-    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
-    private Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
+    private final Set<Module> _registeredModules = new HashSet<>();
+    private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
+    private final Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
+    private final MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
+    private final List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
+    private final Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
+    private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
+    private final Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
+    private final Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
+
     private ProjectValidator _projectValidator = null;
 
     private static final Logger _log = LogManager.getLogger(EHRServiceImpl.class);
 
     public EHRServiceImpl()
     {
-
     }
 
     public static EHRServiceImpl get()
@@ -356,11 +367,12 @@ public class EHRServiceImpl extends EHRService
 
     public static class ReportLink
     {
+        private final String _label;
+        private final Module _owner;
+        private final String _category;
+
         private URLHelper _url = null;
         private DetailsURL _detailsURL = null;
-        private String _label;
-        private Module _owner;
-        private String _category;
 
         public ReportLink(String label, Module owner, DetailsURL url, @Nullable String category)
         {
@@ -839,10 +851,83 @@ public class EHRServiceImpl extends EHRService
         _modulesRequiringLegacyExt3UI.add(m);
     }
 
-    public boolean isUseLegagyExt3EditUI(Container c)
+    @Override
+    public void addModulePreferringTaskFormEditUI(Module m)
+    {
+        _modulesRequiringFormEditUI.add(m);
+    }
+
+    @Override
+    public void importFolderDefinition(Container container, User user, Module m, Path sourceFolderDirPath) throws IOException
+    {
+        Resource root = m.getModuleResource(sourceFolderDirPath);
+        PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(container);
+        java.nio.file.Path pipeRootPath = pipeRoot.getRootNioPath();
+
+        java.nio.file.Path folderXmlPath;
+
+        if (root instanceof DirectoryResource && ((DirectoryResource)root).getDir().equals(pipeRootPath.toFile()))
+        {
+            // The pipeline root is already pointed at the folder definition, like it might be on a dev machine.
+            // No need to copy, especially since copying can cause infinite recursion when the paths are nested
+            folderXmlPath = pipeRootPath.resolve("folder.xml");
+        }
+        else
+        {
+            java.nio.file.Path folderPath = pipeRootPath.resolve("moduleFolderImport");
+            folderXmlPath = folderPath.resolve("folder.xml");
+            if (Files.exists(folderPath))
+            {
+                FileUtil.deleteDir(folderPath);
+            }
+            copyResourceToPath(root, folderPath);
+        }
+
+        if (!Files.exists(folderXmlPath))
+        {
+            throw new FileNotFoundException("Couldn't find an extracted " + folderXmlPath);
+        }
+        ImportOptions options = new ImportOptions(container.getId(), user.getUserId());
+        options.setSkipQueryValidation(true);
+
+        PipelineService.get().runFolderImportJob(container, user, null, folderXmlPath, "folder.xml", pipeRoot, options);
+    }
+
+    private void copyResourceToPath(Resource resource, java.nio.file.Path target) throws IOException
+    {
+        if (resource.isCollection())
+        {
+            Files.createDirectory(target);
+            for (Resource child : resource.list())
+            {
+                java.nio.file.Path childTarget = target.resolve(child.getName());
+                copyResourceToPath(child, childTarget);
+            }
+        }
+        else
+        {
+            try (InputStream in = resource.getInputStream();
+                OutputStream out = Files.newOutputStream(target))
+            {
+                FileUtil.copyData(in, out);
+            }
+        }
+    }
+
+    public boolean isUseLegacyExt3EditUI(Container c)
+    {
+        return isRegisteredUI(_modulesRequiringLegacyExt3UI, c);
+    }
+
+    public boolean isUseFormEditUI(Container c)
+    {
+        return isRegisteredUI(_modulesRequiringFormEditUI, c);
+    }
+
+    private boolean isRegisteredUI(Set<Module> modules, Container c)
     {
         Set<Module> am = c.getActiveModules();
-        for (Module m : _modulesRequiringLegacyExt3UI)
+        for (Module m : modules)
         {
             if (am.contains(m))
             {
@@ -864,7 +949,7 @@ public class EHRServiceImpl extends EHRService
             SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
             SQLFragment displaySQL = new SQLFragment("(SELECT ");
             displaySQL.append(groupConcatSQL);
-            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) ");
+            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");
             displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             if (codeFilter != null)
             {
@@ -899,6 +984,25 @@ public class EHRServiceImpl extends EHRService
             rawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             rawCol.setDisplayWidth("250");
             ti.addColumn(rawCol);
+
+            // Variant that's just the codes concatenated, without the sort index
+            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'").getSqlCharSequence());
+            simpleRawSQL.append("FROM ehr.snomed_tags t ");
+            simpleRawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            simpleRawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
+            if (codeFilter != null)
+            {
+                simpleRawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+            }
+            simpleRawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            simpleRawSQL.append("GROUP BY t.recordid)");
+
+            ExprColumn simpleRawCol = new ExprColumn(ti, displayColumnName + "RawSimple", simpleRawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            simpleRawCol.setLabel(title + " simple raw values");
+            simpleRawCol.setHidden(true);
+            simpleRawCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            simpleRawCol.setDisplayWidth("250");
+            ti.addColumn(simpleRawCol);
         }
     }
 }

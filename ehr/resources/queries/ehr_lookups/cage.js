@@ -10,10 +10,14 @@ triggers.initScript(this);
 var EHR = triggers.EHR;
 var LABKEY = require("labkey");
 
-function onUpsert(helper, scriptErrors, row, oldRow) {
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'ehr_lookups', 'cage', function(helper, scriptErrors, row, oldRow){
     row.location = row.room;
     if (row.cage)
         row.location += '-' + row.cage;
+
+    if (row.location.length > 100) {
+        console.log("Location is longer than allowed length: ", row.location);
+    }
 
     //remove whitespace, normalize punctuation and pad digits
     if (row.joinToCage){
@@ -32,7 +36,7 @@ function onUpsert(helper, scriptErrors, row, oldRow) {
         };
         row.joinToCage = newArray.join(',');
     }
-}
+});
 
 function onUpdate(helper, scriptErrors, row, oldRow) {
     row.cage = row.cage || oldRow.cage;

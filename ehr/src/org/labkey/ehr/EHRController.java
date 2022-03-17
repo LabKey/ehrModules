@@ -17,6 +17,7 @@
 package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
@@ -178,7 +179,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(CacheLivingAnimalsForm form)
+        public @NotNull URLHelper getSuccessURL(CacheLivingAnimalsForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -207,7 +208,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -312,6 +313,7 @@ public class EHRController extends SpringActionController
     public static class EHRQueryForm extends QueryForm
     {
         private boolean _showImport = false;
+        private boolean _queryUpdateURL = false;
 
         public boolean isShowImport()
         {
@@ -321,6 +323,16 @@ public class EHRController extends SpringActionController
         public void setShowImport(boolean showImport)
         {
             _showImport = showImport;
+        }
+
+        public boolean isQueryUpdateURL()
+        {
+            return _queryUpdateURL;
+        }
+
+        public void setQueryUpdateURL(boolean queryUpdateURL)
+        {
+            _queryUpdateURL = queryUpdateURL;
         }
     }
 
@@ -354,7 +366,7 @@ public class EHRController extends SpringActionController
             {
                 String detailsStr;
                 String importStr;
-                if (EHRServiceImpl.get().isUseLegagyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
+                if (EHRServiceImpl.get().isUseLegacyExt3EditUI(getContainer()) && !isExt4Form(form.getSchemaName(), form.getQueryName()) && !isReactForm(form.getSchemaName(), form.getQueryName()))
                 {
                     // Because the Ext3-based UI can rely on loading JS-based metadata that is keyed
                     // off table name, and because when this was originally written LK preferentially used label over title for
@@ -397,7 +409,8 @@ public class EHRController extends SpringActionController
                         url.addParameter("importURL", importUrl.toString());
                     }
                 }
-                else {
+                else
+                {
                     detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
                     importStr = "";
                     for (String pkCol : ti.getPkColumnNames())
@@ -415,7 +428,32 @@ public class EHRController extends SpringActionController
                     }
                 }
 
-                DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
+                DetailsURL updateUrl;
+                if (form.isQueryUpdateURL())
+                {
+                    // Send to the query controller's basic row-level update form
+                    StringBuilder sb = new StringBuilder("query-updateQueryRow.view?schemaName=");
+                    sb.append(ti.getUserSchema().getName());
+                    sb.append("&queryName=");
+                    sb.append(ti.getName());
+                    for (String pk : pks)
+                    {
+                        sb.append("&");
+                        sb.append(pk);
+                        sb.append("=${");
+                        sb.append(pk);
+                        sb.append("}");
+                    }
+                    updateUrl = DetailsURL.fromString(sb.toString());
+                }
+                else if (EHRServiceImpl.get().isUseFormEditUI(getContainer()) && null != ti.getColumn("taskid"))
+                {
+                    updateUrl = DetailsURL.fromString("/ehr/dataEntryForm.view?taskid=${taskid}&formType=${taskid/formType}");
+                }
+                else
+                {
+                    updateUrl = DetailsURL.fromString(detailsStr);
+                }
                 updateUrl.setContainerContext(getContainer());
 
                 String deleteQueryName = ti.getName();
@@ -1050,7 +1088,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
+        public @NotNull URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1093,7 +1131,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1127,7 +1165,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1207,7 +1245,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }
@@ -1234,7 +1272,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -1436,8 +1474,8 @@ public class EHRController extends SpringActionController
         {
             if (form.getFormType() == null)
             {
-                errors.reject(ERROR_MSG, "Must provide either the form type");
-                return null;
+                errors.reject(ERROR_MSG, "Must provide a form type");
+                return new SimpleErrorView(errors);
             }
 
             _def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
@@ -1797,7 +1835,7 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
         }

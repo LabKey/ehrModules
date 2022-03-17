@@ -314,19 +314,15 @@ public class AbstractDataEntryForm implements DataEntryForm
             if (queryPerms == null)
                 queryPerms = new HashMap<>();
 
-            SecurityPolicy policy;
+            Set<Class<? extends Permission>> setOfPermissions;
 
             //test if this is a dataset
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
-            {
-                policy = SecurityPolicyManager.getPolicy(datasetMap.get(queryName));
-            }
+                setOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser());
             else
-            {
-                policy = SecurityPolicyManager.getPolicy(_ctx.getContainer());
-            }
+                setOfPermissions = SecurityManager.getPermissions(_ctx.getContainer().getPolicy(), _ctx.getUser(), Set.of());
 
-            for (Class<? extends Permission> p : policy.getPermissions(_ctx.getUser()))
+            for (Class<? extends Permission> p : setOfPermissions)
             {
                 queryPerms.put(p.getName(), p.getCanonicalName());
             }

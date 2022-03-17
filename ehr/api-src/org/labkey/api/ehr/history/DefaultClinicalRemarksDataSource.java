@@ -44,7 +44,12 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     protected String getCategoryText(Results rs) throws SQLException
     {
         String category = rs.getString("category");
-        return (category == null || REPLACED_SOAP.equals(category) || REPLACEMENT_SOAP.equals(category) ?  "Clinical" : category) + " Remark";
+
+        FieldKey titleFk = FieldKey.fromString("category/title");
+        if (rs.hasColumn(titleFk))
+            category = rs.getString(titleFk);
+
+        return (category == null || REPLACED_SOAP.equals(category) || REPLACEMENT_SOAP.equals(category) ?  "Clinical" : category) + " - Remark";
     }
 
 //    @Override
