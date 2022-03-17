@@ -120,6 +120,8 @@ abstract public class EHRService
      */
     abstract public User getEHRUser(Container c);
 
+    abstract public User getEHRUser(Container c, boolean logOnError);
+
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category);
 
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category);

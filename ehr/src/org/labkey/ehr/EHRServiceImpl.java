@@ -324,6 +324,12 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public User getEHRUser(Container c, boolean logOnError)
+    {
+        return EHRManager.get().getEHRUser(c, logOnError);
+    }
+
+    @Override
     public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category)
     {
         List<ReportLink> links = _reportLinks.get(type);
