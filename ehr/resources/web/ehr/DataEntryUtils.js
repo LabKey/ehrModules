@@ -222,7 +222,7 @@ EHR.DataEntryUtils = new function(){
             errorThreshold: 'INFO',
             successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
             disabled: true,
-            itemId: 'submitBtn',
+            itemId: 'submitReloadBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
                 Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
