@@ -504,6 +504,10 @@ public class TriggerScriptHelper
         {
             ret = new HashMap<>();
         }
+        else
+        {
+            ret = new HashMap<>(ret);
+        }
 
         if (!ret.containsKey(project))
         {
