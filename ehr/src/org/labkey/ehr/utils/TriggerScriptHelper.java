@@ -516,6 +516,7 @@ public class TriggerScriptHelper
             }
         }
 
+        ret = Collections.unmodifiableMap(ret);
         DataEntryManager.get().getCache().put(cacheKey, ret);
 
         return ret.get(project);
@@ -532,8 +533,13 @@ public class TriggerScriptHelper
         {
             ret = new HashMap<>();
         }
+        else
+        {
+            ret = new HashMap<>(ret);
+        }
 
         ret.put(project, protocol);
+        ret = Collections.unmodifiableMap(ret);
         DataEntryManager.get().getCache().put(cacheKey, ret);
     }
 
@@ -541,14 +547,7 @@ public class TriggerScriptHelper
     {
         TableInfo ti = getTableInfo("ehr", "project");
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project", "protocol"), new SimpleFilter(FieldKey.fromString("container"), getContainer().getId(), CompareType.EQUAL), null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
-        {
-            @Override
-            public void exec(ResultSet rs) throws SQLException
-            {
-                updateCachedProtocol(rs.getInt("project"), rs.getString("protocol"));
-            }
-        });
+        ts.forEach(rs -> updateCachedProtocol(rs.getInt("project"), rs.getString("protocol")));
     }
 
     private String getProtocolCacheKey()
@@ -589,6 +588,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("servicename"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -633,6 +633,7 @@ public class TriggerScriptHelper
 
                 ret.put((String)row.get("species"), row);
             }
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -1022,7 +1023,7 @@ public class TriggerScriptHelper
         if (ret == null)
         {
             TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-            ret = new HashMap<String, Map<String, Object>>();
+            ret = new HashMap<>();
 
             _log.info("caching blood_draw_services in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti);
@@ -1031,6 +1032,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("service"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -1069,10 +1071,10 @@ public class TriggerScriptHelper
 
             _log.info("caching projects in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
-            ret = new HashSet<>();
-            ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
+            ret = new HashSet<>(Arrays.asList(ts.getArray(Integer.class)));
+            ret = Collections.unmodifiableSet(ret);
 
-            DataEntryManager.get().getCache().put(cacheKey, Collections.unmodifiableSet(ret));
+            DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
         return ret;
@@ -1361,6 +1363,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("common"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -2361,6 +2364,7 @@ public class TriggerScriptHelper
                 ret.add((Integer)row.get("UserId"));
             }
 
+            ret = Collections.unmodifiableSet(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
