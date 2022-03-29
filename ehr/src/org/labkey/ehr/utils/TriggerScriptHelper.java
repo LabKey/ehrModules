@@ -507,6 +507,7 @@ public class TriggerScriptHelper
         else
         {
             ret = new HashMap<>(ret);
+            // Copy so we can mutate and recache
         }
 
         if (!ret.containsKey(project))
@@ -539,6 +540,7 @@ public class TriggerScriptHelper
         }
         else
         {
+            // Copy so we can mutate and recache
             ret = new HashMap<>(ret);
         }
 
