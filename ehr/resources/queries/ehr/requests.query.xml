@@ -35,11 +35,6 @@
                     </column>
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
-                        <fk>
-                            <fkDbSchema>core</fkDbSchema>
-                            <fkTable>users</fkTable>
-                            <fkColumnName>userid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="notify1">
                         <columnTitle>First Contact</columnTitle>
