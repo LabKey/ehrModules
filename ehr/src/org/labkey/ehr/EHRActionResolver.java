@@ -21,6 +21,7 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.SimpleAction;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
+import org.labkey.api.view.NotFoundException;
 import org.springframework.web.servlet.mvc.Controller;
 
 /**
@@ -65,6 +66,9 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
             public Controller createController(Controller actionController)
             {
                 Container c = ((SpringActionController)actionController).getViewContext().getContainer();
+                // this happens early, we might not have validated that there is a container for this URL
+                if (null == c)
+                    throw new NotFoundException();
                 Pair<Module, Path> pair = EHRServiceImpl.get().getActionOverride(getPrimaryName(), c);
 
                 return (null == pair ? super.createController(actionController) : new SimpleAction(pair.first, pair.second));
