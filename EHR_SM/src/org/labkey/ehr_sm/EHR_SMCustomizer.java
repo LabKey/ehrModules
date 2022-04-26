@@ -5,30 +5,21 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.ContainerService;
-import org.labkey.api.data.DataColumn;
-import org.labkey.api.data.DisplayColumn;
-import org.labkey.api.data.DisplayColumnFactory;
-import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.PropertyManager;
-import org.labkey.api.data.RenderContext;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.exp.api.ExpLineageForeignKey;
 import org.labkey.api.ldk.table.AbstractTableCustomizer;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.AliasedColumn;
-import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class EHR_SMCustomizer extends AbstractTableCustomizer
 {
@@ -76,81 +67,48 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
 
     private void customizeSamples(AbstractTableInfo ti)
     {
-        MutableColumnInfo inputsCol = (MutableColumnInfo) ti.getColumn("Inputs");
+        MutableColumnInfo ancestors = (MutableColumnInfo) ti.getColumn("Ancestors");
         String ehrContainerName = getEHRContainer(ti.getUserSchema().getContainer());
-        if (null != inputsCol && null != ehrContainerName)
+        if (null != ancestors && null != ehrContainerName)
         {
-            // Allows fks on the Animal source and provides message if more than a single Animal source in lineage
-            ((ExpLineageForeignKey) inputsCol.getFk()).setSingleValueForeignKey("Animal");
 
-            // Id column info must be queried after setSingleValueForeignKey to ensure correct lookups
-            FieldKey idFk = FieldKey.fromParts("Inputs", "Data", "Animal", "Id");
+            FieldKey idFk = FieldKey.fromParts("Ancestors", "Registry and Sources", "Animal", "Id");
             ColumnInfo idCol = QueryService.get().getColumns(ti, Arrays.asList(idFk)).get(idFk);
 
-            if (null != idCol)
-            {
-                // Add to default columns
-                List<FieldKey> defaultCols = new ArrayList<>(ti.getDefaultVisibleColumns());
+            // Get received sample date column for age at sample time calculation. Default to created if not set
+            PropertyManager.PropertyMap props = PropertyManager.getProperties(ti.getUserSchema().getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME);
+            String receivedDateCol = props.get(EHR_SMManager.ANIMAL_SAMPLE_RECEIVED_PROP);
+            if (null == receivedDateCol)
+                receivedDateCol = "Created";
 
-                FieldKey animalRecordFk = FieldKey.fromParts("AnimalRecord");
-                var aliasCol = new AliasedColumn(idCol.getParentTable(), animalRecordFk, idCol, false);
-                aliasCol.setShownInInsertView(false);
-                aliasCol.setShownInUpdateView(false);
+            FieldKey receivedKey = FieldKey.fromParts(receivedDateCol);
+            ColumnInfo receivedCol = QueryService.get().getColumns(ti, Arrays.asList(receivedKey)).get(receivedKey);
 
-                aliasCol.setDisplayColumnFactory(new DisplayColumnFactory()
-                {
-                    @Override
-                    public DisplayColumn createRenderer(ColumnInfo colInfo)
-                    {
-                        return new DataColumn(colInfo)
-                        {
+            Container ehrContainer = ContainerService.get().getForPath(ehrContainerName);
+            TableInfo ehrAgeTable = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "study").getTable("");
 
-                            @Override
-                            public Object getValue(RenderContext ctx)
-                            {
-                                String value = (String) super.getValue(ctx);
-                                if (value != null && value.startsWith("#Error"))
-                                {
-                                    return "Multiple animal sources per sample not supported";
-                                }
 
-                                return value;
-                            }
-                        };
-                    }
-                });
+            FieldKey ageAtSampleKey = FieldKey.fromParts("ageAtSample");
+            var aliasCol = new AliasedColumn(idCol.getParentTable(), ageAtSampleKey, idCol, false);
+            aliasCol.setFk(QueryForeignKey.from(ehrAgeTable.getUserSchema(), ehrAgeTable.getContainerFilter()));
 
-                defaultCols.add(animalRecordFk);
-                defaultCols.add(FieldKey.fromParts("AnimalRecord", "Demographics", "Species"));
-                defaultCols.add(FieldKey.fromParts("AnimalRecord", "Demographics", "Gender"));
-                ti.setDefaultVisibleColumns(defaultCols);
-                ti.addColumn(aliasCol);
 
-                // Get received sample date column for age at sample time calculation. Default to created if not set
-                PropertyManager.PropertyMap props = PropertyManager.getProperties(ti.getUserSchema().getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME);
-                String receivedDateCol = props.get(EHR_SMManager.ANIMAL_SAMPLE_RECEIVED_PROP);
-                if (null == receivedDateCol)
-                    receivedDateCol = "Created";
-
-                FieldKey receivedFk = FieldKey.fromParts(receivedDateCol);
-                ColumnInfo receivedCol = QueryService.get().getColumns(ti, Arrays.asList(receivedFk)).get(receivedFk);
-
-                TableInfo demographics = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ContainerService.get().getForPath(ehrContainerName), "study").getTable("demographics");
-
-                // Age at sample time column
-                if (null != receivedCol && null != demographics)
-                {
-                    SQLFragment ageSql = getAgeSql(demographics, ti.getName(), idCol, receivedCol);
-                    if (null != ageSql)
-                    {
-                        FieldKey ageFk = FieldKey.fromParts("ageAtSample");
-                        defaultCols.add(ageFk);
-                        ExprColumn ageAtSampleCol = new ExprColumn(ti, ageFk, ageSql, JdbcType.DECIMAL, idCol, receivedCol);
-                        ageAtSampleCol.setLabel("Age At Sample (yrs)");
-                        ti.addColumn(ageAtSampleCol);
-                    }
-                }
-            }
+//                TableInfo demographics = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ContainerService.get().getForPath(ehrContainerName), "study").getTable("demographics");
+//
+//                // Age at sample time column
+//                if (null != receivedCol && null != demographics)
+//                {
+//                    SQLFragment ageSql = getAgeSql(demographics, ti.getName(), idCol, receivedCol);
+//                    if (null != ageSql)
+//                    {
+//                        FieldKey ageFk = FieldKey.fromParts("ageAtSample");
+//                        defaultCols.add(ageFk);
+//                        ExprColumn ageAtSampleCol = new ExprColumn(ti, ageFk, ageSql, JdbcType.DECIMAL, idCol, receivedCol);
+//                        ageAtSampleCol.setLabel("Age At Sample (yrs)");
+//                        ti.addColumn(ageAtSampleCol);
+//                    }
+//                }
+//            }
         }
     }
 
