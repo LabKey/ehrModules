@@ -1440,10 +1440,10 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            DataEntryForm def = DataEntryManager.get().getFormByName(formType, getContainer(), getUser());
             if (def == null)
             {
-                errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
+                errors.reject(ERROR_MSG, "Unknown form type: " + formType);
                 return null;
             }
 
