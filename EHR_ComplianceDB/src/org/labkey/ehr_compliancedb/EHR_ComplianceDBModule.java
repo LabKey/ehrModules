@@ -23,6 +23,7 @@ import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.ehr_compliancedb.notification.EmployeeComplianceNotification;
+import org.labkey.ehr_compliancedb.notification.EmployeeRequirementsCompletionDatesNotification;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.ehr_compliancedb.api.EHR_ComplianceService;
 
@@ -76,6 +77,9 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
 
           //Added 3-29-2016 Blasa
           ns.registerNotification(new EmployeeComplianceNotification(this));
+
+        //Added 4-28-2022 Blasa
+        ns.registerNotification(new EmployeeRequirementsCompletionDatesNotification(this));
     }
 
     @Override
