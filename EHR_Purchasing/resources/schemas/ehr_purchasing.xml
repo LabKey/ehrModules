@@ -159,6 +159,7 @@
         <columns>
             <column columnName="rowId"/>
             <column columnName="requestRowId"/>
+            <column columnName="lineItemNumber"/>
             <column columnName="item"/>
             <column columnName="itemUnitId"/>
             <column columnName="controlledSubstance"/>
