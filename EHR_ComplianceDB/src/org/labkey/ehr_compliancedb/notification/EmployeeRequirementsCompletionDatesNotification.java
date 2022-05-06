@@ -15,9 +15,12 @@
  */
 package org.labkey.ehr_compliancedb.notification;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.apache.commons.lang3.time.DateUtils;
+import org.labkey.api.files.FileSystemWatcherImpl;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.Module;
 import org.labkey.api.data.CompareType;
@@ -51,13 +54,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-//Added 3-29-2016  Blasa
+//Added 3-28-2022  Blasa
 
-public class EmployeeComplianceNotification extends AbstractNotification
+public class EmployeeRequirementsCompletionDatesNotification extends AbstractNotification
 {
+    private static final Logger LOG = LogManager.getLogger(FileSystemWatcherImpl.class);
 
-
-    public EmployeeComplianceNotification(Module owner)
+    public EmployeeRequirementsCompletionDatesNotification(Module owner)
     {
         super(owner);
     }
@@ -65,13 +68,13 @@ public class EmployeeComplianceNotification extends AbstractNotification
     @Override
     public String getName()
     {
-        return "Employee Compliance Notification";
+        return "Employee Compliance Completion Dates Notification";
     }
 
     @Override
     public String getEmailSubject(Container c)
     {
-        return "Employee Compliance Notification: " + DateUtil.formatDateTime(c);
+        return "Employee Compliance Requirements Completions Dates Notification: " + DateUtil.formatDateTime(c);
     }
 
     @Override
@@ -102,19 +105,21 @@ public class EmployeeComplianceNotification extends AbstractNotification
     {
         StringBuilder msg = new StringBuilder();
         Date now = new Date();
-        msg.append("The following individuals have been added to the PRIMe Training database.<p>");
 
-        EmployeeComplianceNotification(c, u, msg, new Date());
+        EmployeeComplianceDateNotification(c, u, msg, new Date());
 
         return msg.toString();
     }
 
-    private void EmployeeComplianceNotification(Container c, User u, final StringBuilder msg,  final Date maxDate)
+    private void EmployeeComplianceDateNotification(Container c, User u, final StringBuilder msg,  final Date maxDate)
     {
         Date curDate = new Date();
         Date roundedMax = new Date();
         roundedMax.setTime(maxDate.getTime());
         roundedMax = DateUtils.truncate(roundedMax, Calendar.DATE);
+
+        log.info(" roundedmax Date  " + roundedMax);
+        log.info(" max Date  " + maxDate);
 
         UserSchema schema = QueryService.get().getUserSchema(u, c, "ehr_compliancedb");
         if (schema == null)
@@ -124,44 +129,42 @@ public class EmployeeComplianceNotification extends AbstractNotification
             msg.append(" - is the module enabled?");
             return;
         }
-        TableInfo ti = schema.getTable("employees");
+        TableInfo ti = schema.getTable("completionDates");
 
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("modified"), roundedMax, CompareType.DATE_EQUAL);
-        filter.addCondition(FieldKey.fromString("modified"), maxDate, CompareType.LTE);
+   SimpleFilter filter = new SimpleFilter(FieldKey.fromString("modified"), roundedMax, CompareType.DATE_EQUAL);
+//        filter.addCondition(FieldKey.fromString("modified"), maxDate, CompareType.LTE);
 
 
         Set<FieldKey> columns = new HashSet<>();
         columns.add(FieldKey.fromString("employeeid"));
-        columns.add(FieldKey.fromString("lastName"));
-        columns.add(FieldKey.fromString("firstName"));
-        columns.add(FieldKey.fromString("category"));
-        columns.add(FieldKey.fromString("unit"));
-        columns.add(FieldKey.fromString("supervisor"));
-        columns.add(FieldKey.fromString("location"));
-        columns.add(FieldKey.fromString("created"));
-        columns.add(FieldKey.fromString("createdby"));
+        columns.add(FieldKey.fromString("requirementname"));
+        columns.add(FieldKey.fromString("date"));
+        columns.add(FieldKey.fromString("comment"));
         columns.add(FieldKey.fromString("modified"));
         columns.add(FieldKey.fromString("modifiedby"));
+        columns.add(FieldKey.fromString("trainer"));
+
+
+
 
         final Map<FieldKey, ColumnInfo> colMap = QueryService.get().getColumns(ti, columns);
-        TableSelector ts = new TableSelector(ti, colMap.values(), filter, new Sort("lastName"));
+        TableSelector ts = new TableSelector(ti, colMap.values(), filter, new Sort("employeeid"));
         long total = ts.getRowCount();
         if (total == 0)
         {
-            msg.append("There are no individuals added into  PRIMe Training database for today.\n");
+            msg.append("There were no Employee Completion Date records that were updated for today.\n");
         }
         else
         {
-                 //Create header information on this report
+            //Create header information on this report
             msg.append("<table border=1 style='border-collapse: collapse;'>");
-            msg.append("<tr style='font-weight: bold;'><td>Employee ID</td><td>First Name</td><td>Last Name</td>" +
-                    "<td>Category</td><td>Unit</td>" +
-                    "<td>Supervisor</td>" +
-                    "<td>created</td>" +
-                    "<td>createdby</td>" +
-                    "<td>modified</td>" +
-                    "<td>modifiedby</td>" +
-                    "<td>Location</td></tr>\n");
+            msg.append("<tr style='font-weight: bold;'><td>Employee ID</td>" +
+                    "<td>Requirement Name</td>" +
+                    "<td>Completion Date</td>" +
+                    "<td>Comments</td>" +
+                    "<td>Trainer</td>" +
+                     "<td>Record Modified Date</td></tr>\n");
+
 
 
             ts.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -169,14 +172,12 @@ public class EmployeeComplianceNotification extends AbstractNotification
                 @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td><td>" + rs.getString("firstName") + "</td><td>" + rs.getString("lastName")  + "</td><td>" +
-                            rs.getString("category")  + "</td><td>" + rs.getString("unit")  + "</td>" +
-                            "<td>" + rs.getString("supervisor") + "</td><td>" +
-                            "<td>" + rs.getString("created") + "</td><td>" +
-                            "<td>" + rs.getString("createdby") + "</td><td>" +
-                            "<td>" + rs.getString("modified") + "</td><td>" +
-                            "<td>" + rs.getString("modifiedby") + "</td><td>" +
-                            rs.getString("location")+ "</td></tr>\n");
+                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td>" +
+                            "<td>" + rs.getString("requirementname") + "</td>" +
+                            "<td>" + rs.getString("date") + "</td>" +
+                            "<td>" + rs.getString("comment")  + "</td>" +
+                             "<td>" + rs.getString("trainer") + "</td>" +
+                            "<td>" + rs.getString("modified")+ "</td></tr>\n");
 
                 }
             });
