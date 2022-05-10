@@ -189,7 +189,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         if (shouldValidateQueries())
         {
-            super.validateQueries(true);
+            validateQueries(true, 300000);
         }
         else
         {
