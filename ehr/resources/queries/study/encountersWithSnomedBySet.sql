@@ -20,7 +20,7 @@ e.date,
 e.caseno,
 e.set_number,
 group_concat(e.codeWithSort, chr(10)) as codes,
-group_concat(e.codeMeaning, chr(10)) as codesMeaning,
+group_concat(e.codeMeaning, chr(10)) as codesMeaning
 
 FROM (
 

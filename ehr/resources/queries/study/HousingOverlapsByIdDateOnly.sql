@@ -8,7 +8,7 @@ PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Room CHAR DEFAULT NULL, Cage 
 
 SELECT
 h.Id,
-cast(StartDate as timestamp) as date,
+cast(StartDate as timestamp) as date
 
 FROM study.housing h
 

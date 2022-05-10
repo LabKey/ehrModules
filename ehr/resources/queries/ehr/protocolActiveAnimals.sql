@@ -6,7 +6,7 @@
 SELECT
   p.protocol,
   count(distinct a.Id) AS TotalActiveAnimals,
-  group_concat(distinct a.Id) AS ActiveAnimals,
+  group_concat(distinct a.Id) AS ActiveAnimals
 
 FROM ehr.protocol p
 
