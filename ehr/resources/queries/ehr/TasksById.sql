@@ -5,18 +5,8 @@
  */
 SELECT
   sd.id,
---   sd.id.curlocation.location as location,
---   sd.id.curlocation.room,
---   sd.id.curlocation.cage,
---   t.title,
---   t.formtype,
   t.taskId,
-  t.formtype,
---   t.assignedTo,
---   t.duedate,
---   t.created,
---   t.createdby,
---   t.qcstate
+  t.formtype
 
 FROM ehr.tasks t
 

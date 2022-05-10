@@ -28,7 +28,7 @@ CASE
     9999
 END
 ), integer)
-AS TotalDaysAssigned,
+AS TotalDaysAssigned
 
 
 
@@ -43,9 +43,7 @@ a.date,
 coalesce(a.enddate, now()) AS enddate,
 
 convert(year(a.date), 'INTEGER') as StartYear,
-convert(year(coalesce(a.enddate, now())), 'INTEGER') as EndYear,
-
---TIMESTAMPDIFF('SQL_TSI_DAY', a.date, coalesce(a.enddate, curdate())) AS TotalDaysAssigned,
+convert(year(coalesce(a.enddate, now())), 'INTEGER') as EndYear
 
 FROM (SELECT convert(year(curdate()), 'INTEGER')-i.value as Year FROM ldk.integers i WHERE i.value <=5) i
 LEFT JOIN study.assignment a

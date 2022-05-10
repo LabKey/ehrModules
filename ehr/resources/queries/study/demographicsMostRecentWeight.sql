@@ -20,7 +20,7 @@ cast((
 FROM (
 SELECT
   w.Id AS Id,
-  max(w.date) AS MostRecentWeightDate,
+  max(w.date) AS MostRecentWeightDate
 
 FROM study.weight w
 WHERE w.qcstate.publicdata = true and w.weight is not null
