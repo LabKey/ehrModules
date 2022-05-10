@@ -9,8 +9,7 @@ p.protocol,
 p.approve,
 p.species,
 pc.allowed,
-p.TotalAnimals,
---pc.allowed - p.TotalAnimals as TotalRemaining,
+p.TotalAnimals
 
 FROM
 (
@@ -18,7 +17,7 @@ SELECT
   coalesce(p.protocol, pa.protocol) as protocol,
   p.approve,
   pa.species,
-  CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
+  CONVERT(Count(pa.id), INTEGER) AS TotalAnimals
 
 FROM ehr.protocol p
 LEFT OUTER JOIN ehr.protocolHistoricAnimals pa ON (p.protocol = pa.protocol)
@@ -39,7 +38,7 @@ SELECT
   p.approve,
   'All Species' as species,
   p.maxAnimals as allowed,
-  CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
+  CONVERT(Count(pa.id), INTEGER) AS TotalAnimals
 
 FROM ehr.protocol p
 LEFT OUTER JOIN ehr.protocolHistoricAnimals pa ON (p.protocol = pa.protocol)
