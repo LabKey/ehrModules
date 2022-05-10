@@ -382,7 +382,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     /** Hook for center-specific setup that needs to happen after the containers are created but before the study is imported */
-    protected void doExtraPreStudyImportSetup()
+    protected void doExtraPreStudyImportSetup() throws IOException, CommandException
     {
 
     }
