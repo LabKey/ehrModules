@@ -18,7 +18,8 @@ Ext.onReady(function(){
             keyField: LABKEY.ActionURL.getParameter('keyField'),
             keyValue: Ext.util.Format.htmlDecode(LABKEY.ActionURL.getParameter('key')),
             title: (LABKEY.ActionURL.getParameter('title') || EHR.Utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName'))),
-            metadata: EHR.Metadata.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources)
+            metadata: EHR.Metadata.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources),
+            viewName: LABKEY.ActionURL.getParameter('viewName') || LABKEY.ActionURL.getParameter('query.viewName') || '~~UPDATE~~'
         }]
     });
     var webpart = <%=webpartContext%>;
