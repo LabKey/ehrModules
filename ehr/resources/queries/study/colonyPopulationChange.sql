@@ -10,7 +10,7 @@ SELECT
 --   T1.id.dataset.demographics.species as species,
   'Births' AS Category,
   T1.date,
-  convert(year(T1.date), integer) AS Year,
+  convert(year(T1.date), integer) AS Year
 
 FROM study.Birth T1
 WHERE T1.date IS NOT NULL
@@ -23,7 +23,7 @@ SELECT
 --   T2.id.dataset.demographics.species,
   'Arrivals' AS Category,
   T2.date,
-  convert(year(T2.date), INTEGER) AS Year,
+  convert(year(T2.date), INTEGER) AS Year
 
 FROM study.Arrival T2
 WHERE T2.date IS NOT NULL
@@ -37,7 +37,7 @@ SELECT
 --   T3.id.dataset.demographics.species,
   'Departures' AS Category,
   T3.date,
-  convert(year(T3.date), INTEGER) AS Year,
+  convert(year(T3.date), INTEGER) AS Year
 
 FROM study.Departure T3
 WHERE T3.date IS NOT NULL
@@ -51,7 +51,7 @@ SELECT
 --   T4.id.dataset.demographics.species,
   'Deaths' AS Category,
   T4.date,
-  convert(year(T4.date), INTEGER) AS Year,
+  convert(year(T4.date), INTEGER) AS Year
 
 FROM study.Deaths T4
 WHERE T4.date IS NOT NULL

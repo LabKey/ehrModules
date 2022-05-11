@@ -35,8 +35,8 @@ case
 end as next,
 h.remark,
 h.qcstate,
-(select min(i.date) FROM study.housing i WHERE i.Id = h.Id and i.date > h.date) as nextHousingRecord,
-(select max(i.date) FROM study.housing i WHERE i.Id = h.Id and i.date < h.date) as previousHousingRecord
+(select min(i.date) AS d FROM study.housing i WHERE i.Id = h.Id and i.date > h.date) as nextHousingRecord,
+(select max(i.date) AS d FROM study.housing i WHERE i.Id = h.Id and i.date < h.date) as previousHousingRecord
 
 FROM study.housing h
 
