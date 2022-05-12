@@ -45,7 +45,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
     public JSONObject getMetadata(ViewContext ctx, ExpProtocol protocol)
     {
         JSONObject meta = super.getMetadata(ctx, protocol);
-        Viral_Load_Manager.get().getDefaultAssayMetadata(meta);
+        Viral_Load_Manager.get().getDefaultAssayMetadata(meta, ctx);
         return meta;
     }
 
