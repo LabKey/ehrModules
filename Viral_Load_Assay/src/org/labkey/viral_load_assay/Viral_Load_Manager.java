@@ -23,6 +23,8 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.SchemaKey;
 import org.labkey.api.view.ViewContext;
 
+import java.text.DecimalFormat;
+
 /**
  * Created with IntelliJ IDEA.
  * User: bimber
@@ -91,13 +93,18 @@ public class Viral_Load_Manager
             {
                 if (column.getJdbcType().equals(JdbcType.DECIMAL) || column.getJdbcType().equals(JdbcType.DOUBLE))
                 {
-                    JSONObject editor = new JSONObject().put("decimalPrecision", 6);
-                    var col = (JSONObject)resultsMeta.get(column.getName());
-                    if (null == col)
-                        col = new JSONObject();
+                    String format = column.getFormat();
+                    if (null != format)
+                    {
+                        int decimals = new DecimalFormat(format).getMaximumFractionDigits();
+                        JSONObject editor = new JSONObject().put("decimalPrecision", decimals);
+                        var col = (JSONObject)resultsMeta.get(column.getName());
+                        if (null == col)
+                            col = new JSONObject();
 
-                    col.put("editorConfig", editor);
-                    resultsMeta.put(column.getName(), col);
+                        col.put("editorConfig", editor);
+                        resultsMeta.put(column.getName(), col);
+                    }
                 }
             }
         }
