@@ -58,7 +58,7 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
     {
         JSONObject meta = super.getTemplateMetadata(ctx);
         JSONObject domainMeta = meta.getJSONObject("domains");
-        Viral_Load_Manager.get().getDefaultAssayMetadata(domainMeta);
+        Viral_Load_Manager.get().getDefaultAssayMetadata(domainMeta, ctx);
 
         JSONObject runMeta = getJsonObject(domainMeta, "Run");
         String[] hiddenRunFields = new String[]{"instrument", "slope", "intercept", "rSquared"};
