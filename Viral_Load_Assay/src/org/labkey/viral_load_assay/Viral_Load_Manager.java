@@ -16,6 +16,15 @@
 package org.labkey.viral_load_assay;
 
 import org.json.JSONObject;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.SchemaKey;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.view.ViewContext;
+
+import java.text.DecimalFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,7 +50,7 @@ public class Viral_Load_Manager
         return _instance;
     }
 
-    public JSONObject getDefaultAssayMetadata(JSONObject meta){
+    public JSONObject getDefaultAssayMetadata(JSONObject meta, ViewContext ctx){
         JSONObject runMeta = getJsonObject(meta, "Run");
         JSONObject technique = getJsonObject(runMeta, "technique");
         technique.put("defaultValue", "Lifson 1-Step VL");
@@ -74,6 +83,36 @@ public class Viral_Load_Manager
         JSONObject plate = getJsonObject(resultsMeta, "plate");
         plate.put("hidden", true);
         resultsMeta.put("plate", plate);
+
+        // This overrides extjs default decimalPrecision of 2, only where specified by metadata from the server. Makes input
+        // forms respect formatString on column metadata. Decimals will still round to two places if formatString not set.
+        // Consider: Move somewhere more central?
+        UserSchema viralAssaySchema = QueryService.get().getUserSchema(ctx.getUser(), ctx.getContainer(), SchemaKey.fromString("assay.Viral_Loads.Viral_Load"));
+        if (null != viralAssaySchema)
+        {
+            TableInfo resultTable = viralAssaySchema.getTable("Data");
+            if (null != resultTable)
+            {
+                for (ColumnInfo column : resultTable.getColumns())
+                {
+                    if (column.getJdbcType().equals(JdbcType.DECIMAL) || column.getJdbcType().equals(JdbcType.DOUBLE))
+                    {
+                        String format = column.getFormat();
+                        if (null != format)
+                        {
+                            int decimals = new DecimalFormat(format).getMaximumFractionDigits();
+                            JSONObject editor = new JSONObject().put("decimalPrecision", decimals);
+                            var col = (JSONObject) resultsMeta.get(column.getName());
+                            if (null == col)
+                                col = new JSONObject();
+
+                            col.put("editorConfig", editor);
+                            resultsMeta.put(column.getName(), col);
+                        }
+                    }
+                }
+            }
+        }
 
         meta.put("Results", resultsMeta);
 
