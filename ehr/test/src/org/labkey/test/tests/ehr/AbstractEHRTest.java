@@ -179,12 +179,24 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             log("EHR test has too many hard coded links and special actions to crawl effectively. Skipping crawl.");
     }
 
+    protected boolean shouldValidateQueries()
+    {
+        return false;
+    }
+
     @Override
     public void validateQueries(boolean validateSubfolders)
     {
-        //NOTE: the queries are also validated as part of study import
-        //also, validation takes place on the project root, while the EHR and required datasets are loaded into a subfolder
-        log("Skipping query validation.");
+        if (shouldValidateQueries())
+        {
+            validateQueries(true, 300000);
+        }
+        else
+        {
+            //NOTE: the queries are also validated as part of study import
+            //also, validation takes place on the project root, while the EHR and required datasets are loaded into a subfolder
+            log("Skipping query validation.");
+        }
     }
 
     protected Pattern[] getIgnoredElements()
@@ -370,7 +382,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     /** Hook for center-specific setup that needs to happen after the containers are created but before the study is imported */
-    protected void doExtraPreStudyImportSetup()
+    protected void doExtraPreStudyImportSetup() throws IOException, CommandException
     {
 
     }

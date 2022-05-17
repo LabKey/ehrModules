@@ -11,7 +11,7 @@ SELECT
   a.LatestStart,
   a.LatestEnd,
 
-  COALESCE(a.Total, 0) AS TotalAssignments,
+  COALESCE(a.Total, 0) AS TotalAssignments
 
 FROM ehr.protocol p
 
