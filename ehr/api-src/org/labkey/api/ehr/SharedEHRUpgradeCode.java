@@ -236,6 +236,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 throw UnexpectedException.wrap(e);
             }
 
+            // Truncate and reset all tables before queueing the jobs to reduce contention and possible deadlocks
             for (Map.Entry<String, Boolean> etlInfo : _etls.entrySet())
             {
                 if (etlInfo.getValue().booleanValue())
@@ -251,7 +252,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                         LOG.info("No saved state for " + etlInfo.getKey() + " found for reset, starting ETL.");
                     }
                 }
+            }
 
+            // Now queue all the ETL jobs
+            for (Map.Entry<String, Boolean> etlInfo : _etls.entrySet())
+            {
                 try
                 {
                     DataIntegrationService.get().runTransformNow(container, user, etlInfo.getKey());
