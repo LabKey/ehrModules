@@ -48,6 +48,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -147,7 +148,7 @@ public class EHRTestHelper
         final Locator l = Locator.name(name);
         long secTimeout = msTimeout / 1000;
         secTimeout = secTimeout > 0 ? secTimeout : 1;
-        WebDriverWait wait = new WebDriverWait(test.getDriver(), secTimeout);
+        WebDriverWait wait = new WebDriverWait(test.getDriver(), Duration.ofSeconds(secTimeout));
         try
         {
             return wait.until(new ExpectedCondition<Boolean>()
