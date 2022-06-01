@@ -16,7 +16,6 @@
 
 package org.labkey.ehr_billing;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
@@ -28,8 +27,8 @@ import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.ehr_billing.pipeline.InvoicedItemsProcessingService;
 import org.labkey.api.ehr.security.EHR_BillingAdminPermission;
+import org.labkey.api.ehr_billing.pipeline.InvoicedItemsProcessingService;
 import org.labkey.api.pipeline.PipeRoot;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
@@ -38,7 +37,6 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryAction;
-import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
@@ -54,7 +52,6 @@ import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.NavTree;
-import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
@@ -65,7 +62,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -186,7 +182,7 @@ public class EHR_BillingController extends SpringActionController
         @Override
         public ModelAndView getView(QueryForm form, BindException errors)
         {
-            ensureQueryExists(form);
+            form.ensureQueryExists();
 
             _form = form;
 
@@ -253,42 +249,6 @@ public class EHR_BillingController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-        }
-
-        protected void ensureQueryExists(QueryForm form)
-        {
-            if (form.getSchema() == null)
-            {
-                throw new NotFoundException("Could not find schema: " + form.getSchemaName());
-            }
-
-            if (StringUtils.isEmpty(form.getQueryName()))
-            {
-                throw new NotFoundException("Query not specified");
-            }
-
-            if (!queryExists(form))
-            {
-                throw new NotFoundException("Query '" + form.getQueryName() + "' in schema '" + form.getSchemaName() + "' doesn't exist.");
-            }
-        }
-
-        protected boolean queryExists(QueryForm form)
-        {
-            try
-            {
-                return form.getSchema() != null && form.getSchema().getTable(form.getQueryName()) != null;
-            }
-            catch (QueryParseException x)
-            {
-                // exists with errors
-                return true;
-            }
-            catch (QueryException x)
-            {
-                // exists with errors
-                return true;
-            }
         }
     }
 }
