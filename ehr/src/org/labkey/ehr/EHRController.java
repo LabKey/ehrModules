@@ -52,7 +52,6 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryAction;
-import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
@@ -77,7 +76,6 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
-import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartFactory;
@@ -344,7 +342,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getView(EHRQueryForm form, BindException errors)
         {
-            ensureQueryExists(form);
+            form.ensureQueryExists();
 
             _form = form;
 
@@ -494,42 +492,6 @@ public class EHRController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-        }
-
-        protected void ensureQueryExists(EHRQueryForm form)
-        {
-            if (form.getSchema() == null)
-            {
-                throw new NotFoundException("Could not find schema: " + form.getSchemaName());
-            }
-
-            if (StringUtils.isEmpty(form.getQueryName()))
-            {
-                throw new NotFoundException("Query not specified");
-            }
-
-            if (!queryExists(form))
-            {
-                throw new NotFoundException("Query '" + form.getQueryName() + "' in schema '" + form.getSchemaName() + "' doesn't exist.");
-            }
-        }
-
-        protected boolean queryExists(EHRQueryForm form)
-        {
-            try
-            {
-                return form.getSchema() != null && form.getSchema().getTable(form.getQueryName()) != null;
-            }
-            catch (QueryParseException x)
-            {
-                // exists with errors
-                return true;
-            }
-            catch (QueryException x)
-            {
-                // exists with errors
-                return true;
-            }
         }
 
         protected boolean isExt4Form(String schemaName, String queryName)
