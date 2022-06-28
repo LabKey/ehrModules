@@ -1685,7 +1685,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
 
-        String speciesColName = (ehrPath.contains("/SNPRC")) ? ".arc_species_code" : "";
+        final String speciesColName = (ehrPath.contains("/SNPRC")) ? ".arc_species_code" : "";
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
