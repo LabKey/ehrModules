@@ -1685,8 +1685,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         final String queryName = ds.getName();
         final String ehrPath = ehrSchema.getContainer().getPath();
 
-        final String speciesColName = (ehrPath.contains("/SNPRC")) ? ".arc_species_code" : "";
-
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
         col.setReadOnly(true);
@@ -1760,7 +1758,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         "  WHERE " +
                         "  (CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) >= ac.\"min\" AND\n" +
                         "  ((CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" is null) AND\n" +
-                        "  d.species" + speciesColName + "  = ac.species AND\n" +
+                        "  d.species" + ((ehrPath.contains("/SNPRC")) ? ".arc_species_code" : "") + "  = ac.species AND\n" +
                         "  (d.gender = ac.gender OR ac.gender IS NULL)\n" +
                         ") AS AgeClassAtTime \n" +
                     "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
