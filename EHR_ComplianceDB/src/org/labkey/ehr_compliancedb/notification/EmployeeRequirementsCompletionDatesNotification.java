@@ -140,6 +140,7 @@ public class EmployeeRequirementsCompletionDatesNotification extends AbstractNot
         columns.add(FieldKey.fromString("requirementname"));
         columns.add(FieldKey.fromString("date"));
         columns.add(FieldKey.fromString("comment"));
+        columns.add(FieldKey.fromString("created"));
         columns.add(FieldKey.fromString("modified"));
         columns.add(FieldKey.fromString("modifiedby"));
         columns.add(FieldKey.fromString("trainer"));
@@ -162,6 +163,7 @@ public class EmployeeRequirementsCompletionDatesNotification extends AbstractNot
                     "<td>Requirement Name</td>" +
                     "<td>Completion Date</td>" +
                     "<td>Comments</td>" +
+                    "<td>Created Date</td>" +
                     "<td>Trainer</td>" +
                      "<td>Record Modified Date</td></tr>\n");
 
@@ -176,6 +178,7 @@ public class EmployeeRequirementsCompletionDatesNotification extends AbstractNot
                             "<td>" + rs.getString("requirementname") + "</td>" +
                             "<td>" + rs.getString("date") + "</td>" +
                             "<td>" + rs.getString("comment")  + "</td>" +
+                            "<td>" + rs.getString("created")  + "</td>" +
                              "<td>" + rs.getString("trainer") + "</td>" +
                             "<td>" + rs.getString("modified")+ "</td></tr>\n");
 
