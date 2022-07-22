@@ -261,7 +261,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, u);
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    doUpdateRecords(c, u, changed, copiedIds);
+                    doUpdateRecords(c, u, changed, copiedIds, true);
                 }
                 finally
                 {
@@ -271,11 +271,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
         else
         {
-            doUpdateRecords(c, u, changed, copiedIds);
+            doUpdateRecords(c, u, changed, copiedIds, false);
         }
     }
 
-    private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids)
+    private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids, boolean async)
     {
         try
         {
@@ -332,7 +332,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             for (DemographicsProvider p : needsUpdate)
             {
-                updateForProvider(defaultSchema, p, ids, true);
+                updateForProvider(defaultSchema, p, ids, true, async);
             }
         }
         catch (Exception e)
@@ -342,7 +342,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
     }
 
-    private void updateForProvider(DefaultSchema defaultSchema, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
+    private void updateForProvider(DefaultSchema defaultSchema, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate, boolean async)
     {
         CPUTimer timer = new CPUTimer(p.getName());
         timer.start();
@@ -387,7 +387,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
             }
 
-            if (!uncachedIds.isEmpty())
+            if (!uncachedIds.isEmpty() && !async)
             {
                 _log.warn("Animal record not found in cache for: " + uncachedIds + ". Not a problem if these are newly inserted animals. Discovered during update of provider: " + p.getName());
             }
@@ -396,7 +396,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             if (!idsToUpdate.isEmpty())
             {
                 _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
-                updateForProvider(defaultSchema, p, idsToUpdate, false);
+                updateForProvider(defaultSchema, p, idsToUpdate, false, async);
             }
         }
 
