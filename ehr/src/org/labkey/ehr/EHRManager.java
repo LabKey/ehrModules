@@ -255,8 +255,7 @@ public class EHRManager
     }
     
     /**
-     * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
-     * missing columns and make sure the columns point to the correct propertyURI
+     * The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states.
      */
     public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
     {
