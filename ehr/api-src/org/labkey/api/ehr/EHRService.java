@@ -310,4 +310,7 @@ abstract public class EHRService
 
     /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
     abstract public void addModulePreferringTaskFormEditUI(Module m);
+
+    /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
+    abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
 }
