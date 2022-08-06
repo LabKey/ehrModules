@@ -7,7 +7,7 @@
 select w.id, w.date as WeightDate, w.death, timestampdiff('SQL_TSI_DAY', w.date, w.death) as daysBetween
 
 from (SELECT
-  w.Id AS Id, max(w.date) AS date, max(w.id.dataset.demographics.death) as death,
+  w.Id AS Id, max(w.date) AS date, max(w.id.dataset.demographics.death) as death
 	FROM study.weight w
 	WHERE w.qcstate.publicdata = true and w.weight is not null and w.id.dataset.demographics.death is not null
 	GROUP BY w.id) w

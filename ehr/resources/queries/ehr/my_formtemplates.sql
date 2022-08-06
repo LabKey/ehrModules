@@ -9,7 +9,7 @@ SELECT
     category,
     formType,
     userId,
-    description,
+    description
 
 FROM ehr.formtemplates t
 

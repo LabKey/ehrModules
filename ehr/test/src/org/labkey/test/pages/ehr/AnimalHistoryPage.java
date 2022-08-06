@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -69,7 +70,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
     {
         doAndWaitForPageSignal(
             () -> elementCache().updateButton.click(),
-            REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), 60));
+            REPORT_TAB_SIGNAL, new WebDriverWait(getDriver(), Duration.ofSeconds(60)));
 
         ensureWaitForReports();
 

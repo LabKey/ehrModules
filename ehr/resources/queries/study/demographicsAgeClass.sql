@@ -8,7 +8,7 @@ SELECT
 d.id,
 ac.AgeClass,
 ac.label,
-ac.gender,
+ac.gender
 
 FROM study.demographics d
 LEFT JOIN ehr_lookups.ageclass ac

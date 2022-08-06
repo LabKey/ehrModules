@@ -8,7 +8,7 @@ options(echo=FALSE)
 library(visPedigree)
 library(Rlabkey)
 
-labkey.setCurlOptions(ssl.verifypeer=FALSE, ssl.verifyhost=FALSE)
+labkey.setCurlOptions(ssl_verifypeer=FALSE, ssl_verifyhost=FALSE)
 
 id <- as.character(labkey.data$id)
 method <- "down"
