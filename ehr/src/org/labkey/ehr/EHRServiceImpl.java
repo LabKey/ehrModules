@@ -832,6 +832,12 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
+    {
+        return EHRManager.get().ensureStudyQCStates(c, u, commitChanges);
+    }
+
+    @Override
     @NotNull
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, Date enddate, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
