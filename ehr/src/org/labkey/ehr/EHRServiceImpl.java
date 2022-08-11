@@ -155,6 +155,24 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public boolean showLabworkPerformedBy(Container c, @Nullable String type)
+    {
+        return LabworkManager.get().showPerformedBy(c, type);
+    }
+
+    @Override
+    public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
+    {
+        return LabworkManager.get().getResults(c, u, id, minDate, maxDate, redacted);
+    }
+
+    @Override
+    public Collection<LabworkType> getLabworkTypes(Container c)
+    {
+        return LabworkManager.get().getTypes(c);
+    }
+
+    @Override
     public List<Resource> getExtraTriggerScripts(Container c)
     {
         List<Resource> resources = new ArrayList<>();
