@@ -78,6 +78,7 @@ abstract public class EHRService
 
     abstract public void registerLabworkType(LabworkType type);
 
+    /** Labwork functions exposed in API for custom data sources and providers */
     abstract public boolean showLabworkPerformedBy(Container c, @Nullable String type);
 
     abstract public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
