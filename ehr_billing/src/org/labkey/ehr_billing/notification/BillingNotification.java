@@ -73,7 +73,7 @@ import java.util.TreeMap;
  */
 public class BillingNotification extends AbstractNotification
 {
-    private BillingNotificationProvider _notificationProvider;
+    private final BillingNotificationProvider _notificationProvider;
     protected static final DecimalFormat _dollarFormat = new DecimalFormat("$###,##0.00");
     protected static final DecimalFormat _numItemsFormat = new DecimalFormat("###,##0.00");
     private static final String _ehrBillingSchemaName = EHR_BillingSchema.NAME;
@@ -607,15 +607,11 @@ public class BillingNotification extends AbstractNotification
 
     private String createURL(Container c, String schemaName, String queryName, @Nullable String viewName)
     {
-        DetailsURL detailsURL = DetailsURL.fromString("/query/executeQuery.view", c);
-        ActionURL url = new ActionURL(detailsURL.getActionURL().toString());
-        url.addParameter("schemaName", schemaName);
-        url.addParameter("queryName", queryName);
+        ActionURL url = _queryUrls.urlExecuteQuery(c, schemaName, queryName);
 
-        if(null != viewName)
+        if (null != viewName)
             url.addParameter("viewName", viewName);
 
         return url.getLocalURIString();
     }
-
 }
