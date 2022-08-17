@@ -24,6 +24,7 @@ import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.module.Module;
@@ -63,7 +64,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
-        if (!redacted && LabworkManager.get().showPerformedBy(c, rs.hasColumn(FieldKey.fromString("type")) ? rs.getString("type") : null))
+        if (!redacted && EHRService.get().showLabworkPerformedBy(c, rs.hasColumn(FieldKey.fromString("type")) ? rs.getString("type") : null))
         {
             sb.append(safeAppend(rs, "Performed By", "performedby"));
             //Modified 10-13-2017 Blasa
@@ -119,7 +120,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     {
         Date start = new Date();
 
-        _results = LabworkManager.get().getResults(c, u, subjectId, minDate, maxDate, redacted);
+        _results = EHRService.get().getLabworkResults(c, u, subjectId, minDate, maxDate, redacted);
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 6)
@@ -191,7 +192,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     {
         Set<String> types = new HashSet<>();
         types.add("Labwork");
-        for (LabworkType type : LabworkManager.get().getTypes(c))
+        for (LabworkType type : EHRService.get().getLabworkTypes(c))
         {
             types.add(type.getName());
         }

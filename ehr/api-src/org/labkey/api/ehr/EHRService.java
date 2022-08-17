@@ -78,6 +78,13 @@ abstract public class EHRService
 
     abstract public void registerLabworkType(LabworkType type);
 
+    /** Labwork functions exposed in API for custom data sources and providers */
+    abstract public boolean showLabworkPerformedBy(Container c, @Nullable String type);
+
+    abstract public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
+
+    abstract public Collection<LabworkType> getLabworkTypes(Container c);
+
     /**
      * Registers an additional JavaScript trigger script that runs whenever the core EHR's trigger script is initialized,
      * in containers in which the owning module is enabled.
