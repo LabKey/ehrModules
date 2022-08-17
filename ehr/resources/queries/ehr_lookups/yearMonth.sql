@@ -6,7 +6,7 @@
 SELECT
   convert((year(curdate()) - i.value), integer) as year,
   m.month,
-  m.rowid as MonthNum,
+  m.rowid as MonthNum
   
 FROM ldk.integers i
 CROSS JOIN ehr_lookups.months m

@@ -166,7 +166,7 @@ EHR.DataEntryUtils = new function(){
             itemId: 'saveDraftBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                panel.onSubmit(btn)
+                panel.onSubmit(btn, false, true);
             },
             disableOn: 'ERROR'
         },
