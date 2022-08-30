@@ -11,5 +11,6 @@ group_concat(ss.primaryCategory) as categories,
 
 FROM ehr_lookups.snomed s
 LEFT JOIN ehr_lookups.snomed_subset_codes ss ON (s.code = ss.code)
-
+--Added by Kolli to exclude the entired with datadisabled set
+Where s.datedisabled is NULL
 GROUP BY s.code, s.meaning
