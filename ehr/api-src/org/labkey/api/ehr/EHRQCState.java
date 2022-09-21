@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ehr;
 
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.data.Container;
 
 /**

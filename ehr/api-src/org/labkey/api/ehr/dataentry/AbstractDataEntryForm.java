@@ -15,16 +15,14 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.old.JSONArray;
+import org.json.old.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.SecurityManager;
-import org.labkey.api.security.SecurityPolicy;
-import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;

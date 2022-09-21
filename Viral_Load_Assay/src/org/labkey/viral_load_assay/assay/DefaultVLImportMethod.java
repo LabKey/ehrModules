@@ -16,7 +16,7 @@
 package org.labkey.viral_load_assay.assay;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.laboratory.assay.DefaultAssayImportMethod;
 import org.labkey.api.query.ValidationException;

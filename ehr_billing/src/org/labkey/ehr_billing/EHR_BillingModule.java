@@ -18,7 +18,7 @@ package org.labkey.ehr_billing;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SimpleFilter;
@@ -44,7 +44,6 @@ import org.labkey.ehr_billing.notification.BillingNotification;
 import org.labkey.ehr_billing.notification.BillingNotificationServiceImpl;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 %>
-<%@ page import="org.json.JSONObject" %>
+<%@ page import="org.json.old.JSONObject" %>
 <%@ page import="org.labkey.api.ehr.dataentry.DataEntryForm" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%

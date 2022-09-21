@@ -15,7 +15,7 @@
  */
 package org.labkey.viral_load_assay.assay;
 
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
