@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 
 import java.util.Collections;
 import java.util.HashMap;

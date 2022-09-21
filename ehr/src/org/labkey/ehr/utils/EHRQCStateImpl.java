@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr.utils;
 
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr.EHRQCState;
