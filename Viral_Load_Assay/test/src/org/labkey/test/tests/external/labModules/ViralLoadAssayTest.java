@@ -365,7 +365,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         SelectRowsCommand selectCmd = new SelectRowsCommand(schema, query);
         selectCmd.addFilter(new Filter("assayName", assayName));
         SelectRowsResponse resp = selectCmd.execute(cn, getProjectName());
-        Long count = (Long)resp.getRowCount();
+        int count = (int)resp.getRowCount();
         if (count == 0)
         {
             log("Creating ABI7500 detector record");
