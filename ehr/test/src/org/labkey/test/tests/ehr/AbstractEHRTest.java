@@ -16,7 +16,7 @@
 package org.labkey.test.tests.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
@@ -761,7 +761,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
     }
 
-    protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()
+    protected static final ArrayList<Permission> allowedActions = new ArrayList<>()
     {
         {
             // Data Admin - Users with this role are permitted to make any edits to datasets

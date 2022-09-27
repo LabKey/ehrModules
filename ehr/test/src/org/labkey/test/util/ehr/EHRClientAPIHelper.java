@@ -18,7 +18,8 @@ package org.labkey.test.util.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
+import org.json.JSONArray;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
@@ -216,7 +217,7 @@ public class EHRClientAPIHelper
         commandJson.put("schemaName", schema);
         commandJson.put("queryName", queryName);
         commandJson.put("command", command);
-        org.json.simple.JSONArray jsonRows = new org.json.simple.JSONArray();
+        JSONArray jsonRows = new JSONArray();
         int idx = 0;
         for (Object[] row : rows)
         {
@@ -257,7 +258,7 @@ public class EHRClientAPIHelper
             JSONObject ro = new JSONObject();
             ro.put("oldKeys", oldKeyMap);
             ro.put("values", values);
-            jsonRows.add(ro);
+            jsonRows.put(ro);
         }
         commandJson.put("rows", jsonRows);
 
@@ -487,7 +488,7 @@ public class EHRClientAPIHelper
         extraContext.put("validateOnly", true); //a flag to force failure
         extraContext.put("targetQC", "In Progress");
         if (additionalExtraContext != null)
-            extraContext.putAll(additionalExtraContext);
+            additionalExtraContext.forEach(extraContext::put);
 
         PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
         CommandException response = doSaveRowsExpectingError(email, insertCommand, extraContext);
