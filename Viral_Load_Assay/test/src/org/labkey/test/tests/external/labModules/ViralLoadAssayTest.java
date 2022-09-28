@@ -377,7 +377,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
             rowMap.put("reporter", "FAM");
             insertCmd.addRow(rowMap);
             SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
-            assertEquals("Problem creating record", saveResp.getRowsAffected(), (long)1);
+            assertEquals("Problem creating record", 1, saveResp.getRowsAffected());
         }
         else
         {
