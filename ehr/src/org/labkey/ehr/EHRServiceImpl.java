@@ -21,7 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.admin.ImportOptions;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
@@ -152,6 +152,24 @@ public class EHRServiceImpl extends EHRService
     public void registerLabworkType(LabworkType type)
     {
         LabworkManager.get().registerType(type);
+    }
+
+    @Override
+    public boolean showLabworkPerformedBy(Container c, @Nullable String type)
+    {
+        return LabworkManager.get().showPerformedBy(c, type);
+    }
+
+    @Override
+    public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
+    {
+        return LabworkManager.get().getResults(c, u, id, minDate, maxDate, redacted);
+    }
+
+    @Override
+    public Collection<LabworkType> getLabworkTypes(Container c)
+    {
+        return LabworkManager.get().getTypes(c);
     }
 
     @Override

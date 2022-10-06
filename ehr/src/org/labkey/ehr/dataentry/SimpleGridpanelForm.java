@@ -16,18 +16,14 @@
 package org.labkey.ehr.dataentry;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
-import org.labkey.api.data.Container;
-import org.labkey.api.data.TableInfo;
+import org.json.old.JSONObject;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.module.Module;
-import org.labkey.api.security.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * User: bimber

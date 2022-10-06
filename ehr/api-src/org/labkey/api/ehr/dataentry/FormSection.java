@@ -15,13 +15,12 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
