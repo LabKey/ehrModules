@@ -18,8 +18,8 @@ package org.labkey.test.util.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
@@ -80,7 +80,7 @@ public class EHRClientAPIHelper
 
     public Connection getConnection()
     {
-        return _test.createDefaultConnection(true);
+        return _test.createDefaultConnection();
     }
 
     public boolean doesRowExist(String schema, String query, Map<String, Object> row, String pkCol) throws CommandException

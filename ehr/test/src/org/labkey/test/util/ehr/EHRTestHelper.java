@@ -18,22 +18,12 @@ package org.labkey.test.util.ehr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.security.AddGroupMembersCommand;
-import org.labkey.remoteapi.security.CreateGroupCommand;
-import org.labkey.remoteapi.security.CreateGroupResponse;
-import org.labkey.remoteapi.security.DeleteUserCommand;
-import org.labkey.remoteapi.security.GetUsersCommand;
-import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
 import org.labkey.test.pages.ehr.ParticipantViewPage;
 import org.labkey.test.tests.ehr.AbstractEHRTest;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -46,7 +36,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -98,43 +87,6 @@ public class EHRTestHelper
         value += "\t"; //force blur event
         _test.setFormElement(Locator.name(fieldName), value);
         _test.sleep(100);
-    }
-
-    public boolean deleteUserAPI(String email) throws CommandException, IOException
-    {
-        //note: always execute against root, so we are sure the user exists
-        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-        GetUsersCommand getUsers = new GetUsersCommand();
-        getUsers.setName(email);
-        GetUsersResponse userResp = getUsers.execute(cn, "/");
-        if (userResp.getUsersInfo().size() > 0)
-        {
-            DeleteUserCommand uc = new DeleteUserCommand(userResp.getUsersInfo().get(0).getUserId());
-            CommandResponse resp = uc.execute(cn, "/");
-            return true;
-        }
-        else
-        {
-            _test.log("user not found: " + email);
-        }
-
-        return false;
-    }
-
-    public int createPermissionsGroupAPI(String groupName, String containerPath, Integer... memberIds) throws Exception
-    {
-        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-        CreateGroupCommand gc = new CreateGroupCommand(groupName);
-        CreateGroupResponse resp = gc.execute(cn, containerPath);
-        Integer groupId = resp.getGroupId().intValue();
-
-        AddGroupMembersCommand mc = new AddGroupMembersCommand(groupId);
-        for (Integer m : memberIds)
-            mc.addPrincipalId(m);
-
-        mc.execute(cn, containerPath);
-
-        return groupId;
     }
 
     public void waitForCmp(final String query)
@@ -273,8 +225,7 @@ public class EHRTestHelper
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
-        _test.assertElementPresent(l);
-        Assert.assertEquals("More than 1 matching element found, use a more specific xpath", 1, _test.getElementCount(l));
+        Assert.assertEquals("More than 1 matching element found, use a more specific xpath", 1, l.findElements(_test.getDriver()).size());
         _test.click(l);
         _test.waitForElement(l.enabled());
     }
