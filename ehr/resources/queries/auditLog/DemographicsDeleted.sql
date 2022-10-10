@@ -1,6 +1,6 @@
 SELECT
     Date,
-    substring(DataChanges, IdStart, LOCATE('&', DataChanges, LOCATE('&Id=', DataChanges) + 1) - IdStart) as Id
+    substring(DataChanges, IdStart, CAST(LOCATE('&', DataChanges, LOCATE('&Id=', DataChanges) + 1) - IdStart AS INTEGER)) as Id
 FROM (
     SELECT Date,
     DataChanges,
