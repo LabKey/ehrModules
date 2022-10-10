@@ -1,0 +1,10 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="AllSampleTypes" tableDbType="TABLE" useColumnOrder="true">
+                <insertUrl></insertUrl>
+                <javaCustomizer class="org.labkey.ehr_sm.EHR_SMCustomizer  " />
+            </table>
+        </tables>
+    </metadata>
+</query>
