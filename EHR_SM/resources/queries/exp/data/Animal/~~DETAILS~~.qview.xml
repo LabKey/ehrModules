@@ -1,0 +1,15 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" canOverride="true">
+    <columns>
+        <column name="name"/>
+        <column name="Id"/>
+        <column name="Id/Demographics/gender"/>
+        <column name="Id/Demographics/species"/>
+        <column name="Id/Demographics/calculated_status"/>
+        <column name="Id/age/ageFriendly"/>
+        <column name="Id/Demographics/birth"/>
+        <column name="Id/Demographics/death"/>
+        <column name="Id/Flags/flags"/>
+        <column name="Id/MostRecentWeight/MostRecentWeight"/>
+        <column name="Id/MostRecentWeight/MostRecentWeightDate"/>
+    </columns>
+</customView>
