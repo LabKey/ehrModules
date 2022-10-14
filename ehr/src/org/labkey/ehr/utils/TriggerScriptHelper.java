@@ -1377,7 +1377,7 @@ public class TriggerScriptHelper
         sendRequestStateEmail("Completed", requestIds);
     }
 
-    private void sendRequestStateEmail(final String label, final List<String> requestIds)
+    public void sendRequestStateEmail(final String label, final List<String> requestIds)
     {
         JobRunner.getDefault().execute(() -> {
             _log.info("processing " + label.toLowerCase() + " request email for " + requestIds.size() + " records");
