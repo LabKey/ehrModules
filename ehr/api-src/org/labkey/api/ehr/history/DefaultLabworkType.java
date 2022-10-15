@@ -71,6 +71,7 @@ public class DefaultLabworkType implements LabworkType
     protected String _resultField = "result";
     protected String _unitsField = "units";
     protected String _qualResultField = "qualresult";
+    protected String _testIDfieldremark = "remark";
 
     protected String _normalRangeField = null;
     protected String _normalRangeStatusField = null;
@@ -237,8 +238,9 @@ public class DefaultLabworkType implements LabworkType
         }
         String units = _unitsField == null ?  null : rs.getString(FieldKey.fromString(_unitsField));
         String qualResult = _qualResultField == null ?  null : rs.getString(FieldKey.fromString(_qualResultField));
+        String testIDfieldremark = _testIDfieldremark == null ?  null : rs.getString(FieldKey.fromString(_testIDfieldremark));
 
-        if (result != null || qualResult != null)
+        if (result != null || qualResult != null || testIDfieldremark != null )
         {
             sb.append("<td style='padding: 2px;'>").append(testId).append(": ").append("</td>");
             sb.append("<td style='padding: 2px;'>");
@@ -264,6 +266,19 @@ public class DefaultLabworkType implements LabworkType
                 if (units != null && !unitsAppended)
                     sb.append(" ").append(units);
             }
+
+            if (testIDfieldremark!= null)
+            {
+                if (result != null)
+                    sb.append(", ");
+
+                sb.append(testIDfieldremark);
+
+                if (units != null && !unitsAppended)
+                    sb.append(" ").append(units);
+
+            }
+
 
             sb.append("</td>");
 
