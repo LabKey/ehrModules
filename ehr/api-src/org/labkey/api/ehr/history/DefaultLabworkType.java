@@ -246,6 +246,7 @@ public class DefaultLabworkType implements LabworkType
             sb.append("<td style='padding: 2px;'>");
 
             boolean unitsAppended = false;
+            boolean remarkAppended = false;
             if (result != null)
             {
                 sb.append(result);
@@ -254,30 +255,41 @@ public class DefaultLabworkType implements LabworkType
                     sb.append(" ").append(units);
                     unitsAppended = true;
                 }
+                if (testIDfieldremark != null)
+                {
+                    sb.append(" ").append(testIDfieldremark);
+                    remarkAppended = false;
+                }
             }
 
             if (qualResult != null)
             {
                 if (result != null)
-                    sb.append(", ");
+                    sb.append(" ").append(result);
 
                 sb.append(qualResult);
 
                 if (units != null && !unitsAppended)
                     sb.append(" ").append(units);
+
             }
 
-            if (testIDfieldremark!= null)
+            if (testIDfieldremark != null)
             {
                 if (result != null)
-                    sb.append(", ");
+                    sb.append(result);
 
-                sb.append(testIDfieldremark);
+                  if (qualResult!= null)
+                    sb.append(" ");
 
                 if (units != null && !unitsAppended)
-                    sb.append(" ").append(units);
+                    sb.append(" ");
 
+                if (testIDfieldremark != null && !remarkAppended)
+                    sb.append(" ").append(testIDfieldremark);
             }
+
+
 
 
             sb.append("</td>");
