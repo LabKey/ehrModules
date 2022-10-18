@@ -315,7 +315,7 @@ public class EHRClientAPIHelper
 
     private CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
-        command = command.copy();
+        command = new PostCommand(command);
         command.getJsonObject().put("extraContext", extraContext);
         Connection connection = new Connection(WebTestHelper.getBaseURL(), email, PasswordUtil.getPassword());
 
