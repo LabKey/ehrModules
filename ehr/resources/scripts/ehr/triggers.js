@@ -670,7 +670,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
            start = row.begindate.getTime();
         }
 
-        if (start > end){
+        if (start >= end){
             EHR.Server.Utils.addError(scriptErrors, 'enddate', 'End date must be after start date', 'WARN');
         }
     }
