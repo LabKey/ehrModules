@@ -71,7 +71,6 @@ public class DefaultLabworkType implements LabworkType
     protected String _resultField = "result";
     protected String _unitsField = "units";
     protected String _qualResultField = "qualresult";
-    protected String _testIDfieldremark = "remark";
 
     protected String _normalRangeField = null;
     protected String _normalRangeStatusField = null;
@@ -238,15 +237,13 @@ public class DefaultLabworkType implements LabworkType
         }
         String units = _unitsField == null ?  null : rs.getString(FieldKey.fromString(_unitsField));
         String qualResult = _qualResultField == null ?  null : rs.getString(FieldKey.fromString(_qualResultField));
-        String testIDfieldremark = _testIDfieldremark == null ?  null : rs.getString(FieldKey.fromString(_testIDfieldremark));
 
-        if (result != null || qualResult != null || testIDfieldremark != null )
+        if (result != null || qualResult != null)
         {
             sb.append("<td style='padding: 2px;'>").append(testId).append(": ").append("</td>");
             sb.append("<td style='padding: 2px;'>");
 
             boolean unitsAppended = false;
-            boolean remarkAppended = false;
             if (result != null)
             {
                 sb.append(result);
@@ -255,42 +252,18 @@ public class DefaultLabworkType implements LabworkType
                     sb.append(" ").append(units);
                     unitsAppended = true;
                 }
-                if (testIDfieldremark != null)
-                {
-                    sb.append(" ").append(testIDfieldremark);
-                    remarkAppended = false;
-                }
             }
 
             if (qualResult != null)
             {
                 if (result != null)
-                    sb.append(" ").append(result);
+                    sb.append(", ");
 
                 sb.append(qualResult);
 
                 if (units != null && !unitsAppended)
                     sb.append(" ").append(units);
-
             }
-
-            if (testIDfieldremark != null)
-            {
-                if (result != null)
-                    sb.append(result);
-
-                  if (qualResult!= null)
-                    sb.append(" ");
-
-                if (units != null && !unitsAppended)
-                    sb.append(" ");
-
-                if (testIDfieldremark != null && !remarkAppended)
-                    sb.append(" ").append(testIDfieldremark);
-            }
-
-
-
 
             sb.append("</td>");
 
