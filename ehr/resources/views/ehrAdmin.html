@@ -1,96 +1,44 @@
 <script type="text/javascript">
 
-Ext4.onReady(function (){
-
-if (LABKEY.Security.currentUser.isAdmin){
-    var webpart = <%=webpartContext%>;
-
-    Ext4.create('LDK.panel.NavPanel', {
-        renderTo: webpart.wrapperDivId,
-        width: 350,
-        sections: [
-            {header: 'Admin',
-                items: [
-                    //{name: 'EHR Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
-                    //{name: 'ETL Duration', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
-                    //{name: 'ETL History', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync History'},
-                    {name: 'Junit Tests', url: '<%=contextPath%>/junit/begin.view?'},
-                    {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
-                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/populateInitialData.view?'},
-                    {name: 'Set EHR Properties', url: '<%=contextPath%>/core<%=containerPath%>/modulePropertyAdmin.view?moduleName=EHR'}
-                    //{name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
-                    //{name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
-                    //{name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=Client%20API%20Actions'}
-                ]
-            },
-//            {header: 'Documentation',
-//                items: [
-//                    {name: 'Admin/Operations Documentation', url: '<%=contextPath%>/project<%=containerPath%>/Documentation/Admin/begin.view?'},
-//                    {name: 'Data Management Documentation', url: '<%=contextPath%>/project<%=containerPath%>/Documentation/Data Management/begin.view?'},
-//                    {name: 'Training and Operations Material', url: '<%=contextPath%>/project<%=containerPath%>/Development Notes/begin.view?'}
-//                ]
-//            },
-//            {header: 'Logs',
-//                items: [
-//                    {name: 'All Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
-//                    {name: 'Labkey.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/labkey.log'},
-//                    {name: 'Labkey-errors.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/labkey-errors.log'},
-//                    {name: 'ETL Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log'},
-//                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log'},
-//                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/ActiveMQ/activemq.log'},
-//                    {name: 'Monit.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Monit/monit.log'},
-//                    {name: 'Munin.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Munin/munin.log'},
-//                    {name: 'Inbreeding Coefficients Reload Cron Job Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Kinship/kinshipOut.txt'},
-//                    {name: 'Kinship Reload Cron Job Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Kinship/inbreedingOut.txt'}
-//                ]
-//            },
-            {header: 'Notifications',
-                items: [
-                    {name: 'Manage Notification Recipients', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationRecipients'},
-                    {name: 'Notification Admin', url: '<%=contextPath%>/ldk<%=containerPath%>/notificationAdmin.view?'}
-                ]
-            },
-//            {header: 'Monit',
-//                items: [
-//                    {name: 'EHR', url: 'http://ehr.primate.wisc.edu:2812/'},
-//                    {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu:2812/'},
-//                    {name: 'Gems', url: 'http://gems.primate.wisc.edu:2812/'}
-//                ]
-//            },
-//            {header: 'Munin',
-//                items: [
-//                    {name: 'EHR', url: 'http://ehr.primate.wisc.edu:8449/'},
-//                    {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu/munin/'},
-//                    {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/'}
-//                ]
-//            },
-            {header: 'Other Tables',
-                items: [
-                    {name: 'Manage Animal History Reports', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=reports'},
-                    {name: 'Manage Notification Types', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationTypes'},
-                    {name: 'Manage Form Types', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtypes'},
-                    {name: 'Manage Form Sections', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=FormPanelSections'},
-                    {name: 'Manage Templates', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplates'},
-                    {name: 'Manage Template Records', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplaterecords'}
-                ]
-            },
-            {header: 'Usage',
-                items: [
-                    {name: 'Site Logins By Day', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByDay'},
-                    {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
-                    {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
-                ]
-//            },
-//            {header: 'Validation',
-//                items: [
-//                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
-//                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'},
-//                    {name: 'Update Housing Snapshot', url: '<%=contextPath%>/study<%=containerPath%>/editSnapshot.view?schemaName=study&snapshotName=ActiveHousing&query.queryName=ActiveHousing'},
-//                ]
-            }
-        ]
-    });
-}
-});
-
 </script>
+
+<html>
+<div class="col-lg-3">
+<div class="lead">
+    <h4><b>Admin:</b></h4>
+    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/study-manageStudy.view?'>Manage EHR Study</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-populateLookupData.view?'>Populate Reports and Lookups</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/core-modulePropertyAdmin.view?moduleName=EHR'>Set EHR Properties</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-ensureQcStates.view?'>Add QC States</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-ehrTemplates.view?'>EHR Extensible Columns</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/primeDataEntryCache.view?'>Prime/Refresh EHR Data Cache</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/cacheLivingAnimals.view?'>Cache Demographics On All Living Animals</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/cacheLivingAnimals.view?includeAll=true'>Cache Demographics On All Animals</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/geneticCalculationSettings.view?'>Genetics Calculations</a></div>
+</div>
+
+<div class="lead">
+    <h4><b>Notifications:</b></h4>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationRecipients'>Manage Notification Recipients</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ldk<%=containerPath%>/notificationAdmin.view?'>Notification Admin</a></div>
+</div>
+</div>
+<div class="col-md-3">
+<div class="lead">
+    <h4><b>Other Configuration Tables:</b></h4>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=reports'>Manage Animal History Reports</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationTypes'>Manage Notification Types</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtypes'>Manage Form Types</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=FormPanelSections'>Manage Form Sections</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplates'>Manage Templates</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplaterecords'>Manage Template Records</a></div>
+</div>
+
+<div class="lead">
+    <h4><b>Usage:</b></h4>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByDay'>Site Logins By Day</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'>Site Logins By Month</a></div>
+    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'>Site Logins By Group</a></div>
+</div>
+</div>
+</html>

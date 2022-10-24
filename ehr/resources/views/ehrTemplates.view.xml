@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="EHR Administration" frame="none" >
+<view xmlns="http://labkey.org/data/xml/view" title="EHR Extensible Templates" frame="none" >
     <permissions>
         <permission name="admin"/>
     </permissions>
