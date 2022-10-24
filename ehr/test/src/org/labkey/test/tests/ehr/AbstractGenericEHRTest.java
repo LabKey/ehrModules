@@ -15,7 +15,7 @@
  */
 package org.labkey.test.tests.ehr;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;

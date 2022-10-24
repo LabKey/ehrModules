@@ -365,7 +365,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         SelectRowsCommand selectCmd = new SelectRowsCommand(schema, query);
         selectCmd.addFilter(new Filter("assayName", assayName));
         SelectRowsResponse resp = selectCmd.execute(cn, getProjectName());
-        Long count = (Long)resp.getRowCount();
+        int count = (int)resp.getRowCount();
         if (count == 0)
         {
             log("Creating ABI7500 detector record");
@@ -377,7 +377,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
             rowMap.put("reporter", "FAM");
             insertCmd.addRow(rowMap);
             SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
-            assertEquals("Problem creating record", saveResp.getRowsAffected(), (long)1);
+            assertEquals("Problem creating record", 1, saveResp.getRowsAffected());
         }
         else
         {

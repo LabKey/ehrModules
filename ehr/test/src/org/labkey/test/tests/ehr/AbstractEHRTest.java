@@ -16,7 +16,7 @@
 package org.labkey.test.tests.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
@@ -539,7 +539,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("inves", DUMMY_INVES);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     @LogMethod
@@ -562,7 +562,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("research", true);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     @LogMethod
@@ -581,12 +581,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("housingCondition", 1);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
-        Connection cn = createDefaultConnection(false);
+        Connection cn = createDefaultConnection();
 
         SelectRowsCommand selectCmd = new SelectRowsCommand(schemaName, queryName);
         selectCmd.addFilter(new Filter(pkName, map.get(pkName)));
@@ -761,7 +761,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
     }
 
-    protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()
+    protected static final ArrayList<Permission> allowedActions = new ArrayList<>()
     {
         {
             // Data Admin - Users with this role are permitted to make any edits to datasets
