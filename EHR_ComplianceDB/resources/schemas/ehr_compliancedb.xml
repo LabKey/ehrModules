@@ -585,6 +585,10 @@
                 <columnTitle>Employee Id</columnTitle>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="reviewdate">
+                <isUserEditable>true</isUserEditable>
+                <nullable>true</nullable>
+            </column>
         </columns>
     </table>
     <table tableName="employeerequirementexemptions" tableDbType="TABLE">
