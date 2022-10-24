@@ -39,6 +39,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         requestsModified: [],
         requestsDenied: {},
         requestsCompleted: {},
+        requestsApproved: {},
         missingParticipants: [],
         PKsModified: [],
         publicPKsModified: [],
@@ -405,6 +406,15 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
                         props.requestsCompleted[requestId].push(row);
                     }
                 }
+
+                if (qcLabel == 'Request: Approved'){
+                    if (oldQcLabel != 'Request: Approved'){
+                        if (!props.requestsApproved[requestId])
+                            props.requestsApproved[requestId] = [];
+
+                        props.requestsApproved[requestId].push(row);
+                    }
+                }
             }
         },
 
@@ -476,7 +486,6 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         getRequestDeniedArray: function(){
             var requests = [];
             for (var i in props.requestsDenied){
-                var rows = props.requestsDenied[i];
                 requests.push(i);
             }
 
@@ -486,7 +495,15 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         getRequestCompletedArray: function(){
             var requests = [];
             for (var i in props.requestsCompleted){
-                var rows = props.requestsCompleted[i];
+                requests.push(i);
+            }
+
+            return requests;
+        },
+
+        getRequestApprovedArray: function(){
+            var requests = [];
+            for (var i in props.requestsApproved){
                 requests.push(i);
             }
 
