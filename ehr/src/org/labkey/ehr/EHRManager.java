@@ -111,6 +111,7 @@ public class EHRManager
 {
     private static final EHRManager _instance = new EHRManager();
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
+    public static final String EHRCustomModulePropName = "EHRCustomModule";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
     public static final String EHRDefaultClinicalProjectName = "EHRDefaultClinicalProjectName";
     public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";

@@ -17,6 +17,7 @@
 package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +29,7 @@ import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.audit.TransactionAuditProvider;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -46,8 +48,12 @@ import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.query.AbstractQueryImportAction;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
@@ -55,12 +61,18 @@ import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
+import org.labkey.api.reader.DataLoader;
+import org.labkey.api.reader.Readers;
+import org.labkey.api.reader.TabLoader;
 import org.labkey.api.resource.FileResource;
+import org.labkey.api.resource.Resource;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -69,9 +81,11 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
@@ -93,6 +107,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +122,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionAuditEvent;
+
 public class EHRController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new EHRActionResolver();
@@ -114,6 +132,8 @@ public class EHRController extends SpringActionController
     {
         setActionResolver(_actionResolver);
     }
+
+    private static final Logger _log = LogHelper.getLogger(EHRController.class, "EHR API controller.");
 
     public static class GetDataEntryItemsForm
     {
@@ -1251,6 +1271,293 @@ public class EHRController extends SpringActionController
             new RecordDeleteRunner().run(getContainer());
 
             return true;
+        }
+    }
+
+    public static class PopulateLookupsForm
+    {
+        private boolean _delete;
+
+        public boolean isDelete()
+        {
+            return _delete;
+        }
+
+        public void setDelete(boolean delete)
+        {
+            _delete = delete;
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class PopulateLookupsAction extends MutatingApiAction<PopulateLookupsForm>
+    {
+        private final String _manifestPath = "data/lookupsManifest.tsv";
+        private final String _lookupSetsPath = "data/lookup_sets.tsv";
+        private Resource _lookupsManifest;
+        private Resource _lookupSets;
+        private Module _lookupsManifestModule;
+
+        @Override
+        public void validateForm(PopulateLookupsForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            Module ehrModule = ModuleLoader.getInstance().getModule("ehr");
+            if (null == ehrModule)
+            {
+                errors.reject(ERROR_MSG, "EHR module missing.");
+            }
+            else
+            {
+                ModuleProperty mp = ehrModule.getModuleProperties().get(EHRManager.EHRCustomModulePropName);
+                _lookupsManifestModule = null;
+                if (mp != null && mp.getEffectiveValue(getContainer()) != null)
+                {
+                    _lookupsManifestModule = ModuleLoader.getInstance().getModule(mp.getEffectiveValue(getContainer()));
+                    if (null != _lookupsManifestModule)
+                    {
+                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestPath);
+                        _lookupSets = _lookupsManifestModule.getModuleResource(_lookupSetsPath);
+                    }
+                }
+                else
+                {
+                    _log.warn("Attempted to access EHRCustomModule Module Property, which has not been set for this folder." +
+                            "Populating base EHR lookups.");
+                }
+
+                if (_lookupsManifest == null || !_lookupsManifest.exists() || _lookupSets == null || !_lookupSets.exists())
+                {
+                    _lookupsManifest = ehrModule.getModuleResource(_manifestPath);
+                    _lookupSets = ehrModule.getModuleResource(_lookupSetsPath);
+                    _lookupsManifestModule = ehrModule;
+                }
+
+                if (_lookupsManifest == null || !_lookupsManifest.exists() || _lookupSets == null || !_lookupSets.exists())
+                {
+                    errors.reject(ERROR_MSG, "Unable to find lookups manifest and lookupSets in module '" + _lookupsManifestModule.getName() + "'");
+                }
+            }
+
+        }
+
+        private void loadFile(UserSchema schema, String tableName, Resource resource, boolean isDelete) throws SQLException, BatchValidationException, QueryUpdateServiceException, IOException
+        {
+            TableInfo table = schema.getTable(tableName);
+            if (table == null)
+            {
+                // If table not created yet just skip on delete
+                if (isDelete)
+                    return;
+
+                throw new IllegalArgumentException("Could not find " + tableName + " table in " + schema.getName() + " schema in " + getContainer().getPath());
+            }
+            QueryUpdateService updateService = table.getUpdateService();
+            if (updateService == null)
+            {
+                throw new IllegalArgumentException("No query update service for " + schema.getName() + "." + tableName + ".");
+            }
+
+            updateService.truncateRows(getUser(), getContainer(), null, null);
+
+            if (!isDelete)
+            {
+                DataLoader loader = DataLoader.get().createLoader(resource, true, null, TabLoader.TSV_FILE_TYPE);
+
+                BatchValidationException batchErrors = new BatchValidationException();
+                AuditBehaviorType behaviorType = table.getAuditBehavior();
+                TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
+                if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                    auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
+                        false, false, batchErrors, behaviorType, auditEvent, getUser(), getContainer());
+
+                if (batchErrors.hasErrors())
+                {
+                    throw batchErrors;
+                }
+            }
+        }
+
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (null == _lookupsManifest || null == _lookupSets)
+                return null;
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            HtmlStringBuilder responseText = HtmlStringBuilder.of((form.isDelete() ? "Deleting" : "Loading") + " lookups from module: " + _lookupsManifestModule.getName() + "\n");
+
+            UserSchema schema = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr_lookups");
+            if (schema == null)
+            {
+                throw new IllegalArgumentException("Could not find ehr_lookups schema in " + getContainer().getPath());
+            }
+
+            responseText.append("Lookup tables: \n");
+            try (DbScope.Transaction transaction = schema.getDbSchema().getScope().ensureTransaction())
+            {
+                loadFile(schema, "lookup_sets", _lookupSets, form.isDelete());
+                responseText.append("lookup_sets\n");
+
+                BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
+                String line;
+                String header = null;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    if (header == null)
+                    {
+                        header = line;
+                        continue;
+                    }
+
+                    String [] cols = line.split("\t");
+                    Resource r = _lookupsManifestModule.getModuleResource("data/" + cols[0] + ".tsv");
+                    if (r != null && r.exists())
+                    {
+                        responseText.append(cols[0] + "\n");
+                        loadFile(schema, cols[0], r, form.isDelete());
+                    }
+                    else
+                    {
+                        responseText.append(cols[0] + " - file not found\n");
+                    }
+                }
+
+                transaction.commit();
+            }
+
+            responseText.append((form.isDelete() ? "Deleting" : "Loading") + " lookups is complete.");
+            response.put("result", responseText);
+            response.put("success", true);
+            return response;
+
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class PopulateReportsAction extends MutatingApiAction<PopulateLookupsForm>
+    {
+        private final String _reportsPath = "reports/reports.tsv";
+        private final String _additionalReportsPath = "reports/additionalReports.tsv";
+        private Resource _reportsResource;
+        private Resource _additionalReportsResource;
+
+        private Module _additionalReportsModule;
+
+        @Override
+        public void validateForm(PopulateLookupsForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            Module ehrModule = ModuleLoader.getInstance().getModule("ehr");
+            if (null == ehrModule)
+            {
+                errors.reject(ERROR_MSG, "EHR module missing.");
+            }
+            else if (!form.isDelete())
+            {
+                _reportsResource = ehrModule.getModuleResource(_reportsPath);
+                if (_reportsResource == null || !_reportsResource.exists())
+                    errors.reject(ERROR_MSG, "Reports file '" + _reportsPath + "' not found in EHR module.");
+
+                ModuleProperty mp = ehrModule.getModuleProperties().get(EHRManager.EHRCustomModulePropName);
+                if (mp == null || mp.getEffectiveValue(getContainer()) == null)
+                {
+                    _log.warn("Attempted to access EHRCustomModule Module Property, which has not been set for this folder");
+                }
+                else
+                {
+                    _additionalReportsModule = ModuleLoader.getInstance().getModule(mp.getEffectiveValue(getContainer()));
+                    if (null != _additionalReportsModule)
+                    {
+                        _additionalReportsResource = _additionalReportsModule.getModuleResource(_additionalReportsPath);
+                        if (_additionalReportsResource == null || !_additionalReportsResource.exists())
+                            _log.info("No additional reports found in " + mp.getEffectiveValue(getContainer()) + " module.");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (!form.isDelete() && null == _reportsResource)
+                return null;
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            HtmlStringBuilder responseText;
+
+            if (form.isDelete())
+            {
+                responseText = HtmlStringBuilder.of("Deleting reports\n");
+            }
+            else
+            {
+                responseText = HtmlStringBuilder.of("Populating reports from EHR module\n");
+            }
+
+            UserSchema schema = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr");
+            if (schema == null)
+            {
+                throw new IllegalArgumentException("Could not find EHR schema in " + getContainer().getPath());
+            }
+            TableInfo table = schema.getTable("reports");
+            if (table == null)
+            {
+                throw new IllegalArgumentException("Could not find reports table in EHR schema in " + getContainer().getPath());
+            }
+            QueryUpdateService updateService = table.getUpdateService();
+            if (updateService == null)
+            {
+                throw new IllegalArgumentException("No query update service for ehr.reports.");
+            }
+
+            try (DbScope.Transaction transaction = table.getSchema().getScope().ensureTransaction())
+            {
+                updateService.truncateRows(getUser(), getContainer(), null, null);
+
+                if (!form.isDelete())
+                {
+                    DataLoader loader = DataLoader.get().createLoader(_reportsResource, true, null, TabLoader.TSV_FILE_TYPE);
+
+                    BatchValidationException batchErrors = new BatchValidationException();
+                    AuditBehaviorType behaviorType = table.getAuditBehavior();
+                    TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
+                    if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                        auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                    AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
+                            false, false, batchErrors, behaviorType, auditEvent, getUser(), getContainer());
+
+                    if (batchErrors.hasErrors())
+                    {
+                        throw batchErrors;
+                    }
+
+                    if (null != _additionalReportsResource)
+                    {
+                        responseText.append("Populating additional reports from " + _additionalReportsModule.getName() + " module\n");
+                        if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                            auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                        loader = DataLoader.get().createLoader(_additionalReportsResource, true, null, TabLoader.TSV_FILE_TYPE);
+                        AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.IMPORT_IDENTITY,
+                                false, false, batchErrors, behaviorType, auditEvent, getUser(), getContainer());
+                    }
+                }
+                transaction.commit();
+            }
+
+            responseText.append((form.isDelete() ? "Deleting" : "Loading") + " reports is complete.");
+            response.put("result", responseText);
+            response.put("success", true);
+            return response;
         }
     }
 

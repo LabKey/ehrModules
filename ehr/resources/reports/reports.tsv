@@ -1,0 +1,35 @@
+reportname	category	reporttype	reporttitle	visible	containerpath	schemaname	queryname	viewname	report	datefieldname	todayonly	queryhaslocation	sort_order	QCStateLabelFieldName	description
+activeHousing	Colony Management	query	Housing - Active	TRUE		study	housing	Active Housing		date	FALSE	TRUE		qcstate/publicdata	This report shows the active housing record for each animal
+birth	Colony Management	query	Birth Records	TRUE		study	birth			date	FALSE	FALSE		qcstate/publicdata	Birth records
+housing	Colony Management	query	Housing History	TRUE		study	housing			date	FALSE	TRUE		qcstate/publicdata	This report contains the housing history of each animal
+roommateHistory	Colony Management	query	Cagemate History	TRUE		study	housingRoommates			StartDate	FALSE	FALSE		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
+weight	Colony Management	js	Weights	TRUE		study	weightGraph			date	FALSE	FALSE		qcstate/publicdata	This report contains a summary of the animal\'s weight, including a graph
+Flags	Colony Management	query	Animal Attributes (flags)	true		study	flags			StartDate	false	false		qcstate/publicdata	Animal attribute flags
+demographics	General	query	Demographics	TRUE		study	demographics				FALSE	FALSE		qcstate/publicdata	This report displays the demographics data about each animal including species, sex and birth
+snapshot	General	js	Snapshot	TRUE		study	snapshot				FALSE	FALSE		qcstate/publicdata	This report contains a summary of the animal, including demographics, assignments and weight
+death	Pathology	query	Death Records	true		study	deaths			date	false	false		qcstate/publicdata	Death records
+arrival	General	query	Arrivals	true		study	arrival			date	false	false		qcstate/publicdata	Displays arrival dates
+departure	General	query	Departures	true		study	departure			date	false	false		qcstate/publicdata	Displays departure dates
+currentBlood	Clinical	js	Current Blood	true		study	currentBlood			date	false	false		qcstate/publicdata	This report contains a summary of the current available blood for each animal
+bloodDraws	Clinical	query	Blood Draws	TRUE		study	blood			date	FALSE	FALSE		qcstate/publicdata	This report displays blood draw data for the selected animal
+biopsy	Clinical	query	Biopsies	TRUE		study	biopsy			date	FALSE	FALSE		qcstate/publicdata	This report displays biopsy data for the selected animal
+obs	Clinical	query	Observations	TRUE		study	obs			date	FALSE	FALSE		qcstate/publicdata	This report displays observations for the selected animal
+alopecia	Clinical	query	Alopecia Scores	TRUE		study	alopecia			date	FALSE	FALSE		qcstate/publicdata	This report contains the alopecia scores for the animal
+pairings	Colony Management	query	Pairings	TRUE		study	pairings			date	FALSE	FALSE		qcstate/publicdata	This report displays pairings for the selected animal
+breeder	Colony Management	query	Breeder	TRUE		study	breeder			date	FALSE	FALSE		qcstate/publicdata	This report displays breeding data for the selected animal
+clinremarks	Clinical	query	Clinical Remarks	true		study	Clinical Remarks			date	false	false		qcstate/publicdata	This report contains the clinical remarks entered about each animal
+serology	ClinPath	query	Serology	TRUE		study	serology			date	FALSE	FALSE		qcstate/publicdata	This report displays serology data for the selected animal
+vitals	Clinical	query	Vital Signs	TRUE		study	vitals			date	FALSE	FALSE		qcstate/publicdata	This report displays vitals data for the selected animal
+physicalExam	Clinical	query	Physical Exam	TRUE		study	physicalExam			date	FALSE	FALSE		qcstate/publicdata	This report displays physical exam data for the selected animal
+procedures	Clinical	query	Procedures	TRUE		study	prc			date	FALSE	FALSE		qcstate/publicdata	This report displays procedures data for the selected animal
+exemptions	Colony Management	query	Exemptions	TRUE		study	exemptions			date	FALSE	FALSE		qcstate/publicdata	This report displays exemptions data for the selected animal
+drugAdministration	Clinical	query	Drug Administration	TRUE		study	drug			date	FALSE	FALSE		qcstate/publicdata	This report displays drug administration data for the selected animal
+necropsy	Pathology	query	Necropsy	TRUE		study	necropsy			date	FALSE	FALSE		qcstate/publicdata	This report displays necropsy data for the selected animal
+cases	Clinical	query	Cases	TRUE		study	cases			date	FALSE	FALSE		qcstate/publicdata	This report displays clinical treatment cases for the selected animal
+pregnancy	Reproductive Management	query	Pregnancy Outcomes	TRUE		study	pregnancy			date	FALSE	FALSE		qcstate/publicdata	This report displays pregnancy outcomes
+pedigree	Genetics	js	Pedigree	true		study	pedigree				false	false		qcstate/publicdata	This report displays pedigree data for animals, including parents, grandparents, siblings and offspring
+pedigreePlot	Genetics	report	Pedigree Plot	true		study	pedigree		module:EHR/schemas/study/Pedigree/Pedigree.r		false	false		qcstate/publicdata	This report will generate a pedigree plot for the selected animal
+offspring	Reproductive Management	query	Offspring	true		study	demographicsOffspring				false	false		qcstate/publicdata	This report displays pedigree data for animals, including parents, grandparents, siblings and offspring
+kinship	Genetics	js	Kinship	true		ehr	kinshipSummary				false	false		qcstate/publicdata	This report shows the kinship coefficient between every animal in the colony. The kinship coefficient is a measure of relatedness between two individuals. It represents the probability that two genes, sampled at random from each individual are identical (e.g. the kinship coefficient between a parent and an offspring is 0.25).
+inbreeding	Genetics	query	Inbreeding Coefficients	true		study	Inbreeding Coefficients				false	false		qcstate/publicdata	This report shows the inbreeding coefficient of each animal, where pedigree data is available. The inbreeding coefficient is the kinship coefficient between the individual's parents. It measures the probability that the two alleles of a gene are identical by descent in the same individual (autozygosity). It is zero if the individual is not inbred.
+parentage	Genetics	query	Parentage	true		study	demographicsParents				false	false		qcstate/publicdata	This report shows information about the parentage of each animal, drawing from genetic data and observations
