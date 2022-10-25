@@ -1,44 +1,40 @@
-<script type="text/javascript">
-
-</script>
-
 <html>
 <div class="col-lg-3">
-<div class="lead">
-    <h4><b>Admin:</b></h4>
-    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/study-manageStudy.view?'>Manage EHR Study</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-populateLookupData.view?'>Populate Reports and Lookups</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/core-modulePropertyAdmin.view?moduleName=EHR'>Set EHR Properties</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-ensureQcStates.view?'>Add QC States</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%><%=containerPath%>/ehr-ehrTemplates.view?'>EHR Extensible Columns</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/primeDataEntryCache.view?'>Prime/Refresh EHR Data Cache</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/cacheLivingAnimals.view?'>Cache Demographics On All Living Animals</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/cacheLivingAnimals.view?includeAll=true'>Cache Demographics On All Animals</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/geneticCalculationSettings.view?'>Genetics Calculations</a></div>
-</div>
+    <div class="lead">
+        <h4><b>Admin:</b></h4>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/study-manageStudy.view?">Manage EHR Study</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-populateLookupData.view?">Populate Reports and Lookups</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/core-modulePropertyAdmin.view?moduleName=EHR">Set EHR Properties</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-ensureQcStates.view?">Add QC States</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-ehrTemplates.view?">EHR Extensible Columns</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-primeDataEntryCache.view?">Prime/Refresh EHR Data Cache</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-cacheLivingAnimals.view?">Cache Demographics On All Living Animals</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-cacheLivingAnimals.view?includeAll=true">Cache Demographics On All Animals</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-geneticCalculationSettings.view?">Genetics Calculations</a></div>
+    </div>
 
-<div class="lead">
-    <h4><b>Notifications:</b></h4>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationRecipients'>Manage Notification Recipients</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ldk<%=containerPath%>/notificationAdmin.view?'>Notification Admin</a></div>
-</div>
+    <div class="lead">
+        <h4><b>Notifications:</b></h4>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=NotificationRecipients">Manage Notification Recipients</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ldk-notificationAdmin.view?">Notification Admin</a></div>
+    </div>
 </div>
 <div class="col-md-3">
-<div class="lead">
-    <h4><b>Other Configuration Tables:</b></h4>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=reports'>Manage Animal History Reports</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationTypes'>Manage Notification Types</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtypes'>Manage Form Types</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=FormPanelSections'>Manage Form Sections</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplates'>Manage Templates</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplaterecords'>Manage Template Records</a></div>
-</div>
+    <div class="lead">
+        <h4><b>Other Configuration Tables:</b></h4>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=reports">Manage Animal History Reports</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=NotificationTypes">Manage Notification Types</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=formtypes">Manage Form Types</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=FormPanelSections">Manage Form Sections</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=formtemplates">Manage Templates</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/ehr-updateTable.view?schemaName=ehr&query.queryName=formtemplaterecords">Manage Template Records</a></div>
+    </div>
 
-<div class="lead">
-    <h4><b>Usage:</b></h4>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByDay'>Site Logins By Day</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'>Site Logins By Month</a></div>
-    <div><a class="labkey-text-link" href='<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'>Site Logins By Group</a></div>
-</div>
+    <div class="lead">
+        <h4><b>Usage:</b></h4>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/query-executeQuery.view?schemaName=core&query.queryName=SiteUsageByDay">Site Logins By Day</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/query-executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth">Site Logins By Month</a></div>
+        <div><a class="labkey-text-link" href="<%=contextPath%><%=containerPath%>/query-executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup">Site Logins By Group</a></div>
+    </div>
 </div>
 </html>
