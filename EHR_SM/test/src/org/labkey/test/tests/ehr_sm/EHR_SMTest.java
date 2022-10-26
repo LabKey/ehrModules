@@ -22,15 +22,15 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.TestTimeoutException;
-import org.labkey.test.categories.InDevelopment;
+import org.labkey.test.categories.EHR;
 import org.labkey.test.pages.ehr_sm.BeginPage;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-@Category({InDevelopment.class})
+@Category({EHR.class})
 public class EHR_SMTest extends BaseWebDriverTest
 {
     @Override
