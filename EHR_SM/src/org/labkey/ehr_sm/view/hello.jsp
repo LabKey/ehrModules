@@ -19,17 +19,15 @@
 <%@ page import="org.labkey.api.data.Container" %>
 <%@ page import="org.labkey.api.security.User" %>
 <%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
-<%@ page import="org.labkey.api.util.HelpTopic" %>
 <%@ page import="org.labkey.api.view.ActionURL" %>
 <%@ page import="org.labkey.ehr_sm.EHR_SMController" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%
     Container c = getContainer();
     User user = getUser();
-    String href = new HelpTopic("ehrSamples").getHelpTopicHref();
 %>
 
-<div name="helloMessage">Hello, and welcome to the EHR Sample Manager module. Please see <a href="<%=h(href)%>" target="_blank">documentation</a> for setup and description of the module.</div>
+<div data-name="helloMessage">Hello, and welcome to the EHR Sample Manager module. Please see <%=helpLink("ehrSamples", "documentation")%> for setup and description of the module.</div>
 <br>
 <a href="<%=h(new ActionURL("sampleManager", "app", getContainer()))%>">Go To Sample Manager</a>
 <br>
