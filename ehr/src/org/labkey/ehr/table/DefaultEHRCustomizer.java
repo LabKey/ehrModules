@@ -161,6 +161,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeSNOMED((AbstractTableInfo) table);
         }
+        else if (matches(table, "ehr_lookups", "editable_lookups"))
+        {
+            customizeEditableLookups((AbstractTableInfo) table);
+        }
         else if (matches(table, "ehr", "snomed_tags"))
         {
             customizeSNOMEDTags((AbstractTableInfo) table);
@@ -1086,6 +1090,14 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             return;
         }
 
+        if (ds.getColumn("activeAnimalGroups") == null && -1 != StudyService.get().getDatasetIdByName( ds.getUserSchema().getContainer(), "animal_group_members"))
+        {
+            var col21 = getWrappedIdCol(us, ds, "activeAnimalGroups", "demographicsActiveAnimalGroups");
+            col21.setLabel("Animal Groups - Active");
+            col21.setDescription("Displays the animal groups to which this animal currently belongs");
+            ds.addColumn(col21);
+        }
+
         var col = getWrappedIdCol(us, ds, "age", "demographicsAge");
         col.setLabel("Age");
         col.setDescription("This calculates the age of the animal in year, months or days.  It shows the current age for living animals or age at time of death.");
@@ -1189,6 +1201,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setDescription("This column shows whether the draw is being counted against the available blood volume.  Future request that have not yet been approved will not count against the allowable volume.");
             col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             ti.addColumn(col);
+        }
+    }
+
+    private void customizeEditableLookups(AbstractTableInfo table)
+    {
+        String name = "edit";
+        if (table.getColumn(name) == null)
+        {
+            DetailsURL url = DetailsURL.fromString("ehr-updateTable.view?schemaName=ehr_lookups&query.queryName=${value}");
+            MutableColumnInfo col = ((MutableColumnInfo) table.getColumn("value"));
+            col.setURL(url);
         }
     }
 
