@@ -51,8 +51,8 @@ public class BeginPage extends LabKeyPage<BeginPage.ElementCache>
         return new ElementCache();
     }
 
-    protected class ElementCache extends LabKeyPage.ElementCache
+    protected class ElementCache extends LabKeyPage<?>.ElementCache
     {
-        protected final WebElement helloMessage = Locator.tagWithName("div", "helloMessage").findWhenNeeded(this);
+        protected final WebElement helloMessage = Locator.tagWithAttribute("div", "data-name", "helloMessage").findWhenNeeded(this);
     }
 }

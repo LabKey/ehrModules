@@ -7,6 +7,13 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRCustomModule">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>This is the module used in this project with the custom EHR setup (ex. MYRC_EHR)</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
         <propertyDescriptor name="InstitutionName">
             <canSetPerContainer>true</canSetPerContainer>
             <editPermissions>

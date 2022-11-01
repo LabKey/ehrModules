@@ -1,0 +1,73 @@
+<script type="text/javascript">
+
+    function populateReports(isDelete) {
+        const container = "<%=containerPath%>";
+        let result;
+        if (isDelete) {
+            result = confirm("Deleting reports will delete all reports populated from file or manually added. Delete reports?");
+        }
+        else {
+            result = confirm("Populating reports from file will overwrite any manual edits to ehr.reports. Populate reports?");
+        }
+        if (result) {
+            LABKEY.Ajax.request({
+                url: LABKEY.ActionURL.buildURL("ehr", "populateReports", container),
+                method: 'POST',
+                jsonData: {
+                    delete: isDelete
+                },
+                timeout: 100000,
+                success: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = response.result;
+                }),
+                failure: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = "Failed: " + response.exception
+                })
+            });
+        }
+    }
+
+    function populateLookups(isDelete) {
+        const container = "<%=containerPath%>";
+        let result;
+        if (isDelete) {
+            result = confirm("Deleting lookups will delete all values populated from file or manually added. Delete lookups?");
+        }
+        else {
+            result = confirm("Populating lookups from file will delete any manual edits to lookups. Populate lookups from file?");
+        }
+        if (result) {
+
+            document.getElementById("populateLookupResults").value = isDelete ? "Deleting..." : "Loading...";
+            LABKEY.Ajax.request({
+                url: LABKEY.ActionURL.buildURL("ehr", "populateLookups", container),
+                method: 'POST',
+                jsonData: {
+                    delete: isDelete
+                },
+                timeout: 100000,
+                success: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = response.result;
+                }),
+                failure: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = "Failed: " + response.exception
+                })
+            });
+        }
+    }
+
+</script>
+
+<html>
+    <div style="margin: 20px 0;">
+        <h5><b>
+            <a style="margin-right: 30px; cursor: pointer;" onclick='populateReports(false); return false;'>Populate Reports</a>
+            <a style="margin-right: 30px; cursor: pointer;" onclick='populateReports(true); return false;'>Delete Reports</a>
+            <a style="margin-right: 30px; cursor: pointer;" onclick='populateLookups(false); return false;'>Populate Lookups</a>
+            <a style="margin-right: 30px; cursor: pointer;" onclick='populateLookups(true); return false;'>Delete Lookups</a>
+        </b></h5>
+    </div>
+    <div>
+        <textarea class="form-control" id="populateLookupResults" rows="20"></textarea>
+    </div>
+</html>
