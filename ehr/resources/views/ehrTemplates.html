@@ -1,0 +1,67 @@
+<script type="text/javascript">
+
+    createEHRDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext(undefined, ['EHRStudyContainer', 'EHRCustomModule']);
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR",
+            domainGroup: "ehr",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+    createEHRLookupsDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext();
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR_Lookups",
+            domainGroup: "ehr_lookups",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR_Lookups tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+    createEHRBillingDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext();
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR_Billing",
+            domainGroup: "ehr_billing",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR_Billing tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+</script>
+
+<html>
+<div style="margin: 20px 0;">
+    <h5><b>
+        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRDomainHandler(); return false;'>Load EHR table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRLookupsDomainHandler(); return false;'>Load EHR_Lookup table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRBillingDomainHandler(); return false;'>Load EHR_Billing table definitions</a>
+    </b></h5>
+</div>
+</html>
