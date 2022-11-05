@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.completiondates add reviewdate datetime;
