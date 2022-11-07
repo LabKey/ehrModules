@@ -14,39 +14,6 @@
     "lint": "eslint",
     "lint-fix": "eslint --fix"
   },
-  "jest": {
-    "globals": {
-      "LABKEY": {
-        "container": {
-          "formats": {
-            "dateFormat": "yyyy-MM-dd",
-            "dateTimeFormat": "yyyy-MM-dd HH:mm"
-          }
-        },
-        "moduleContext": {},
-        "user": {
-          "displayName": "Bill",
-          "id": 1004
-        }
-      }
-    },
-    "moduleFileExtensions": [
-      "tsx",
-      "ts",
-      "js"
-    ],
-    "preset": "ts-jest",
-    "setupFilesAfterEnv": [
-      "./test/js/setup.ts"
-    ],
-    "testEnvironment": "jsdom",
-    "testMatch": null,
-    "testRegex": "(\\.(test|spec))\\.(ts|tsx)$",
-    "testResultsProcessor": "jest-teamcity-reporter",
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    }
-  },
   "dependencies": {
     "@labkey/components": "2.194.8"
   },
