@@ -27,6 +27,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.demographics.ActiveAssignmentsDemographicsProvider;
+import org.labkey.api.ehr.demographics.ActiveGroupsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ActiveProblemsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
@@ -166,6 +167,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveGroupsDemographicsProvider(this));
 
         EHRService.get().setProjectValidator(new EHRProjectValidator());
 

@@ -17,6 +17,7 @@ import org.labkey.api.ldk.table.AbstractTableCustomizer;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.AliasManager;
 import org.labkey.api.query.AliasedColumn;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
@@ -54,9 +55,10 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
         }
     }
 
-    private SQLFragment getAgeSql(TableInfo demographics, String alias, ColumnInfo idCol, ColumnInfo receivedCol)
+    private SQLFragment getAgeSql(TableInfo demographics, String sampleType, ColumnInfo idCol, ColumnInfo receivedCol)
     {
         SQLFragment ageSql = null;
+        String alias = AliasManager.makeLegalName(sampleType, demographics.getSqlDialect());
         if (demographics.getSqlDialect().isSqlServer())
         {
             ageSql = new SQLFragment("(SELECT CONVERT(DECIMAL(10,2), DATEDIFF(month, dem.birth, ").append(receivedCol.getValueSql(alias));
