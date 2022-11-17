@@ -11,6 +11,10 @@ import org.labkey.api.view.ActionURL;
 
 import java.util.List;
 
+/**
+ * Adds a link only visible to admins on the EHR data entry page. Override dataEntryLink() with the desired URL. _formContext
+ * can be used to get URL container and context.
+ */
 public abstract class AdminLinksFormType extends AbstractDataEntryForm
 {
     protected final DataEntryFormContext _formContext;
