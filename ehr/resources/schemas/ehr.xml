@@ -117,7 +117,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1098,7 +1097,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1244,7 +1242,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>false</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1366,7 +1363,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1454,7 +1450,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
