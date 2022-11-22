@@ -895,4 +895,36 @@
             </column>
         </columns>
     </table>
+
+    <table tableName="Compliance_Reference_Data" tableDbType="TABLE">
+    <auditLogging>DETAILED</auditLogging>
+    <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+    <tableTitle>Compliance Reference Data</tableTitle>
+    <pkColumnName>rowid</pkColumnName>
+    <columns>
+    <column columnName="rowid">
+        <isAutoInc>true</isAutoInc>
+        <columnTitle>Key</columnTitle>
+    </column>
+    <column columnName="label">
+        <columnTitle>Label</columnTitle>
+      </column>
+    <column columnName="value">
+        <columnTitle>Value</columnTitle>
+        <isKeyField>true</isKeyField>
+    </column>
+    <column columnName="columnName">
+        <columnTitle>Column Name</columnTitle>
+    </column>
+    <column columnName="sort_order">
+        <columnTitle>Sort Order</columnTitle>
+    </column>
+    <column columnName="endDate">
+        <columnTitle>End Date</columnTitle>
+    </column>
+    <column columnName="objectid">
+        <isHidden>true</isHidden>
+    </column>
+
+    </table>
 </tables>
