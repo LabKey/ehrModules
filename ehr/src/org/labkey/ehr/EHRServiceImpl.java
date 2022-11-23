@@ -1035,4 +1035,15 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(simpleRawCol);
         }
     }
+    @Override
+    public Map<String, Map<String, Object>> getDataEntryCacheValue(String cacheKey)
+    {
+        return (Map)DataEntryManager.get().getCache().get(cacheKey);
+    }
+
+    @Override
+    public void putDataEntryCacheValue(String key, Map<String, Map<String, Object>> value)
+    {
+        DataEntryManager.get().getCache().put(key, value);
+    }
 }

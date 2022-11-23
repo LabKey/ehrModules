@@ -320,4 +320,18 @@ abstract public class EHRService
 
     /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
+
+    /**
+     * Allow custom module trigger script helpers to access the data entry cache values
+     * @param cacheKey
+     * @return cached value
+     */
+    abstract public Map<String, Map<String, Object>> getDataEntryCacheValue(String cacheKey);
+
+    /**
+     * Allow custom module trigger script helpers to add data to data entry cache
+     * @param key
+     * @param value
+     */
+    abstract public void putDataEntryCacheValue(String key, Map<String, Map<String, Object>> value);
 }
