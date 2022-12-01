@@ -46,6 +46,49 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             }
         },
+        'id/curLocation/room': {
+            hidden: false,
+            allowBlank: true,
+            nullable: true,
+            shownInGrid: true,
+            caption: 'Room',
+            header: 'Room',
+            lookups: false,
+            //to allow natural sorting
+            sortType: function(val){
+                return val ? LDK.Utils.naturalize(val) : val;
+            },
+            allowDuplicateValue: false,
+            columnConfig: {
+                width: 175,
+                showLink: false
+            },
+            formEditorConfig: {
+                hidden: true
+            }
+        },
+        'id/curLocation/cage': {
+            hidden: false,
+            allowBlank: true,
+            nullable: true,
+            shownInGrid: true,
+            caption: 'Cage',
+            header: 'Cage',
+            lookups: false,
+            //to allow natural sorting
+            sortType: function(val){
+                return val ? LDK.Utils.naturalize(val) : val;
+            },
+            allowDuplicateValue: false,
+            columnConfig: {
+                width: 175,
+                showLink: false
+            },
+            formEditorConfig: {
+                hidden: true
+            }
+        },
+
         'id/numroommates/cagemates': {
             hidden: true,
             updateValueFromServer: true,

@@ -41,6 +41,7 @@ public class SimpleFormSection extends AbstractFormSection
     private String _queryName;
 
     protected boolean _showLocation = false;
+    protected boolean _showRoomCage = false;
     /** Whether the grid has a button to edit the row in a popup dialog with a text label/form element layout for each field */
     protected boolean _allowRowEditing = true;
 
@@ -103,6 +104,10 @@ public class SimpleFormSection extends AbstractFormSection
         if (_showLocation)
         {
             keys.add(0, FieldKey.fromString("Id/curLocation/location"));
+        }
+        if (_showRoomCage){
+            keys.add(1, FieldKey.fromString("Id/curLocation/room"));
+            keys.add(2, FieldKey.fromString("Id/curLocation/cage"));
         }
 
         return keys;

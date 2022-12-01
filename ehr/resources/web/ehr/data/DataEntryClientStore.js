@@ -22,6 +22,10 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             this.hasLocationField = true;
         }
 
+        if (this.getFields().get('Id/curLocation/room') && this.getFields().get('Id/curLocation/cage')){
+            this.hasRoomCageFields = true;
+        }
+
         if (this.getFields().get('project') && this.autoSelectProjectOnLoad){
             this.hasProjectFieldToPopulate = true;
         }
@@ -72,6 +76,26 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         return true; //no action needed
     },
 
+    ensureRoomCage: function(record){
+        var id = record.get('Id');
+        if (id && !record.get('Id/curLocation/room')){
+            var cached = EHR.DemographicsCache.getDemographicsSynchronously(id);
+            if (cached && cached[id]){
+                record.suspendEvents();
+                record.set('Id/curLocation/room', cached[id].getCurrentRoom());
+                record.set('Id/curLocation/cage', cached[id].getCurrentCage());
+                record.resumeEvents();
+
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        return true; //no action needed
+    },
+
     ensureProjects: function(record){
         var id = record.get('Id');
         if (id && !record.get('project')){
@@ -102,6 +126,25 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                         if (rec.get('Id') == id){
                             rec.beginEdit();
                             rec.set('Id/curLocation/location', location);
+                            rec.endEdit(true);
+                            this.fireEvent('validation', this, rec);
+                        }
+                    }, this);
+                }
+            }
+        }, this, -1);
+    },
+    retrieveRoomCage: function(ids){
+        EHR.DemographicsCache.getDemographics(ids, function(idArr, idMap){
+            if (idMap){
+                for (var id in idMap){
+                    var room = idMap[id].getCurrentRoom();
+                    var cage = idMap[id].getCurrentCage();
+                    this.each(function(rec){
+                        if (rec.get('Id') == id){
+                            rec.beginEdit();
+                            rec.set('Id/curLocation/room', room);
+                            rec.set('Id/curLocation/cage', cage);
                             rec.endEdit(true);
                             this.fireEvent('validation', this, rec);
                         }
@@ -258,6 +301,12 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                 this.retrieveLocation(record.get('Id'));
             }
         }
+
+        if (this.hasRoomCageFields && !record.get('Id/curLocation/room')){
+            if (!this.ensureRoomCage(record)){
+                this.retrieveRoomCage(record.get('Id'));
+            }
+        }
         if (this.hasProjectFieldToPopulate && !record.get('project')){
             if (!this.ensureProjects(record)){
                 this.retrieveProjects(record.get('Id'));
@@ -289,6 +338,18 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
             if (idsNeeded.length){
                 this.retrieveLocation(idsNeeded);
+            }
+        }
+        if (this.hasRoomCageFields && records && records.length){
+            var idsNeeded = [];
+            for (var i=0;i< records.length;i++){
+                if (!this.ensureRoomCage(records[i])){
+                    idsNeeded.push(records[i].get('Id'));
+                }
+            }
+
+            if (idsNeeded.length){
+                this.retrieveRoomCage(idsNeeded);
             }
         }
         if (this.hasProjectFieldToPopulate && records && records.length){
