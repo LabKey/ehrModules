@@ -1,6 +1,6 @@
 
 
-LDK.Utils.splitIds = function(subjectArray, unsorted, preserveDuplicates, preserveCase) {
+LDK.Utils.splitIds = function(subjectArray, unsorted, preserveDuplicates) {
     if (!subjectArray){
         return [];
     }
@@ -8,8 +8,6 @@ LDK.Utils.splitIds = function(subjectArray, unsorted, preserveDuplicates, preser
     subjectArray = Ext4.String.trim(subjectArray);
     subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
     subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-    if (!preserveCase)
-        subjectArray = subjectArray.toLowerCase();
 
     if (subjectArray){
         subjectArray = subjectArray.split(';');
