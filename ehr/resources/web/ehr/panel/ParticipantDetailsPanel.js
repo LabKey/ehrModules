@@ -12,6 +12,7 @@
 
 Ext4.define('EHR.panel.ParticipantDetailsPanel', {
     extend: 'EHR.panel.AnimalHistoryPanel',
+    caseInsensitiveSubjects: true,
 
     initComponent: function(){
         this.callParent();
