@@ -16,7 +16,7 @@ LDK.Utils.splitIds = function(subjectArray, unsorted, preserveDuplicates) {
         subjectArray = [];
     }
 
-    EHR.Utils.formatAnimalIds(subjectArray);
+    subjectArray = EHR.Utils.formatAnimalIds(subjectArray);
 
     if (subjectArray.length > 0) {
 
