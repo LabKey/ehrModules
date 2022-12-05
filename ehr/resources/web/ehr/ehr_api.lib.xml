@@ -6,6 +6,7 @@
         <script path="ehr/DemographicsCache.js"/>
         <script path="ehr/Security.js"/>
         <script path="ehr/navMenu.js"/>
+        <script path="ehr/overrides.js"/>
 
 
         <!--Misc Ext4 components-->

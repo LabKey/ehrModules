@@ -626,6 +626,13 @@ EHR.Utils = new function(){
                 minWidth: 60,
                 border: includeBorder
             };
+        },
+
+        /** Override this function to apply custom patterns (casing, hyphens, etc) to ids entered into UI components like animal history, animal search,
+         *  and data entry windows. Default is no formatting.
+         */
+        formatAnimalIds: function(subjects){
+            return subjects;
         }
     }
 };
