@@ -1,0 +1,16 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="animalGroupHousingSummary" tableDbType="TABLE">
+                <tableTitle>Animal Groups Housing Summary</tableTitle>
+                <columns>
+                    <column columnName="totalAnimals">
+                        <columnTitle>Total Animals</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;query.queryName=demographics&amp;query.viewName=By Location&amp;query.id/curLocation/room~eq=${room}&amp;query.id/activeAnimalGroups/groups~contains=${groupId/name}</url>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>
+
