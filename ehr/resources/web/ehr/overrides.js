@@ -18,7 +18,7 @@ LDK.Utils.splitIds = function(subjectArray, unsorted, preserveDuplicates) {
 
     subjectArray = EHR.Utils.formatAnimalIds(subjectArray);
 
-    if (subjectArray.length > 0) {
+    if (subjectArray.length > 1) {
 
         if (!preserveDuplicates) {
             subjectArray = Ext4.unique(subjectArray);
