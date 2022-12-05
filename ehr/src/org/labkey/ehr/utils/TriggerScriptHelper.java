@@ -2495,6 +2495,17 @@ public class TriggerScriptHelper
 
     public void ensureSingleFlagCategoryActive(String id, String flag, String objectId, final Date enddate)
     {
+        TableInfo flagsTable = getTableInfo("study", "flags");
+        ColumnInfo ci = flagsTable.getColumn("flag");
+
+        if (ci == null)
+            return;
+
+        // Only perform if using ehr_lookups.flag_values as study.flags lookup table
+        TableInfo ti = ci.getFkTableInfo();
+        if (ti == null || !ti.getSchema().getName().equals("ehr_lookups") || !ti.getName().equals("flag_values"))
+            return;
+
         //first resolve flag
         TableInfo flagValuesTable = getTableInfo("ehr_lookups", "flag_values");
         TableSelector ts1 =  new TableSelector(flagValuesTable, Collections.singleton("category"), new SimpleFilter(FieldKey.fromString("objectid"), flag), null);
@@ -2517,7 +2528,6 @@ public class TriggerScriptHelper
             filter.addCondition(FieldKey.fromString("Id"), id, CompareType.EQUAL);
             filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ_OR_NULL);
 
-            TableInfo flagsTable = getTableInfo("study", "Animal Record Flags");
             final List<Map<String, Object>> rows = new ArrayList<>();
             final List<Map<String, Object>> oldKeys = new ArrayList<>();
             QueryUpdateService qus = flagsTable.getUpdateService();
