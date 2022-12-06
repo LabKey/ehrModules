@@ -1,6 +1,7 @@
 setname	label	keyfield	titleColumn
-alopecia_cause	Alopecia Cause	value	
-alopecia_score	Alopecia Score	value	
+alias_category	Alias Category	value
+alopecia_cause	Alopecia Cause	value
+alopecia_score	Alopecia Score	value
 avail_codes	Availability Code Field Values	value	
 bacteriology_method	Bacteriology Method Field Values	value	
 bacteriology_sensitivity	Bacteriology Sensitivity Field Values	value	

@@ -4,7 +4,7 @@ birth	Colony Management	query	Birth Records	TRUE		study	birth			date	FALSE	FALSE
 housing	Colony Management	query	Housing History	TRUE		study	housing			date	FALSE	TRUE		qcstate/publicdata	This report contains the housing history of each animal
 roommateHistory	Colony Management	query	Cagemate History	TRUE		study	housingRoommates			StartDate	FALSE	FALSE		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
 weight	Colony Management	js	Weights	TRUE		study	weightGraph			date	FALSE	FALSE		qcstate/publicdata	This report contains a summary of the animal\'s weight, including a graph
-Flags	Colony Management	query	Animal Attributes (flags)	true		study	flags			StartDate	false	false		qcstate/publicdata	Animal attribute flags
+Flags	Colony Management	query	Flags	true		study	flags			StartDate	false	false		qcstate/publicdata	Animal attribute flags
 demographics	General	query	Demographics	TRUE		study	demographics				FALSE	FALSE		qcstate/publicdata	This report displays the demographics data about each animal including species, sex and birth
 snapshot	General	js	Snapshot	TRUE		study	snapshot				FALSE	FALSE		qcstate/publicdata	This report contains a summary of the animal, including demographics, assignments and weight
 death	Pathology	query	Death Records	true		study	deaths			date	false	false		qcstate/publicdata	Death records
