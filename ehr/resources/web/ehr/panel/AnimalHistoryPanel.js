@@ -19,6 +19,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     showDiscvrLink: false,
     minTabHeight: 500,
     minTabWidth: 1000,
+    caseInsensitiveSubjects: true,
 
     initComponent: function(){
         Ext4.apply(this, {

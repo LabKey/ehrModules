@@ -1,0 +1,25 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="groupId"/>
+        <column name="Id/curLocation/area"/>
+        <column name="Id/curLocation/room"/>
+        <column name="Id/curLocation/cage"/>
+        <column name="Id/utilization/use"/>
+        <column name="Id"/>
+        <column name="Id/demographics/species"/>
+        <column name="Id/demographics/gender"/>
+        <column name="Id/age/yearAndDays"/>
+        <column name="date"/>
+        <column name="enddate"/>
+        <column name="history"/>
+    </columns>
+    <filters>
+        <filter column="isActive" operator="eq" value="true"/>
+    </filters>
+    <sorts>
+        <sort column="groupId/name"/>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage" />
+        <sort column="Id"/>
+    </sorts>
+</customView>
