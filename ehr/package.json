@@ -1,0 +1,26 @@
+{
+  "name": "ehr",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm ci --legacy-peer-deps",
+    "build": "npm run build-dev",
+    "build-dev": "npm run clean && cross-env NODE_ENV=development webpack --config node_modules/@labkey/build/webpack/dev.config.js --color",
+    "build-prod": "npm run clean && cross-env NODE_ENV=production webpack --config node_modules/@labkey/build/webpack/prod.config.js --color --progress --profile",
+    "clean": "rimraf resources/web/ehr/gen && rimraf resources/views/gen && rimraf resources/web/gen",
+    "start": "cross-env NODE_ENV=development webpack serve --config node_modules/@labkey/build/webpack/watch.config.js",
+    "start-link": "cross-env LINK=true npm run start",
+    "test": "cross-env NODE_ENV=test jest",
+    "lint": "eslint",
+    "lint-fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@labkey/components": "2.249.0"
+  },
+  "devDependencies": {
+    "@labkey/build": "6.4.0",
+    "@types/jest": "27.4.0",
+    "@types/react": "16.14.34",
+    "@types/react-dom": "16.9.17"
+  }
+}

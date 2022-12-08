@@ -10,6 +10,7 @@ cage_positions
 cageclass
 calculated_status_codes
 clinpath_tests
+clinpath_types
 conc_units
 death_remarks
 disallowed_medications
@@ -26,6 +27,9 @@ project_types
 request_priority
 restraint_type
 routes
+snomed
+snomed_subset_codes
+snomed_subsets
 source
 species
 species_codes

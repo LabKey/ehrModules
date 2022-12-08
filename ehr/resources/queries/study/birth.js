@@ -64,11 +64,14 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
                 gender: row.gender,
                 dam: row.dam,
                 sire: row.sire,
-                origin: row.origin,
                 birth: row.date,
                 date: row.date,
                 calculated_status: isLiving ? 'Alive' : 'Dead'
             };
+
+            if (row.origin || row['Id/demographics/origin']) {
+                obj.origin = row.origin || row['Id/demographics/origin'];
+            }
 
             //NOTE: the follow is designed to allow the table to either have physical columns for species/origin, or do display the demographics values.  in the latter case, editing the form field will act to update the demographics record
             if (row.species || row['Id/demographics/species']){

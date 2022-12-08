@@ -1,0 +1,11 @@
+value	category
+Antibiotic Sensitivity	antibioticSensitivity
+Biochemistry	chemistryResults
+Hematology	hematologyResults
+iSTAT	iStat
+Anesthesia	anesthesia
+Misc Tests	miscTests
+Microbiology	microbiology
+Parasitology	parasitologyResults
+Serology/Virology	serology
+Urinalysis	urinalysisResults

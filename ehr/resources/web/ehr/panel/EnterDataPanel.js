@@ -35,7 +35,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 formMap[form.category] = formMap[form.category] || [];
                 formMap[form.category].push({
                     name: form.label,
-                    url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {formType: form.name})
+                    url: form.url ? form.url : LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {formType: form.name})
                 });
             }
         }, this);
