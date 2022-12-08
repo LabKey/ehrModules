@@ -1988,6 +1988,8 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="category"/>
+            <!-- Kollil, 12/07: Added new column  -->
+            <column columnName="PainCategories"/>
             <column columnName="major">
                 <columnTitle>Is Major?</columnTitle>
             </column>
