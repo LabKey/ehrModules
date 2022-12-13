@@ -22,7 +22,7 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.List;
 
-public class NewAnimalFormSection  extends SimpleFormSection
+public class NewAnimalFormSection extends SimpleFormSection
 {
     private boolean _allowSetSpecies;
 
