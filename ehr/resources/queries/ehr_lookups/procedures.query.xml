@@ -30,8 +30,8 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>Procedure_Pain_Categories</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                            <fkDisplayColumnName>title</fkDisplayColumnName>
+                            <fkColumnName>rowid</fkColumnName>
+                            <fkDisplayColumnName>value</fkDisplayColumnName>
                         </fk>
                     </column>
                 </columns>
