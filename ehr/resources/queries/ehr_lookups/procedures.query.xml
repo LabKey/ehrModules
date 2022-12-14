@@ -24,6 +24,16 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <!-- Kollil, 12/08/2022: Added a new column (drop down list) to display the USDA pain categories. -->
+                    <column columnName="painCategories">
+                        <columnTitle>Pain Categories</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>Procedure_Pain_Categories</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName>title</fkDisplayColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>
