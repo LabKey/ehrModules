@@ -386,7 +386,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
                 scrollIntoView(_el);
                 doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(2));
                 _ext4Helper.waitForMaskToDisappear(30000);
-                activeReportPanelContainer.waitForElement(getDriver(), 10000);
+                activeReportPanelContainer.waitForElement(getDriver(), 20000);
                 sleep(5000);
 
             }
