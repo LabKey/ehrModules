@@ -109,6 +109,26 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         _showTime = showTime;
     }
 
+    protected String getCategoryText()
+    {
+        return _categoryText;
+    }
+
+    protected void setCategoryText(String categoryText)
+    {
+        _categoryText = categoryText;
+    }
+
+    protected String getPrimaryGroup()
+    {
+        return _primaryGroup;
+    }
+
+    protected void setPrimaryGroup(String primaryGroup)
+    {
+        _primaryGroup = primaryGroup;
+    }
+
     @Override
     @NotNull
     public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId, boolean redacted)
