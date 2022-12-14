@@ -384,11 +384,10 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
             {
                 log("Selecting Report: " + getLabel());
                 scrollIntoView(_el);
-                doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(2));
+                doAndWaitForRepeatedPageSignal(_el::click, REPORT_TAB_SIGNAL, Duration.ofSeconds(3));
                 _ext4Helper.waitForMaskToDisappear(30000);
-                activeReportPanelContainer.waitForElement(getDriver(), 20000);
+                activeReportPanelContainer.waitForElement(getDriver(), 10000);
                 sleep(5000);
-
             }
             else
             {
