@@ -85,7 +85,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      */
 
     var scriptOptions = {
-        datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List'],
+        datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Protocol Assignments'],
         allowFutureDates: false,
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
