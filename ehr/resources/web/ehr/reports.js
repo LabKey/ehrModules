@@ -531,7 +531,7 @@ EHR.reports.clinicalHistory = function(panel, tab, showActionsBtn, includeAll){
         var toAdd = [];
         Ext4.each(subjects, function(s){
             toAdd.push({
-                html: '<span style="font-size: large;"><b>Animal: ' + s + '</b></span>',
+                html: '<span style="font-size: large;"><b>Animal: ' + Ext4.htmlEncode(s) + '</b></span>',
                 style: 'padding-bottom: 20px;',
                 border: false
             });
