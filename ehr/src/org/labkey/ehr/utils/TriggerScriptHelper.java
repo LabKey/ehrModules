@@ -207,7 +207,6 @@ public class TriggerScriptHelper
             int datasetId = getDatasetByLabelOrName(container, queryName);
             Dataset dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
-                _log.info("Non existent table: study." + queryName);
                 continue;
             }
 
