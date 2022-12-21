@@ -89,18 +89,18 @@ Ext4.define('EHR.grid.Panel', {
 
     pendingChanges: {},
 
-    getEditingPlugin: function(){
-        const plugin = Ext4.create('LDK.grid.plugin.CellEditing', {
-            pluginId: this.editingPluginId,
-            clicksToEdit: this.clicksToEdit
-        });
-
-        // Ensure gridview height updated on long text cell edits
-        plugin.on('edit', this.resizeHeight, this);
-        plugin.on('beforeedit', this.resizeHeight, this);
-        plugin.on('canceledit', this.resizeHeight, this);
-
-        return plugin;
+    // Force height to match contents. Blanket coverage of any layout updates
+    heightResize: false, // avoid infinite loop
+    updateLayout: function(options){
+        const view = this.getView();
+        if (view.rendered && view.body && !this.heightResize) {
+            this.heightResize = true;
+            view.setHeight(view.body.getHeight());
+        }
+        else {
+            this.heightResize = false;
+            this.callParent();
+        }
     },
 
     resizeHeight: function(){
