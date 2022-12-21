@@ -60,6 +60,10 @@ Ext4.define('EHR.grid.Panel', {
 
         this.getSelectionModel().on('selectionchange', this.handleSectionChangeEvent, this);
 
+        // Ensure gridview height updated on long text cell edits
+        if (this.plugins.length > 0)
+            this.plugins[0].on('edit', this.resizeHeight, this);
+
         // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
         // single row changes, or more importantly single row changes that only involve validation/tooltip error message differences
         this.on('storevalidationcomplete', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
@@ -88,6 +92,14 @@ Ext4.define('EHR.grid.Panel', {
     },
 
     pendingChanges: {},
+
+    resizeHeight: function(){
+        // A bit of a hack but there are some cases where the gridview does not resize height to match its contents. Called
+        // on store validation complete as this covers initial load and adding new rows scenario. Also done on cell edit
+        // for long text cells.
+        var view = this.getView();
+        view.setHeight(view.body.getHeight());
+    },
 
     handleSectionChangeEvent: function(sm, models){
         if (models.length != 1)
@@ -135,6 +147,7 @@ Ext4.define('EHR.grid.Panel', {
         if (this.needsRefresh || keys.length > 5){
             //console.log('grid refresh: ' + this.store.storeId);
             this.getView().refresh();
+            this.resizeHeight();
         }
         else if (!keys.length){
             console.log('no changes, skipping refresh');
