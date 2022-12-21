@@ -60,13 +60,6 @@ Ext4.define('EHR.grid.Panel', {
 
         this.getSelectionModel().on('selectionchange', this.handleSectionChangeEvent, this);
 
-        // Ensure gridview height updated on long text cell edits
-        if (this.plugins.length > 0) {
-            this.plugins[0].on('edit', this.resizeHeight, this);
-            this.plugins[0].on('beforeedit', this.resizeHeight, this);
-            this.plugins[0].on('canceledit', this.resizeHeight, this);
-        }
-
         // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
         // single row changes, or more importantly single row changes that only involve validation/tooltip error message differences
         this.on('storevalidationcomplete', this.onStoreValidationComplete, this, {buffer: 100, delay: 20});
@@ -95,6 +88,20 @@ Ext4.define('EHR.grid.Panel', {
     },
 
     pendingChanges: {},
+
+    getEditingPlugin: function(){
+        const plugin = Ext4.create('LDK.grid.plugin.CellEditing', {
+            pluginId: this.editingPluginId,
+            clicksToEdit: this.clicksToEdit
+        });
+
+        // Ensure gridview height updated on long text cell edits
+        plugin.on('edit', this.resizeHeight, this);
+        plugin.on('beforeedit', this.resizeHeight, this);
+        plugin.on('canceledit', this.resizeHeight, this);
+
+        return plugin;
+    },
 
     resizeHeight: function(){
         // A bit of a hack but there are some cases where the gridview does not resize height to match its contents. Called
