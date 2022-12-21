@@ -61,8 +61,11 @@ Ext4.define('EHR.grid.Panel', {
         this.getSelectionModel().on('selectionchange', this.handleSectionChangeEvent, this);
 
         // Ensure gridview height updated on long text cell edits
-        if (this.plugins.length > 0)
+        if (this.plugins.length > 0) {
             this.plugins[0].on('edit', this.resizeHeight, this);
+            this.plugins[0].on('beforeedit', this.resizeHeight, this);
+            this.plugins[0].on('canceledit', this.resizeHeight, this);
+        }
 
         // the intention of the following is to avoid redrawing the entire grid, which is expensive, when we have
         // single row changes, or more importantly single row changes that only involve validation/tooltip error message differences
