@@ -93,7 +93,7 @@ Ext4.define('EHR.grid.Panel', {
     heightResize: false, // avoid infinite loop
     updateLayout: function(options){
         const view = this.getView();
-        if (view.rendered && view.body && !this.heightResize) {
+        if (view.rendered && view.body && view.body.dom && !this.heightResize) {
             this.heightResize = true;
             view.setHeight(view.body.getHeight());
         }
