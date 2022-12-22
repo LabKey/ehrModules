@@ -99,7 +99,7 @@ Ext4.define('EHR.grid.Panel', {
         }
         else {
             this.heightResize = false;
-            this.callParent();
+            this.callParent(options);
         }
     },
 
