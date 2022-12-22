@@ -904,9 +904,11 @@
     <columns>
     <column columnName="rowid">
         <isAutoInc>true</isAutoInc>
+        <isHidden>true</isHidden>
         <columnTitle>Key</columnTitle>
     </column>
     <column columnName="label">
+        <isHidden>true</isHidden>
         <columnTitle>Label</columnTitle>
       </column>
     <column columnName="value">
@@ -917,6 +919,7 @@
         <columnTitle>Column Name</columnTitle>
     </column>
     <column columnName="sort_order">
+        <isHidden>true</isHidden>
         <columnTitle>Sort Order</columnTitle>
     </column>
     <column columnName="endDate">
