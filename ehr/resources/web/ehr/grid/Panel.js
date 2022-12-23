@@ -89,8 +89,38 @@ Ext4.define('EHR.grid.Panel', {
 
     pendingChanges: {},
 
+    // Force height to match contents. Blanket coverage of any layout updates
+    heightResize: false, // avoid infinite loop
+
+    updateLayout: function(options){
+        console.log('calling updateLayout(). heightResize: ' + this.heightResize);
+        this.heightResize = this.possiblyResizeHeight();
+
+        // the resize above will trigger a layout of the parent, which repeats this layout.
+        // test above to avoid infinite loop:
+        if (this.heightResize) {
+            console.log('heightResize=true, we might want to stop here to avoid infinite loop. How to repro this situation??')
+        }
+
+        this.callParent(options);
+    },
+
+    possiblyResizeHeight: function(){
+        // A bit of a hack but there are some cases where the gridview does not resize height to match its contents. Called
+        // on store validation complete as this covers initial load and adding new rows scenario. Also done on cell edit
+        // for long text cells.
+        var view = this.getView();
+        if (view && view.body && view.rendered && view.body.dom && view.getHeight() != view.body.getHeight()) {
+            view.setHeight(view.body.getHeight());
+            return true;
+        }
+        else {
+            return false;
+        }
+    },
+
     handleSectionChangeEvent: function(sm, models){
-        if (models.length != 1)
+        if (models.length !== 1)
             return;
 
         //checks the extra property for a non dataset that does not have Id column
@@ -133,7 +163,8 @@ Ext4.define('EHR.grid.Panel', {
 
         var keys = Ext4.Object.getKeys(this.pendingChanges);
         if (this.needsRefresh || keys.length > 5){
-            //console.log('grid refresh: ' + this.store.storeId);
+            console.log('grid refresh: ' + this.store.storeId);
+            this.possiblyResizeHeight();
             this.getView().refresh();
         }
         else if (!keys.length){
