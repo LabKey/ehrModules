@@ -305,6 +305,7 @@
             <column columnName="reviewdate">
                 <isUserEditable>true</isUserEditable>
                 <nullable>true</nullable>
+                <columnTitle>Review Date</columnTitle>
             </column>
             <column columnName="required">
                 <nullable>true</nullable>
@@ -581,12 +582,11 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
-
             <column columnName="employeeId2" wrappedColumnName="employeeId">
                 <columnTitle>Employee Id</columnTitle>
                 <isHidden>true</isHidden>
             </column>
-          </columns>
+        </columns>
     </table>
     <table tableName="employeerequirementexemptions" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
