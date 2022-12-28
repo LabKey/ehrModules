@@ -1,1 +1,1 @@
-ALTER TABLE ehr_compliancedb.Requirements add reviewdate datetime;
+ALTER TABLE ehr_compliancedb.Requirements add reviewdate TIMESTAMP;
