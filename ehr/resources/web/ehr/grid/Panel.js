@@ -89,6 +89,28 @@ Ext4.define('EHR.grid.Panel', {
 
     pendingChanges: {},
 
+    // Force height to match contents. Blanket coverage of any layout updates
+    heightResize: false, // avoid infinite loop
+    updateLayout: function(options){
+        const view = this.getView();
+        if (view.rendered && view.body && view.body.dom && !this.heightResize) {
+            this.heightResize = true;
+            view.setHeight(view.body.getHeight());
+        }
+        else {
+            this.heightResize = false;
+            this.callParent(options);
+        }
+    },
+
+    resizeHeight: function(){
+        // A bit of a hack but there are some cases where the gridview does not resize height to match its contents. Called
+        // on store validation complete as this covers initial load and adding new rows scenario. Also done on cell edit
+        // for long text cells.
+        var view = this.getView();
+        view.setHeight(view.body.getHeight());
+    },
+
     handleSectionChangeEvent: function(sm, models){
         if (models.length != 1)
             return;
@@ -135,6 +157,7 @@ Ext4.define('EHR.grid.Panel', {
         if (this.needsRefresh || keys.length > 5){
             //console.log('grid refresh: ' + this.store.storeId);
             this.getView().refresh();
+            this.resizeHeight();
         }
         else if (!keys.length){
             console.log('no changes, skipping refresh');
