@@ -9,5 +9,3 @@ CREATE TABLE ehr_compliancedb.Compliance_Reference_Data (
 
             CONSTRAINT pk_compliance_reference PRIMARY KEY (value)
 );
-
-

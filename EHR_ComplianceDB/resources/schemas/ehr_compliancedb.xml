@@ -302,6 +302,11 @@
             <column columnName="expireperiod">
                 <columnTitle>Expire Period (Months)</columnTitle>
             </column>
+            <column columnName="reviewdate">
+                <isUserEditable>true</isUserEditable>
+                <nullable>true</nullable>
+                <columnTitle>Review Date</columnTitle>
+            </column>
             <column columnName="required">
                 <nullable>true</nullable>
                 <columnTitle>Required For Everyone?</columnTitle>
@@ -928,6 +933,6 @@
     <column columnName="objectid">
         <isHidden>true</isHidden>
     </column>
-
-    </table>
+   </columns>
+  </table>
 </tables>
