@@ -26,7 +26,7 @@
                     </column>
                     <!-- Kollil, 12/08/2022: Added a new column (drop down list) to display the USDA pain categories. -->
                     <column columnName="painCategories">
-                        <columnTitle>Pain Categories</columnTitle>
+                        <columnTitle>USDA Pain Category</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>Procedure_Pain_Categories</fkTable>
