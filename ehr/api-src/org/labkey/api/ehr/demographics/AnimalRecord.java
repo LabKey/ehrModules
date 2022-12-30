@@ -46,6 +46,10 @@ public interface AnimalRecord
     // Below are convenience methods for specific cached properties
     String getGender();
 
+    String getSire();
+
+    String getDam();
+
     String getGenderMeaning();
 
     String getOrigGender();
