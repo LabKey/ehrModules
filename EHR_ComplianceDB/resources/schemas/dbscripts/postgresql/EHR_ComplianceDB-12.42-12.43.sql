@@ -1,6 +1,6 @@
 CREATE TABLE ehr_compliancedb.Compliance_Reference_Data
 (
-        rowId int identity(1,1),
+        rowId serial,
         label varchar(250) NULL,
         value varchar(255) ,
         columnName varchar(255)  NOT NULL,
