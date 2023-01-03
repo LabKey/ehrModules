@@ -6,7 +6,7 @@ CREATE TABLE ehr_compliancedb.Compliance_Reference_Data
         columnName varchar(255) NOT NULL,
         sort_order integer NULL,
         endDate  TIMESTAMP NULL,
-        objectid entityid
+        objectid entityid,
 
         CONSTRAINT pk_compliance_reference PRIMARY KEY (value)
 );
