@@ -49,7 +49,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 12.41;
+        return 12.43;
     }
 
     @Override

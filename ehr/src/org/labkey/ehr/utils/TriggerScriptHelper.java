@@ -809,6 +809,12 @@ public class TriggerScriptHelper
 
     public void createDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
+        createDemographicsRecord(id, props, null);
+    }
+
+    public void createDemographicsRecord(String id, Map<String, Object> props,
+                                         @Nullable Map<String, Object> extraDemographicsFieldMappings) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
         if (id == null)
             return;
 
@@ -839,6 +845,11 @@ public class TriggerScriptHelper
         EHRQCState qc = getQCStateForLabel("Completed");
         if (qc != null)
             row.put("qcstate", qc.getRowId());
+
+        if (extraDemographicsFieldMappings != null)
+        {
+            row.putAll(extraDemographicsFieldMappings);
+        }
 
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
@@ -1544,11 +1555,7 @@ public class TriggerScriptHelper
         //allow the potential for entry without birth date
         demographicsProps.put("date", row.get("birth") != null ? row.get("birth") : row.get("date"));
         demographicsProps.put("calculated_status", "Alive");
-        if (extraDemographicsFieldMappings != null)
-        {
-            extraDemographicsFieldMappings.forEach(demographicsProps::put);
-        }
-        createDemographicsRecord(id, demographicsProps);
+        createDemographicsRecord(id, demographicsProps, extraDemographicsFieldMappings);
 
         if (row.get("birth") != null)
         {
