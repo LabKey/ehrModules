@@ -25,6 +25,10 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 fieldLabel: 'Is Enabled?',
                 itemId: 'enabled'
             },{
+                xtype: 'checkbox',
+                fieldLabel: 'Kinship validation?',
+                itemId: 'kinshipValidation'
+            },{
                 xtype: 'numberfield',
                 hideTrigger: true,
                 fieldLabel: 'Hour Of Day',
@@ -79,6 +83,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#enabled').setValue(results.enabled);
         this.down('#hourOfDay').setValue(results.hourOfDay);
         this.down('#containerPath').setValue(results.containerPath);
+        this.down('#kinshipValidation').setValue(results.kinshipValidation);
     },
 
     saveData: function(){
@@ -88,7 +93,8 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
             params: {
                 containerPath: this.down('#containerPath').getValue(),
                 enabled: this.down('#enabled').getValue(),
-                hourOfDay: this.down('#hourOfDay').getValue()
+                hourOfDay: this.down('#hourOfDay').getValue(),
+                kinshipValidation: this.down('#kinshipValidation').getValue()
             },
             method : 'POST',
             scope: this,

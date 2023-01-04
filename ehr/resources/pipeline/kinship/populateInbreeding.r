@@ -13,6 +13,7 @@ options(error = dump.frames);
 library(pedigree);
 library(getopt);
 library(Matrix);
+library(dplyr)
 
 spec <- matrix(c(
 'inputFile', '-f', 1, "character"
@@ -30,6 +31,9 @@ is.na(allPed$Gender)<-which(allPed$Gender=="")
 df <- data.frame(id=as.character(allPed$Id), 'id parent1'=allPed$Dam, 'id parent2'=allPed$Sire, stringsAsFactors=FALSE);
 colnames(df)<-c("id", "id parent1", "id parent2")
 
+originalIds <-as.data.frame(df[,1])
+colnames(originalIds) <- c("id")
+
 #this is a function in the pedigree package designed to add missing parents to the dataframe
 #see pedigree package documentation for more detail
 df <- add.Inds(df);
@@ -40,6 +44,9 @@ df <- df[order(ord),]
 ib = calcInbreeding(df);
 
 newRecords <- data.frame(Id=as.character(df$id), coefficient=ib, stringsAsFactors=FALSE);
+
+#only calculate inbreeding for Ids at the center
+newRecords <- dplyr::filter(newRecords, Id %in% originalIds$id)
 
 # write TSV to disk
 print("Output table:");
