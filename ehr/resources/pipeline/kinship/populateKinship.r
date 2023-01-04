@@ -39,8 +39,6 @@ allPed$Species <- as.factor(allPed$Species)
 # In order to reduce the max matrix size, calculate famids using makefamid, then analyze each group separately
 # It resizes the biggest matrix from 12000^2 to 8200^2 thus reduces the memory used by half
 newRecords=NULL
-write.table('start', file = "pedigreeSpecies.txt", append = FALSE,row.names=F,quote=F,sep="\t");
-write.table('start', file = "kinshipMatrix.txt", append = FALSE,row.names=F,quote=F,sep="\t");
 for (species in unique(allPed$Species)){
     print(paste0('processing species: ', species))
     allRecordsForSpecies <- allPed[allPed$Species == species,]
