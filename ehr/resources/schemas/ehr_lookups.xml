@@ -1989,7 +1989,9 @@
             </column>
             <column columnName="category"/>
             <!-- Kollil, 12/07: Added new column  -->
-            <column columnName="painCategories"/>
+            <column columnName="painCategories">
+                <columnTitle>USDA Pain Category</columnTitle>
+            </column>
             <column columnName="major">
                 <columnTitle>Is Major?</columnTitle>
             </column>
