@@ -1,1 +1,0 @@
-ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN unitCost TYPE NUMERIC(10, 2);

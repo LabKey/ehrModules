@@ -10112,3 +10112,9 @@ BEGIN
 END $$;
 
 ALTER TABLE ehr_lookups.treatment_codes ALTER COLUMN dosage TYPE DECIMAL(13,2);
+
+/* 21.xxx SQL scripts */
+
+ALTER TABLE ehr_lookups.drug_defaults ADD COLUMN remark varchar(1000);
+
+ALTER TABLE ehr_lookups.cage ALTER COLUMN location TYPE varchar(100);
