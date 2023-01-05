@@ -31,8 +31,7 @@ is.na(allPed$Gender)<-which(allPed$Gender=="")
 df <- data.frame(id=as.character(allPed$Id), 'id parent1'=allPed$Dam, 'id parent2'=allPed$Sire, stringsAsFactors=FALSE);
 colnames(df)<-c("id", "id parent1", "id parent2")
 
-originalIds <-as.data.frame(df[,1])
-colnames(originalIds) <- c("id")
+originalIds <-as.data.frame(df[,1,drop=FALSE])
 
 #this is a function in the pedigree package designed to add missing parents to the dataframe
 #see pedigree package documentation for more detail
