@@ -1409,3 +1409,35 @@ ALTER TABLE ehr.supplemental_pedigree ADD species NVARCHAR(4000);
 -- contents of ehr-18.32-18.33.sql & ehr-18.33-18.34.sql from wnprc18.3 svn
 ALTER TABLE ehr.form_framework_types add url varchar(255) DEFAULT NULL;
 ALTER TABLE ehr.form_framework_types ADD CONSTRAINT ehr_form_framework_types_unique UNIQUE (RowId);
+
+/* 21.xxx SQL scripts */
+
+-- same contents as ehr-20.001-20.002.sql.
+-- Rationale: When ehr-20.001-20.002.sql was created, the module version was bumped from 21.001 to 21.002
+-- rendering ehr-20.001-20.002.sql useless if the ehr module v. was already at 21.00x in the db.
+-- The script should have been numbered ehr-21.001-21.002.sql instead of ehr-20.001-20.002.sql.
+-- This script is an correction attempt to get in sync with the ehr module v. 21.00x so that this script runs
+-- and below col and constraint gets added as intended.
+
+EXEC core.fn_dropifexists 'form_framework_types', 'ehr', 'column', 'url';
+GO
+ALTER TABLE ehr.form_framework_types add url varchar(255) DEFAULT NULL;
+
+EXEC core.fn_dropifexists 'form_framework_types', 'ehr', 'CONSTRAINT', 'ehr_form_framework_types_unique';
+GO
+ALTER TABLE ehr.form_framework_types ADD CONSTRAINT ehr_form_framework_types_unique UNIQUE (RowId);
+
+DELETE FROM ehr.qcStateMetadata WHERE QCStateLabel = 'Request: On Hold';
+DELETE FROM ehr.status WHERE Label = 'Request: On Hold';
+
+INSERT INTO ehr.qcStateMetadata
+(QCStateLabel, draftData, isDeleted, isRequest, allowFutureDates)
+VALUES
+('Request: On Hold', 0, 0, 1, 1);
+
+INSERT INTO ehr.status
+(label, description, publicData, draftData, isDeleted, isRequest, allowFutureDates)
+VALUES
+('Request: On Hold', 'Request has been put on hold', 0, 0, 0, 1, 1);
+
+CREATE INDEX snomed_tags_recordid ON ehr.snomed_tags (recordid);
