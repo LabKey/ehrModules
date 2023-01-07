@@ -86,13 +86,6 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         _reloadFolder = true;
     }
 
-    @Deprecated // Remove this once no more EHR development is taking place on 21.11
-    public void reloadStudy(ModuleContext context)
-    {
-        LOG.error("Update this script to invoke \"reloadFolder\" instead of \"reloadStudy\"!");
-        reloadFolder(context);
-    }
-
     @Override
     public void fallthroughHandler(String methodName)
     {
