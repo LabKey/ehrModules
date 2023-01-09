@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
+import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
@@ -48,6 +50,7 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
+import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr.EHRSchema;
@@ -305,6 +308,54 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         return 0.0;
     }
 
+    // This function checks if missing coefficients are due to relations across species which are not tracked for kinship
+    // coefficients. Otherwise throw a pipeline error.
+    private void handleMissingCoefficient(User user, Container container, String id, String id2, String relation)
+    {
+        UserSchema studySchema = QueryService.get().getUserSchema(user, container, "study");
+        if (studySchema == null)
+        {
+            throw new IllegalStateException("Could not find schema 'study'");
+        }
+        TableInfo demographicsTable = studySchema.getTable("Demographics");
+        if (demographicsTable == null)
+        {
+            throw new IllegalStateException("Could not find query 'Demographics' in study schema");
+        }
+
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromParts("Id"), List.of(id, id2), CompareType.IN);
+        TableSelector demographicsTs = new TableSelector(demographicsTable, PageFlowUtil.set("Id", "species"), filter, null);
+
+        String species = null;
+        try(Results results = demographicsTs.getResults())
+        {
+            while(results.next())
+            {
+                if (species == null)
+                {
+                    species = results.getString("species");
+                }
+                else
+                {
+                    if (!species.equals(results.getString("species")))
+                    {
+                        PipelineJob job = getJob();
+                        job.getLogger().info("Relation across species, kinship coefficent not calculated. Id: " + id + ", Id2: " + id2 + ", Relation: " + relation);
+                    }
+                    else
+                    {
+                        throw new IllegalStateException("Kinship validation failed for Id: " + id + ", Id2: " + id2 + ". Relation: " + relation + ". Kinship coefficent not found");
+                    }
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private boolean validateKinshipType(TableInfo kinshipTable, TableInfo familyTable, List<String> familyMembers)
     {
         PipelineJob job = getJob();
@@ -349,7 +400,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                         }
                     });
                     if (!found.get())
-                        throw new IllegalStateException("Kinship validation failed for Id: " + id + ", Id2: " + relationId + ". Relation: " + relation + ". Kinship coefficent not found");
+                        handleMissingCoefficient(job.getUser(), job.getContainer(), id, relationId, relation);
                 }
 
             }
