@@ -68,10 +68,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * User: bbimber
@@ -283,6 +283,62 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         }
     }
 
+    private static class Relationship
+    {
+        private String _id;
+        private String _kinId;
+        private String _relation;
+        private String _relationDetailed;
+
+        public Relationship(String id, String kinId, String relation, String relationDetailed)
+        {
+            _id = id;
+            _kinId = kinId;
+            _relation = relation;
+            _relationDetailed = relationDetailed; // Used for full or half sibling
+        }
+
+        public String getId()
+        {
+            return _id;
+        }
+
+        public void setId(String id)
+        {
+            _id = id;
+        }
+
+        public String getKinId()
+        {
+            return _kinId;
+        }
+
+        public void setKinId(String kinId)
+        {
+            _kinId = kinId;
+        }
+
+        public String getRelation()
+        {
+            return _relation;
+        }
+
+        public void setRelation(String relation)
+        {
+            _relation = relation;
+        }
+
+        public String getRelationDetailed()
+        {
+            return _relationDetailed;
+        }
+
+        public void setRelationDetailed(String relationDetailed)
+        {
+            _relationDetailed = relationDetailed;
+        }
+    }
+
     private Double getMinCoefficient(String relation, @Nullable String relationship)
     {
         switch(relation)
@@ -337,14 +393,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 }
                 else
                 {
+                    PipelineJob job = getJob();
                     if (!species.equals(results.getString("species")))
                     {
-                        PipelineJob job = getJob();
                         job.getLogger().info("Relation across species, kinship coefficent not calculated. Id: " + id + ", Id2: " + id2 + ", Relation: " + relation);
                     }
                     else
                     {
-                        throw new IllegalStateException("Kinship validation failed for Id: " + id + ", Id2: " + id2 + ". Relation: " + relation + ". Kinship coefficent not found");
+                        job.getLogger().info("Kinship validation failed. Missing coefficient for Id: " + id + ", Id2: " + id2 + ". Relation: " + relation);
                     }
                 }
             }
@@ -356,23 +412,63 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
     }
 
+    private void validateSetOfRelations(TableInfo kinshipTable, Map<String, Map<String, Relationship>> relations)
+    {
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromParts("Id"), relations.keySet(), CompareType.IN);
+
+        TableSelector kinshipTs = new TableSelector(kinshipTable, PageFlowUtil.set("Id", "Id2", "coefficient"), filter, null);
+
+        List<String> foundKinships = new ArrayList<>();
+
+        kinshipTs.forEach(rs -> {
+            String id = rs.getString("Id");
+            String kin = rs.getString("Id2");
+
+            Map<String, Relationship> kinRelations = relations.get(id);
+            if (kinRelations != null)
+            {
+                Relationship kinRelation = kinRelations.get(kin);
+                if (kinRelation != null)
+                {
+                    foundKinships.add(id + "-" + kin);
+                    Double coefficient = rs.getDouble("coefficient");
+                    if (coefficient < getMinCoefficient(kinRelation.getRelation(), kinRelation.getRelationDetailed()))
+                    {
+                        PipelineJob job = getJob();
+                        job.getLogger().info("Kinship validation failed. Does not meet minimum coefficient for Id: " + id +
+                                ", Id2: " + kin + ". Relation: " + (kinRelation.getRelationDetailed() != null ? kinRelation.getRelationDetailed() : kinRelation.getRelation()) +
+                                ", coefficient: " + coefficient);
+                    }
+
+                }
+            }
+        });
+        for (String id : relations.keySet())
+        {
+            for (String kin : relations.get(id).keySet())
+            {
+                if (!foundKinships.contains(id + "-" + kin))
+                {
+                    PipelineJob job = getJob();
+                    handleMissingCoefficient(job.getUser(), job.getContainer(), id, kin, relations.get(id).get(kin).getRelation());
+                }
+            }
+
+        }
+
+    }
+
     private boolean validateKinshipType(TableInfo kinshipTable, TableInfo familyTable, List<String> familyMembers)
     {
         PipelineJob job = getJob();
         TableSelector familyTs = new TableSelector(familyTable, new LinkedHashSet(familyMembers));
 
+        Map<String, Map<String, Relationship>> relations = new HashMap<>();
         familyTs.forEach(rs -> {
-            Collection<String> relevantIds = new ArrayList<>();
-            for (String familyMember : familyMembers)
-            {
-                if (rs.getString(familyMember) != null && !familyMember.equalsIgnoreCase("relationship"))
-                    relevantIds.add(rs.getString(familyMember));
-            }
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromParts("Id"), relevantIds, CompareType.IN);
-
-            TableSelector kinshipTs = new TableSelector(kinshipTable, PageFlowUtil.set("Id", "Id2", "coefficient"), filter, null);
-
             String id = rs.getString("Id");
+
+            Collection<String> relevantIds = new HashSet<>();
+            relevantIds.add(id);
 
             String relationship = null;
             if (familyMembers.contains("Relationship"))
@@ -383,28 +479,32 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 if (relation.equalsIgnoreCase("Id") || relation.equals("Relationship"))
                     continue;
 
-                String relationId = rs.getString(relation);
-                if (relationId != null)
+                String kin = rs.getString(relation);
+                if (kin != null)
                 {
-                    String finalRelationship = relationship;
-                    AtomicBoolean found = new AtomicBoolean(false);
-                    kinshipTs.forEach(krs -> {
-                        String id1 = krs.getString("Id");
-                        String kin = krs.getString("Id2");
-                        if (id1.equals(id) && kin.equals(relationId))
-                        {
-                            found.set(true);
-                            Double coefficient = krs.getDouble("coefficient");
-                            if (coefficient < getMinCoefficient(relation, finalRelationship))
-                                throw new IllegalStateException("Kinship validation failed for Id: " + id + ", Id2: " + relationId + ". Relation: " + relation + ", coefficient: " + coefficient);
-                        }
-                    });
-                    if (!found.get())
-                        handleMissingCoefficient(job.getUser(), job.getContainer(), id, relationId, relation);
-                }
+                    Relationship relShip = new Relationship(id, kin, relation, relationship);
 
+                    if (relations.get(id) != null)
+                    {
+                        relations.get(id).put(kin, relShip);
+                    }
+                    else
+                    {
+                        Map<String, Relationship> map = new HashMap<>();
+                        map.put(kin, relShip);
+                        relations.put(id, map);
+                    }
+
+                    if (relations.size() > 1000)
+                    {
+                        validateSetOfRelations(kinshipTable, relations);
+                        relations.clear();
+                    }
+                }
             }
         });
+
+        validateSetOfRelations(kinshipTable, relations);
         return true;
     }
 

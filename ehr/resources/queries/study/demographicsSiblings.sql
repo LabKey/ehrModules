@@ -25,5 +25,5 @@ SELECT
     d1.qcstate
 
 FROM study.Demographics d1
-JOIN study.Demographics d2 ON ((d2.id.parents.sire = d1.id.parents.sire OR d2.id.parents.dam = d1.id.parents.dam) AND d1.id != d2.id)
+JOIN study.Demographics d2 ON ((d2.sire = d1.sire OR d2.dam = d1.dam) AND d1.id != d2.id)
 WHERE d2.id is not null
