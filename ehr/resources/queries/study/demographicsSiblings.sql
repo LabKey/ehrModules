@@ -8,13 +8,13 @@ SELECT
     d1.id,
 
     CASE
-        WHEN (COALESCE(d1.id.parents.sire, '') = COALESCE(d2.id.parents.sire, '') and COALESCE(d1.id.parents.dam, '') = COALESCE(d2.id.parents.dam, '') AND COALESCE(d1.id.parents.sire, '')!='' AND COALESCE(d1.id.parents.dam, '')!='')
+        WHEN (ISEQUAL(d1.sire, d2.sire) AND ISEQUAL(d1.dam, d2.dam))
             THEN 'Full Sib'
-        WHEN (COALESCE(d1.id.parents.sire, '') = COALESCE(d2.id.parents.sire, '') AND COALESCE(d1.id.parents.sire, '') != '' AND (COALESCE(d1.id.parents.dam, '') != COALESCE(d2.id.parents.dam, '') OR COALESCE(d1.id.parents.dam, '') = ''))
+        WHEN (ISEQUAL(d1.sire, d2.sire) AND NOT ISEQUAL(d1.dam, d2.dam))
             THEN 'Half-Sib Paternal'
-        WHEN (COALESCE(d1.id.parents.dam, '') = COALESCE(d2.id.parents.dam, '') AND COALESCE(d1.id.parents.dam, '') != '' AND (COALESCE(d1.id.parents.sire, '') != COALESCE(d2.id.parents.sire, '') OR COALESCE(d1.id.parents.sire, '') = ''))
+        WHEN (NOT ISEQUAL(d1.sire, d2.sire) AND ISEQUAL(d1.dam, d2.dam))
             THEN 'Half-Sib Maternal'
-        WHEN (COALESCE(d1.id.parents.sire, '') != COALESCE(d2.id.parents.sire, '') and COALESCE(d1.id.parents.dam, '') != COALESCE(d2.id.parents.dam, ''))
+        WHEN (NOT ISEQUAL(d1.sire, d2.sire) AND NOT ISEQUAL(d1.dam, d2.dam))
             THEN 'ERROR'
         END AS Relationship,
 
