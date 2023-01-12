@@ -407,7 +407,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeSQLException(e);
         }
 
     }

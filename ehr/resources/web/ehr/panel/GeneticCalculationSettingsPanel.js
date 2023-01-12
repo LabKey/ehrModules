@@ -27,7 +27,17 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kinship validation?',
-                itemId: 'kinshipValidation'
+                itemId: 'kinshipValidation',
+                listeners : {
+                    render: function(c) {
+                        Ext4.create('Ext.tip.ToolTip', {
+                            target: c.getEl(),
+                            html: 'This will iterate pedigree queries to ensure a minimum kinship coefficient exists for parents, ' +
+                                    'grandparents, offspring, full-siblings and half-siblings. This can significantly increase the time to ' +
+                                    'complete the kinship calculations so should only be used when validating kinship and pedigree.'
+                        });
+                    }
+                }
             },{
                 xtype: 'numberfield',
                 hideTrigger: true,
