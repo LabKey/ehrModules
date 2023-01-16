@@ -1,0 +1,25 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="category"/>
+        <column name="date"/>
+        <column name="enddate"/>
+        <column name="cagematesAtOpen/roomAtOpen"/>
+        <column name="cagematesAtOpen/cageAtOpen"/>
+        <column name="cagematesAtOpen/cagematesAtOpen"/>
+        <column name="cagematesAtOpen/cagemateCurrentLocations"/>
+        <column name="Id/activeAnimalGroups/groups">
+            <properties>
+                <property name="columnTitle" value="Animal Groups"/>
+            </properties>
+        </column>
+        <column name="Id/activeAnimalGroups/majorityLocations">
+            <properties>
+                <property name="columnTitle" value="Group Current Location"/>
+            </properties>
+        </column>
+    </columns>
+    <sorts>
+        <sort column="date" descending="true"/>
+    </sorts>
+</customView>

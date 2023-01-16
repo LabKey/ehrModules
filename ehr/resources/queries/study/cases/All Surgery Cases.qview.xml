@@ -1,0 +1,20 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/curLocation/room"/>
+        <column name="Id/curLocation/cage"/>
+        <column name="date"/>
+        <column name="enddate"/>
+        <column name="remark"/>
+        <!--<column name="proceduresPerformed"/>-->
+        <column name="caseHistory"/>
+    </columns>
+    <filters>
+        <filter column="category" operator="eq" value="Surgery"/>
+    </filters>
+    <sorts>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
+        <sort column="date" descending="true"/>
+    </sorts>
+</customView>

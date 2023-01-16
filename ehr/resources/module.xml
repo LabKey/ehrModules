@@ -97,6 +97,13 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="VetReviewStartDate">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>There are reports that show records based on date of last vet review.  Because legacy animals may not have this value, a default date can be supplied, resulting in records prior to this date being considered reviewed.</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
     </properties>
     <requiredModuleContext>
         <module name="LDK"/>

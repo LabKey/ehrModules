@@ -1,0 +1,21 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" label="All Cases">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/curLocation/room"/>
+        <column name="Id/curLocation/cage"/>
+        <column name="category"/>
+        <column name="date"/>
+        <column name="reviewdate"/>
+        <column name="enddate"/>
+        <column name="allProblemCategories"/>
+        <column name="Id/demographics/species"/>
+        <column name="Id/demographics/gender"/>
+        <!--<column name="category"/>-->
+        <!--<column name="remark"/>-->
+        <column name="performedby"/>
+        <column name="caseHistory"/>
+    </columns>
+    <sorts>
+        <sort column="date" descending="true"/>
+    </sorts>
+</customView>

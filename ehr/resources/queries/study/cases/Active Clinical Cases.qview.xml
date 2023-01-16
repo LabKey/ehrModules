@@ -1,0 +1,28 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/curLocation/room"/>
+        <column name="Id/curLocation/cage"/>
+        <column name="mostRecentP2"/>
+        <column name="Id/demographics/mostRecentHx"/>
+        <column name="Id/utilization/use"/>
+        <column name="date"/>
+        <column name="allProblemCategories"/>
+        <column name="Id/curLocation/daysInRoom"/>
+        <column name="assignedvet/DisplayName">
+            <properties>
+                <property name="columnTitle" value="Assigned Vet"/>
+            </properties>
+        </column>
+        <column name="caseHistory"/>
+    </columns>
+    <filters>
+        <filter column="isActive" operator="eq" value="true"/>
+        <filter column="category" operator="eq" value="Clinical"/>
+    </filters>
+    <sorts>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
+        <sort column="date" descending="true"/>
+    </sorts>
+</customView>

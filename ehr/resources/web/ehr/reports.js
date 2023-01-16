@@ -403,6 +403,45 @@ EHR.reports.treatmentSchedule = function(panel, tab){
     });
 };
 
+EHR.reports.medicationSchedule = function(panel, tab, viewName){
+    var filterArray = panel.getFilterArray(tab);
+    var title = panel.getTitleSuffix();
+
+    var date = Ext4.Date.format(new Date(), LABKEY.extDefaultDateFormat);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'margin-bottom:20px;',
+        queryConfig: panel.getQWPConfig({
+            schemaName: 'study',
+            queryName: 'treatmentSchedule',
+            viewName: viewName,
+            title: viewName + ' ' + title,
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            parameters: {
+                StartDate: date,
+                NumDays: 1
+            }
+        })
+    });
+}
+
+EHR.reports.clinMedicationSchedule = function(panel, tab){
+    EHR.reports.medicationSchedule(panel, tab, 'Clinical Medications');
+};
+
+EHR.reports.dietSchedule = function(panel, tab){
+    EHR.reports.medicationSchedule(panel, tab, 'Diets');
+};
+
+EHR.reports.surgMedicationSchedule = function(panel, tab){
+    EHR.reports.medicationSchedule(panel, tab, 'Surgical Medications');
+};
+
+EHR.reports.incompleteTreatments = function(panel, tab){
+    EHR.reports.medicationSchedule(panel, tab, 'Incomplete Treatments');
+};
+
 EHR.reports.snapshot = function(panel, tab, showActionsBtn){
     if (tab.filters.subjects){
         renderSubjects(tab.filters.subjects, tab);
