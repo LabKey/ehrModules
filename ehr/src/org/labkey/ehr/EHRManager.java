@@ -116,8 +116,15 @@ public class EHRManager
     public static final String EHRDefaultClinicalProjectName = "EHRDefaultClinicalProjectName";
     public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
-    public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
+    @Queryable
+    public static final String VetReviewStartDateProp = "VetReviewStartDate";
+    @Queryable
+    public static final String REPLACED_SOAP = "Replaced SOAP";
+    @Queryable
+    public static final String CLINICAL_SOAP_CATEGORY = "Clinical";
+    @Queryable
+    public static final String RECORD_AMENDMENT = "Record Amendment";
     @Queryable
     public static final String VET_REVIEW = "Vet Review";
     @Queryable
@@ -126,6 +133,8 @@ public class EHRManager
     public static final String OBS_REVIEWED = "Reviewed";
     @Queryable
     public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
+
+    public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
     private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
 
