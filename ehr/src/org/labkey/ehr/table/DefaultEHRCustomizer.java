@@ -955,29 +955,30 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         }
 
         String isActive = "isActive";
-        ColumnInfo isActiveCol = ti.getColumn(isActive);
-        if (isActiveCol != null)
+        if (ti.getColumn(isActive) == null)
         {
-            ti.removeColumn(isActiveCol);
+            SQLFragment sql = new SQLFragment("(CASE " +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".lsid) IS NULL THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".enddate <= {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".reviewdate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".reviewdate > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " ELSE " + ti.getSqlDialect().getBooleanTRUE() + " END)");
+            ExprColumn newCol = new ExprColumn(ti, isActive, sql, JdbcType.BOOLEAN, ti.getColumn("lsid"), ti.getColumn("enddate"), ti.getColumn("reviewdate"));
+            newCol.setLabel("Is Active?");
+            ti.addColumn(newCol);
         }
 
-        SQLFragment sql = new SQLFragment("(CASE " +
-                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".lsid) IS NULL THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".enddate <= {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".reviewdate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".reviewdate > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                " ELSE " + ti.getSqlDialect().getBooleanTRUE() + " END)");
-        ExprColumn newCol = new ExprColumn(ti, isActive, sql, JdbcType.BOOLEAN, ti.getColumn("lsid"), ti.getColumn("enddate"), ti.getColumn("reviewdate"));
-        newCol.setLabel("Is Active?");
-        ti.addColumn(newCol);
-
-        SQLFragment sql2 = new SQLFragment("(CASE " +
-                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".lsid) IS NULL THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".enddate <= {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
-                " ELSE " + ti.getSqlDialect().getBooleanTRUE() + " END)");
-        ExprColumn newCol2 = new ExprColumn(ti, "isOpen", sql2, JdbcType.BOOLEAN, ti.getColumn("lsid"), ti.getColumn("enddate"), ti.getColumn("reviewdate"));
-        newCol2.setLabel("Is Open?");
-        newCol2.setDescription("Displays whether this case is still open, which will includes cases that have been closed for review");
-        ti.addColumn(newCol2);
+        String isOpen = "isOpen";
+        if (ti.getColumn(isOpen) == null)
+        {
+            SQLFragment sql2 = new SQLFragment("(CASE " +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".lsid) IS NULL THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND " + ExprColumn.STR_TABLE_ALIAS + ".enddate <= {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " ELSE " + ti.getSqlDialect().getBooleanTRUE() + " END)");
+            ExprColumn newCol2 = new ExprColumn(ti, isOpen, sql2, JdbcType.BOOLEAN, ti.getColumn("lsid"), ti.getColumn("enddate"), ti.getColumn("reviewdate"));
+            newCol2.setLabel("Is Open?");
+            newCol2.setDescription("Displays whether this case is still open, which will includes cases that have been closed for review");
+            ti.addColumn(newCol2);
+        }
 
         //days since vet review
         String lastVetReview = "lastVetReview";
