@@ -1,4 +1,4 @@
-package org.labkey.ehr.table;
+package org.labkey.api.ehr.table;
 
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;

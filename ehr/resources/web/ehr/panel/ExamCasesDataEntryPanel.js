@@ -9,7 +9,6 @@
 Ext4.define('EHR.panel.ExamCasesDataEntryPanel', {
     extend: 'EHR.panel.TaskDataEntryPanel',
 
-
    onBeforeSubmit: function(btn){
        if (!btn || !btn.targetQC || ['Completed', 'Review Required'].indexOf(btn.targetQC) == -1){
            return;
@@ -55,9 +54,6 @@ Ext4.define('EHR.panel.ExamCasesDataEntryPanel', {
                Ext4.Msg.confirm('No Case', 'There is no active clinical case for this animal, do you want to continue anyway?', function(val){
                    if (val == 'yes'){
                        this.onSubmit(btn, true);
-                   }
-                   else {
-
                    }
                }, this);
            }

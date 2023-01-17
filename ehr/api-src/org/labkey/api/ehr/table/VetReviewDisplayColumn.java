@@ -1,4 +1,4 @@
-package org.labkey.ehr.table;
+package org.labkey.api.ehr.table;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
