@@ -155,6 +155,38 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             },
             scope: this
         })
+    },
+
+    // Used instead of resolving from demographicsCurLocation
+    resolveSubjectsFromDemographics: function(tab, callback, scope){
+        Ext4.Msg.wait('Loading Ids For Location...');
+
+        var filters = [];
+        var filterArray = this.getFilterArray(tab);
+        if (filterArray.nonRemovable)
+            filters = filters.concat(tab.filterArray.nonRemovable);
+
+        if (filterArray.removable)
+            filters = filters.concat(tab.filterArray.removable);
+
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'demographics',
+            sort: 'id',
+            filterArray: filters,
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                Ext4.Msg.hide();
+
+                var subjects = [];
+                Ext4.each(results.rows, function(row){
+                    subjects.push(row.Id);
+                }, this);
+
+                callback.apply(scope || this, [subjects, tab]);
+            },
+            scope: this
+        })
 
     }
 });

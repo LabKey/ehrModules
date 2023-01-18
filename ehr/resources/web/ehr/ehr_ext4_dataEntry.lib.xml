@@ -28,6 +28,7 @@
         <script path="ehr/form/field/TimeOfDayField.js" />
         <script path="ehr/form/field/TriggerNumberField.js" />
         <script path="ehr/form/field/AnimalIdGeneratorField.js" />
+        <script path="ehr/form/field/AnimalIdUpperField.js" />
         <script path="ehr/form/field/ProjectIdGeneratorField.js" />
         <script path="ehr/form/field/DrugDoseField.js" />
         <script path="ehr/form/field/DrugVolumeField.js" />

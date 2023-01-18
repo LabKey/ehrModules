@@ -58,6 +58,7 @@ import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
@@ -182,18 +183,6 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             doSharedCustomization((AbstractTableInfo) table);
         }
 
-        //this should execute after any default EHR code
-        if (us != null)
-        {
-            Container c = us.getContainer();
-
-            List<TableCustomizer> customizers = EHRService.get().getCustomizers(c, table.getSchema().getName(), table.getName());
-            for (TableCustomizer tc : customizers)
-            {
-                tc.customize(table);
-            }
-        }
-
         if (table instanceof AbstractTableInfo)
         {
             //this will force qcstate toward the end of the non-calculated columns
@@ -206,6 +195,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             }
 
             customizeButtonBar((AbstractTableInfo) table);
+        }
+
+        //this should execute after any default EHR code
+        if (us != null)
+        {
+            Container c = us.getContainer();
+
+            List<TableCustomizer> customizers = EHRService.get().getCustomizers(c, table.getSchema().getName(), table.getName());
+            for (TableCustomizer tc : customizers)
+            {
+                tc.customize(table);
+            }
         }
 
         LDKService.get().getColumnsOrderCustomizer().customize(table);
@@ -525,6 +526,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             customizeDemographics(ti);
         }
+        else if (matches(ti, "study", "Clinical Observations") || matches(ti, "study", "clinical_observations"))
+        {
+            customizeClinicalObservations(ti);
+        }
         else if (matches(ti, "study", "birth"))
         {
             addIsNumericId(ti);
@@ -642,6 +647,23 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         appendSNOMEDCol(ti);
     }
 
+    private void customizeClinicalObservations(AbstractTableInfo ti)
+    {
+        var categoryCol = ti.getMutableColumn("category");
+        if (categoryCol != null)
+        {
+            UserSchema us = getUserSchema(ti, "ehr");
+            if (us != null)
+            {
+                categoryCol.setFk(QueryForeignKey
+                        .from(ti.getUserSchema(), ti.getContainerFilter())
+                        .schema(us)
+                        .to("observation_types", "value", "value")
+                        .raw(true));
+            }
+        }
+    }
+
     private void customizeDemographics(AbstractTableInfo ti)
     {
         String lastDayAtCenter = "lastDayAtCenter";
@@ -663,6 +685,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     ti.addColumn(newCol);
                 }
             }
+        }
+
+        var birthCol = ti.getMutableColumn("birth");
+        if (birthCol != null)
+        {
+            birthCol.setFormat(LookAndFeelProperties.getInstance(ti.getUserSchema().getContainer()).getDefaultDateTimeFormat());
+        }
+
+        var deathCol = ti.getMutableColumn("death");
+        if (deathCol != null)
+        {
+            deathCol.setFormat(LookAndFeelProperties.getInstance(ti.getUserSchema().getContainer()).getDefaultDateTimeFormat());
         }
 
         addIsNumericId(ti);
@@ -1183,6 +1217,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);        
         col.setFk(new QueryForeignKey(ds.getUserSchema(), ds.getContainerFilter(), us, null, queryName, ID_COL, ID_COL));
+
+        return col;
+    }
+
+    private BaseColumnInfo getWrappedCol(UserSchema us, AbstractTableInfo ds, String name, String queryName, String colName, String targetCol)
+    {
+
+        WrappedColumn col = new WrappedColumn(ds.getColumn(colName), name);
+        col.setReadOnly(true);
+        col.setIsUnselectable(true);
+        col.setUserEditable(false);
+        col.setFk(new QueryForeignKey(us, null, queryName, targetCol, targetCol));
 
         return col;
     }

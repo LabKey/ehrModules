@@ -612,7 +612,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             name: 'category',
             label: 'Category'
         },{
-            name: 'problemCategories',
+            name: 'allProblemCategories',
             label: 'Problem(s)'
         },{
             name: 'date',
@@ -814,7 +814,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
             },
             items: [{
                 xtype: 'container',
-                html: '<b>' + this.headerLabel + ':</b><hr>',
+                html: '<b>' + this.headerLabel + ':</b>',
                 itemId: 'headerItem',
                 overCls: 'ldk-clickable',
                 listeners: {
