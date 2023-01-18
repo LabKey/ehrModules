@@ -20,7 +20,7 @@ FROM study.assignment a
 
 WHERE (
   -- Match on either project/protocol number or full display name, or skip the check if the user hasn't supplied a value
-  (a.project = PROJECT OR a.project.displayName = PROJECT OR PROJECT is null) AND
+  (CAST(a.project AS VARCHAR) = PROJECT OR a.project.displayName = PROJECT OR PROJECT is null) AND
   (a.project.protocol = PROTOCOL OR a.project.protocol.displayName = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
 
   (a.enddateCoalesced >= cast(StartDate as date)) AND
