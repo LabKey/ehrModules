@@ -15,10 +15,10 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.security.AbstractEHRPermission;
@@ -56,7 +56,7 @@ abstract public class AbstractFormSection implements FormSection
     private TEMPLATE_MODE _templateMode = TEMPLATE_MODE.MULTI;
     private boolean _allowBulkAdd = true;
     private boolean _supportFormSort = true;
-    private Map<String, String> _extraProperties = new HashMap<>();
+    private final Map<String, String> _extraProperties = new HashMap<>();
 
     /**
     * Use this string as a key to addExtraProperty in FormSection backed by non datasets not having animal id column.

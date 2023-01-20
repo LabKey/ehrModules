@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr.dataentry;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
