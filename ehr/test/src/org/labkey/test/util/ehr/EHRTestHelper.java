@@ -17,7 +17,6 @@ package org.labkey.test.util.ehr;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
@@ -34,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.text.SimpleDateFormat;
@@ -225,8 +225,7 @@ public class EHRTestHelper
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
-        Assert.assertEquals("More than 1 matching element found, use a more specific xpath", 1, l.findElements(_test.getDriver()).size());
-        _test.click(l);
+        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
         _test.waitForElement(l.enabled());
     }
 
