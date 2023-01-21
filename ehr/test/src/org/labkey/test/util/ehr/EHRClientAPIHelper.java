@@ -51,11 +51,10 @@ import static org.junit.Assert.assertEquals;
 
 public class EHRClientAPIHelper
 {
-    private BaseWebDriverTest _test;
-    private String _containerPath;
+    private final BaseWebDriverTest _test;
+    private final String _containerPath;
     public static final String DATE_SUBSTITUTION = "@@CURDATE@@";
-    private static Class _currentTestClass;
-    private static final Map<String, Connection> _connections = new HashMap<>();
+    private static Class<?> _currentTestClass;
 
     public EHRClientAPIHelper(BaseWebDriverTest test, String containerPath)
     {
@@ -64,9 +63,7 @@ public class EHRClientAPIHelper
 
         if (!_test.getClass().equals(_currentTestClass))
         {
-            // Don't remember connections between test classes
             _currentTestClass = _test.getClass();
-            _connections.clear();
         }
     }
 
