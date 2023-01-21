@@ -316,7 +316,7 @@ public class EHRClientAPIHelper
     private CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
         command = new PostCommand(command.getControllerName(), command.getActionName());
-        command.setJsonObject(new JSONObject(Map.of("extraContext", extraContext)));
+        command.setJsonObject(command.getJsonObject().put("extraContext", extraContext));
         Connection connection = new Connection(WebTestHelper.getBaseURL(), email, PasswordUtil.getPassword());
 
         try
@@ -360,7 +360,7 @@ public class EHRClientAPIHelper
     {
         Object exception = responseJson.get("exception");
         if (exception != null)
-            TestLogger.log("Expection: " + exception);
+            TestLogger.log("Exception: " + exception);
 
         Map<String, List<String>> ret = extractErrors(responseJson);
         for (String field : ret.keySet())
