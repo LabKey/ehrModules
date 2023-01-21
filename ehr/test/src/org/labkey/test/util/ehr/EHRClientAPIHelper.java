@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -310,7 +311,7 @@ public class EHRClientAPIHelper
         }
     }
 
-    private CommandResponse doSaveRows(String email, SimplePostCommand source, JSONObject extraContext, boolean expectSuccess) throws CommandException
+    private CommandResponse doSaveRows(String email, PostCommand<?> source, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
         SimplePostCommand command = new SimplePostCommand(source.getControllerName(), source.getActionName());
         command.setJsonObject(source.getJsonObject().put("extraContext", extraContext));
