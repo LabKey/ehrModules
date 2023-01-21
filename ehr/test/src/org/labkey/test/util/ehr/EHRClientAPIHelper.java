@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -196,19 +196,19 @@ public class EHRClientAPIHelper
         }
     }
 
-    public PostCommand prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
+    public SimplePostCommand prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
     {
         return prepareCommand("insertWithKeys", schema, queryName, pkName, fieldNames, rows, null);
     }
 
-    public PostCommand prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    public SimplePostCommand prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
     {
         return prepareCommand("updateChangingKeys", schema, queryName, pkName, fieldNames, rows, oldKeys);
     }
 
-    private PostCommand prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    private SimplePostCommand prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
     {
-        PostCommand postCommand = new PostCommand("query", "saveRows");
+        SimplePostCommand postCommand = new SimplePostCommand("query", "saveRows");
 
         JSONObject commandJson = new JSONObject();
         commandJson.put("schemaName", schema);
@@ -265,7 +265,7 @@ public class EHRClientAPIHelper
         return postCommand;
     }
 
-    public CommandException doSaveRowsExpectingError(String email, PostCommand command, JSONObject extraContext)
+    public CommandException doSaveRowsExpectingError(String email, SimplePostCommand command, JSONObject extraContext)
     {
         try
         {
@@ -288,7 +288,7 @@ public class EHRClientAPIHelper
         }
     }
 
-    public CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext)
+    public CommandResponse doSaveRows(String email, SimplePostCommand command, JSONObject extraContext)
     {
         try
         {
@@ -310,9 +310,9 @@ public class EHRClientAPIHelper
         }
     }
 
-    private CommandResponse doSaveRows(String email, PostCommand source, JSONObject extraContext, boolean expectSuccess) throws CommandException
+    private CommandResponse doSaveRows(String email, SimplePostCommand source, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
-        PostCommand command = new PostCommand(source.getControllerName(), source.getActionName());
+        SimplePostCommand command = new SimplePostCommand(source.getControllerName(), source.getActionName());
         command.setJsonObject(source.getJsonObject().put("extraContext", extraContext));
         Connection connection = new Connection(WebTestHelper.getBaseURL(), email, PasswordUtil.getPassword());
 
@@ -465,7 +465,7 @@ public class EHRClientAPIHelper
             }
         }
 
-        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        SimplePostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
         return doSaveRows(email, insertCommand, extraContext);
     }
 
@@ -487,7 +487,7 @@ public class EHRClientAPIHelper
         if (additionalExtraContext != null)
             additionalExtraContext.forEach(extraContext::put);
 
-        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        SimplePostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
         CommandException response = doSaveRowsExpectingError(email, insertCommand, extraContext);
         Map<String, List<String>> errors = extractErrors(response.getProperties());
 
