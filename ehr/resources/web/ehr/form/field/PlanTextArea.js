@@ -102,6 +102,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         if (rec && rec.get('Id')){
             this.getMostRecentP2(rec, function(ret, Id){
                 if (!ret || !this.displayEl){
+                    this.displayEl.update('Either no active case or no P2 for ' + (Id || rec.get('Id')));
                     return;
                 }
 
@@ -131,7 +132,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
         this.getMostRecentP2(rec, function(ret){
             Ext4.Msg.hide();
 
-            if (ret){
+            if (ret && ret.mostRecentP2){
                 this.setValue(ret.mostRecentP2);
                 this.linkEl.update('Refresh P2');
             }
@@ -154,7 +155,7 @@ Ext4.define('EHR.form.field.PlanTextArea', {
                     return;
                 }
 
-                if (results && results.rows && results.rows.length && results.rows[0].mostRecentP2){
+                if (results && results.rows && results.rows.length){
                     cb.call(this, results.rows[0], results.rows[0].Id);
                 }
                 else {
