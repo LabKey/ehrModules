@@ -32,7 +32,7 @@ Ext4.define('EHR.window.CreateFormTemplateWindow', {
                 disabled: !this.formType,
                 handler: this.onSubmit
             }, {
-                text: 'Close',
+                text: 'Cancel',
                 handler: function (btn) {
                     btn.up('window').close();
                 }
