@@ -124,6 +124,8 @@ public class EHRManager
     public static final String VET_REVIEW = "Vet Review";
     @Queryable
     public static final String VET_ATTENTION = "Vet Attention";
+    @Queryable
+    public static final String TECH_REVIEW = "Reviewed";
 
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
