@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
@@ -150,7 +150,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
         ), false);
 
         //this should cascade update the row in requirements
-        PostCommand cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirementtype", "type", new String[]{"type"}, new Object[][]{{requirementType2}}, new Object[][]{{requirementType1}});
+        SimplePostCommand cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirementtype", "type", new String[]{"type"}, new Object[][]{{requirementType2}}, new Object[][]{{requirementType1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
         SelectRowsCommand src = new SelectRowsCommand("ehr_compliancedb", "requirements");

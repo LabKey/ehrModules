@@ -24,6 +24,7 @@ import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -51,11 +52,10 @@ import static org.junit.Assert.assertEquals;
 
 public class EHRClientAPIHelper
 {
-    private BaseWebDriverTest _test;
-    private String _containerPath;
+    private final BaseWebDriverTest _test;
+    private final String _containerPath;
     public static final String DATE_SUBSTITUTION = "@@CURDATE@@";
-    private static Class _currentTestClass;
-    private static final Map<String, Connection> _connections = new HashMap<>();
+    private static Class<?> _currentTestClass;
 
     public EHRClientAPIHelper(BaseWebDriverTest test, String containerPath)
     {
@@ -64,9 +64,7 @@ public class EHRClientAPIHelper
 
         if (!_test.getClass().equals(_currentTestClass))
         {
-            // Don't remember connections between test classes
             _currentTestClass = _test.getClass();
-            _connections.clear();
         }
     }
 
@@ -199,19 +197,19 @@ public class EHRClientAPIHelper
         }
     }
 
-    public PostCommand prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
+    public SimplePostCommand prepareInsertCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows)
     {
         return prepareCommand("insertWithKeys", schema, queryName, pkName, fieldNames, rows, null);
     }
 
-    public PostCommand prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    public SimplePostCommand prepareUpdateCommand(String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
     {
         return prepareCommand("updateChangingKeys", schema, queryName, pkName, fieldNames, rows, oldKeys);
     }
 
-    private PostCommand prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
+    private SimplePostCommand prepareCommand(String command, String schema, String queryName, String pkName, String[] fieldNames, Object[][] rows, @Nullable Object[][] oldKeys)
     {
-        PostCommand postCommand = new PostCommand("query", "saveRows");
+        SimplePostCommand postCommand = new SimplePostCommand("query", "saveRows");
 
         JSONObject commandJson = new JSONObject();
         commandJson.put("schemaName", schema);
@@ -268,7 +266,7 @@ public class EHRClientAPIHelper
         return postCommand;
     }
 
-    public CommandException doSaveRowsExpectingError(String email, PostCommand command, JSONObject extraContext)
+    public CommandException doSaveRowsExpectingError(String email, SimplePostCommand command, JSONObject extraContext)
     {
         try
         {
@@ -291,7 +289,7 @@ public class EHRClientAPIHelper
         }
     }
 
-    public CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext)
+    public CommandResponse doSaveRows(String email, SimplePostCommand command, JSONObject extraContext)
     {
         try
         {
@@ -313,10 +311,10 @@ public class EHRClientAPIHelper
         }
     }
 
-    private CommandResponse doSaveRows(String email, PostCommand command, JSONObject extraContext, boolean expectSuccess) throws CommandException
+    private CommandResponse doSaveRows(String email, PostCommand<?> source, JSONObject extraContext, boolean expectSuccess) throws CommandException
     {
-        command = new PostCommand(command);
-        command.getJsonObject().put("extraContext", extraContext);
+        SimplePostCommand command = new SimplePostCommand(source.getControllerName(), source.getActionName());
+        command.setJsonObject(source.getJsonObject().put("extraContext", extraContext));
         Connection connection = new Connection(WebTestHelper.getBaseURL(), email, PasswordUtil.getPassword());
 
         try
@@ -360,7 +358,7 @@ public class EHRClientAPIHelper
     {
         Object exception = responseJson.get("exception");
         if (exception != null)
-            TestLogger.log("Expection: " + exception);
+            TestLogger.log("Exception: " + exception);
 
         Map<String, List<String>> ret = extractErrors(responseJson);
         for (String field : ret.keySet())
@@ -468,7 +466,7 @@ public class EHRClientAPIHelper
             }
         }
 
-        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        SimplePostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
         return doSaveRows(email, insertCommand, extraContext);
     }
 
@@ -490,7 +488,7 @@ public class EHRClientAPIHelper
         if (additionalExtraContext != null)
             additionalExtraContext.forEach(extraContext::put);
 
-        PostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
+        SimplePostCommand insertCommand = prepareInsertCommand(schemaName, queryName, "lsid", fields, data);
         CommandException response = doSaveRowsExpectingError(email, insertCommand, extraContext);
         Map<String, List<String>> errors = extractErrors(response.getProperties());
 
