@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -230,7 +231,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         String[] fields;
         Object[][] data;
-        PostCommand<?> insertCommand;
+        SimplePostCommand insertCommand;
 
         //insert into demographics
         log("Creating test subjects");
