@@ -88,6 +88,9 @@
                     <column columnName="performedby">
                         <columnTitle>Entered By</columnTitle>
                     </column>
+                    <column columnName="assignedVet">
+                        <columnTitle>Assigned Vet</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>
