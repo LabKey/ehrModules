@@ -637,7 +637,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -756,6 +756,8 @@ public class EHRController extends SpringActionController
         private String containerPath;
         private int hourOfDay;
 
+        private boolean _kinshipValidation;
+
         public boolean isEnabled()
         {
             return _enabled;
@@ -785,6 +787,16 @@ public class EHRController extends SpringActionController
         {
             this.hourOfDay = hourOfDay;
         }
+
+        public boolean isKinshipValidation()
+        {
+            return _kinshipValidation;
+        }
+
+        public void setKinshipValidation(boolean kinshipValidation)
+        {
+            _kinshipValidation = kinshipValidation;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
@@ -802,6 +814,7 @@ public class EHRController extends SpringActionController
             ret.put("isScheduled", GeneticCalculationsJob.isScheduled());
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
+            ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
 
             return new ApiSimpleResponse(ret);
         }

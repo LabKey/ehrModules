@@ -25,7 +25,15 @@ procedures	Clinical	query	Procedures	TRUE		study	prc			date	FALSE	FALSE		qcstate
 exemptions	Colony Management	query	Exemptions	TRUE		study	exemptions			date	FALSE	FALSE		qcstate/publicdata	This report displays exemptions data for the selected animal
 drugAdministration	Clinical	query	Drug Administration	TRUE		study	drug			date	FALSE	FALSE		qcstate/publicdata	This report displays drug administration data for the selected animal
 necropsy	Pathology	query	Necropsy	TRUE		study	necropsy			date	FALSE	FALSE		qcstate/publicdata	This report displays necropsy data for the selected animal
-cases	Clinical	query	Cases	TRUE		study	cases			date	FALSE	FALSE		qcstate/publicdata	This report displays clinical treatment cases for the selected animal
+clinCases	Clinical	query	Cases	true		study	Cases	Active Clinical Cases		date	false	false		qcstate/publicdata	This report contains one record for each case opend for this animal, including surgeries, exams, procedures, etc.
+behaviorCases	Behavior	query	Behavior Cases	true		study	cases	Open Behavior Cases		date	false	false		qcstate/publicdata	This displays active behavior cases
+behaviorRemarks	Behavior	query	Behavior Remarks	true		study	Clinical Remarks	Behavior Remarks		date	false	false		qcstate/publicdata	This report contains the behavior remarks entered about each animal
+clinObsBsu	Behavior	query	Observations	true		study	Clinical Observations	BSU Observations		date	false	false		qcstate/publicdata	This report contains one record for each encounter with each animal, including surergies, exams, procedures, etc.
+drug	Behavior	query	Behavior Treatments	true		study	Drug Administration	Behavior Treatments		date	false	false		qcstate/publicdata	This report contains the behavior treatments entered about each animal
+pairings	Behavior	query	Pairing Observations	true		study	pairingSummary			date	false	false			This report contains records about pairings made using each animal
+pairingHousingSummary	Behavior	query	Pairing With Housing	true		study	pairingHousingSummary			date	false	false			This report contains records about pairings made using each animal
+roommateHistoryBSU	Behavior	query	Cagemate History	true		study	housingRoommates	Caged Housing Only		StartDate	false	false		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
+pairingHistory	Behavior	js	Pairing History	true		study	pairHistory			date	false	false		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
 pregnancy	Reproductive Management	query	Pregnancy Outcomes	TRUE		study	pregnancy			date	FALSE	FALSE		qcstate/publicdata	This report displays pregnancy outcomes
 pedigree	Genetics	js	Pedigree	true		study	pedigree				false	false		qcstate/publicdata	This report displays pedigree data for animals, including parents, grandparents, siblings and offspring
 pedigreePlot	Genetics	report	Pedigree Plot	true		study	pedigree		module:EHR/schemas/study/Pedigree/Pedigree.r		false	false		qcstate/publicdata	This report will generate a pedigree plot for the selected animal
@@ -34,3 +42,11 @@ kinship	Genetics	js	Kinship	true		ehr	kinshipSummary				false	false		qcstate/pub
 inbreeding	Genetics	query	Inbreeding Coefficients	true		study	Inbreeding Coefficients				false	false		qcstate/publicdata	This report shows the inbreeding coefficient of each animal, where pedigree data is available. The inbreeding coefficient is the kinship coefficient between the individual's parents. It measures the probability that the two alleles of a gene are identical by descent in the same individual (autozygosity). It is zero if the individual is not inbred.
 parentage	Genetics	query	Parentage	true		study	demographicsParents				false	false		qcstate/publicdata	This report shows information about the parentage of each animal, drawing from genetic data and observations
 clinicalHistory	Clinical	js	Clinical History	TRUE		study	clinicalHistory			date	FALSE	FALSE		qcstate/publicdata	This report contains an overview of the animal\'s clinical history
+clinMedicationSchedule	Daily Reports	js	Clinical Medication Schedule	true		study	clinMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+dietSchedule	Daily Reports	js	Diets	true		study	dietSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+surgMedicationSchedule2	Surgery	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+surgMedicationSchedule	Daily Reports	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+incompleteTreatments	Daily Reports	js	Meds/Diet - Incomplete	true		study	incompleteTreatments			date	false	false		qcstate/publicdata	This report contains a list of daily treatments not yet administered
+bloodSchedule	Daily Reports	js	Blood Schedule	true		study	bloodSchedule			date	false	false		qcstate/publicdata	This report contains an overview of the animal's clinical history
+cases	Daily Reports	query	Active Clinical Cases	true		study	Cases	Active Clinical Cases		date	false	false		qcstate/publicdata	This displays active clinical cases
+surgicalCases	Daily Reports	query	Active Surgery Cases	true		study	Cases	Active Surgery Cases		date	false	false		qcstate/publicdata	This displays active surgery cases

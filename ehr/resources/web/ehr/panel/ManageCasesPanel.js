@@ -842,6 +842,7 @@ Ext4.define('EHR.window.OpenCaseWindow', {
         values.Id = this.ownerPanel.animalId;
         values.performedby = LABKEY.Security.currentUser.displayName;
         values.objectid = caseId;
+        values.QCStateLabel = EHR.QCStates.COMPLETED
         if (enddate){
             values.enddate = enddate;
         }
@@ -856,7 +857,8 @@ Ext4.define('EHR.window.OpenCaseWindow', {
             enddate: values.enddate,
             category: values.problem,
             subcategory: values.subcategory,
-            caseid: values.objectid
+            caseid: values.objectid,
+            QCStateLabel: EHR.QCStates.COMPLETED
         };
 
         var panel = this.ownerPanel;
