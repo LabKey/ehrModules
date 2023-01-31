@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.ehr.EHRService;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class SimpleFormPanelSection extends SimpleFormSection
 {
-    private boolean _createRecordOnLoad;
+    private final boolean _createRecordOnLoad;
 
     public SimpleFormPanelSection(String schemaName, String queryName, String label)
     {

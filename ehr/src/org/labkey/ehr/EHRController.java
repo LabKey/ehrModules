@@ -19,8 +19,8 @@ package org.labkey.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
@@ -1597,7 +1597,7 @@ public class EHRController extends SpringActionController
         {
             Map<String, Object> resultProperties = new HashMap<>();
 
-            List<Map<String, Object>> ret = new ArrayList<>();
+            List<JSONObject> ret = new ArrayList<>();
 
             if (form.getLinkTypes() == null)
             {
@@ -2103,7 +2103,6 @@ public class EHRController extends SpringActionController
             response.put("columnModel", columnModel);
 
             return response;
-
         }
     }
 

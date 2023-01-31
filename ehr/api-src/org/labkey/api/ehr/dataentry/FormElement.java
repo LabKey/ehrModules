@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DisplayColumn;
@@ -47,7 +47,7 @@ public class FormElement
 
         DisplayColumn dc = _boundCol.getDisplayColumnFactory().createRenderer(_boundCol);
         dc.prepare(c);
-        json.putAll(JsonWriter.getMetaData(dc, null, true, true, true));
+        JsonWriter.getMetaData(dc, null, true, true, true).forEach(json::put);
 
         json.put("schemaName", _boundCol.getParentTable().getPublicSchemaName());
         json.put("queryName", _boundCol.getParentTable().getPublicName());

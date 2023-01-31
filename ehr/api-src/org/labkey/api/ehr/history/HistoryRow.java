@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ehr.history;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 
 /**
  * An individual item within a Clinical History, as created by a {@link HistoryDataSource}

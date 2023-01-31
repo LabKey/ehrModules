@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr.query;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import java.util.Date;
 
 /**

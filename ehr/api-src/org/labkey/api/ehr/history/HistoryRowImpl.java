@@ -17,7 +17,7 @@ package org.labkey.api.ehr.history;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

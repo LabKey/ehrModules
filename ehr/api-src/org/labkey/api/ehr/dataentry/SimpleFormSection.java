@@ -15,8 +15,8 @@
  */
 package org.labkey.api.ehr.dataentry;
 
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class SimpleFormSection extends AbstractFormSection
 {
-    private String _schemaName;
+    private final String _schemaName;
     private String _queryName;
 
     protected boolean _showLocation = false;
