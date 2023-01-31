@@ -283,7 +283,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             try
             {
-                TableInfo invoice = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(), "ehr_billing").getTableOrThrow("invoice", null);
+                TableInfo invoice = QueryService.get().getUserSchema(getJob().getUser(), getJob().getContainer(), "ehr_billing").getTable("invoice", null);
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("invoiceNumber"), invoiceNumber, CompareType.EQUAL);
 
                 TableSelector ts = new TableSelector(invoice, filter, null);
