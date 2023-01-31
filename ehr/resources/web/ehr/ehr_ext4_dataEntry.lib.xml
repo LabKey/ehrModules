@@ -42,6 +42,7 @@
         <script path="ehr/panel/DataEntryErrorPanel.js"/>
         <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/FormTemplateWindow.js"/>
+        <script path="ehr/window/CreateFormTemplateWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewWindow.js"/>
         <script path="ehr/window/CopyFromRunsWindow.js"/>

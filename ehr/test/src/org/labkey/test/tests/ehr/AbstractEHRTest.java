@@ -394,9 +394,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         initProject("EHR");
     }
 
-    protected void initProject(String type) throws Exception
+    protected void initCreatedProject() throws Exception
     {
-        createProjectAndFolders(type);
         setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
@@ -415,6 +414,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         populateHardTableRecords();
         primeCaches();
     }
+
+    protected void initProject(String type) throws Exception
+    {
+        createProjectAndFolders(type);
+        initCreatedProject();
+    }
+
 
     @LogMethod(quiet = true)
     protected void populate(@LoggedParam String tableLabel)

@@ -49,8 +49,8 @@ FROM (SELECT
 
 FROM study.clinical_observations o
 
-WHERE o.category != javaConstant('org.labkey.onprc_ehr.ONPRC_EHRManager.VET_REVIEW')
-  AND o.category != javaConstant('org.labkey.onprc_ehr.ONPRC_EHRManager.TECH_REVIEW')
+WHERE o.category != javaConstant('org.labkey.ehr.EHRManager.VET_REVIEW')
+  AND o.category != javaConstant('org.labkey.ehr.EHRManager.TECH_REVIEW')
   AND o.qcstate.PublicData = true
 ) t
 GROUP BY t.Id, t.taskId, t.dateOnly

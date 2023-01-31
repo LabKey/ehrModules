@@ -688,6 +688,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             species: {allowBlank: false},
             gender: {allowBlank: false}
         },
+        'study.vitals': {
+            bloodPressure: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+            respRate: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+        },
         'study.microbiology': {
             tissue: {
                 hidden: false,

@@ -131,7 +131,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
         this.queryValue(rec, function(ret){
             Ext4.Msg.hide();
 
-            if (ret){
+            if (ret && ret.mostRecentHx){
                 this.setValue(ret.mostRecentHx);
                 this.linkEl.update('Refresh Hx');
             }
@@ -157,7 +157,7 @@ Ext4.define('EHR.form.field.HxTextArea', {
                     return;
                 }
 
-                if (results && results.rows && results.rows.length && results.rows[0].mostRecentHx){
+                if (results && results.rows && results.rows.length){
                     cb.call(this, results.rows[0], results.rows[0].Id);
                 }
                 else {
