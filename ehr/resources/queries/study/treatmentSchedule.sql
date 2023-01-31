@@ -9,7 +9,7 @@ d.id,
 d.calculated_status,
 s.*,
 s.objectid as treatmentid,
-(SELECT max(d.qcstate) as label FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = d.timeordered) as treatmentStatus
+(SELECT max(d.qcstate) as label FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = IFDEFINED(d.timeordered)) as treatmentStatus
 --(SELECT max(taskId) as taskId FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = d.timeordered) as taskId
 
 
