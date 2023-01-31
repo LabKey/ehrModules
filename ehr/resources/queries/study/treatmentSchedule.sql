@@ -48,7 +48,7 @@ SELECT
 
   CASE
     WHEN snomed.code IS NOT NULL THEN 'Diet'
-    ELSE t1.category
+    ELSE ifdefined(t1.category)
   END as category,
   --t1.category,
 
