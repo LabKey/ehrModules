@@ -9,7 +9,7 @@ d.id,
 d.calculated_status,
 s.*,
 s.objectid as treatmentid,
-(SELECT max(d.qcstate) as label FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = d.timeordered) as treatmentStatus
+(SELECT max(d.qcstate) as label FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = IFDEFINED(d.timeordered)) as treatmentStatus
 --(SELECT max(taskId) as taskId FROM study.drug d WHERE s.objectid = d.treatmentid AND s.date = d.timeordered) as taskId
 
 
@@ -48,7 +48,7 @@ SELECT
 
   CASE
     WHEN snomed.code IS NOT NULL THEN 'Diet'
-    ELSE t1.category
+    ELSE IFDEFINED(t1.category)
   END as category,
   --t1.category,
 
@@ -71,7 +71,7 @@ SELECT
   t1.qualifier,
 
   t1.route,
-  t1.reason,
+  IFDEFINED(t1.reason) AS reason,
   t1.performedby,
   t1.remark,
 
