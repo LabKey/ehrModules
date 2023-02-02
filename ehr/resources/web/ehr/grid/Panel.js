@@ -108,7 +108,8 @@ Ext4.define('EHR.grid.Panel', {
         // on store validation complete as this covers initial load and adding new rows scenario. Also done on cell edit
         // for long text cells.
         var view = this.getView();
-        view.setHeight(view.body.getHeight());
+        if (view.body)
+            view.setHeight(view.body.getHeight());
     },
 
     handleSectionChangeEvent: function(sm, models){
