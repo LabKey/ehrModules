@@ -2697,4 +2697,9 @@ public class TriggerScriptHelper
 
         return date1.compareTo(date2);
     }
+
+    public Map<String, Object> getScriptOptions()
+    {
+        return EHRService.get().getTriggerScriptOptions();
+    }
 }

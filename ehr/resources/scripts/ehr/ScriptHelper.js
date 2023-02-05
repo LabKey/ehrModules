@@ -112,6 +112,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         extraDemographicsFieldMappings: {}
     };
 
+    // Load scriptOptions registered in the module
+    var moduleScriptOptions = props.javaHelper.getScriptOptions()
+    for (var opt in moduleScriptOptions) { scriptOptions[opt] = moduleScriptOptions[opt]; }
+
     var cachedValues = {
         liveBirths: {},
         deaths: {},

@@ -13,7 +13,7 @@ departure	General	query	Departures	true		study	departure			date	false	false		qcs
 currentBlood	Clinical	js	Current Blood	true		study	currentBlood			date	false	false		qcstate/publicdata	This report contains a summary of the current available blood for each animal
 bloodDraws	Clinical	query	Blood Draws	TRUE		study	blood			date	FALSE	FALSE		qcstate/publicdata	This report displays blood draw data for the selected animal
 biopsy	Clinical	query	Biopsies	TRUE		study	biopsy			date	FALSE	FALSE		qcstate/publicdata	This report displays biopsy data for the selected animal
-obs	Clinical	query	Observations	TRUE		study	obs			date	FALSE	FALSE		qcstate/publicdata	This report displays observations for the selected animal
+obs	Clinical	query	Observations	TRUE		study	clinical_observations			date	FALSE	FALSE		qcstate/publicdata	This report displays observations for the selected animal
 alopecia	Clinical	query	Alopecia Scores	TRUE		study	alopecia			date	FALSE	FALSE		qcstate/publicdata	This report contains the alopecia scores for the animal
 pairings	Colony Management	query	Pairings	TRUE		study	pairings			date	FALSE	FALSE		qcstate/publicdata	This report displays pairings for the selected animal
 breeder	Colony Management	query	Breeder	TRUE		study	breeder			date	FALSE	FALSE		qcstate/publicdata	This report displays breeding data for the selected animal
