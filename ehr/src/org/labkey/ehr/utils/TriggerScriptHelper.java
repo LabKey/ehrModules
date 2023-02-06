@@ -708,6 +708,11 @@ public class TriggerScriptHelper
 
     public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, @Nullable String cond) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
+        createHousingRecord(id, date, enddate, room, cage, cond, null);
+    }
+
+    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, @Nullable String cond, @Nullable String taskId) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
         if (id == null || date == null || room == null)
             return;
 
@@ -752,6 +757,9 @@ public class TriggerScriptHelper
 
         if (cage != null)
             row.put("cage", cage);
+
+        if (taskId != null)
+            row.put("taskId", taskId);
 
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
