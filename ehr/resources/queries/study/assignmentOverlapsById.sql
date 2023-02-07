@@ -12,6 +12,8 @@ group_concat(distinct a.project.protocol.displayName) as protocols,
 group_concat(distinct a.project.displayName) as projects,
 min(a.date) as earliestAssignment,
 max(a.date) as latestAssignment,
+min(a.enddate) as earliestRelease,
+max(a.enddate) as latestRelease,
 ROUND(CONVERT(age_in_months(max(a.Id.demographics.birth), min(a.date)), DOUBLE) / 12, 1) AS ageOnEarliestAssignment,
 group_concat(DISTINCT CAST(ifdefined(a.releaseType) as varchar(200))) as releaseTypes,
 count(*) as totalAssignments
