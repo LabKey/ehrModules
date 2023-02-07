@@ -116,6 +116,7 @@ public class EHRServiceImpl extends EHRService
     private final Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private final Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
     private final Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
+    private final Map<String, Object> _triggerScriptOptions = new CaseInsensitiveHashMap<>();
 
     private ProjectValidator _projectValidator = null;
 
@@ -561,6 +562,18 @@ public class EHRServiceImpl extends EHRService
     public ActionURL getDataEntryFormActionURL(Container c)
     {
         return new ActionURL(EHRController.DataEntryFormAction.class, c);
+    }
+
+    @Override
+    public void registerTriggerScriptOption(String name, Object value)
+    {
+        _triggerScriptOptions.put(name, value);
+    }
+
+    @Override
+    public Map<String, Object> getTriggerScriptOptions()
+    {
+        return _triggerScriptOptions;
     }
 
     @Override

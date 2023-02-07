@@ -211,6 +211,10 @@ abstract public class EHRService
 
     abstract public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys);
 
+    abstract public void registerTriggerScriptOption(String name, Object value);
+
+    abstract public Map<String, Object> getTriggerScriptOptions();
+
     public enum FORM_SECTION_LOCATION
     {
         Header(),
