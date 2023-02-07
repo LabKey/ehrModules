@@ -64,6 +64,56 @@ Ext4.define('EHR.window.CreateFormTemplateWindow', {
 
     onSubmit: function(btn){
         var templateName = this.down('#formTemplateName').getValue();
+
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            columns: 'formType,userid,entityid',
+            filterArray: [
+                LABKEY.Filter.create('category', 'Form'),
+                LABKEY.Filter.create('formtype', this.formType),
+                LABKEY.Filter.create('title', templateName),
+            ],
+            scope: this,
+            error: LDK.Utils.getErrorCallback(),
+            success: function (results) {
+                if (results && results.rows && results.rows.length > 0) {
+                    const entityid = results.rows[0]['entityid'];
+                    Ext4.Msg.confirm('Update Template', 'A form template with that name already exists. Overwrite this template?', function (val) {
+                        if (val == 'yes') {
+                            this.overwriteTemplate(entityid, templateName)
+                        }
+                        else {
+                            Ext4.Msg.hide();
+                        }
+                    }, this);
+                }
+                else {
+                    this.createTemplate(templateName);
+                }
+
+            }
+        });
+    },
+
+    overwriteTemplate: function(oldEntityId, templateName){
+        // Deleting existing form template first. Trigger script will delete from FormTemplateSections.
+        LABKEY.Query.deleteRows({
+            method: 'POST',
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            scope: this,
+            rows: [{
+                entityId: oldEntityId
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(data) {
+                this.createTemplate(templateName);
+            }
+        });
+    },
+
+    createTemplate: function(templateName){
         var templateRows = [{
             template: [templateName, 'Form', this.formType, '', ''],
             records: this.records
