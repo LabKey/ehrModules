@@ -25,6 +25,10 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
         this.model.prototype.idProperty = 'idfield';
 
         this.changeMode(config.sortMode || 'date');
+
+        if (this.onDataUpdate){
+            this.on('datachanged', this.onDataUpdate, this);
+        }
     },
 
     /**
