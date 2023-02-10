@@ -17,7 +17,6 @@ public class EHR_PurchasingTable extends SimpleUserSchema.SimpleTable<EHR_Purcha
     @Override
     public QueryUpdateService getUpdateService()
     {
-        // UNDONE: add an 'isUserEditable' bit to the schema and table?
         if (!isReadOnly())
         {
             TableInfo table = getRealTable();
