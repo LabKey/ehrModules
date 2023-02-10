@@ -4,8 +4,8 @@ import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
@@ -24,6 +24,7 @@ import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.reader.TabLoader;
 import org.labkey.api.security.User;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
 import org.labkey.api.view.ViewContext;
@@ -272,7 +273,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
 
         //Validate the contents of each template row
         int rowIdx = 0;
-        for (JSONObject row : rawResults.toJSONObjectArray()) {
+        for (JSONObject row : JsonUtil.toJSONObjectList(rawResults)) {
             rowIdx++;
 
             //Override any defaults with actual user input
