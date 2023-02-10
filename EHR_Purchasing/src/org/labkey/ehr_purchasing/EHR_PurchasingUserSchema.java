@@ -82,7 +82,8 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf, true).init();
+                EHR_PurchasingTable table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf, true).init();
+                return getPermissionFilteredTable(table);
             }
         },
         purchasingRequests
@@ -90,11 +91,26 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf, true).init();
+                EHR_PurchasingTable table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf, true).init();
+                return getPermissionFilteredTable(table);
             }
         };
 
         public abstract TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf);
+
+        private static EHR_PurchasingTable getPermissionFilteredTable(EHR_PurchasingTable table)
+        {
+            //Updaters can see all the rows
+            if (table.getContainer().hasPermission(table.getUserSchema().getUser(), UpdatePermission.class))
+                return table;
+
+            //Non-updaters can only see rows created by them
+            SimpleFilter filter = SimpleFilter.createContainerFilter(table.getContainer());
+            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
+            table.addCondition(filter);
+            return table;
+        }
+
     }
 
     @Override

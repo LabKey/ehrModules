@@ -1,38 +1,18 @@
 package org.labkey.ehr_purchasing;
 
-import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
-import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.query.FieldKey;
 import org.labkey.api.data.DatabaseTableType;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.SimpleQueryUpdateService;
-import org.labkey.api.security.User;
-import org.labkey.api.security.permissions.UpdatePermission;
 
 public class EHR_PurchasingTable extends SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema>
 {
-    public EHR_PurchasingTable(EHR_PurchasingUserSchema schema, TableInfo table, ContainerFilter cf, boolean needUpdatePerm)
-    {
-        super(schema, table, cf);
-
-//        if (needUpdatePerm && !schema.getContainer().hasPermission(schema.getUser(), UpdatePermission.class))
-//        {
-//            //Non-updaters can only see rows created by them
-//            SimpleFilter filter = SimpleFilter.createContainerFilter(schema.getContainer());
-//            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
-//            addCondition(filter);
-//        }
-
-    }
-
     public EHR_PurchasingTable(EHR_PurchasingUserSchema schema, TableInfo table, ContainerFilter cf)
     {
-        this(schema, table, cf, false);
+        super(schema, table, cf);
     }
-
 
     @Override
     public QueryUpdateService getUpdateService()
