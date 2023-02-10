@@ -42,11 +42,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getVendorTable(), cf).init();
-
-                return table;
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getVendorTable(), cf).init();
             }
         },
         shippingInfo
@@ -54,11 +50,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getShippingInfoTable(), cf).init();
-
-                return table;
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getShippingInfoTable(), cf).init();
             }
         },
         units
@@ -66,10 +58,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getItemUnitsTable(), cf).init();
-                return table;
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getItemUnitsTable(), cf).init();
             }
         },
         userAccountAssociations
@@ -77,10 +66,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getUserAccountAssociationsTable(), cf).init();
-                return table;
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getUserAccountAssociationsTable(), cf).init();
             }
         },
         lineItemStatus
@@ -88,10 +74,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getLineItemStatusTable(), cf).init();
-                return table;
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemStatusTable(), cf).init();
             }
         },
         lineItems
@@ -99,11 +82,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf).init();
-
-                return getPermissionFilteredTable(table);
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf, true).init();
             }
         },
         purchasingRequests
@@ -111,28 +90,11 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                SimpleUserSchema.SimpleTable<EHR_PurchasingUserSchema> table =
-                        new SimpleUserSchema.SimpleTable<>(
-                                schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf).init();
-
-                return getPermissionFilteredTable(table);
+                return new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf, true).init();
             }
         };
 
         public abstract TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf);
-
-        private static SimpleTable<EHR_PurchasingUserSchema> getPermissionFilteredTable(SimpleTable<EHR_PurchasingUserSchema> table)
-        {
-            //Updaters can see all the rows
-            if (table.getContainer().hasPermission(table.getUserSchema().getUser(), UpdatePermission.class))
-                return table;
-
-            //Non-updaters can only see rows created by them
-            SimpleFilter filter = SimpleFilter.createContainerFilter(table.getContainer());
-            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
-            table.addCondition(filter);
-            return table;
-        }
     }
 
     @Override

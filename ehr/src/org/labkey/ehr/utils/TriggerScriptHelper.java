@@ -910,7 +910,10 @@ public class TriggerScriptHelper
 
         if (!newRows.isEmpty())
         {
-            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+            BatchValidationException batchValidationException = new BatchValidationException();
+            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, batchValidationException, null, getExtraContext());
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
             // Prime the cache for the updated IDs
             EHRDemographicsService.get().getAnimals(getContainer(), ids);
         }
@@ -1724,7 +1727,11 @@ public class TriggerScriptHelper
         if (!rows.isEmpty())
         {
             TableInfo ti = getTableInfo("study", "Demographics");
-            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, null, getExtraContext());
+
+            BatchValidationException batchValidationException = new BatchValidationException();
+            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, batchValidationException, null, getExtraContext());
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
             EHRDemographicsServiceImpl.get().getAnimals(getContainer(), ids);
         }
         else
@@ -2477,7 +2484,10 @@ public class TriggerScriptHelper
             _log.info("closing housing records: " + toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
-            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
+            BatchValidationException batchValidationException = new BatchValidationException();
+            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, batchValidationException, null, context);
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
         }
     }
 
@@ -2560,7 +2570,10 @@ public class TriggerScriptHelper
                 {
                     Map<String, Object> extraContext = getExtraContext();
                     extraContext.put("skipAnnounceChangedParticipants", true);
-                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, extraContext);
+                    BatchValidationException batchValidationException = new BatchValidationException();
+                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, batchValidationException, null, extraContext);
+                    if (batchValidationException.hasErrors())
+                        throw batchValidationException;
                 }
             }
             catch (InvalidKeyException e)

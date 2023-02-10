@@ -1284,7 +1284,10 @@ public class EHRManager
 
                 if (!requestsToQueue.isEmpty())
                 {
-                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<>());
+                    BatchValidationException batchValidationException = new BatchValidationException();
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, batchValidationException, null, new HashMap<>());
+                    if (batchValidationException.hasErrors())
+                        throw batchValidationException;
                 }
             }
             catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
@@ -1514,7 +1517,12 @@ public class EHRManager
         try
         {
             if (rows.size() > 0)
-                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, getExtraContext());
+            {
+                BatchValidationException batchValidationException = new BatchValidationException();
+                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, batchValidationException, null, getExtraContext());
+                if (batchValidationException.hasErrors())
+                    throw batchValidationException;
+            }
 
             return distinctIds;
         }
