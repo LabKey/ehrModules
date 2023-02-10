@@ -27,6 +27,11 @@ public class EHR_PurchasingTable extends SimpleUserSchema.SimpleTable<EHR_Purcha
 
     }
 
+    public EHR_PurchasingTable(EHR_PurchasingUserSchema schema, TableInfo table, ContainerFilter cf)
+    {
+        this(schema, table, cf, false);
+    }
+
 
     @Override
     public QueryUpdateService getUpdateService()
