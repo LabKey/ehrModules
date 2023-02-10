@@ -18,13 +18,13 @@ public class EHR_PurchasingTable extends SimpleUserSchema.SimpleTable<EHR_Purcha
     {
         super(schema, table, cf);
 
-        if (needUpdatePerm && !schema.getContainer().hasPermission(schema.getUser(), UpdatePermission.class))
-        {
-            //Non-updaters can only see rows created by them
-            SimpleFilter filter = SimpleFilter.createContainerFilter(schema.getContainer());
-            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
-            addCondition(filter);
-        }
+//        if (needUpdatePerm && !schema.getContainer().hasPermission(schema.getUser(), UpdatePermission.class))
+//        {
+//            //Non-updaters can only see rows created by them
+//            SimpleFilter filter = SimpleFilter.createContainerFilter(schema.getContainer());
+//            filter.addCondition(FieldKey.fromString("createdBy"), table.getUserSchema().getUser());
+//            addCondition(filter);
+//        }
 
     }
 
