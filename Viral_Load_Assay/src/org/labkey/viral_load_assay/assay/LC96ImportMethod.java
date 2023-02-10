@@ -57,6 +57,7 @@ public class LC96ImportMethod extends AbstractWNPRCImportMethod {
         return "This is designed to accept the output directly from a Roche96 Light Cycler.  If using the Copy/Paste method be sure to copy all data, including the column headers.";
     }
 
+    @Override
     public AssayParser getFileParser(Container c, User u, int assayId) {
         return new Parser(this, c, u, assayId);
     }
