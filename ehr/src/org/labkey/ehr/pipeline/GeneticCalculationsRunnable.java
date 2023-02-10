@@ -93,6 +93,8 @@ public class GeneticCalculationsRunnable
                 return;
             }
 
+            protocol.setTimestampLog(true);
+
             File fileParameters = protocol.getParametersFile(root.getRootPath(), root);
             if (!fileParameters.exists())
             {
