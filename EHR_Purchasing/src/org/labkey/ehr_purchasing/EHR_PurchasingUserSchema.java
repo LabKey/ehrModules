@@ -82,7 +82,7 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                TableInfo table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf).init();
+                SimpleTable table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getLineItemsTable(), cf).init();
                 return getPermissionFilteredTable(table);
             }
         },
@@ -91,14 +91,14 @@ public class EHR_PurchasingUserSchema extends SimpleUserSchema
             @Override
             public TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf)
             {
-                TableInfo table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf).init();
+                SimpleTable table = new EHR_PurchasingTable(schema, EHR_PurchasingSchema.getInstance().getPurchasingRequestsTable(), cf).init();
                 return getPermissionFilteredTable(table);
             }
         };
 
         public abstract TableInfo createTable(EHR_PurchasingUserSchema schema, ContainerFilter cf);
 
-        private static TableInfo getPermissionFilteredTable(TableInfo table)
+        private static TableInfo getPermissionFilteredTable(SimpleTable table)
         {
             //Updaters can see all the rows
             if (table.getContainer().hasPermission(table.getUserSchema().getUser(), UpdatePermission.class))
