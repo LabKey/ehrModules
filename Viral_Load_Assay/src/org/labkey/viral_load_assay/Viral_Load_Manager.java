@@ -27,7 +27,6 @@ import org.labkey.api.view.ViewContext;
 import java.text.DecimalFormat;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/15/12
  * Time: 7:43 AM
@@ -50,7 +49,8 @@ public class Viral_Load_Manager
         return _instance;
     }
 
-    public JSONObject getDefaultAssayMetadata(JSONObject meta, ViewContext ctx){
+    public JSONObject getDefaultAssayMetadata(JSONObject meta, ViewContext ctx)
+    {
         JSONObject runMeta = getJsonObject(meta, "Run");
         JSONObject technique = getJsonObject(runMeta, "technique");
         technique.put("defaultValue", "Lifson 1-Step VL");
