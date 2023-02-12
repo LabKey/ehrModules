@@ -774,15 +774,9 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                     Date date = ConvertHelper.convert(row.get(DATE_FIELD), Date.class);
                     _dateFormat.format(date);
                 }
-                catch (ConversionException e)
+                catch (ConversionException | IllegalArgumentException e)
                 {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
-                    continue;
-                }
-                catch (IllegalArgumentException e)
-                {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
-                    continue;
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "]"));
                 }
             }
         }
