@@ -290,7 +290,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             //add slope to run info
             if (_detectorMap.keySet().size() == 1)
             {
-                JSONObject runInfo = context.getRunProperties();
+                Map<String, Object> runInfo = context.getRunProperties();
                 Map<String, Double> values = _detectorMap.values().iterator().next();
                 runInfo.put("slope", values.get("slope"));
                 runInfo.put("intercept", values.get("intercept"));
