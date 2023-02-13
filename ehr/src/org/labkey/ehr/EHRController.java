@@ -1290,6 +1290,7 @@ public class EHRController extends SpringActionController
     public static class PopulateLookupsForm
     {
         private boolean _delete;
+        private String _manifest;
 
         public boolean isDelete()
         {
@@ -1300,12 +1301,24 @@ public class EHRController extends SpringActionController
         {
             _delete = delete;
         }
+
+        public String getManifest()
+        {
+            return _manifest;
+        }
+
+        public void setManifest(String manifest)
+        {
+            _manifest = manifest;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
     public class PopulateLookupsAction extends MutatingApiAction<PopulateLookupsForm>
     {
-        private final String _manifestPath = "data/lookupsManifest.tsv";
+        private final String _manifestDirectory = "data/";
+        private final String _manifestDefault = "lookupsManifest";
+        private final String _manifestFileExt = ".tsv";
         private final String _lookupSetsPath = "data/lookup_sets.tsv";
         private Resource _lookupsManifest;
         private Resource _lookupSets;
@@ -1330,7 +1343,14 @@ public class EHRController extends SpringActionController
                     _lookupsManifestModule = ModuleLoader.getInstance().getModule(mp.getEffectiveValue(getContainer()));
                     if (null != _lookupsManifestModule)
                     {
-                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestPath);
+                        if (form.getManifest() != null)
+                        {
+                            _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + form.getManifest() + _manifestFileExt);
+                        }
+                        else
+                        {
+                            _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + _manifestDefault + _manifestFileExt);
+                        }
                         _lookupSets = _lookupsManifestModule.getModuleResource(_lookupSetsPath);
                     }
                 }
@@ -1342,7 +1362,14 @@ public class EHRController extends SpringActionController
 
                 if (_lookupsManifest == null || !_lookupsManifest.exists() || _lookupSets == null || !_lookupSets.exists())
                 {
-                    _lookupsManifest = ehrModule.getModuleResource(_manifestPath);
+                    if (form.getManifest() != null)
+                    {
+                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + form.getManifest() + _manifestFileExt);
+                    }
+                    else
+                    {
+                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + _manifestDefault + _manifestFileExt);
+                    }
                     _lookupSets = ehrModule.getModuleResource(_lookupSetsPath);
                     _lookupsManifestModule = ehrModule;
                 }
