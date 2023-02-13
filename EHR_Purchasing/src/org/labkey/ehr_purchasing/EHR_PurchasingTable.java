@@ -26,6 +26,8 @@ public class EHR_PurchasingTable extends SimpleUserSchema.SimpleTable<EHR_Purcha
                     @Override
                     protected boolean supportUpdateUsingDIB()
                     {
+                        // ehr_purchasing.purchasingRequests has a custom query definition in wnprc_purchusing that adds special calculated columns.
+                        // The email notifications sent are dependent on those calculated columns, which aren't returned by updateRows using data iterator / prepared statement
                         return false;
                     }
                 };
