@@ -376,7 +376,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                     _dateFormat.format(date);
                 }
                 catch (ConversionException | IllegalArgumentException e) {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "]"));
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.opt(DATE_FIELD) + "], " + e.getMessage()));
                 }
             }
         }
@@ -388,6 +388,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
         }
     }
 
+    @Override
     protected void calculateViralLoadForRoche(Map<String, Object> map)
     {
         //calculate VL

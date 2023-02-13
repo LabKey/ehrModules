@@ -776,7 +776,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 }
                 catch (ConversionException | IllegalArgumentException e)
                 {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "]"));
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "], " + e.getMessage()));
                 }
             }
         }
