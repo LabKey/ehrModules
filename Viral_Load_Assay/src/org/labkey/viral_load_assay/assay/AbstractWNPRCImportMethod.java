@@ -376,7 +376,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                     _dateFormat.format(date);
                 }
                 catch (ConversionException | IllegalArgumentException e) {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "]"));
                 }
             }
         }
