@@ -282,12 +282,12 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
 
             String[] ids = !StringUtils.isEmpty(row.getString("subjectId")) ? row.getString("subjectId").split(",\\s*") : new String[0];
-            String[] pooledDates = !StringUtils.isEmpty(row.getString("pooledDates")) ? row.getString("pooledDates").split("[^0-9/-]") : new String[0];
+            String[] pooledDates = !row.isNull("pooledDates") ? row.getString("pooledDates").split("[^0-9/-]") : new String[0];
 
             //Check to make sure that all required fields are populated for the current row
             boolean missingRequired = false;
             for (String field : requiredFields) {
-                if (row.get(field) == null || StringUtils.isEmpty(row.getString(field))) {
+                if (row.isNull(field) || StringUtils.isEmpty(row.getString(field))) {
                     if (field.equals(DATE_FIELD) && "Standard".equals(row.get("category"))) {
                         //Standard samples do not require a date
                     } else if (field.equals(DATE_FIELD) && pooledDates.length > 0) {
@@ -346,7 +346,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                 continue;
             }
 
-            String well = row.getString("well");
+            String well = StringUtils.trimToNull(row.optString("well"));
             if (well == null) {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing well"));
                 continue;
@@ -363,7 +363,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
             distinctWells.add(well);
 
-            String uniqueSample = row.getString("uniqueSample");
+            String uniqueSample = StringUtils.trimToNull(row.optString("uniqueSample"));
             if (uniqueSample == null) {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing uniqueSample"));
                 continue;

@@ -729,7 +729,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
             if (TYPE.Standard.getTemplateText().equals(row.get(CATEGORY_FIELD)))
             {
-                if (row.get(QUANTITY_FIELD) == null)
+                if (row.isNull(QUANTITY_FIELD))
                 {
                     errors.addRowError(new ValidationException("Row " + rowIdx + ": Missing value for quantity field"));
                     continue;
@@ -746,7 +746,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 }
             }
 
-            String well = row.getString("well");
+            String well = StringUtils.trimToNull(row.optString("well"));
             if (well == null)
             {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing well"));
@@ -767,7 +767,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             distinctWells.add(well);
 
             //validate the row's date
-            if (row.get(DATE_FIELD) != null)
+            if (!row.isNull(DATE_FIELD))
             {
                 try
                 {
