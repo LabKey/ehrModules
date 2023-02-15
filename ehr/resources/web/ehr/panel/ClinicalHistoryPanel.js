@@ -22,8 +22,6 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
     showMaxDate: false,
 
-    printView: false,  // Height adjustment when in print view
-
     initComponent: function(){
         this.sortMode = this.sortMode || 'date';
 
@@ -253,13 +251,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             type: 'ehr-clinicalhistorystore',
             containerPath: this.containerPath,
             redacted: this.redacted,
-            sortMode: this.sortMode,
-            onDataUpdate: function(store) {
-                var grid = me.down('grid');
-                var panel = me.up('panel');
-                if (me.printView && !store.isLoading() && grid && panel)
-                    grid.setHeight(panel.getHeight() * 1.05);
-            }
+            sortMode: this.sortMode
         };
     },
 
