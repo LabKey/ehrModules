@@ -15,7 +15,7 @@
  */
 package org.labkey.viral_load_assay;
 
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.TableInfo;
@@ -121,6 +121,6 @@ public class Viral_Load_Manager
 
     public static JSONObject getJsonObject(JSONObject parent, String key)
     {
-        return parent.containsKey(key) ? parent.getJSONObject(key): new JSONObject();
+        return parent.has(key) ? parent.getJSONObject(key): new JSONObject();
     }
 }

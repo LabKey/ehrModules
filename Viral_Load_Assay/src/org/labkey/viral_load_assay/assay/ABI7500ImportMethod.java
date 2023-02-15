@@ -21,9 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONArray;
-import org.json.old.JSONException;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -45,6 +45,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ViewContext;
 import org.labkey.viral_load_assay.Viral_Load_AssaySchema;
@@ -289,7 +290,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             //add slope to run info
             if (_detectorMap.keySet().size() == 1)
             {
-                JSONObject runInfo = context.getRunProperties();
+                Map<String, Object> runInfo = context.getRunProperties();
                 Map<String, Double> values = _detectorMap.values().iterator().next();
                 runInfo.put("slope", values.get("slope"));
                 runInfo.put("intercept", values.get("intercept"));
@@ -549,8 +550,8 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             Map<Object, Object> wellMap = getWellMap96("well_96", "addressbyrow_96");
 
             //append global results
-            List<JSONObject> results = new ArrayList<JSONObject>();
-            for (JSONObject row : rawResults.toJSONObjectArray())
+            List<JSONObject> results = new ArrayList<>();
+            for (JSONObject row : JsonUtil.toJSONObjectList(rawResults))
             {
                 for (String prop : resultDefaults.keySet())
                 {
@@ -560,7 +561,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             }
             Map<String, Map<String, String>> detectorRows = getDetectorsForResults(results);
 
-            if (!json.containsKey("templateName") || json.getString("templateName") == null)
+            if (!json.has("templateName") || json.getString("templateName") == null)
             {
                 errors.addRowError(new ValidationException("No template name provided"));
                 throw errors;
@@ -680,7 +681,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
         int negCtlCount = 0;
         int rowIdx = 0;
-        for (JSONObject row : rawResults.toJSONObjectArray())
+        for (JSONObject row : JsonUtil.toJSONObjectList(rawResults))
         {
             rowIdx++;
 
@@ -728,7 +729,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
             if (TYPE.Standard.getTemplateText().equals(row.get(CATEGORY_FIELD)))
             {
-                if (row.get(QUANTITY_FIELD) == null)
+                if (row.isNull(QUANTITY_FIELD))
                 {
                     errors.addRowError(new ValidationException("Row " + rowIdx + ": Missing value for quantity field"));
                     continue;
@@ -745,7 +746,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 }
             }
 
-            String well = row.getString("well");
+            String well = StringUtils.trimToNull(row.optString("well"));
             if (well == null)
             {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing well"));
@@ -766,22 +767,16 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             distinctWells.add(well);
 
             //validate the row's date
-            if (row.get(DATE_FIELD) != null)
+            if (!row.isNull(DATE_FIELD))
             {
                 try
                 {
                     Date date = ConvertHelper.convert(row.get(DATE_FIELD), Date.class);
                     _dateFormat.format(date);
                 }
-                catch (ConversionException e)
+                catch (ConversionException | IllegalArgumentException e)
                 {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
-                    continue;
-                }
-                catch (IllegalArgumentException e)
-                {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
-                    continue;
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.get(DATE_FIELD) + "], " + e.getMessage()));
                 }
             }
         }
@@ -872,7 +867,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             return null;
         }
 
-        public static String getSampleName(TYPE type, Map<String, Object> row)
+        public static String getSampleName(TYPE type, JSONObject row)
         {
             if (type.getTemplateText().equals(Unknown.getTemplateText()))
             {

@@ -4,8 +4,8 @@ import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
@@ -24,6 +24,7 @@ import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.reader.TabLoader;
 import org.labkey.api.security.User;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
 import org.labkey.api.view.ViewContext;
@@ -272,7 +273,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
 
         //Validate the contents of each template row
         int rowIdx = 0;
-        for (JSONObject row : rawResults.toJSONObjectArray()) {
+        for (JSONObject row : JsonUtil.toJSONObjectList(rawResults)) {
             rowIdx++;
 
             //Override any defaults with actual user input
@@ -281,12 +282,12 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
 
             String[] ids = !StringUtils.isEmpty(row.getString("subjectId")) ? row.getString("subjectId").split(",\\s*") : new String[0];
-            String[] pooledDates = !StringUtils.isEmpty(row.getString("pooledDates")) ? row.getString("pooledDates").split("[^0-9/-]") : new String[0];
+            String[] pooledDates = !row.isNull("pooledDates") ? row.getString("pooledDates").split("[^0-9/-]") : new String[0];
 
             //Check to make sure that all required fields are populated for the current row
             boolean missingRequired = false;
             for (String field : requiredFields) {
-                if (row.get(field) == null || StringUtils.isEmpty(row.getString(field))) {
+                if (row.isNull(field) || StringUtils.isEmpty(row.getString(field))) {
                     if (field.equals(DATE_FIELD) && "Standard".equals(row.get("category"))) {
                         //Standard samples do not require a date
                     } else if (field.equals(DATE_FIELD) && pooledDates.length > 0) {
@@ -345,7 +346,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                 continue;
             }
 
-            String well = row.getString("well");
+            String well = StringUtils.trimToNull(row.optString("well"));
             if (well == null) {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing well"));
                 continue;
@@ -362,7 +363,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
             distinctWells.add(well);
 
-            String uniqueSample = row.getString("uniqueSample");
+            String uniqueSample = StringUtils.trimToNull(row.optString("uniqueSample"));
             if (uniqueSample == null) {
                 errors.addRowError(new ValidationException("Row " + rowIdx + ": sample is missing uniqueSample"));
                 continue;
@@ -375,7 +376,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                     _dateFormat.format(date);
                 }
                 catch (ConversionException | IllegalArgumentException e) {
-                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date"));
+                    errors.addRowError(new ValidationException("Row " + rowIdx + ": Invalid sample date: [" + row.opt(DATE_FIELD) + "], " + e.getMessage()));
                 }
             }
         }
@@ -387,6 +388,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
         }
     }
 
+    @Override
     protected void calculateViralLoadForRoche(Map<String, Object> map)
     {
         //calculate VL

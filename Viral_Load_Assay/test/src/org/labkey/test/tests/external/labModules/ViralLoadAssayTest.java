@@ -976,11 +976,11 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         int i = 0;
         while (i < totalRows)
         {
-            String subjectId = results.getDataAsText(i, "Subject Id");
-            String vl = results.getDataAsText(i, "Viral Load");
-            String dateString = StringUtils.trimToNull(results.getDataAsText(i, "Sample Date"));
+            String subjectId = results.getDataAsText(i, "subjectId");
+            String vl = results.getDataAsText(i, "viralLoadScientific");
+            String dateString = StringUtils.trimToNull(results.getDataAsText(i, "date"));
             String date = dateString == null ? null : _dateFormat.format(_dateTimeFormat.parse(dateString));
-            String category = results.getDataAsText(i, "Category");
+            String category = results.getDataAsText(i, "category");
             String[] expectedVals;
             StringBuilder sb = new StringBuilder();
             if (keyFields == null)
