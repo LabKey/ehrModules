@@ -28,6 +28,8 @@
     }
 
     function populateLookups(isDelete) {
+        const manifest = LABKEY.ActionURL.getParameter('manifest');
+
         const container = "<%=containerPath%>";
         let result;
         if (isDelete) {
@@ -43,7 +45,8 @@
                 url: LABKEY.ActionURL.buildURL("ehr", "populateLookups", container),
                 method: 'POST',
                 jsonData: {
-                    delete: isDelete
+                    delete: isDelete,
+                    manifest: manifest || null
                 },
                 timeout: 100000,
                 success: LABKEY.Utils.getCallbackWrapper((response) => {
@@ -68,6 +71,6 @@
         </b></h5>
     </div>
     <div>
-        <textarea class="form-control" id="populateLookupResults" rows="20"></textarea>
+        <textarea class="form-control" id="populateLookupResults" name="populateLookupResults" rows="20"></textarea>
     </div>
 </html>
