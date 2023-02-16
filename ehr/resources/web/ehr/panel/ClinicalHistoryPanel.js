@@ -22,13 +22,15 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
     showMaxDate: false,
 
+    printView: false,  // Height adjustment when in print view
+
     initComponent: function(){
         this.sortMode = this.sortMode || 'date';
 
         if (this.minDate && !Ext4.isDate(this.minDate))
-            this.minDate = LDK.ConvertUtils.parseDate(this.minDate);
+            this.minDate = LDK.ConvertUtils.parseDate(this.minDate, LABKEY.extDefaultDateFormat);
         if (this.maxDate && !Ext4.isDate(this.maxDate))
-            this.maxDate = LDK.ConvertUtils.parseDate(this.maxDate);
+            this.maxDate = LDK.ConvertUtils.parseDate(this.maxDate, LABKEY.extDefaultDateFormat);
 
         Ext4.apply(this, {
             border: false,
@@ -246,11 +248,18 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     },
 
     getStoreConfig: function(){
+        var me = this;
         return {
             type: 'ehr-clinicalhistorystore',
             containerPath: this.containerPath,
             redacted: this.redacted,
-            sortMode: this.sortMode
+            sortMode: this.sortMode,
+            onDataUpdate: function(store) {
+                var grid = me.down('grid');
+                var panel = me.up('panel');
+                if (me.printView && !store.isLoading() && grid && panel)
+                    grid.setHeight(panel.getHeight() * 1.05);
+            }
         };
     },
 
