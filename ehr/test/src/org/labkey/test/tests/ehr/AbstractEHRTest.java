@@ -402,8 +402,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         doExtraPreStudyImportSetup();
 
-        populateInitialData();
+        // QC States added before populating data where they may be needed
         defineQCStates();
+        populateInitialData();
+
         // Do this first to establish the QC states before importing
         importStudy();
         disableMiniProfiler();

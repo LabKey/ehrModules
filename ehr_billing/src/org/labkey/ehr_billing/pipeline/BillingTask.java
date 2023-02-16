@@ -59,7 +59,6 @@ import org.labkey.ehr_billing.EHR_BillingSchema;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -78,7 +77,6 @@ import java.util.Set;
  */
 public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 {
-    private final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final static DbSchema EHR_BILLING_SCHEMA = EHR_BillingSchema.getInstance().getSchema();
     private final static InvoicedItemsProcessingService processingService =  InvoicedItemsProcessingService.get();
 
@@ -305,7 +303,12 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     QueryUpdateService invoiceTableQUS = invoice.getUpdateService();
                     if (null != invoiceTableQUS)
                     {
-                        invoice.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), List.of(toCreate), new BatchValidationException(), null, null);
+                        BatchValidationException errors = new BatchValidationException();
+                        invoice.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), List.of(toCreate), errors, null, null);
+                        if (errors.hasErrors())
+                        {
+                            throw errors;
+                        }
                     }
                     else
                     {
@@ -364,6 +367,10 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
                 BatchValidationException errors = new BatchValidationException();
                 invoicedItems.getUpdateService().insertRows(getJob().getUser(), getJob().getContainer(), Collections.singletonList(toInsert), errors, null, null);
+                if (errors.hasErrors())
+                {
+                    throw errors;
+                }
             }
 
             //update records in miscCharges to show proper invoiceId
@@ -433,7 +440,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             if (!colKeys.containsKey(col))
             {
-                getJob().getLogger().warn("Unable to find column with key: " + col.toString() + " for table: " + ti.getPublicName());
+                getJob().getLogger().warn("Unable to find column with key: " + col + " for table: " + ti.getPublicName());
             }
         }
 
@@ -461,40 +468,37 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         getJob().getLogger().info("Updating rows with invoiceAmount in ehr_billing.invoice table");
 
         TableInfo invoice = EHR_BillingSchema.getInstance().getInvoice();
-        TableResultSet invoiceTotalCost = getInvoiceTotalCost(billingRunContainer);
-        Iterator<Map<String, Object>> iterator = invoiceTotalCost.iterator();
-        Map<String,BigDecimal> existingInvoiceAmounts = getExistingInvoiceAmounts();
-
-        getJob().getLogger().info(invoiceTotalCost.getSize() + " rows to be updated");
-
-        while (iterator.hasNext())
+        try (TableResultSet invoiceTotalCost = getInvoiceTotalCost(billingRunContainer))
         {
-            Map<String, Object> row = iterator.next();
-            String invoiceNumber = (String) row.get("invoiceNumber");
+            Iterator<Map<String, Object>> iterator = invoiceTotalCost.iterator();
+            Map<String, BigDecimal> existingInvoiceAmounts = getExistingInvoiceAmounts();
 
-            if (null == existingInvoiceAmounts.get(invoiceNumber))
+            getJob().getLogger().info(invoiceTotalCost.getSize() + " rows to be updated");
+
+            while (iterator.hasNext())
             {
-                Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
+                Map<String, Object> row = iterator.next();
+                String invoiceNumber = (String) row.get("invoiceNumber");
 
-                for (String col : row.keySet())
+                if (null == existingInvoiceAmounts.get(invoiceNumber))
                 {
-                    if (col.equals("_row"))
-                        continue;
+                    Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
 
-                    toUpdate.put(col, row.get(col));
+                    for (String col : row.keySet())
+                    {
+                        if (col.equals("_row"))
+                            continue;
+
+                        toUpdate.put(col, row.get(col));
+                    }
+
+                    Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
                 }
-
-                Table.update(getJob().getUser(), invoice, toUpdate, invoiceNumber);
             }
-        }
-        try
-        {
-            invoiceTotalCost.close();
         }
         catch (SQLException e)
         {
-            getJob().getLogger().info("Something went wrong while attempting to close a result set for Invoice Total Cost.", e);
-            return;
+            throw new RuntimeSQLException(e);
         }
 
         getJob().getLogger().info("Finished updating rows in ehr_billing.invoice table");
