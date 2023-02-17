@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 SELECT
-    d.id,
-    d.dam as dam,
+    d.Id,
+    d.dam,
     'Observed' as damType,
-    d.sire as sire,
+    d.sire,
     'Observed' as sireType,
     CASE
         WHEN d.dam IS NOT NULL AND d.sire IS NOT NULL THEN 2
@@ -25,4 +25,19 @@ SELECT
         ELSE 0
         END as numParents
 FROM study.demographics d
+
+UNION
+
+SELECT
+    s.Id,
+    s.dam,
+    'Observed' as damType,
+    s.sire,
+    'Observed' as sireType,
+    CASE
+        WHEN s.dam IS NOT NULL AND s.sire IS NOT NULL THEN 2
+        WHEN s.dam IS NOT NULL OR s.sire IS NOT NULL THEN 1
+        ELSE 0
+        END as numParents
+FROM ehr.supplemental_pedigree s
 
