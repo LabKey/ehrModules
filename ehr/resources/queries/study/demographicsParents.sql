@@ -26,7 +26,7 @@ SELECT
         END as numParents
 FROM study.demographics d
 
-UNION
+UNION ALL
 
 SELECT
     s.Id,
