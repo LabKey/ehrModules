@@ -1124,6 +1124,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             return;
         }
 
+        if (ds.getColumn("parents") == null)
+        {
+            var col = getWrappedCol(us, ds, "Parents", "demographicsParents", "Id", "Id");
+            col.setLabel("Parents");
+            ds.addColumn(col);
+        }
+
         if (ds.getColumn("activeAnimalGroups") == null && -1 != StudyService.get().getDatasetIdByName( ds.getUserSchema().getContainer(), "animal_group_members"))
         {
             var col21 = getWrappedIdCol(us, ds, "activeAnimalGroups", "demographicsActiveAnimalGroups");
