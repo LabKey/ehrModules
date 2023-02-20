@@ -182,7 +182,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
 
     // Automatically close out old dataset records before inserting new records
     if (!helper.isValidateOnly() && helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1
-            && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData
+            && row.QCStateLabel === "Completed"
     ){
         row.date = EHR.Server.Utils.datetimeToString(row.date);
         helper.getJavaHelper().closePreviousDatasetRecords(helper.getQueryName(), [row], false);
