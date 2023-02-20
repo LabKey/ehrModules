@@ -9,6 +9,7 @@ const modelId = 'editable_ehr_lookups'
 const queryConfig = {
         bindURL: false,
         id: modelId,
+        maxRows: 500,
         schemaQuery: SchemaQuery.create('ehr_lookups', 'editable_lookups'),
     };
 
@@ -20,6 +21,7 @@ export const EHRLookupsPage: FC = memo(() => {
                 title={'Select table to edit values'}
                 asPanel={true}
                 queryConfig={queryConfig}
+                allowSelections={false}
             />
         </div>
     );

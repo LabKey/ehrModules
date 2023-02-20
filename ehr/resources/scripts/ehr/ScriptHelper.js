@@ -61,6 +61,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      *              of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
      *              are problematic for a center, creating additional properties to modify or skip core behaviors is sometimes a good option.
      * @param {Array} datasetsToClose An array of datasets whose records will be closed on animal departure or death.
+     * @param {Array} datasetsToCloseOnNewEntry An array of datasets whose records will be closed when a new record for an animal is entered in that dataset.
      * @param {Boolean} allowFutureDates Used for validation to determine if future dates can be entered.
      * @param {Boolean} removeTimeFromDate Save Date without time values.
      * @param {Boolean} removeTimeFromEndDate Save EndDate without time values.
@@ -86,6 +87,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
     var scriptOptions = {
         datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Protocol Assignments', 'Animal Group Members'],
+        datasetsToCloseOnNewEntry: [],
         allowFutureDates: false,
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
@@ -526,6 +528,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
                 props.newIdsAdded[protocol].push(id);
         },
 
+        getDatasetsToCloseOnNewEntry: function(){
+            return scriptOptions.datasetsToCloseOnNewEntry;
+        },
+
         isAllowFutureDates: function(){
             return scriptOptions.allowFutureDates;
         },
@@ -595,6 +601,22 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             //close housing, assignments, treatments
             // console.log('on death departure: ' + id);
             var changedTables = this.getJavaHelper().closeActiveDatasetRecords(scriptOptions.datasetsToClose, id, date);
+            if (changedTables){
+                changedTables = changedTables.split(';');
+                for (var i=0;i<changedTables.length;i++){
+                    this.addTableModified('study', changedTables[i]);
+                }
+            }
+        },
+
+        /**
+         * Some datasets will only have one active record per animal at a time. This is a helper function to close out
+         * old records for an animal in that dataset before entering a new record for that animal.
+         * @param participant The Id of the participant
+         * @param date The date of the event.
+         */
+        onClosePreviousRecords: function(dataset, id, date){
+            var changedTables = this.getJavaHelper().closeActiveDatasetRecords([dataset], id, date);
             if (changedTables){
                 changedTables = changedTables.split(';');
                 for (var i=0;i<changedTables.length;i++){

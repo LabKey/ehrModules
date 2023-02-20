@@ -180,6 +180,12 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
         }
     }
 
+    // Automatically close out old dataset records before inserting new records
+    if (!helper.isValidateOnly() && row.Id && row.date
+            && helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1){
+        helper.onClosePreviousRecords(helper.getQueryName(), row.Id, row.date);
+    }
+
     EHR.Server.Triggers.rowEnd.call(this, helper, errors, scriptErrors, row, null);
 };
 exports.beforeInsert = EHR.Server.Triggers.beforeInsert;
