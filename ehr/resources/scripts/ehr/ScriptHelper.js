@@ -609,22 +609,6 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             }
         },
 
-        /**
-         * Some datasets will only have one active record per animal at a time. This is a helper function to close out
-         * old records for an animal in that dataset before entering a new record for that animal.
-         * @param participant The Id of the participant
-         * @param date The date of the event.
-         */
-        onClosePreviousRecords: function(dataset, id, date){
-            var changedTables = this.getJavaHelper().closeActiveDatasetRecords([dataset], id, date);
-            if (changedTables){
-                changedTables = changedTables.split(';');
-                for (var i=0;i<changedTables.length;i++){
-                    this.addTableModified('study', changedTables[i]);
-                }
-            }
-        },
-
         addTableModified: function(schemaName, queryName){
             props.tablesModified.push(schemaName + ';' + queryName);
         },

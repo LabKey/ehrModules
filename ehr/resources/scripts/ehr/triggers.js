@@ -181,9 +181,11 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
     }
 
     // Automatically close out old dataset records before inserting new records
-    if (!helper.isValidateOnly() && row.Id && row.date
-            && helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1){
-        helper.onClosePreviousRecords(helper.getQueryName(), row.Id, row.date);
+    if (!helper.isValidateOnly() && helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1
+            && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData
+    ){
+        row.date = EHR.Server.Utils.datetimeToString(row.date);
+        helper.getJavaHelper().closePreviousDatasetRecords(helper.getQueryName(), [row], false);
     }
 
     EHR.Server.Triggers.rowEnd.call(this, helper, errors, scriptErrors, row, null);
