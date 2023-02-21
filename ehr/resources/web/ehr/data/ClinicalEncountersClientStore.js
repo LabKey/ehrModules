@@ -24,19 +24,22 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
         this.callParent(arguments);
     },
 
-    onRecordUpdate: function(record, modifiedFieldNames){
-        if (record.get('procedureid')){
-            modifiedFieldNames = modifiedFieldNames || [];
+    onRecordUpdate: function(record, modifiedFieldNames) {
+        if (record.get('procedureid')) {
+            this.getProcedureRecord(record.get('procedureid'), modifiedFieldNames, this.handleRecordUpdate);
+        }
+    },
 
-            var lookupRec = this.getProcedureRecord(record.get('procedureid'));
-            if (!lookupRec)
-                return;
+    handleRecordUpdate: function(lookupRec, modifiedFieldNames){
 
-            if (lookupRec.get('remark')&& record.get('remark')== null){
-                record.beginEdit();
-                record.set('remark', lookupRec.get('remark'));
-                record.endEdit(true);
-            }
+        modifiedFieldNames = modifiedFieldNames || [];
+        if (!lookupRec)
+            return;
+
+        if (lookupRec.get('remark')&& record.get('remark')== null){
+            record.beginEdit();
+            record.set('remark', lookupRec.get('remark'));
+            record.endEdit(true);
         }
 
         if (modifiedFieldNames && (modifiedFieldNames.indexOf('Id') > -1 || modifiedFieldNames.indexOf('project') > -1 || modifiedFieldNames.indexOf('chargetype') > -1)){
@@ -97,9 +100,7 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
         }
     },
 
-    getProcedureRecord: function(procedureId){
-        var procedureStore = EHR.DataEntryUtils.getProceduresStore();
-        LDK.Assert.assertNotEmpty('Unable to find procedureStore from ClinicalEncountersClientStore', procedureStore);
+    getProcedureRecordFromStore(procedureStore, procedureId){
         var procRecIdx = procedureStore.findExact('rowid', procedureId);
         LDK.Assert.assertTrue('Unable to find procedure record in ClinicalEncountersClientStore for procedureId: [' + procedureId + ']', procRecIdx > -1);
 
@@ -107,5 +108,18 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
         LDK.Assert.assertNotEmpty('Unable to find procedure record from ClinicalEncountersClientStore.  ProcedureId was: [' + procedureId + ']', procedureRec);
 
         return procedureRec;
+    },
+
+    getProcedureRecord: function(procedureId, modifiedFieldNames, cb){
+        var procedureStore = EHR.DataEntryUtils.getProceduresStore();
+        LDK.Assert.assertNotEmpty('Unable to find procedureStore from ClinicalEncountersClientStore', procedureStore);
+        if (LABKEY.ext4.Util.hasStoreLoaded(procedureStore)) {
+            cb(this.getProcedureRecordFromStore(procedureStore, procedureId), modifiedFieldNames);
+        }
+        else {
+            procedureStore.on('load', function(store){
+                cb.call(this, this.getProcedureRecordFromStore(store, procedureId), modifiedFieldNames);
+            }, this, {single: true});
+        }
     }
 });
