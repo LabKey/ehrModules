@@ -212,6 +212,48 @@ $(document).ready(function() {
         });
     }
     $('#doTest3').click(doTest3)
+
+    function doTest4() {
+        $('#msgArea').html('Start Test 4');
+        LABKEY.Query.saveRows({
+            commands: [{
+                schemaName: 'study',
+                queryName: 'housing',
+                command: 'insert',
+                rows: [
+                    // NOTE: this record has the same date as the existing active record. I bet this doesnt work right.
+                    {Id: 'TestAnimal1', room: 'Rm1', comment: 'Created for testing purposes', date: baseDate}
+                ]
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function () {
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'housing',
+                    filterArray: [LABKEY.Filter.create('Id', 'TestAnimal1', LABKEY.Filter.Types.EQUALS)],
+                    sort: 'Date',
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function(results){
+                        var rec1 = results.rows[0];
+                        var rec2 = results.rows[1];
+
+                        if (rec1.enddate !== rec2.date) {
+                            alert('Earlier housing record was not terminated correctly');
+                        }
+
+                        if (rec2.enddate) {
+                            alert('The second housing record should not have been terminated');
+                        }
+
+                        LABKEY.DataRegions['housingDR'].refresh();
+                    }
+                })
+                $('#msgArea').html('Test Complete');
+            }
+        });
+    }
+    $('#doTest4').click(doTest4)
 });
 
 </script>
@@ -230,6 +272,9 @@ This page is designed to test expected behaviors around EHR housing data entry
 <br>
 
 <button id="doTest3">Test 3</button>
+<br>
+
+<button id="doTest4">Test 4</button>
 <br>
 
 <div id="msgArea"></div>
