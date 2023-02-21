@@ -1,0 +1,238 @@
+<script type="text/javascript">
+
+$(document).ready(function() {
+    const baseDate = new Date('2020-01-01 13:00');
+    new LABKEY.QueryWebPart({
+        name: 'housingDR',
+        title: 'Housing Records',
+        schemaName: 'study',
+        queryName: 'housing',
+        removeableSort: 'Id,date',
+        filterArray: [LABKEY.Filter.create('Id', 'TestAnimal1;TestAnimal2;TestAnimal3', LABKEY.Filter.Types.EQUALS_ONE_OF)],
+        renderTo: 'qwpDiv',
+        failure: LDK.Utils.getErrorCallback()
+    });
+
+    function resetHousing() {
+        $('#msgArea').html('');
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("query", "truncateTable.api"),
+            scope: this,
+            success: function() {
+                $('#msgArea').html('Truncate Housing Complete');
+            },
+            failure: LDK.Utils.getErrorCallback(),
+            jsonData: {
+                schemaName: 'study',
+                queryName: 'housing'
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: LABKEY.Utils.getCallbackWrapper(function(){
+                LABKEY.Query.saveRows({
+                    commands: [{
+                        schemaName: 'study',
+                        queryName: 'housing',
+                        command: 'insert',
+                        rows: [
+                            {Id: 'TestAnimal1', room: 'Rm1', comment: 'This should get closed by test1', date: baseDate},
+                            {Id: 'TestAnimal2', room: 'Rm1', comment: 'Created for testing purposes', date: baseDate},
+                            {Id: 'TestAnimal3', room: 'Rm1', comment: 'Created for testing purposes', date: baseDate}
+                        ]
+                    }],
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function () {
+                        $('#msgArea').html('Housing Reset Complete');
+                        LABKEY.DataRegions['housingDR'].refresh();
+                    }
+                });
+            }, this),
+        });
+    }
+    $('#resetHousing').click(resetHousing)
+
+    function populateDemographics() {
+        $('#msgArea').html('');
+        LABKEY.Query.saveRows({
+            commands: [{
+                schemaName: 'study',
+                queryName: 'demographics',
+                command: 'insert',
+                rows: [
+                    {Id: 'TestAnimal1', gender: 'm', comment: 'Created for testing purposes', date: baseDate},
+                    {Id: 'TestAnimal2', gender: 'm', comment: 'Created for testing purposes', date: baseDate},
+                    {Id: 'TestAnimal3', gender: 'm', comment: 'Created for testing purposes', date: baseDate}
+                ]
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function () {
+                $('#msgArea').html('Populate Demographics Complete');
+            }
+        });
+    }
+    $('#populateDemographics').click(populateDemographics)
+
+    function doTest1() {
+        // Do a simple insert, which should close the prior record
+        $('#msgArea').html('Start Test 1');
+        LABKEY.Query.saveRows({
+            commands: [{
+                schemaName: 'study',
+                queryName: 'housing',
+                command: 'insert',
+                rows: [
+                    {Id: 'TestAnimal1', room: 'Rm1', comment: 'Created for testing purposes', date: new Date('2020-01-02 16:00')}
+                ]
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function () {
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'housing',
+                    filterArray: [LABKEY.Filter.create('Id', 'TestAnimal1', LABKEY.Filter.Types.EQUALS)],
+                    sort: 'Date',
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function(results){
+                        console.log(results);
+                        if (results.rows[0].enddate !== results.rows[1].date) {
+                            alert('Earlier housing record was not terminated');
+                        }
+
+                        if (results.rows[1].enddate) {
+                            alert('The last housing record should not have been terminated');
+                        }
+
+                        LABKEY.DataRegions['housingDR'].refresh();
+                    }
+                })
+                $('#msgArea').html('Test Complete');
+            }
+        });
+
+    }
+    $('#doTest1').click(doTest1)
+
+    function doTest2() {
+        // Do a simple insert, with multiple rows/animal
+        $('#msgArea').html('Start Test 2');
+        LABKEY.Query.saveRows({
+            commands: [{
+                schemaName: 'study',
+                queryName: 'housing',
+                command: 'insert',
+                rows: [
+                    // NOTE the newer record is first and both lack endddate
+                    {Id: 'TestAnimal2', room: 'Rm1', comment: 'Created for testing purposes', date: new Date('2020-01-03 16:00')},
+                    {Id: 'TestAnimal2', room: 'Rm1', comment: 'Created for testing purposes', date: new Date('2020-01-02 16:00')}
+                ]
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function () {
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'housing',
+                    filterArray: [LABKEY.Filter.create('Id', 'TestAnimal2', LABKEY.Filter.Types.EQUALS)],
+                    sort: 'Date',
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function(results){
+                        console.log(results);
+                        var rec1 = results.rows[0];
+                        var rec2 = results.rows[1];
+                        var rec3 = results.rows[2];
+
+                        if (rec1.enddate !== rec2.date) {
+                            alert('Earlier housing record was not terminated correctly');
+                        }
+
+                        if (rec2.enddate !== rec3.date) {
+                            alert('Earlier housing record was not terminated correctly');
+                        }
+
+                        if (rec3.enddate) {
+                            alert('The last housing record should not have been terminated');
+                        }
+
+                        LABKEY.DataRegions['housingDR'].refresh();
+                    }
+                })
+                $('#msgArea').html('Test Complete');
+            }
+        });
+    }
+    $('#doTest2').click(doTest2)
+
+    function doTest3() {
+        // Do a simple insert, with multiple rows/animal
+        $('#msgArea').html('Start Test 3');
+        LABKEY.Query.saveRows({
+            commands: [{
+                schemaName: 'study',
+                queryName: 'housing',
+                command: 'insert',
+                rows: [
+                    // NOTE the newer record is first and both lack endddate. The newest record is draft, and therefore should not terminate the prior records
+                    {Id: 'TestAnimal2', room: 'Rm1', comment: 'Created for testing purposes', date: new Date('2020-01-02 16:00')},
+                    {Id: 'TestAnimal2', room: 'Rm1', comment: 'Created for testing purposes', date: new Date('2020-01-03 16:00'), QCStateLabel: 'In Progress'}
+                ]
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function () {
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'housing',
+                    filterArray: [LABKEY.Filter.create('Id', 'TestAnimal2', LABKEY.Filter.Types.EQUALS)],
+                    sort: 'Date',
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: function(results){
+                        var rec1 = results.rows[0];
+                        var rec2 = results.rows[1];
+                        var rec3 = results.rows[2];
+
+                        if (rec1.enddate !== rec2.date) {
+                            alert('Earlier housing record was not terminated correctly');
+                        }
+
+                        if (rec2.enddate) {
+                            alert('The second housing record should not have been terminated since the last record is Draft');
+                        }
+
+                        if (rec3.enddate) {
+                            alert('The last housing record should not have been terminated');
+                        }
+
+                        LABKEY.DataRegions['housingDR'].refresh();
+                    }
+                })
+                $('#msgArea').html('Test Complete');
+            }
+        });
+    }
+    $('#doTest3').click(doTest3)
+});
+
+</script>
+
+This page is designed to test expected behaviors around EHR housing data entry
+<br>
+<button id="populateDemographics">Populate Demographics</button>
+<br>
+<button id="resetHousing">Reset Housing Table</button>
+<br>
+
+<button id="doTest1">Test 1</button>
+<br>
+
+<button id="doTest2">Test 2</button>
+<br>
+
+<button id="doTest3">Test 3</button>
+<br>
+
+<div id="msgArea"></div>
+
+<p/>
+<div id="qwpDiv"></div>
