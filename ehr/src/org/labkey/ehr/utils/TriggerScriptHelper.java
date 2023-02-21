@@ -2415,7 +2415,7 @@ public class TriggerScriptHelper
         closePreviousDatasetRecords("housing", records, true);
     }
 
-    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean validateDateTime) throws Exception
+    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean dateOnly) throws Exception
     {
         TableInfo datasetTi = getTableInfo("study", dataset);
         List<Map<String, Object>> toUpdate = new ArrayList<>();
@@ -2448,8 +2448,7 @@ public class TriggerScriptHelper
         for (Map<String, Object> row : records)
         {
             Date date = _dateTimeFormat.parse(row.get("date").toString());
-            // TODO how do we override this a center specific module can opt out of this check?
-            if (validateDateTime && date.getHours() == 0 && date.getMinutes() == 0)
+            if (!dateOnly && date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
                 _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
@@ -2490,6 +2489,7 @@ public class TriggerScriptHelper
             _log.info("closing " + dataset + " records: " + toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
+            context.put("skipClosingRecords", true);
             datasetTi.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
         }
     }

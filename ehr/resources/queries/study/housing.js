@@ -111,24 +111,5 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 });
 
 function onComplete(event, errors, helper){
-    if (!helper.isETL() && !helper.isValidateOnly()){
-        var housingRows = helper.getRows();
-        var idsToClose = [];
-        if (housingRows){
-            for (var i=0;i<housingRows.length;i++){
-                if (EHR.Server.Security.getQCStateByLabel(housingRows[i].row.QCStateLabel).PublicData && housingRows[i].row.date){
-                    idsToClose.push({
-                        Id: housingRows[i].row.Id,
-                        date: EHR.Server.Utils.datetimeToString(housingRows[i].row.date),  //stringify to serialize properly
-                        objectid: housingRows[i].row.objectid
-                    });
-                }
-            }
-        }
-
-        if (idsToClose.length){
-            //NOTE: this list should be limited to 1 row per animalId
-            helper.getJavaHelper().closeHousingRecords(idsToClose);
-        }
-    }
+    helper.closeRecordsOnComplete();
 }

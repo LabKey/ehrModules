@@ -180,14 +180,6 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
         }
     }
 
-    // Automatically close out old dataset records before inserting new records
-    if (!helper.isValidateOnly() && !helper.isETL() && helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1
-            && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData
-    ){
-        row.date = EHR.Server.Utils.datetimeToString(row.date);
-        helper.getJavaHelper().closePreviousDatasetRecords(helper.getQueryName(), [row], false);
-    }
-
     EHR.Server.Triggers.rowEnd.call(this, helper, errors, scriptErrors, row, null);
 };
 exports.beforeInsert = EHR.Server.Triggers.beforeInsert;
@@ -478,6 +470,11 @@ EHR.Server.Triggers.complete = function(event, errors) {
         for (var i=0;i<handlers.length;i++){
             handlers[i].call(this, event, errors, helper);
         }
+    }
+
+    // Automatically close out old dataset records defined in datasetsToCloseOnNewEntry before inserting new records
+    if (helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1){
+        helper.closeRecordsOnComplete()
     }
 
     if (helper.isRequiresStatusRecalc() && helper.getPublicParticipantsModified().length && !helper.isETL()){

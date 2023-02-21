@@ -485,6 +485,11 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return !!props.extraContext.skipAnnounceChangedParticipants;
         },
 
+        // This will prevent looping through multiple times when automatically closing records
+        skipClosingRecords: function(){
+            return !!props.extraContext.skipClosingRecords;
+        },
+
         isSkipAssignmentCheck: function(){
             return scriptOptions.skipAssignmentCheck
         },
@@ -680,6 +685,30 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
                             EHR.Server.Utils.addError(errors, itemName, itemLabel + ' ' + itemValue + ' appears more than once', 'ERROR');
                     }
                 });
+            }
+        },
+
+        closeRecordsOnComplete: function(){
+            if (!this.isValidateOnly() && !this.isETL() && !this.skipClosingRecords()){
+                console.log("closing records");
+                var rows = this.getRows();
+                var idsToClose = [];
+                if (rows){
+                    for (var i=0;i<rows.length;i++){
+                        if (EHR.Server.Security.getQCStateByLabel(rows[i].row.QCStateLabel).PublicData && rows[i].row.date){
+                            idsToClose.push({
+                                Id: rows[i].row.Id,
+                                date: EHR.Server.Utils.datetimeToString(rows[i].row.date),  //stringify to serialize properly
+                                objectid: rows[i].row.objectid
+                            });
+                        }
+                    }
+                }
+
+                if (idsToClose.length){
+                    //NOTE: this list should be limited to 1 row per animalId
+                    this.getJavaHelper().closePreviousDatasetRecords(this.getQueryName(), idsToClose, this.shouldRemoveTimeFromDate());
+                }
             }
         }
     }
