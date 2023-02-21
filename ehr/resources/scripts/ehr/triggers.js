@@ -474,7 +474,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
 
     // Automatically close out old dataset records defined in datasetsToCloseOnNewEntry before inserting new records
     if (helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1){
-        helper.closeRecordsOnComplete()
+        helper.closeRecordsOnComplete(true);
     }
 
     if (helper.isRequiresStatusRecalc() && helper.getPublicParticipantsModified().length && !helper.isETL()){

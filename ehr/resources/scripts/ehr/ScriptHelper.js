@@ -688,7 +688,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             }
         },
 
-        closeRecordsOnComplete: function(){
+        closeRecordsOnComplete: function(publicData){
             if (!this.isValidateOnly() && !this.isETL() && !this.skipClosingRecords()){
                 console.log("closing records");
                 var rows = this.getRows();
@@ -707,7 +707,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
                 if (idsToClose.length){
                     //NOTE: this list should be limited to 1 row per animalId
-                    this.getJavaHelper().closePreviousDatasetRecords(this.getQueryName(), idsToClose, this.shouldRemoveTimeFromDate());
+                    this.getJavaHelper().closePreviousDatasetRecords(this.getQueryName(), idsToClose, this.shouldRemoveTimeFromDate(), publicData);
                 }
             }
         }

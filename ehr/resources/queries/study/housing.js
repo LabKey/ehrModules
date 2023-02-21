@@ -111,5 +111,5 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 });
 
 function onComplete(event, errors, helper){
-    helper.closeRecordsOnComplete();
+    helper.closeRecordsOnComplete(false);
 }

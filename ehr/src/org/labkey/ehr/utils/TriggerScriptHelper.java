@@ -2412,10 +2412,10 @@ public class TriggerScriptHelper
 
     public void closeHousingRecords(List<Map<String, Object>> records) throws Exception
     {
-        closePreviousDatasetRecords("housing", records, true);
+        closePreviousDatasetRecords("housing", records, false, false);
     }
 
-    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean dateOnly) throws Exception
+    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean dateOnly, boolean publicData) throws Exception
     {
         TableInfo datasetTi = getTableInfo("study", dataset);
         List<Map<String, Object>> toUpdate = new ArrayList<>();
@@ -2460,6 +2460,10 @@ public class TriggerScriptHelper
             //we want to only close those records starting prior to this record
             filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
             filter.addCondition(FieldKey.fromString("objectid"), row.get("objectid"), CompareType.NEQ_OR_NULL);
+
+            if (publicData)
+                filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
             if (!encounteredLsids.isEmpty())
             {
                 filter.addCondition(FieldKey.fromString("lsid"), encounteredLsids, CompareType.NOT_IN);
