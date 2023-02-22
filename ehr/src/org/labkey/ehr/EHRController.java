@@ -1599,7 +1599,7 @@ public class EHRController extends SpringActionController
                         context = new DataIteratorContext(batchErrors);
                         context.setConfigParameters(configParameters);
                         context.setInsertOption(QueryUpdateService.InsertOption.REPLACE);
-                        context.setAlternateKeys(Set.of("reportname"));
+                        context.getAlternateKeys().add("reportname");
 
                         loader = DataLoader.get().createLoader(_additionalReportsResource, true, null, TabLoader.TSV_FILE_TYPE);
                         AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
