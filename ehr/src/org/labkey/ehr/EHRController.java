@@ -42,6 +42,8 @@ import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.dataiterator.DataIteratorContext;
+import org.labkey.api.dataiterator.DetailedAuditLogDataIterator;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
@@ -1564,6 +1566,7 @@ public class EHRController extends SpringActionController
 
                 if (!form.isDelete())
                 {
+                    // Initially insert core reports
                     DataLoader loader = DataLoader.get().createLoader(_reportsResource, true, null, TabLoader.TSV_FILE_TYPE);
 
                     BatchValidationException batchErrors = new BatchValidationException();
@@ -1572,8 +1575,14 @@ public class EHRController extends SpringActionController
                     if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
                         auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
 
-                    AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
-                            false, false, batchErrors, behaviorType, auditEvent, getUser(), getContainer());
+                    DataIteratorContext context = new DataIteratorContext(batchErrors);
+
+                    Map<Enum, Object> configParameters = new HashMap<>();
+                    configParameters.put(DetailedAuditLogDataIterator.AuditConfigs.AuditBehavior, behaviorType);
+                    context.setConfigParameters(configParameters);
+                    context.setInsertOption(QueryUpdateService.InsertOption.INSERT);
+
+                    AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
 
                     if (batchErrors.hasErrors())
                     {
@@ -1582,13 +1591,18 @@ public class EHRController extends SpringActionController
 
                     if (null != _additionalReportsResource)
                     {
+                        // Merge in additional reports (based on report name) with replace option
                         responseText.append("Populating additional reports from " + _additionalReportsModule.getName() + " module\n");
                         if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
                             auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
 
+                        context = new DataIteratorContext(batchErrors);
+                        context.setConfigParameters(configParameters);
+                        context.setInsertOption(QueryUpdateService.InsertOption.REPLACE);
+                        context.setAlternateKeys(Set.of("reportname"));
+
                         loader = DataLoader.get().createLoader(_additionalReportsResource, true, null, TabLoader.TSV_FILE_TYPE);
-                        AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.IMPORT_IDENTITY,
-                                false, false, batchErrors, behaviorType, auditEvent, getUser(), getContainer());
+                        AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
                     }
                 }
                 transaction.commit();
