@@ -9,7 +9,8 @@ const modelId = 'editable_ehr_lookups'
 const queryConfig = {
         bindURL: false,
         id: modelId,
-        schemaQuery: SchemaQuery.create('ehr_lookups', 'editable_lookups'),
+        schemaQuery: new SchemaQuery('ehr_lookups', 'editable_lookups'),
+        includeTotalCount: true,
     };
 
 export const EHRLookupsPage: FC = memo(() => {
