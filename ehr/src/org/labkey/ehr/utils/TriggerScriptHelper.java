@@ -2412,7 +2412,12 @@ public class TriggerScriptHelper
 
     public void closeHousingRecords(List<Map<String, Object>> records) throws Exception
     {
-        TableInfo housing = getTableInfo("study", "housing");
+        closePreviousDatasetRecords("housing", records, false, false);
+    }
+
+    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean dateOnly, boolean publicData) throws Exception
+    {
+        TableInfo datasetTi = getTableInfo("study", dataset);
         List<Map<String, Object>> toUpdate = new ArrayList<>();
         List<Map<String, Object>> oldKeys = new ArrayList<>();
 
@@ -2443,11 +2448,10 @@ public class TriggerScriptHelper
         for (Map<String, Object> row : records)
         {
             Date date = _dateTimeFormat.parse(row.get("date").toString());
-            // TODO how do we override this a center specific module can opt out of this check?
-            if (date.getHours() == 0 && date.getMinutes() == 0)
+            if (!dateOnly && date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.warn("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
@@ -2456,12 +2460,16 @@ public class TriggerScriptHelper
             //we want to only close those records starting prior to this record
             filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
             filter.addCondition(FieldKey.fromString("objectid"), row.get("objectid"), CompareType.NEQ_OR_NULL);
+
+            if (publicData)
+                filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
             if (!encounteredLsids.isEmpty())
             {
                 filter.addCondition(FieldKey.fromString("lsid"), encounteredLsids, CompareType.NOT_IN);
             }
 
-            TableSelector ts = new TableSelector(housing, Collections.singleton("lsid"), filter, null);
+            TableSelector ts = new TableSelector(datasetTi, Collections.singleton("lsid"), filter, null);
             List<String> ret = ts.getArrayList(String.class);
             if (!ret.isEmpty())
             {
@@ -2482,10 +2490,11 @@ public class TriggerScriptHelper
 
         if (!toUpdate.isEmpty())
         {
-            _log.info("closing housing records: " + toUpdate.size());
+            _log.info("closing " + dataset + " records: " + toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
-            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
+            context.put("skipClosingRecords", true);
+            datasetTi.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
         }
     }
 
