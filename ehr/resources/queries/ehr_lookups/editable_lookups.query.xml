@@ -3,11 +3,6 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="editable_lookups" tableDbType="TABLE">
                 <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
-                <columns>
-                    <column columnName="value">
-                        <columnTitle>Table</columnTitle>
-                    </column>
-                </columns>
             </table>
         </tables>
     </metadata>

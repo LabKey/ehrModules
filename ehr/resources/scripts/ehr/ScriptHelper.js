@@ -61,6 +61,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
      *              of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that
      *              are problematic for a center, creating additional properties to modify or skip core behaviors is sometimes a good option.
      * @param {Array} datasetsToClose An array of datasets whose records will be closed on animal departure or death.
+     * @param {Array} datasetsToCloseOnNewEntry An array of datasets whose records will be closed when a new record for an animal is entered in that dataset.
      * @param {Boolean} allowFutureDates Used for validation to determine if future dates can be entered.
      * @param {Boolean} removeTimeFromDate Save Date without time values.
      * @param {Boolean} removeTimeFromEndDate Save EndDate without time values.
@@ -86,6 +87,7 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
     var scriptOptions = {
         datasetsToClose: ['Assignment', 'Cases', 'Housing', 'Treatment Orders', 'Notes', 'Problem List', 'Protocol Assignments', 'Animal Group Members'],
+        datasetsToCloseOnNewEntry: [],
         allowFutureDates: false,
         removeTimeFromDate: false,
         removeTimeFromEndDate: false,
@@ -483,6 +485,11 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return !!props.extraContext.skipAnnounceChangedParticipants;
         },
 
+        // This will prevent looping through multiple times when automatically closing records
+        skipClosingRecords: function(){
+            return !!props.extraContext.skipClosingRecords;
+        },
+
         isSkipAssignmentCheck: function(){
             return scriptOptions.skipAssignmentCheck
         },
@@ -524,6 +531,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
 
             if (props.newIdsAdded[protocol].indexOf(id) == -1)
                 props.newIdsAdded[protocol].push(id);
+        },
+
+        getDatasetsToCloseOnNewEntry: function(){
+            return scriptOptions.datasetsToCloseOnNewEntry;
         },
 
         isAllowFutureDates: function(){
@@ -674,6 +685,30 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
                             EHR.Server.Utils.addError(errors, itemName, itemLabel + ' ' + itemValue + ' appears more than once', 'ERROR');
                     }
                 });
+            }
+        },
+
+        closeRecordsOnComplete: function(publicData){
+            if (!this.isValidateOnly() && !this.isETL() && !this.skipClosingRecords()){
+                console.log("closing records");
+                var rows = this.getRows();
+                var idsToClose = [];
+                if (rows){
+                    for (var i=0;i<rows.length;i++){
+                        if (EHR.Server.Security.getQCStateByLabel(rows[i].row.QCStateLabel).PublicData && rows[i].row.date){
+                            idsToClose.push({
+                                Id: rows[i].row.Id,
+                                date: EHR.Server.Utils.datetimeToString(rows[i].row.date),  //stringify to serialize properly
+                                objectid: rows[i].row.objectid
+                            });
+                        }
+                    }
+                }
+
+                if (idsToClose.length){
+                    //NOTE: this list should be limited to 1 row per animalId
+                    this.getJavaHelper().closePreviousDatasetRecords(this.getQueryName(), idsToClose, this.shouldRemoveTimeFromDate(), publicData);
+                }
             }
         }
     }

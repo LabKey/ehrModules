@@ -1259,12 +1259,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
     private void customizeEditableLookups(AbstractTableInfo table)
     {
-        String name = "edit";
-        if (table.getColumn(name) == null)
+        String name = "title";
+        if (table.getColumn(name) != null)
         {
             DetailsURL url = DetailsURL.fromString("ehr-updateTable.view?schemaName=ehr_lookups&query.queryName=${value}");
-            MutableColumnInfo col = ((MutableColumnInfo) table.getColumn("value"));
+            MutableColumnInfo col = ((MutableColumnInfo) table.getColumn(name));
             col.setURL(url);
+            col.setLabel("Table");
         }
     }
 
