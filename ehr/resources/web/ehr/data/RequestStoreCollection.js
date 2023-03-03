@@ -31,7 +31,7 @@ Ext4.define('EHR.data.RequestStoreCollection', {
                     cs.each(function(r){
                         var actualRequestId = r.get('requestid');
                         if (requestid !== actualRequestId) {
-                            if (actualRequestId && actualRequestId.length > 0) { // Tolerate null values
+                            if (actualRequestId) { // Tolerate null/blank values
                                 LDK.Assert.assertEquality('Incorrect requestid for client store:' + cs.storeId, requestid, actualRequestId);
                             }
                             r.beginEdit();
@@ -51,7 +51,7 @@ Ext4.define('EHR.data.RequestStoreCollection', {
 
                         var actualRequestId = r.get('requestid');
                         if (requestid !== actualRequestId) {
-                            if (actualRequestId && actualRequestId.length > 0) { // Tolerate null values
+                            if (actualRequestId) { // Tolerate null/blank values
                                 LDK.Assert.assertEquality('Incorrect requestid for server store:' + cs.storeId, requestid, actualRequestId);
                             }
                             r.beginEdit();
