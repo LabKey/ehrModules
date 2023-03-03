@@ -29,9 +29,10 @@ Ext4.define('EHR.data.RequestStoreCollection', {
             this.clientStores.each(function(cs){
                 if (cs.getFields().get('requestid') != null){
                     cs.each(function(r){
-                        if (requestid !== r.get('requestid')) {
-                            if (requestid) { // Tolerate null values
-                                LDK.Assert.assertEquality('Incorrect requestid for client store:' + cs.storeId, requestid, r.get('requestid'));
+                        var actualRequestId = r.get('requestid');
+                        if (requestid !== actualRequestId) {
+                            if (actualRequestId) { // Tolerate null/blank values
+                                LDK.Assert.assertEquality('Incorrect requestid for client store:' + cs.storeId, requestid, actualRequestId);
                             }
                             r.beginEdit();
                             r.set('requestid', this.getRequestId());
@@ -48,9 +49,10 @@ Ext4.define('EHR.data.RequestStoreCollection', {
                             return;  //do not check these records.  they have deliberately been separated.
                         }
 
-                        if (requestid !== r.get('requestid')) {
-                            if (requestid) { // Tolerate null values
-                                LDK.Assert.assertEquality('Incorrect requestid for server store:' + cs.storeId, requestid, r.get('requestid'));
+                        var actualRequestId = r.get('requestid');
+                        if (requestid !== actualRequestId) {
+                            if (actualRequestId) { // Tolerate null/blank values
+                                LDK.Assert.assertEquality('Incorrect requestid for server store:' + cs.storeId, requestid, actualRequestId);
                             }
                             r.beginEdit();
                             r.set('requestid', this.getRequestId());
