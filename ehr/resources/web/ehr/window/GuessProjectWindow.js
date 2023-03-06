@@ -132,7 +132,7 @@ Ext4.define('EHR.window.GuessProjectWindow', {
             queryMode: 'local',
             forceSelection: true,
             listConfig: {
-                innerTpl: ['<span style="white-space:nowrap;">{[values["project/displayName"] + " " + (values["project/investigatorId/lastName"] ? "(" + values["project/investigatorId/lastName"] + ")" : "")]}&nbsp;</span>']
+                innerTpl: ['<span style="white-space:nowrap;">{[LABKEY.Utils.encodeHtml(values["project/displayName"] + " " + (values["project/investigatorId/lastName"] ? "(" + values["project/investigatorId/lastName"] + ")" : ""))]}&nbsp;</span>']
             },
             allowBlank: true,
             store: {
