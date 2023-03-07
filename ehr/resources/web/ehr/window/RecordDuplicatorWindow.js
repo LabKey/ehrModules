@@ -43,26 +43,33 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
                 fieldLabel: 'Bulk Edit?',
                 helpPopup: 'If checked, you will have the option to bulk edit the newly created records.',
                 itemId: 'doBulkEdit'
-            },{
-                html: 'Choose Fields to Copy:',
-                style: 'padding-top: 10px;padding-bottom: 5px;'
-            },{
-                xtype: 'form',
-                items: [{
-                    xtype: 'checkboxgroup',
-                    columns: 2,
-                    labelAlign: 'top',
-                    defaults: {
-                        width: 200
-                    },
-                    items: this.getCheckboxes()
-                }]
-            }],
+            },
+            //     {
+            //     html: 'Choose Fields to Copy:',
+            //     style: 'padding-top: 10px;padding-bottom: 5px;'
+            // },{
+            //     xtype: 'form',
+            //     items: [{
+            //         xtype: 'checkboxgroup',
+            //         columns: 2,
+            //         labelAlign: 'top',
+            //         defaults: {
+            //             width: 200
+            //         },
+            //         items: this.getCheckboxes()
+            //     }]
+            // }
+            ],
             buttons: [{
                 text: 'Submit',
                 scope: this,
                 handler: function(btn){
-                    this.duplicate();
+                    if (this.onSubmit) {
+                        this.onSubmit(this.down('#newRecs').getValue());
+                    }
+                    else {
+                        this.duplicate();
+                    }
                     this.close();
                 }
             },{
@@ -150,21 +157,21 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
     }
 });
 
-EHR.DataEntryUtils.registerGridButton('DUPLICATE', function(config){
-    return Ext4.Object.merge({
-        text: 'Duplicate Selected',
-        tooltip: 'Click to duplicate selected rows',
-        handler: function(btn){
-            var grid = btn.up('gridpanel');
-            var selected = grid.getSelectionModel().getSelection();
-            if (!selected || !selected.length){
-                Ext4.Msg.alert('Error', 'No records selected');
-                return;
-            }
-
-            Ext4.create('EHR.window.RecordDuplicatorWindow', {
-                targetGrid: grid
-            }).show();
-        }
-    }, config);
-});
+// EHR.DataEntryUtils.registerGridButton('DUPLICATE', function(config){
+//     return Ext4.Object.merge({
+//         text: 'Duplicate Selected',
+//         tooltip: 'Click to duplicate selected rows',
+//         handler: function(btn){
+//             var grid = btn.up('gridpanel');
+//             var selected = grid.getSelectionModel().getSelection();
+//             if (!selected || !selected.length){
+//                 Ext4.Msg.alert('Error', 'No records selected');
+//                 return;
+//             }
+//
+//             Ext4.create('EHR.window.RecordDuplicatorWindow', {
+//                 targetGrid: grid
+//             }).show();
+//         }
+//     }, config);
+// });

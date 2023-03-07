@@ -31,6 +31,8 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
             this.mon(this.dataEntryPanel, 'animalchange', this.onAnimalChange, this, {buffer: 500});
         }
 
+        this.mon(this, 'animalchange', this.onAnimalChange, this);
+
         this.mon(EHR.DemographicsCache, 'cachechange', this.demographicsListener, this);
     },
 

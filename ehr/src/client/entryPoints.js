@@ -15,5 +15,10 @@ module.exports = {
         permission: 'read',
         path: './src/client/EHRLookups/webpart',
         generateLib: true // used by views/ehrLookups.html
+    },{
+        name: 'ReactEHRTest',
+        title: 'Sample EHR React Form',
+        permission: 'read',
+        path: './src/client/ReactEHRPrototype'
     }]
 };
