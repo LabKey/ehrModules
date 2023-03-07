@@ -100,12 +100,17 @@ Ext4.define('EHR.data.ClinicalEncountersClientStore', {
     getProcedureRecord: function(procedureId){
         var procedureStore = EHR.DataEntryUtils.getProceduresStore();
         LDK.Assert.assertNotEmpty('Unable to find procedureStore from ClinicalEncountersClientStore', procedureStore);
-        var procRecIdx = procedureStore.findExact('rowid', procedureId);
-        LDK.Assert.assertTrue('Unable to find procedure record in ClinicalEncountersClientStore for procedureId: [' + procedureId + ']', procRecIdx > -1);
 
-        var procedureRec = procedureStore.getAt(procRecIdx);
-        LDK.Assert.assertNotEmpty('Unable to find procedure record from ClinicalEncountersClientStore.  ProcedureId was: [' + procedureId + ']', procedureRec);
+        // If the store is not loaded this will call again. No need to do a load callback here just return undefined if not loaded.
+        if (LABKEY.ext4.Util.hasStoreLoaded(procedureStore)) {
+            var procRecIdx = procedureStore.findExact('rowid', procedureId);
+            LDK.Assert.assertTrue('Unable to find procedure record in ClinicalEncountersClientStore for procedureId: [' + procedureId + ']', procRecIdx > -1);
 
-        return procedureRec;
+            var procedureRec = procedureStore.getAt(procRecIdx);
+            LDK.Assert.assertNotEmpty('Unable to find procedure record from ClinicalEncountersClientStore.  ProcedureId was: [' + procedureId + ']', procedureRec);
+
+            return procedureRec;
+        }
+        return undefined;
     }
 });
