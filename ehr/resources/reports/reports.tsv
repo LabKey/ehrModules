@@ -28,11 +28,11 @@ necropsy	Pathology	query	Necropsy	TRUE		study	necropsy			date	FALSE	FALSE		qcsta
 clinCases	Clinical	query	Cases	true		study	Cases	Active Clinical Cases		date	false	false		qcstate/publicdata	This report contains one record for each case opend for this animal, including surgeries, exams, procedures, etc.
 behaviorCases	Behavior	query	Behavior Cases	true		study	cases	Open Behavior Cases		date	false	false		qcstate/publicdata	This displays active behavior cases
 behaviorRemarks	Behavior	query	Behavior Remarks	true		study	Clinical Remarks	Behavior Remarks		date	false	false		qcstate/publicdata	This report contains the behavior remarks entered about each animal
-clinObsBsu	Behavior	query	Observations	true		study	Clinical Observations	BSU Observations		date	false	false		qcstate/publicdata	This report contains one record for each encounter with each animal, including surergies, exams, procedures, etc.
+clinObsBehavior	Behavior	query	Observations	true		study	Clinical Observations	BSU Observations		date	false	false		qcstate/publicdata	This report contains one record for each encounter with each animal, including surergies, exams, procedures, etc.
 drug	Behavior	query	Behavior Treatments	true		study	Drug Administration	Behavior Treatments		date	false	false		qcstate/publicdata	This report contains the behavior treatments entered about each animal
-pairings	Behavior	query	Pairing Observations	true		study	pairingSummary			date	false	false			This report contains records about pairings made using each animal
+pairingsBehavior	Behavior	query	Pairing Observations	true		study	pairingSummary			date	false	false			This report contains records about pairings made using each animal
 pairingHousingSummary	Behavior	query	Pairing With Housing	true		study	pairingHousingSummary			date	false	false			This report contains records about pairings made using each animal
-roommateHistoryBSU	Behavior	query	Cagemate History	true		study	housingRoommates	Caged Housing Only		StartDate	false	false		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
+roommateHistoryBehavior	Behavior	query	Cagemate History	true		study	housingRoommates	Caged Housing Only		StartDate	false	false		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
 pairingHistory	Behavior	js	Pairing History	true		study	pairHistory			date	false	false		qcstate/publicdata	This report displays all animals that shared a cage, including the start date, stop date and days co-housed
 pregnancy	Reproductive Management	query	Pregnancy Outcomes	TRUE		study	pregnancy			date	FALSE	FALSE		qcstate/publicdata	This report displays pregnancy outcomes
 pedigree	Genetics	js	Pedigree	true		study	pedigree				false	false		qcstate/publicdata	This report displays pedigree data for animals, including parents, grandparents, siblings and offspring
@@ -44,8 +44,8 @@ parentage	Genetics	query	Parentage	true		study	demographicsParents				false	fals
 clinicalHistory	Clinical	js	Clinical History	TRUE		study	clinicalHistory			date	FALSE	FALSE		qcstate/publicdata	This report contains an overview of the animal\'s clinical history
 clinMedicationSchedule	Daily Reports	js	Clinical Medication Schedule	true		study	clinMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
 dietSchedule	Daily Reports	js	Diets	true		study	dietSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
-surgMedicationSchedule2	Surgery	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
-surgMedicationSchedule	Daily Reports	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+surgMedicationSchedule	Surgery	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
+surgMedicationScheduleDaily	Daily Reports	js	Surgical Medication Schedule	true		study	surgMedicationSchedule			date	false	false		qcstate/publicdata	This report contains a list of daily treatments to be administered
 incompleteTreatments	Daily Reports	js	Meds/Diet - Incomplete	true		study	incompleteTreatments			date	false	false		qcstate/publicdata	This report contains a list of daily treatments not yet administered
 bloodSchedule	Daily Reports	js	Blood Schedule	true		study	bloodSchedule			date	false	false		qcstate/publicdata	This report contains an overview of the animal's clinical history
 cases	Daily Reports	query	Active Clinical Cases	true		study	Cases	Active Clinical Cases		date	false	false		qcstate/publicdata	This displays active clinical cases
