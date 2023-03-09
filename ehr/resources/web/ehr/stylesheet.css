@@ -202,17 +202,17 @@ a:hover .ehr-tool-icon-lg {
 }
 
 .x4-panel.clinical-history-print {
-    overflow-y: visible !important;
+    overflow: visible !important;
 }
 
 .x4-panel-body.clinical-history-print {
-    overflow-y: visible !important;
+    overflow: visible !important;
 }
 
 .clinical-history-print .x4-panel{
-    overflow-y: visible !important;
+    overflow: visible !important;
 }
 
 .clinical-history-print .x4-panel-body{
-    overflow-y: visible !important;
+    overflow: visible !important;
 }
