@@ -588,7 +588,9 @@
             </column>
             <column columnName="snooze_date">
                 <columnTitle>Snooze Until</columnTitle>
+                <formatString>Date</formatString>
                  <nullable>true</nullable>
+                <isHidden>true</isHidden>
             </column>
         </columns>
     </table>
