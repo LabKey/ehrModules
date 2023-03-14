@@ -37,6 +37,14 @@ EHR.model.DataModelManager.registerMetadata('SurgicalRounds', {
                 hidden: true
             }
         },
+        'study.clinical_observations': {
+            findings: {
+                hidden: false,
+            },
+            remark: {
+                hidden: false,
+            }
+        },
         'study.blood': {
             reason: {
                 defaultValue: 'Clinical'
