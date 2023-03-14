@@ -586,6 +586,12 @@
                 <columnTitle>Employee Id</columnTitle>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="snooze_date">
+                <columnTitle>Snooze Until</columnTitle>
+                <formatString>Date</formatString>
+                 <nullable>true</nullable>
+                <isHidden>false</isHidden>
+            </column>
         </columns>
     </table>
     <table tableName="employeerequirementexemptions" tableDbType="TABLE">
