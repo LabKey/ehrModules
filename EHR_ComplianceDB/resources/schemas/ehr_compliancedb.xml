@@ -590,7 +590,7 @@
                 <columnTitle>Snooze Until</columnTitle>
                 <formatString>Date</formatString>
                  <nullable>true</nullable>
-                <isHidden>true</isHidden>
+                <isHidden>false</isHidden>
             </column>
         </columns>
     </table>
