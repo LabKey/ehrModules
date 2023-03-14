@@ -45,6 +45,14 @@
                         <columnTitle>Code</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="findings">
+                        <columnTitle>Findings</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="remark">
+                        <columnTitle>Remarks</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>
