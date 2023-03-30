@@ -235,7 +235,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     UserSchema us = getEHRStudyUserSchema(ti);
                     if (us != null)
                     {
-                        col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, null, "Animal", "Id", "Id"));
+                        col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, us.getContainer(), "Animal", "Id", "Id"));
                         col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", us.getContainer()));
                     }
                 }
