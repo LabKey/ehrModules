@@ -15,7 +15,7 @@
     "lint-fix": "eslint --fix"
   },
   "dependencies": {
-    "@labkey/components": "2.303.0-fb-ehr-editable-grid.0",
+    "@labkey/components": "2.308.0-fb-ehr-editable-grid.0",
     "@labkey/api": "1.18.7"
   },
   "devDependencies": {
