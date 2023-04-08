@@ -989,7 +989,7 @@ public class EHRServiceImpl extends EHRService
         {
             //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
+            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, new SQLFragment(chr + "(10)"));
             SQLFragment displaySQL = new SQLFragment("(SELECT ");
             displaySQL.append(groupConcatSQL);
             displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");
@@ -1010,7 +1010,7 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(displayCol);
 
             //programmatic version
-            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence());
+            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, ";").getSqlCharSequence());
             rawSQL.append("FROM ehr.snomed_tags t ");
             rawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             rawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
@@ -1029,7 +1029,7 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(rawCol);
 
             // Variant that's just the codes concatenated, without the sort index
-            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'").getSqlCharSequence());
+            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, ";").getSqlCharSequence());
             simpleRawSQL.append("FROM ehr.snomed_tags t ");
             simpleRawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             simpleRawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
