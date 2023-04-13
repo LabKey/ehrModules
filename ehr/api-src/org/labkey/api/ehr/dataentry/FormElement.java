@@ -47,7 +47,14 @@ public class FormElement
 
         DisplayColumn dc = _boundCol.getDisplayColumnFactory().createRenderer(_boundCol);
         dc.prepare(c);
-        JsonWriter.getMetaData(dc, null, true, true, true).forEach(json::put);
+        JsonWriter.getMetaData(dc, null, true, true, true).forEach((name, value) -> {
+            // The updated JSONObject library requires special handling for null values. If values are just set to Java null
+            // they will be excluded from the JSON. The EHR forms are expecting null values in the API response.
+            if (value == null)
+                value = JSONObject.NULL;
+
+            json.put(name, value);
+        });
 
         json.put("schemaName", _boundCol.getParentTable().getPublicSchemaName());
         json.put("queryName", _boundCol.getParentTable().getPublicName());
