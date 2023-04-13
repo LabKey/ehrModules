@@ -230,7 +230,7 @@ public class EHRTestHelper
         grid.clickTbarButton(btnLabel);
         grid.waitForRowCount(count + 1);
         grid.cancelEdit();
-        _test.sleep(700);
+        _test.sleep(200);
     }
 
     public void clickExt4WindowBtn(String title, String label)
