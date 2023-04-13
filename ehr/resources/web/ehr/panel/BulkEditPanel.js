@@ -29,6 +29,9 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     title: 'Bulk Edit',
 
     initComponent: function(){
+
+        LDK.Assert.assertTrue('formConfig has no fields', this.formConfig.fieldConfigs.length > 0);
+
         Ext4.apply(this, {
             itemId: 'formPanel',
             border: false,
@@ -80,7 +83,10 @@ Ext4.define('EHR.panel.BulkEditPanel', {
                 }, this);
 
                 var keys = Ext4.Object.getKeys(values);
-                if (keys.length == 1){
+
+                // there can be more than one value for certain fields, ex. Date field with the time component,
+                // there might be different times in the selected rows, so pick one as a default value
+                if (keys.length >= 1){
                     valMap[field.name] = values[keys[0]];
                 }
             }, this);
@@ -107,6 +113,7 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     getFieldConfigs: function(){
         var fields = this.callParent(arguments);
         var newItems = [];
+        LDK.Assert.assertTrue('Fields not found for bulk editing', fields.length > 0);
         Ext4.Array.forEach(fields, function(item){
             item.originalDisabled = item.disabled;
             item.disabled = true;
