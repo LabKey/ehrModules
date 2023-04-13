@@ -29,9 +29,6 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     title: 'Bulk Edit',
 
     initComponent: function(){
-
-        LDK.Assert.assertTrue('formConfig has no fields', this.formConfig.fieldConfigs.length > 0);
-
         Ext4.apply(this, {
             itemId: 'formPanel',
             border: false,
@@ -113,7 +110,6 @@ Ext4.define('EHR.panel.BulkEditPanel', {
     getFieldConfigs: function(){
         var fields = this.callParent(arguments);
         var newItems = [];
-        LDK.Assert.assertTrue('Fields not found for bulk editing', fields.length > 0);
         Ext4.Array.forEach(fields, function(item){
             item.originalDisabled = item.disabled;
             item.disabled = true;
