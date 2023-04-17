@@ -335,9 +335,24 @@ Ext4.define('EHR.data.DataEntryClientStore', {
 
     safeRemove: function(records){
         Ext4.Array.forEach(records, function(r){
-            var recs = [];
-            if (!r.phantom && r.get('requestid')){
-                r.isRemovedRequest = true;
+            // First check if the record is attached to a request
+            if (!r.phantom && r.get('requestid')) {
+
+                // Check if we're editing via request form, which will be using RequestStoreCollection
+                if (this.storeCollection.getRequestId &&
+                        this.storeCollection.getRequestId() === r.get('requestid')) {
+                    if (r.get('taskid')) {
+                        Ext4.Msg.alert('Unable to delete', 'The record is already attached to a task. It will be detached from the task but not deleted when saved.');
+                        r.isRemovedRequest = true;
+                    }
+                    else {
+                        // Do nothing special. This will be a true delete, because we're editing the request its request
+                        // form, and the row isn't yet attached to a task
+                    }
+                }
+                else {
+                    r.isRemovedRequest = true;
+                }
             }
         }, this);
 
