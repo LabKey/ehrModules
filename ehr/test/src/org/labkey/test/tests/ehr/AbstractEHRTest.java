@@ -430,17 +430,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Populate Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton("Populate " + tableLabel, 0);
-        confirmPopulate();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
-    }
-
-    protected void confirmPopulate()
-    {
-        // Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
@@ -450,17 +444,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Delete Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
-        confirmDelete();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
-    }
-
-    protected void confirmDelete()
-    {
-        //Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
