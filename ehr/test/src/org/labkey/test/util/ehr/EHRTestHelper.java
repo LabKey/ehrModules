@@ -172,13 +172,17 @@ public class EHRTestHelper
 
     public void addBatchToGrid(Ext4GridRef grid)
     {
-        String btnLable = "Add Batch";
-        grid.clickTbarButton(btnLable);
+        grid.clickTbarButton("Add Batch");
+    }
+
+    public void deleteSelectedFromGrid(Ext4GridRef grid)
+    {
+        grid.clickTbarButton("Delete Selected");
     }
 
     public void addRecordToGrid(Ext4GridRef grid, String btnLabel)
     {
-        Integer count = grid.getRowCount();
+        int count = grid.getRowCount();
         grid.clickTbarButton(btnLabel);
         grid.waitForRowCount(count + 1);
         grid.cancelEdit();
