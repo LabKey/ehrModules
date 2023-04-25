@@ -235,7 +235,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     UserSchema us = getEHRStudyUserSchema(ti);
                     if (us != null)
                     {
-                        col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, null, "Animal", "Id", "Id"));
+                        col.setFk(new QueryForeignKey(ti.getUserSchema(), null, us, null, "Animal", "Id", "Id"));
                         col.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${" + col.getName() + "}", us.getContainer()));
                     }
                 }
@@ -257,7 +257,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         UserSchema study = getEHRStudyUserSchema(ti);
                         if (study != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), study, null, "Clinpath Runs", "objectid", ID_COL));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, study, null, "Clinpath Runs", "objectid", ID_COL));
                     }
                     col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                     col.setUserEditable(false);
@@ -269,7 +269,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         UserSchema study = getEHRStudyUserSchema(ti);
                         if (study != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "core"), ehrContainer, "QCState","RowId", "Label"));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ehrContainer, "core"), ehrContainer, "QCState","RowId", "Label"));
                     }
                     //TODO: disabled due to issue with DataIterator
                     //col.setUserEditable(false);
@@ -281,7 +281,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         UserSchema study = getEHRStudyUserSchema(ti);
                         if (study != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), study, null, "Clinical Encounters", "objectid", ID_COL));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, study, null, "Clinical Encounters", "objectid", ID_COL));
                     }
                     col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                     break;
@@ -304,7 +304,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                         if (schema != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), schema, ehrContainer, "tasks", "taskid", "rowid"));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, schema, ehrContainer, "tasks", "taskid", "rowid"));
                     }
                     col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                     break;
@@ -315,7 +315,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         UserSchema schema = getUserSchema(ti, "ehr", ehrContainer);
                         if (schema != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), schema, ehrContainer, "requests", "requestid", "rowid"));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, schema, ehrContainer, "requests", "requestid", "rowid"));
                     }
                     col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                     break;
@@ -344,7 +344,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         //project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                         UserSchema us = getUserSchema(ti, "ehr", ehrContainer);
                         if (us != null)
-                            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, ehrContainer, "project", "project", "project"));
+                            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, us, ehrContainer, "project", "project", "project"));
                     }
                     break;
 
@@ -365,7 +365,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 UserSchema us = getUserSchema(ti, "ehr_lookups", ehrContainer);
                 if (us != null){
-                    room.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, ehrContainer, "rooms", "room", "room"));
+                    room.setFk(new QueryForeignKey(ti.getUserSchema(), null, us, ehrContainer, "rooms", "room", "room"));
                 }
             }
 
@@ -1223,7 +1223,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);        
-        col.setFk(new QueryForeignKey(ds.getUserSchema(), ds.getContainerFilter(), us, null, queryName, ID_COL, ID_COL));
+        col.setFk(new QueryForeignKey(ds.getUserSchema(), null, us, null, queryName, ID_COL, ID_COL));
 
         return col;
     }
@@ -1419,7 +1419,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
-                col.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "protocolActiveAnimals", "protocol", "protocol"));
+                col.setFk(new QueryForeignKey(table.getUserSchema(), null, us, null, "protocolActiveAnimals", "protocol", "protocol"));
             }
         }
 
@@ -1467,7 +1467,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col.setLabel("Animals Actively Assigned");
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
-                col.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "projectTotalActivelyAssigned", "project", "project"));
+                col.setFk(new QueryForeignKey(table.getUserSchema(), null, us, null, "projectTotalActivelyAssigned", "project", "project"));
             }
 
             if (table.getColumn("activelyAssignedBySpecies") == null)
@@ -1476,7 +1476,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 col2.setLabel("Animals Actively Assigned, By Species");
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
-                col2.setFk(new QueryForeignKey(table.getUserSchema(), table.getContainerFilter(), us, null, "projectTotalActivelyAssignedBySpecies", "project", "project"));
+                col2.setFk(new QueryForeignKey(table.getUserSchema(), null, us, null, "projectTotalActivelyAssignedBySpecies", "project", "project"));
             }
         }
 
@@ -1607,7 +1607,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             col.setReadOnly(true);
             col.setIsUnselectable(true);
             col.setUserEditable(false);
-            col.setFk(new QueryForeignKey(ti.getUserSchema(), ti.getContainerFilter(), us, null, "roomUtilization", "room", "room"));
+            col.setFk(new QueryForeignKey(ti.getUserSchema(), null, us, null, "roomUtilization", "room", "room"));
             ti.addColumn(col);
         }
     }
