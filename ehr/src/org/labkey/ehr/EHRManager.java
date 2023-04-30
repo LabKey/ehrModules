@@ -115,6 +115,8 @@ public class EHRManager
     public static final String EHRAdminUserPropName = "EHRAdminUser";
     public static final String EHRDefaultClinicalProjectName = "EHRDefaultClinicalProjectName";
     public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";
+    public static final String EHRPerformGeneticsCalculationsExternallyPropName = "EHRPerformGeneticsCalculationsExternally";
+
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
     @Queryable
     public static final String OBS_REVIEWED = "Reviewed";

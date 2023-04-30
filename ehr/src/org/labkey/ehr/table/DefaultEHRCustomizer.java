@@ -1205,8 +1205,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ds.addColumn(col8);
 
         var col21 = getWrappedIdCol(us, ds, "MhcStatus", "demographicsMhcStatus");
-        col12.setLabel("MHC Status");
-        col12.setDescription("MHC status");
+        col21.setLabel("MHC Status");
+        col21.setDescription("MHC status");
         ds.addColumn(col21);
 
         var id = ds.getMutableColumn(ID_COL);

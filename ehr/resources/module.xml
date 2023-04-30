@@ -97,6 +97,19 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRPerformGeneticsCalculationsExternally">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>If true, rather than run the R scripts locally to calculation kinship and inbreeding, these are assumed to have run externally and that step will be skipped. The pipeline assumes this external process generates the results TSVs and will attempt to import those files</description>
+            <defaultValue>false</defaultValue>
+            <inputType>select</inputType>
+            <options>
+                <option display="true" value="true"/>
+                <option display="false" value="false"/>
+            </options>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
     </properties>
     <requiredModuleContext>
         <module name="LDK"/>

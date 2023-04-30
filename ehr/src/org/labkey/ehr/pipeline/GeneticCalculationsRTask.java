@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
 import org.labkey.api.pipeline.PipelineJob;
@@ -34,9 +35,11 @@ import org.labkey.api.reports.report.r.RScriptEngineFactory;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.util.FileType;
+import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,7 +85,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public PipelineJob.Task<?> createTask(PipelineJob job)
         {
             GeneticCalculationsRTask task = new GeneticCalculationsRTask(this, job);
             setJoin(false);
@@ -94,6 +97,17 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         public boolean isJobComplete(PipelineJob job)
         {
             return false;
+        }
+
+        @Override
+        public boolean isParticipant(PipelineJob job) throws IOException
+        {
+            // The purpose of this code is to allow a server to opt-out of running these R scripts locally.
+            // In this scenario, a remote process would typically generate these data and copy the
+            ModuleProperty performRemoteProp = ModuleLoader.getInstance().getModule(EHRModule.class).getModuleProperties().get(EHRManager.EHRPerformGeneticsCalculationsExternallyPropName);
+            boolean performRemote = Boolean.parseBoolean(performRemoteProp.getEffectiveValue(job.getContainer()));
+
+            return !performRemote && super.isParticipant(job);
         }
     }
 
