@@ -44,6 +44,8 @@ Ext4.define('EHR.panel.BulkEditPanel', {
             }
         });
 
+        Ext4.QuickTips.init();
+
         this.callParent(arguments);
 
         this.addEvents('bulkeditcomplete');
