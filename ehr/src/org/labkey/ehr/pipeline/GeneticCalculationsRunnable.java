@@ -73,7 +73,7 @@ public class GeneticCalculationsRunnable
         {
             String taskIdString =  FileAnalysisTaskPipeline.class.getName() + ":" + KINSHIP_PIPELINE_NAME;
             TaskId taskId = new TaskId(taskIdString);
-            TaskPipeline taskPipeline = PipelineJobService.get().getTaskPipeline(taskId);
+            TaskPipeline<?> taskPipeline = PipelineJobService.get().getTaskPipeline(taskId);
             if (taskPipeline == null)
                 throw new PipelineJobException("Unable to find kinship pipeline: " + taskId);
 
@@ -135,11 +135,7 @@ public class GeneticCalculationsRunnable
         {
             throw new ConfigurationException("The EHR kinship pipeline has not been configured on this server", e);
         }
-        catch (IOException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (PipelineValidationException e)
+        catch (IOException | PipelineValidationException e)
         {
             throw new PipelineJobException(e);
         }
