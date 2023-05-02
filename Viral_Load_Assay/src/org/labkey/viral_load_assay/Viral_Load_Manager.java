@@ -102,7 +102,7 @@ public class Viral_Load_Manager
                         {
                             int decimals = new DecimalFormat(format).getMaximumFractionDigits();
                             JSONObject editor = new JSONObject().put("decimalPrecision", decimals);
-                            var col = (JSONObject) resultsMeta.get(column.getName());
+                            JSONObject col = resultsMeta.getJSONObject(column.getName());
                             if (null == col)
                                 col = new JSONObject();
 
