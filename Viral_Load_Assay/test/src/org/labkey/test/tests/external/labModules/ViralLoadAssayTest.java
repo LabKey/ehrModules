@@ -64,7 +64,7 @@ import static org.junit.Assert.assertNotNull;
 @Category({External.class, EHR.class, LabModule.class})
 public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 {
-    private static final String ASSAY_NAME = "Viral_Load_Test";
+    private static final String ASSAY_NAME = "Viral Load Test";
     private static final String LC480 = "LC480";
     private static final String LC96 = "LC96";
     private String DETECTOR_NAME = "PIATAK SIVGAG";
@@ -296,7 +296,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
         Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
         runFields.put("exptNumber", FieldDefinition.ColumnType.String);
-        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + "_" + ASSAY_NAME, null, runFields, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, runFields, resultFields);
     }
 
     public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
@@ -355,7 +355,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
         runFields.put("exptNumber", FieldDefinition.ColumnType.String);
 
-        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + "_" + ASSAY_NAME, null, runFields, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, runFields, resultFields);
     }
 
     private void ensureABI7500Records() throws CommandException, IOException
@@ -540,7 +540,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
     private void createWNPRCPlateTemplate(String instrument)
     {
-        String fullAssayName = instrument + "_" + ASSAY_NAME;
+        String fullAssayName = instrument + " " + ASSAY_NAME;
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
         click(Ext4Helper.Locators.menuItem("Prepare Run"));
@@ -809,7 +809,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
     private void importWNPRCResults(String instrument) throws Exception
     {
-        String fullAssayName = instrument + "_" + ASSAY_NAME;
+        String fullAssayName = instrument + " " + ASSAY_NAME;
         log("Verifying " + instrument + " Import");
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
