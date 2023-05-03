@@ -47,6 +47,7 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +64,7 @@ import static org.junit.Assert.assertNotNull;
 @Category({External.class, EHR.class, LabModule.class})
 public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 {
-    private static final String ASSAY_NAME = "Viral Load Test";
+    private static final String ASSAY_NAME = "Viral_Load_Test";
     private static final String LC480 = "LC480";
     private static final String LC96 = "LC96";
     private String DETECTOR_NAME = "PIATAK SIVGAG";
@@ -293,7 +294,9 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         Map<String, FieldDefinition.ColumnType> resultFields = new HashMap<>();
         resultFields.put("uniqueSample", FieldDefinition.ColumnType.String);
         resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
-        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, null, resultFields);
+        Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
+        runFields.put("exptNumber", FieldDefinition.ColumnType.String);
+        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + "_" + ASSAY_NAME, null, runFields, resultFields);
     }
 
     public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
@@ -349,7 +352,10 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         resultFields.put("samplePrepNotes", FieldDefinition.ColumnType.String);
         resultFields.put("number", FieldDefinition.ColumnType.Integer);
 
-        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, null, resultFields);
+        Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
+        runFields.put("exptNumber", FieldDefinition.ColumnType.String);
+
+        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + "_" + ASSAY_NAME, null, runFields, resultFields);
     }
 
     private void ensureABI7500Records() throws CommandException, IOException
@@ -534,7 +540,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
     private void createWNPRCPlateTemplate(String instrument)
     {
-        String fullAssayName = instrument + " " + ASSAY_NAME;
+        String fullAssayName = instrument + "_" + ASSAY_NAME;
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
         click(Ext4Helper.Locators.menuItem("Prepare Run"));
@@ -803,7 +809,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
     private void importWNPRCResults(String instrument) throws Exception
     {
-        String fullAssayName = instrument + " " + ASSAY_NAME;
+        String fullAssayName = instrument + "_" + ASSAY_NAME;
         log("Verifying " + instrument + " Import");
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
@@ -839,6 +845,11 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
         log("Saving valid data");
         textarea.setValue(text);
+
+        WebElement newCategoryField = Locator.xpath("//input[contains(@id, 'textfield') and @name='exptNumber']").notHidden().waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT);
+        setFormElementJS(newCategoryField, "1000");
+        fireEvent(newCategoryField, SeleniumEvent.blur);
+
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
         waitForElement(Ext4Helper.Locators.window("Success"));
         clickAndWait(Ext4Helper.Locators.ext4Button("OK"));
