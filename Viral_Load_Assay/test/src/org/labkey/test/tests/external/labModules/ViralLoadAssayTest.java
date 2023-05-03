@@ -846,9 +846,9 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         log("Saving valid data");
         textarea.setValue(text);
 
-        WebElement newCategoryField = Locator.xpath("//input[contains(@id, 'textfield') and @name='exptNumber']").notHidden().waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT);
-        setFormElementJS(newCategoryField, "1000");
-        fireEvent(newCategoryField, SeleniumEvent.blur);
+        WebElement exptNumberField = Locator.xpath("//input[contains(@id, 'textfield') and @name='exptNumber']").notHidden().waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT);
+        setFormElementJS(exptNumberField, "1000");
+        fireEvent(exptNumberField, SeleniumEvent.blur);
 
         waitAndClick(Ext4Helper.Locators.ext4Button("Upload"));
         waitForElement(Ext4Helper.Locators.window("Success"));
