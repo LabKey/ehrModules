@@ -67,6 +67,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
     private static final String ASSAY_NAME = "Viral Load Test";
     private static final String LC480 = "LC480";
     private static final String LC96 = "LC96";
+    private static final String VIRAL_LOAD_GENERIC = "Viral_Load";
     private String DETECTOR_NAME = "PIATAK SIVGAG";
 
     private static final String[][] TEMPLATE_DATA = new String[][]{
@@ -273,10 +274,12 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         setUpTest();
         createPlateTemplate();
         importABI7500Results();
-        createWNPRCPlateTemplate(LC480);
-        importWNPRCResults(LC480);
-        createWNPRCPlateTemplate(LC96);
-        importWNPRCResults(LC96);
+        createWNPRCPlateTemplate(LC480, LC480);
+        importWNPRCResults(LC480, LC480);
+        createWNPRCPlateTemplate(LC96, LC96);
+        importWNPRCResults(LC96, LC96);
+        createWNPRCPlateTemplate(VIRAL_LOAD_GENERIC, LC96);
+        importWNPRCResults(VIRAL_LOAD_GENERIC, LC96);
     }
 
     @Override
@@ -287,6 +290,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         ensureABI7500Records();
         setUpLC480Assay();
         setUpLC96Assay();
+        setUpGenericAssay();
     }
 
     private void setUpLC480Assay() throws Exception
@@ -296,7 +300,16 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
         Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
         runFields.put("exptNumber", FieldDefinition.ColumnType.String);
-        defineViralAssayWithAdditionalFields("Viral Loads",  LC480 + " " + ASSAY_NAME, null, runFields, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads",  LC480, null, runFields, resultFields);
+    }
+    private void setUpGenericAssay() throws Exception
+    {
+        Map<String, FieldDefinition.ColumnType> resultFields = new HashMap<>();
+        resultFields.put("uniqueSample", FieldDefinition.ColumnType.String);
+        resultFields.put("nucleicAcidVol", FieldDefinition.ColumnType.Decimal);
+        Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
+        runFields.put("exptNumber", FieldDefinition.ColumnType.String);
+        defineViralAssayWithAdditionalFields("Viral Loads",  VIRAL_LOAD_GENERIC, null, runFields, resultFields);
     }
 
     public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
@@ -354,8 +367,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
         Map<String, FieldDefinition.ColumnType> runFields = new HashMap<>();
         runFields.put("exptNumber", FieldDefinition.ColumnType.String);
-
-        defineViralAssayWithAdditionalFields("Viral Loads", LC96 + " " + ASSAY_NAME, null, runFields, resultFields);
+        defineViralAssayWithAdditionalFields("Viral Loads", LC96, null, runFields, resultFields);
     }
 
     private void ensureABI7500Records() throws CommandException, IOException
@@ -538,9 +550,9 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         }
     }
 
-    private void createWNPRCPlateTemplate(String instrument)
+    private void createWNPRCPlateTemplate(String instrument, String importMethod)
     {
-        String fullAssayName = instrument + " " + ASSAY_NAME;
+        String fullAssayName = instrument;
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
         click(Ext4Helper.Locators.menuItem("Prepare Run"));
@@ -561,7 +573,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         Ext4ComboRef.waitForField(this, "Import Method");
         Ext4ComboRef importMethodField = Ext4ComboRef.getForLabel(this, "Import Method");
         importMethodField.clickTrigger();
-        getDriver().findElement(By.xpath("//li[text()='" + instrument + "']")).click();
+        getDriver().findElement(By.xpath("//li[text()='" + importMethod + "']")).click();
 
         waitForElement(Locator.xpath("//span[contains(text(), 'Source Material') and contains(@class, 'x4-column-header-text')]")); //ensure grid loaded
         _helper.addRecordsToAssayTemplate(WNPRC_TEMPLATE_DATA, expectedCols);
@@ -807,9 +819,9 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         assertEquals("Run plan not marked completed", 0, dr2.getDataRowCount());
     }
 
-    private void importWNPRCResults(String instrument) throws Exception
+    private void importWNPRCResults(String instrument, String importMethod) throws Exception
     {
-        String fullAssayName = instrument + " " + ASSAY_NAME;
+        String fullAssayName = instrument;
         log("Verifying " + instrument + " Import");
         _helper.goToLabHome();
         _helper.clickNavPanelItem(fullAssayName + ":", IMPORT_DATA_TEXT);
@@ -822,7 +834,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
         waitForViralLoadAssayPageWithSavedTemplate();
 
-        assertEquals("Incorrect value for field", instrument, Ext4FieldRef.getForLabel(this, "Instrument").getValue());
+        assertEquals("Incorrect value for field", importMethod, Ext4FieldRef.getForLabel(this, "Instrument").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(50), Ext4FieldRef.getForLabel(this, "Eluate Volume").getValue());
         assertEquals("Incorrect value for field", Long.valueOf(5), Ext4FieldRef.getForLabel(this, "Sample Vol Per Rxn").getValue());
 
