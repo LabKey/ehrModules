@@ -996,7 +996,7 @@ public class EHRServiceImpl extends EHRService
             displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             if (codeFilter != null)
             {
-                displaySQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                displaySQL.append(" t.code LIKE ").appendValue(codeFilter + "%").append(" AND " );
             }
             displaySQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
             displaySQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "' \n");
@@ -1010,15 +1010,15 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(displayCol);
 
             //programmatic version
-            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, ";").getSqlCharSequence());
+            SQLFragment rawSQL = new SQLFragment("(SELECT ").append(ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, ";"));
             rawSQL.append("FROM ehr.snomed_tags t ");
             rawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             rawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
             if (codeFilter != null)
             {
-                rawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                rawSQL.append(" t.code LIKE ").appendValue(codeFilter + "%").append(" AND " );
             }
-            rawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            rawSQL.append("t.container = ").appendValue(ti.getUserSchema().getContainer()).append("\n");
             rawSQL.append("GROUP BY t.recordid)");
 
             ExprColumn rawCol = new ExprColumn(ti, displayColumnName + "Raw", rawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
@@ -1029,15 +1029,15 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(rawCol);
 
             // Variant that's just the codes concatenated, without the sort index
-            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, ";").getSqlCharSequence());
+            SQLFragment simpleRawSQL = new SQLFragment("(SELECT ").append(ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, ";"));
             simpleRawSQL.append("FROM ehr.snomed_tags t ");
             simpleRawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             simpleRawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
             if (codeFilter != null)
             {
-                simpleRawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                simpleRawSQL.append(" t.code LIKE ").appendValue(codeFilter + "%").append(" AND " );
             }
-            simpleRawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
+            simpleRawSQL.append("t.container = ").appendValue(ti.getUserSchema().getContainer().getId()).append("\n");
             simpleRawSQL.append("GROUP BY t.recordid)");
 
             ExprColumn simpleRawCol = new ExprColumn(ti, displayColumnName + "RawSimple", simpleRawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
