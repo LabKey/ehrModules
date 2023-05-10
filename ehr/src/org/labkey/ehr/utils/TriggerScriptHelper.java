@@ -1460,44 +1460,42 @@ public class TriggerScriptHelper
 
     public void processModifiedRequests(final List<String> requestIds)
     {
-        JobRunner.getDefault().execute(() -> {
-            _log.info("processing request status for " + requestIds.size() + " records");
-            for (String requestId : requestIds)
+        _log.info("processing request status for " + requestIds.size() + " records");
+        for (String requestId : requestIds)
+        {
+            TableInfo studyDataTable = getTableInfo("study", "StudyData");
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
+            TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
+
+            // set the parent ehr.requests record to a specific QC State if all rows for that request match
+            Integer requestState = null;
+            for (Integer rowQcState : selector.getArrayList(Integer.class))
             {
-                TableInfo studyDataTable = getTableInfo("study", "StudyData");
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
-                TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
-
-                // set the parent ehr.requests record to a specific QC State if all rows for that request match
-                Integer requestState = null;
-                for (Integer rowQcState : selector.getArrayList(Integer.class))
+                if (requestState == null)
                 {
-                    if (requestState == null)
-                    {
-                        requestState = rowQcState;
-                    }
-                    else if (!requestState.equals(rowQcState))
-                    {
-                        requestState = null;
-                        break;
-                    }
+                    requestState = rowQcState;
                 }
-
-                if (requestState != null)
+                else if (!requestState.equals(rowQcState))
                 {
-                    _log.info("Updating request status since all children agree");
-                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
-                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
-                            new SQLFragment("UPDATE ").
-                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
-                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
-                                    add(requestState).
-                                    add(new Date()).
-                                    add(getUser().getUserId()).
-                                    add(requestId));
+                    requestState = null;
+                    break;
                 }
             }
-        });
+
+            if (requestState != null)
+            {
+                _log.info("Updating request status since all children agree");
+                // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                        new SQLFragment("UPDATE ").
+                                append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                add(requestState).
+                                add(new Date()).
+                                add(getUser().getUserId()).
+                                add(requestId));
+            }
+        }
     }
 
     private void appendLinkToRequest(String requestid, String formtype, StringBuilder html, TableInfo requestTable)
