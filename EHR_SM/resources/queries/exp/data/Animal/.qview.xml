@@ -12,6 +12,10 @@
                 <property name="columnTitle" value="Species"/>
             </properties>
         </column>
-        <column name="Id/Demographics/calculated_status"/>
+        <column name="Id/Demographics/calculated_status/code">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
     </columns>
 </customView>
