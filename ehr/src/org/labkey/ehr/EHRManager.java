@@ -889,7 +889,7 @@ public class EHRManager
                     if (ds != null)
                     {
                         _log.info("increasing size of remark column for dataset: " + label);
-                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
+                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max)");
                         SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
                         se.execute(sql);
                     }
