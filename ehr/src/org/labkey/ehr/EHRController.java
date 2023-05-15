@@ -1579,7 +1579,7 @@ public class EHRController extends SpringActionController
 
                     Map<Enum, Object> configParameters = new HashMap<>();
                     configParameters.put(DetailedAuditLogDataIterator.AuditConfigs.AuditBehavior, behaviorType);
-                    configParameters.put(QueryUpdateService.ConfigParameters.SkipInsertOptionValidation, Boolean.TRUE);
+
                     context.setConfigParameters(configParameters);
                     context.setInsertOption(QueryUpdateService.InsertOption.INSERT);
 
@@ -1598,6 +1598,8 @@ public class EHRController extends SpringActionController
                             auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
 
                         context = new DataIteratorContext(batchErrors);
+                        configParameters.put(QueryUpdateService.ConfigParameters.SkipInsertOptionValidation, Boolean.TRUE);
+
                         context.setConfigParameters(configParameters);
                         context.setInsertOption(QueryUpdateService.InsertOption.REPLACE);
                         context.getAlternateKeys().add("reportname");
