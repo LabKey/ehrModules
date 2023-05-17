@@ -1,0 +1,71 @@
+<p>
+    Each of the below data grids identifies issues present in the animal colony data that would prevent the pedigree plots from working correctly.<br>
+    To correct any data consistency issues, use this report as a reference for identifying the data issues, and then correct them on the demographics dataset, which can be access with the below button.<br>
+</p>
+<button onclick = "linkBrowseData()">
+    Correct Data
+</button>
+<p><br></p>
+<table>
+    <tr>
+        <td>
+            <div name="webpart" id='parentsDifferentSpeciesReport' />
+        </td>
+        <td>
+            <div name="webpart" id='parentsBothDamAndSireReport' />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div name="webpart" id='parentsWrongGenderReport' />
+        </td>
+        <td>
+            <div name="webpart" id='parentsYoungerThanOffspringReport' />
+        </td>
+    </tr>
+</table>
+
+<script>
+
+function linkBrowseData() {
+    window.location = LABKEY.ActionURL.buildURL(
+        "ehr",
+        "updateQuery",
+        LABKEY.ActionURL.getContainer(),
+        {
+            schemaName: "study",
+            queryName: "demographics",
+            returnUrl: window.location
+        }
+        );
+}
+
+new LABKEY.QueryWebPart({
+            renderTo: 'parentsDifferentSpeciesReport',
+            title: 'Parents that are wrong species',
+            schemaName: 'study',
+            queryName: 'parentsDifferentSpecies'
+});
+
+new LABKEY.QueryWebPart({
+            renderTo: 'parentsBothDamAndSireReport',
+            title: 'Parents that are listed as both dam and sire',
+            schemaName: 'study',
+            queryName: 'parentsBothDamAndSire'
+});
+
+new LABKEY.QueryWebPart({
+            renderTo: 'parentsWrongGenderReport',
+            title: 'Parents that are listed as both dam and sire',
+            schemaName: 'study',
+            queryName: 'parentsWrongGender'
+});
+
+new LABKEY.QueryWebPart({
+            renderTo: 'parentsYoungerThanOffspringReport',
+            title: 'Parents that are listed as both dam and sire',
+            schemaName: 'study',
+            queryName: 'parentsYoungerThanOffspring'
+});
+
+</script>
