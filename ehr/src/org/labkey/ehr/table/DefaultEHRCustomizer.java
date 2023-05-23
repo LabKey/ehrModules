@@ -56,6 +56,7 @@ import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.LookAndFeelProperties;
@@ -141,6 +142,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         else if (matches(table, "ehr", "protocol"))
         {
             customizeProtocolTable((AbstractTableInfo) table);
+        }
+        else if (matches(table, "ehr", "reports"))
+        {
+            customizeReportsTable((AbstractTableInfo) table);
         }
         else if (matches(table, "ehr_lookups", "procedures"))
         {
@@ -1402,6 +1407,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             displayCol.setLabel("Short Name");
             table.addColumn(displayCol);
         }
+    }
+
+    private void customizeReportsTable(AbstractTableInfo table)
+    {
+        // Enabling this option for populating reports from additionalReports.tsv. This is set here while data iterator
+        // refinements are being made and may be removed in the future.
+        table.setAllowedInsertOption(QueryUpdateService.InsertOption.REPLACE);
     }
 
     private void customizeProtocolTable(AbstractTableInfo table)

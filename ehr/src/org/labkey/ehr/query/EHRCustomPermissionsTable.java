@@ -17,10 +17,6 @@ public class EHRCustomPermissionsTable<SchemaType extends UserSchema> extends Cu
     public EHRCustomPermissionsTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {
         super(schema, table, cf);
-
-        setAllowedInsertOption(QueryUpdateService.InsertOption.MERGE);
-        setAllowedInsertOption(QueryUpdateService.InsertOption.REPLACE);
-        setAllowedInsertOption(QueryUpdateService.InsertOption.UPSERT);
     }
 
     @Override
