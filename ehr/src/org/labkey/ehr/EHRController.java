@@ -1579,6 +1579,7 @@ public class EHRController extends SpringActionController
 
                     Map<Enum, Object> configParameters = new HashMap<>();
                     configParameters.put(DetailedAuditLogDataIterator.AuditConfigs.AuditBehavior, behaviorType);
+
                     context.setConfigParameters(configParameters);
                     context.setInsertOption(QueryUpdateService.InsertOption.INSERT);
 
