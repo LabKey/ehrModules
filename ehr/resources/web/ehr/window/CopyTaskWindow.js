@@ -211,7 +211,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
             LDK.Assert.assertNotEmpty('Unable to find serverStore for: ' + key, serverStore);
 
             //TODO: change to something metadata-driven
-            var blacklist = ['date', 'enddate', 'parentid', 'requestid', 'taskid', 'runid', 'objectid', 'lsid', 'qcstate'];
+            const blockList = ['date', 'enddate', 'parentid', 'requestid', 'taskid', 'runid', 'objectid', 'lsid', 'qcstate'];
 
             var fields = [];
             multi.add(LABKEY.Query.selectRows, {
@@ -251,7 +251,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                             }
 
                             serverStore.getFields().each(function(field){
-                                if (blacklist.indexOf(field.name.toLowerCase()) > -1){
+                                if (blockList.indexOf(field.name.toLowerCase()) > -1){
                                     return;
                                 }
 
