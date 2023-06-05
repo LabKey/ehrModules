@@ -2320,7 +2320,7 @@ public class TriggerScriptHelper
             {
                 new SqlExecutor(ti.getSchema()).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE objectid = ?", pk));
             }
-            _log.info("deleted " + pks.size() + "snomed tags for record: " + objectid);
+            _log.info("deleted " + pks.size() + " snomed tags for record: " + objectid);
         }
     }
 

@@ -769,7 +769,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     var incrementSnomedIndex = true;
 
-    if (row && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
+    if (row && !row.codesRaw && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
         var newCodes = [];
         for (var i = 0; i < helper.getSNOMEDSubsetCodeFieldNames().length; i++) {
             var fieldName =  helper.getSNOMEDSubsetCodeFieldNames()[i];
