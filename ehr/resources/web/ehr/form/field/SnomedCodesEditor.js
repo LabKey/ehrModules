@@ -108,6 +108,10 @@ Ext4.define('EHR.window.SnomedCodeWindow', {
                     }
 
                     win.boundRec.set(win.boundColumn, codes.length ? codes.join(';') : null);
+                    if (win.boundColumn !== 'codesRaw') {
+                        // Reduce ambiguity by not sending conflicting sets of codes in the combined and per-category fields
+                        win.boundRec.set('codesRaw', null);
+                    }
                     win.close();
                 }
             },{
