@@ -167,6 +167,12 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         Ext4.Array.forEach(this.records, function(r){
             r.set(values);
 
+            if (this.getBoundRecord() && this.getBoundRecord().setAdditionalFields) {
+                Ext4.Array.forEach(this.getBoundRecord().setAdditionalFields, function(field){
+                    r.set(field);
+                }, this);
+            }
+
             if (!r.store){
                 toAdd.push(r);
             }
