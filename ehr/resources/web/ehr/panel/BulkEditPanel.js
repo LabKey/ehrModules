@@ -167,8 +167,17 @@ Ext4.define('EHR.panel.BulkEditPanel', {
         Ext4.Array.forEach(this.records, function(r){
             r.set(values);
 
-            if (this.getBoundRecord() && this.getBoundRecord().setAdditionalFields) {
-                Ext4.Array.forEach(this.getBoundRecord().setAdditionalFields, function(field){
+            /**
+             *  bulkPropertyAdditionalFields can be used to set additional fields on the form that are
+             *  hidden but needed to be set in the background (fields that need to have values but not from users)
+             *
+             *  Example Usage:
+             *  This can be set in the custom Ext fields using the boundRecord
+             *  this.boundRecord['bulkPropertyAdditionalFields'] = [{'fieldName' : value}];
+             *
+             * */
+            if (this.getBoundRecord() && this.getBoundRecord().bulkPropertyAdditionalFields) {
+                Ext4.Array.forEach(this.getBoundRecord().bulkPropertyAdditionalFields, function(field){
                     r.set(field);
                 }, this);
             }
