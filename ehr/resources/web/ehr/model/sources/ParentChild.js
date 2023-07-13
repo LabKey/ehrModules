@@ -4,6 +4,10 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/*
+    This applies metadata to child form sections to inherit fields from a parent form section.
+ */
+
 EHR.model.DataModelManager.registerMetadata('ParentChild', {
     allQueries: {
         Id: {
