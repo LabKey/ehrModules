@@ -433,7 +433,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             {
                 _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
             }
-        });
+        }, 5000);
     }
 
     /**

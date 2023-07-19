@@ -126,7 +126,10 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
 
         List<String> args = new ArrayList<>();
         args.add(exePath);
-        args.add("--vanilla");
+        args.add("--no-save"); // don't save workspace
+        args.add("--no-environ"); // Do not read any user file to set environment variables.
+        args.add("--no-init-file"); // Do not read the user’s profile at startup.
+        args.add("--no-restore"); // don't restore saved objects
         args.add(scriptPath);
         args.add("-f");
         args.add(tsvFile.getPath());
