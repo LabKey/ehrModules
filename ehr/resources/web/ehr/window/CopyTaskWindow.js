@@ -261,6 +261,8 @@ Ext4.define('EHR.window.CopyTaskWindow', {
 
                             var model = serverStore.addServerModel({});
                             model.set(obj);
+                            // this is a new record, so we need to mark it as phantom
+                            model.phantom = true;
 
                             this.toAddMap[serverStore.storeId].push(model);
                         }, this);
