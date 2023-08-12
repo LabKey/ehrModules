@@ -618,16 +618,28 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         //}
     },
 
-    //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
-    addServerModel: function(data){
+    // creates a model for the provided server store, handling any dependencies within other stores in the collection
+    createServerModel: function(data, doesNotExistOnServer){
         data = data || {};
         if (EHR.debug)
             console.log('creating server model');
         var model = this.createModel(data);
+
+        // phantom is a property Ext4 stores use to identify whether a record exists on the server or not.
+        // This will default to undefined, but callers should consider setting this as appropriate:
+        if (doesNotExistOnServer) {
+            model.phantom = true;
+        }
+
         model.serverErrors = Ext4.create('EHR.data.Errors', {
             record: model
         });
 
+        return model;
+    },
+
+    addServerModel: function(data){
+        var model = this.createServerModel(data);
         this.add(model);
 
         return model;
