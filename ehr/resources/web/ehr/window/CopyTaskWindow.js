@@ -9,6 +9,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
     width: 600,
     noun: 'Task',
     queryName: 'tasks',
+    defaultQCStateLabel: null,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -250,6 +251,10 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                                 obj.requestid = requestId;
                             }
 
+                            if (this.defaultQCStateLabel) {
+                                obj.QCStateLabel = this.defaultQCStateLabel;
+                            }
+
                             serverStore.getFields().each(function(field){
                                 if (blockList.indexOf(field.name.toLowerCase()) > -1){
                                     return;
@@ -259,7 +264,8 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                                     obj[field.name] = row.getValue(field.name);
                             }, this);
 
-                            var model = serverStore.addServerModel({});
+                            // NOTE: models are created here but not added to the store until all queries return:
+                            var model = serverStore.createServerModel({}, true);
                             model.set(obj);
 
                             this.toAddMap[serverStore.storeId].push(model);
