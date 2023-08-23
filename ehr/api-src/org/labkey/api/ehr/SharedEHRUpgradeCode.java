@@ -115,7 +115,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         else if (methodName.startsWith(IMPORT_FROM_TSV_PREFIX))
         {
             String[] tsvArguments = methodName.split(";");
-            if (tsvArguments.length != 4)
+            if (tsvArguments.length < 4 || tsvArguments.length > 5)
             {
                 throw new UnsupportedOperationException("Expected three arguments for importFromTsv but got " + (tsvArguments.length - 1));
             }
@@ -123,7 +123,15 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             String queryName = tsvArguments[2];
             String tsvPath = tsvArguments[3];
 
-            _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+            if (tsvArguments.length == 5)
+            {
+                String containerPath = tsvArguments[4];
+                _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath, containerPath));
+            }
+            else
+            {
+                _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+            }
         }
         else if (methodName.startsWith(IMPORT_DOMAIN_TEMPLATE))
         {
@@ -216,7 +224,22 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             {
                 for (TsvImport tsvImport : _tsvImports)
                 {
-                    importFile(tsvImport, container, user);
+                    if (tsvImport._containerPath != null)
+                    {
+                        Container tsvImportContainer = ContainerManager.getForPath(tsvImport._containerPath);
+                        if (tsvImportContainer != null)
+                        {
+                            importFile(tsvImport, ContainerManager.getForPath(tsvImport._containerPath), user);
+                        }
+                        else
+                        {
+                            importFile(tsvImport, container, user);
+                        }
+                    }
+                    else
+                    {
+                        importFile(tsvImport, container, user);
+                    }
                 }
 
                 if (_reloadFolder)
@@ -308,12 +331,21 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         private final String _schemaName;
         private final String _queryName;
         private final String _tsvPath;
+        private String _containerPath;
 
         public TsvImport(String schemaName, String queryName, String tsvPath)
         {
             _schemaName = schemaName;
             _queryName = queryName;
             _tsvPath = tsvPath;
+        }
+
+        public TsvImport(String schemaName, String queryName, String tsvPath, String containerPath)
+        {
+            _schemaName = schemaName;
+            _queryName = queryName;
+            _tsvPath = tsvPath;
+            _containerPath = containerPath;
         }
 
         @Override
