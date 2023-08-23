@@ -43,8 +43,8 @@ public class SingleQueryFormSection extends SimpleFormSection
         Map<String, Object> bindConfig = new HashMap<>();
         bindConfig.put("createRecordOnLoad", true);
         formConfig.put("bindConfig", bindConfig);
-        formConfig.put("title", null);
-        formConfig.put("label", null);
+        formConfig.put("title", JSONObject.NULL);
+        formConfig.put("label", JSONObject.NULL);
         formConfig.put("maxItemsPerCol", 8);
         ret.put("formConfig", formConfig);
 
