@@ -229,10 +229,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                         Container tsvImportContainer = ContainerManager.getForPath(tsvImport._containerPath);
                         if (tsvImportContainer != null)
                         {
-                            importFile(tsvImport, ContainerManager.getForPath(tsvImport._containerPath), user);
+                            importFile(tsvImport, tsvImportContainer, user);
                         }
                         else
                         {
+                            LOG.warn("Unable to find container for path " + tsvImport._containerPath + ". Importing into EHR study container.");
                             importFile(tsvImport, container, user);
                         }
                     }
