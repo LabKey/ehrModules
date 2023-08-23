@@ -117,7 +117,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             String[] tsvArguments = methodName.split(";");
             if (tsvArguments.length < 4 || tsvArguments.length > 5)
             {
-                throw new UnsupportedOperationException("Expected three arguments for importFromTsv but got " + (tsvArguments.length - 1));
+                throw new UnsupportedOperationException("Expected three or four arguments for importFromTsv but got " + (tsvArguments.length - 1));
             }
             String schemaName = tsvArguments[1];
             String queryName = tsvArguments[2];
@@ -342,9 +342,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
 
         public TsvImport(String schemaName, String queryName, String tsvPath, String containerPath)
         {
-            _schemaName = schemaName;
-            _queryName = queryName;
-            _tsvPath = tsvPath;
+           this(schemaName, queryName, tsvPath);
             _containerPath = containerPath;
         }
 
