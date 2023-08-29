@@ -16,6 +16,7 @@
 package org.labkey.api.ehr.dataentry;
 
 import org.json.JSONObject;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class SingleQueryFormSection extends SimpleFormSection
         formConfig.put("title", null);
         formConfig.put("label", null);
         formConfig.put("maxItemsPerCol", 8);
-        ret.put("formConfig", formConfig);
+        ret.put("formConfig", JsonUtil.toJsonPreserveNulls(formConfig));
 
         return ret;
     }
