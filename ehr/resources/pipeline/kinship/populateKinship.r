@@ -21,9 +21,9 @@ allPed <- read.table(opts$inputFile, quote="\"")
 colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Species')
 
 allPed$Id[allPed$Id == ""] <- NA
-allPed$Id[allPed$Dam == ""] <- NA
-allPed$Id[allPed$Sire == ""] <- NA
-allPed$Id[allPed$Gender == ""] <- NA
+allPed$Dam[allPed$Dam == ""] <- NA
+allPed$Sire[allPed$Sire == ""] <- NA
+allPed$Gender[allPed$Gender == ""] <- NA
 
 allPed$Species <- as.character(allPed$Species)
 allPed$Species[is.na(allPed$Species)] <- c('Unknown')
