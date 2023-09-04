@@ -7,7 +7,6 @@
 # This R script will calculate and store kinship coefficients (aka. relatedness) for all animals in the colony.  This is a large, sparse matrix.
 # The matrix is converted into a very long 3-column dataframe (animal1, animal2, coefficient).  This dataframe is output to a TSV file,
 # which is normally imported into ehr.kinship by java code in GeneticCalculationsImportTask
-options(error = dump.frames)
 library(kinship2)
 library(getopt)
 library(Matrix)
@@ -56,32 +55,36 @@ for (species in unique(allPed$Species)){
     # Now filter out parents added for kinship calculation
     temp.tri <- dplyr::filter(temp.tri, grepl("^(?!addin).*$", Id, perl = TRUE))
     temp.tri <- dplyr::filter(temp.tri, grepl("^(?!addin).*$", Id2, perl = TRUE))
+    temp.tri$Species <- species
 
     newRecords <- rbind(newRecords,temp.tri)
-    print(paste0('Total subjects: ', nrow(allRecordsForSpecies)))
 }
 
 generateExpectedKinship <- function(pedDf) {
+    # See reference: https://en.wikipedia.org/wiki/Coefficient_of_relationship#Kinship_coefficient
+    self <- data.frame(Id = pedDf$Id, Id2 = pedDf$Id, Species = pedDf$Species, Relationship = 'Self', ExpectedCoefficient = 0.5)
+
     parentChild <- rbind(
       data.frame(Id = pedDf$Id, Id2 = pedDf$Dam, Species = pedDf$Species, Relationship = 'Child/Parent'),
       data.frame(Id = pedDf$Id, Id2 = pedDf$Sire, Species = pedDf$Species, Relationship = 'Child/Parent')
-    ) %>% filter(!is.na(Id2)) %>% mutate(ExpectedCoefficient = 0.5)
+    ) %>% filter(!is.na(Id2)) %>% mutate(ExpectedCoefficient = 0.25)
 
     grandParentOffspring1 <- merge(pedDf[!is.na(pedDf$Dam),], pedDf, by.x = c('Dam', 'Species'), by.y = c('Id', 'Species'), all.x = F, all.y = F)
     grandParentOffspring1 <- rbind(
       grandParentOffspring1 %>% select(Id, Dam.y, Species) %>% filter(!is.na(Dam.y)) %>% rename(Id2 = Dam.y) %>% mutate(Relationship = 'Grandchild/Maternal Granddam'),
       grandParentOffspring1 %>% select(Id, Sire.y, Species) %>% filter(!is.na(Sire.y)) %>% rename(Id2 = Sire.y) %>% mutate(Relationship = 'Grandchild/Maternal Grandsire')
-    ) %>% mutate(ExpectedCoefficient = 0.25)
+    ) %>% mutate(ExpectedCoefficient = 0.125)
 
     grandParentOffspring2 <- merge(pedDf[!is.na(pedDf$Sire),], pedDf, by.x = c('Sire', 'Species'), by.y = c('Id', 'Species'), all.x = F, all.y = F)
     grandParentOffspring2 <- rbind(
       grandParentOffspring2 %>% select(Id, Dam.y, Species) %>% filter(!is.na(Dam.y)) %>% rename(Id2 = Dam.y) %>% mutate(Relationship = 'Grandchild/Paternal Granddam'),
       grandParentOffspring2 %>% select(Id, Sire.y, Species) %>% filter(!is.na(Sire.y)) %>% rename(Id2 = Sire.y) %>% mutate(Relationship = 'Grandchild/Paternal Grandsire')
-    ) %>% mutate(ExpectedCoefficient = 0.25)
+    ) %>% mutate(ExpectedCoefficient = 0.125)
 
     fullSibs <- merge(pedDf[!is.na(pedDf$Dam) & !is.na(pedDf$Sire),], pedDf[!is.na(pedDf$Dam) & !is.na(pedDf$Sire),], by = c('Sire', 'Dam', 'Species'), all.x = F, all.y = F) %>%
       select(Id.x, Id.y, Species) %>%
       rename(Id = Id.x, Id2 = Id.y) %>%
+      filter(Id != Id2) %>%
       mutate(Relationship = 'Full sib', ExpectedCoefficient = 0.25)
 
     ret <- rbind(
@@ -102,21 +105,24 @@ generateExpectedKinship <- function(pedDf) {
         return(paste0(x[2], '/', x[1]))
     })
 
-    return(rbind(ret, ret2))
+    return(rbind(self, ret, ret2))
 }
 
 # Basic validation:
-toValidate <- merge(newRecords, generateExpectedKinship(pedDf), by = c('Id', 'Id2', 'Species'), all.x = T, all.y = T) %>%
+toValidate <- merge(newRecords, generateExpectedKinship(allPed), by = c('Id', 'Id2', 'Species'), all.x = T, all.y = T)
+write.table(file = 'kinshipWithExpectedValues.txt', toValidate, sep = '\t', quote = F)
+
+toValidate <- toValidate %>%
     filter(!is.na(ExpectedCoefficient)) %>%
-    mutate(MinCoefficient = ExpectedCoefficient / 2) %>%
-    filter(is.na(coefficient) | coefficient < MinCoefficient)
+    filter(is.na(coefficient) | coefficient < ExpectedCoefficient)
 
 if (nrow(toValidate) > 0) {
     print(paste0('There were unexpected kinship values! See the file kinshipErrors.txt for more information'))
-    write.table(newRecords, file = "kinshipErrors.txt", append = FALSE, row.names=F, quote=F, sep='\t')
+    write.table(newRecords, file = "kinshipErrors.txt", append = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
+} else {
+    print('All coefficients were within expected ranges from predicted values')
 }
+newRecords$Species <- NULL
 
 # write TSV to disk
-print("Output table:")
-print(str(newRecords))
-write.table(newRecords, file = "kinship.txt", append = FALSE, row.names = FALSE, quote = FALSE, sep='\t')
+write.table(newRecords, file = "kinship.txt", append = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
