@@ -21,9 +21,9 @@ allPed <- read.table(opts$inputFile)
 colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender')
 
 allPed$Id[allPed$Id == ""] <- NA
-allPed$Id[allPed$Dam == ""] <- NA
-allPed$Id[allPed$Sire == ""] <- NA
-allPed$Id[allPed$Gender == ""] <- NA
+allPed$Dam[allPed$Dam == ""] <- NA
+allPed$Sire[allPed$Sire == ""] <- NA
+allPed$Gender[allPed$Gender == ""] <- NA
 
 df <- data.frame(id=as.character(allPed$Id), 'id parent1'=allPed$Dam, 'id parent2'=allPed$Sire, stringsAsFactors=FALSE)
 originalIds <- df$id
