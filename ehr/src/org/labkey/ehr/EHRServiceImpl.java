@@ -50,6 +50,7 @@ import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
@@ -78,10 +79,12 @@ import org.labkey.ehr.history.DefaultEncountersDataSource;
 import org.labkey.ehr.history.DefaultObservationsDataSource;
 import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
+import org.labkey.ehr.pipeline.GeneticCalculationsImportTask;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1049,5 +1052,11 @@ public class EHRServiceImpl extends EHRService
             simpleRawCol.setDisplayWidth("250");
             ti.addColumn(simpleRawCol);
         }
+    }
+
+    @Override
+    public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
+    {
+        GeneticCalculationsImportTask.standaloneProcessKinshipAndInbreeding(c, u, pipelineDir, log);
     }
 }
