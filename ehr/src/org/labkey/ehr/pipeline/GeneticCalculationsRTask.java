@@ -82,7 +82,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public PipelineJob.Task<?> createTask(PipelineJob job)
         {
             GeneticCalculationsRTask task = new GeneticCalculationsRTask(this, job);
             setJoin(false);
