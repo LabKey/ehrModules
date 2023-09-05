@@ -583,8 +583,8 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         waitForText("Group By Category");
         Ext4FieldRef.getForLabel(this, "Group By Category").setChecked(true);
         waitForText("Below are the sample categories");
-        Ext4FieldRef ctlField = Ext4FieldRef.getForLabel(this, "Neg Control (2)");
-        ctlField.setValue(8); //A8
+        Ext4ComboRef ctlField = Ext4ComboRef.getForLabel(this, "Neg Control (2)");
+        ctlField.setComboByDisplayValue("A8");
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
         assertAlert("Error: Neg Control conflicts with an existing sample in well: A8");
 
