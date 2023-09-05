@@ -122,6 +122,16 @@ public class GeneticCalculationsJob implements Job
             return false;
     }
 
+    public static boolean isMergeSpeciesWithHybrids()
+    {
+        Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
+
+        if (saved.containsKey("mergeSpeciesWithHybrids"))
+            return Boolean.parseBoolean(saved.get("mergeSpeciesWithHybrids"));
+        else
+            return false;
+    }
+
     public static boolean isEnabled()
     {
         Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
@@ -152,13 +162,14 @@ public class GeneticCalculationsJob implements Job
         return null;
     }
 
-    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, Boolean isKinshipValidation)
+    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, Boolean isKinshipValidation, Boolean mergeSpeciesWithHybrids)
     {
         PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
         props.put("enabled", isEnabled.toString());
         props.put("container", c.getId());
         props.put("hourOfDay", hourOfDay.toString());
         props.put("kinshipValidation", isKinshipValidation.toString());
+        props.put("mergeSpeciesWithHybrids", mergeSpeciesWithHybrids.toString());
         props.save();
 
         //unschedule in case settings have changed

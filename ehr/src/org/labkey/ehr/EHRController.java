@@ -639,7 +639,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isMergeSpeciesWithHybrids());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -759,6 +759,7 @@ public class EHRController extends SpringActionController
         private int hourOfDay;
 
         private boolean _kinshipValidation;
+        private boolean _mergeSpeciesWithHybrids;
 
         public boolean isEnabled()
         {
@@ -799,6 +800,16 @@ public class EHRController extends SpringActionController
         {
             _kinshipValidation = kinshipValidation;
         }
+
+        public boolean isMergeSpeciesWithHybrids()
+        {
+            return _mergeSpeciesWithHybrids;
+        }
+
+        public void setMergeSpeciesWithHybrids(boolean mergeSpeciesWithHybrids)
+        {
+            _mergeSpeciesWithHybrids = mergeSpeciesWithHybrids;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
@@ -817,6 +828,7 @@ public class EHRController extends SpringActionController
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
             ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
+            ret.put("mergeSpeciesWithHybrids", GeneticCalculationsJob.isMergeSpeciesWithHybrids());
 
             return new ApiSimpleResponse(ret);
         }
