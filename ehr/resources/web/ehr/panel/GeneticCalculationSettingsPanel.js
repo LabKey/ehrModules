@@ -28,13 +28,25 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 xtype: 'checkbox',
                 fieldLabel: 'Kinship validation?',
                 itemId: 'kinshipValidation',
-                listeners : {
+                listeners: {
                     render: function(c) {
                         Ext4.create('Ext.tip.ToolTip', {
                             target: c.getEl(),
                             html: 'This will iterate pedigree queries to ensure a minimum kinship coefficient exists for parents, ' +
                                     'grandparents, offspring, full-siblings and half-siblings. This can significantly increase the time to ' +
                                     'complete the kinship calculations so should only be used when validating kinship and pedigree.'
+                        });
+                    }
+                }
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Merge Species With Hybrids?',
+                itemId: 'mergeSpeciesWithHybrids',
+                listeners: {
+                    render: function (c) {
+                        Ext4.create('Ext.tip.ToolTip', {
+                            target: c.getEl(),
+                            html: 'If any hybrid animals are detected, these species groups will be merged and processed as one unit. Merging all these species together ensures that the correct ancestors from each side are present'
                         });
                     }
                 }
@@ -94,6 +106,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#hourOfDay').setValue(results.hourOfDay);
         this.down('#containerPath').setValue(results.containerPath);
         this.down('#kinshipValidation').setValue(results.kinshipValidation);
+        this.down('#mergeSpeciesWithHybrids').setValue(results.mergeSpeciesWithHybrids);
     },
 
     saveData: function(){
@@ -104,7 +117,8 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 containerPath: this.down('#containerPath').getValue(),
                 enabled: this.down('#enabled').getValue(),
                 hourOfDay: this.down('#hourOfDay').getValue(),
-                kinshipValidation: this.down('#kinshipValidation').getValue()
+                kinshipValidation: this.down('#kinshipValidation').getValue(),
+                mergeSpeciesWithHybrids: this.down('#mergeSpeciesWithHybrids').getValue()
             },
             method : 'POST',
             scope: this,

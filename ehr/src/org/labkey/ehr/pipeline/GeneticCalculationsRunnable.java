@@ -86,6 +86,8 @@ public class GeneticCalculationsRunnable
             String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<bioml>\n" +
                     (allowRunningDuringDay ? "\t<note label=\"allowRunningDuringDay\" type=\"input\">true</note>" : "") +
+                    "\t<note label=\"kinshipValidation\" type=\"input\">" + GeneticCalculationsJob.isKinshipValidation() + "</note>" +
+                    "\t<note label=\"mergeSpeciesWithHybrids\" type=\"input\">" + GeneticCalculationsJob.isMergeSpeciesWithHybrids() + "</note>" +
                 "</bioml>";
 
             AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml);

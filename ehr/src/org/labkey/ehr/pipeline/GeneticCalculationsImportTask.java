@@ -153,8 +153,10 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger());
             processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger());
 
-            if (GeneticCalculationsJob.isKinshipValidation())
+            if (Boolean.parseBoolean(getJob().getParameters().get("kinshipValidation")))
+            {
                 validateKinship();
+            }
         }
 
         return new RecordedActionSet(actions);
