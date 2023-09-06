@@ -84,6 +84,10 @@ generateSpeciesToProcess <- function(allPed, mergeSpeciesWithHybrids) {
 }
 
 validateExpectedKinshipSubset <- function(dataToTest, expectedValues, errorRows, testReciprocal = TRUE) {
+    if (nrow(dataToTest) == 0 || nrow(expectedValues) == 0) {
+        return(errorRows)
+    }
+
     # Generate the reciprocal of relationships as well:
     if (testReciprocal) {
         ret2 <- data.frame(Id = expectedValues$Id2, Id2 = expectedValues$Id, Relationship = expectedValues$Relationship, ExpectedCoefficient = expectedValues$ExpectedCoefficient)
