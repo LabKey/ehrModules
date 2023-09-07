@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
@@ -39,7 +38,6 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
-import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
@@ -750,12 +748,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     private void setEhrUserPasswords()
     {
-        setInitialPassword(DATA_ADMIN.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(REQUESTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(BASIC_SUBMITTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(FULL_SUBMITTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(FULL_UPDATER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
+        setInitialPassword(DATA_ADMIN.getEmail());
+        setInitialPassword(REQUESTER.getEmail());
+        setInitialPassword(BASIC_SUBMITTER.getEmail());
+        setInitialPassword(FULL_SUBMITTER.getEmail());
+        setInitialPassword(FULL_UPDATER.getEmail());
+        setInitialPassword(REQUEST_ADMIN.getEmail());
     }
 
     protected static final ArrayList<Permission> allowedActions = new ArrayList<>()
