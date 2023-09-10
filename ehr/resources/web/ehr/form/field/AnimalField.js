@@ -19,8 +19,8 @@ Ext4.define('EHR.form.field.AnimalField.js', {
             this.fireEvent('animalchange', val);
         }, this, {buffer: 200});
 
-        this.on('blur', function(field, val, oldVal){
-            this.fireEvent('animalchange', val);
+        this.on('blur', function(field){
+            this.fireEvent('animalchange', field.value);
         }, this);
     },
 
