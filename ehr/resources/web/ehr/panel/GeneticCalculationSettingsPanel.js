@@ -26,6 +26,10 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 itemId: 'enabled'
             },{
                 xtype: 'checkbox',
+                fieldLabel: 'Allow Import During Business Hours?',
+                itemId: 'allowImportDuringBusinessHours'
+            },{
+                xtype: 'checkbox',
                 fieldLabel: 'Kinship validation?',
                 itemId: 'kinshipValidation',
                 listeners: {
@@ -107,6 +111,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#containerPath').setValue(results.containerPath);
         this.down('#kinshipValidation').setValue(results.kinshipValidation);
         this.down('#mergeSpeciesWithHybrids').setValue(results.mergeSpeciesWithHybrids);
+        this.down('#allowImportDuringBusinessHours').setValue(results.allowImportDuringBusinessHours)
     },
 
     saveData: function(){
@@ -118,7 +123,8 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 enabled: this.down('#enabled').getValue(),
                 hourOfDay: this.down('#hourOfDay').getValue(),
                 kinshipValidation: this.down('#kinshipValidation').getValue(),
-                mergeSpeciesWithHybrids: this.down('#mergeSpeciesWithHybrids').getValue()
+                mergeSpeciesWithHybrids: this.down('#mergeSpeciesWithHybrids').getValue(),
+                allowImportDuringBusinessHours: this.down('#allowImportDuringBusinessHours').getValue()
             },
             method : 'POST',
             scope: this,
