@@ -83,6 +83,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
@@ -639,7 +640,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isMergeSpeciesWithHybrids());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isMergeSpeciesWithHybrids(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -760,6 +761,7 @@ public class EHRController extends SpringActionController
 
         private boolean _kinshipValidation;
         private boolean _mergeSpeciesWithHybrids;
+        private boolean _allowImportDuringBusinessHours;
 
         public boolean isEnabled()
         {
@@ -810,6 +812,16 @@ public class EHRController extends SpringActionController
         {
             _mergeSpeciesWithHybrids = mergeSpeciesWithHybrids;
         }
+
+        public boolean isAllowImportDuringBusinessHours()
+        {
+            return _allowImportDuringBusinessHours;
+        }
+
+        public void setAllowImportDuringBusinessHours(boolean allowImportDuringBusinessHours)
+        {
+            _allowImportDuringBusinessHours = allowImportDuringBusinessHours;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
@@ -829,6 +841,7 @@ public class EHRController extends SpringActionController
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
             ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
             ret.put("mergeSpeciesWithHybrids", GeneticCalculationsJob.isMergeSpeciesWithHybrids());
+            ret.put("allowImportDuringBusinessHours", GeneticCalculationsJob.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse(ret);
         }
@@ -1262,7 +1275,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
+            return new HtmlView(HtmlString.of("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?"));
         }
 
         @Override
