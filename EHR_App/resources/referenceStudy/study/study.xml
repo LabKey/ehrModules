@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<study label="Primate Electronic Health Record"
+       timepointType="CONTINUOUS"
+       subjectNounSingular="Animal"
+       subjectNounPlural="Animals"
+       subjectColumnName="Id"
+       description=""
+       descriptionRendererType="TEXT_WITH_LINKS"
+       investigator=""
+       grant="" startDate="1990-01-01-06:00"
+       securityType="ADVANCED_WRITE"
+       xmlns="http://labkey.org/study/xml">
+    <qcStates showPrivateDataByDefault="true"/>
+    <datasets dir="datasets" file="datasets_manifest.xml">
+        <definition file="PrimateElectronicHealthRecord.dataset"/>
+    </datasets>
+</study>

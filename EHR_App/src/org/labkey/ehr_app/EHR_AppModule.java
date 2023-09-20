@@ -18,7 +18,9 @@ package org.labkey.ehr_app;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.SharedEHRUpgradeCode;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.view.WebPartFactory;
@@ -67,6 +69,11 @@ public class EHR_AppModule extends ExtendedSimpleModule
         EHRService ehrService = EHRService.get();
         ehrService.registerModule(this);
 
+    }
 
+    @Override
+    public @NotNull UpgradeCode getUpgradeCode()
+    {
+        return SharedEHRUpgradeCode.getInstance(this);
     }
 }
