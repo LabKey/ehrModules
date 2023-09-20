@@ -18,6 +18,11 @@ Ext4.define('EHR.form.field.AnimalField.js', {
         this.on('change', function(field, val, oldVal){
             this.fireEvent('animalchange', val);
         }, this, {buffer: 200});
+
+        // Verify one more time when the field loses focus as change handler can be a little flaky
+        this.on('blur', function(field){
+            this.fireEvent('animalchange', field.value);
+        }, this);
     },
 
     //NOTE: modules can override this method to enfore alternate rules
