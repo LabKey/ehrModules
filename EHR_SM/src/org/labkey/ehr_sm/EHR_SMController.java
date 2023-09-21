@@ -112,7 +112,7 @@ public class EHR_SMController extends SpringActionController
         {
             PropertyManager.PropertyMap props = PropertyManager.getProperties(getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME);
             adminForm.setSelectedAnimalSampleTypes(props.keySet().toArray(new String[0]));
-            adminForm.setAnimalSampleTypes(SampleTypeService.get().getSampleTypes(getContainer(), getUser(), false));
+            adminForm.setAnimalSampleTypes(SampleTypeService.get().getSampleTypes(getContainer(), getUser(), true));
             adminForm.setSampleReceivedCol(props.get(EHR_SMManager.ANIMAL_SAMPLE_RECEIVED_PROP));
 
             JspView<AdminForm> view = new JspView<>("/org/labkey/ehr_sm/view/admin.jsp", adminForm, errors);
@@ -125,7 +125,7 @@ public class EHR_SMController extends SpringActionController
         public boolean handlePost(AdminForm adminForm, BindException errors)
         {
             PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME, true);
-            for (ExpSampleType animalSampleType : SampleTypeService.get().getSampleTypes(getContainer(), getUser(), false))
+            for (ExpSampleType animalSampleType : SampleTypeService.get().getSampleTypes(getContainer(), getUser(), true))
             {
                 if (Arrays.stream(adminForm.getSelectedAnimalSampleTypes()).anyMatch(s -> s.equals(animalSampleType.getName())))
                 {
