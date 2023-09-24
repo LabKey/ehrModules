@@ -96,4 +96,6 @@ public interface InvoicedItemsProcessingService
     }
 
     default void processBillingRerun(String newInvoiceId, String newInvoiceRowId, Date billingStartDate, Date billingRunEndDate, int nextTransactionNumber, User user, Container container, Logger logger) {}
+
+    default void setBillingStartDate(Date billingStartDate) {}
 }

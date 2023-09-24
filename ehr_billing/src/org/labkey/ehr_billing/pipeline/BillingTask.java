@@ -149,6 +149,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             getOrCreateInvoiceRunRecord();
             loadTransactionNumber();
+            processingService.setBillingStartDate(getSupport().getStartDate());
 
             if (null != _previousInvoice)
             {
