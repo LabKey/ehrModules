@@ -22,8 +22,12 @@ import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.SharedEHRUpgradeCode;
 import org.labkey.api.ldk.ExtendedSimpleModule;
+import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.query.DefaultSchema;
+import org.labkey.api.query.QuerySchema;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr_app.query.EHR_AppUserSchema;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +65,19 @@ public class EHR_AppModule extends ExtendedSimpleModule
     protected void init()
     {
 
+    }
+
+    @Override
+    protected void registerSchemas()
+    {
+        DefaultSchema.registerProvider(EHR_AppSchema.NAME, new DefaultSchema.SchemaProvider(this)
+        {
+            @Override
+            public @Nullable QuerySchema createSchema(DefaultSchema schema, Module module)
+            {
+                return new EHR_AppUserSchema(EHR_AppSchema.NAME, null, schema.getUser(), schema.getContainer(), EHR_AppSchema.getInstance().getSchema());
+            }
+        });
     }
 
     @Override
