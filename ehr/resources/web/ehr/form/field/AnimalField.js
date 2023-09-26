@@ -21,7 +21,7 @@ Ext4.define('EHR.form.field.AnimalField.js', {
 
         // Verify one more time when the field loses focus as change handler can be a little flaky
         this.on('blur', function(field){
-            this.fireEvent('animalchange', field.lastValue || field.value);
+            this.fireEvent('animalchange', field.getValue());
         }, this);
     },
 
