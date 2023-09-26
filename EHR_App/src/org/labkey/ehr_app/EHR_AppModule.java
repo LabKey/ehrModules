@@ -89,6 +89,12 @@ public class EHR_AppModule extends ExtendedSimpleModule
     }
 
     @Override
+    public @NotNull Collection<String> getSchemaNames()
+    {
+        return Collections.singleton(EHR_AppSchema.NAME);
+    }
+
+    @Override
     public @NotNull UpgradeCode getUpgradeCode()
     {
         return SharedEHRUpgradeCode.getInstance(this);

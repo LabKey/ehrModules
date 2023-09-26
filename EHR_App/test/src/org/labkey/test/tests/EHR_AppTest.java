@@ -1,7 +1,9 @@
 package org.labkey.test.tests;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
@@ -18,11 +20,17 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     private static final String PROJECT_NAME = "EHR App";
 
     @Override
+    protected String getProjectName()
+    {
+        return PROJECT_NAME;
+    }
+
+    @Override
     public void importStudy()
     {
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
         importFolderByPath(path, getContainerPath(), 1);
-        path = TestFileUtils.getSampleData("jhu_ehr/study");
+        path = TestFileUtils.getSampleData("EHR_App/study");
         importFolderByPath(path, getContainerPath(), 2);
     }
 
@@ -47,7 +55,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     @Override
     protected File getStudyPolicyXML()
     {
-        return TestFileUtils.getSampleData("jhuEHRStudyPolicy.xml");
+        return TestFileUtils.getSampleData("EHR_AppEHRStudyPolicy.xml");
     }
 
     @BeforeClass
@@ -73,7 +81,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     @Override
     protected String getModuleDirectory()
     {
-        return "johnsHopkinsEHRModules/jhu_ehr";
+        return "ehrModules/EHR_App";
     }
 
     @Override
@@ -88,9 +96,15 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         return null;
     }
 
-    @Override
-    protected @Nullable String getProjectName()
+    @Before
+    public void preTest()
     {
-        return null;
+        goToProjectHome();
+    }
+
+    @Test
+    public void testSteps()
+    {
+        goToProjectHome();
     }
 }

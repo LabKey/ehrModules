@@ -74,6 +74,31 @@
             </column>
         </columns>
     </table>
+    <table tableName="assignment" tableDbType="TABLE">
+        <tableTitle>Project Assignments</tableTitle>
+        <columns>
+            <column columnName="Id">
+                <datatype>varchar</datatype>
+                <propertyURI>http://cpas.labkey.com/Study#ParticipantId</propertyURI>
+                <importAliases>
+                    <importAlias>ptid</importAlias>
+                </importAliases>
+            </column>
+            <column columnName="date">
+                <datatype>timestamp</datatype>
+                <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                <conceptURI>http://cpas.labkey.com/Study#VisitDate</conceptURI>
+            </column>
+            <column columnName="enddate">
+                <datatype>timestamp</datatype>
+            </column>
+            <column columnName="objectid">
+                <datatype>varchar</datatype>
+                <propertyURI>urn:ehr.labkey.org/#ObjectId</propertyURI>
+                <isKeyField>true</isKeyField>
+            </column>
+        </columns>
+    </table>
     <table tableName="birth" tableDbType="TABLE">
         <tableTitle>Birth</tableTitle>
         <columns>
@@ -165,10 +190,7 @@
                 <datatype>timestamp</datatype>
                 <propertyURI>urn:ehr.labkey.org/#EndDate</propertyURI>
             </column>
-            <column columnName="caseid">
-                <datatype>varchar</datatype>
-                <propertyURI>urn:ehr.labkey.org/#CaseId</propertyURI>
-            </column>
+
             <column columnName="reviewdate">
                 <datatype>timestamp</datatype>
             </column>
@@ -488,6 +510,35 @@
             </column>
             <column columnName="type">
                 <datatype>varchar</datatype>
+            </column>
+        </columns>
+    </table>
+    <table tableName="problem" tableDbType="TABLE">
+        <tableTitle>Problem List</tableTitle>
+        <columns>
+            <column columnName="Id">
+                <datatype>varchar</datatype>
+                <propertyURI>http://cpas.labkey.com/Study#ParticipantId</propertyURI>
+                <importAliases>
+                    <importAlias>ptid</importAlias>
+                </importAliases>
+            </column>
+            <column columnName="date">
+                <datatype>timestamp</datatype>
+                <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                <conceptURI>http://cpas.labkey.com/Study#VisitDate</conceptURI>
+            </column>
+            <column columnName="category">
+                <datatype>varchar</datatype>
+            </column>
+            <column columnName="code">
+                <datatype>varchar</datatype>
+            </column>
+            <column columnName="caseid">
+                <datatype>varchar</datatype>
+            </column>
+            <column columnName="enddate">
+                <datatype>timestamp</datatype>
             </column>
         </columns>
     </table>

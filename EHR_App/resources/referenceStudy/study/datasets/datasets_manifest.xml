@@ -3,18 +3,20 @@
     <datasets>
         <dataset name="alias" id="1001" category="Colony Management" type="Standard"/>
         <dataset name="arrival" id="1002" category="Colony Management" type="Standard"/>
-        <dataset name="blood" id="1003" category="Clinical" type="Standard"/>
-        <dataset name="birth" id="1004" category="Colony Management" demographicData="true" type="Standard"/>
-        <dataset name="cases" id="1005" category="Clinical" type="Standard"/>
-        <dataset name="deaths" id="1006" category="Pathology" demographicData="true" type="Standard"/>
-        <dataset name="demographics" id="1007" category="Colony Management" demographicData="true" type="Standard"/>
-        <dataset name="departure" id="1008" category="Colony Management" type="Standard"/>
-        <dataset name="drug" id="1009" category="Clinical" type="Standard"/>
-        <dataset name="flags" id="1010" category="Colony Management" type="Standard"/>
-        <dataset name="housing" id="1011" category="Colony Management" type="Standard"/>
-        <dataset name="prc" id="1012" category="Clinical" type="Standard"/>
-        <dataset name="treatment_order" id="1013" category="Clinical" type="Standard"/>
-        <dataset name="vitals" id="1014" category="Clinical" type="Standard"/>
-        <dataset name="weight" id="1015" category="Clinical" type="Standard"/>
+        <dataset name="assignment" id="1003" category="Colony Management" type="Standard"/>
+        <dataset name="blood" id="1004" category="Clinical" type="Standard"/>
+        <dataset name="birth" id="1005" category="Colony Management" demographicData="true" type="Standard"/>
+        <dataset name="cases" id="1006" category="Clinical" type="Standard"/>
+        <dataset name="deaths" id="1007" category="Pathology" demographicData="true" type="Standard"/>
+        <dataset name="demographics" id="1008" category="Colony Management" demographicData="true" type="Standard"/>
+        <dataset name="departure" id="1009" category="Colony Management" type="Standard"/>
+        <dataset name="drug" id="1010" category="Clinical" type="Standard"/>
+        <dataset name="flags" id="1011" category="Colony Management" type="Standard"/>
+        <dataset name="housing" id="1012" category="Colony Management" type="Standard"/>
+        <dataset name="prc" id="1013" category="Clinical" type="Standard"/>
+        <dataset name="problem" id="1017" category="Clinical" type="Standard"/>
+        <dataset name="treatment_order" id="1014" category="Clinical" type="Standard"/>
+        <dataset name="vitals" id="1015" category="Clinical" type="Standard"/>
+        <dataset name="weight" id="1016" category="Clinical" type="Standard"/>
     </datasets>
 </datasets>

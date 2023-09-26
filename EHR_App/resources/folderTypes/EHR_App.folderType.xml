@@ -1,0 +1,65 @@
+<folderType xmlns="http://labkey.org/data/xml/folderType">
+    <name>EHR App</name>
+    <description>EHR App Folder Type</description>
+
+    <requiredWebParts>
+    </requiredWebParts>
+
+    <preferredWebParts>
+    </preferredWebParts>
+
+    <folderTabs>
+        <folderTab>
+            <name>overview</name>
+            <caption>Overview</caption>
+            <preferredWebParts>
+                <webPart>
+                    <name>EHR Front Page</name>
+                    <location>body</location>
+                </webPart>
+                <webPart>
+                    <name>EHR App Links</name>
+                    <location>body</location>
+                </webPart>
+            </preferredWebParts>
+        </folderTab>
+        <folderTab>
+            <name>animalHistory</name>
+            <caption>Animal History</caption>
+            <selectors>
+                <selector>
+                    <view>animalHistory</view>
+                </selector>
+            </selectors>
+            <preferredWebParts>
+                <webPart>
+                    <name>Animal History</name>
+                    <location>body</location>
+                </webPart>
+            </preferredWebParts>
+        </folderTab>
+        <folderTab>
+            <name>animalSearch</name>
+            <caption>Animal Search</caption>
+            <selectors>
+                <selector>
+                    <view>animalSearch</view>
+                </selector>
+            </selectors>
+            <preferredWebParts>
+                <webPart>
+                    <name>Animal Search</name>
+                    <location>body</location>
+                </webPart>
+            </preferredWebParts>
+        </folderTab>
+    </folderTabs>
+    <modules>
+        <moduleName>Core</moduleName>
+        <moduleName>Study</moduleName>
+        <moduleName>EHR</moduleName>
+        <moduleName>EHR_App</moduleName>
+    </modules>
+    <defaultModule>Core</defaultModule>
+    <workbookType>false</workbookType>
+</folderType>
