@@ -10,6 +10,10 @@
                 <datatype>varchar</datatype>
                 <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
             </column>
+            <column columnName="project">
+                <datatype>integer</datatype>
+                <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
+            </column>
             <column columnName="performedby">
                 <datatype>varchar</datatype>
                 <propertyURI>urn:ehr.labkey.org/#PerformedBy</propertyURI>

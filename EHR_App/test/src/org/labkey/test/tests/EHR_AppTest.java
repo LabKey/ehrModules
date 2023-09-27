@@ -69,7 +69,6 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     {
         initProject("EHR App");
         goToEHRFolder();
-        createTestSubjects();
     }
 
     @Override
