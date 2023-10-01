@@ -8,8 +8,8 @@ SELECT
     d2.gender as damGender,
     d3.Id as sireId,
     d3.gender as sireGender,
-    CASE WHEN (d2.gender IS NOT NULL AND d2.gender.meaning NOT IN ('FEMALE', 'UNKNOWN', 'UNDETERMINED')) OR
-              (d3.gender IS NOT NULL AND d3.gender.meaning NOT IN  ('MALE', 'UNKNOWN', 'UNDETERMINED'))
+    CASE WHEN (d2.gender IS NOT NULL AND upper(d2.gender.meaning) NOT IN ('FEMALE', 'UNKNOWN', 'UNDETERMINED')) OR
+              (d3.gender IS NOT NULL AND upper(d3.gender.meaning) NOT IN  ('MALE', 'UNKNOWN', 'UNDETERMINED'))
         THEN TRUE
         ELSE FALSE
     END as parentSpeciesMismatch
