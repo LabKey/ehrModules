@@ -1,14 +1,6 @@
 
-SELECT DISTINCT dam AS Id,
-                gender,
-                species
+SELECT Id.parents.dam AS parent,
+       gender,
+       species
 FROM demographics
-WHERE dam IN (SELECT sire FROM demographics)
-
-UNION
-
-SELECT DISTINCT sire AS Id,
-                gender,
-                species
-FROM demographics
-WHERE sire IN (SELECT dam FROM demographics);
+WHERE Id.parents.dam IN (SELECT Id.parents.sire FROM demographics)
