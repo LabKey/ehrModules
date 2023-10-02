@@ -14,7 +14,7 @@ SELECT
         ELSE FALSE
     END as parentSpeciesMismatch
 FROM demographics d1
-LEFT JOIN demographics d2 ON d1.dam = d2.Id
-LEFT JOIN demographics d3 ON d1.sire = d3.Id
+LEFT JOIN demographics d2 ON d1.Id.parents.dam = d2.Id
+LEFT JOIN demographics d3 ON d1.Id.parents.sire = d3.Id
 ) d4
 WHERE d4.parentSpeciesMismatch = TRUE
