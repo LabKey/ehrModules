@@ -85,7 +85,7 @@ public class EHR_AppModule extends ExtendedSimpleModule
     {
         EHRService ehrService = EHRService.get();
         ehrService.registerModule(this);
-
+        ehrService.registerActionOverride("populateInitialData", this, "views/populateData.html");
     }
 
     @Override

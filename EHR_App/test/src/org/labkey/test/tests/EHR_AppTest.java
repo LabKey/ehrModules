@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.remoteapi.Connection;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
@@ -18,6 +19,8 @@ import java.io.File;
 public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyTest
 {
     private static final String PROJECT_NAME = "EHR App";
+    private static final String FOLDER_NAME = "EHR";
+    private final EHRAppTestSetupHelper _setupHelper = new EHRAppTestSetupHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath());
 
     @Override
     protected String getProjectName()
@@ -32,6 +35,18 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         importFolderByPath(path, getContainerPath(), 1);
         path = TestFileUtils.getSampleData("EHR_App/study");
         importFolderByPath(path, getContainerPath(), 2);
+    }
+
+    @Override
+    protected void populateInitialData() throws Exception
+    {
+        _setupHelper.populateInitialData(this);
+    }
+
+    @Override
+    protected void populateRoomRecords() throws Exception
+    {
+        _setupHelper.populateRoomRecords();
     }
 
     public void importFolderByPath(File path, String containerPath, int finishedJobsExpected)
