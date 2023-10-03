@@ -126,6 +126,47 @@ Ext4.define('EHR.window.SedationWindow', {
         }]
     },
 
+    getCodeField: function(key){
+        return {
+            xtype: 'combo',
+            key: key,
+            fieldName: 'code',
+            valueField: 'code',
+            displayField: 'displayField',
+            value: 'E-70590',
+            store: {
+                type: 'store',
+                fields: ['code', 'displayField', 'dosage'],
+                data: [
+                    {code: 'E-70590', displayField: 'Ketamine', dosage: 10},
+                    {code: 'E-YY992', displayField: 'Telazol', dosage: 3},
+                    {code: 'none', displayField: 'None', dosage: null}
+                ]
+            },
+            listeners: {
+                select: function(field, recs){
+                    if (!recs || recs.length != 1)
+                        return;
+
+                    var round = field.up('ehr-sedationwindow').down('#roundField').getValue();
+                    var dose = recs[0].get('dosage');
+                    var weightField = field.up('panel').down("field[key='" + field.key + "][fieldName='weight']");
+                    var dosageField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='dosage']");
+                    var amountField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='amount']");
+                    LDK.Assert.assertNotEmpty('Unable to find target field in SedationWindow', dosageField);
+
+                    var amount = weightField.getValue() ? Ext4.util.Format.round(weightField.getValue() * dose, 1) : null;
+
+                    dosageField.setValue(dose);
+
+                    amountField.suspendEvents();
+                    amountField.setValue(EHR.Utils.roundToNearest(amount, round));
+                    amountField.resumeEvents();
+                }
+            }
+        };
+    },
+
     getFinalItems: function(){
         var numCols = 7;
         var items = [{
@@ -211,44 +252,7 @@ Ext4.define('EHR.window.SedationWindow', {
                 value: minDate
             });
 
-            items.push({
-                xtype: 'combo',
-                key: key,
-                fieldName: 'code',
-                valueField: 'code',
-                displayField: 'displayField',
-                value: 'E-70590',
-                store: {
-                    type: 'store',
-                    fields: ['code', 'displayField', 'dosage'],
-                    data: [
-                        {code: 'E-70590', displayField: 'Ketamine', dosage: 10},
-                        {code: 'E-YY992', displayField: 'Telazol', dosage: 3},
-                        {code: 'none', displayField: 'None', dosage: null}
-                    ]
-                },
-                listeners: {
-                    select: function(field, recs){
-                        if (!recs || recs.length != 1)
-                            return;
-
-                        var round = field.up('ehr-sedationwindow').down('#roundField').getValue();
-                        var dose = recs[0].get('dosage');
-                        var weightField = field.up('panel').down("field[key='" + field.key + "][fieldName='weight']");
-                        var dosageField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='dosage']");
-                        var amountField = field.up('panel').down("numberfield[key='" + field.key + "][fieldName='amount']");
-                        LDK.Assert.assertNotEmpty('Unable to find target field in SedationWindow', dosageField);
-
-                        var amount = weightField.getValue() ? Ext4.util.Format.round(weightField.getValue() * dose, 1) : null;
-
-                        dosageField.setValue(dose);
-
-                        amountField.suspendEvents();
-                        amountField.setValue(EHR.Utils.roundToNearest(amount, round));
-                        amountField.resumeEvents();
-                    }
-                }
-            });
+            items.push(this.getCodeField(key));
 
             items.push({
                 xtype: 'ldk-numberfield',
