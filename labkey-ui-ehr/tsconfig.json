@@ -1,7 +1,7 @@
 {
   "extends": "./node_modules/@labkey/build/webpack/tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["node_modules/@types", "./src/typings"]
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "./src/**/*"

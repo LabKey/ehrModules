@@ -10,12 +10,16 @@
   "module": "dist/ehr.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/ehr.js"
+    ".": "./dist/ehr.js",
+    "./animalhistory": "./dist/animalhistory.js"
   },
   "typesVersions": {
     "*": {
       "*": [
         "dist/index.d.ts"
+      ],
+      "animalhistory": [
+        "dist/reports/AnimalHistory/animalhistory/index.d.ts"
       ]
     }
   },
