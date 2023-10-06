@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.1",
+  "version": "0.0.1-fb-ehr-react-package.0",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -19,7 +19,7 @@
         "dist/index.d.ts"
       ],
       "animalhistory": [
-        "dist/reports/AnimalHistory/animalhistory/index.d.ts"
+        "dist/reports/AnimalHistory/index.d.ts"
       ]
     }
   },
@@ -29,10 +29,8 @@
     "clean": "rimraf dist",
     "cleanAll": "rimraf dist && rimraf node_modules",
     "prepublishOnly": "npm install --legacy-peer-deps && cross-env WEBPACK_STATS=errors-only npm run build",
-    "test": "npm run test-enzyme ; npm run test-react",
-    "test-enzyme": "cross-env NODE_ENV=test jest --maxWorkers=6 --silent",
-    "test-react": "cross-env NODE_ENV=test jest --config jest.react.config.js --maxWorkers=6",
-    "test-ci": "cross-env NODE_ENV=test jest --config jest.react.config.js --ci ; cross-env NODE_ENV=test jest --ci --silent",
+    "test": "cross-env NODE_ENV=test jest --maxWorkers=6 --silent",
+    "test-ci": "cross-env NODE_ENV=test jest --ci --silent",
     "lint": "eslint",
     "lint-fix": "eslint --fix",
     "lint-precommit": "node lint.diff.mjs",
