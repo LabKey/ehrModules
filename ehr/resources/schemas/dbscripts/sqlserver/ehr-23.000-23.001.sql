@@ -152,6 +152,7 @@ ALTER TABLE ehr.kinship ALTER COLUMN id NVARCHAR(100);
 ALTER TABLE ehr.kinship ALTER COLUMN id2 NVARCHAR(100);
 GO
 
+DECLARE @ConstraintName nvarchar(200)
 SELECT @ConstraintName = Name
 FROM sys.default_constraints
 WHERE parent_object_id = OBJECT_ID('ehr.module_properties') AND
@@ -258,6 +259,7 @@ GO
 ALTER TABLE ehr.qcstatemetadata ADD CONSTRAINT pk_qcstatemetadata PRIMARY KEY (qcstatelabel)
 GO
 
+DECLARE @ConstraintName nvarchar(200)
 SELECT @ConstraintName = Name
 FROM sys.default_constraints
 WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
