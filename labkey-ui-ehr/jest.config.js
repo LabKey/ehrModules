@@ -5,8 +5,8 @@ module.exports = {
             container: {
                 path: '',
                 formats: {
-                    dateFormat: "yyyy-MM-dd",
-                    dateTimeFormat: "yyyy-MM-dd HH:mm"
+                    dateFormat: 'yyyy-MM-dd',
+                    dateTimeFormat: 'yyyy-MM-dd HH:mm'
                 }
             },
             project: {
@@ -27,7 +27,7 @@ module.exports = {
                     timepointType: 'CONTINUOUS'
                 }
             }
-        },
+        }
     },
     moduleFileExtensions: ['ts', 'tsx', 'js'],
     roots: ['<rootDir>'],
@@ -38,7 +38,7 @@ module.exports = {
     testPathIgnorePatterns: [
         '/node_modules/'
     ],
-    testRegex: '(\\.(spec))\\.(ts|tsx)$',
+    testRegex: '(\\.(test))\\.(ts|tsx)$',
     testResultsProcessor: 'jest-teamcity-reporter',
     transform: {
         '^.+\\.tsx?$': [
@@ -47,6 +47,9 @@ module.exports = {
                 // This increases test perf by a considerable margin
                 isolatedModules: true,
             }
-        ],
+        ]
     },
+    transformIgnorePatterns: [
+        'node_modules/(?!(lib0|y-protocols))'
+    ],
 };
