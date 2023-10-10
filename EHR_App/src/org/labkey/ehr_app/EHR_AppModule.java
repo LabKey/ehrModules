@@ -21,12 +21,14 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.SharedEHRUpgradeCode;
+import org.labkey.api.ehr.dataentry.DefaultDataEntryFormFactory;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr_app.dataentry.form.EHRAppArrivalFormType;
 import org.labkey.ehr_app.query.EHR_AppUserSchema;
 
 import java.util.Collection;
@@ -86,6 +88,7 @@ public class EHR_AppModule extends ExtendedSimpleModule
         EHRService ehrService = EHRService.get();
         ehrService.registerModule(this);
         ehrService.registerActionOverride("populateInitialData", this, "views/populateData.html");
+        registerDataEntryForms();
     }
 
     @Override
@@ -98,5 +101,10 @@ public class EHR_AppModule extends ExtendedSimpleModule
     public @NotNull UpgradeCode getUpgradeCode()
     {
         return SharedEHRUpgradeCode.getInstance(this);
+    }
+
+    private void registerDataEntryForms()
+    {
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppArrivalFormType.class, this));
     }
 }

@@ -113,12 +113,12 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     @Before
     public void preTest()
     {
-        goToProjectHome();
+        goToEHRFolder();
     }
 
     @Test
     public void testSteps()
     {
-        goToProjectHome();
+        goToEHRFolder();
     }
 }
