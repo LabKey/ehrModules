@@ -159,7 +159,7 @@ WHERE parent_object_id = OBJECT_ID('ehr.module_properties') AND
         parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.module_properties') AND name = 'prop_name');
 IF @ConstraintName IS NOT NULL
 BEGIN
-EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+EXEC('ALTER TABLE ehr.module_properties DROP CONSTRAINT ' + @ConstraintName)
 END
 
 SELECT @ConstraintName = Name
@@ -168,7 +168,7 @@ WHERE parent_object_id = OBJECT_ID('ehr.module_properties') AND
         parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.module_properties') AND name = 'stringvalue');
 IF @ConstraintName IS NOT NULL
 BEGIN
-EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+EXEC('ALTER TABLE ehr.module_properties DROP CONSTRAINT ' + @ConstraintName)
 END
 
 EXEC core.fn_dropifexists 'module_properties', 'ehr', 'constraint', 'unique_module_properties';
