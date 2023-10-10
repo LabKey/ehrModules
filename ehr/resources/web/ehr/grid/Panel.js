@@ -108,7 +108,7 @@ Ext4.define('EHR.grid.Panel', {
         // on store validation complete as this covers initial load and adding new rows scenario. Also done on cell edit
         // for long text cells.
         var view = this.getView();
-        if (view.body)
+        if (view.body && view.body.dom)  // Need to check dom available otherwise getHeight will throw error
             view.setHeight(view.body.getHeight());
     },
 
