@@ -28,7 +28,13 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr_app.dataentry.form.EHRAppAliasFormType;
 import org.labkey.ehr_app.dataentry.form.EHRAppArrivalFormType;
+import org.labkey.ehr_app.dataentry.form.EHRAppAssignmentFormType;
+import org.labkey.ehr_app.dataentry.form.EHRAppBirthFormType;
+import org.labkey.ehr_app.dataentry.form.EHRAppDeathFormType;
+import org.labkey.ehr_app.dataentry.form.EHRAppDepartureFormType;
+import org.labkey.ehr_app.dataentry.form.EHRAppHousingFormType;
 import org.labkey.ehr_app.query.EHR_AppUserSchema;
 
 import java.util.Collection;
@@ -105,6 +111,12 @@ public class EHR_AppModule extends ExtendedSimpleModule
 
     private void registerDataEntryForms()
     {
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppAliasFormType.class, this));
         EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppArrivalFormType.class, this));
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppAssignmentFormType.class, this));
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppBirthFormType.class, this));
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppDeathFormType.class, this));
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppDepartureFormType.class, this));
+        EHRService.get().registerFormType(new DefaultDataEntryFormFactory(EHRAppHousingFormType.class, this));
     }
 }

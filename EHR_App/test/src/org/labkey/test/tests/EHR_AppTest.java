@@ -127,4 +127,6 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     {
         goToEHRFolder();
     }
+
+
 }
