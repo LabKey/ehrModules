@@ -45,7 +45,7 @@ EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'constraint', 'PK_encoun
 ALTER TABLE ehr.encounter_summaries ALTER COLUMN objectid NVARCHAR(60) NOT NULL;
 GO
 ALTER TABLE ehr.encounter_summaries ADD CONSTRAINT PK_encounter_summaries PRIMARY KEY (objectid);
-CREATE INDEX encounter_summaries_container_objectid ON ehr.encounter_summaries(objectid);
+CREATE INDEX encounter_summaries_container_objectid ON ehr.encounter_summaries(container, objectid);
 ALTER TABLE ehr.encounter_summaries ALTER COLUMN category NVARCHAR(100);
 GO
 
@@ -236,7 +236,7 @@ ALTER TABLE ehr.protocol_amendments ALTER COLUMN protocol NVARCHAR(200);
 ALTER TABLE ehr.protocol_amendments ALTER COLUMN Comment NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.protocol_counts ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.protocol_counts ALTER COLUMN protocol NVARCHAR(200);
 ALTER TABLE ehr.protocol_counts ALTER COLUMN species NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.protocol_counts ALTER COLUMN gender NVARCHAR(100);
 ALTER TABLE ehr.protocol_counts ALTER COLUMN description NVARCHAR(MAX);
@@ -346,6 +346,15 @@ SELECT @ConstraintName = Name
 FROM sys.default_constraints
 WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
         parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'containerpath');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'queryname');
 IF @ConstraintName IS NOT NULL
 BEGIN
 EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
