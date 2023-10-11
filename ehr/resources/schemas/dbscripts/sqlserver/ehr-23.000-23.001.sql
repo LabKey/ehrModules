@@ -1,4 +1,4 @@
-ALTER TABLE ehr.animal_groups ALTER COLUMN name NVARCHAR(255);
+ALTER TABLE ehr.animal_groups ALTER COLUMN name NVARCHAR(255) NOT NULL;
 ALTER TABLE ehr.animal_groups ALTER COLUMN category NVARCHAR(100);
 ALTER TABLE ehr.animal_groups ALTER COLUMN purpose NVARCHAR(MAX);
 GO
@@ -27,6 +27,7 @@ GO
 CREATE INDEX encounter_participants_id ON ehr.encounter_participants(id);
 ALTER TABLE ehr.encounter_participants ALTER COLUMN username NVARCHAR(500);
 ALTER TABLE ehr.encounter_participants ALTER COLUMN comment NVARCHAR(MAX);
+ALTER TABLE ehr.encounter_participants ALTER COLUMN role NVARCHAR(200);
 EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'constraint', 'pk_encounter_participants';
 ALTER TABLE ehr.encounter_participants ALTER COLUMN objectid NVARCHAR(60) NOT NULL;
 GO
@@ -99,9 +100,9 @@ ALTER TABLE ehr.form_framework_types ALTER COLUMN framework NVARCHAR(255);
 ALTER TABLE ehr.form_framework_types ALTER COLUMN url NVARCHAR(255);
 GO
 
-ALTER TABLE ehr.formpanelsections ALTER COLUMN formtype NVARCHAR(200);
-ALTER TABLE ehr.formpanelsections ALTER COLUMN destination NVARCHAR(200);
-ALTER TABLE ehr.formpanelsections ALTER COLUMN xtype NVARCHAR(200);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formpanelsections ALTER COLUMN destination NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formpanelsections ALTER COLUMN xtype NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.formpanelsections ALTER COLUMN schemaname NVARCHAR(200);
 ALTER TABLE ehr.formpanelsections ALTER COLUMN queryname NVARCHAR(200);
 ALTER TABLE ehr.formpanelsections ALTER COLUMN title NVARCHAR(200);
@@ -110,20 +111,20 @@ ALTER TABLE ehr.formpanelsections ALTER COLUMN buttons NVARCHAR(MAX);
 ALTER TABLE ehr.formpanelsections ALTER COLUMN initialtemplates NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.formtemplaterecords ALTER COLUMN storeid NVARCHAR(1000);
+ALTER TABLE ehr.formtemplaterecords ALTER COLUMN storeid NVARCHAR(1000) NOT NULL;
 ALTER TABLE ehr.formtemplaterecords ALTER COLUMN targettemplate NVARCHAR(100);
 GO
 
 EXEC core.fn_dropifexists 'formtemplates', 'ehr', 'constraint', 'UNIQUE_formTemplates';
-ALTER TABLE ehr.formtemplates ALTER COLUMN title NVARCHAR(200);
-ALTER TABLE ehr.formtemplates ALTER COLUMN formtype NVARCHAR(200);
+ALTER TABLE ehr.formtemplates ALTER COLUMN title NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formtemplates ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
 GO
 ALTER TABLE ehr.formtemplates ADD CONSTRAINT UNIQUE_formTemplates UNIQUE (container, formtype, title);
 ALTER TABLE ehr.formtemplates ALTER COLUMN category NVARCHAR(100);
 GO
 
 EXEC core.fn_dropifexists 'formtypes', 'ehr', 'constraint', 'unique_formtypes';
-ALTER TABLE ehr.formtypes ALTER COLUMN formtype NVARCHAR(200);
+ALTER TABLE ehr.formtypes ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
 GO
 ALTER TABLE ehr.formtypes ADD CONSTRAINT unique_formtypes UNIQUE (container , formtype);
 ALTER TABLE ehr.formtypes ALTER COLUMN category NVARCHAR(100);
@@ -148,8 +149,8 @@ ALTER TABLE ehr.investigators ALTER COLUMN emailAddress NVARCHAR(100);
 ALTER TABLE ehr.investigators ALTER COLUMN division NVARCHAR(100);
 GO
 
-ALTER TABLE ehr.kinship ALTER COLUMN id NVARCHAR(100);
-ALTER TABLE ehr.kinship ALTER COLUMN id2 NVARCHAR(100);
+ALTER TABLE ehr.kinship ALTER COLUMN id NVARCHAR(100) NOT NULL;
+ALTER TABLE ehr.kinship ALTER COLUMN id2 NVARCHAR(100) NOT NULL;
 GO
 
 DECLARE @ConstraintName nvarchar(200)
@@ -219,7 +220,7 @@ ALTER TABLE ehr.project ALTER COLUMN projecttype NVARCHAR(100);
 GO
 
 EXEC core.fn_dropifexists 'protocol', 'ehr', 'index', 'IDX_protocol_container_protocol';
-ALTER TABLE ehr.protocol ALTER COLUMN protocol NVARCHAR(200);
+ALTER TABLE ehr.protocol ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
 GO
 CREATE INDEX IDX_protocol_container_protocol ON ehr.protocol (container, protocol);
 ALTER TABLE ehr.protocol ALTER COLUMN inves NVARCHAR(200);
@@ -235,8 +236,8 @@ ALTER TABLE ehr.protocol_amendments ALTER COLUMN protocol NVARCHAR(200);
 ALTER TABLE ehr.protocol_amendments ALTER COLUMN Comment NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.protocol_counts ALTER COLUMN protocol NVARCHAR(200);
-ALTER TABLE ehr.protocol_counts ALTER COLUMN species NVARCHAR(200);
+ALTER TABLE ehr.protocol_counts ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.protocol_counts ALTER COLUMN species NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.protocol_counts ALTER COLUMN gender NVARCHAR(100);
 ALTER TABLE ehr.protocol_counts ALTER COLUMN description NVARCHAR(MAX);
 GO
@@ -246,7 +247,7 @@ ALTER TABLE ehr.protocolexemptions ALTER COLUMN exemption NVARCHAR(200);
 ALTER TABLE ehr.protocolexemptions ALTER COLUMN remark NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.protocolprocedures ALTER COLUMN protocol NVARCHAR(200);
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN procedurename NVARCHAR(200);
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN code NVARCHAR(100);
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN frequency NVARCHAR(2000);
@@ -291,15 +292,6 @@ SELECT @ConstraintName = Name
 FROM sys.default_constraints
 WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
         parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'report');
-IF @ConstraintName IS NOT NULL
-BEGIN
-EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
-END
-
-SELECT @ConstraintName = Name
-FROM sys.default_constraints
-WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
-        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'reportname');
 IF @ConstraintName IS NOT NULL
 BEGIN
 EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
@@ -411,18 +403,18 @@ ALTER TABLE ehr.snomed_tags ADD CONSTRAINT PK_snomed_tags PRIMARY KEY NONCLUSTER
 ALTER TABLE ehr.snomed_tags ALTER COLUMN id NVARCHAR(100);
 GO
 
-ALTER TABLE ehr.status ALTER COLUMN label NVARCHAR(200);
+ALTER TABLE ehr.status ALTER COLUMN label NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.status ALTER COLUMN description NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN id NVARCHAR(50);
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN id NVARCHAR(50) NOT NULL;
 ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN gender NVARCHAR(50);
 ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN dam NVARCHAR(50);
 ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN sire NVARCHAR(50);
 ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN species NVARCHAR(MAX);
 GO
 
-ALTER TABLE ehr.tasks ALTER COLUMN category NVARCHAR(200);
+ALTER TABLE ehr.tasks ALTER COLUMN category NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.tasks ALTER COLUMN title NVARCHAR(200);
 
 EXEC core.fn_dropifexists 'tasks', 'ehr', 'index', 'IDX_container_taskid_formtype';
