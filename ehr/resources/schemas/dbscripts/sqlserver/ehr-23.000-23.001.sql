@@ -250,7 +250,7 @@ GO
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN procedurename NVARCHAR(200);
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN code NVARCHAR(100);
-ALTER TABLE ehr.protocolprocedures ALTER COLUMN frequency NVARCHAR(2000);
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN frequency NVARCHAR(200);
 ALTER TABLE ehr.protocolprocedures ALTER COLUMN remark NVARCHAR(MAX);
 GO
 
