@@ -110,6 +110,12 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         return null;
     }
 
+    @Override
+    protected boolean doSetUserPasswords()
+    {
+        return true;
+    }
+
     @Before
     public void preTest()
     {
