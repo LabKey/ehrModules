@@ -1,0 +1,1 @@
+CREATE SCHEMA EHR_App;

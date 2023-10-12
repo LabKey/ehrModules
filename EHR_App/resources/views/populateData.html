@@ -1,0 +1,232 @@
+<script type="text/javascript">
+
+    function importFile(config) {
+        var o = {
+            schemaName: config.schemaName,
+            queryName: config.queryName
+        };
+
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("query", "import", config.containerPath, {
+                module: 'EHR_App',
+                moduleResource: config.moduleResource
+            }),
+            method: 'POST',
+            timeout: 100000,
+            success: LABKEY.Utils.getCallbackWrapper(config.success, config.scope),
+            failure: LABKEY.Utils.getCallbackWrapper(config.failure, config.scope, true),
+            jsonData: o,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    Ext4.onReady(function(){
+
+        var tables = [{
+            label: 'Reports',
+            populateFn: 'populateFromFile',
+            schemaName: 'ehr',
+            queryName: 'reports',
+            pk: 'rowid'
+        }];
+
+        tables.sort(function(a, b) {
+            return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+        });
+
+        var webpart = <%=webpartContext%>;
+        Ext4.define('EHR_App.panel.PopulateDataPanel', {
+            extend: 'Ext.panel.Panel',
+
+            initComponent: function(){
+                Ext4.apply(this, {
+                    defaults: {
+                        style: 'padding: 10px;'
+                    },
+                    items: this.getItems()
+                });
+
+                this.pendingInserts = 0;
+                this.pendingDeletes = 0;
+
+                this.callParent();
+            },
+
+            getItems: function(){
+                var tableItems = [];
+                var items = [{
+                    layout: 'hbox',
+                    border: false,
+                    items: [{
+                        border: false,
+                        layout: {
+                            type: 'table',
+                            columns: 2
+                        },
+                        defaults: {
+                            style: 'margin: 2px;'
+                        },
+                        items: tableItems
+                    },{
+                        border: false,
+                        itemId: 'ehr_msg',
+                        xtype: 'box',
+                        width: "400px",
+                        style: {overflow: "scroll"},
+                        html: '<div id="msgbox"></div>'
+                    }]
+                }];
+
+                Ext4.each(this.tables, function(table){
+                    tableItems.push({
+                        xtype: 'button',
+                        text: 'Populate ' + table.label,
+                        scope: this,
+                        handler: function(){
+                            document.getElementById('msgbox').innerHTML = '<div>Populating ' + table.queryName + '...</div>';
+                            if (table.populateFn == 'populateFromFile') {
+                                this.populateFromFile.call(this, table.schemaName, table.queryName);
+                            } else {
+                                this[table.populateFn].call(this);
+                            }
+                        }
+                    });
+
+                    tableItems.push({
+                        xtype: 'button',
+                        text: 'Delete Data From ' + table.label,
+                        scope: this,
+                        handler: function(){
+                            document.getElementById('msgbox').innerHTML = '<div>Deleting ' + table.label + '...</div>';
+                            this.deleteHandler(table);
+                        }
+                    });
+                }, this);
+
+                tableItems.push({
+                    xtype: 'button',
+                    text: 'Populate All',
+                    scope: this,
+                    handler: function(){
+                        document.getElementById('msgbox').innerHTML = '';
+                        Ext4.each(this.tables, function(table){
+                            if (!table.doSkip) {
+                                document.getElementById('msgbox').innerHTML += '<div>Populating ' + table.queryName + '...</div>';
+                                if (table.populateFn == 'populateFromFile') {
+                                    this.populateFromFile.call(this, table.schemaName, table.queryName);
+                                } else {
+                                    this[table.populateFn]();
+                                }
+                            } else {
+                                document.getElementById('msgbox').innerHTML += '<div>Skipping ' + table.label + '</div>';
+                            }
+                        }, this);
+                    }
+                });
+                tableItems.push({
+                    xtype: 'button',
+                    text: 'Delete All',
+                    scope: this,
+                    handler: function(){
+                        this.pendingDeletes = 0;
+                        document.getElementById('msgbox').innerHTML = '';
+                        Ext4.each(this.tables, function(table){
+                            if (!table.doSkip) {
+                                document.getElementById('msgbox').innerHTML += '<div>Deleting ' + table.label + '...</div>';
+                                this.deleteHandler(table);
+                            } else {
+                                document.getElementById('msgbox').innerHTML += '<div>Skipping ' + table.label + '</div>';
+                            }
+                        }, this);
+                    }
+                });
+
+                return items;
+            },
+
+            tables: tables,
+            deleteHandler: function(table){
+                if (table.deleteFn){
+                    this[table.deleteFn].call(this);
+                }
+                else {
+                    this.truncate(table.schemaName, table.queryName);
+                }
+            },
+
+            truncate: function (schemaName, queryName) {
+                this.pendingDeletes++;
+                LABKEY.Ajax.request({
+                    url: LABKEY.ActionURL.buildURL("query", "truncateTable.api"),
+                    success: LABKEY.Utils.getCallbackWrapper(this.onDeleteSuccess, this),
+                    failure: LDK.Utils.getErrorCallback({
+                        callback: function (resp) {
+                            document.getElementById('msgbox').innerHTML += '<div class="labkey-error">Error loading data: ' + resp.errorMsg + '</div>';
+                        },
+                        scope: this
+                    }),
+                    jsonData: {
+                        schemaName: schemaName,
+                        queryName: queryName
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            },
+
+            onDeleteSuccess: function(data){
+                var count = data ? (data.affectedRows || data.deletedRows) : '?';
+                this.pendingDeletes--;
+                if (this.pendingDeletes === 0){
+                    document.getElementById('msgbox').innerHTML += '<div>Delete Complete</div>';
+                }
+            },
+
+            populateFromFile: function (schemaName, queryName) {
+                this.pendingInserts++;
+                //records for task forms:
+                var config = {
+                    schemaName: schemaName,
+                    queryName: queryName,
+                    moduleResource: '/data/reports/' + queryName + '.tsv',
+                    success: this.onSuccess,
+                    failure: this.onError,
+                    scope: this
+                };
+
+                importFile(config);
+            },
+
+            onSuccess: function(result, xhr, config){
+                if (result.exception || result.errors) {
+                    // NOTE: importFile uses query/import.view which returns statusCode=200 for errors
+                    this.onError.call(this, result, xhr, config);
+                } else {
+                    this.pendingInserts--;
+
+                    if (this.pendingInserts === 0) {
+                        document.getElementById('msgbox').innerHTML += '<div>Populate Complete</div>';
+                    }
+                }
+            },
+
+            onError: function(result, xhr, config){
+                this.pendingInserts--;
+
+                var queryName = result.queryName || config.queryName || config.jsonData.queryName;
+
+                document.getElementById('msgbox').innerHTML += '<div class="labkey-error">ERROR: ' + queryName + ': ' + result.exception + '</div>';
+
+                if (this.pendingInserts==0){
+                    document.getElementById('msgbox').innerHTML += '<div>Populate Complete</div>';
+                }
+            }
+        });
+
+        Ext4.create('EHR_App.panel.PopulateDataPanel').render(webpart.wrapperDivId);
+    });
+
+</script>

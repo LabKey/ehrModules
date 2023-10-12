@@ -1,0 +1,14 @@
+<studyqc xmlns="http://labkey.org/study/xml/qcStates">
+    <showPrivateDataByDefault>true</showPrivateDataByDefault>
+    <blankQCStatePublic>false</blankQCStatePublic>
+    <pipelineImportDefault>Completed</pipelineImportDefault>
+    <assayDataDefault>Completed</assayDataDefault>
+    <insertUpdateDefault>Completed</insertUpdateDefault>
+    <qcstates>
+        <qcstate name="Abnormal" description="Value is abnormal" public="true"/>
+        <qcstate name="Completed" description="Record has been completed and is public" public="true"/>
+        <qcstate name="Delete Requested" description="Records are requested to be deleted" public="false"/>
+        <qcstate name="In Progress" description="Draft Record, not public" public="false"/>
+        <qcstate name="Review Required" description="Review is required prior to public release" public="false"/>
+    </qcstates>
+</studyqc>
