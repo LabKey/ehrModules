@@ -46,6 +46,7 @@ module.exports = {
             {
                 // This increases test perf by a considerable margin
                 isolatedModules: true,
+                tsconfig: "node_modules/@labkey/build/webpack/tsconfig.json"
             }
         ]
     },
