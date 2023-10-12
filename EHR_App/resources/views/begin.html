@@ -1,0 +1,89 @@
+<script type="text/javascript">
+
+Ext4.onReady(createNavMenu);
+
+function createNavMenu(){
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
+
+    if(!ctx)
+        return;
+
+    Ext4.get(webpart.wrapperDivId).update(
+        '<div style="max-width:920px">' +
+        '    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues' + ctx['EHRStudyContainer'] + '/Issue_TrackerQ/list.view?" target="_blank">here</a>.' +
+        '   <br><br>' +
+        '</div>' +
+        '<table>' +
+        '<tr style="vertical-align:top">' +
+        '    <td style="width:300px">' +
+        '        <div id="ehrMenu1_'+webpart.wrapperDivId+'"></div>' +
+        '    </td>' +
+        '    <td style="width:300px;vertical-align:top">' +
+        '        <div id="ehrMenu2_'+webpart.wrapperDivId+'"></div>' +
+        '    </td>' +
+        '    <td style="width:300px;vertical-align:top">' +
+        '        <div id="ehrMenu3_'+webpart.wrapperDivId+'"></div>' +
+        '    </td>' +
+        '</tr>' +
+        '</table>'
+    );
+
+    Ext4.create('EHR.NavMenu',{
+        width: 270,
+        renderTo: 'ehrMenu1_'+webpart.wrapperDivId,
+        sections: [
+            {header: 'By Animal',
+            items: [
+                {name: 'Animal History', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view?'},
+                {name: 'Animal Search', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalSearch.view?'}
+                ]},
+            {header: 'By Dataset',
+            items: [
+                {name: 'Browse All Datasets', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/datasets.view?'},
+                {name: 'Housing Queries', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingQueries.view?'},
+                {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/projectQueries.view?'}
+            ]},
+            {header: 'By Location',
+            items: [
+                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:roomCage'},
+            ]}
+        ]
+    });
+
+
+    Ext4.create('EHR.NavMenu', {
+        width: 270,
+        renderTo: 'ehrMenu2_'+webpart.wrapperDivId,
+        sections: [
+            {header: 'Entire Colony',
+            items: [
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
+                {name: 'Population Summary', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/populationOverview.view?'}
+            ]}
+        ]
+    });
+
+    var menuCfg = {
+        width: 270,
+        renderTo: 'ehrMenu3_'+webpart.wrapperDivId,
+        sections: []
+    }
+
+    if (LABKEY.Security.currentUser.isAdmin){
+        menuCfg.sections.push({
+            header: 'Admin',
+            items: [
+                {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/ehrAdmin.view'},
+                {name: 'Manage EHR Study', url: '<%=contextPath%>/study' + ctx['EHRStudyContainer'] + '/manageStudy.view?'},
+                {name: 'Manage Lookup Tables', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/dataAdmin.view'}
+            ]
+        })
+
+    }
+
+    Ext4.create('EHR.NavMenu', menuCfg);
+
+}
+
+</script>

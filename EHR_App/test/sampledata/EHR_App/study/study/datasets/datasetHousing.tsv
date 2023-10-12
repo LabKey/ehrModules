@@ -1,0 +1,74 @@
+objectid	Id	date	enddate	room	housingType	cage	remark
+1	TEST3804589	-5762d	-5762d	R06	2	1	odio fusce placerat amet viverra quis dignissim sagittis tortor donec aliquet scelerisque ut leo imperdiet
+2	TEST3804589	-5761d	-5761d	R07	2	2	rhoncus lorem odio amet leo ultrices odio id massa risus tortor leo donec magna porttitor dolor fringilla
+3	TEST3804589	-5760d	-5282d	R06	2	3	volutpat eget a egestas urna vitae quam nec tincidunt morbi ut et laoreet a erat convallis ante sed duis
+4	TEST3804589	-5282d	-5182d	R04	1	1	nisi eget sem vitae metus neque sem elementum sem dis leo erat morbi dapibus a amet per vulputate vestibulum
+5	TEST3804589	-5182d	-5182d	R07	2	2	ridiculus ante nullam sed lorem odio dui odio pretium facilisis et nibh sem varius at quis nec pharetra
+6	TEST3804589	-5181d	-5173d	R06	2	1	lacinia aliquam praesent urna fusce in quisque orci dui ultricies amet faucibus phasellus tempor non enim
+7	TEST3804589	-5173d	-4895d	R06	2	2	nulla duis sed leo lorem odio dolor lorem feugiat orci nunc erat est auctor posuere mattis eros vitae
+8	TEST3804589	-4895d	-4893d	R07	2		dapibus egestas sagittis et felis sit sed dignissim tincidunt pretium varius risus vel sit
+9	TEST3804589	-4893d	-4869d	R06	2	3	porta a pulvinar luctus a consequat vel egestas orci iaculis erat lacinia imperdiet tellus eu eleifend
+10	TEST4564246	-4566d		R07	2	3	porta a pulvinar luctus a consequat vel egestas orci iaculis erat lacinia imperdiet tellus eu eleifend
+11	TEST3804589	-4892d		R04	1	1	Nam tempus risus eu faucibus tempor
+12	TEST4551032	-4893d		R04	1	2	Etiam convallis id ante vitae viverra
+13	TEST5904521	-4893d		R04	1	3	Nunc sodales condimentum ipsum sed fringilla
+14	TEST1112911	-4527d		R05	2	1	Cras porta ligula vitae leo tristique pharetra
+15	TEST1684145	-4893d		R05	2	2	Quisque lobortis nulla pellentesque sapien placerat
+16	TESTAB500114	-4893d		R01	1	14	Cras porta ligula vitae leo tristique pharetra
+17	TESTAB50014	-4893d	-4869d	R01	1	4	Quisque lobortis nulla pellentesque sapien placerat
+18	TEST9118022	-4893d		R02	1	4	Quisque lobortis pellentesque placerat
+19	44444	-1240d		R03	1	3	Quisque lobortis pellentesque placerat
+20	TSTCP	-1605d		R03	1	3	Quisque lobortis pellentesque placerat
+21	TEST8976544	-45d	-35d1m	R01	1	2	Billing Test
+22	TEST8976544	-35d1m	-35d	R02	1	2	Billing Test
+23	TEST8976544	-35d		R10	3	2	Billing Test
+24	TEST9195996	-45d	-30d	R15	4	3	Billing Test
+25	TEST9195996	-30d	-15d	R17	5	4	Billing Test
+26	TEST9195996	-14d		R22		1	Billing Test
+27	TESTMICE101	-45d	-35d1m	R01	1	2	Billing Test
+28	TESTMICE101	-35d1m	-35d	R02	1	2	Billing Test
+29	TESTMICE101	-35d		R10	3	2	Billing Test
+30	TESTMICE102	-45d	-30d	R15	4	3	Billing Test
+31	TESTMICE102	-30d	-15d	R17	5	4	Billing Test
+32	TESTMICE102	-14d		R22		1	Billing Test
+33	TESTRAT101	-45d	-35d1m	R01	1	2	Billing Test
+34	TESTRAT101	-35d1m	-35d	R02		2	Billing Test
+35	TESTRAT101	-35d		R10	3	2	Billing Test
+36	TESTRAT102	-45d	-30d	R15	4	3	Billing Test
+37	TESTRAT102	-30d	-15d	R17	5	4	Billing Test
+38	TESTRAT102	-14d		R22		1	Billing Test
+39	TESTGPIG101	-45d	-35d1m	R01	1	2	Billing Test
+40	TESTGPIG101	-35d1m	-35d	R02	1	2	Billing Test
+41	TESTGPIG101	-35d		R10		2	Billing Test
+42	TESTGPIG102	-45d	-30d	R15	4	3	Billing Test
+43	TESTGPIG102	-30d	-15d	R17	5	4	Billing Test
+44	TESTGPIG102	-14d		R22		1	Billing Test
+45	TESTGRBL101	-45d	-35d1m	R01	1	2	Billing Test
+46	TESTGRBL101	-35d1m	-35d	R02	1	2	Billing Test
+47	TESTGRBL101	-35d		R10		2	Billing Test
+48	TESTGRBL102	-45d	-30d	R15	4	3	Billing Test
+49	TESTGRBL102	-30d	-15d	R17	5	4	Billing Test
+50	TESTGRBL102	-14d		R22		1	Billing Test
+51	TESTRBT101	-45d	-35d1m	R01	1	2	Billing Test
+52	TESTRBT101	-35d1m	-35d	R02	1	2	Billing Test
+53	TESTRBT101	-35d		R10	3	2	Billing Test
+54	TESTRBT102	-45d	-30d	R15	4	3	Billing Test
+55	TESTRBT102	-30d	-15d	R17	5	4	Billing Test
+56	TESTRBT102	-14d		R22		1	Billing Test
+57	TESTHMSTR101	-45d	-35d1m	R01	1	2	Billing Test
+58	TESTHMSTR101	-35d1m	-35d	R02	1	2	Billing Test
+59	TESTHMSTR101	-35d		R10	3	2	Billing Test
+60	TESTHMSTR102	-45d	-30d	R15	4	3	Billing Test
+61	TESTHMSTR102	-30d	-15d	R17	5	4	Billing Test
+62	TESTHMSTR102	-14d		R22		1	Billing Test
+63	TESTCAT101	-45d	-35d1m	R01	1	2	Billing Test
+64	TESTCAT101	-35d1m	-35d	R02	1	2	Billing Test
+65	TESTCAT101	-35d		R10		2	Billing Test
+66	TESTCAT102	-45d	-30d	R15	4	3	Billing Test
+67	TESTCAT102	-30d	-15d	R17	5	4	Billing Test
+68	TESTCAT102	-14d		R22		1	Billing Test
+69	AnimalTx01	-14d		R10	3	1	Billing Test
+70	AnimalTx02	-14d		R07	2	1	Billing Test
+71	TEST4037096	-35d		R07	2	1	Billing Test
+72	TESTCAT101	-54d	-53d	R01	1	2	Billing Test
+73	TEST4037096	-54d	-53d	R07	2	1	Billing Test

@@ -1,0 +1,9 @@
+<webpart xmlns="http://labkey.org/data/xml/webpart"
+    title="EHR App Links">
+   <view name="begin"/>
+   <locations>
+       <location name="body"/>
+		<location name="right"/>
+		<location name="menu"/>
+   </locations>
+</webpart>
