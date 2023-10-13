@@ -56,10 +56,8 @@ npm test
 
 ## Related docs from labkey-ui-components repository
 
-- [Getting @labkey/premium package feature branch changes to the application](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#getting-labkeycomponents-packages-to-the-application)
 - [Linting](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#linting)
 - [Check package bundle size](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#package-bundle-size)
-- [Adding an entry point / subpackage to @labkey/premium](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#adding-an-entry-point--subpackage-to-labkeycomponents)
 - [Publishing alpha package versions and release verions](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#publishing)
 - [Merging feature branch changes into develop](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#merging-changes-into-develop)
 - [Making hotfix patches to a release branch](https://github.com/LabKey/labkey-ui-components/blob/develop/packages/components/docs/localDev.md#making-hotfix-patches-to-a-release-branch)
