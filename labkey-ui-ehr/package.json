@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@labkey/api": "1.24.2",
-    "@labkey/build": "6.15.0-fb-ehr-react-package.4",
+    "@labkey/build": "6.15.0-fb-ehr-react-package.5",
     "@labkey/components": "2.374.1",
     "@labkey/eslint-config-react": "0.0.13",
     "@types/jest": "~29.5.4",
