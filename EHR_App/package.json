@@ -8,7 +8,7 @@
     "build-analyze": "cross-env ANALYZE=true npm run build",
     "build-dev": "npm run clean && cross-env NODE_ENV=development webpack --config node_modules/@labkey/build/webpack/dev.config.js --color",
     "build-prod": "npm run clean && cross-env NODE_ENV=production webpack --config node_modules/@labkey/build/webpack/prod.config.js --color --progress --profile",
-    "clean": "rimraf resources/web/jhu_ehr/gen && rimraf resources/views/gen && rimraf resources/web/gen",
+    "clean": "rimraf resources/web/EHR_App/gen && rimraf resources/views/gen && rimraf resources/web/gen",
     "start": "cross-env NODE_ENV=development webpack serve --config node_modules/@labkey/build/webpack/watch.config.js",
     "start-link": "cross-env LINK=true npm run start",
     "test": "cross-env NODE_ENV=test jest",
