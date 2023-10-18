@@ -17,8 +17,8 @@
     "lint-fix": "eslint --fix"
   },
   "dependencies": {
-    "@labkey/components": "2.375.1",
-    "@labkey/ehr": "0.0.1-fb-ehr-react-package.14"
+    "@labkey/components": "2.381.1",
+    "@labkey/ehr": "0.0.1-fb-ehr-react-package.17"
   },
   "devDependencies": {
     "@labkey/build": "6.15.0-fb-ehr-react-package.5",

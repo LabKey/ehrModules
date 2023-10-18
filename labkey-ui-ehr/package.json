@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.1-fb-ehr-react-package.14",
+  "version": "0.0.1-fb-ehr-react-package.17",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -61,9 +61,9 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@labkey/api": "1.24.2",
-    "@labkey/build": "6.15.0-fb-ehr-react-package.5",
-    "@labkey/components": "2.374.1",
+    "@labkey/api": "1.25.0",
+    "@labkey/build": "6.15.0-fb-ehr-react-package.6",
+    "@labkey/components": "2.381.1",
     "@labkey/eslint-config-react": "0.0.13",
     "@types/jest": "~29.5.4",
     "@types/react": "~16.14.46",
