@@ -72,7 +72,7 @@ public class EHR_AppModule extends ExtendedSimpleModule
     @Override
     protected void init()
     {
-
+        addController(EHR_AppController.NAME, EHR_AppController.class);
     }
 
     @Override

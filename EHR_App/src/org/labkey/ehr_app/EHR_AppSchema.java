@@ -18,7 +18,7 @@ public class EHR_AppSchema
     {
         // private constructor to prevent instantiation from
         // outside this class: this singleton should only be
-        // accessed via org.labkey.jhu_ehr.Jhu_ehrSchema.getInstance()
+        // accessed via org.labkey.ehr_app.EHR_AppSchema.getInstance()
     }
 
     public DbSchema getSchema()

@@ -1,0 +1,6 @@
+.gradle
+
+/node_modules
+/dist
+/resources/views/gen
+/resources/web/gen
