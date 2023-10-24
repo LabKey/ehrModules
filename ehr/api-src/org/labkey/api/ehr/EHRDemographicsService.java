@@ -50,4 +50,9 @@ abstract public class EHRDemographicsService
     abstract public AnimalRecord getAnimal(Container c, String id);
 
     abstract public List<AnimalRecord> getAnimals(Container c, Collection<String> ids);
+
+    /**
+     *
+     */
+    abstract public void recalculateForAllIdsInCache(final Container c, final String schema, final String query, final boolean async);
 }
