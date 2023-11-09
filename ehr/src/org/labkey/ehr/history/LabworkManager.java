@@ -18,7 +18,10 @@ package org.labkey.ehr.history;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
+import org.labkey.api.util.Pair;
+import org.labkey.ehr.EHRServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,11 +58,20 @@ public class LabworkManager
     public Collection<LabworkType> getTypes(Container c)
     {
         List<LabworkType> result = new ArrayList<>(_types.size());
+        Map<String, Pair<Module, LabworkType>> labworkTypeOverrides = EHRServiceImpl.get().getLabWorkOverrides();
         for (LabworkType type : _types)
         {
             if (type.isEnabled(c))
             {
-                result.add(type);
+                if (labworkTypeOverrides.containsKey(type.getName()))
+                {
+                    Pair<Module, LabworkType> override = labworkTypeOverrides.get(type.getName());
+                    result.add(override.getValue());
+                }
+                else
+                {
+                    result.add(type);
+                }
             }
         }
         return Collections.unmodifiableCollection(result);
