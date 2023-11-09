@@ -53,13 +53,6 @@
                         }
                         return value; // Return the cell value
                     }
-                },
-                editorConfig: {
-                    listeners: {
-                        validitychange: function(field, isValid) {
-                            debugger
-                        }
-                    }
                 }
             }
         }
