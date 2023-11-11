@@ -48,7 +48,7 @@
                                 metaData.style = 'background-color: #F66760;';
                             }
                             else {
-                                metaData.style = 'background-color: green;';
+                                metaData.style = 'background-color: #00C200;';
                             }
                         }
                         return value; // Return the cell value
