@@ -324,4 +324,6 @@ abstract public class EHRService
 
     /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
+
+    abstract public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType);
 }
