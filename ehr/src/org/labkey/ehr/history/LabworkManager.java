@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: bimber
@@ -59,11 +60,13 @@ public class LabworkManager
     {
         List<LabworkType> result = new ArrayList<>(_types.size());
         Map<String, Pair<Module, LabworkType>> labworkTypeOverrides = EHRServiceImpl.get().getLabWorkOverrides();
+        Set<Module> activeModules = c.getActiveModules();
         for (LabworkType type : _types)
         {
             if (type.isEnabled(c))
             {
-                if (labworkTypeOverrides.containsKey(type.getName()))
+                if (labworkTypeOverrides.containsKey(type.getName()) &&
+                    activeModules.contains(labworkTypeOverrides.get(type.getName()).first))
                 {
                     Pair<Module, LabworkType> override = labworkTypeOverrides.get(type.getName());
                     result.add(override.getValue());
