@@ -110,7 +110,7 @@ public class EHRServiceImpl extends EHRService
     private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
     private final Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
     private final MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
-    private final Map<String, Pair<Module, LabworkType>> _labWorkOverrides = new HashMap<>();
+    private final Map<String, Map<Module, LabworkType>> _labWorkOverrides = new HashMap<>();
     private final List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private final Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -1054,10 +1054,15 @@ public class EHRServiceImpl extends EHRService
 
     public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType)
     {
-        _labWorkOverrides.put(fromType, Pair.of(module, toType));
+        if (!_labWorkOverrides.containsKey(fromType))
+        {
+            _labWorkOverrides.put(fromType, new HashMap<>());
+        }
+        _labWorkOverrides.get(fromType).put(module, toType);
+        _labWorkOverrides.put(fromType, _labWorkOverrides.get(fromType));
     }
 
-    public Map<String, Pair<Module, LabworkType>> getLabWorkOverrides()
+    public Map<String, Map<Module, LabworkType>> getLabWorkOverrides()
     {
         return _labWorkOverrides;
     }

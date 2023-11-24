@@ -59,17 +59,20 @@ public class LabworkManager
     public Collection<LabworkType> getTypes(Container c)
     {
         List<LabworkType> result = new ArrayList<>(_types.size());
-        Map<String, Pair<Module, LabworkType>> labworkTypeOverrides = EHRServiceImpl.get().getLabWorkOverrides();
+        Map<String, Map<Module, LabworkType>> labworkTypeOverrides = EHRServiceImpl.get().getLabWorkOverrides();
         Set<Module> activeModules = c.getActiveModules();
         for (LabworkType type : _types)
         {
             if (type.isEnabled(c))
             {
-                if (labworkTypeOverrides.containsKey(type.getName()) &&
-                    activeModules.contains(labworkTypeOverrides.get(type.getName()).first))
+                if (labworkTypeOverrides.containsKey(type.getName()))
                 {
-                    Pair<Module, LabworkType> override = labworkTypeOverrides.get(type.getName());
-                    result.add(override.getValue());
+                    labworkTypeOverrides.get(type.getName()).forEach((module, labworkType) -> {
+                        if (activeModules.contains(module))
+                        {
+                            result.add(labworkType);
+                        }
+                    });
                 }
                 else
                 {
