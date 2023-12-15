@@ -1141,7 +1141,7 @@ public class EHRController extends SpringActionController
                 throw new UnauthorizedException("Only site admins can view this page");
             }
 
-            return new HtmlView("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
+            return HtmlView.of("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
         }
 
         @Override
@@ -1250,7 +1250,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
+            return HtmlView.of("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
         }
 
         @Override
@@ -1277,7 +1277,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            return new HtmlView("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
+            return HtmlView.of("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
         }
 
         @Override
