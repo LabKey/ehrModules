@@ -980,7 +980,7 @@
     <table tableName="employeeTraining" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
-        <tableTitle>Employee Training</tableTitle>
+        <tableTitle>Employee Requirement Details</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="rowid">
@@ -1002,7 +1002,7 @@
             </column>
 
             <column columnName="next_training">
-                <columnTitle>Next Training</columnTitle>
+                <columnTitle>Training Status</columnTitle>
                 <fk>
                     <fkDbSchema>ehr_compliancedb</fkDbSchema>
                     <fkTable>Employee_Reference_Data</fkTable>
@@ -1037,7 +1037,7 @@
                 <isHidden>true</isHidden>
             </column>
 
-            <column columnName="modfiedby">
+            <column columnName="modifiedby">
                 <isHidden>true</isHidden>
             </column>
             <column columnName="modified">
@@ -1073,5 +1073,76 @@
             </column>
 
          </columns>
+    </table>
+
+    <table tableName="Employee_Assigned_Location" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <tableTitle>Employee Assigned Locations</tableTitle>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <columnTitle>Key</columnTitle>
+            </column>
+            <column columnName="employeeid">
+                <columnTitle>Employee Id</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_compliancedb</fkDbSchema>
+                    <fkTable>employees</fkTable>
+                    <fkColumnName>employeeid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="location">
+                <columnTitle>Assigned Locations</columnTitle>
+            </column>
+
+            <column columnName="status">
+                <columnTitle>Training Status</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_compliancedb</fkDbSchema>
+                    <fkTable>Employee_Reference_Data</fkTable>
+                    <fkColumnName>value</fkColumnName>
+                </fk>
+            </column>
+
+            <column columnName="enddate">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="objectid">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="comments">
+                <columnTitle>Comments</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="createdby">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isHidden>true</isHidden>
+            </column>
+
+            <column columnName="modifiedby">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="taskid">
+                <isHidden>true</isHidden>
+            </column>
+
+        </columns>
     </table>
 </tables>
