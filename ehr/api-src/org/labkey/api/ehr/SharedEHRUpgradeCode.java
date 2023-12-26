@@ -1,5 +1,6 @@
 package org.labkey.api.ehr;
 
+import jakarta.servlet.ServletContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.audit.TransactionAuditProvider;
@@ -33,7 +34,6 @@ import org.labkey.api.util.UnexpectedException;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.NotFoundException;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -48,7 +48,6 @@ import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionA
 /**
  * Allows upgrade scripts to prescribe folder reloads and ETL executions (including truncates). Will look at the
  * site-wide ehrStudyContainer and ehrAdminUser module properties to decide where and as whom to run the jobs.
- *
  * Supports 'reloadFolder' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
  */
 public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
@@ -299,7 +298,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         UserSchema schema = QueryService.get().getUserSchema(user, container, tsvImport._schemaName);
         if (schema == null)
         {
-            throw new IllegalArgumentException("Could not find schema " + schema + " in " + container.getPath());
+            throw new IllegalArgumentException("Could not find schema " + tsvImport._schemaName + " in " + container.getPath());
         }
         TableInfo table = schema.getTable(tsvImport._queryName);
         if (table == null)
