@@ -10577,3 +10577,30 @@ DROP INDEX cage_location ON ehr_lookups.cage;
 alter table ehr_lookups.cage alter column location nvarchar(100);
 CREATE INDEX cage_location ON ehr_lookups.cage (location ASC);
 ALTER TABLE ehr_lookups.cage ADD CONSTRAINT UQ_cage UNIQUE (Container,Location);
+
+/* 22.xxx SQL scripts */
+
+ALTER TABLE ehr_lookups.cage ADD Lsid LSIDtype;
+ALTER TABLE ehr_lookups.areas ADD Lsid LSIDtype;
+
+CREATE TABLE ehr_lookups.floors (
+    rowId int identity(1,1),
+    floor NVARCHAR(100),
+    building NVARCHAR(100),
+    name NVARCHAR(100),
+    description NVARCHAR(100),
+    created datetime,
+    createdby integer,
+    modified datetime,
+    modifiedby integer,
+    container ENTITYID NOT NULL,
+    Lsid LSIDtype,
+
+    CONSTRAINT PK_Floors PRIMARY KEY (rowId),
+    CONSTRAINT FK_Floors_Container FOREIGN KEY (container) REFERENCES core.Containers (EntityId)
+);
+CREATE INDEX IX_Ehr_Lookups_Floors_Container ON ehr_lookups.floors (Container);
+
+--Added new column called "PainCategories" to record the USDA pain levels.
+--EHR tkt # 8782
+ALTER TABLE ehr_lookups.procedures ADD painCategories NVARCHAR(50);
