@@ -2,7 +2,7 @@ CREATE TABLE ehr_compliancedb.EmployeeTraining
 (
     rowId INT IDENTITY(100,1) NOT NULL,
     EmployeeId nvarchar(255) not null,
-    [requirementname] [nvarchar](500) NULL,
+    [requirementname] [nvarchar](3000) NULL,
     [datecompleted] [datetime] NULL,
     [next_training] [nvarchar](50) NULL,
     [next_training_date] [datetime] NULL,
