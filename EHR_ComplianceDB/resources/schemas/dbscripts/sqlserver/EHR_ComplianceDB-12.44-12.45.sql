@@ -15,8 +15,8 @@ CREATE TABLE ehr_compliancedb.EmployeeTraining
     ModifiedBy USERID,
     Modified datetime,
     taskid entityid,
-    unit nvarchar(100),
-    category nvarchar(100)
+    unit nvarchar(1000),
+    category nvarchar(1000)
 
 
 
