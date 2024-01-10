@@ -21,7 +21,6 @@ import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.history.DefaultLabworkType;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
@@ -42,9 +41,9 @@ import java.util.TreeMap;
  */
 public class AntibioticSensitivityLabworkType extends DefaultLabworkType
 {
-    private String _tissueField = "tissue/meaning";
-    private String _microbeField = "microbe/meaning";
-    private String _antibioticField = "antibiotic/meaning";
+    protected String _tissueField = "tissue/meaning";
+    protected String _microbeField = "microbe/meaning";
+    protected String _antibioticField = "antibiotic/meaning";
 
     public AntibioticSensitivityLabworkType(Module module)
     {
