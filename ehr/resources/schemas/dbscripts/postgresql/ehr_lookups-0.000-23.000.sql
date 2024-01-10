@@ -10118,3 +10118,30 @@ ALTER TABLE ehr_lookups.treatment_codes ALTER COLUMN dosage TYPE DECIMAL(13,2);
 ALTER TABLE ehr_lookups.drug_defaults ADD COLUMN remark varchar(1000);
 
 ALTER TABLE ehr_lookups.cage ALTER COLUMN location TYPE varchar(100);
+
+/* 22.xxx SQL scripts */
+
+ALTER TABLE ehr_lookups.cage ADD COLUMN Lsid LSIDtype;
+ALTER TABLE ehr_lookups.areas ADD COLUMN Lsid LSIDtype;
+
+CREATE TABLE ehr_lookups.floors (
+    rowId SERIAL,
+    floor varchar(100),
+    building varchar(100),
+    name varchar(100),
+    description varchar(100),
+    created timestamp,
+    createdby integer,
+    modified timestamp,
+    modifiedby integer,
+    container ENTITYID NOT NULL,
+    Lsid LSIDtype,
+
+    CONSTRAINT PK_Floors PRIMARY KEY (rowId),
+    CONSTRAINT FK_Floors_Container FOREIGN KEY (container) REFERENCES core.Containers (EntityId)
+);
+CREATE INDEX IX_Ehr_Lookups_Floors_Container ON ehr_lookups.floors (Container);
+
+--Added new column called "PainCategories" to record the USDA pain levels.
+--EHR tkt # 8782
+ALTER TABLE ehr_lookups.procedures ADD COLUMN painCategories varchar(50);

@@ -759,6 +759,17 @@
                 <nullable>true</nullable>
                 <isHidden>true</isHidden>
             </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
         </columns>
     </table>
     <table tableName="form_framework_types" tableDbType="TABLE">

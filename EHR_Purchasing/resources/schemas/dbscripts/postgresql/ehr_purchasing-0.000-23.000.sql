@@ -257,3 +257,7 @@ ALTER TABLE ehr_purchasing.lineItems ALTER COLUMN quantity TYPE NUMERIC(10, 2);
 
 ALTER TABLE ehr_purchasing.vendor ALTER COLUMN state DROP NOT NULL;
 ALTER TABLE ehr_purchasing.vendor ALTER COLUMN zip DROP NOT NULL;
+
+/* 22.xxx SQL scripts */
+
+ALTER TABLE ehr_purchasing.lineItems ADD COLUMN lineItemNumber INTEGER DEFAULT 0 NOT NULL;

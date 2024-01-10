@@ -1,0 +1,1 @@
+ALTER TABLE ehr.notificationrecipients ADD COLUMN LSID LSIDtype;
