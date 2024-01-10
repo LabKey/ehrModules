@@ -1,0 +1,3 @@
+--Added new column called "template_OID" to record the eIACUC Link.
+--
+--ALTER TABLE ehr.protocol ADD template_oid NVARCHAR(100);
