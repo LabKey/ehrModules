@@ -4,12 +4,11 @@ BEGIN
       IF NOT EXISTS (
         SELECT column_name
         FROM information_schema.columns
-        WHERE table_name='notificationrecipients' and table_schema='ehr' and column_name='LSID'
+        WHERE table_name='notificationrecipients' and table_schema='ehr' and column_name='lsid'
       )
       THEN
-
-ALTER TABLE ehr.notificationrecipients ADD COLUMN LSID LSIDtype;
-END IF;
+        ALTER TABLE ehr.notificationrecipients ADD COLUMN LSID LSIDtype;
+      END IF;
 END;
 $$ LANGUAGE plpgsql;
 
