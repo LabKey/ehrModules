@@ -1294,6 +1294,8 @@ public class EHRController extends SpringActionController
         private boolean _delete;
         private String _manifest;
 
+        private String _lookup;
+
         public boolean isDelete()
         {
             return _delete;
@@ -1313,18 +1315,28 @@ public class EHRController extends SpringActionController
         {
             _manifest = manifest;
         }
+
+        public String getLookup()
+        {
+            return _lookup;
+        }
+
+        public void setLookup(String lookup)
+        {
+            _lookup = lookup;
+        }
     }
 
-    @RequiresPermission(AdminPermission.class)
-    public class PopulateLookupsAction extends MutatingApiAction<PopulateLookupsForm>
+    private abstract class BaseLookupsAction extends MutatingApiAction<PopulateLookupsForm>
     {
-        private final String _manifestDirectory = "data/";
-        private final String _manifestDefault = "lookupsManifest";
-        private final String _manifestFileExt = ".tsv";
-        private final String _lookupSetsPath = "data/lookup_sets.tsv";
-        private Resource _lookupsManifest;
-        private Resource _lookupSets;
-        private Module _lookupsManifestModule;
+        protected final String _manifestDirectory = "data/";
+        protected final String _manifestDefault = "lookupsManifest";
+        protected final String _manifestFileExt = ".tsv";
+        protected final String _lookupSetsPath = "data/lookup_sets.tsv";
+        protected String _lookup = "All";
+        protected Resource _lookupsManifest;
+        protected Resource _lookupSets;
+        protected Module _lookupsManifestModule;
 
         @Override
         public void validateForm(PopulateLookupsForm form, Errors errors)
@@ -1380,10 +1392,57 @@ public class EHRController extends SpringActionController
                 {
                     errors.reject(ERROR_MSG, "Unable to find lookups manifest and lookupSets in module '" + _lookupsManifestModule.getName() + "'");
                 }
+
+                // Lookup to populate
+                if (form.getLookup() != null)
+                {
+                    _lookup = form.getLookup();
+                }
             }
 
         }
+    }
 
+    @RequiresPermission(AdminPermission.class)
+    public class GetLookupsAction extends BaseLookupsAction
+    {
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (null == _lookupsManifest || null == _lookupSets)
+                return null;
+
+            List<String> lookups = new ArrayList<>();
+            lookups.add("All");
+            lookups.add("lookup_sets");
+
+            BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
+            String line;
+
+            while ((line = reader.readLine()) != null)
+            {
+                String [] cols = line.split("\t");
+                Resource r = _lookupsManifestModule.getModuleResource("data/" + cols[0] + ".tsv");
+                if (r != null && r.exists())
+                {
+                    lookups.add(cols[0]);
+                }
+                else
+                {
+                    _log.warn("File listed in manifest file but data file not found: " + cols[0] + ". Using manifest file: " + _lookupsManifestModule.getName());
+                }
+            }
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            response.put("lookups", lookups);
+            return response;
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class PopulateLookupsAction extends BaseLookupsAction
+    {
         private void loadFile(UserSchema schema, String tableName, Resource resource, boolean isDelete) throws SQLException, BatchValidationException, QueryUpdateServiceException, IOException
         {
             TableInfo table = schema.getTable(tableName);
@@ -1442,8 +1501,11 @@ public class EHRController extends SpringActionController
             responseText.append("Lookup tables: \n");
             try (DbScope.Transaction transaction = schema.getDbSchema().getScope().ensureTransaction())
             {
-                loadFile(schema, "lookup_sets", _lookupSets, form.isDelete());
-                responseText.append("lookup_sets\n");
+                if (_lookup.equals("All") || _lookup.equals("lookup_sets"))
+                {
+                    loadFile(schema, "lookup_sets", _lookupSets, form.isDelete());
+                    responseText.append("lookup_sets\n");
+                }
 
                 BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
                 String line;
@@ -1458,6 +1520,10 @@ public class EHRController extends SpringActionController
                     }
 
                     String [] cols = line.split("\t");
+
+                    if (!_lookup.equals("All") && !_lookup.equals(cols[0]))
+                        continue;
+
                     Resource r = _lookupsManifestModule.getModuleResource("data/" + cols[0] + ".tsv");
                     if (r != null && r.exists())
                     {
