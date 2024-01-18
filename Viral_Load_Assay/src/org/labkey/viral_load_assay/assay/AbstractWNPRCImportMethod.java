@@ -370,7 +370,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
 
             //validate the row's date
-            if (row.get(DATE_FIELD) != null) {
+            if (!row.isNull(DATE_FIELD)) {
                 try {
                     Date date = ConvertHelper.convert(row.get(DATE_FIELD), Date.class);
                     _dateFormat.format(date);

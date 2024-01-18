@@ -115,6 +115,11 @@ Ext4.define('EHR.panel.LocationFilterType', {
             removable: [],
             nonRemovable: []
         };
+
+        if (this.reportQCStates?.length) {
+            filterArray.nonRemovable.push(LABKEY.Filter.create('qcstate/label', this.reportQCStates, LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
         var area, room, cage;
 
         var areaFieldName = tab.report.areaFieldName;
