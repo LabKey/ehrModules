@@ -155,7 +155,10 @@ public class EHRTestHelper
         Ext4CmpRef.waitForComponent(_test, query);
         Ext4GridRef grid = _test._ext4Helper.queryOne(query, Ext4GridRef.class);
         if (grid != null)
+        {
+            grid.expand();
             grid.setClicksToEdit(1);
+        }
 
         return grid;
     }
