@@ -17,6 +17,10 @@ Ext4.define('EHR.grid.Panel', {
             return;
         }
 
+        if (this.formConfig.collapsible){
+            this.plugins = ['ehr-collapsibleDataEntryPanel'];
+        }
+
         this.configureColumns();
         this.sortColumns();
 

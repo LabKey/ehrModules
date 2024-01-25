@@ -20,6 +20,7 @@
         <script path="ehr/plugin/DataBind.js"/>
         <script path="ehr/plugin/ResizableTextArea.js"/>
         <script path="ehr/plugin/RowEditor.js"/>
+        <script path="ehr/plugin/CollapsibleDataEntryPanel.js"/>
 
         <!--fields-->
         <script path="ehr/form/field/AnimalField.js"/>
