@@ -216,3 +216,7 @@ a:hover .ehr-tool-icon-lg {
 .clinical-history-print .x4-panel-body{
     overflow: visible !important;
 }
+
+.collapsed-dataentry-panel {
+    opacity: 0.5;
+}

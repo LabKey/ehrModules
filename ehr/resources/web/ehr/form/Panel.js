@@ -30,6 +30,10 @@ Ext4.define('EHR.form.Panel', {
             buttonAlign: 'left'
         });
 
+        if (this.formConfig.collapsible){
+            this.plugins = ['ehr-collapsibleDataEntryPanel'];
+        }
+
         this.bindConfig = this.bindConfig || {};
         LABKEY.Utils.mergeIf(this.bindConfig, {
             autoCreateRecordOnChange: true,
