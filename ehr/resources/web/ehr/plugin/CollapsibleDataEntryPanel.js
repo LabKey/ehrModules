@@ -14,6 +14,12 @@ Ext4.define('EHR.plugin.CollapsibleDataEntryPanel', {
             panel.collapsed = true;
         }
 
+        panel.onPanelDataChange = function() {
+            panel.expand();
+        }
+
+        panel.mon(panel, 'panelDataChange', panel.onPanelDataChange, {buffer: 500});
+
         panel.on('collapse', function() {
             if (!panel.formConfig.dataDependentCollapseHeader || !panel.store || panel.store.getCount() === 0) {
                 panel.header?.addCls('collapsed-dataentry-panel');
