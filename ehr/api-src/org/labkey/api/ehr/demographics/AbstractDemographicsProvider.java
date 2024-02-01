@@ -16,8 +16,8 @@
 package org.labkey.api.ehr.demographics;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -35,9 +35,7 @@ import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
-import org.labkey.api.security.User;
 
-import javax.validation.groups.Default;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,8 +59,9 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 {
     protected static final Logger _log = LogManager.getLogger(AbstractDemographicsProvider.class);
 
-    private String _schemaName;
-    private String _queryName;
+    private final String _schemaName;
+    private final String _queryName;
+
     protected boolean _supportsQCState = true;
 
     public AbstractDemographicsProvider(Module owner, String schemaName, String queryName)

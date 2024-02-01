@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.utils;
 
+import jakarta.mail.Address;
+import jakarta.mail.Message;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -84,8 +86,6 @@ import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.security.EHRSecurityManager;
 
-import javax.mail.Address;
-import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -106,12 +106,9 @@ import java.util.TreeSet;
 
 
 /**
- * Java class that provides services for trigger script actions that are more easily implemented or more performent
+ * Java class that provides services for trigger script actions that are more easily implemented or more performant
  * when written in Java. Primarily focused on supporting study dataset operations, but other tables can leverage it
- * as well.
- * Instantiated in the EHR's ScriptHelper.js
- * User: bbimber
- * Date: 3/1/12
+ * as well. Instantiated in the EHR's ScriptHelper.js
  */
 public class TriggerScriptHelper
 {
