@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import jakarta.servlet.ServletContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -109,7 +110,6 @@ import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRTemplateCreatorRole;
 import org.labkey.ehr.security.EHRVeterinarianRole;
 
-import javax.servlet.ServletContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
