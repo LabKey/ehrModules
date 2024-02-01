@@ -7,7 +7,7 @@ CREATE TABLE ehr_compliancedb.SciShield_Data
     requirementname nvarchar(255) null,
     Date datetime null,
     Container ENTITYID NOT NULL,
-    comment nvarchar(2000) null
+    comment nvarchar(2000) null,
     CreatedBy USERID,
     Created datetime,
     ModifiedBy USERID,
