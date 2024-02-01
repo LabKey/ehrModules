@@ -35,7 +35,7 @@
             success: function(){
                 Ext4.create(<%=q(formClass)%>, {
                     formConfig: <%=json%>
-                }).render('<%=text(renderTarget)%>');
+                }).render(<%=q(renderTarget)%>);
             }
         });
     });
