@@ -8,6 +8,11 @@ Ext4.define('EHR.plugin.CollapsibleDataEntryPanel', {
 
     init: function(panel){
 
+        // Don't apply this to sub-panels in other windows/panels
+        if (!panel.border) {
+            return;
+        }
+
         panel.collapsible = true;
 
         if ((!panel.store || panel.store.getCount() === 0) && panel.formConfig?.initCollapsed) {
@@ -15,10 +20,10 @@ Ext4.define('EHR.plugin.CollapsibleDataEntryPanel', {
         }
 
         panel.onPanelDataChange = function() {
-            panel.expand();
+            this.expand();
         }
 
-        panel.mon(panel, 'panelDataChange', panel.onPanelDataChange, {buffer: 500});
+        panel.mon(panel, 'panelDataChange', panel.onPanelDataChange, panel, {buffer: 500});
 
         panel.on('collapse', function() {
             if (!panel.formConfig.dataDependentCollapseHeader || !panel.store || panel.store.getCount() === 0) {
