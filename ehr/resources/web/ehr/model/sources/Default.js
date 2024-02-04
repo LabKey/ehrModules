@@ -440,6 +440,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 200
             }
         },
+        // grossAbnormalities: {
+        //     xtype: 'ehr-remarkfield',
+        //     height: 100,
+        //     editorConfig: {
+        //         resizeDirections: 's'
+        //     },
+        //     columnConfig: {
+        //         width: 200
+        //     }
+        // },
         hx: {
             columnConfig: {
                 width: 200
