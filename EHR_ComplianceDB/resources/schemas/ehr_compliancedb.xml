@@ -919,7 +919,6 @@
         <columnTitle>Key</columnTitle>
     </column>
     <column columnName="label">
-        <isHidden>true</isHidden>
         <columnTitle>Label</columnTitle>
       </column>
     <column columnName="value">
@@ -936,9 +935,7 @@
     <column columnName="endDate">
         <columnTitle>End Date</columnTitle>
     </column>
-    <column columnName="objectid">
-        <isHidden>true</isHidden>
-    </column>
+
    </columns>
   </table>
 
@@ -1013,7 +1010,7 @@
     <table tableName="SciShield_Reference_Data" tableDbType="TABLE">
         <auditLogging>DETAILED</auditLogging>
         <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
-        <tableTitle>Compliance Reference Data</tableTitle>
+        <tableTitle>SciShield Reference Data</tableTitle>
         <pkColumnName>rowid</pkColumnName>
         <columns>
             <column columnName="rowid">
@@ -1022,7 +1019,6 @@
                 <columnTitle>Key</columnTitle>
             </column>
             <column columnName="label">
-                <isHidden>true</isHidden>
                 <columnTitle>Label</columnTitle>
             </column>
             <column columnName="value">
@@ -1033,8 +1029,7 @@
                 <columnTitle>Column Name</columnTitle>
             </column>
             <column columnName="sort_order">
-                <isHidden>true</isHidden>
-                <columnTitle>Sort Order</columnTitle>
+                  <columnTitle>Sort Order</columnTitle>
             </column>
             <column columnName="endDate">
                 <columnTitle>End Date</columnTitle>
