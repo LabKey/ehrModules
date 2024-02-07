@@ -17,7 +17,7 @@ CREATE TABLE ehr_compliancedb.SciShield_Data
 
         CONSTRAINT PK_ScieShield_Data PRIMARY KEY (RowId)
     );
-GO
+
 
 CREATE TABLE ehr_compliancedb.SciShield_Reference_Data
 (
@@ -32,4 +32,4 @@ CREATE TABLE ehr_compliancedb.SciShield_Reference_Data
         CONSTRAINT pk_SciShield_reference PRIMARY KEY (value)
 
 );
-GO
+
