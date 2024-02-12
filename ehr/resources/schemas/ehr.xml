@@ -1154,6 +1154,10 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="contacts"/>
+            <column columnName="Template_OID"/>
+            <column columnName="Protocol_OID"/>
+            <column columnName="PROTOCOL_State"/>
+            <column columnName="PPQ_Numbers"/>
         </columns>
     </table>
     <table tableName="project" tableDbType="TABLE" useColumnOrder="true">
