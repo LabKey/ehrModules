@@ -1008,6 +1008,7 @@
             </column>
         </columns>
     </table>
+    <!--Added fields for eiACUC relationship in SQL and added here-->
     <table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
         <tableTitle>IACUC Protocols</tableTitle>
         <javaCustomizer class="org.labkey.ehr.table.DefaultEHRCustomizer" />
