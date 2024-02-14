@@ -935,9 +935,105 @@
     <column columnName="endDate">
         <columnTitle>End Date</columnTitle>
     </column>
-    <column columnName="objectid">
-        <isHidden>true</isHidden>
-    </column>
+
    </columns>
   </table>
+
+    <table tableName="SciShield_Data" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <tableTitle>SciShield Data</tableTitle>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+                <columnTitle>Key</columnTitle>
+            </column>
+            <column columnName="employeeid">
+                <columnTitle>Employee Id</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_compliancedb</fkDbSchema>
+                    <fkTable>employees</fkTable>
+                    <fkColumnName>employeeid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="requirementname">
+                <columnTitle>Requirement Name</columnTitle>
+                <fk>
+                    <fkDbSchema>ehr_compliancedb</fkDbSchema>
+                    <fkTable>requirements</fkTable>
+                    <fkColumnName>requirementname</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="Date">
+                <columnTitle>Date</columnTitle>
+            </column>
+            <column columnName="container">
+                <isUserEditable>false</isUserEditable>
+                <isHidden>true</isHidden>
+                <fk>
+                    <fkDbSchema>core</fkDbSchema>
+                    <fkTable>containers</fkTable>
+                    <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="comment">
+                <columnTitle>Comments</columnTitle>
+            </column>
+             <column columnName="createdby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="processed">
+                <columnTitle>Processed</columnTitle>
+            </column>
+        </columns>
+    </table>
+
+    <table tableName="SciShield_Reference_Data" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <tableTitle>SciShield Reference Data</tableTitle>
+        <pkColumnName>rowid</pkColumnName>
+        <columns>
+            <column columnName="rowid">
+                <isAutoInc>true</isAutoInc>
+                <isHidden>true</isHidden>
+                <columnTitle>Key</columnTitle>
+            </column>
+            <column columnName="label">
+                <columnTitle>Label</columnTitle>
+            </column>
+            <column columnName="value">
+                <columnTitle>Value</columnTitle>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="columnName">
+                <columnTitle>Column Name</columnTitle>
+            </column>
+            <column columnName="sort_order">
+                  <columnTitle>Sort Order</columnTitle>
+            </column>
+            <column columnName="endDate">
+                <columnTitle>End Date</columnTitle>
+            </column>
+        </columns>
+    </table>
 </tables>
