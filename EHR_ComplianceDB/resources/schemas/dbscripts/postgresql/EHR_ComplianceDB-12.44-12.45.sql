@@ -12,7 +12,7 @@ CREATE TABLE ehr_compliancedb.SciShield_Data
     Created TIMESTAMP,
     ModifiedBy USERID,
     Modified TIMESTAMP,
-    processed int NULL
+    processed int NULL,
 
 
         CONSTRAINT PK_ScieShield_Data PRIMARY KEY (RowId)
@@ -26,7 +26,7 @@ CREATE TABLE ehr_compliancedb.SciShield_Reference_Data
     value varchar(255) ,
     columnName varchar(255)  NOT NULL,
     sort_order integer  null,
-    endDate  TIMESTAMP  NULL
+    endDate  TIMESTAMP  NULL,
 
 
         CONSTRAINT pk_SciShield_reference PRIMARY KEY (value)
