@@ -935,6 +935,9 @@
     <column columnName="endDate">
         <columnTitle>End Date</columnTitle>
     </column>
+     <column columnName="objectid">
+            <isHidden>true</isHidden>
+     </column>
 
    </columns>
   </table>
