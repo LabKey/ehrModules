@@ -45,7 +45,7 @@
   "author": "LabKey",
   "license": "SEE LICENSE IN LICENSE.txt",
   "bugs": {
-    "url": "https://www.labkey.org/project/home/Developer/issues/begin.view?"
+    "url": "https://www.labkey.org/home/Developer/issues/project-begin.view"
   },
   "publishConfig": {
     "registry": "https://labkey.jfrog.io/artifactory/api/npm/libs-client"
