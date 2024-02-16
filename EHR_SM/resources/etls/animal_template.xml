@@ -8,7 +8,7 @@
             <description>Copy Animal Data to Animal Source</description>
             <!-- For source, update folderPath to the folder path of your EHR folder using dot notation. queryName can be
             demographics or another query if you want to copy in a subset of animals -->
-            <source schemaName="Site.folderPath.study" queryName="demographics">
+            <source sourceContainerPath="myEHRFolderPath" schemaName="study" queryName="demographics">
                 <sourceColumns>
                     <column>Id</column>
                 </sourceColumns>
@@ -19,7 +19,7 @@
     <incrementalFilter className="ModifiedSinceFilterStrategy" timestampColumnName="modified">
         <!-- For deletedRowsSource, update folderPath to the folder path of your EHR folder using dot notation.
          DemographicsDeleted is a query in the EHR to indicate when an animal record has been deleted using audit logs -->
-        <deletedRowsSource schemaName="Site.folderPath.auditLog" queryName="DemographicsDeleted" timestampColumnName="Date" deletedSourceKeyColumnName="Id" targetKeyColumnName="Id"/>
+        <deletedRowsSource sourceContainerPath="myEHRFolderPath" schemaName="auditLog" queryName="DemographicsDeleted" timestampColumnName="Date" deletedSourceKeyColumnName="Id" targetKeyColumnName="Id"/>
     </incrementalFilter>
     <schedule>
         <poll interval="1d"/>
