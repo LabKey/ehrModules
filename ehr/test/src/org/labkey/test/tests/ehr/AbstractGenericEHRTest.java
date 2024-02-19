@@ -54,21 +54,21 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         log("verifying custom actions");
 
         //housing queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Housing Queries"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //animal queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Animal Search"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //project, protocol queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Protocol and Project Queries"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
@@ -203,7 +203,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         log("verifying custom buttons");
 
         //housing queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Browse All Datasets"));
         waitForText("Weight:");
         waitAndClick(LabModuleHelper.getNavPanelItem("Weight:", VIEW_TEXT));
