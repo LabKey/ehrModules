@@ -11,7 +11,7 @@ function createNavMenu(){
 
     Ext4.get(webpart.wrapperDivId).update(
         '<div style="max-width:920px">' +
-        '    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues' + ctx['EHRStudyContainer'] + '/Issue_TrackerQ/list.view?" target="_blank">here</a>.' +
+        '    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>' + ctx['EHRStudyContainer'] + '/Issue_TrackerQ/issues-list.view" target="_blank">here</a>.' +
         '   <br><br>' +
         '</div>' +
         '<table>' +
@@ -35,18 +35,18 @@ function createNavMenu(){
         sections: [
             {header: 'By Animal',
             items: [
-                {name: 'Animal History', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view?'},
-                {name: 'Animal Search', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalSearch.view?'}
+                {name: 'Animal History', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-animalHistory.view'},
+                {name: 'Animal Search', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-animalSearch.view'}
                 ]},
             {header: 'By Dataset',
             items: [
-                {name: 'Browse All Datasets', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/datasets.view?'},
-                {name: 'Housing Queries', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingQueries.view?'},
-                {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/projectQueries.view?'}
+                {name: 'Browse All Datasets', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-datasets.view'},
+                {name: 'Housing Queries', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-housingQueries.view'},
+                {name: 'Protocol and Project Queries', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-projectQueries.view'}
             ]},
             {header: 'By Location',
             items: [
-                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:roomCage'},
+                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-animalHistory.view#inputType:roomCage'},
             ]}
         ]
     });
@@ -58,8 +58,8 @@ function createNavMenu(){
         sections: [
             {header: 'Entire Colony',
             items: [
-                {name: 'Colony Population By Age', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
-                {name: 'Population Summary', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/populationOverview.view?'}
+                {name: 'Colony Population By Age', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/query-executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
+                {name: 'Population Summary', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-populationOverview.view'}
             ]}
         ]
     });
@@ -74,9 +74,9 @@ function createNavMenu(){
         menuCfg.sections.push({
             header: 'Admin',
             items: [
-                {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/ehrAdmin.view'},
-                {name: 'Manage EHR Study', url: '<%=contextPath%>/study' + ctx['EHRStudyContainer'] + '/manageStudy.view?'},
-                {name: 'Manage Lookup Tables', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/dataAdmin.view'}
+                {name: 'EHR Admin Page', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-ehrAdmin.view'},
+                {name: 'Manage EHR Study', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/study-manageStudy.view'},
+                {name: 'Manage Lookup Tables', url: '<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-dataAdmin.view'}
             ]
         })
 

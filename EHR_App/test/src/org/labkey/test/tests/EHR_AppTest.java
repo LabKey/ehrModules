@@ -1,11 +1,9 @@
 package org.labkey.test.tests;
 
-import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.labkey.remoteapi.Connection;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
@@ -53,7 +51,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     {
         setPipelineRoot(path.getPath(), false);
 
-        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + containerPath + "/begin.view");
+        beginAt(WebTestHelper.getBaseURL() + "/" + containerPath + "/pipeline-status-begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
         _fileBrowserHelper.expandFileBrowserRootNode();
         _fileBrowserHelper.checkFileBrowserFileCheckbox("folder.xml");

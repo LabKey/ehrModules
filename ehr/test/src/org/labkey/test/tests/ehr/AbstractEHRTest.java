@@ -351,7 +351,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
         setPipelineRoot(path.getPath());
 
-        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
+        beginAt(WebTestHelper.getBaseURL() + "/" + getContainerPath() + "/pipeline-status-begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
