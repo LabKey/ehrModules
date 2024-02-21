@@ -90,14 +90,16 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
             // Add to default columns
             List<FieldKey> defaultCols = new ArrayList<>(ti.getDefaultVisibleColumns());
 
-            FieldKey animalRecordFk = FieldKey.fromParts("AnimalRecord");
+            FieldKey animalRecordFk = FieldKey.fromParts("Id");
             var aliasCol = new AliasedColumn(idCol.getParentTable(), animalRecordFk, idCol, false);
             aliasCol.setShownInInsertView(false);
             aliasCol.setShownInUpdateView(false);
+            aliasCol.setRequired(false);
+            aliasCol.setLabel("Animal Record");
 
             defaultCols.add(animalRecordFk);
-            defaultCols.add(FieldKey.fromParts("AnimalRecord", "Demographics", "Species"));
-            defaultCols.add(FieldKey.fromParts("AnimalRecord", "Demographics", "Gender"));
+            defaultCols.add(FieldKey.fromParts("Id", "Demographics", "Species"));
+            defaultCols.add(FieldKey.fromParts("Id", "Demographics", "Gender"));
             ti.setDefaultVisibleColumns(defaultCols);
             ti.addColumn(aliasCol);
 
