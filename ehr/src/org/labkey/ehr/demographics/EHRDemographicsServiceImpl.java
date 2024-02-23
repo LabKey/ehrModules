@@ -59,7 +59,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.dao.DeadlockLoserDataAccessException;
+import org.springframework.dao.PessimisticLockingFailureException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -436,7 +436,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
 
             }
-            catch (DeadlockLoserDataAccessException e)
+            catch (PessimisticLockingFailureException e)
             {
                 _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
             }
