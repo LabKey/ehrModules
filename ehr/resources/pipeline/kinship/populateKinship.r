@@ -39,14 +39,12 @@ for (species in unique(allPed$Species)){
     print(paste0('Processing species: ', species, ', with ', nrow(allRecordsForSpecies), ' IDs'))
     if (nrow(allRecordsForSpecies) == 1) {
         print('single record, skipping')
-        newRecords <- dplyr::bind_rows(newRecords,data.frame(Id = allRecordsForSpecies$Id, Id2 = allRecordsForSpecies$Id, coefficient = 0.5, Species = allRecordsForSpecies$Species))
         next
     }
 
     pctMissingSex <- sum(allRecordsForSpecies$Gender > 2) / nrow(allRecordsForSpecies)
     if (pctMissingSex > 0.25) {
         paste0('More than 25% of this species group are missing sex and cannot be processed by fixParents(), skipping')
-        newRecords <- dplyr::bind_rows(newRecords,data.frame(Id = allRecordsForSpecies$Id, Id2 = allRecordsForSpecies$Id, coefficient = 0.5, Species = allRecordsForSpecies$Species))
         next
     }
 
