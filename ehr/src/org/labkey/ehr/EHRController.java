@@ -640,7 +640,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isMergeSpeciesWithHybrids(), form.isAllowImportDuringBusinessHours());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -760,7 +760,6 @@ public class EHRController extends SpringActionController
         private int hourOfDay;
 
         private boolean _kinshipValidation;
-        private boolean _mergeSpeciesWithHybrids;
         private boolean _allowImportDuringBusinessHours;
 
         public boolean isEnabled()
@@ -803,16 +802,6 @@ public class EHRController extends SpringActionController
             _kinshipValidation = kinshipValidation;
         }
 
-        public boolean isMergeSpeciesWithHybrids()
-        {
-            return _mergeSpeciesWithHybrids;
-        }
-
-        public void setMergeSpeciesWithHybrids(boolean mergeSpeciesWithHybrids)
-        {
-            _mergeSpeciesWithHybrids = mergeSpeciesWithHybrids;
-        }
-
         public boolean isAllowImportDuringBusinessHours()
         {
             return _allowImportDuringBusinessHours;
@@ -840,7 +829,6 @@ public class EHRController extends SpringActionController
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
             ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
-            ret.put("mergeSpeciesWithHybrids", GeneticCalculationsJob.isMergeSpeciesWithHybrids());
             ret.put("allowImportDuringBusinessHours", GeneticCalculationsJob.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse(ret);

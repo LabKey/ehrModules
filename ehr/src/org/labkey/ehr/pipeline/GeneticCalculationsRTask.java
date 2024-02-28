@@ -104,25 +104,13 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
     {
         List<RecordedAction> actions = new ArrayList<>();
 
-        actions.add(runScript("populateInbreeding.r", GeneticCalculationsImportTask.INBREEDING_FILE, "Inbreeding Coefficient Output", null));
-
-        List<String> kinshipArgs = new ArrayList<>();
-        if (getJob().getParameters().containsKey("mergeSpeciesWithHybrids") && "true".equalsIgnoreCase(getJob().getParameters().get("mergeSpeciesWithHybrids")))
-        {
-            kinshipArgs.add("-m");
-        }
-
-        if (getJob().getParameters().containsKey("kinshipValidation") && "true".equalsIgnoreCase(getJob().getParameters().get("kinshipValidation")))
-        {
-            kinshipArgs.add("-v");
-        }
-
-        actions.add(runScript("populateKinship.r", GeneticCalculationsImportTask.KINSHIP_FILE, "Kinship Output", kinshipArgs));
+        actions.add(runScript("populateInbreeding.r", GeneticCalculationsImportTask.INBREEDING_FILE, "Inbreeding Coefficient Output"));
+        actions.add(runScript("populateKinship.r", GeneticCalculationsImportTask.KINSHIP_FILE, "Kinship Output"));
 
         return new RecordedActionSet(actions);
     }
 
-    public RecordedAction runScript(String scriptName, String outputFileName, String actionLabel, @Nullable List<String> extraArgs) throws PipelineJobException
+    public RecordedAction runScript(String scriptName, String outputFileName, String actionLabel) throws PipelineJobException
     {
         PipelineJob job = getJob();
         FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
@@ -146,10 +134,6 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         args.add(scriptPath);
         args.add("-f");
         args.add(tsvFile.getPath());
-        if (extraArgs != null)
-        {
-            args.addAll(extraArgs);
-        }
 
         getJob().getLogger().info("Using working directory of: " + support.getAnalysisDirectory().getPath());
         ProcessBuilder pb = new ProcessBuilder(args);

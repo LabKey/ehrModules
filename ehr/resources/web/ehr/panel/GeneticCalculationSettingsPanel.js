@@ -43,18 +43,6 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                     }
                 }
             },{
-                xtype: 'checkbox',
-                fieldLabel: 'Merge Species With Hybrids?',
-                itemId: 'mergeSpeciesWithHybrids',
-                listeners: {
-                    render: function (c) {
-                        Ext4.create('Ext.tip.ToolTip', {
-                            target: c.getEl(),
-                            html: 'If any hybrid animals are detected, these species groups will be merged and processed as one unit. Merging all these species together ensures that the correct ancestors from each side are present'
-                        });
-                    }
-                }
-            },{
                 xtype: 'numberfield',
                 hideTrigger: true,
                 fieldLabel: 'Hour Of Day',
@@ -110,7 +98,6 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#hourOfDay').setValue(results.hourOfDay);
         this.down('#containerPath').setValue(results.containerPath);
         this.down('#kinshipValidation').setValue(results.kinshipValidation);
-        this.down('#mergeSpeciesWithHybrids').setValue(results.mergeSpeciesWithHybrids);
         this.down('#allowImportDuringBusinessHours').setValue(results.allowImportDuringBusinessHours)
     },
 
@@ -123,7 +110,6 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 enabled: this.down('#enabled').getValue(),
                 hourOfDay: this.down('#hourOfDay').getValue(),
                 kinshipValidation: this.down('#kinshipValidation').getValue(),
-                mergeSpeciesWithHybrids: this.down('#mergeSpeciesWithHybrids').getValue(),
                 allowImportDuringBusinessHours: this.down('#allowImportDuringBusinessHours').getValue()
             },
             method : 'POST',
