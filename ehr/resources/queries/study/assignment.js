@@ -6,7 +6,7 @@
 
 require("ehr/triggers").initScript(this);
 
-function onInit(event, helper){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.INIT, 'study', 'assignment', function(event, helper){
     helper.setScriptOptions({
         allowFutureDates: true,
         removeTimeFromDate: true,
@@ -49,9 +49,9 @@ function onInit(event, helper){
 
         helper.setProperty('assignmentsInTransaction', assignmentsInTransaction);
     });
-}
+});
 
-function onUpsert(helper, scriptErrors, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'assignment', function(helper, scriptErrors, row, oldRow){
     if (!helper.isETL()){
         //note: the the date field is handled above by removeTimeFromDate
         EHR.Server.Utils.removeTimeFromDate(row, scriptErrors, 'enddate');
@@ -80,4 +80,4 @@ function onUpsert(helper, scriptErrors, row, oldRow){
             }
         }
     }
-}
+});
