@@ -323,7 +323,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             auditEvent = createTransactionAuditEvent(container, QueryService.AuditAction.INSERT);
 
         AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
-                new HashMap<>(), errors, behaviorType, auditEvent, user, container, null);
+                new HashMap<>(), errors, behaviorType, auditEvent, null, user, container, null);
     }
 
     private static class TsvImport
