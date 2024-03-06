@@ -101,18 +101,24 @@
         });
     })();
 
+    LABKEY.Utils.onReady(function(){
+        document.getElementById('populateReports')['onclick'] = function(){ populateReports(false); return false; }
+        document.getElementById('deleteReports')['onclick'] = function(){ populateReports(true); return false; }
+        document.getElementById('populateLookups')['onclick'] = function(){ populateLookups(false); return false; }
+        document.getElementById('deleteLookups')['onclick'] = function(){ populateLookups(true); return false; }
+    });
 </script>
 
 <html>
     <div style="margin: 20px 0;">
         <h5><b>
-            <a style="margin-right: 30px; cursor: pointer;" onclick='populateReports(false); return false;'>Populate Reports</a>
-            <a style="margin-right: 30px; cursor: pointer;" onclick='populateReports(true); return false;'>Delete Reports</a>
-            <a style="margin-right: 10px; cursor: pointer;" onclick='populateLookups(false); return false;'>Populate Lookups</a>
+            <a style="margin-right: 30px; cursor: pointer;" id='populateReports'>Populate Reports</a>
+            <a style="margin-right: 30px; cursor: pointer;" id='deleteReports'>Delete Reports</a>
+            <a style="margin-right: 10px; cursor: pointer;" id='populateLookups'>Populate Lookups</a>
             <select style="margin-right: 30px;" id="populateOptions" name="populateOptions">
                 <option value="all">All</option>
             </select>
-            <a style="margin-right: 10px; cursor: pointer;" onclick='populateLookups(true); return false;'>Delete Lookups</a>
+            <a style="margin-right: 10px; cursor: pointer;" id='deleteLookups'>Delete Lookups</a>
             <select style="margin-right: 30px;" id="deleteOptions" name="populateOptions">
                 <option value="all">All</option>
             </select>

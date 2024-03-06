@@ -54,14 +54,19 @@
         });
     }
 
+    LABKEY.Utils.onReady(function(){
+        document.getElementById('createEHRDomainHandler')['onclick'] = function(){ createEHRDomainHandler(); return false; }
+        document.getElementById('createEHRLookupsDomainHandler')['onclick'] = function(){ createEHRLookupsDomainHandler(); return false; }
+        document.getElementById('createEHRBillingDomainHandler')['onclick'] = function(){ createEHRBillingDomainHandler(); return false; }
+    });
 </script>
 
 <html>
 <div style="margin: 20px 0;">
     <h5><b>
-        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRDomainHandler(); return false;'>Load EHR table definitions</a>
-        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRLookupsDomainHandler(); return false;'>Load EHR_Lookup table definitions</a>
-        <a style="margin-right: 30px; cursor: pointer;" onclick='createEHRBillingDomainHandler(); return false;'>Load EHR_Billing table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRDomainHandler'>Load EHR table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRLookupsDomainHandler'>Load EHR_Lookup table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
     </b></h5>
 </div>
 </html>
