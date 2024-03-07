@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
@@ -119,7 +118,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     @Test
     public void testWeightValidation()
     {
-        //initialize wieght of subject 0
+        //initialize weight of subject 3
         String[] fields;
         Object[][] data;
         SimplePostCommand insertCommand;
