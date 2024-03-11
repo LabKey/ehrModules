@@ -1473,7 +1473,7 @@ public class EHRController extends SpringActionController
                     auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
 
                 AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
-                        new HashMap<>(), batchErrors, behaviorType, auditEvent, getUser(), getContainer(), null);
+                        new HashMap<>(), batchErrors, behaviorType, auditEvent, null, getUser(), getContainer(), null);
 
                 if (batchErrors.hasErrors())
                 {
