@@ -42,12 +42,6 @@ for (species in unique(allPed$Species)){
         next
     }
 
-    pctMissingSex <- sum(allRecordsForSpecies$Gender > 2) / nrow(allRecordsForSpecies)
-    if (pctMissingSex > 0.25) {
-        paste0('More than 25% of this species group are missing sex and cannot be processed by fixParents(), skipping')
-        next
-    }
-
     # Add missing parents for accurate kinship calculations
     fixedRecords <- with(allRecordsForSpecies, fixParents(id = Id, dadid = Sire, momid = Dam, sex = Gender))
 
