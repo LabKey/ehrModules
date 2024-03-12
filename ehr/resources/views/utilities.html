@@ -46,9 +46,13 @@ function cleanSplit(input){
     return input;
 }
 
+LABKEY.Utils.onReady(function(){
+    document.getElementById("uniqueButton")['onclick'] = unique;
+    document.getElementById("compareButton")['onclick'] = compare;
+});
 </script>
 
-This page contains an several basic utilities to process lists of animal names (can actually be used on anything).
+This page contains several basic utilities to process lists of animal names (can actually be used on anything).
 <p/>
 To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hit the arrow to process.  Results will appear on the right.
 <p/>
@@ -57,7 +61,7 @@ To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hi
 <table>
 <tr>
     <td>List 1:<span id="uniqueInputTotal"></span><br><textarea rows="10" cols="30" id="unique"></textarea></td>
-    <td><button id="uniqueButton" onclick=unique()>--></button></td>
+    <td><button id="uniqueButton">--></button></td>
     <td>Unique Values:<span id="uniqueTargetTotal"></span><br><textarea rows="10" cols="30" id="uniqueTarget"></textarea></td>
 </tr>
 </table>
@@ -72,7 +76,7 @@ To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hi
 <tr>
     <td>List 1:<span id="subtractList1Total"></span><br><textarea rows="10" cols="30" id="subtract1"></textarea></td>
     <td>List 2:<span id="subtractList2Total"></span><br><textarea rows="10" cols="30" id="subtract2"></textarea></td>
-    <td><button id="compareButton" onclick=compare()>--></button></td>
+    <td><button id="compareButton">--></button></td>
     <td>Shared IDs:<span id="intersectTargetTotal"></span><br><textarea rows="10" cols="30" id="intersectTarget"></textarea></td>
     <td>Present In List 1, but not List 2:<span id="subtractTargetTotal"></span><br><textarea rows="10" cols="30" id="subtractTarget"></textarea></td>
     <td>Present In List 2, but not List 1:<span id="subtractTargetTotal2"></span><br><textarea rows="10" cols="30" id="subtractTarget2"></textarea></td>
