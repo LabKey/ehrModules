@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ehr;
 
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
@@ -31,6 +32,7 @@ import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ehr.history.*;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
@@ -43,6 +45,7 @@ import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -326,4 +329,14 @@ abstract public class EHRService
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
 
     abstract public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType);
+
+    /**
+     * The EHR has a built-in GeneticsCalculations pipeline job that computes inbreeding and kinship based on the pedigree.
+     * These are normally calculated in R, saved as TSVs, and imported using java code. This method is a separate entrypoint
+     * that allows other code perform the calculations, save the results as TSVs, and then trigger import here.
+     *
+     * A use case is a separate pipeline server that performs the R computation on a cluster, and then triggers the main webserver to import
+     * those results.
+     */
+    abstract public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException;
 }
