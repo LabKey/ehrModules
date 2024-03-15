@@ -59,9 +59,9 @@ import org.labkey.ehr.EHRSchema;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -240,7 +240,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             }
 
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
-                 BufferedReader reader = Readers.getReader(output))
+                 BufferedReader reader = Readers.getReader(output);
+                 PreparedStatement stmt = transaction.getConnection().prepareStatement(
+                    "INSERT INTO " + EHRSchema.EHR_SCHEMANAME + ".kinship\n" +
+                            "\t(Id, Id2, coefficient, container, created, createdby, modified, modifiedby)\n" +
+                            "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?)"))
             {
                 log.info("Inserting rows");
                 String line = null;
@@ -260,34 +264,40 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     assert fields[0].length() < 80 : "Field Id value too long: [" + fields[0] + ']';
                     assert fields[1].length() < 80 : "Field Id2 value too long: [" + fields[1] + "]";
 
-                    row.put("Id", fields[0]);
-                    row.put("Id2", fields[1]);
+                    stmt.setString(1, fields[0]); // Id
+                    stmt.setString(2, fields[1]); // Id2
                     try
                     {
-                        row.put("coefficient", Double.parseDouble(fields[2]));
+                        stmt.setDouble(3, Double.parseDouble(fields[2])); // coefficient
                     }
                     catch (NumberFormatException e)
                     {
                         throw new PipelineJobException("Invalid kinship coefficient on line " + (lineNum + 1) + " for IDs " + fields[0] + " and " + fields[1] + ": " + fields[2], e);
                     }
 
-                    row.put("container", c.getId());
-                    row.put("created", new Date());
-                    row.put("createdby", u.getUserId());
-                    Table.insert(u, kinshipTable, row);
+                    stmt.setString(4, c.getId()); // container
+                    java.sql.Date now = new java.sql.Date(new Date().getTime());
+                    stmt.setDate(5, now); // created
+                    stmt.setInt(6, u.getUserId()); // createdby
+                    stmt.setDate(7, now); // modified
+                    stmt.setInt(8, u.getUserId()); // modifiedby
+
+                    stmt.addBatch();
+
                     lineNum++;
 
-                    if (lineNum % 100000 == 0)
+                    if (lineNum % 250000 == 0)
                     {
-                        log.info("processed " + lineNum + " rows");
+                        log.info("prepared " + lineNum + " rows");
                     }
                 }
 
-                log.info("Inserted " + lineNum + " rows into ehr.kinship");
+                stmt.executeBatch();
                 transaction.commit();
+                log.info("Inserted " + lineNum + " rows into ehr.kinship");
             }
         }
-        catch (RuntimeSQLException | IOException e)
+        catch (RuntimeSQLException | SQLException | IOException e)
         {
             throw new PipelineJobException(e);
         }
