@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,24 +58,32 @@ public class LabworkManager
 
     public Collection<LabworkType> getTypes(Container c)
     {
-        List<LabworkType> result = new ArrayList<>(_types.size());
         Map<String, Pair<Module, LabworkType>> labworkTypeOverrides = EHRServiceImpl.get().getLabWorkOverrides();
+
+        Map<String, LabworkType> map = new LinkedHashMap<>();
         for (LabworkType type : _types)
         {
+            // NOTE: this override mechanism should not actually be needed, and would be great to phase out.
+            // This code is retained to allow legacy code to continue working. Performing a checking on whether the module is part of the
+            // container's active modules and checking LabworkType.isEnabled() is probably redundant,
+            // but the code does allow the user to provide them separately, so we should respect that.
+            if (labworkTypeOverrides.containsKey(type.getName()) && c.getActiveModules().contains(labworkTypeOverrides.get(type.getName()).first) && labworkTypeOverrides.get(type.getName()).second.isEnabled(c))
+            {
+                map.put(type.getName(), labworkTypeOverrides.get(type.getName()).second);
+                continue;
+            }
+
+            // NOTE: Because modules initialize in dependency order, they will be registered in order and the code below should allow
+            // center modules to override default EHR labwork types.
+            // Also, if it ever becomes necessary for a center module to simply eliminate a built-in labwork type we could consider making a
+            // NoOpLabworkType. A module could register this to replace a built-in Labwork type with one that doesnt do anything.
             if (type.isEnabled(c))
             {
-                if (labworkTypeOverrides.containsKey(type.getName()))
-                {
-                    Pair<Module, LabworkType> override = labworkTypeOverrides.get(type.getName());
-                    result.add(override.getValue());
-                }
-                else
-                {
-                    result.add(type);
-                }
+                map.put(type.getName(), type);
             }
         }
-        return Collections.unmodifiableCollection(result);
+
+        return Collections.unmodifiableCollection(map.values());
     }
 
     public List<String> getResults(Container c, User u, String runId, boolean redacted)

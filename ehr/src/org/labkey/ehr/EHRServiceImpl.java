@@ -1055,11 +1055,24 @@ public class EHRServiceImpl extends EHRService
         }
     }
 
+    @Override
+    @Deprecated
     public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType)
     {
+        // If this is true, we can just use the normal registration pathway:
+        if (toType instanceof DefaultLabworkType dlt)
+        {
+            if (module.equals(dlt.getDeclaringModule()) && toType.getName().equals(fromType))
+            {
+                registerLabworkType(toType);
+                return;
+            }
+        }
+
         _labWorkOverrides.put(fromType, Pair.of(module, toType));
     }
 
+    @Deprecated
     public Map<String, Pair<Module, LabworkType>> getLabWorkOverrides()
     {
         return _labWorkOverrides;

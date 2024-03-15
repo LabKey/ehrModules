@@ -328,6 +328,12 @@ abstract public class EHRService
     /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
 
+    /**
+     * Note: there is probably no need to use this method. Modules can simply register LabworkTypes using registerLabworkType().
+     * LabworkTypes are resolved in module dependency order, meaning if a center-specific module registers a type with the same name as a built-in
+     * type, the LabworkType from the center-specific module will be preferentially used instead of the built-in one.
+     */
+    @Deprecated
     abstract public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType);
 
     /**
