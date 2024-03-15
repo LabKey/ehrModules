@@ -113,7 +113,6 @@ public class EHRServiceImpl extends EHRService
     private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
     private final Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
     private final MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
-    private final Map<String, Pair<Module, LabworkType>> _labWorkOverrides = new HashMap<>();
     private final List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private final Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -1053,29 +1052,6 @@ public class EHRServiceImpl extends EHRService
             simpleRawCol.setDisplayWidth("250");
             ti.addColumn(simpleRawCol);
         }
-    }
-
-    @Override
-    @Deprecated
-    public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType)
-    {
-        // If this is true, we can just use the normal registration pathway:
-        if (toType instanceof DefaultLabworkType dlt)
-        {
-            if (module.equals(dlt.getDeclaringModule()) && toType.getName().equals(fromType))
-            {
-                registerLabworkType(toType);
-                return;
-            }
-        }
-
-        _labWorkOverrides.put(fromType, Pair.of(module, toType));
-    }
-
-    @Deprecated
-    public Map<String, Pair<Module, LabworkType>> getLabWorkOverrides()
-    {
-        return _labWorkOverrides;
     }
 
     @Override

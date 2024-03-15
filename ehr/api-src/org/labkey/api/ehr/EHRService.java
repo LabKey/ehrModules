@@ -329,14 +329,6 @@ abstract public class EHRService
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
 
     /**
-     * Note: there is probably no need to use this method. Modules can simply register LabworkTypes using registerLabworkType().
-     * LabworkTypes are resolved in module dependency order, meaning if a center-specific module registers a type with the same name as a built-in
-     * type, the LabworkType from the center-specific module will be preferentially used instead of the built-in one.
-     */
-    @Deprecated
-    abstract public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType);
-
-    /**
      * The EHR has a built-in GeneticsCalculations pipeline job that computes inbreeding and kinship based on the pedigree.
      * These are normally calculated in R, saved as TSVs, and imported using java code. This method is a separate entrypoint
      * that allows other code perform the calculations, save the results as TSVs, and then trigger import here.
