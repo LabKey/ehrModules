@@ -67,4 +67,5 @@ for (species in unique(allPed$Species)){
 }
 
 # write TSV to disk
+print(paste0('Total kinship records: ', nrow(newRecords)))
 write.table(newRecords, file = "kinship.txt", append = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
