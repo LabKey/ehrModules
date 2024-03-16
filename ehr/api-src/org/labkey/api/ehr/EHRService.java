@@ -328,8 +328,6 @@ abstract public class EHRService
     /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
     abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
 
-    abstract public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType);
-
     /**
      * The EHR has a built-in GeneticsCalculations pipeline job that computes inbreeding and kinship based on the pedigree.
      * These are normally calculated in R, saved as TSVs, and imported using java code. This method is a separate entrypoint
