@@ -286,9 +286,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                     lineNum++;
 
+                    if (lineNum % 100000 == 0)
+                    {
+                        stmt.executeBatch();
+                    }
+
                     if (lineNum % 250000 == 0)
                     {
-                        log.info("prepared " + lineNum + " rows");
+                        log.info("imported " + lineNum + " rows");
                     }
                 }
 
