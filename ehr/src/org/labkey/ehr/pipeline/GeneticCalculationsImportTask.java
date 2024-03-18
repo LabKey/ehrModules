@@ -38,6 +38,7 @@ import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
+import org.labkey.api.pipeline.CancelledException;
 import org.labkey.api.pipeline.PipelineJob;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.RecordedAction;
@@ -151,7 +152,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
 
             processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger());
-            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger());
+            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger(), job);
 
             if (GeneticCalculationsJob.isKinshipValidation())
             {
@@ -165,10 +166,10 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
     public static void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
     {
         processInbreeding(c, u, pipelineDir, log);
-        processKinship(c, u, pipelineDir, log);
+        processKinship(c, u, pipelineDir, log, null);
     }
 
-    private static void processKinship(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
+    private static void processKinship(Container c, User u, File pipelineDir, Logger log, @Nullable PipelineJob job) throws PipelineJobException
     {
         File output = new File(pipelineDir, KINSHIP_FILE);
         if (!output.exists())
@@ -186,6 +187,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             {
                 while (lnr.readLine() != null)
                 {
+                    if (job != null && job.isCancelled())
+                    {
+                        throw new CancelledException();
+                    }
+
                     if (lnr.getLineNumber() > 3)
                         break;
                 }
@@ -251,6 +257,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 int lineNum = 0;
                 while ((line = reader.readLine()) != null)
                 {
+                    if (this.is)
+                    {
+
+                    }
+
                     String[] fields = line.split("\t");
                     if (fields.length < 3)
                         continue;
