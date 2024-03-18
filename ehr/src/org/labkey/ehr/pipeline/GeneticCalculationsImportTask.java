@@ -187,11 +187,6 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             {
                 while (lnr.readLine() != null)
                 {
-                    if (job != null && job.isCancelled())
-                    {
-                        throw new CancelledException();
-                    }
-
                     if (lnr.getLineNumber() > 3)
                         break;
                 }
@@ -257,9 +252,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 int lineNum = 0;
                 while ((line = reader.readLine()) != null)
                 {
-                    if (this.is)
+                    if (job != null && job.isCancelled())
                     {
-
+                        throw new CancelledException();
                     }
 
                     String[] fields = line.split("\t");
