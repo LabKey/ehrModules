@@ -83,6 +83,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
@@ -639,7 +640,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -759,6 +760,7 @@ public class EHRController extends SpringActionController
         private int hourOfDay;
 
         private boolean _kinshipValidation;
+        private boolean _allowImportDuringBusinessHours;
 
         public boolean isEnabled()
         {
@@ -799,6 +801,16 @@ public class EHRController extends SpringActionController
         {
             _kinshipValidation = kinshipValidation;
         }
+
+        public boolean isAllowImportDuringBusinessHours()
+        {
+            return _allowImportDuringBusinessHours;
+        }
+
+        public void setAllowImportDuringBusinessHours(boolean allowImportDuringBusinessHours)
+        {
+            _allowImportDuringBusinessHours = allowImportDuringBusinessHours;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
@@ -817,6 +829,7 @@ public class EHRController extends SpringActionController
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
             ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
+            ret.put("allowImportDuringBusinessHours", GeneticCalculationsJob.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse(ret);
         }

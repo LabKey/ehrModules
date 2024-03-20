@@ -8,7 +8,7 @@ SELECT
     d2.species as damSpecies,
     d3.Id as sireId,
     d3.species as sireSpecies,
-    CASE WHEN (d2.species IS NOT NULL AND d1.species != d2.species) AND
+    CASE WHEN (d2.species IS NOT NULL AND d1.species != d2.species) OR
               (d3.species IS NOT NULL AND d1.species != d3.species)
         THEN TRUE
         ELSE FALSE

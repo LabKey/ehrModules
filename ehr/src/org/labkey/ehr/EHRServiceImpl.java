@@ -50,6 +50,7 @@ import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
@@ -78,10 +79,12 @@ import org.labkey.ehr.history.DefaultEncountersDataSource;
 import org.labkey.ehr.history.DefaultObservationsDataSource;
 import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
+import org.labkey.ehr.pipeline.GeneticCalculationsImportTask;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,7 +113,6 @@ public class EHRServiceImpl extends EHRService
     private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
     private final Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
     private final MultiValuedMap<String, Pair<Module, Path>> _actionOverrides = new ArrayListValuedHashMap<>();
-    private final Map<String, Pair<Module, LabworkType>> _labWorkOverrides = new HashMap<>();
     private final List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private final Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -1052,13 +1054,9 @@ public class EHRServiceImpl extends EHRService
         }
     }
 
-    public void registerLabWorkOverrides(Module module, String fromType, LabworkType toType)
+    @Override
+    public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
     {
-        _labWorkOverrides.put(fromType, Pair.of(module, toType));
-    }
-
-    public Map<String, Pair<Module, LabworkType>> getLabWorkOverrides()
-    {
-        return _labWorkOverrides;
+        GeneticCalculationsImportTask.standaloneProcessKinshipAndInbreeding(c, u, pipelineDir, log);
     }
 }
