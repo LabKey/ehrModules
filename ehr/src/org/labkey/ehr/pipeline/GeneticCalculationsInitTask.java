@@ -33,6 +33,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.writer.PrintWriters;
 import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.File;
@@ -84,7 +85,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public PipelineJob.Task<?> createTask(PipelineJob job)
         {
             GeneticCalculationsInitTask task = new GeneticCalculationsInitTask(this, job);
             setJoin(false);
@@ -138,7 +139,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
 
             File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
 
-            try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER))
+            try (CSVWriter writer = new CSVWriter(PrintWriters.getPrintWriter(outputFile), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER))
             {
                 long count = ts.getRowCount();
                 if (count > 0)

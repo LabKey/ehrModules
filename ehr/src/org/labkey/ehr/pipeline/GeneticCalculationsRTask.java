@@ -17,6 +17,7 @@ package org.labkey.ehr.pipeline;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
@@ -82,7 +83,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public PipelineJob.Task<?> createTask(PipelineJob job)
         {
             GeneticCalculationsRTask task = new GeneticCalculationsRTask(this, job);
             setJoin(false);

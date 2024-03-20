@@ -79,7 +79,7 @@ public class DefaultLabworkType implements LabworkType
     @NotNull
     private final Module _declaringModule;
 
-        public DefaultLabworkType(String name, String schemaName, String queryName, Module declaringModule)
+        public DefaultLabworkType(String name, String schemaName, String queryName, @NotNull Module declaringModule)
     {
         _name = name;
         _schemaName = schemaName;
@@ -116,6 +116,11 @@ public class DefaultLabworkType implements LabworkType
     public boolean isEnabled(Container c)
     {
         return c.getActiveModules().contains(_declaringModule);
+    }
+
+    public Module getDeclaringModule()
+    {
+        return _declaringModule;
     }
 
     @Override
