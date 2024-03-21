@@ -1490,13 +1490,13 @@ public class TriggerScriptHelper
         List<TableInfo> requestDatasets = getRequestDatasets();
         for (String requestId : requestIds)
         {
-            for (TableInfo ti : requestDatasets)
+            Integer requestState = null;
+            OUTER: for (TableInfo ti : requestDatasets)
             {
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
                 TableSelector selector = new TableSelector(ti, Collections.singleton("qcstate"), filter, null);
 
                 // set the parent ehr.requests record to a specific QC State if all rows for that request match
-                Integer requestState = null;
                 for (Integer rowQcState : selector.getArrayList(Integer.class))
                 {
                     if (requestState == null)
@@ -1506,23 +1506,23 @@ public class TriggerScriptHelper
                     else if (!requestState.equals(rowQcState))
                     {
                         requestState = null;
-                        break;
+                        break OUTER;
                     }
                 }
+            }
 
-                if (requestState != null)
-                {
-                    _log.info("Updating request status since all children agree");
-                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
-                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
-                            new SQLFragment("UPDATE ").
-                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
-                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
-                                    add(requestState).
-                                    add(new Date()).
-                                    add(getUser().getUserId()).
-                                    add(requestId));
-                }
+            if (requestState != null)
+            {
+                _log.info("Updating request status since all children agree");
+                // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                        new SQLFragment("UPDATE ").
+                                append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                add(requestState).
+                                add(new Date()).
+                                add(getUser().getUserId()).
+                                add(requestId));
             }
         }
     }
