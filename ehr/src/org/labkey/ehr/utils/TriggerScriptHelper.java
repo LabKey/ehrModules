@@ -46,6 +46,7 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -1458,42 +1459,70 @@ public class TriggerScriptHelper
         }
     }
 
+    // Returns all datasets containing the column requestId. Note: it might be useful if EHR had some more direct mechanism to register which datasets support requests,
+    // or for a FormType or other event to announce which datasets should be considered.
+    private List<TableInfo> getRequestDatasets()
+    {
+        Study study = StudyService.get().getStudy(getContainer());
+        if (null == study)
+        {
+            throw new IllegalStateException("Study not found for container: " + getContainer().getName());
+        }
+
+        List<? extends Dataset> datasets = study.getDatasets();
+        List<TableInfo> requestDatasets = new ArrayList<>();
+        for (Dataset ds : datasets)
+        {
+            TableInfo ti = StorageProvisioner.createTableInfo(ds.getDomain());  // This is faster than ds.getTableInfo(u)
+            if (ti.getColumn("requestid") != null)
+            {
+                requestDatasets.add(ti);
+            }
+        }
+
+        return requestDatasets;
+    }
+
     public void processModifiedRequests(final List<String> requestIds)
     {
         _log.info("processing request status for " + requestIds.size() + " records");
+
+        List<TableInfo> requestDatasets = getRequestDatasets();
         for (String requestId : requestIds)
         {
-            TableInfo studyDataTable = getTableInfo("study", "StudyData");
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
-            TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
-
-            // set the parent ehr.requests record to a specific QC State if all rows for that request match
-            Integer requestState = null;
-            for (Integer rowQcState : selector.getArrayList(Integer.class))
+            for (TableInfo ti : requestDatasets)
             {
-                if (requestState == null)
-                {
-                    requestState = rowQcState;
-                }
-                else if (!requestState.equals(rowQcState))
-                {
-                    requestState = null;
-                    break;
-                }
-            }
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
+                TableSelector selector = new TableSelector(ti, Collections.singleton("qcstate"), filter, null);
 
-            if (requestState != null)
-            {
-                _log.info("Updating request status since all children agree");
-                // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
-                new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
-                        new SQLFragment("UPDATE ").
-                                append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
-                                append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
-                                add(requestState).
-                                add(new Date()).
-                                add(getUser().getUserId()).
-                                add(requestId));
+                // set the parent ehr.requests record to a specific QC State if all rows for that request match
+                Integer requestState = null;
+                for (Integer rowQcState : selector.getArrayList(Integer.class))
+                {
+                    if (requestState == null)
+                    {
+                        requestState = rowQcState;
+                    }
+                    else if (!requestState.equals(rowQcState))
+                    {
+                        requestState = null;
+                        break;
+                    }
+                }
+
+                if (requestState != null)
+                {
+                    _log.info("Updating request status since all children agree");
+                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                            new SQLFragment("UPDATE ").
+                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                    add(requestState).
+                                    add(new Date()).
+                                    add(getUser().getUserId()).
+                                    add(requestId));
+                }
             }
         }
     }
