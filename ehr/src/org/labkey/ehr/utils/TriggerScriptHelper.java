@@ -46,6 +46,7 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -1458,14 +1459,61 @@ public class TriggerScriptHelper
         }
     }
 
+    // Get all datasets that have a requestid column
+    private List<TableInfo> getRequestDatasets(Container c, User u)
+    {
+        Study study = StudyService.get().getStudy(c);
+        if (null == study)
+        {
+            throw new IllegalStateException("Study not found for container: " + c.getName());
+        }
+
+        List<? extends Dataset> datasets = study.getDatasets();
+        List<TableInfo> requestDatasets = new ArrayList<>();
+        for (Dataset ds : datasets)
+        {
+            TableInfo ti = StorageProvisioner.createTableInfo(ds.getDomain());  // This is faster than ds.getTableInfo(u)
+            if (ti.getColumn("requestid") != null)
+            {
+                requestDatasets.add(ti);
+            }
+        }
+
+        return requestDatasets;
+    }
+
+    // Creates SQL comparable to study.StudyData but only includes datasets with a requestid column and queries qcstate only
+    private SQLFragment getRequestStudyDataSQL(Container c, User u, String requestId)
+    {
+        List<TableInfo> requestDatasets = getRequestDatasets(c, u);
+
+        SQLFragment unionSql = new SQLFragment();
+        for (TableInfo ti : requestDatasets)
+        {
+            if (!unionSql.isEmpty())
+            {
+                unionSql.append(" UNION ALL \n");
+            }
+            else
+            {
+                unionSql.append("\n(");
+            }
+            unionSql.append("SELECT requestid, qcstate FROM ").append(ti);
+        }
+
+        SQLFragment sql = new SQLFragment("SELECT sd.qcstate FROM ");
+
+        return sql.append(unionSql).append(") sd \n").append( "WHERE sd.requestid = ?").add(requestId);
+    }
+
     public void processModifiedRequests(final List<String> requestIds)
     {
+
         _log.info("processing request status for " + requestIds.size() + " records");
         for (String requestId : requestIds)
         {
-            TableInfo studyDataTable = getTableInfo("study", "StudyData");
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
-            TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
+            SQLFragment sql = getRequestStudyDataSQL(getContainer(), getUser(), requestId);
+            SqlSelector selector = new SqlSelector(StudyService.get().getDatasetSchema(), sql);
 
             // set the parent ehr.requests record to a specific QC State if all rows for that request match
             Integer requestState = null;
