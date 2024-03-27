@@ -37,6 +37,22 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             this.setLoading(true);
             this.loadData();
         }
+
+        this.on('afterrender', function() {
+
+            var displayField = this.down('#flags');
+            if (displayField.getEl()) {
+
+                var anchor = displayField.getEl('flagsLink');
+
+                if (anchor) {
+                    Ext4.get(anchor).on('click', function(e) {
+                        e.preventDefault();
+                        EHR.Utils.showFlagPopup(this.subjectId, this);
+                    });
+                }
+            }
+        }, this);
     },
 
     getBaseItems: function(){
@@ -702,7 +718,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }
         }
 
-        toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + LABKEY.Utils.encodeHtml(this.subjectId) + '\', this);">' + values.join('<br>') + '</div>' : null;
+        toSet['flags'] = values.length ? '<a id="flagsLink">' + values.join('<br>') + '</div>' : null;
     },
 
     getFlagDisplayValue: function(row) {
