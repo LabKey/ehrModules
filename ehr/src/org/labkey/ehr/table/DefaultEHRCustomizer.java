@@ -408,6 +408,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ensureSortColumn(ti, cage);
 
         cage.setDisplayWidth("40");
+
+        // This turns off auto-load
         cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
     }
 
