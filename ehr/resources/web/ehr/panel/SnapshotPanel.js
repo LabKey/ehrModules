@@ -140,7 +140,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Flags',
-                        name: 'flags'
+                        name: 'flags',
+                        itemId: 'flags'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Last TB Date',
