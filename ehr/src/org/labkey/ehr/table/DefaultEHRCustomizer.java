@@ -824,7 +824,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         Date date = (Date) ctx.get("date");
                         Object id = ctx.get(ID_COL);
 
-                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
+                        Link.LinkBuilder link = new Link.LinkBuilder("[Show Hx]").onClick("EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);");
+                        DOM.createHtmlFragment(SPAN(at(style, "white-space:nowrap"), link, null)).appendTo(out);
                     }
 
                     @Override
