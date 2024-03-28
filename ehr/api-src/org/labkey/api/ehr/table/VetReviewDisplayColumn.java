@@ -44,9 +44,10 @@ public class VetReviewDisplayColumn extends DataColumn
                     text = text.replaceAll("\\*\\*", "<span style=\"background-color: yellow;\">\\*\\*</span>");
                 }
 
-                out.write("<a style=\"max-width: 500px;\" onclick=\"EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: " + PageFlowUtil.jsString(StringUtils.trimToNull(tokens[2])) + ", scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}});\">");
-                out.write(text);
-                out.write("</a>");
+                Link.LinkBuilder link = new Link.LinkBuilder(text)
+                        .style("max-width: 500px;")
+                        .onClick("EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: " + PageFlowUtil.jsString(StringUtils.trimToNull(tokens[2])) + ", scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}});");
+                link.appendTo(out);
             }
         }
     }
