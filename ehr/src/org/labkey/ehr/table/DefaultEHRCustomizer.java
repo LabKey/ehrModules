@@ -65,6 +65,7 @@ import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.logging.LogHelper;
+import org.labkey.api.view.HttpView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRModule;
@@ -97,6 +98,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private static final Logger _log = LogHelper.getLogger(DefaultEHRCustomizer.class, "Setup and configuration of EHR data tables, including calculated columns and special lookups");
     private boolean _addLinkDisablers = true;
     private static final String MORE_ACTIONS = "More Actions";
+
+    private boolean _clickHandlerAdded = false;
 
     public DefaultEHRCustomizer()
     {
@@ -824,8 +827,12 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         Date date = (Date) ctx.get("date");
                         Object id = ctx.get(ID_COL);
 
-                        Link.LinkBuilder link = new Link.LinkBuilder("[Show Hx]").onClick("EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);");
-                        DOM.createHtmlFragment(SPAN(at(style, "white-space:nowrap"), link, null)).appendTo(out);
+                        out.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\">[Show Hx]</a></span>");
+                        if (!_clickHandlerAdded)
+                        {
+                            HttpView.currentPageConfig().addHandlerForQuerySelector("a.anm-history", "click", "EHR.window.ClinicalHistoryWindow.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);");
+                            _clickHandlerAdded = true;
+                        }
                     }
 
                     @Override
