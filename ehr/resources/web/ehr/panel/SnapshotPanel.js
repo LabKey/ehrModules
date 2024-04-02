@@ -31,8 +31,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         });
 
         this.callParent();
+        let anmId;
 
         if (this.subjectId){
+            anmId = this.subjectId;
             this.isLoading = true;
             this.setLoading(true);
             this.loadData();
@@ -48,7 +50,9 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (anchor) {
                     Ext4.get(anchor).on('click', function(e) {
                         e.preventDefault();
-                        EHR.Utils.showFlagPopup(this.subjectId, this);
+                        if (anmId) {
+                            EHR.Utils.showFlagPopup(anmId, this);
+                        }
                     });
                 }
             }
