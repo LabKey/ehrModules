@@ -828,10 +828,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                         Date date = (Date) ctx.get("date");
                         Object id = ctx.get(ID_COL);
 
-                        out.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\" data-objectid=\"" + PageFlowUtil.filter(objectid) + "\" data-id=\"" + PageFlowUtil.filter(id) + "\" data-date=\"" + PageFlowUtil.filter(date) + "\">[Show Hx]</a></span>");
+                        out.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\" data-id=\"" + PageFlowUtil.filter(id) + "\">[Show Hx]</a></span>");
                         if (!_clickHandlerAdded)
                         {
-                            HttpView.currentPageConfig().addHandlerForQuerySelector("a.anm-history", "click", "EHR.window.ClinicalHistoryWindow.showClinicalHistory(this.attributes.getNamedItem('data-objectid').value , this.attributes.getNamedItem('data-id').value, this.attributes.getNamedItem('data-date').value, this);");
+                            HttpView.currentPageConfig().addHandlerForQuerySelector("a.anm-history", "click", "EHR.window.ClinicalHistoryWindow.showClinicalHistory(null , this.attributes.getNamedItem('data-id').value, null, this);");
                             _clickHandlerAdded = true;
                         }
                     }
