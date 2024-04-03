@@ -31,12 +31,32 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         });
 
         this.callParent();
+        let anmId;
 
         if (this.subjectId){
+            anmId = this.subjectId;
             this.isLoading = true;
             this.setLoading(true);
             this.loadData();
         }
+
+        this.on('afterrender', function() {
+
+            var displayField = this.down('#flags');
+            if (displayField && displayField.getEl()) {
+
+                var anchor = displayField.getEl('flagsLink');
+
+                if (anchor) {
+                    Ext4.get(anchor).on('click', function(e) {
+                        e.preventDefault();
+                        if (anmId) {
+                            EHR.Utils.showFlagPopup(anmId, this);
+                        }
+                    });
+                }
+            }
+        }, this);
     },
 
     getBaseItems: function(){
@@ -124,7 +144,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Flags',
-                        name: 'flags'
+                        name: 'flags',
+                        itemId: 'flags'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Last TB Date',
@@ -702,7 +723,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }
         }
 
-        toSet['flags'] = values.length ? '<a onclick="EHR.Utils.showFlagPopup(\'' + LABKEY.Utils.encodeHtml(this.subjectId) + '\', this);">' + values.join('<br>') + '</div>' : null;
+        toSet['flags'] = values.length ? '<a id="flagsLink">' + values.join('<br>') + '</div>' : null;
     },
 
     getFlagDisplayValue: function(row) {
