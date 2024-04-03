@@ -6,7 +6,7 @@
 
 require("ehr/triggers").initScript(this);
 
-EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.INIT, 'study', 'assignment', function(event, helper){
+function onInit(event, helper){
     helper.setScriptOptions({
         allowFutureDates: true,
         removeTimeFromDate: true,
@@ -49,7 +49,7 @@ EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Even
 
         helper.setProperty('assignmentsInTransaction', assignmentsInTransaction);
     });
-});
+}
 
 EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'assignment', function(helper, scriptErrors, row, oldRow){
     if (!helper.isETL()){
