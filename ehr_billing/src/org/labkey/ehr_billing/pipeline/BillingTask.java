@@ -476,7 +476,15 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 // for each procedure query, get query results
                 UserSchema schema = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, procedureSchema);
                 TableInfo procedureQueryTi = schema.getTable(procedureQuery, null);
-                TableSelector procedureQueryTs = new TableSelector(procedureQueryTi);
+                if (null == procedureQueryTi)
+                {
+                    throw new RuntimeException("Unable to find procedure query: '" + procedureQuery + "' in schema: '" + procedureSchema + "' in order to the process procedure charges. " +
+                            "Please correct the schema and query info in ehr_billing.procedureQueryChargeIdAssoc table before performing a Billing Run.");
+                }
+                SimpleFilter filter = new SimpleFilter();
+                filter.addCondition(FieldKey.fromString("date"), getSupport().getStartDate(), CompareType.DATE_GTE);
+                filter.addCondition(FieldKey.fromString("date"), getSupport().getEndDate(), CompareType.DATE_LTE);
+                TableSelector procedureQueryTs = new TableSelector(procedureQueryTi, filter, null);
                 Collection<Map<String, Object>> procedureRows = procedureQueryTs.getMapCollection();
 
                 //iterate through procedure query results
@@ -512,9 +520,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                         totalCostWithOtherRate = unitCostWithOtherRate * (Double) procedureRow.get("quantity");
                         procedureRow.put(processingService.getAdditionalTotalCostColName(), totalCostWithOtherRate);
                     }
-
-                     writeToInvoicedItems(process, procedureRows, getSupport());
                 }
+                writeToInvoicedItems(process, procedureRows, getSupport());
             }
         }
         else if (process.getQueryName() != null && !process.getQueryToInvoiceItemColMap().isEmpty())
@@ -556,8 +563,6 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
     private ArrayList<ChargeInfo> getChargeIdWithAssociatedInfo(Container billingRunContainer)
     {
-        Map<Integer, ChargeInfo> chargeIdInfoMap = new HashMap<>();
-
         UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, EHR_BILLING_SCHEMA.getName());
         TableInfo ti = us.getTable("chargeItemsWithRates", null);
 
