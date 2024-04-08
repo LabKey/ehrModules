@@ -166,7 +166,7 @@ public class BillingNotification extends AbstractNotification
         endDate.add(Calendar.DATE, 1);
 
         getProjectSummaryPerCategory(u, startDate, endDate, categoryToQuery, containerMap, dataMap, totalsByCategory, fields);
-        _notificationProvider.setAdditionalTotalsByCategory(u, billingContainer, startDate.getTime(), endDate.getTime(), totalsByCategory, additionalCategoryURLs);
+        _notificationProvider.getAdditionalChargeCategoryInfo(u, billingContainer, startDate.getTime(), endDate.getTime(), totalsByCategory, additionalCategoryURLs);
 
         simpleAlert(billingContainer, u , msg, _ehrBillingSchemaName, "duplicateAliases",
                 " duplicate account(s) found.  This is a potentially serious problem that could result in improper" +

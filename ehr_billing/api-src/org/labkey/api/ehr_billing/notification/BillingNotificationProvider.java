@@ -90,7 +90,16 @@ public interface BillingNotificationProvider
     public String getCenterSpecificBillingSchema();
 
 
-    public default void setAdditionalTotalsByCategory(User u, Container c, Date startDate, Date endDate,
+    /**
+     * @param u User
+     * @param c Container where custom charge categories are defined
+     * @param startDate Filter custom charge category query where date >= startDate
+     * @param endDate Filter custom charge category query where date <= endDate
+     * @param totalsByCategory Add totals for the center-specific custom category to be displayed in the Charge Summary section of the notification.
+     * @param additionalCategoryUrls Add URLs for center-specific custom category to be linked to the Category
+     * See WNPRC Billing's implementation of this method for an example.
+     */
+    public default void getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate,
                                             final Map<String, Map<String, Double>> totalsByCategory, Map<String, String> additionalCategoryUrls)
     {
 
