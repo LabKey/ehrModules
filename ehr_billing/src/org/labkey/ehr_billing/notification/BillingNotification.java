@@ -35,7 +35,6 @@ import org.labkey.api.ehr_billing.notification.BillingNotificationProvider;
 import org.labkey.api.ehr_billing.notification.FieldDescriptor;
 import org.labkey.api.ldk.notification.AbstractNotification;
 import org.labkey.api.module.Module;
-import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;

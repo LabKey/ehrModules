@@ -89,7 +89,6 @@ public interface BillingNotificationProvider
      */
     public String getCenterSpecificBillingSchema();
 
-
     /**
      * @param u User
      * @param c Container where custom charge categories are defined
