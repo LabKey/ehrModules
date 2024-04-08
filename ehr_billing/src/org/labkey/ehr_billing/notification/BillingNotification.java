@@ -155,6 +155,7 @@ public class BillingNotification extends AbstractNotification
 
         Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap = new TreeMap<>();
         Map<String, Map<String, Double>> totalsByCategory = new TreeMap<>();
+        Map<String, String> additionalCategoryURLs = new TreeMap<>();
 
         Calendar startDate = Calendar.getInstance();
         startDate.setTime(lastInvoiceDate);
@@ -165,13 +166,14 @@ public class BillingNotification extends AbstractNotification
         endDate.add(Calendar.DATE, 1);
 
         getProjectSummaryPerCategory(u, startDate, endDate, categoryToQuery, containerMap, dataMap, totalsByCategory, fields);
+        _notificationProvider.setAdditionalTotalsByCategory(u, billingContainer, startDate.getTime(), endDate.getTime(), totalsByCategory, additionalCategoryURLs);
 
         simpleAlert(billingContainer, u , msg, _ehrBillingSchemaName, "duplicateAliases",
                 " duplicate account(s) found.  This is a potentially serious problem that could result in improper" +
                         " or duplicate charge(s) and should be corrected ASAP.");
 
         //based on data gathered on Project Summary Per Category above, create charge summary report
-        createChargeSummaryReport(msg, lastInvoiceDate, startDate, endDate, dataMap, totalsByCategory, categoryToQuery, containerMap, c, fields);
+        createChargeSummaryReport(msg, lastInvoiceDate, startDate, endDate, dataMap, totalsByCategory, categoryToQuery, containerMap, c, fields, additionalCategoryURLs);
 
         simpleAlert(billingContainer, u , msg,_ehrBillingSchemaName, "invalidChargeRateEntries",
                 " charge rate record(s) with invalid or overlapping intervals.  This indicates a problem with how the records " +
@@ -401,7 +403,8 @@ public class BillingNotification extends AbstractNotification
     protected void createChargeSummaryReport(final StringBuilder msg, Date lastInvoiceEnd, Calendar start, Calendar endDate,
                                              final Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap,
                                              final Map<String, Map<String, Double>> totalsByCategory, Map<String, String> categoryToQuery,
-                                             Map<String, Container> containerMap, Container c, List<FieldDescriptor> fields)
+                                             Map<String, Container> containerMap, Container c, List<FieldDescriptor> fields,
+                                             Map<String, String> additionalCategoryURLs)
     {
 
         String centerSpecificBillingSchema = _notificationProvider.getCenterSpecificBillingSchema();
@@ -414,9 +417,14 @@ public class BillingNotification extends AbstractNotification
         {
             Map<String, Double> totalsMap = totalsByCategory.get(category);
             Container container = containerMap.get(category);
+            String url;
+            if (categoryToQuery.containsKey(category))
+                url = createURL(container, centerSpecificBillingSchema, categoryToQuery.get(category), null) + "&query.param.StartDate=" + getDateFormat(c).format(start.getTime()) + "&query.param.EndDate=" + getDateFormat(c).format(endDate.getTime());
+            else
+                url = additionalCategoryURLs.get(category);
 
-            String url = createURL(container, centerSpecificBillingSchema, categoryToQuery.get(category), null) + "&query.param.StartDate=" + getDateFormat(c).format(start.getTime()) + "&query.param.EndDate=" + getDateFormat(c).format(endDate.getTime());
-            msg.append("<tr><td><a href='" + url + "'>" + category + "</a></td><td align='right'>" + _numItemsFormat.format(totalsMap.get("total")) + "</td><td align='right'>" + _dollarFormat.format(totalsMap.get("totalCost")) + "</td></tr>");
+            if (null != url)
+                msg.append("<tr><td><a href='" + url + "'>" + category + "</a></td><td align='right'>" + _numItemsFormat.format(totalsMap.get("total")) + "</td><td align='right'>" + _dollarFormat.format(totalsMap.get("totalCost")) + "</td></tr>");
         }
         msg.append("</table><br><br>");
 

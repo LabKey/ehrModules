@@ -19,6 +19,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -87,5 +88,12 @@ public interface BillingNotificationProvider
      * @return Name of center specific billing schema
      */
     public String getCenterSpecificBillingSchema();
-    
+
+
+    public default void setAdditionalTotalsByCategory(User u, Container c, Date startDate, Date endDate,
+                                            final Map<String, Map<String, Double>> totalsByCategory, Map<String, String> additionalCategoryUrls)
+    {
+
+    }
+
 }

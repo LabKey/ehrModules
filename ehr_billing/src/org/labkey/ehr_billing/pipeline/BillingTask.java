@@ -471,7 +471,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 String procedureQuery = (String) row.get("queryName");
                 int chargeId = (Integer) row.get("chargeId");
 
-                getJob().getLogger().info("Processing ");
+                getJob().getLogger().info("Processing '" + row.get("description") + "'");
 
                 // for each procedure query, get query results
                 UserSchema schema = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, procedureSchema);
