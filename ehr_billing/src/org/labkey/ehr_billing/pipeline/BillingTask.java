@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 LabKey Corporation
+ * Copyright (c) 2018-2024 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -539,22 +539,11 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         Date chargeDate = (Date) date;
         List<ChargeInfo> chargeInfoList = chargeInfoArrayList.stream().filter(ci -> ci.getChargeId() == chargeId).toList();
 
-        if (chargeInfoList.size() == 1)
+        for (ChargeInfo ci : chargeInfoList)
         {
-            ChargeInfo ci = chargeInfoList.get(0);
             if (chargeDate.after(ci.getChargeRateStartDate()) && chargeDate.before(ci.getChargeRateEndDate()))
             {
                 return ci;
-            }
-        }
-        else if (chargeInfoList.size() > 1)
-        {
-            for (ChargeInfo ci : chargeInfoList)
-            {
-                if (chargeDate.after(ci.getChargeRateStartDate()) && chargeDate.before(ci.getChargeRateEndDate()))
-                {
-                    return ci;
-                }
             }
         }
 

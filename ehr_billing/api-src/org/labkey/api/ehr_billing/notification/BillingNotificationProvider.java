@@ -19,6 +19,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -94,14 +95,13 @@ public interface BillingNotificationProvider
      * @param c Container where custom charge categories are defined
      * @param startDate Filter custom charge category query where date >= startDate
      * @param endDate Filter custom charge category query where date <= endDate
-     * @param totalsByCategory Add totals for the center-specific custom category to be displayed in the Charge Summary section of the notification.
-     * @param additionalCategoryUrls Add URLs for center-specific custom category to be linked to the Category
+     * @return Map of custom charge category information. Key is the category name and value is a map of additional information
+     * such as "total" (total number of charges), "totalCost" (total cost of charges), and "url" (url to the query).
      * See WNPRC Billing's implementation of this method for an example.
      */
-    public default void getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate,
-                                            final Map<String, Map<String, Double>> totalsByCategory, Map<String, String> additionalCategoryUrls)
+    public default Map<String, Map<String, Object>> getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate)
     {
-
+        return Collections.emptyMap();
     }
 
 }

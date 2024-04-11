@@ -1,16 +1,16 @@
 CREATE TABLE ehr_billing.procedureQueryChargeIdAssoc (
 
    rowId SERIAL NOT NULL,
-   schemaName varchar(200) NOT NULL,
-   queryName varchar(500) NOT NULL,
-   description varchar(2000) NOT NULL,
+   schemaName nvarchar(200) NOT NULL,
+   queryName nvarchar(500) NOT NULL,
+   description nvarchar(2000) NOT NULL,
    chargeId int NOT NULL,
 
    container ENTITYID NOT NULL,
    createdBy USERID,
-   created timestamp,
+   created DATETIME,
    modifiedBy USERID,
-   modified timestamp,
+   modified DATETIME,
 
    CONSTRAINT PK_procedureQueryChargeIdAssociations PRIMARY KEY (rowId),
    CONSTRAINT FK_EHR_BILLING_PROCEDURE_QUERY_CHARGEID_ASSOC_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
