@@ -391,7 +391,7 @@ public class BillingNotification extends AbstractNotification
             }
         });
         categoryInfo.setTotalQuantity(totalQuantity[0]);
-        categoryInfo.setTotalCost(totalQuantity[0]);
+        categoryInfo.setTotalCost(totalCost[0]);
         categoryInfoMap.put(categoryName, categoryInfo);
     }
 
