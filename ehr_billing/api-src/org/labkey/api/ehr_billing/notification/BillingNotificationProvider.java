@@ -95,13 +95,11 @@ public interface BillingNotificationProvider
      * @param c Container where custom charge categories are defined
      * @param startDate Filter custom charge category query where date >= startDate
      * @param endDate Filter custom charge category query where date <= endDate
-     * @return Map of custom charge category information. Key is the category name and value is a map of additional information
-     * such as "total" (total number of charges), "totalCost" (total cost of charges), and "url" (url to the query).
+     * @return A List of {@link ChargeCategoryInfo} - ChargeCategoryInfo class holds data to display under the 'Charge Summary' section of the notification per custom category.
      * See WNPRC Billing's implementation of this method for an example.
      */
-    public default Map<String, Map<String, Object>> getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate)
+    public default List<ChargeCategoryInfo> getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate)
     {
-        return Collections.emptyMap();
+        return Collections.emptyList();
     }
-
 }
