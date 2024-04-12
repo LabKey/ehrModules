@@ -42,6 +42,7 @@ import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
@@ -418,7 +419,7 @@ public class BillingNotification extends AbstractNotification
                 url = categoryInfo.getCategoryURL();
 
             if (null != url)
-                msg.append("<tr><td><a href='" + url + "'>" + category + "</a></td><td align='right'>" + _numItemsFormat.format(categoryInfo.getTotalQuantity()) + "</td><td align='right'>" + _dollarFormat.format(categoryInfo.getTotalCost()) + "</td></tr>");
+                msg.append("<tr><td><a href='" + PageFlowUtil.filter(url) + "'>" + PageFlowUtil.filter(category) + "</a></td><td align='right'>" + PageFlowUtil.filter(_numItemsFormat.format(categoryInfo.getTotalQuantity())) + "</td><td align='right'>" + PageFlowUtil.filter(_dollarFormat.format(categoryInfo.getTotalCost())) + "</td></tr>");
         }
         msg.append("</table><br><br>");
 
