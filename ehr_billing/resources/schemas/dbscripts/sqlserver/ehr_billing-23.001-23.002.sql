@@ -1,6 +1,6 @@
 CREATE TABLE ehr_billing.procedureQueryChargeIdAssoc (
 
-   rowId SERIAL NOT NULL,
+   rowId INT IDENTITY(1,1) NOT NULL,
    schemaName nvarchar(200) NOT NULL,
    queryName nvarchar(500) NOT NULL,
    description nvarchar(2000) NOT NULL,
