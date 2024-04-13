@@ -73,7 +73,7 @@ public interface InvoicedItemsProcessingService
     void performAdditionalProcessing(String invoiceId, User user, Container container);
 
     /*
-     * Returns Pair of previous matching billing run's objectId and rowId
+     * Returns a pair of previous matching billing run's objectId and rowId
      * */
     @Nullable
     default Pair<String,String> verifyBillingRunPeriod(User user, Container container, Date startDate, Date endDate) throws PipelineJobException
@@ -98,4 +98,24 @@ public interface InvoicedItemsProcessingService
     default void processBillingRerun(String newInvoiceId, String newInvoiceRowId, Date billingStartDate, Date billingRunEndDate, int nextTransactionNumber, User user, Container container, Logger logger) {}
 
     default void setBillingStartDate(Date billingStartDate) {}
+
+    default String getUnitCostColName()
+    {
+        return "unitCost";
+    }
+
+    default String getTotalCostColName()
+    {
+        return "totalcost";
+    }
+
+    default String getAdditionalUnitCostColName()
+    {
+        return null;
+    }
+
+    default String getAdditionalTotalCostColName()
+    {
+        return null;
+    }
 }

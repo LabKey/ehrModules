@@ -40,6 +40,7 @@ public class EHR_BillingSchema
     public static final String TABLE_CHARGE_RATE_EXEMPTIONS = "chargeRateExemptions";
     public static final String TABLE_INVOICE = "invoice";
     public static final String TABLE_DATA_ACCESS = "dataAccess";
+    public static final String TABLE_PROCEDURE_QUERY_CHARGE_ID_ASSOCIATIONS = "procedureQueryChargeIdAssoc";
 
     public static EHR_BillingSchema getInstance()
     {
@@ -116,5 +117,10 @@ public class EHR_BillingSchema
     public TableInfo getDataAccessTable()
     {
         return getSchema().getTable(TABLE_DATA_ACCESS);
+    }
+
+    public TableInfo getProcedureQueryChargeIdAssoc()
+    {
+        return getSchema().getTable(TABLE_PROCEDURE_QUERY_CHARGE_ID_ASSOCIATIONS);
     }
 }
