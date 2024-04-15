@@ -19,6 +19,8 @@ import org.labkey.api.data.Container;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -87,5 +89,17 @@ public interface BillingNotificationProvider
      * @return Name of center specific billing schema
      */
     public String getCenterSpecificBillingSchema();
-    
+
+    /**
+     * @param u User
+     * @param c Container where custom charge categories are defined
+     * @param startDate Filter custom charge category query where date >= startDate
+     * @param endDate Filter custom charge category query where date <= endDate
+     * @return A List of {@link ChargeCategoryInfo} - ChargeCategoryInfo class holds data to display under the 'Charge Summary' section of the notification per custom category.
+     * See WNPRC Billing's implementation of this method for an example.
+     */
+    public default List<ChargeCategoryInfo> getAdditionalChargeCategoryInfo(User u, Container c, Date startDate, Date endDate)
+    {
+        return Collections.emptyList();
+    }
 }
