@@ -1,8 +1,8 @@
 -- this table should consists of the rows with schema name, query name where the resulting rows of that query are associated with a chargeId, chargeId, and description of the query
 CREATE TABLE IF NOT EXISTS ehr_billing.procedureQueryChargeIdAssoc (
 
-                                                                       rowId SERIAL NOT NULL,
-                                                                       schemaName varchar(200) NOT NULL,
+    rowId SERIAL NOT NULL,
+    schemaName varchar(200) NOT NULL,
     queryName varchar(500) NOT NULL,
     description varchar(2000) NOT NULL,
     chargeId int NOT NULL,
