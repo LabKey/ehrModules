@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 LabKey Corporation
+ * Copyright (c) 2018-2024 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -452,15 +452,215 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
     private void runProcessing(BillingPipelineJobProcess process, Container billingRunContainer) throws PipelineJobException
     {
-        if (process != null && process.getQueryName() != null && !process.getQueryToInvoiceItemColMap().isEmpty())
-        {
-            getJob().getLogger().info("Caching " + process.getLabel());
+        getJob().getLogger().info("Caching " + process.getLabel());
 
+        if (process.isProcedureCharges())
+        {
+            ArrayList<ChargeInfo> chargeInfoArrayList = getChargeIdWithAssociatedInfo(billingRunContainer);
+
+            getJob().getLogger().info("Querying ehr_billing.procedureQueryChargeIdAssoc table to get procedures info");
+            UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, EHR_BILLING_SCHEMA.getName());
+            TableInfo ti = us.getTable("procedureQueryChargeIdAssoc", null);
+            TableSelector ts = new TableSelector(ti);
+            Collection<Map<String, Object>> procedureQueries = ts.getMapCollection();
+
+            // iterate through Procedure queries associated with a chargeId
+            for(Map<String, Object> row : procedureQueries)
+            {
+                String procedureSchema = (String) row.get("schemaName");
+                String procedureQuery = (String) row.get("queryName");
+                int chargeId = (Integer) row.get("chargeId");
+
+                getJob().getLogger().info("Processing '" + row.get("description") + "'");
+
+                // for each procedure query, get query results
+                UserSchema schema = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, procedureSchema);
+                TableInfo procedureQueryTi = schema.getTable(procedureQuery, null);
+                if (null == procedureQueryTi)
+                {
+                    throw new RuntimeException("Unable to find procedure query: '" + procedureQuery + "' in schema: '" + procedureSchema + "' in order to the process procedure charges. " +
+                            "Please correct the schema and query info in ehr_billing.procedureQueryChargeIdAssoc table before performing a Billing Run.");
+                }
+                SimpleFilter filter = new SimpleFilter();
+                filter.addCondition(FieldKey.fromString("date"), getSupport().getStartDate(), CompareType.DATE_GTE);
+                filter.addCondition(FieldKey.fromString("date"), getSupport().getEndDate(), CompareType.DATE_LTE);
+                TableSelector procedureQueryTs = new TableSelector(procedureQueryTi, filter, null);
+                Collection<Map<String, Object>> procedureRows = procedureQueryTs.getMapCollection();
+
+                //iterate through procedure query results
+                for (Map<String, Object> procedureRow : procedureRows)
+                {
+                    // for each row, associate chargeId
+                    procedureRow.put("chargeId", chargeId);
+
+                    // add additional charge info
+                    ChargeInfo ci = getChargeInfo(chargeId, chargeInfoArrayList, (Date) procedureRow.get("date"));
+                    procedureRow.put("item", ci.getItem());
+                    procedureRow.put("category", ci.getCategory());
+
+                    // get cost
+                    Double unitCost = ci.getUnitCost();
+                    procedureRow.put(processingService.getUnitCostColName(), unitCost);
+
+                    // total cost
+                    Double totalCost = unitCost * (Double) procedureRow.get("quantity");
+                    procedureRow.put(processingService.getTotalCostColName(), totalCost);
+
+                    // calculate total cost with additional/other rate (ex. tier rate for WNPRC)
+                    Double otherRate = (Double) procedureRow.get("otherRate");
+                    Double unitCostWithOtherRate;
+                    Double totalCostWithOtherRate;
+                    if (null != otherRate &&
+                            null != processingService.getAdditionalUnitCostColName() &&
+                            null != processingService.getAdditionalTotalCostColName())
+                    {
+                        unitCostWithOtherRate = unitCost + (unitCost * otherRate);
+                        procedureRow.put(processingService.getAdditionalUnitCostColName(), unitCostWithOtherRate);
+
+                        totalCostWithOtherRate = unitCostWithOtherRate * (Double) procedureRow.get("quantity");
+                        procedureRow.put(processingService.getAdditionalTotalCostColName(), totalCostWithOtherRate);
+                    }
+                }
+                writeToInvoicedItems(process, procedureRows, getSupport());
+            }
+        }
+        else if (process.getQueryName() != null && !process.getQueryToInvoiceItemColMap().isEmpty())
+        {
             Collection<Map<String, Object>> rows = getRowList(process, billingRunContainer);
             getJob().getLogger().info(rows.size() + " rows found");
 
             writeToInvoicedItems(process, rows, getSupport());
-            getJob().getLogger().info("Finished Caching " + process.getLabel());
+        }
+        getJob().getLogger().info("Finished Caching " + process.getLabel());
+    }
+
+    private ChargeInfo getChargeInfo(int chargeId, ArrayList<ChargeInfo> chargeInfoArrayList, Object date)
+    {
+        Date chargeDate = (Date) date;
+        List<ChargeInfo> chargeInfoList = chargeInfoArrayList.stream().filter(ci -> ci.getChargeId() == chargeId).toList();
+
+        for (ChargeInfo ci : chargeInfoList)
+        {
+            if (chargeDate.after(ci.getChargeRateStartDate()) && chargeDate.before(ci.getChargeRateEndDate()))
+            {
+                return ci;
+            }
+        }
+
+        return new ChargeInfo();
+    }
+
+    private ArrayList<ChargeInfo> getChargeIdWithAssociatedInfo(Container billingRunContainer)
+    {
+        UserSchema us = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, EHR_BILLING_SCHEMA.getName());
+        TableInfo ti = us.getTable("chargeItemsWithRates", null);
+
+        TableSelector ts = new TableSelector(ti, Set.of("chargeId", "item", "category", "departmentCode", "chargeableItemStartDate", "chargeableItemEndDate", "unitCost", "chargeRateStartDate", "chargeRateEndDate"));
+        ArrayList<ChargeInfo> chargeInfoArrayList = ts.getArrayList(ChargeInfo.class);
+
+        return chargeInfoArrayList;
+    }
+
+    public static class ChargeInfo
+    {
+        private int _chargeId;
+        private String _item;
+        private String _category;
+        private String _departmentCode;
+        private Date _chargeableItemStartDate;
+        private Date _chargeableItemEndDate;
+        private double _unitCost;
+        private Date _chargeRateStartDate;
+        private Date _chargeRateEndDate;
+
+        public int getChargeId()
+        {
+            return _chargeId;
+        }
+
+        public void setChargeId(int chargeId)
+        {
+            _chargeId = chargeId;
+        }
+
+        public String getItem()
+        {
+            return _item;
+        }
+
+        public void setItem(String item)
+        {
+            _item = item;
+        }
+
+        public String getCategory()
+        {
+            return _category;
+        }
+
+        public void setCategory(String category)
+        {
+            _category = category;
+        }
+
+        public String getDepartmentCode()
+        {
+            return _departmentCode;
+        }
+
+        public void setDepartmentCode(String departmentCode)
+        {
+            _departmentCode = departmentCode;
+        }
+
+        public Date getChargeableItemStartDate()
+        {
+            return _chargeableItemStartDate;
+        }
+
+        public void setChargeableItemStartDate(Date chargeableItemStartDate)
+        {
+            _chargeableItemStartDate = chargeableItemStartDate;
+        }
+
+        public Date getChargeableItemEndDate()
+        {
+            return _chargeableItemEndDate;
+        }
+
+        public void setChargeableItemEndDate(Date chargeableItemEndDate)
+        {
+            _chargeableItemEndDate = chargeableItemEndDate;
+        }
+
+        public double getUnitCost()
+        {
+            return _unitCost;
+        }
+
+        public void setUnitCost(double unitCost)
+        {
+            _unitCost = unitCost;
+        }
+
+        public Date getChargeRateStartDate()
+        {
+            return _chargeRateStartDate;
+        }
+
+        public void setChargeRateStartDate(Date chargeRateStartDate)
+        {
+            _chargeRateStartDate = chargeRateStartDate;
+        }
+
+        public Date getChargeRateEndDate()
+        {
+            return _chargeRateEndDate;
+        }
+
+        public void setChargeRateEndDate(Date chargeRateEndDate)
+        {
+            _chargeRateEndDate = chargeRateEndDate;
         }
     }
 

@@ -35,6 +35,7 @@ public class BillingPipelineJobProcess
     private List<String> _requiredFields;
     private boolean _useEHRContainer = false;
     private boolean _isMiscCharges = false;
+    private boolean _isProcedureCharges = false;
     private TableInfo _miscChargesTableInfo;
     private Map<String,Object> _params;
 
@@ -51,6 +52,11 @@ public class BillingPipelineJobProcess
         _schemaName = schemaName;
         _queryName = queryName;
         _queryToInvoiceItemColMap = queryToInvoiceItemColMap;
+    }
+
+    public BillingPipelineJobProcess(boolean isProcedure)
+    {
+        _isProcedureCharges = isProcedure;
     }
 
     public String getLabel()
@@ -120,6 +126,11 @@ public class BillingPipelineJobProcess
     public boolean isMiscCharges()
     {
         return _isMiscCharges;
+    }
+
+    public boolean isProcedureCharges()
+    {
+        return _isProcedureCharges;
     }
 
     public TableInfo getMiscChargesTableInfo()

@@ -46,52 +46,43 @@ public class EHR_BillingContainerListener implements ContainerListener
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
             TableInfo aliasesTable = EHR_BillingSchema.getInstance().getAliasesTable();
-            if (aliasesTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(aliasesTable, containerFilter);
+            Table.delete(aliasesTable, containerFilter);
 
             TableInfo chargeRatesTable = EHR_BillingSchema.getInstance().getChargeRatesTable();
-            if (chargeRatesTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeRatesTable, containerFilter);
+            Table.delete(chargeRatesTable, containerFilter);
 
             TableInfo invoiceItemsTable = EHR_BillingSchema.getInstance().getTableInvoiceItems();
-            if (invoiceItemsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(invoiceItemsTable, containerFilter);
+            Table.delete(invoiceItemsTable, containerFilter);
 
             TableInfo invoiceTable = EHR_BillingSchema.getInstance().getInvoice();
-            if (invoiceTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(invoiceTable, containerFilter);
+            Table.delete(invoiceTable, containerFilter);
 
             TableInfo invoiceRunsTable = EHR_BillingSchema.getInstance().getTableInvoiceRuns();
-            if (invoiceRunsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(invoiceRunsTable, containerFilter);
+            Table.delete(invoiceRunsTable, containerFilter);
 
             TableInfo miscChargesTable = EHR_BillingSchema.getInstance().getMiscCharges();
-            if (miscChargesTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(miscChargesTable, containerFilter);
+            Table.delete(miscChargesTable, containerFilter);
 
             TableInfo chargeableItemsTable = EHR_BillingSchema.getInstance().getChargeableItems();
-            if (chargeableItemsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeableItemsTable, containerFilter);
+            Table.delete(chargeableItemsTable, containerFilter);
 
             TableInfo chargeableItemsCategories = EHR_BillingSchema.getInstance().getChargeableItemCategories();
-            if (chargeableItemsCategories.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeableItemsCategories, containerFilter);
+            Table.delete(chargeableItemsCategories, containerFilter);
 
             TableInfo chargeUnitsTable = EHR_BillingSchema.getInstance().getChargeUnits();
-            if (chargeUnitsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeUnitsTable, containerFilter);
+            Table.delete(chargeUnitsTable, containerFilter);
 
             TableInfo chargeRateExemptionsTable = EHR_BillingSchema.getInstance().getChargeRateExemptions();
-            if (chargeRateExemptionsTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeRateExemptionsTable, containerFilter);
+            Table.delete(chargeRateExemptionsTable, containerFilter);
 
             TableInfo dataAccessTable = EHR_BillingSchema.getInstance().getDataAccessTable();
-            if (dataAccessTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(dataAccessTable, containerFilter);
+            Table.delete(dataAccessTable, containerFilter);
 
             TableInfo chargeableItemCategoriesTable = EHR_BillingSchema.getInstance().getChargeableItemCategories();
-            if (chargeableItemCategoriesTable.getTableType() == DatabaseTableType.TABLE)
-                Table.delete(chargeableItemCategoriesTable, containerFilter);
+            Table.delete(chargeableItemCategoriesTable, containerFilter);
+
+            TableInfo procedurequerychargeidassocTable = EHR_BillingSchema.getInstance().getProcedureQueryChargeIdAssoc();
+            Table.delete(procedurequerychargeidassocTable, containerFilter);
 
             transaction.commit();
         }
