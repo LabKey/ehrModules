@@ -138,6 +138,10 @@ public class TriggerScriptHelper
 
     private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
+    private static boolean _checkThreshold = false;
+
+    private static double _bloodLimitThreshold = 4.0; //in mL
+
     private TriggerScriptHelper(int userId, String containerId)
     {
         User user = UserManager.getUser(userId);
@@ -1142,7 +1146,7 @@ public class TriggerScriptHelper
                             foundRow = true;
                         }
                     }
-                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class));
+                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class), true);
                     allBloods.add(bloodsIntransc);
                 }
                 catch (ConversionException e)
@@ -1186,10 +1190,28 @@ public class TriggerScriptHelper
 
         // Get records from the database in our date range that aren't part of the current transaction
         TableSelector tsdate = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
-        allBloods.addAll(tsdate.getArrayList(BloodInfo.class));
+        //get the db object
+            try (Results r = tsdate.getResults())
+            {
+
+                if (tsdate.getRowCount() > 0)
+                {
+                    while (r.next())
+                    {
+                        BloodInfo bi = new BloodInfo(r.getString("objectid"), r.getDate("date"), r.getDouble("quantity"), false);
+                        allBloods.add(bi);
+                    }
+                }
+            }
+            catch (SQLException e)
+            {
+                throw new RuntimeException(e);
+            }
+
 
         // Iterate over all of the blood records
         TreeSet<Double> overages = new TreeSet<>();
+        TreeSet<Double> closeToThreshold = new TreeSet<>();
         for (BloodInfo blood1 : allBloods)
         {
             double bloodNextInterval = 0;
@@ -1215,15 +1237,89 @@ public class TriggerScriptHelper
             {
                 overages.add(bloodNextInterval);
             }
+            else if (getThresholdCheck())
+            {
+                //only report about problematic bloods nearing the limit in the current transaction
+                //because allBloods contains everything and we want to distinguish them
+                if (blood1.getIsInTransaction())
+                {
+                    double maxAllowableThreshold = maxAllowable - getThresholdLimit();
+                    if (bloodNextInterval > maxAllowableThreshold)
+                    {
+                        closeToThreshold.add(bloodNextInterval);
+                    }
+                }
+            }
         }
 
-        //always report the most severe overage
-        if (!overages.isEmpty())
+        if (!overages.isEmpty() || !closeToThreshold.isEmpty())
         {
-            return "Blood volume of " + rowQuantity + " (" + overages.descendingSet().iterator().next() + " over " + interval + " days) exceeds the allowable volume of " + maxAllowable + " mL (weight: " + weight + " kg)";
-        }
+            StringBuilder errorMsgBuilder = new StringBuilder();
 
-        return null;
+            //always report the most severe overage
+            if (!overages.isEmpty())
+            {
+                errorMsgBuilder.append("Blood volume of ");
+                errorMsgBuilder.append(rowQuantity);
+                errorMsgBuilder.append(" (");
+                errorMsgBuilder.append(overages.descendingSet().iterator().next());
+                errorMsgBuilder.append(" over ");
+                errorMsgBuilder.append(interval);
+                errorMsgBuilder.append(" days) exceeds the allowable volume of ");
+                errorMsgBuilder.append(maxAllowable);
+                errorMsgBuilder.append(" mL (weight: ");
+                errorMsgBuilder.append(weight);
+                errorMsgBuilder.append(" kg).\n");
+            }
+
+            //report all the ones that are close to limit
+            for (double closeValue : closeToThreshold.descendingSet())
+            {
+                errorMsgBuilder.append("Limit notice! Blood volume of ");
+                errorMsgBuilder.append(rowQuantity);
+                errorMsgBuilder.append(" (");
+                errorMsgBuilder.append(closeValue);
+                errorMsgBuilder.append(" over ");
+                errorMsgBuilder.append(interval);
+                errorMsgBuilder.append(" days) is within ");
+                errorMsgBuilder.append(getThresholdLimit());
+                errorMsgBuilder.append(" mL of the max allowable limit of ");
+                errorMsgBuilder.append(maxAllowable);
+                errorMsgBuilder.append(" mL (weight: ");
+                errorMsgBuilder.append(weight);
+                errorMsgBuilder.append(" kg).\n");
+            }
+
+            return errorMsgBuilder.toString();
+        }
+        else
+        {
+            return null; // No errors
+        }
+    }
+
+    public double getThresholdLimit()
+    {
+        return _bloodLimitThreshold;
+
+    }
+
+    public void setThresholdLimit(double threshold)
+    {
+        _bloodLimitThreshold = threshold;
+
+    }
+
+    public boolean getThresholdCheck()
+    {
+        return _checkThreshold;
+
+    }
+
+    public void setThresholdCheck(boolean checkIt)
+    {
+        _checkThreshold = checkIt;
+
     }
 
     public static class BloodInfo implements Comparable<BloodInfo>
@@ -1231,14 +1327,16 @@ public class TriggerScriptHelper
         private String _objectId;
         private Date _date;
         private double _quantity;
+        private boolean _inTransaction;
 
         public BloodInfo() {}
 
-        public BloodInfo(String objectId, Date date, Double quantity)
+        public BloodInfo(String objectId, Date date, Double quantity, boolean isInTransaction)
         {
             _objectId = objectId;
             setDate(date);
             _quantity = quantity;
+            _inTransaction = isInTransaction;
         }
 
         @Override
@@ -1276,6 +1374,16 @@ public class TriggerScriptHelper
         public void setQuantity(double quantity)
         {
             _quantity = quantity;
+        }
+
+        public void setIsInTransaction(boolean inTransaction)
+        {
+            _inTransaction = inTransaction;
+        }
+
+        public boolean getIsInTransaction()
+        {
+            return _inTransaction;
         }
 
         final long MILLIS_PER_DAY = 24 * 3600 * 1000;
