@@ -3,9 +3,7 @@
         <column name="Dataset"/>
         <column name="CreatedBy"/>
         <column name="Date"/>
-        <!--<column name="project"/>-->
-        <!--<column name="container"/>-->
-        <column name="IntKey1"/>
+        <column name="Lsid"/>
         <column name="Comment" />
         <column name="oldValues">
             <properties>
