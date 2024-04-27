@@ -72,6 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: bimber
@@ -339,7 +340,16 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             for (DemographicsProvider p : needsUpdate)
             {
-                updateForProvider(defaultSchema, p, ids, true, async);
+                // If not already in an async thread, and the provider is async, defer just this provider update to an async thread
+                if (!async && p.isAsync())
+                {
+                    JobRunner.getDefault().execute(TimeUnit.SECONDS.toMillis(30), () -> {
+                        updateForProvider(defaultSchema, p, ids, true, true);
+                    });
+                }
+                else {
+                    updateForProvider(defaultSchema, p, ids, true, async);
+                }
             }
         }
         catch (Exception e)
