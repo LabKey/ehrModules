@@ -1860,7 +1860,7 @@ public class TriggerScriptHelper
                 }
                 else if (hasCustomDepartureStatus)
                 {
-                    status = _centerCustomProps.get("departureStatus").toString();
+                    status = String.valueOf(_centerCustomProps.get("departureStatus"));
                 }
                 else
                 {
