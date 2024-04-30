@@ -1307,6 +1307,10 @@ public class TriggerScriptHelper
                 return (Double) theVal;
             }
         }
+        else
+        {
+            _log.warn("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold, using default value.");
+        }
         return _bloodNearingOveragesThresholdDefaultValue;
     }
 
