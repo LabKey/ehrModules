@@ -344,7 +344,19 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 if (!async && p.isAsync())
                 {
                     JobRunner.getDefault().execute(TimeUnit.SECONDS.toMillis(30), () -> {
-                        updateForProvider(defaultSchema, p, ids, true, true);
+                        try
+                        {
+                            // Set up environment so auditing in compliance code works
+                            QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                            QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
+
+                            // Update provider in another thread
+                            updateForProvider(defaultSchema, p, ids, true, true);
+                        }
+                        finally
+                        {
+                            QueryService.get().clearEnvironment();
+                        }
                     });
                 }
                 else {
