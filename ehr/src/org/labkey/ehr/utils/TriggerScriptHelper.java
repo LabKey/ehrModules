@@ -1258,13 +1258,12 @@ public class TriggerScriptHelper
                                .append(" kg).\n");
             }
 
-            //report all the ones that are close to limit
-            for (double closeValue : closeToThreshold.descendingSet())
+            if (!closeToThreshold.isEmpty())
             {
                 errorMsgBuilder.append("Limit notice! Blood volume of ")
                                .append(rowQuantity)
                                .append(" (")
-                               .append(closeValue)
+                               .append(closeToThreshold.descendingSet().iterator().next())
                                .append(" over ")
                                .append(interval)
                                .append(" days) is within ")
@@ -1285,10 +1284,15 @@ public class TriggerScriptHelper
     }
 
     /**
-     * Gets the center specific threshold to warn when blood vols are close to the max blood allowed,
+     * Gets the center specific threshold from _centerCustomProps.bloodNearOverageThreshold to warn when blood vols are close to the max blood allowed,
      * only used if the doWarnForBloodNearOverages() is true
      * e.g., if the max allowable blood drawn vol is 60.0, a threshold of 4.0 will warn users if blood vol is greater than 56.0 ml
-     * this should be set on the JS side with helper.setCenterCustomProps()
+     * this should be set in a JS trigger script via     helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
+     * It uses default value "_bloodNearingOveragesThresholdDefaultValue" if none is supplied or incorrect data type is supplied
      *
      * @return      the threshold value of the limit
      */
@@ -1306,6 +1310,10 @@ public class TriggerScriptHelper
             {
                 return (Double) theVal;
             }
+            else
+            {
+                _log.warn("TriggerScriptHelper.getBloodNearingOveragesThreshold incorrect datatype supplied for _centerCustomProps.bloodNearOverageThreshold, using default value.");
+            }
         }
         else
         {
@@ -1317,8 +1325,12 @@ public class TriggerScriptHelper
 
 
     /**
-     * For use with _bloodLimitThreshold, checks to see whether we should warn about bloods draws nearing their limit,
-     * this should be set on the JS side with helper.setCenterCustomProps()
+     * For use with getBloodNearingOveragesThreshold(), checks to see whether we should warn about bloods draws nearing their limit,
+     * this should be set in a JS trigger script via helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
      *
      * @return      whether to warn for bloods nearing overages
      */
