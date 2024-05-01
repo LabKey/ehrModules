@@ -1312,14 +1312,13 @@ public class TriggerScriptHelper
             }
             else
             {
-                _log.warn("TriggerScriptHelper.getBloodNearingOveragesThreshold incorrect datatype supplied for _centerCustomProps.bloodNearOverageThreshold, using default value.");
+                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold.");
             }
         }
         else
         {
-            _log.warn("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold, using default value.");
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold, please supply a value.");
         }
-        return _bloodNearingOveragesThresholdDefaultValue;
     }
 
 
