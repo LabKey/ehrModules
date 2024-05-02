@@ -138,8 +138,6 @@ public class TriggerScriptHelper
 
     private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
-    private static double _bloodNearingOveragesThresholdDefaultValue = 4.0; //in mL
-
     private TriggerScriptHelper(int userId, String containerId)
     {
         User user = UserManager.getUser(userId);
