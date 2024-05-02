@@ -1315,7 +1315,7 @@ public class TriggerScriptHelper
         }
         else
         {
-            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold, please supply a value.");
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold. If doWarnForBloodNearOverages is set to true, then bloodNearOverageThreshold must also be set.");
         }
     }
 
