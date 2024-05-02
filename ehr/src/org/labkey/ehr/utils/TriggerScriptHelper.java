@@ -1310,7 +1310,7 @@ public class TriggerScriptHelper
             }
             else
             {
-                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold.");
+                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold. Required type is a double.");
             }
         }
         else
