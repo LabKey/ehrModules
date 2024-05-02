@@ -1299,14 +1299,13 @@ public class TriggerScriptHelper
         Object theVal = _centerCustomProps.get("bloodNearOverageThreshold");
         if (null != theVal)
         {
-            if (theVal instanceof Integer)
+            if (theVal instanceof Integer theValInt)
             {
-                Integer theValInt = (Integer) theVal;
                 return theValInt.doubleValue();
             }
-            else if (theVal instanceof Double)
+            else if (theVal instanceof Double theValDouble)
             {
-                return (Double) theVal;
+                return theValDouble;
             }
             else
             {
