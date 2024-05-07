@@ -32,6 +32,7 @@ import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
+import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
@@ -39,6 +40,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.ehr.EHRSchema;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -63,6 +65,15 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
         addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
         addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
         setTitleColumn("testid");
+    }
+
+    @Override
+    public String getDomainURI()
+    {
+        if (_objectUriCol == null)
+            return null;
+
+        return SimpleTableDomainKind.getDomainURI(_userSchema.getName(), EHRSchema.TABLE_LAB_TESTS, getDomainContainer(), _userSchema.getUser());
     }
 
     @Override
