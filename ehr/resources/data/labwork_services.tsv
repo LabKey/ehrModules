@@ -1,32 +1,32 @@
-servicename	dataset
-CBC	Hematology
-Chlamydia trachomatis Detection by NAA	Bacteriology
-Chol/HDL Ratio	Chemistry
-Culture, Bacterial/Smear	Bacteriology
-Culture, Enteric	Bacteriology
-Culture, Fungus, Dermal/Smear	Bacteriology
-Culture, Other	Bacteriology
-Culture, Sterile Fluid/Tissue/Smear	Bacteriology
-Culture, Urine	Bacteriology
-Culture, Wound/Smear	Bacteriology
-Direct Smear for Protozoa	Parasitology
-ELISA - HBV	Virology
-ELISA - Measles	Virology
-ELISA - SIV	Virology
-ELISA - SRV	Virology
-ELISA - STLV-1	Virology
-GIFN for TB detection	Bacteriology
-Glycosylated Hemoglobin	Hematology
-Isolation - HBV	Virology
-Lipid Panel	Chemistry
-Mycobacteria Smear and Culture	Bacteriology
-Occult Blood	Parasitology
-Osmolarity	Chemistry
-Ova and Parasite Antigen Panel (EIA)	Parasitology
-Ova and Parasite Concentration (Fecal Float)	Parasitology
-Ova and Parasite Wet Prep	Parasitology
-PCR - Individual Bacterium	Bacteriology
-PCR - SRV 1,2,3,4,5	Virology
-PCR - STLV-1	Virology
-Prothrombin Time (PT) and Activated Partial Thromboplastin Time (APTT)	Chemistry
-Vet-19 Chem Panel	Chemistry
+servicename	dataset	alertOnComplete
+CBC	Hematology 	FALSE
+Chlamydia trachomatis Detection by NAA	Bacteriology	FALSE
+Chol/HDL Ratio	Chemistry	FALSE
+"Culture, Bacterial/Smear"	Bacteriology	FALSE
+"Culture, Enteric"	Bacteriology	FALSE
+"Culture, Fungus, Dermal/Smear"	Bacteriology	FALSE
+"Culture, Other"	Bacteriology	FALSE
+"Culture, Sterile Fluid/Tissue/Smear"	Bacteriology	FALSE
+"Culture, Urine"	Bacteriology	FALSE
+"Culture, Wound/Smear"	Bacteriology	FALSE
+Direct Smear for Protozoa	Parasitology	FALSE
+ELISA - HBV	Virology	FALSE
+ELISA - Measles	Virology	FALSE
+ELISA - SIV	Virology	FALSE
+ELISA - SRV	Virology	FALSE
+ELISA - STLV-1	Virology	FALSE
+GIFN for TB detection	Bacteriology	FALSE
+Glycosylated Hemoglobin	Hematology	FALSE
+Isolation - HBV	Virology	FALSE
+Lipid Panel	Chemistry	FALSE
+Mycobacteria Smear and Culture	Bacteriology	FALSE
+Occult Blood	Parasitology	FALSE
+Osmolarity	Chemistry	FALSE
+Ova and Parasite Antigen Panel (EIA)	Parasitology	FALSE
+Ova and Parasite Concentration (Fecal Float)	Parasitology	FALSE
+Ova and Parasite Wet Prep	Parasitology	FALSE
+PCR - Individual Bacterium	Bacteriology	FALSE
+"PCR - SRV 1,2,3,4,5"	Virology	FALSE
+PCR - STLV-1	Virology	FALSE
+Prothrombin Time (PT) and Activated Partial Thromboplastin Time (APTT)	Chemistry	FALSE
+Vet-19 Chem Panel	Chemistry	FALSE
