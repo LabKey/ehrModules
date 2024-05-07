@@ -25,6 +25,7 @@ import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -339,7 +340,38 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             for (DemographicsProvider p : needsUpdate)
             {
-                updateForProvider(defaultSchema, p, ids, true, async);
+                // If not already in an async thread, and the provider is async, defer just this provider update to an async thread
+                if (!async && p.isAsync())
+                {
+                    try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
+                    {
+                        // Add post commit task to run provider update in another thread once this transaction is complete.
+                        transaction.addCommitTask(() ->
+                        {
+                            JobRunner.getDefault().execute(() ->
+                            {
+                                try
+                                {
+                                    // Set up environment so auditing in compliance code works
+                                    QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
+
+                                    // Update provider in another thread
+                                    updateForProvider(defaultSchema, p, ids, true, true);
+                                }
+                                finally
+                                {
+                                    QueryService.get().clearEnvironment();
+                                }
+                            });
+                        }, DbScope.CommitTaskOption.POSTCOMMIT);
+
+                        transaction.commit();
+                    }
+                }
+                else {
+                    updateForProvider(defaultSchema, p, ids, true, async);
+                }
             }
         }
         catch (Exception e)
