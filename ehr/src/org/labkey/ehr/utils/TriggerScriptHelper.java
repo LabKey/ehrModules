@@ -877,22 +877,8 @@ public class TriggerScriptHelper
             // Add post commit task to run provider update in another thread once this transaction is complete.
             transaction.addCommitTask(() ->
             {
-                JobRunner.getDefault().execute(() ->
-                {
-                    try
-                    {
-                        // Set up environment so auditing in compliance code works
-                        QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(getContainer()));
-                        QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, getContainer());
-
-                        // Update provider in another thread
-                        EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
-                    }
-                    finally
-                    {
-                        QueryService.get().clearEnvironment();
-                    }
-                });
+                // Update provider in another thread
+                EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
             }, DbScope.CommitTaskOption.POSTCOMMIT);
 
             transaction.commit();
