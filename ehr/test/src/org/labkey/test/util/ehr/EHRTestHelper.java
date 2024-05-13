@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.ParticipantViewPage;
 import org.labkey.test.tests.ehr.AbstractEHRTest;
 import org.labkey.test.util.Ext4Helper;
@@ -244,6 +245,26 @@ public class EHRTestHelper
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
         _test.waitForElement(Locator.tagWithText("a", "Enter New Data"));
+    }
+
+    public void submitFinalTaskForm()
+    {
+        Locator submitFinalBtn = Locator.linkWithText("Submit Final");
+        _test.shortWait().until(ExpectedConditions.elementToBeClickable(submitFinalBtn));
+        Window<?> msgWindow;
+        try
+        {
+            submitFinalBtn.findElement(_test.getDriver()).click();
+            msgWindow = new Window.WindowFinder(_test.getDriver()).withTitleContaining("Finalize").waitFor();
+        }
+        catch (NoSuchElementException e)
+        {
+            //retry
+            _test.sleep(500);
+            submitFinalBtn.findElement(_test.getDriver()).click();
+            msgWindow = new Window.WindowFinder(_test.getDriver()).withTitleContaining("Finalize").waitFor();
+        }
+        msgWindow.clickButton("Yes");
     }
 
     public void verifyAllReportTabs(ParticipantViewPage participantView)
