@@ -33,6 +33,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -131,7 +132,7 @@ public class TriggerScriptHelper
      *  <li>departureStatus - center specific custom status for animal departures</li>
      */
     @NotNull
-    private static final Map<String, String> _centerCustomProps = new HashMap<>();
+    private static final Map<String, Object> _centerCustomProps = new HashMap<>();
 
     private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
@@ -868,7 +869,17 @@ public class TriggerScriptHelper
         // inserted a row into study.participant, which means that calculated lookup values like the animal's current
         // age won't resolve until AFTER the call to insertRows() has completed. Thus, refresh the cache for this new
         // animal an extra time. See ticket 44283.
-        EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
+        try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
+        {
+            // Add post commit task to run provider update in another thread once this transaction is complete.
+            transaction.addCommitTask(() ->
+            {
+                // Update provider in another thread
+                EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
+            }, DbScope.CommitTaskOption.POSTCOMMIT);
+
+            transaction.commit();
+        }
     }
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
@@ -1139,7 +1150,7 @@ public class TriggerScriptHelper
                             foundRow = true;
                         }
                     }
-                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class));
+                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class), true);
                     allBloods.add(bloodsIntransc);
                 }
                 catch (ConversionException e)
@@ -1182,11 +1193,17 @@ public class TriggerScriptHelper
         TableInfo ti = getTableInfo("study", "Blood Draws");
 
         // Get records from the database in our date range that aren't part of the current transaction
-        TableSelector tsdate = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
-        allBloods.addAll(tsdate.getArrayList(BloodInfo.class));
+        TableSelector  bloodQuery = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
+        //get the db object
+        bloodQuery.forEach( rs -> {
+            BloodInfo bi = new BloodInfo(rs.getString("objectid"), rs.getDate("date"), rs.getDouble("quantity"), false);
+            allBloods.add(bi);
+            }
+        );
 
         // Iterate over all of the blood records
         TreeSet<Double> overages = new TreeSet<>();
+        TreeSet<Double> closeToThreshold = new TreeSet<>();
         for (BloodInfo blood1 : allBloods)
         {
             double bloodNextInterval = 0;
@@ -1212,30 +1229,138 @@ public class TriggerScriptHelper
             {
                 overages.add(bloodNextInterval);
             }
+            else if (doWarnForBloodNearOverages())
+            {
+                //only report about problematic bloods nearing the limit in the current transaction
+                //because allBloods contains everything and we want to distinguish them
+                if (blood1.getInTransaction())
+                {
+                    double maxAllowableThreshold = maxAllowable - getBloodNearingOveragesThreshold();
+                    if (bloodNextInterval > maxAllowableThreshold)
+                    {
+                        closeToThreshold.add(bloodNextInterval);
+                    }
+                }
+            }
         }
 
-        //always report the most severe overage
-        if (!overages.isEmpty())
+        if (!overages.isEmpty() || !closeToThreshold.isEmpty())
         {
-            return "Blood volume of " + rowQuantity + " (" + overages.descendingSet().iterator().next() + " over " + interval + " days) exceeds the allowable volume of " + maxAllowable + " mL (weight: " + weight + " kg)";
-        }
+            StringBuilder errorMsgBuilder = new StringBuilder();
 
-        return null;
+            //always report the most severe overage
+            if (!overages.isEmpty())
+            {
+                errorMsgBuilder.append("Blood volume of ")
+                               .append(rowQuantity)
+                               .append(" (")
+                               .append(overages.descendingSet().iterator().next())
+                               .append(" over ")
+                               .append(interval)
+                               .append(" days) exceeds the allowable volume of ")
+                               .append(maxAllowable)
+                               .append(" mL (weight: ")
+                               .append(weight)
+                               .append(" kg).\n");
+            }
+
+            if (!closeToThreshold.isEmpty())
+            {
+                errorMsgBuilder.append("Limit notice! Blood volume of ")
+                               .append(rowQuantity)
+                               .append(" (")
+                               .append(closeToThreshold.descendingSet().iterator().next())
+                               .append(" over ")
+                               .append(interval)
+                               .append(" days) is within ")
+                               .append(getBloodNearingOveragesThreshold())
+                               .append(" mL of the max allowable limit of ")
+                               .append(maxAllowable)
+                               .append(" mL (weight: ")
+                               .append(weight)
+                               .append(" kg).\n");
+            }
+
+            return errorMsgBuilder.toString();
+        }
+        else
+        {
+            return null; // No errors
+        }
     }
+
+    /**
+     * Gets the center specific threshold from _centerCustomProps.bloodNearOverageThreshold to warn when blood vols are close to the max blood allowed,
+     * only used if the doWarnForBloodNearOverages() is true
+     * e.g., if the max allowable blood drawn vol is 60.0, a threshold of 4.0 will warn users if blood vol is greater than 56.0 ml
+     * this should be set in a JS trigger script via     helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
+     * It uses default value "_bloodNearingOveragesThresholdDefaultValue" if none is supplied or incorrect data type is supplied
+     *
+     * @return      the threshold value of the limit
+     */
+    public double getBloodNearingOveragesThreshold()
+    {
+        Object theVal = _centerCustomProps.get("bloodNearOverageThreshold");
+        if (null != theVal)
+        {
+            if (theVal instanceof Integer theValInt)
+            {
+                return theValInt.doubleValue();
+            }
+            else if (theVal instanceof Double theValDouble)
+            {
+                return theValDouble;
+            }
+            else
+            {
+                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold. Required type is a double.");
+            }
+        }
+        else
+        {
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold. If doWarnForBloodNearOverages is set to true, then bloodNearOverageThreshold must also be set.");
+        }
+    }
+
+
+
+    /**
+     * For use with getBloodNearingOveragesThreshold(), checks to see whether we should warn about bloods draws nearing their limit,
+     * this should be set in a JS trigger script via helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
+     *
+     * @return      whether to warn for bloods nearing overages
+     */
+    public boolean doWarnForBloodNearOverages()
+    {
+        return null != _centerCustomProps.get("doWarnForBloodNearOverages") ? (Boolean) _centerCustomProps.get("doWarnForBloodNearOverages") : false;
+    }
+
 
     public static class BloodInfo implements Comparable<BloodInfo>
     {
         private String _objectId;
         private Date _date;
         private double _quantity;
+        // this will track whether the current blood record is in the current transaction,
+        // since some come from the DB strictly, and we won't want to report that for bloods nearing overages
+        private boolean _inTransaction;
 
         public BloodInfo() {}
 
-        public BloodInfo(String objectId, Date date, Double quantity)
+        public BloodInfo(String objectId, Date date, Double quantity, boolean isInTransaction)
         {
             _objectId = objectId;
             setDate(date);
             _quantity = quantity;
+            _inTransaction = isInTransaction;
         }
 
         @Override
@@ -1273,6 +1398,12 @@ public class TriggerScriptHelper
         public void setQuantity(double quantity)
         {
             _quantity = quantity;
+        }
+
+
+        private boolean getInTransaction()
+        {
+            return _inTransaction;
         }
 
         final long MILLIS_PER_DAY = 24 * 3600 * 1000;
@@ -1749,7 +1880,7 @@ public class TriggerScriptHelper
                 }
                 else if (hasCustomDepartureStatus)
                 {
-                    status = _centerCustomProps.get("departureStatus");
+                    status = String.valueOf(_centerCustomProps.get("departureStatus"));
                 }
                 else
                 {
