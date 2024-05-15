@@ -298,6 +298,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         insertCommand = getApiHelper().prepareInsertCommand("study", "Assignment", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Assignment", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
+
+        primeCaches();
     }
 
     @Override
@@ -754,6 +756,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         setInitialPassword(FULL_SUBMITTER.getEmail());
         setInitialPassword(FULL_UPDATER.getEmail());
         setInitialPassword(REQUEST_ADMIN.getEmail());
+    }
+
+    protected void validateDemographicsCache()
+    {
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "cacheLivingAnimals", Map.of("validateOnly", "true")));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 4);
     }
 
     protected static final ArrayList<Permission> allowedActions = new ArrayList<>()
