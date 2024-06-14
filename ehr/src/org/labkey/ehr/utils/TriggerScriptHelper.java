@@ -2256,11 +2256,20 @@ public class TriggerScriptHelper
 
         //find the total animals previously used by this protocols/species
         TableInfo ti = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr").getTable("protocolTotalAnimalsBySpecies");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), PageFlowUtil.set(ar.getSpecies(), "All Species"), CompareType.IN);
+        String animalSpecies = ar.getSpecies();
+        SimpleFilter filter;
+        if (("Rhesus".equals(animalSpecies) || "Cynomolgus".equals(animalSpecies)))
+        {
+             filter = new SimpleFilter(FieldKey.fromString("species"), PageFlowUtil.set(animalSpecies, "All Species", "Macaque"), CompareType.IN);
+         } else
+         {
+             filter = new SimpleFilter(FieldKey.fromString("species"), PageFlowUtil.set(animalSpecies, "All Species"), CompareType.IN);
+         }
         filter.addCondition(FieldKey.fromString("protocol"), protocol);
         TableSelector ts = new TableSelector(ti, filter, null);
         final List<String> errors = new ArrayList<>();
         final String ALL_SPECIES = "All Species";
+        final boolean[] noSpeciesListedOnProtocol = {true};
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -2294,8 +2303,8 @@ public class TriggerScriptHelper
                         {
                             continue;
                         }
-
-                        if (!ALL_SPECIES.equals(species))
+                        //we don't want to exit the animal count if ar.species() is cyno or rhesus and the protocol's species value is macaque.
+                        if (!ALL_SPECIES.equals(species) && !("Rhesus".equals(ar.getSpecies()) || "Cynomolgus".equals(ar.getSpecies()) && "Macaque".equals(species)))
                         {
                             //find species
                             AnimalRecord ar = getDemographicRecord(id);
@@ -2306,8 +2315,16 @@ public class TriggerScriptHelper
                         }
 
                         animals.add(id);
+
+                        AnimalRecord ar = getDemographicRecord(id);
+                        if (ar.getSpecies().equals(species))
+                        {
+                            noSpeciesListedOnProtocol[0] = false;
+                        }
                     }
                 }
+
+
 
                 int remaining = totalAllowed - animals.size();
                 if (remaining < 0)
@@ -2316,6 +2333,11 @@ public class TriggerScriptHelper
                 }
             }
         });
+
+        if (noSpeciesListedOnProtocol[0])
+        {
+            errors.add("Species not allowed on protocol: " + protocol);
+        }
 
         return StringUtils.join(errors, "<>");
     }
