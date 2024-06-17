@@ -30,6 +30,10 @@ FROM
 
         UNION
 
+        /*
+         * Calculate the macaque totals as well, as the sum of Cynos and Rhesus
+         */
+
         SELECT
             coalesce(p.protocol, pa.protocol) as protocol,
             'Macaque' as species,
