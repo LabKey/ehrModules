@@ -15,7 +15,11 @@ Ext4.define('EHR.plugin.CollapsibleDataEntryPanel', {
 
         panel.collapsible = true;
 
-        if ((!panel.store || panel.store.getCount() === 0) && panel.formConfig?.initCollapsed) {
+        // - initCollapsed: initialize the panel as collapsed if it has no data
+        // - initCollapsedWithData: initialize the panel as collapsed regardless of data. dataDependentCollapseHeader will
+        // still be respected this is just the initial state of collapsed.
+        if ((panel.formConfig?.initCollapsed && (!panel.store || panel.store.getCount() === 0))
+            || panel.formConfig?.initCollapsedWithData) {
             panel.collapsed = true;
         }
 
