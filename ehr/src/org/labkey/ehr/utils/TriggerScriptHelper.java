@@ -391,7 +391,7 @@ public class TriggerScriptHelper
         if (id == null || projectId == null || date == null)
             return null;
 
-        String protocol = getProtocolForProject(projectId);
+        String protocol = EHRService.get().getProtocolForProject(_container, _user, projectId);
         if (protocol == null)
             return "This project is not associated with a valid protocol";
 
@@ -489,40 +489,6 @@ public class TriggerScriptHelper
 
         TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
         return ts.getRowCount() > 0;
-    }
-
-    public String getProtocolForProject(Integer project)
-    {
-        if (project == null)
-            return null;
-
-        String cacheKey = getProtocolCacheKey();
-        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
-        if (ret == null)
-        {
-            ret = new HashMap<>();
-        }
-        else
-        {
-            ret = new HashMap<>(ret);
-            // Copy so we can mutate and recache
-        }
-
-        if (!ret.containsKey(project))
-        {
-            TableInfo ti = getTableInfo("ehr", "project");
-            TableSelector ts = new TableSelector(ti, Collections.singleton("protocol"), new SimpleFilter(FieldKey.fromString("project"), project), null);
-            String[] results = ts.getArray(String.class);
-            if (results.length == 1)
-            {
-                ret.put(project, results[0]);
-            }
-        }
-
-        ret = Collections.unmodifiableMap(ret);
-        DataEntryManager.get().getCache().put(cacheKey, ret);
-
-        return ret.get(project);
     }
 
     public void updateCachedProtocol(Integer project, String protocol)
@@ -2248,7 +2214,7 @@ public class TriggerScriptHelper
             return "Unknown species: " + id;
         }
 
-        final String protocol = getProtocolForProject(project);
+        final String protocol = EHRService.get().getProtocolForProject(_container, _user, project);
         if (protocol == null)
         {
             return "Unable to find protocol associated with project: " + project;
@@ -2289,7 +2255,7 @@ public class TriggerScriptHelper
                             continue;
                         }
 
-                        String rowProtocol = getProtocolForProject(project.intValue());
+                        String rowProtocol = EHRService.get().getProtocolForProject(_container, _user, project.intValue());
                         if (rowProtocol == null || !rowProtocol.equals(protocol))
                         {
                             continue;

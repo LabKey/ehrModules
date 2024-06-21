@@ -337,4 +337,8 @@ abstract public class EHRService
      * those results.
      */
     abstract public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException;
+
+    /** Applicable for centers who use the model that projects have a reference to a protocol. Returns the protocol for a
+     * given project, or null if no protocol is found. **/
+    abstract public String getProtocolForProject(Container c, User u, Integer project);
 }
