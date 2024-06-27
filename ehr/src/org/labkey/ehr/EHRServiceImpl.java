@@ -1101,4 +1101,27 @@ public class EHRServiceImpl extends EHRService
 
         return ret.get(project);
     }
+
+    @Override
+    public void updateCachedProtocol(Container c, Integer project, String protocol)
+    {
+        if (project == null)
+            return;
+
+        String cacheKey = getProtocolCacheKey(c);
+        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            ret = new HashMap<>();
+        }
+        else
+        {
+            // Copy so we can mutate and recache
+            ret = new HashMap<>(ret);
+        }
+
+        ret.put(project, protocol);
+        ret = Collections.unmodifiableMap(ret);
+        DataEntryManager.get().getCache().put(cacheKey, ret);
+    }
 }

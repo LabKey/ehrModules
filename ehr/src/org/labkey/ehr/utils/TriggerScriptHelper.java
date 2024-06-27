@@ -491,38 +491,11 @@ public class TriggerScriptHelper
         return ts.getRowCount() > 0;
     }
 
-    public void updateCachedProtocol(Integer project, String protocol)
-    {
-        if (project == null)
-            return;
-
-        String cacheKey = getProtocolCacheKey();
-        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
-        if (ret == null)
-        {
-            ret = new HashMap<>();
-        }
-        else
-        {
-            // Copy so we can mutate and recache
-            ret = new HashMap<>(ret);
-        }
-
-        ret.put(project, protocol);
-        ret = Collections.unmodifiableMap(ret);
-        DataEntryManager.get().getCache().put(cacheKey, ret);
-    }
-
     private void cacheAllProtocols()
     {
         TableInfo ti = getTableInfo("ehr", "project");
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project", "protocol"), new SimpleFilter(FieldKey.fromString("container"), getContainer().getId(), CompareType.EQUAL), null);
-        ts.forEach(rs -> updateCachedProtocol(rs.getInt("project"), rs.getString("protocol")));
-    }
-
-    private String getProtocolCacheKey()
-    {
-        return this.getClass().getName() + "||" + getContainer().getId() + "||" + "projectProtocol";
+        ts.forEach(rs -> EHRService.get().updateCachedProtocol(_container, rs.getInt("project"), rs.getString("protocol")));
     }
 
     public String lookupDatasetForService(String service)
