@@ -12,7 +12,6 @@ module.exports = {
     },{
         name: 'EHRLookupsWebpart',
         title: 'EHRLookups Webpart',
-        permission: 'read',
         path: './src/client/EHRLookups/webpart',
         generateLib: true // used by views/ehrLookups.html
     }]
