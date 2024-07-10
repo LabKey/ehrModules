@@ -716,8 +716,7 @@ public class EHRServiceImpl extends EHRService
             sr = ti.getUserSchema().getContainer();
         }
 
-        SecurityPolicy policy = SecurityPolicyManager.getPolicy(sr);
-        return policy.hasPermission(ti.getUserSchema().getUser(), perm);
+        return sr.hasPermission(ti.getUserSchema().getUser(), perm);
     }
 
     @Override

@@ -1,10 +1,10 @@
-common	scientific_name	id_prefix	mhc_prefix
-Baboon			
-Cotton-top Tamarin	Saguinus oedipus	so	Saoe
-Cynomolgus	Macaca fascicularis	cy	Mafa
-Pigtail	Macaca Nemestrina		Mane
-Rhesus	Macaca mulatta	r|rh	Mamu
-Sooty Mangabey	Cercocebus atys		Ceat
-Stump Tailed	Macaca Arctoides		Maar
-Vervet	Chlorocebus sabaeus	ag	Chsa
-Marmoset	Callithrix jacchus	cj	Caja
+common	scientific_name	id_prefix	mhc_prefix	blood_per_kg	max_draw_pct	blood_draw_interval
+Baboon				60.0	0.2	30.0
+Cotton-top Tamarin	Saguinus oedipus	so	Saoe	60.0	0.2	30.0
+Cynomolgus	Macaca fascicularis	cy	Mafa	60.0	0.2	30.0
+Pigtail	Macaca Nemestrina		Mane	60.0	0.2	30.0
+Rhesus	Macaca mulatta	r|rh	Mamu	60.0	0.2	30.0
+Sooty Mangabey	Cercocebus atys		Ceat	60.0	0.2	30.0
+Stump Tailed	Macaca Arctoides		Maar	60.0	0.2	30.0
+Vervet	Chlorocebus sabaeus	ag	Chsa	60.0	0.2	30.0
+Marmoset	Callithrix jacchus	cj	Caja	60.0	0.15	30.0

@@ -332,6 +332,15 @@ Ext4.define('EHR.window.FormTemplateWindow', {
             }
         }
 
+        // If expandable, expand sections with template data
+        // This will just have one store with the storeId as the key
+        let storeId = Object.keys(recMap)?.[0];
+        if (storeId) {
+            let grid = this.dataEntryPanel.query('grid').find(g => g.store.storeId === storeId);
+            if (grid)
+                grid.fireEvent('panelDataChange');
+        }
+
         this.pendingTemplates--;
         if (this.pendingTemplates == 0){
             this.close();

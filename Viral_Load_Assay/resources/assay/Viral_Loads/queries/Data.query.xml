@@ -100,6 +100,7 @@
                         <shownInInsertView>false</shownInInsertView>
                     </column>
                     <column columnName="viralLoadScientific" wrappedColumnName="viralLoad">
+                        <displayColumnFactory><className>DEFAULT</className></displayColumnFactory>
                         <columnTitle>Viral Load</columnTitle>
                         <conceptURI>http://cpas.labkey.com/laboratory#assayResult</conceptURI>
                         <description>This column shows the viral load, formatted in scientific notation</description>
