@@ -2845,4 +2845,9 @@ public class TriggerScriptHelper
     {
         return EHRService.get().getTriggerScriptOptions();
     }
+
+    public void updateCachedProtocol(Integer project, String protocol)
+    {
+        EHRService.get().updateCachedProtocol(_container, project, protocol);
+    }
 }
