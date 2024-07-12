@@ -1,7 +1,7 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Enter Data" frame="none">
-    <permissions>
-        <permission name="insert"/>
-    </permissions>
+    <permissionClasses>
+        <permissionClass name="org.labkey.api.security.permissions.InsertPermission"/>
+    </permissionClasses>
     <dependencies>
         <dependency path="ehr.context" />
         <dependency path="ehr/panel/EnterDataPanel.js"/>
