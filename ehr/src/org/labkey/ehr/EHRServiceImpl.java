@@ -30,8 +30,10 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
@@ -1057,5 +1059,68 @@ public class EHRServiceImpl extends EHRService
     public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
     {
         GeneticCalculationsImportTask.standaloneProcessKinshipAndInbreeding(c, u, pipelineDir, log);
+    }
+
+    private String getProtocolCacheKey(Container c)
+    {
+        return this.getClass().getName() + "||" + c.getId() + "||" + "projectProtocol";
+    }
+
+    @Override
+    public String getProtocolForProject(Container c, User u, Integer project)
+    {
+        if (project == null)
+            return null;
+
+        String cacheKey = getProtocolCacheKey(c);
+        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            ret = new HashMap<>();
+        }
+        else
+        {
+            ret = new HashMap<>(ret);
+            // Copy so we can mutate and recache
+        }
+
+        if (!ret.containsKey(project))
+        {
+            TableInfo ti = QueryService.get().getUserSchema(u, c, "ehr").getTable("project");
+            TableSelector ts = new TableSelector(ti, Collections.singleton("protocol"), new SimpleFilter(FieldKey.fromString("project"), project), null);
+            String[] results = ts.getArray(String.class);
+            if (results.length == 1)
+            {
+                ret.put(project, results[0]);
+            }
+        }
+
+        ret = Collections.unmodifiableMap(ret);
+        DataEntryManager.get().getCache().put(cacheKey, ret);
+
+        return ret.get(project);
+    }
+
+    @Override
+    public void updateCachedProtocol(Container c, Integer project, String protocol)
+    {
+        if (project == null)
+            return;
+
+        String cacheKey = getProtocolCacheKey(c);
+        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            ret = new HashMap<>();
+        }
+        else
+        {
+            // Copy so we can mutate and recache
+            ret = new HashMap<>(ret);
+        }
+
+        ret.put(project, protocol);
+        ret = Collections.unmodifiableMap(ret);
+        DataEntryManager.get().getCache().put(cacheKey, ret);
     }
 }
