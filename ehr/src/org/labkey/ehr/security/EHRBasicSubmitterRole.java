@@ -69,6 +69,6 @@ public class EHRBasicSubmitterRole extends AbstractEHRDatasetRole
                 EHRScheduledUpdatePermission.class
         );
 
-        addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+        excludeGuests();
     }
 }

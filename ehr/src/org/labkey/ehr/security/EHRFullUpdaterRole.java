@@ -81,6 +81,6 @@ public class EHRFullUpdaterRole extends AbstractEHRDatasetRole
                 EHRStartedUpdatePermission.class
         );
 
-        addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+        excludeGuests();
     }
 }
