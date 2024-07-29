@@ -38,10 +38,6 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
-/**
- * User: jeckels
- * Date: Feb 25, 2011
- */
 public class EHRRequestorRole extends AbstractEHRDatasetRole
 {
     public EHRRequestorRole()
