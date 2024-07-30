@@ -18,7 +18,6 @@ package org.labkey.ehr.security;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.security.*;
 import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.security.Group;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -28,10 +27,6 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
-/**
- * User: bbimber
- * Date: March 22, 2011
- */
 public class EHRRequestAdminRole extends AbstractEHRDatasetRole
 {
     public EHRRequestAdminRole()
@@ -92,7 +87,7 @@ public class EHRRequestAdminRole extends AbstractEHRDatasetRole
                 EHRScheduledUpdatePermission.class
         );
 
-        addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+        excludeGuests();
     }
 
     @Override
