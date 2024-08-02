@@ -2,7 +2,7 @@ module.exports = {
     apps: [{
         name: 'animalHistoryReact',
         title: 'Animal History',
-        permission: 'read',
+        permissionClasses: ['org.labkey.api.security.permissions.ReadPermission'],
         path: './src/client/AnimalHistory'
     }]
 };

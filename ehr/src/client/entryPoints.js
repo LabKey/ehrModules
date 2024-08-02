@@ -7,12 +7,11 @@ module.exports = {
     apps: [{
         name: 'EHRLookups',
         title: 'EHR Lookups Page',
-        permission: 'read',
+        permissionClasses: ['org.labkey.api.security.permissions.ReadPermission'],
         path: './src/client/EHRLookups'
     },{
         name: 'EHRLookupsWebpart',
         title: 'EHRLookups Webpart',
-        permission: 'read',
         path: './src/client/EHRLookups/webpart',
         generateLib: true // used by views/ehrLookups.html
     }]
