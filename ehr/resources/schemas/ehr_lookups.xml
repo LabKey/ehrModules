@@ -897,6 +897,9 @@
             <column columnName="Gestation">
                 <description>Gestation period, in days</description>
             </column>
+            <column columnName="isNHP">
+                <columnTitle>Is NHP?</columnTitle>
+            </column>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>
                 <isHidden>true</isHidden>
