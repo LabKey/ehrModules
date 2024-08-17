@@ -29,7 +29,6 @@ import org.labkey.api.ehr.security.EHRRequestPermission;
 import org.labkey.api.ehr.security.EHRRequestSampleDeliveredInsertPermission;
 import org.labkey.api.ehr.security.EHRRequestSampleDeliveredUpdatePermission;
 import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.security.Group;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -39,10 +38,6 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.Dataset;
 import org.labkey.ehr.EHRModule;
 
-/**
- * User: jeckels
- * Date: Feb 25, 2011
- */
 public class EHRRequestorRole extends AbstractEHRDatasetRole
 {
     public EHRRequestorRole()
@@ -92,7 +87,7 @@ public class EHRRequestorRole extends AbstractEHRDatasetRole
 //                EHRScheduledUpdatePermission.class
 );
 
-        addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+        excludeGuests();
     }
 
     @Override

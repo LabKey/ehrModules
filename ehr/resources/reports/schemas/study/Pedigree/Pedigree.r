@@ -15,7 +15,7 @@ library(Rlabkey)
 
 labkey.setCurlOptions(ssl_verifypeer = FALSE, ssl_verifyhost = FALSE)
 
-if ((length(labkey.data$id) == 0) | (is.na(labkey.data$dam) & is.na(labkey.data$sire))){
+if ((nrow(labkey.data) == 0) | (all(is.na(labkey.data$dam)) & all(is.na(labkey.data$sire)))) {
     png(filename="${imgout:myscatterplot}", width = 650, height = 150);
     plot(0, 0, type='n', xaxt='n', yaxt='n', bty='n', ann=FALSE  )
     title(main = "No pedigree data found for selected animal(s).", sub = NULL, xlab = NULL, ylab = NULL,

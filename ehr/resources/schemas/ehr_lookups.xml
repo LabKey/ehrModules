@@ -258,7 +258,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -378,7 +377,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -431,7 +429,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -654,7 +651,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1534,7 +1530,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -1655,6 +1650,17 @@
                     <fkDbSchema>core</fkDbSchema>
                     <fkTable>containers</fkTable>
                     <fkColumnName>entityid</fkColumnName>
+                </fk>
+            </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
                 </fk>
             </column>
         </columns>
@@ -1993,6 +1999,10 @@
                 <isHidden>true</isHidden>
             </column>
             <column columnName="category"/>
+            <!-- Kollil, 12/07: Added new column  -->
+            <column columnName="painCategories">
+                <columnTitle>USDA Pain Category</columnTitle>
+            </column>
             <column columnName="major">
                 <columnTitle>Is Major?</columnTitle>
             </column>
@@ -2228,7 +2238,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -2478,7 +2487,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -2594,7 +2602,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>

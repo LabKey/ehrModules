@@ -21,7 +21,7 @@ SELECT
   pd2.PrevDate as PrevDate2,
   pw2.weight AS PrevWeight2,
   Round(((pw1.weight - pw2.weight) * 100 / pw1.weight), 1) AS PctChange2,
-  timestampdiff('SQL_TSI_DAY', pw2.date, pw1.date) AS Interval2,
+  timestampdiff('SQL_TSI_DAY', pw2.date, pw1.date) AS Interval2
 
 FROM study.weight w
   --Find the next most recent weight date before this one

@@ -448,13 +448,13 @@ Ext4.define('EHR.data.StoreCollection', {
         return ret;
     },
 
-    commitChanges: function(commitAll, extraContext){
+    commitChanges: function(commitAll, extraContext, retainErrors){
         var changed = this.getCommands(commitAll);
-        this.commit(changed.commands, changed.records, this.getExtraContext(extraContext));
+        this.commit(changed.commands, changed.records, this.getExtraContext(extraContext), retainErrors);
     },
 
     //private
-    commit: function(commands, records, extraContext){
+    commit: function(commands, records, extraContext, retainErrors){
         extraContext = extraContext || {};
 
         if(this.fireEvent('beforecommit', this, records, commands, extraContext)===false)
@@ -465,17 +465,17 @@ Ext4.define('EHR.data.StoreCollection', {
             return;
         }
 
-        this.sendRequest(records, commands, extraContext);
+        this.sendRequest(records, commands, extraContext, false, retainErrors);
     },
 
-    sendRequest: function(recordsArr, commands, extraContext, validateOnly){
+    sendRequest: function(recordsArr, commands, extraContext, validateOnly, retainErrors){
         if (EHR.debug)
             console.log(commands);
 
         var cfg = {
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
-            success: this.getOnCommitSuccess(recordsArr, validateOnly),
+            success: this.getOnCommitSuccess(recordsArr, validateOnly, retainErrors),
             failure: this.getOnCommitFailure(recordsArr, validateOnly),
             scope: this,
             timeout: 5000000,  //a little extreme?
@@ -735,7 +735,7 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     //private
-    getOnCommitSuccess: function(recordArr, validateOnly){
+    getOnCommitSuccess: function(recordArr, validateOnly, retainErrors){
         return function(response, options){
             var json = this.getJson(response);
 
@@ -765,9 +765,11 @@ Ext4.define('EHR.data.StoreCollection', {
                     //NOTE: since this indicates we expect to navigate the page, dont bother updating the client store
                 }
                 else {
-                    Ext4.Array.forEach(records, function(r){
-                        r.serverErrors.clear();
-                    }, this);
+                    if (!retainErrors) {
+                        Ext4.Array.forEach(records, function (r) {
+                            r.serverErrors.clear();
+                        }, this);
+                    }
 
                     if (!validateOnly){
                         store.processResponse(command.rows, command);

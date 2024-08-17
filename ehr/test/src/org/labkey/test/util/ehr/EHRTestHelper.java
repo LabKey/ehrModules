@@ -17,23 +17,13 @@ package org.labkey.test.util.ehr;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.security.AddGroupMembersCommand;
-import org.labkey.remoteapi.security.CreateGroupCommand;
-import org.labkey.remoteapi.security.CreateGroupResponse;
-import org.labkey.remoteapi.security.DeleteUserCommand;
-import org.labkey.remoteapi.security.GetUsersCommand;
-import org.labkey.remoteapi.security.GetUsersResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.pages.ehr.ParticipantViewPage;
 import org.labkey.test.tests.ehr.AbstractEHRTest;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.TestLogger;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -44,10 +34,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,43 +90,6 @@ public class EHRTestHelper
         _test.sleep(100);
     }
 
-    public boolean deleteUserAPI(String email) throws CommandException, IOException
-    {
-        //note: always execute against root, so we are sure the user exists
-        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-        GetUsersCommand getUsers = new GetUsersCommand();
-        getUsers.setName(email);
-        GetUsersResponse userResp = getUsers.execute(cn, "/");
-        if (userResp.getUsersInfo().size() > 0)
-        {
-            DeleteUserCommand uc = new DeleteUserCommand(userResp.getUsersInfo().get(0).getUserId());
-            CommandResponse resp = uc.execute(cn, "/");
-            return true;
-        }
-        else
-        {
-            _test.log("user not found: " + email);
-        }
-
-        return false;
-    }
-
-    public int createPermissionsGroupAPI(String groupName, String containerPath, Integer... memberIds) throws Exception
-    {
-        Connection cn = new Connection(_test.getBaseURL(), PasswordUtil.getUsername(), PasswordUtil.getPassword());
-        CreateGroupCommand gc = new CreateGroupCommand(groupName);
-        CreateGroupResponse resp = gc.execute(cn, containerPath);
-        Integer groupId = resp.getGroupId().intValue();
-
-        AddGroupMembersCommand mc = new AddGroupMembersCommand(groupId);
-        for (Integer m : memberIds)
-            mc.addPrincipalId(m);
-
-        mc.execute(cn, containerPath);
-
-        return groupId;
-    }
-
     public void waitForCmp(final String query)
     {
         _test.waitFor(() -> null != _test._ext4Helper.queryOne(query, Ext4CmpRef.class),
@@ -147,7 +101,7 @@ public class EHRTestHelper
         final Locator l = Locator.name(name);
         long secTimeout = msTimeout / 1000;
         secTimeout = secTimeout > 0 ? secTimeout : 1;
-        WebDriverWait wait = new WebDriverWait(test.getDriver(), secTimeout);
+        WebDriverWait wait = new WebDriverWait(test.getDriver(), Duration.ofSeconds(secTimeout));
         try
         {
             return wait.until(new ExpectedCondition<Boolean>()
@@ -202,7 +156,10 @@ public class EHRTestHelper
         Ext4CmpRef.waitForComponent(_test, query);
         Ext4GridRef grid = _test._ext4Helper.queryOne(query, Ext4GridRef.class);
         if (grid != null)
+        {
+            grid.expand();
             grid.setClicksToEdit(1);
+        }
 
         return grid;
     }
@@ -219,13 +176,17 @@ public class EHRTestHelper
 
     public void addBatchToGrid(Ext4GridRef grid)
     {
-        String btnLable = "Add Batch";
-        grid.clickTbarButton(btnLable);
+        grid.clickTbarButton("Add Batch");
+    }
+
+    public void deleteSelectedFromGrid(Ext4GridRef grid)
+    {
+        grid.clickTbarButton("Delete Selected");
     }
 
     public void addRecordToGrid(Ext4GridRef grid, String btnLabel)
     {
-        Integer count = grid.getRowCount();
+        int count = grid.getRowCount();
         grid.clickTbarButton(btnLabel);
         grid.waitForRowCount(count + 1);
         grid.cancelEdit();
@@ -272,9 +233,7 @@ public class EHRTestHelper
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
-        _test.assertElementPresent(l);
-        Assert.assertEquals("More than 1 matching element found, use a more specific xpath", 1, _test.getElementCount(l));
-        _test.click(l);
+        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
         _test.waitForElement(l.enabled());
     }
 
@@ -286,6 +245,26 @@ public class EHRTestHelper
         _test.waitAndClickAndWait(Ext4Helper.Locators.windowButton("Discard Form", "Yes"));
 
         _test.waitForElement(Locator.tagWithText("a", "Enter New Data"));
+    }
+
+    public void submitFinalTaskForm()
+    {
+        Locator submitFinalBtn = Locator.linkWithText("Submit Final");
+        _test.shortWait().until(ExpectedConditions.elementToBeClickable(submitFinalBtn));
+        Window<?> msgWindow;
+        try
+        {
+            submitFinalBtn.findElement(_test.getDriver()).click();
+            msgWindow = new Window.WindowFinder(_test.getDriver()).withTitleContaining("Finalize").waitFor();
+        }
+        catch (NoSuchElementException e)
+        {
+            //retry
+            _test.sleep(500);
+            submitFinalBtn.findElement(_test.getDriver()).click();
+            msgWindow = new Window.WindowFinder(_test.getDriver()).withTitleContaining("Finalize").waitFor();
+        }
+        msgWindow.clickButton("Yes");
     }
 
     public void verifyAllReportTabs(ParticipantViewPage participantView)

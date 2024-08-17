@@ -9,6 +9,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
     width: 600,
     noun: 'Task',
     queryName: 'tasks',
+    defaultQCStateLabel: null,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -211,7 +212,7 @@ Ext4.define('EHR.window.CopyTaskWindow', {
             LDK.Assert.assertNotEmpty('Unable to find serverStore for: ' + key, serverStore);
 
             //TODO: change to something metadata-driven
-            var blacklist = ['date', 'enddate', 'parentid', 'requestid', 'taskid', 'runid', 'objectid', 'lsid', 'qcstate'];
+            const blockList = ['date', 'enddate', 'parentid', 'requestid', 'taskid', 'runid', 'objectid', 'lsid', 'qcstate'];
 
             var fields = [];
             multi.add(LABKEY.Query.selectRows, {
@@ -250,8 +251,12 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                                 obj.requestid = requestId;
                             }
 
+                            if (this.defaultQCStateLabel) {
+                                obj.QCStateLabel = this.defaultQCStateLabel;
+                            }
+
                             serverStore.getFields().each(function(field){
-                                if (blacklist.indexOf(field.name.toLowerCase()) > -1){
+                                if (blockList.indexOf(field.name.toLowerCase()) > -1){
                                     return;
                                 }
 
@@ -259,8 +264,11 @@ Ext4.define('EHR.window.CopyTaskWindow', {
                                     obj[field.name] = row.getValue(field.name);
                             }, this);
 
-                            var model = serverStore.addServerModel({});
+                            // NOTE: models are created here but not added to the store until all queries return:
+                            var model = serverStore.createServerModel({}, true);
                             model.set(obj);
+                            // this is a new record, so we need to mark it as phantom
+                            model.phantom = true;
 
                             this.toAddMap[serverStore.storeId].push(model);
                         }, this);

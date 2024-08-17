@@ -472,6 +472,11 @@ EHR.Server.Triggers.complete = function(event, errors) {
         }
     }
 
+    // Automatically close out old dataset records defined in datasetsToCloseOnNewEntry before inserting new records
+    if (helper.getDatasetsToCloseOnNewEntry().indexOf(helper.getQueryName()) !== -1){
+        helper.closeRecordsOnComplete(true);
+    }
+
     if (helper.isRequiresStatusRecalc() && helper.getPublicParticipantsModified().length && !helper.isETL()){
         helper.doUpdateStatusField();
     }
@@ -764,7 +769,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     var incrementSnomedIndex = true;
 
-    if (row && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
+    if (row && !row.codesRaw && helper.getSNOMEDSubsetCodeFieldNames() && helper.getSNOMEDSubsetCodeFieldNames().length) {
         var newCodes = [];
         for (var i = 0; i < helper.getSNOMEDSubsetCodeFieldNames().length; i++) {
             var fieldName =  helper.getSNOMEDSubsetCodeFieldNames()[i];

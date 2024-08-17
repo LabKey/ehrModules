@@ -598,7 +598,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return EHR.DataEntryUtils.hasPermission(qcStateLabel, permissionName, this.formConfig.permissions, null);
     },
 
-    onSubmit: function(btn, ignoreBeforeSubmit){
+    onSubmit: function(btn, ignoreBeforeSubmit, retainErrors){
         if (ignoreBeforeSubmit !== true){
             if (this.onBeforeSubmit(btn) === false)
                 return;
@@ -615,7 +615,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         };
 
         //we delay this event so that any modified fields can fire their blur events and/or commit changes
-        Ext4.defer(this.storeCollection.commitChanges, 300, this.storeCollection, [true, extraContext]);
+        Ext4.defer(this.storeCollection.commitChanges, 300, this.storeCollection, [true, extraContext, retainErrors]);
     },
 
     //allows subclasses to provide custom warnings prior to saving

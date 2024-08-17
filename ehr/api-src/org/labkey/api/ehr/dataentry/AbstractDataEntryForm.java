@@ -23,8 +23,6 @@ import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.SecurityManager;
-import org.labkey.api.security.SecurityPolicy;
-import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.Permission;
@@ -320,7 +318,7 @@ public class AbstractDataEntryForm implements DataEntryForm
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
                 setOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser());
             else
-                setOfPermissions = SecurityManager.getPermissions(_ctx.getContainer().getPolicy(), _ctx.getUser(), Set.of());
+                setOfPermissions = SecurityManager.getPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
 
             for (Class<? extends Permission> p : setOfPermissions)
             {

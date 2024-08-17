@@ -113,6 +113,18 @@ public class AnimalRecordImpl implements AnimalRecord
     }
 
     @Override
+    public String getSire()
+    {
+        return (String)_props.get("sire");
+    }
+
+    @Override
+    public String getDam()
+    {
+        return (String)_props.get("dam");
+    }
+
+    @Override
     public String getGenderMeaning()
     {
         return (String)_props.get(FieldKey.fromString("gender/meaning").toString());

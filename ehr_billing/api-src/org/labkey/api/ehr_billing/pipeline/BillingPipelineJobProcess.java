@@ -35,7 +35,9 @@ public class BillingPipelineJobProcess
     private List<String> _requiredFields;
     private boolean _useEHRContainer = false;
     private boolean _isMiscCharges = false;
+    private boolean _isProcedureCharges = false;
     private TableInfo _miscChargesTableInfo;
+    private Map<String,Object> _params;
 
     /**
      *
@@ -50,6 +52,11 @@ public class BillingPipelineJobProcess
         _schemaName = schemaName;
         _queryName = queryName;
         _queryToInvoiceItemColMap = queryToInvoiceItemColMap;
+    }
+
+    public BillingPipelineJobProcess(boolean isProcedure)
+    {
+        _isProcedureCharges = isProcedure;
     }
 
     public String getLabel()
@@ -121,6 +128,11 @@ public class BillingPipelineJobProcess
         return _isMiscCharges;
     }
 
+    public boolean isProcedureCharges()
+    {
+        return _isProcedureCharges;
+    }
+
     public TableInfo getMiscChargesTableInfo()
     {
         return _miscChargesTableInfo;
@@ -139,9 +151,17 @@ public class BillingPipelineJobProcess
 
     public Map<String, Object> getQueryParams(BillingPipelineJobSupport support)
     {
-        Map<String, Object> params = new HashMap<>();
-        params.put("StartDate", support.getStartDate());
-        params.put("EndDate", support.getEndDate());
-        return params;
+        if (_params == null)
+            _params = new HashMap<>();
+        _params.put("StartDate", support.getStartDate());
+        _params.put("EndDate", support.getEndDate());
+        return _params;
+    }
+
+    public void addQueryParam(String name, Object value)
+    {
+        if (_params == null)
+            _params = new HashMap<>();
+        _params.put(name, value);
     }
 }

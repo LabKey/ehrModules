@@ -118,7 +118,7 @@ Ext4.define('EHR.window.CreateTaskFromRecordsWindow', {
             displayField: 'title',
             valueField: 'taskid',
             listConfig: {
-                innerTpl: ['{rowid}: {title}']
+                innerTpl: [LABKEY.Utils.encodeHtml('{rowid}: {title}')]
             },
             store: {
                 type: 'labkey-store',

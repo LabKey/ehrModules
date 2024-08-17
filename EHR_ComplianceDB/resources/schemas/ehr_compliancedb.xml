@@ -302,6 +302,11 @@
             <column columnName="expireperiod">
                 <columnTitle>Expire Period (Months)</columnTitle>
             </column>
+            <column columnName="reviewdate">
+                <isUserEditable>true</isUserEditable>
+                <nullable>true</nullable>
+                <columnTitle>Review Date</columnTitle>
+            </column>
             <column columnName="required">
                 <nullable>true</nullable>
                 <columnTitle>Required For Everyone?</columnTitle>
@@ -580,6 +585,12 @@
             <column columnName="employeeId2" wrappedColumnName="employeeId">
                 <columnTitle>Employee Id</columnTitle>
                 <isHidden>true</isHidden>
+            </column>
+            <column columnName="snooze_date">
+                <columnTitle>Snooze Until</columnTitle>
+                <formatString>Date</formatString>
+                 <nullable>true</nullable>
+                <isHidden>false</isHidden>
             </column>
         </columns>
     </table>
@@ -895,4 +906,39 @@
             </column>
         </columns>
     </table>
+
+    <table tableName="Compliance_Reference_Data" tableDbType="TABLE">
+    <auditLogging>DETAILED</auditLogging>
+    <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+    <tableTitle>Compliance Reference Data</tableTitle>
+    <pkColumnName>rowid</pkColumnName>
+    <columns>
+    <column columnName="rowid">
+        <isAutoInc>true</isAutoInc>
+        <isHidden>true</isHidden>
+        <columnTitle>Key</columnTitle>
+    </column>
+    <column columnName="label">
+        <isHidden>true</isHidden>
+        <columnTitle>Label</columnTitle>
+      </column>
+    <column columnName="value">
+        <columnTitle>Value</columnTitle>
+        <isKeyField>true</isKeyField>
+    </column>
+    <column columnName="columnName">
+        <columnTitle>Column Name</columnTitle>
+    </column>
+    <column columnName="sort_order">
+        <isHidden>true</isHidden>
+        <columnTitle>Sort Order</columnTitle>
+    </column>
+    <column columnName="endDate">
+        <columnTitle>End Date</columnTitle>
+    </column>
+    <column columnName="objectid">
+        <isHidden>true</isHidden>
+    </column>
+   </columns>
+  </table>
 </tables>

@@ -166,7 +166,7 @@ EHR.DataEntryUtils = new function(){
             itemId: 'saveDraftBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                panel.onSubmit(btn)
+                panel.onSubmit(btn, false, true);
             },
             disableOn: 'ERROR'
         },
@@ -178,7 +178,7 @@ EHR.DataEntryUtils = new function(){
             name: 'submit',
             successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('project', 'start'),
             disabled: false,
-            itemId: 'submitBtn',
+            itemId: 'submitBasicBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
                 var maxSeverity = panel.storeCollection.getMaxErrorSeverity();
@@ -222,7 +222,7 @@ EHR.DataEntryUtils = new function(){
             errorThreshold: 'INFO',
             successURL: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm.view', null, {formType: LABKEY.ActionURL.getParameter('formType')}),
             disabled: true,
-            itemId: 'submitBtn',
+            itemId: 'submitReloadBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
                 Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
@@ -244,7 +244,7 @@ EHR.DataEntryUtils = new function(){
             errorThreshold: 'ERROR',
             successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.getParameter('returnURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             disabled: true,
-            itemId: 'foreceSubmitBtn',
+            itemId: 'forceSubmitBtn',
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
                 Ext4.Msg.confirm('Force Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){

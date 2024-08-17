@@ -44,7 +44,6 @@ import org.labkey.ehr_billing.notification.BillingNotification;
 import org.labkey.ehr_billing.notification.BillingNotificationServiceImpl;
 import org.labkey.ehr_billing.security.EHR_BillingRole;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,7 +63,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 22.000;
+        return 24.001;
     }
 
     @Override

@@ -30,8 +30,11 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
+import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -49,6 +52,7 @@ import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
@@ -77,10 +81,12 @@ import org.labkey.ehr.history.DefaultEncountersDataSource;
 import org.labkey.ehr.history.DefaultObservationsDataSource;
 import org.labkey.ehr.history.DefaultPregnanciesDataSource;
 import org.labkey.ehr.history.LabworkManager;
+import org.labkey.ehr.pipeline.GeneticCalculationsImportTask;
 import org.labkey.ehr.security.EHRSecurityManager;
 import org.labkey.ehr.table.DefaultEHRCustomizer;
 import org.labkey.ehr.table.SNOMEDCodesDisplayColumn;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,6 +122,7 @@ public class EHRServiceImpl extends EHRService
     private final Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
     private final Set<Module> _modulesRequiringLegacyExt3UI = new HashSet<>();
     private final Set<Module> _modulesRequiringFormEditUI = new HashSet<>();
+    private final Map<String, Object> _triggerScriptOptions = new CaseInsensitiveHashMap<>();
 
     private ProjectValidator _projectValidator = null;
 
@@ -152,6 +159,24 @@ public class EHRServiceImpl extends EHRService
     public void registerLabworkType(LabworkType type)
     {
         LabworkManager.get().registerType(type);
+    }
+
+    @Override
+    public boolean showLabworkPerformedBy(Container c, @Nullable String type)
+    {
+        return LabworkManager.get().showPerformedBy(c, type);
+    }
+
+    @Override
+    public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
+    {
+        return LabworkManager.get().getResults(c, u, id, minDate, maxDate, redacted);
+    }
+
+    @Override
+    public Collection<LabworkType> getLabworkTypes(Container c)
+    {
+        return LabworkManager.get().getTypes(c);
     }
 
     @Override
@@ -321,6 +346,12 @@ public class EHRServiceImpl extends EHRService
     public User getEHRUser(Container c)
     {
         return EHRManager.get().getEHRUser(c);
+    }
+
+    @Override
+    public User getEHRUser(Container c, boolean logOnError)
+    {
+        return EHRManager.get().getEHRUser(c, logOnError);
     }
 
     @Override
@@ -540,6 +571,18 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public void registerTriggerScriptOption(String name, Object value)
+    {
+        _triggerScriptOptions.put(name, value);
+    }
+
+    @Override
+    public Map<String, Object> getTriggerScriptOptions()
+    {
+        return _triggerScriptOptions;
+    }
+
+    @Override
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
     {
         DataEntryManager.get().registerDefaultFieldKeys(schemaName, queryName, keys);
@@ -675,8 +718,7 @@ public class EHRServiceImpl extends EHRService
             sr = ti.getUserSchema().getContainer();
         }
 
-        SecurityPolicy policy = SecurityPolicyManager.getPolicy(sr);
-        return policy.hasPermission(ti.getUserSchema().getUser(), perm);
+        return sr.hasPermission(ti.getUserSchema().getUser(), perm);
     }
 
     @Override
@@ -826,6 +868,12 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
+    public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
+    {
+        return EHRManager.get().ensureStudyQCStates(c, u, commitChanges);
+    }
+
+    @Override
     @NotNull
     public Collection<String> ensureFlagActive(User u, Container c, String flag, Date date, Date enddate, String remark, Collection<String> animalIds, boolean livingAnimalsOnly) throws BatchValidationException
     {
@@ -941,23 +989,24 @@ public class EHRServiceImpl extends EHRService
     @Override
     public void appendSNOMEDCols(AbstractTableInfo ti, String displayColumnName, String title, @Nullable String codeFilter)
     {
+        SqlDialect dialect = ti.getSqlDialect();
         var existing = ti.getMutableColumn(displayColumnName);
         if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
         {
             //display version of the column
             String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)");
+            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, new SQLFragment(chr + "(10)"));
             SQLFragment displaySQL = new SQLFragment("(SELECT ");
             displaySQL.append(groupConcatSQL);
-            displaySQL.append(" FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");
-            displaySQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            displaySQL.append("\nFROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");
+            displaySQL.append("\nWHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             if (codeFilter != null)
             {
-                displaySQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                displaySQL.append(" t.code LIKE ").appendValue(codeFilter + "%", dialect).append(" AND " );
             }
             displaySQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
-            displaySQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "' \n");
-            displaySQL.append(" GROUP BY t.recordid)");
+            displaySQL.append("t.container = ").appendValue(ti.getUserSchema().getContainer());
+            displaySQL.append("\nGROUP BY t.recordid)");
 
             ExprColumn displayCol = new ExprColumn(ti, displayColumnName, displaySQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
             displayCol.setLabel(title);
@@ -967,16 +1016,16 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(displayCol);
 
             //programmatic version
-            SQLFragment rawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, "';'").getSqlCharSequence());
-            rawSQL.append("FROM ehr.snomed_tags t ");
-            rawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            SQLFragment rawSQL = new SQLFragment("(SELECT ").append(ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "'<>'", "t.code")), true, true, ";"));
+            rawSQL.append("\nFROM ehr.snomed_tags t ");
+            rawSQL.append("\nWHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             rawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
             if (codeFilter != null)
             {
-                rawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                rawSQL.append(" t.code LIKE ").appendValue(codeFilter + "%", dialect).append(" AND " );
             }
-            rawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
-            rawSQL.append("GROUP BY t.recordid)");
+            rawSQL.append("t.container = ").appendValue(ti.getUserSchema().getContainer());
+            rawSQL.append("\nGROUP BY t.recordid)");
 
             ExprColumn rawCol = new ExprColumn(ti, displayColumnName + "Raw", rawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
             rawCol.setLabel(title + " raw values");
@@ -986,16 +1035,16 @@ public class EHRServiceImpl extends EHRService
             ti.addColumn(rawCol);
 
             // Variant that's just the codes concatenated, without the sort index
-            SQLFragment simpleRawSQL = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, "';'").getSqlCharSequence());
-            simpleRawSQL.append("FROM ehr.snomed_tags t ");
-            simpleRawSQL.append(" WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
+            SQLFragment simpleRawSQL = new SQLFragment("(SELECT ").append(ti.getSqlDialect().getGroupConcat(new SQLFragment("t.code"), true, true, ";"));
+            simpleRawSQL.append("\nFROM ehr.snomed_tags t ");
+            simpleRawSQL.append("\nWHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND ");
             simpleRawSQL.append(ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id AND ");
             if (codeFilter != null)
             {
-                simpleRawSQL.append(" t.code LIKE '" + codeFilter + "%' AND " );
+                simpleRawSQL.append(" t.code LIKE ").appendValue(codeFilter + "%", dialect).append(" AND " );
             }
-            simpleRawSQL.append("t.container = '" + ti.getUserSchema().getContainer().getId() + "'\n");
-            simpleRawSQL.append("GROUP BY t.recordid)");
+            simpleRawSQL.append("t.container = ").appendValue(ti.getUserSchema().getContainer().getId());
+            simpleRawSQL.append("\nGROUP BY t.recordid)");
 
             ExprColumn simpleRawCol = new ExprColumn(ti, displayColumnName + "RawSimple", simpleRawSQL, JdbcType.VARCHAR, ti.getColumn("objectid"));
             simpleRawCol.setLabel(title + " simple raw values");
@@ -1004,5 +1053,74 @@ public class EHRServiceImpl extends EHRService
             simpleRawCol.setDisplayWidth("250");
             ti.addColumn(simpleRawCol);
         }
+    }
+
+    @Override
+    public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
+    {
+        GeneticCalculationsImportTask.standaloneProcessKinshipAndInbreeding(c, u, pipelineDir, log);
+    }
+
+    private String getProtocolCacheKey(Container c)
+    {
+        return this.getClass().getName() + "||" + c.getId() + "||" + "projectProtocol";
+    }
+
+    @Override
+    public String getProtocolForProject(Container c, User u, Integer project)
+    {
+        if (project == null)
+            return null;
+
+        String cacheKey = getProtocolCacheKey(c);
+        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            ret = new HashMap<>();
+        }
+        else
+        {
+            ret = new HashMap<>(ret);
+            // Copy so we can mutate and recache
+        }
+
+        if (!ret.containsKey(project))
+        {
+            TableInfo ti = QueryService.get().getUserSchema(u, c, "ehr").getTable("project");
+            TableSelector ts = new TableSelector(ti, Collections.singleton("protocol"), new SimpleFilter(FieldKey.fromString("project"), project), null);
+            String[] results = ts.getArray(String.class);
+            if (results.length == 1)
+            {
+                ret.put(project, results[0]);
+            }
+        }
+
+        ret = Collections.unmodifiableMap(ret);
+        DataEntryManager.get().getCache().put(cacheKey, ret);
+
+        return ret.get(project);
+    }
+
+    @Override
+    public void updateCachedProtocol(Container c, Integer project, String protocol)
+    {
+        if (project == null)
+            return;
+
+        String cacheKey = getProtocolCacheKey(c);
+        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
+        if (ret == null)
+        {
+            ret = new HashMap<>();
+        }
+        else
+        {
+            // Copy so we can mutate and recache
+            ret = new HashMap<>(ret);
+        }
+
+        ret.put(project, protocol);
+        ret = Collections.unmodifiableMap(ret);
+        DataEntryManager.get().getCache().put(cacheKey, ret);
     }
 }

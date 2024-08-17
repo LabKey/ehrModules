@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class SimpleFormSection extends AbstractFormSection
 {
-    private String _schemaName;
+    private final String _schemaName;
     private String _queryName;
 
     protected boolean _showLocation = false;

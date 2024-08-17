@@ -16,16 +16,11 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.*;
-import org.labkey.api.security.Group;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 
-/**
- * User: bbimber
- * Date: March 22, 2011
- */
 public class EHRFullSubmitterRole extends AbstractEHRDatasetRole
 {
     public EHRFullSubmitterRole()
@@ -77,6 +72,6 @@ public class EHRFullSubmitterRole extends AbstractEHRDatasetRole
                 EHRScheduledUpdatePermission.class
         );
 
-        addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+        excludeGuests();
     }
 }

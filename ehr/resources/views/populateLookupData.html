@@ -1,0 +1,130 @@
+<script type="text/javascript" nonce="<%=scriptNonce%>">
+
+    function populateReports(isDelete) {
+        const container = "<%=containerPath%>";
+        let result;
+        if (isDelete) {
+            result = confirm("Deleting reports will delete all reports populated from file or manually added. Delete reports?");
+        }
+        else {
+            result = confirm("Populating reports from file will overwrite any manual edits to ehr.reports. Populate reports?");
+        }
+        if (result) {
+            LABKEY.Ajax.request({
+                url: LABKEY.ActionURL.buildURL("ehr", "populateReports", container),
+                method: 'POST',
+                jsonData: {
+                    delete: isDelete
+                },
+                timeout: 100000,
+                success: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = response.result;
+                }),
+                failure: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = "Failed: " + response.exception
+                })
+            });
+        }
+    }
+
+    function populateLookups(isDelete) {
+        const manifest = LABKEY.ActionURL.getParameter('manifest');
+
+        const container = "<%=containerPath%>";
+        let result;
+        if (isDelete) {
+            result = confirm("Deleting lookups will delete all values populated from file or manually added. Delete lookups?");
+        }
+        else {
+            result = confirm("Populating lookups from file will delete any manual edits to the lookups. Populate lookups from file?");
+        }
+        if (result) {
+            let lookup;
+            if (isDelete) {
+                lookup = document.getElementById("deleteOptions").value;
+            }
+            else {
+                lookup = document.getElementById("populateOptions").value;
+            }
+
+            document.getElementById("populateLookupResults").value = isDelete ? "Deleting..." : "Loading...";
+            LABKEY.Ajax.request({
+                url: LABKEY.ActionURL.buildURL("ehr", "populateLookups", container),
+                method: 'POST',
+                jsonData: {
+                    delete: isDelete,
+                    manifest: manifest || null,
+                    lookup: lookup
+                },
+                timeout: 100000,
+                success: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = response.result;
+                }),
+                failure: LABKEY.Utils.getCallbackWrapper((response) => {
+                    document.getElementById("populateLookupResults").value = "Failed: " + response.exception
+                })
+            });
+        }
+    }
+
+    (function getLookups() {
+        const manifest = LABKEY.ActionURL.getParameter('manifest');
+
+        const container = "<%=containerPath%>";
+
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("ehr", "getLookups", container),
+            jsonData: {
+                manifest: manifest || null
+            },
+            timeout: 100000,
+            success: LABKEY.Utils.getCallbackWrapper((response) => {
+                if (response?.lookups?.length > 0) {
+                    let populateDropdown = document.getElementById("populateOptions");
+                    let deleteDropdown = document.getElementById("deleteOptions");
+
+                    populateDropdown.innerHTML = "";
+                    deleteDropdown.innerHTML = "";
+
+                    response.lookups.forEach((lookup) => {
+                        let option = document.createElement("option");
+                        option.value = lookup;
+                        option.text = lookup;
+                        populateDropdown.appendChild(option);
+                        deleteDropdown.appendChild(option.cloneNode(true));
+                    });
+                }
+            }),
+            failure: LABKEY.Utils.getCallbackWrapper((response) => {
+                document.getElementById("populateLookupResults").value = "Failed: " + response.exception
+            })
+        });
+    })();
+
+    LABKEY.Utils.onReady(function(){
+        document.getElementById('populateReports')['onclick'] = function(){ populateReports(false); return false; }
+        document.getElementById('deleteReports')['onclick'] = function(){ populateReports(true); return false; }
+        document.getElementById('populateLookups')['onclick'] = function(){ populateLookups(false); return false; }
+        document.getElementById('deleteLookups')['onclick'] = function(){ populateLookups(true); return false; }
+    });
+</script>
+
+<html>
+    <div style="margin: 20px 0;">
+        <h5><b>
+            <a style="margin-right: 30px; cursor: pointer;" id='populateReports'>Populate Reports</a>
+            <a style="margin-right: 30px; cursor: pointer;" id='deleteReports'>Delete Reports</a>
+            <a style="margin-right: 10px; cursor: pointer;" id='populateLookups'>Populate Lookups</a>
+            <select style="margin-right: 30px;" id="populateOptions" name="populateOptions">
+                <option value="all">All</option>
+            </select>
+            <a style="margin-right: 10px; cursor: pointer;" id='deleteLookups'>Delete Lookups</a>
+            <select style="margin-right: 30px;" id="deleteOptions" name="populateOptions">
+                <option value="all">All</option>
+            </select>
+        </b></h5>
+    </div>
+    <div>
+        <textarea class="form-control" id="populateLookupResults" name="populateLookupResults" rows="20"></textarea>
+    </div>
+</html>

@@ -1,5 +1,6 @@
 package org.labkey.api.ehr;
 
+import jakarta.servlet.ServletContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.audit.TransactionAuditProvider;
@@ -33,7 +34,6 @@ import org.labkey.api.util.UnexpectedException;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.NotFoundException;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -48,7 +48,6 @@ import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionA
 /**
  * Allows upgrade scripts to prescribe folder reloads and ETL executions (including truncates). Will look at the
  * site-wide ehrStudyContainer and ehrAdminUser module properties to decide where and as whom to run the jobs.
- *
  * Supports 'reloadFolder' or 'etl;%TRANSFORM_ID%' with an optional ';truncate' suffix
  */
 public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
@@ -86,13 +85,6 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         _reloadFolder = true;
     }
 
-    @Deprecated // Remove this once no more EHR development is taking place on 21.11
-    public void reloadStudy(ModuleContext context)
-    {
-        LOG.error("Update this script to invoke \"reloadFolder\" instead of \"reloadStudy\"!");
-        reloadFolder(context);
-    }
-
     @Override
     public void fallthroughHandler(String methodName)
     {
@@ -122,15 +114,23 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         else if (methodName.startsWith(IMPORT_FROM_TSV_PREFIX))
         {
             String[] tsvArguments = methodName.split(";");
-            if (tsvArguments.length != 4)
+            if (tsvArguments.length < 4 || tsvArguments.length > 5)
             {
-                throw new UnsupportedOperationException("Expected three arguments for importFromTsv but got " + (tsvArguments.length - 1));
+                throw new UnsupportedOperationException("Expected three or four arguments for importFromTsv but got " + (tsvArguments.length - 1));
             }
             String schemaName = tsvArguments[1];
             String queryName = tsvArguments[2];
             String tsvPath = tsvArguments[3];
 
-            _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+            if (tsvArguments.length == 5)
+            {
+                String containerPath = tsvArguments[4];
+                _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath, containerPath));
+            }
+            else
+            {
+                _tsvImports.add(new TsvImport(schemaName, queryName, tsvPath));
+            }
         }
         else if (methodName.startsWith(IMPORT_DOMAIN_TEMPLATE))
         {
@@ -141,16 +141,16 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             }
 
             Container ehrStudyContainer = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
-            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot());
+            User ehrUser = EHRService.get().getEHRUser(ContainerManager.getRoot(), false);
 
             if (ehrStudyContainer == null)
             {
-                LOG.warn("EHR Study Container module property not found for extensible column import. Skipping import.");
+                LOG.info("EHR Study Container module property not found for extensible column import. Skipping import.");
             }
 
             if (ehrUser == null)
             {
-                LOG.warn("EHR Admin User module property not found for extensible column import. Skipping import.");
+                LOG.info("EHR Admin User module property not found for extensible column import. Skipping import.");
             }
 
             if (ehrStudyContainer != null && ehrUser != null)
@@ -223,7 +223,23 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             {
                 for (TsvImport tsvImport : _tsvImports)
                 {
-                    importFile(tsvImport, container, user);
+                    if (tsvImport._containerPath != null)
+                    {
+                        Container tsvImportContainer = ContainerManager.getForPath(tsvImport._containerPath);
+                        if (tsvImportContainer != null)
+                        {
+                            importFile(tsvImport, tsvImportContainer, user);
+                        }
+                        else
+                        {
+                            LOG.warn("Unable to find container for path " + tsvImport._containerPath + ". Importing into EHR study container.");
+                            importFile(tsvImport, container, user);
+                        }
+                    }
+                    else
+                    {
+                        importFile(tsvImport, container, user);
+                    }
                 }
 
                 if (_reloadFolder)
@@ -236,6 +252,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 throw UnexpectedException.wrap(e);
             }
 
+            // Truncate and reset all tables before queueing the jobs to reduce contention and possible deadlocks
             for (Map.Entry<String, Boolean> etlInfo : _etls.entrySet())
             {
                 if (etlInfo.getValue().booleanValue())
@@ -251,7 +268,11 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                         LOG.info("No saved state for " + etlInfo.getKey() + " found for reset, starting ETL.");
                     }
                 }
+            }
 
+            // Now queue all the ETL jobs
+            for (Map.Entry<String, Boolean> etlInfo : _etls.entrySet())
+            {
                 try
                 {
                     DataIntegrationService.get().runTransformNow(container, user, etlInfo.getKey());
@@ -277,7 +298,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         UserSchema schema = QueryService.get().getUserSchema(user, container, tsvImport._schemaName);
         if (schema == null)
         {
-            throw new IllegalArgumentException("Could not find schema " + schema + " in " + container.getPath());
+            throw new IllegalArgumentException("Could not find schema " + tsvImport._schemaName + " in " + container.getPath());
         }
         TableInfo table = schema.getTable(tsvImport._queryName);
         if (table == null)
@@ -302,7 +323,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             auditEvent = createTransactionAuditEvent(container, QueryService.AuditAction.INSERT);
 
         AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
-                false, false, errors, behaviorType, auditEvent, user, container);
+                new HashMap<>(), errors, behaviorType, auditEvent, null, user, container, null);
     }
 
     private static class TsvImport
@@ -310,12 +331,19 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         private final String _schemaName;
         private final String _queryName;
         private final String _tsvPath;
+        private String _containerPath;
 
         public TsvImport(String schemaName, String queryName, String tsvPath)
         {
             _schemaName = schemaName;
             _queryName = queryName;
             _tsvPath = tsvPath;
+        }
+
+        public TsvImport(String schemaName, String queryName, String tsvPath, String containerPath)
+        {
+           this(schemaName, queryName, tsvPath);
+            _containerPath = containerPath;
         }
 
         @Override

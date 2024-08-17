@@ -25,7 +25,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -99,7 +98,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -158,7 +156,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -341,7 +338,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -552,7 +548,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -613,7 +608,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -665,7 +659,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -710,7 +703,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -746,7 +738,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -781,7 +772,6 @@
                 <isReadOnly>true</isReadOnly>
                 <isHidden>true</isHidden>
                 <isUserEditable>false</isUserEditable>
-                <isUnselectable>true</isUnselectable>
                 <fk>
                     <fkColumnName>ObjectUri</fkColumnName>
                     <fkTable>Object</fkTable>
@@ -892,6 +882,37 @@
             </column>
             <column columnName="container"/>
             <column columnName="objectid"/>
+            <column columnName="createdBy"/>
+            <column columnName="created"/>
+            <column columnName="modifiedBy"/>
+            <column columnName="modified"/>
+        </columns>
+    </table>
+    <table tableName="procedureQueryChargeIdAssoc" tableDbType="TABLE" useColumnOrder="true">
+        <tableTitle>Procedure ChargeId Associations</tableTitle>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowid">
+                <columnTitle>Row Id</columnTitle>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="schemaName">
+                <columnTitle>Schema Name</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="queryName">
+                <columnTitle>Query Name</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="description">
+                <columnTitle>Description</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="chargeId">
+                <columnTitle>Charge Id</columnTitle>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
             <column columnName="modifiedBy"/>

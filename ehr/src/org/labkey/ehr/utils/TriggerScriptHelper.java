@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.utils;
 
+import jakarta.mail.Address;
+import jakarta.mail.Message;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -31,6 +33,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
@@ -46,6 +49,7 @@ import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.demographics.AnimalRecord;
+import org.labkey.api.exp.api.StorageProvisioner;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
@@ -84,8 +88,6 @@ import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.notification.DeathNotification;
 import org.labkey.ehr.security.EHRSecurityManager;
 
-import javax.mail.Address;
-import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -106,12 +108,9 @@ import java.util.TreeSet;
 
 
 /**
- * Java class that provides services for trigger script actions that are more easily implemented or more performent
+ * Java class that provides services for trigger script actions that are more easily implemented or more performant
  * when written in Java. Primarily focused on supporting study dataset operations, but other tables can leverage it
- * as well.
- * Instantiated in the EHR's ScriptHelper.js
- * User: bbimber
- * Date: 3/1/12
+ * as well. Instantiated in the EHR's ScriptHelper.js
  */
 public class TriggerScriptHelper
 {
@@ -133,7 +132,7 @@ public class TriggerScriptHelper
      *  <li>departureStatus - center specific custom status for animal departures</li>
      */
     @NotNull
-    private static final Map<String, String> _centerCustomProps = new HashMap<>();
+    private static final Map<String, Object> _centerCustomProps = new HashMap<>();
 
     private static final Logger _log = LogHelper.getLogger(TriggerScriptHelper.class, "Server-side validation of EHR data insert/update/deletes");
 
@@ -207,7 +206,6 @@ public class TriggerScriptHelper
             int datasetId = getDatasetByLabelOrName(container, queryName);
             Dataset dataset = StudyService.get().getDataset(container, datasetId);
             if (dataset == null){
-                _log.info("Non existent table: study." + queryName);
                 continue;
             }
 
@@ -393,7 +391,7 @@ public class TriggerScriptHelper
         if (id == null || projectId == null || date == null)
             return null;
 
-        String protocol = getProtocolForProject(projectId);
+        String protocol = EHRService.get().getProtocolForProject(_container, _user, projectId);
         if (protocol == null)
             return "This project is not associated with a valid protocol";
 
@@ -493,67 +491,11 @@ public class TriggerScriptHelper
         return ts.getRowCount() > 0;
     }
 
-    public String getProtocolForProject(Integer project)
-    {
-        if (project == null)
-            return null;
-
-        String cacheKey = getProtocolCacheKey();
-        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
-        if (ret == null)
-        {
-            ret = new HashMap<>();
-        }
-
-        if (!ret.containsKey(project))
-        {
-            TableInfo ti = getTableInfo("ehr", "project");
-            TableSelector ts = new TableSelector(ti, Collections.singleton("protocol"), new SimpleFilter(FieldKey.fromString("project"), project), null);
-            String[] results = ts.getArray(String.class);
-            if (results.length == 1)
-            {
-                ret.put(project, results[0]);
-            }
-        }
-
-        DataEntryManager.get().getCache().put(cacheKey, ret);
-
-        return ret.get(project);
-    }
-
-    public void updateCachedProtocol(Integer project, String protocol)
-    {
-        if (project == null)
-            return;
-
-        String cacheKey = getProtocolCacheKey();
-        Map<Integer, String> ret = (Map)DataEntryManager.get().getCache().get(cacheKey);
-        if (ret == null)
-        {
-            ret = new HashMap<>();
-        }
-
-        ret.put(project, protocol);
-        DataEntryManager.get().getCache().put(cacheKey, ret);
-    }
-
     private void cacheAllProtocols()
     {
         TableInfo ti = getTableInfo("ehr", "project");
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project", "protocol"), new SimpleFilter(FieldKey.fromString("container"), getContainer().getId(), CompareType.EQUAL), null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
-        {
-            @Override
-            public void exec(ResultSet rs) throws SQLException
-            {
-                updateCachedProtocol(rs.getInt("project"), rs.getString("protocol"));
-            }
-        });
-    }
-
-    private String getProtocolCacheKey()
-    {
-        return this.getClass().getName() + "||" + getContainer().getId() + "||" + "projectProtocol";
+        ts.forEach(rs -> EHRService.get().updateCachedProtocol(_container, rs.getInt("project"), rs.getString("protocol")));
     }
 
     public String lookupDatasetForService(String service)
@@ -589,6 +531,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("servicename"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -633,6 +576,7 @@ public class TriggerScriptHelper
 
                 ret.put((String)row.get("species"), row);
             }
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -702,6 +646,11 @@ public class TriggerScriptHelper
 
     public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, @Nullable String cond) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
+        createHousingRecord(id, date, enddate, room, cage, cond, null);
+    }
+
+    public void createHousingRecord(String id, Date date, @Nullable Date enddate, String room, @Nullable String cage, @Nullable String cond, @Nullable String taskId) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
         if (id == null || date == null || room == null)
             return;
 
@@ -746,6 +695,9 @@ public class TriggerScriptHelper
 
         if (cage != null)
             row.put("cage", cage);
+
+        if (taskId != null)
+            row.put("taskId", taskId);
 
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
@@ -803,6 +755,12 @@ public class TriggerScriptHelper
 
     public void createDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
     {
+        createDemographicsRecord(id, props, null);
+    }
+
+    public void createDemographicsRecord(String id, Map<String, Object> props,
+                                         @Nullable Map<String, Object> extraDemographicsFieldMappings) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
         if (id == null)
             return;
 
@@ -834,6 +792,11 @@ public class TriggerScriptHelper
         if (qc != null)
             row.put("qcstate", qc.getRowId());
 
+        if (extraDemographicsFieldMappings != null)
+        {
+            row.putAll(extraDemographicsFieldMappings);
+        }
+
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(row);
         BatchValidationException errors = new BatchValidationException();
@@ -845,7 +808,17 @@ public class TriggerScriptHelper
         // inserted a row into study.participant, which means that calculated lookup values like the animal's current
         // age won't resolve until AFTER the call to insertRows() has completed. Thus, refresh the cache for this new
         // animal an extra time. See ticket 44283.
-        EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
+        try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
+        {
+            // Add post commit task to run provider update in another thread once this transaction is complete.
+            transaction.addCommitTask(() ->
+            {
+                // Update provider in another thread
+                EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
+            }, DbScope.CommitTaskOption.POSTCOMMIT);
+
+            transaction.commit();
+        }
     }
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
@@ -893,7 +866,10 @@ public class TriggerScriptHelper
 
         if (!newRows.isEmpty())
         {
-            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, null, getExtraContext());
+            BatchValidationException batchValidationException = new BatchValidationException();
+            ti.getUpdateService().updateRows(getUser(), getContainer(), newRows, keyRows, batchValidationException, null, getExtraContext());
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
             // Prime the cache for the updated IDs
             EHRDemographicsService.get().getAnimals(getContainer(), ids);
         }
@@ -1022,7 +998,7 @@ public class TriggerScriptHelper
         if (ret == null)
         {
             TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
-            ret = new HashMap<String, Map<String, Object>>();
+            ret = new HashMap<>();
 
             _log.info("caching blood_draw_services in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti);
@@ -1031,6 +1007,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("service"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -1069,10 +1046,10 @@ public class TriggerScriptHelper
 
             _log.info("caching projects in TriggerScriptHelper");
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
-            ret = new HashSet<>();
-            ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
+            ret = new HashSet<>(Arrays.asList(ts.getArray(Integer.class)));
+            ret = Collections.unmodifiableSet(ret);
 
-            DataEntryManager.get().getCache().put(cacheKey, Collections.unmodifiableSet(ret));
+            DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
         return ret;
@@ -1112,7 +1089,7 @@ public class TriggerScriptHelper
                             foundRow = true;
                         }
                     }
-                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class));
+                    BloodInfo bloodsIntransc = new BloodInfo(objectId, ConvertHelper.convert(map.get("date"), Date.class), ConvertHelper.convert(map.get("quantity"), Double.class), true);
                     allBloods.add(bloodsIntransc);
                 }
                 catch (ConversionException e)
@@ -1155,11 +1132,17 @@ public class TriggerScriptHelper
         TableInfo ti = getTableInfo("study", "Blood Draws");
 
         // Get records from the database in our date range that aren't part of the current transaction
-        TableSelector tsdate = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
-        allBloods.addAll(tsdate.getArrayList(BloodInfo.class));
+        TableSelector  bloodQuery = new TableSelector(ti, PageFlowUtil.set("objectid", "date", "quantity"), filter, null);
+        //get the db object
+        bloodQuery.forEach( rs -> {
+            BloodInfo bi = new BloodInfo(rs.getString("objectid"), rs.getDate("date"), rs.getDouble("quantity"), false);
+            allBloods.add(bi);
+            }
+        );
 
         // Iterate over all of the blood records
         TreeSet<Double> overages = new TreeSet<>();
+        TreeSet<Double> closeToThreshold = new TreeSet<>();
         for (BloodInfo blood1 : allBloods)
         {
             double bloodNextInterval = 0;
@@ -1185,30 +1168,138 @@ public class TriggerScriptHelper
             {
                 overages.add(bloodNextInterval);
             }
+            else if (doWarnForBloodNearOverages())
+            {
+                //only report about problematic bloods nearing the limit in the current transaction
+                //because allBloods contains everything and we want to distinguish them
+                if (blood1.getInTransaction())
+                {
+                    double maxAllowableThreshold = maxAllowable - getBloodNearingOveragesThreshold();
+                    if (bloodNextInterval > maxAllowableThreshold)
+                    {
+                        closeToThreshold.add(bloodNextInterval);
+                    }
+                }
+            }
         }
 
-        //always report the most severe overage
-        if (!overages.isEmpty())
+        if (!overages.isEmpty() || !closeToThreshold.isEmpty())
         {
-            return "Blood volume of " + rowQuantity + " (" + overages.descendingSet().iterator().next() + " over " + interval + " days) exceeds the allowable volume of " + maxAllowable + " mL (weight: " + weight + " kg)";
-        }
+            StringBuilder errorMsgBuilder = new StringBuilder();
 
-        return null;
+            //always report the most severe overage
+            if (!overages.isEmpty())
+            {
+                errorMsgBuilder.append("Blood volume of ")
+                               .append(rowQuantity)
+                               .append(" (")
+                               .append(overages.descendingSet().iterator().next())
+                               .append(" over ")
+                               .append(interval)
+                               .append(" days) exceeds the allowable volume of ")
+                               .append(maxAllowable)
+                               .append(" mL (weight: ")
+                               .append(weight)
+                               .append(" kg).\n");
+            }
+
+            if (!closeToThreshold.isEmpty())
+            {
+                errorMsgBuilder.append("Limit notice! Blood volume of ")
+                               .append(rowQuantity)
+                               .append(" (")
+                               .append(closeToThreshold.descendingSet().iterator().next())
+                               .append(" over ")
+                               .append(interval)
+                               .append(" days) is within ")
+                               .append(getBloodNearingOveragesThreshold())
+                               .append(" mL of the max allowable limit of ")
+                               .append(maxAllowable)
+                               .append(" mL (weight: ")
+                               .append(weight)
+                               .append(" kg).\n");
+            }
+
+            return errorMsgBuilder.toString();
+        }
+        else
+        {
+            return null; // No errors
+        }
     }
+
+    /**
+     * Gets the center specific threshold from _centerCustomProps.bloodNearOverageThreshold to warn when blood vols are close to the max blood allowed,
+     * only used if the doWarnForBloodNearOverages() is true
+     * e.g., if the max allowable blood drawn vol is 60.0, a threshold of 4.0 will warn users if blood vol is greater than 56.0 ml
+     * this should be set in a JS trigger script via     helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
+     * It uses default value "_bloodNearingOveragesThresholdDefaultValue" if none is supplied or incorrect data type is supplied
+     *
+     * @return      the threshold value of the limit
+     */
+    public double getBloodNearingOveragesThreshold()
+    {
+        Object theVal = _centerCustomProps.get("bloodNearOverageThreshold");
+        if (null != theVal)
+        {
+            if (theVal instanceof Integer theValInt)
+            {
+                return theValInt.doubleValue();
+            }
+            else if (theVal instanceof Double theValDouble)
+            {
+                return theValDouble;
+            }
+            else
+            {
+                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold. Required type is a double.");
+            }
+        }
+        else
+        {
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold. If doWarnForBloodNearOverages is set to true, then bloodNearOverageThreshold must also be set.");
+        }
+    }
+
+
+
+    /**
+     * For use with getBloodNearingOveragesThreshold(), checks to see whether we should warn about bloods draws nearing their limit,
+     * this should be set in a JS trigger script via helper.setCenterCustomProps(), for example:
+     * helper.setCenterCustomProps({
+     *  doWarnForBloodNearOverages: true,
+     *  bloodNearOverageThreshold: 5.0
+     * })
+     *
+     * @return      whether to warn for bloods nearing overages
+     */
+    public boolean doWarnForBloodNearOverages()
+    {
+        return null != _centerCustomProps.get("doWarnForBloodNearOverages") ? (Boolean) _centerCustomProps.get("doWarnForBloodNearOverages") : false;
+    }
+
 
     public static class BloodInfo implements Comparable<BloodInfo>
     {
         private String _objectId;
         private Date _date;
         private double _quantity;
+        // this will track whether the current blood record is in the current transaction,
+        // since some come from the DB strictly, and we won't want to report that for bloods nearing overages
+        private boolean _inTransaction;
 
         public BloodInfo() {}
 
-        public BloodInfo(String objectId, Date date, Double quantity)
+        public BloodInfo(String objectId, Date date, Double quantity, boolean isInTransaction)
         {
             _objectId = objectId;
             setDate(date);
             _quantity = quantity;
+            _inTransaction = isInTransaction;
         }
 
         @Override
@@ -1246,6 +1337,12 @@ public class TriggerScriptHelper
         public void setQuantity(double quantity)
         {
             _quantity = quantity;
+        }
+
+
+        private boolean getInTransaction()
+        {
+            return _inTransaction;
         }
 
         final long MILLIS_PER_DAY = 24 * 3600 * 1000;
@@ -1361,6 +1458,7 @@ public class TriggerScriptHelper
                 ret.put((String)row.get("common"), row);
             }
 
+            ret = Collections.unmodifiableMap(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -1377,7 +1475,7 @@ public class TriggerScriptHelper
         sendRequestStateEmail("Completed", requestIds);
     }
 
-    private void sendRequestStateEmail(final String label, final List<String> requestIds)
+    public void sendRequestStateEmail(final String label, final List<String> requestIds)
     {
         JobRunner.getDefault().execute(() -> {
             _log.info("processing " + label.toLowerCase() + " request email for " + requestIds.size() + " records");
@@ -1428,46 +1526,91 @@ public class TriggerScriptHelper
         }
     }
 
+    // Get all datasets that have a requestid column
+    private List<TableInfo> getRequestDatasets(Container c, User u)
+    {
+        Study study = StudyService.get().getStudy(c);
+        if (null == study)
+        {
+            throw new IllegalStateException("Study not found for container: " + c.getName());
+        }
+
+        List<? extends Dataset> datasets = study.getDatasets();
+        List<TableInfo> requestDatasets = new ArrayList<>();
+        for (Dataset ds : datasets)
+        {
+            TableInfo ti = StorageProvisioner.createTableInfo(ds.getDomain());  // This is faster than ds.getTableInfo(u)
+            if (ti.getColumn("requestid") != null)
+            {
+                requestDatasets.add(ti);
+            }
+        }
+
+        return requestDatasets;
+    }
+
+    // Creates SQL comparable to study.StudyData but only includes datasets with a requestid column and queries qcstate only
+    private SQLFragment getRequestStudyDataSQL(Container c, User u, String requestId)
+    {
+        List<TableInfo> requestDatasets = getRequestDatasets(c, u);
+
+        SQLFragment unionSql = new SQLFragment();
+        for (TableInfo ti : requestDatasets)
+        {
+            if (!unionSql.isEmpty())
+            {
+                unionSql.append(" UNION ALL \n");
+            }
+            else
+            {
+                unionSql.append("\n(");
+            }
+            unionSql.append("SELECT requestid, qcstate FROM ").append(ti);
+        }
+
+        SQLFragment sql = new SQLFragment("SELECT sd.qcstate FROM ");
+
+        return sql.append(unionSql).append(") sd \n").append( "WHERE sd.requestid = ?").add(requestId);
+    }
+
     public void processModifiedRequests(final List<String> requestIds)
     {
-        JobRunner.getDefault().execute(() -> {
-            _log.info("processing request status for " + requestIds.size() + " records");
-            for (String requestId : requestIds)
+
+        _log.info("processing request status for " + requestIds.size() + " records");
+        for (String requestId : requestIds)
+        {
+            SQLFragment sql = getRequestStudyDataSQL(getContainer(), getUser(), requestId);
+            SqlSelector selector = new SqlSelector(StudyService.get().getDatasetSchema(), sql);
+
+            // set the parent ehr.requests record to a specific QC State if all rows for that request match
+            Integer requestState = null;
+            for (Integer rowQcState : selector.getArrayList(Integer.class))
             {
-                TableInfo studyDataTable = getTableInfo("study", "StudyData");
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestId, CompareType.EQUAL);
-                TableSelector selector = new TableSelector(studyDataTable, Collections.singleton("qcstate"), filter, null);
-
-                // set the parent ehr.requests record to a specific QC State if all rows for that request match
-                Integer requestState = null;
-                for (Integer rowQcState : selector.getArrayList(Integer.class))
+                if (requestState == null)
                 {
-                    if (requestState == null)
-                    {
-                        requestState = rowQcState;
-                    }
-                    else if (!requestState.equals(rowQcState))
-                    {
-                        requestState = null;
-                        break;
-                    }
+                    requestState = rowQcState;
                 }
-
-                if (requestState != null)
+                else if (!requestState.equals(rowQcState))
                 {
-                    _log.info("Updating request status since all children agree");
-                    // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
-                    new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
-                            new SQLFragment("UPDATE ").
-                                    append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
-                                    append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
-                                    add(requestState).
-                                    add(new Date()).
-                                    add(getUser().getUserId()).
-                                    add(requestId));
+                    requestState = null;
+                    break;
                 }
             }
-        });
+
+            if (requestState != null)
+            {
+                _log.info("Updating request status since all children agree");
+                // Do a direct UPDATE for efficiency and to avoid possible optimistic concurrency issues during bulk import
+                new SqlExecutor(EHRSchema.getInstance().getSchema()).execute(
+                        new SQLFragment("UPDATE ").
+                                append(EHRSchema.getInstance().getSchema().getTable(EHRSchema.TABLE_REQUESTS)).
+                                append(" SET qcstate = ?, modified = ?, modifiedby = ? WHERE RequestId = ?").
+                                add(requestState).
+                                add(new Date()).
+                                add(getUser().getUserId()).
+                                add(requestId));
+            }
+        }
     }
 
     private void appendLinkToRequest(String requestid, String formtype, StringBuilder html, TableInfo requestTable)
@@ -1536,11 +1679,7 @@ public class TriggerScriptHelper
         //allow the potential for entry without birth date
         demographicsProps.put("date", row.get("birth") != null ? row.get("birth") : row.get("date"));
         demographicsProps.put("calculated_status", "Alive");
-        if (extraDemographicsFieldMappings != null)
-        {
-            extraDemographicsFieldMappings.forEach(demographicsProps::put);
-        }
-        createDemographicsRecord(id, demographicsProps);
+        createDemographicsRecord(id, demographicsProps, extraDemographicsFieldMappings);
 
         if (row.get("birth") != null)
         {
@@ -1680,7 +1819,7 @@ public class TriggerScriptHelper
                 }
                 else if (hasCustomDepartureStatus)
                 {
-                    status = _centerCustomProps.get("departureStatus");
+                    status = String.valueOf(_centerCustomProps.get("departureStatus"));
                 }
                 else
                 {
@@ -1709,7 +1848,11 @@ public class TriggerScriptHelper
         if (!rows.isEmpty())
         {
             TableInfo ti = getTableInfo("study", "Demographics");
-            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, null, getExtraContext());
+
+            BatchValidationException batchValidationException = new BatchValidationException();
+            ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, batchValidationException, null, getExtraContext());
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
             EHRDemographicsServiceImpl.get().getAnimals(getContainer(), ids);
         }
         else
@@ -2044,7 +2187,7 @@ public class TriggerScriptHelper
             return "Unknown species: " + id;
         }
 
-        final String protocol = getProtocolForProject(project);
+        final String protocol = EHRService.get().getProtocolForProject(_container, _user, project);
         if (protocol == null)
         {
             return "Unable to find protocol associated with project: " + project;
@@ -2085,7 +2228,7 @@ public class TriggerScriptHelper
                             continue;
                         }
 
-                        String rowProtocol = getProtocolForProject(project.intValue());
+                        String rowProtocol = EHRService.get().getProtocolForProject(_container, _user, project.intValue());
                         if (rowProtocol == null || !rowProtocol.equals(protocol))
                         {
                             continue;
@@ -2292,7 +2435,7 @@ public class TriggerScriptHelper
             {
                 new SqlExecutor(ti.getSchema()).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE objectid = ?", pk));
             }
-            _log.info("deleted " + pks.size() + "snomed tags for record: " + objectid);
+            _log.info("deleted " + pks.size() + " snomed tags for record: " + objectid);
         }
     }
 
@@ -2361,6 +2504,7 @@ public class TriggerScriptHelper
                 ret.add((Integer)row.get("UserId"));
             }
 
+            ret = Collections.unmodifiableSet(ret);
             DataEntryManager.get().getCache().put(cacheKey, ret);
         }
 
@@ -2388,7 +2532,12 @@ public class TriggerScriptHelper
 
     public void closeHousingRecords(List<Map<String, Object>> records) throws Exception
     {
-        TableInfo housing = getTableInfo("study", "housing");
+        closePreviousDatasetRecords("housing", records, false, false);
+    }
+
+    public void closePreviousDatasetRecords(String dataset, List<Map<String, Object>> records, boolean dateOnly, boolean publicData) throws Exception
+    {
+        TableInfo datasetTi = getTableInfo("study", dataset);
         List<Map<String, Object>> toUpdate = new ArrayList<>();
         List<Map<String, Object>> oldKeys = new ArrayList<>();
 
@@ -2419,11 +2568,10 @@ public class TriggerScriptHelper
         for (Map<String, Object> row : records)
         {
             Date date = _dateTimeFormat.parse(row.get("date").toString());
-            // TODO how do we override this a center specific module can opt out of this check?
-            if (date.getHours() == 0 && date.getMinutes() == 0)
+            if (!dateOnly && date.getHours() == 0 && date.getMinutes() == 0)
             {
                 Exception e = new Exception();
-                _log.warn("Attempting to terminate housing records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
@@ -2432,12 +2580,16 @@ public class TriggerScriptHelper
             //we want to only close those records starting prior to this record
             filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
             filter.addCondition(FieldKey.fromString("objectid"), row.get("objectid"), CompareType.NEQ_OR_NULL);
+
+            if (publicData)
+                filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
             if (!encounteredLsids.isEmpty())
             {
                 filter.addCondition(FieldKey.fromString("lsid"), encounteredLsids, CompareType.NOT_IN);
             }
 
-            TableSelector ts = new TableSelector(housing, Collections.singleton("lsid"), filter, null);
+            TableSelector ts = new TableSelector(datasetTi, Collections.singleton("lsid"), filter, null);
             List<String> ret = ts.getArrayList(String.class);
             if (!ret.isEmpty())
             {
@@ -2458,10 +2610,14 @@ public class TriggerScriptHelper
 
         if (!toUpdate.isEmpty())
         {
-            _log.info("closing housing records: " + toUpdate.size());
+            _log.info("closing " + dataset + " records: " + toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
-            housing.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, null, context);
+            context.put("skipClosingRecords", true);
+            BatchValidationException batchValidationException = new BatchValidationException();
+            datasetTi.getUpdateService().updateRows(getUser(), getContainer(), toUpdate, oldKeys, batchValidationException, null, context);
+            if (batchValidationException.hasErrors())
+                throw batchValidationException;
         }
     }
 
@@ -2485,6 +2641,17 @@ public class TriggerScriptHelper
 
     public void ensureSingleFlagCategoryActive(String id, String flag, String objectId, final Date enddate)
     {
+        TableInfo flagsTable = getTableInfo("study", "flags");
+        ColumnInfo ci = flagsTable.getColumn("flag");
+
+        if (ci == null)
+            return;
+
+        // Only perform if using ehr_lookups.flag_values as study.flags lookup table
+        TableInfo ti = ci.getFkTableInfo();
+        if (ti == null || !ti.getSchema().getName().equals("ehr_lookups") || !ti.getName().equals("flag_values"))
+            return;
+
         //first resolve flag
         TableInfo flagValuesTable = getTableInfo("ehr_lookups", "flag_values");
         TableSelector ts1 =  new TableSelector(flagValuesTable, Collections.singleton("category"), new SimpleFilter(FieldKey.fromString("objectid"), flag), null);
@@ -2507,7 +2674,6 @@ public class TriggerScriptHelper
             filter.addCondition(FieldKey.fromString("Id"), id, CompareType.EQUAL);
             filter.addCondition(FieldKey.fromString("objectid"), objectId, CompareType.NEQ_OR_NULL);
 
-            TableInfo flagsTable = getTableInfo("study", "Animal Record Flags");
             final List<Map<String, Object>> rows = new ArrayList<>();
             final List<Map<String, Object>> oldKeys = new ArrayList<>();
             QueryUpdateService qus = flagsTable.getUpdateService();
@@ -2534,7 +2700,10 @@ public class TriggerScriptHelper
                 {
                     Map<String, Object> extraContext = getExtraContext();
                     extraContext.put("skipAnnounceChangedParticipants", true);
-                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, extraContext);
+                    BatchValidationException batchValidationException = new BatchValidationException();
+                    qus.updateRows(getUser(), flagsTable.getUserSchema().getContainer(), rows, oldKeys, batchValidationException, null, extraContext);
+                    if (batchValidationException.hasErrors())
+                        throw batchValidationException;
                 }
             }
             catch (InvalidKeyException e)
@@ -2670,5 +2839,15 @@ public class TriggerScriptHelper
         date2 = DateUtil.parseDateTime(dateString2, format);
 
         return date1.compareTo(date2);
+    }
+
+    public Map<String, Object> getScriptOptions()
+    {
+        return EHRService.get().getTriggerScriptOptions();
+    }
+
+    public void updateCachedProtocol(Integer project, String protocol)
+    {
+        EHRService.get().updateCachedProtocol(_container, project, protocol);
     }
 }

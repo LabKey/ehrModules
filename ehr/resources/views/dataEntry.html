@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=scriptNonce%>">
 
 Ext.onReady(function(){
     EHR.Security.init({
@@ -48,23 +48,23 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Blood%20Draws", title: 'Enter Blood Draws', queries: ['Blood Draws']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?schemaName=study&queryName=Charges&keyField=lsid", title: 'Enter Charges', queries: ['Charges']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?schemaName=study&queryName=Clinical%20Remarks&keyField=lsid", title: 'Enter Clinical Remark', queries: ['Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=study&queryName=Feeding&keyField=lsid", title: 'Enter/Manage Feeding Orders', queries: ['Feeding']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Irregular%20Observations", title: 'Enter Irregular Observations', queries: ['Irregular Observations']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=MPR", title: 'Enter MPR', queries: ['Drug Administration']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=MPR&useSnomedCodes=1", title: 'Enter MPR (using SNOMED codes)', queries: ['Drug Administration']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRecord.view?schemaName=study&queryName=Notes&keyField=lsid", title: 'Enter Note', queries: ['Notes']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Physical%20Exam", title: 'Enter Physical Exam (OWM)', queries: ['Alopecia','Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Physical%20Exam - NWM", title: 'Enter Physical Exam (NWM)', queries: ['Alopecia','Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Problem%20List", title: 'Enter Problem', queries: ['Problem List']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Surgery", title: 'Enter Surgery', queries: ['Clinical Encounters','Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Surgery&useSnomedCodes=1", title: 'Enter Surgery (using SNOMED codes)', queries: ['Clinical Encounters','Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=TB%20Tests", title: 'Enter TB Tests', queries: ['TB Tests']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Treatments", title: 'Enter Treatments', queries: ['Drug Administration']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Treatment%20Orders", title: 'Enter Treatment Order', queries: ['Treatment Orders']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Weight", title: 'Enter Weights', queries: ['Weight']}
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Blood%20Draws", title: 'Enter Blood Draws', queries: ['Blood Draws']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?schemaName=study&queryName=Charges&keyField=lsid", title: 'Enter Charges', queries: ['Charges']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?schemaName=study&queryName=Clinical%20Remarks&keyField=lsid", title: 'Enter Clinical Remark', queries: ['Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=study&queryName=Feeding&keyField=lsid", title: 'Enter/Manage Feeding Orders', queries: ['Feeding']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Irregular%20Observations", title: 'Enter Irregular Observations', queries: ['Irregular Observations']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=MPR", title: 'Enter MPR', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=MPR&useSnomedCodes=1", title: 'Enter MPR (using SNOMED codes)', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRecord.view?schemaName=study&queryName=Notes&keyField=lsid", title: 'Enter Note', queries: ['Notes']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Physical%20Exam", title: 'Enter Physical Exam (OWM)', queries: ['Alopecia','Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Physical%20Exam - NWM", title: 'Enter Physical Exam (NWM)', queries: ['Alopecia','Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Problem%20List", title: 'Enter Problem', queries: ['Problem List']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Surgery", title: 'Enter Surgery', queries: ['Clinical Encounters','Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Surgery&useSnomedCodes=1", title: 'Enter Surgery (using SNOMED codes)', queries: ['Clinical Encounters','Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=TB%20Tests", title: 'Enter TB Tests', queries: ['TB Tests']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Treatments", title: 'Enter Treatments', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Treatment%20Orders", title: 'Enter Treatment Order', queries: ['Treatment Orders']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Weight", title: 'Enter Weights', queries: ['Weight']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
@@ -89,19 +89,19 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Arrival", title: 'Enter Arrivals', qcstate: 'Completed', permission: 'admin', queries: ['Arrival']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=study&queryName=Assignment&keyField=lsid", title: 'Enter/Manage Assignments', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Birth", title: 'Enter Births', queries: ['Birth']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=study&queryName=Demographics&keyField=lsid", title: 'Enter/Manage Demographics', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', qcstate: 'Completed', permission: 'admin', queries: ['Departure']},
-            {permission: 'admin', url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Multi-Animal MPR", title: 'Enter Multi-Animal MPR', queries: ['Drug Administration']},
-            {permission: 'admin', url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Multi-Animal MPR&useSnomedCodes=1", title: 'Enter Multi-Animal MPR (using SNOMED codes)', queries: ['Drug Administration']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter/Manage Projects', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=ehr&queryName=Protocol&keyField=protocol", title: 'Enter/Manage Protocols', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=SimpleRemark&title=Remark", title: 'Enter Simple Remark', queries: ['Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/updateQuery.view?schemaName=ehr&queryName=supplemental_pedigree&keyField=rowid", title: 'Enter/Manage Supplemental Pedigree', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']}
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Arrival", title: 'Enter Arrivals', qcstate: 'Completed', permission: 'admin', queries: ['Arrival']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=study&queryName=Assignment&keyField=lsid", title: 'Enter/Manage Assignments', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Birth", title: 'Enter Births', queries: ['Birth']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=study&queryName=Demographics&keyField=lsid", title: 'Enter/Manage Demographics', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', qcstate: 'Completed', permission: 'admin', queries: ['Departure']},
+            {permission: 'admin', url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Multi-Animal MPR", title: 'Enter Multi-Animal MPR', queries: ['Drug Administration']},
+            {permission: 'admin', url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Multi-Animal MPR&useSnomedCodes=1", title: 'Enter Multi-Animal MPR (using SNOMED codes)', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter/Manage Projects', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=ehr&queryName=Protocol&keyField=protocol", title: 'Enter/Manage Protocols', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=SimpleRemark&title=Remark", title: 'Enter Simple Remark', queries: ['Clinical Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-updateQuery.view?schemaName=ehr&queryName=supplemental_pedigree&keyField=rowid", title: 'Enter/Manage Supplemental Pedigree', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']}
 
-            //{url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRecord.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter Project', queries: ['Assignment']}
+            //{url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRecord.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter Project', queries: ['Assignment']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
@@ -126,9 +126,9 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid", title: 'Enter Behavior Remark', queries: ['Behavior Remarks']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Housing", title: 'Enter Housing Change', qcstate: 'Completed', permission: 'admin', queries: ['Housing']}
-            //{url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?schemaName=study&queryName=Pregnancies&keyField=lsid", title: 'Enter Pregnancies', queries: ['Pregnancies']}
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid", title: 'Enter Behavior Remark', queries: ['Behavior Remarks']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Housing", title: 'Enter Housing Change', qcstate: 'Completed', permission: 'admin', queries: ['Housing']}
+            //{url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?schemaName=study&queryName=Pregnancies&keyField=lsid", title: 'Enter Pregnancies', queries: ['Pregnancies']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
@@ -153,12 +153,12 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Biopsy", title: 'Enter Biopsy', queries: ['Biopsies']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Clinpath", title: 'Enter Clinpath Results', queries: ['Clinpath Runs'], qcstate: 'Completed'},
-            //{url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid&metaSources=Task", title: 'Enter Death Record', queries: ['Deaths']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Death", title: 'Enter Death Record', queries: ['Deaths']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageTask.view?formtype=Necropsy", title: 'Enter Necropsy', queries: ['Necropsies']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRecord.view?schemaName=study&queryName=Prenatal Deaths&keyField=lsid", title: 'Enter Prenatal Death', queries: ['Prenatal Deaths']}
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Biopsy", title: 'Enter Biopsy', queries: ['Biopsies']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Clinpath", title: 'Enter Clinpath Results', queries: ['Clinpath Runs'], qcstate: 'Completed'},
+            //{url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid&metaSources=Task", title: 'Enter Death Record', queries: ['Deaths']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Death", title: 'Enter Death Record', queries: ['Deaths']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageTask.view?formtype=Necropsy", title: 'Enter Necropsy', queries: ['Necropsies']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRecord.view?schemaName=study&queryName=Prenatal Deaths&keyField=lsid", title: 'Enter Prenatal Death', queries: ['Prenatal Deaths']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
@@ -182,10 +182,10 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRequest.view?formtype=Blood%20Draw%20Request", title: 'Request Blood Draws', queries: ['Blood Draws']},
-            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRequest.view?formtype=Clinpath%20Request", title: 'Request Clinpath Services', queries: ['Clinpath Runs']}
-            //{url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRequest.view?formtype=Housing%20Request", title: 'Request Housing Change', queries: ['Housing']},
-//            {url: "<%=contextPath%>/ehr" + ctx['EHRStudyContainer'] + "/manageRequest.view?formtype=Procedure%20Request", title: 'Request Procedure', queries: ['Clinical Encounters']}
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRequest.view?formtype=Blood%20Draw%20Request", title: 'Request Blood Draws', queries: ['Blood Draws']},
+            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRequest.view?formtype=Clinpath%20Request", title: 'Request Clinpath Services', queries: ['Clinpath Runs']}
+            //{url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRequest.view?formtype=Housing%20Request", title: 'Request Housing Change', queries: ['Housing']},
+//            {url: "<%=contextPath%>" + ctx['EHRStudyContainer'] + "/ehr-manageRequest.view?formtype=Procedure%20Request", title: 'Request Procedure', queries: ['Clinical Encounters']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){

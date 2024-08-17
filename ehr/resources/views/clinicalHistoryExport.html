@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=scriptNonce%>">
 
     Ext4.onReady(function (){
         var webpart = <%=webpartContext%>;
@@ -74,6 +74,8 @@
         Ext4.create('Ext.panel.Panel', {
             border: false,
             style: 'width: 8in;',
+            cls: 'clinical-history-print',
+            bodyCls: 'clinical-history-print',
             items: toAdd
         }).render(webpart.wrapperDivId);
     });

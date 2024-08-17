@@ -23,7 +23,7 @@ import org.labkey.api.study.security.SecurityEscalationAuditProvider;
  */
 public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditProvider
 {
-    public static String EVENT_TYPE = EHRSecurityEscalationEvent.class.getName();
+    public static String EVENT_TYPE = EHRSecurityEscalationEvent.class.getSimpleName();
     public static String AUDIT_LOG_TITLE = "EHR Security Escalations";
 
     @Override
@@ -62,12 +62,7 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
     public static class EHRSecurityEscalationDomain extends SecurityEscalationAuditDomainKind
     {
         public EHRSecurityEscalationDomain() {
-            super(EVENT_TYPE);
-        }
-
-        @Override
-        public String getDomainName() {
-            return EHRSecurityEscalationDomain.class.getName();
+            super(EVENT_TYPE, EHRSecurityEscalationEvent.class.getName());
         }
     }
 }

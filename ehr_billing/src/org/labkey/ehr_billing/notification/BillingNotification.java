@@ -32,16 +32,17 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr_billing.notification.BillingNotificationProvider;
+import org.labkey.api.ehr_billing.notification.ChargeCategoryInfo;
 import org.labkey.api.ehr_billing.notification.FieldDescriptor;
 import org.labkey.api.ldk.notification.AbstractNotification;
 import org.labkey.api.module.Module;
-import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
@@ -73,7 +74,7 @@ import java.util.TreeMap;
  */
 public class BillingNotification extends AbstractNotification
 {
-    private BillingNotificationProvider _notificationProvider;
+    private final BillingNotificationProvider _notificationProvider;
     protected static final DecimalFormat _dollarFormat = new DecimalFormat("$###,##0.00");
     protected static final DecimalFormat _numItemsFormat = new DecimalFormat("###,##0.00");
     private static final String _ehrBillingSchemaName = EHR_BillingSchema.NAME;
@@ -154,7 +155,7 @@ public class BillingNotification extends AbstractNotification
             lastInvoiceDate = DateUtils.truncate(new Date(0), Calendar.DATE);
 
         Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap = new TreeMap<>();
-        Map<String, Map<String, Double>> totalsByCategory = new TreeMap<>();
+        Map<String, ChargeCategoryInfo> categoryInfoMap = new TreeMap<>();
 
         Calendar startDate = Calendar.getInstance();
         startDate.setTime(lastInvoiceDate);
@@ -164,14 +165,20 @@ public class BillingNotification extends AbstractNotification
         endDate.setTime(new Date());
         endDate.add(Calendar.DATE, 1);
 
-        getProjectSummaryPerCategory(u, startDate, endDate, categoryToQuery, containerMap, dataMap, totalsByCategory, fields);
+        getProjectSummaryPerCategory(u, startDate, endDate, categoryToQuery, containerMap, dataMap, categoryInfoMap, fields);
+        List<ChargeCategoryInfo> additionalCategoryInfo = _notificationProvider.getAdditionalChargeCategoryInfo(u, billingContainer, startDate.getTime(), endDate.getTime());
+
+        for (ChargeCategoryInfo category : additionalCategoryInfo)
+        {
+            categoryInfoMap.put(category.getCategoryLabel(), category);
+        }
 
         simpleAlert(billingContainer, u , msg, _ehrBillingSchemaName, "duplicateAliases",
                 " duplicate account(s) found.  This is a potentially serious problem that could result in improper" +
                         " or duplicate charge(s) and should be corrected ASAP.");
 
         //based on data gathered on Project Summary Per Category above, create charge summary report
-        createChargeSummaryReport(msg, lastInvoiceDate, startDate, endDate, dataMap, totalsByCategory, categoryToQuery, containerMap, c, fields);
+        createChargeSummaryReport(msg, lastInvoiceDate, startDate, endDate, dataMap, categoryInfoMap, categoryToQuery, containerMap, c, fields);
 
         simpleAlert(billingContainer, u , msg,_ehrBillingSchemaName, "invalidChargeRateEntries",
                 " charge rate record(s) with invalid or overlapping intervals.  This indicates a problem with how the records " +
@@ -206,13 +213,13 @@ public class BillingNotification extends AbstractNotification
 
     private void getProjectSummaryPerCategory(User u, Calendar startDate, Calendar endDate, Map<String, String> categoryToQuery,
                                               Map<String, Container> containerMap, Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap,
-                                              Map<String, Map<String, Double>> totalsByCategory, List<FieldDescriptor> fields)
+                                              Map<String, ChargeCategoryInfo> categoryInfoMap, List<FieldDescriptor> fields)
     {
         if (null != categoryToQuery && null != containerMap)
         {
             for (String categoryName : categoryToQuery.keySet())
             {
-                getProjectSummary(containerMap.get(categoryName), u, startDate, endDate, categoryName, categoryToQuery.get(categoryName), dataMap, totalsByCategory, fields);
+                getProjectSummary(containerMap.get(categoryName), u, startDate, endDate, categoryName, categoryToQuery.get(categoryName), dataMap, categoryInfoMap, fields);
             }
         }
     }
@@ -280,7 +287,7 @@ public class BillingNotification extends AbstractNotification
 
     private void getProjectSummary(Container c, User u, final Calendar start, Calendar endDate, final String categoryName,
                                    String queryName, final Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap,
-                                   final Map<String, Map<String, Double>> totalsByCategory, List<FieldDescriptor> fields)
+                                   final Map<String, ChargeCategoryInfo> categoryInfoMap, List<FieldDescriptor> fields)
     {
         UserSchema us = QueryService.get().getUserSchema(u, c, _notificationProvider.getCenterSpecificBillingSchema());
         QueryDefinition qd = us.getQueryDefForTable(queryName);
@@ -307,6 +314,10 @@ public class BillingNotification extends AbstractNotification
         final Map<FieldKey, ColumnInfo> cols = QueryService.get().getColumns(ti, fieldKeys);
         TableSelector ts = new TableSelector(ti, cols.values(), null, null);
         ts.setNamedParameters(params);
+        ChargeCategoryInfo categoryInfo = new ChargeCategoryInfo();
+        categoryInfo.setCategoryLabel(categoryName);
+        final double[] totalQuantity = {0.0}; // 1 element final array since 'final' is required in the below exec method
+        final double[] totalCost = {0.0};// 1 element final array since 'final' is required in the below exec method
 
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -314,27 +325,11 @@ public class BillingNotification extends AbstractNotification
             public void exec(ResultSet object) throws SQLException
             {
                 Results rs = new ResultsImpl(object, cols);
-                Map<String, Double> totalsMap = totalsByCategory.get(categoryName);
-                if (totalsMap == null)
-                    totalsMap = new HashMap<>();
 
                 Double unitCost = rs.getDouble(FieldKey.fromString("unitCost"));
                 Double quantity = rs.getDouble(FieldKey.fromString("quantity"));
-                if (unitCost != null && quantity != null)
-                {
-                    Double t = totalsMap.containsKey("totalCost") ? totalsMap.get("totalCost") : 0.0;
-                    t += (quantity * unitCost);
-                    totalsMap.put("totalCost", t);
-                }
-
-                if (quantity != null)
-                {
-                    Double t = totalsMap.containsKey("total") ? totalsMap.get("total") : 0.0;
-                    t += quantity;
-                    totalsMap.put("total", t);
-                }
-
-                totalsByCategory.put(categoryName, totalsMap);
+                totalQuantity[0] += quantity;
+                totalCost[0] += (unitCost * quantity);
 
                 String projectDisplay = rs.getString(FieldKey.fromString("project"));
                 if (projectDisplay == null)
@@ -396,11 +391,14 @@ public class BillingNotification extends AbstractNotification
                 }
             }
         });
+        categoryInfo.setTotalQuantity(totalQuantity[0]);
+        categoryInfo.setTotalCost(totalCost[0]);
+        categoryInfoMap.put(categoryName, categoryInfo);
     }
 
     protected void createChargeSummaryReport(final StringBuilder msg, Date lastInvoiceEnd, Calendar start, Calendar endDate,
                                              final Map<String, Map<String, Map<String, Map<String, Integer>>>> dataMap,
-                                             final Map<String, Map<String, Double>> totalsByCategory, Map<String, String> categoryToQuery,
+                                             final Map<String, ChargeCategoryInfo> categoryInfoMap, Map<String, String> categoryToQuery,
                                              Map<String, Container> containerMap, Container c, List<FieldDescriptor> fields)
     {
 
@@ -410,13 +408,18 @@ public class BillingNotification extends AbstractNotification
         msg.append("The table below summarizes projected charges since the last invoice date of " + getDateFormat(c).format(lastInvoiceEnd));
 
         msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td align='center'>Category</td><td align='center'># Items</td><td align='center'>Amount</td>");
-        for (String category : totalsByCategory.keySet())
+        for (String category : categoryInfoMap.keySet())
         {
-            Map<String, Double> totalsMap = totalsByCategory.get(category);
+            ChargeCategoryInfo categoryInfo = categoryInfoMap.get(category);
             Container container = containerMap.get(category);
+            String url;
+            if (categoryToQuery.containsKey(category))
+                url = createURL(container, centerSpecificBillingSchema, categoryToQuery.get(category), null) + "&query.param.StartDate=" + getDateFormat(c).format(start.getTime()) + "&query.param.EndDate=" + getDateFormat(c).format(endDate.getTime());
+            else
+                url = categoryInfo.getCategoryURL();
 
-            String url = createURL(container, centerSpecificBillingSchema, categoryToQuery.get(category), null) + "&query.param.StartDate=" + getDateFormat(c).format(start.getTime()) + "&query.param.EndDate=" + getDateFormat(c).format(endDate.getTime());
-            msg.append("<tr><td><a href='" + url + "'>" + category + "</a></td><td align='right'>" + _numItemsFormat.format(totalsMap.get("total")) + "</td><td align='right'>" + _dollarFormat.format(totalsMap.get("totalCost")) + "</td></tr>");
+            if (null != url)
+                msg.append("<tr><td><a href='" + PageFlowUtil.filter(url) + "'>" + PageFlowUtil.filter(category) + "</a></td><td align='right'>" + PageFlowUtil.filter(_numItemsFormat.format(categoryInfo.getTotalQuantity())) + "</td><td align='right'>" + PageFlowUtil.filter(_dollarFormat.format(categoryInfo.getTotalCost())) + "</td></tr>");
         }
         msg.append("</table><br><br>");
 
@@ -607,15 +610,11 @@ public class BillingNotification extends AbstractNotification
 
     private String createURL(Container c, String schemaName, String queryName, @Nullable String viewName)
     {
-        DetailsURL detailsURL = DetailsURL.fromString("/query/executeQuery.view", c);
-        ActionURL url = new ActionURL(detailsURL.getActionURL().toString());
-        url.addParameter("schemaName", schemaName);
-        url.addParameter("queryName", queryName);
+        ActionURL url = _queryUrls.urlExecuteQuery(c, schemaName, queryName);
 
-        if(null != viewName)
+        if (null != viewName)
             url.addParameter("viewName", viewName);
 
         return url.getLocalURIString();
     }
-
 }

@@ -512,12 +512,7 @@ EHR.Utils = new function(){
             }
         },
 
-        editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap, copyFilters){
-            var params = {
-                schemaName: schemaName,
-                'query.queryName': queryName,
-                showImport: true
-            };
+        editUIButtonCore: function(schemaName, queryName, dataRegionName, paramMap, copyFilters, params){
 
             if (copyFilters !== false && dataRegionName){
                 var array = LABKEY.DataRegions[dataRegionName].getUserFilterArray();
@@ -547,6 +542,27 @@ EHR.Utils = new function(){
             }
 
             window.location = LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, params);
+        },
+
+        editUIButtonHandler: function(schemaName, queryName, dataRegionName, paramMap, copyFilters){
+            var params = {
+                schemaName: schemaName,
+                'query.queryName': queryName,
+                showImport: true
+            };
+
+            this.editUIButtonCore(schemaName, queryName, dataRegionName, paramMap, undefined, params);
+        },
+
+        editUIButtonWithoutFormHandler: function(schemaName, queryName, dataRegionName, paramMap, copyFilters){
+            var params = {
+                schemaName: schemaName,
+                'query.queryName': queryName,
+                showImport: true,
+                queryUpdateURL: true
+            };
+
+            this.editUIButtonCore(schemaName, queryName, dataRegionName, paramMap, undefined, params);
         },
 
         showFlagPopup: function(id, el){
@@ -626,6 +642,13 @@ EHR.Utils = new function(){
                 minWidth: 60,
                 border: includeBorder
             };
+        },
+
+        /** Override this function to apply custom patterns (casing, hyphens, etc) to ids entered into UI components like animal history, animal search,
+         *  and data entry windows. Default is no formatting.
+         */
+        formatAnimalIds: function(subjects){
+            return subjects;
         }
     }
 };

@@ -12,6 +12,8 @@ group_concat(distinct a.project.protocol.displayName) as protocols,
 group_concat(distinct a.project.displayName) as projects,
 min(a.date) as earliestAssignment,
 max(a.date) as latestAssignment,
+min(a.enddate) as earliestRelease,
+max(a.enddate) as latestRelease,
 ROUND(CONVERT(age_in_months(max(a.Id.demographics.birth), min(a.date)), DOUBLE) / 12, 1) AS ageOnEarliestAssignment,
 group_concat(DISTINCT CAST(ifdefined(a.releaseType) as varchar(200))) as releaseTypes,
 count(*) as totalAssignments
@@ -19,8 +21,9 @@ count(*) as totalAssignments
 FROM study.assignment a
 
 WHERE (
-  (a.project.displayName = PROJECT OR PROJECT is null) AND
-  (a.project.protocol.displayName = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
+  -- Match on either project/protocol number or full display name, or skip the check if the user hasn't supplied a value
+  (CAST(a.project AS VARCHAR) = PROJECT OR a.project.displayName = PROJECT OR PROJECT is null) AND
+  (a.project.protocol = PROTOCOL OR a.project.protocol.displayName = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
 
   (a.enddateCoalesced >= cast(StartDate as date)) AND
   (a.dateOnly <= cast(coalesce(EndDate, curdate()) as date))

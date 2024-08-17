@@ -15,11 +15,11 @@
  */
 package org.labkey.test.tests.ehr;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
@@ -53,21 +53,21 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         log("verifying custom actions");
 
         //housing queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Housing Queries"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //animal queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Animal Search"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //project, protocol queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Protocol and Project Queries"));
         waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
@@ -118,10 +118,10 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     @Test
     public void testWeightValidation()
     {
-        //initialize wieght of subject 0
+        //initialize weight of subject 3
         String[] fields;
         Object[][] data;
-        PostCommand insertCommand;
+        SimplePostCommand insertCommand;
         fields = new String[]{"Id", "date", "weight", "QCStateLabel"};
         data = new Object[][]{
                 {SUBJECTS[3], new Date(), 12, EHRQCState.COMPLETED.label},
@@ -202,7 +202,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         log("verifying custom buttons");
 
         //housing queries
-        beginAt("/project/" + getContainerPath() + "/begin.view");
+        beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Browse All Datasets"));
         waitForText("Weight:");
         waitAndClick(LabModuleHelper.getNavPanelItem("Weight:", VIEW_TEXT));
@@ -239,7 +239,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Object[][] insertData = {weightData1};
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = null;
         insertData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = null;
-        PostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
+        SimplePostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
 
         for (EHRQCState qc : EHRQCState.values())
         {
@@ -263,7 +263,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
             extraContext.put("targetQC", originalQc.label);
             originalData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = objectId.toString();
-            PostCommand initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
+            SimplePostCommand initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
             log("Inserting initial record for update test, with initial QCState of: " + originalQc.label);
             response = getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), initialInsertCommand, extraContext);
 
@@ -276,7 +276,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 boolean successExpected = originalQc.equals(qc) ? successExpected(user.getRole(), originalQc, "update") : successExpected(user.getRole(), originalQc, "update") && successExpected(user.getRole(), qc, "insert");
                 log("Testing role: " + user.getRole().name() + " with update from QCState " + originalQc.label + " to: " + qc.label);
                 originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = qc.label;
-                PostCommand updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
+                SimplePostCommand updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
                 extraContext.put("targetQC", qc.label);
                 if (!successExpected)
                     getApiHelper().doSaveRowsExpectingError(user.getEmail(), updateCommand, extraContext);

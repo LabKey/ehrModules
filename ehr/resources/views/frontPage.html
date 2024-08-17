@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=scriptNonce%>">
 
     Ext4.onReady(function(){
         var webpart = <%=webpartContext%>;
@@ -7,21 +7,21 @@
             return;
 
         Ext4.get(webpart.wrapperDivId).update(
-            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view">' +
+            '<a href="<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-animalHistory.view">' +
                 '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
                     '<div class="ehr-tool-icon-lg">' +
                        '<img src="<%=contextPath%>/ehr/icons/icon_browse_lg.png">Browse Data' +
                     '</div>' +
                 '</div>' +
             '</a>' +
-            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/enterData.view">' +
+            '<a href="<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-enterData.view">' +
                 '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
                     '<div class="ehr-tool-icon-lg">' +
                         '<img src="<%=contextPath%>/ehr/icons/icon_data_lg.png">Enter Data' +
                     '</div>' +
                 '</div>' +
             '</a>' +
-            '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/colonyOverview.view">' +
+            '<a href="<%=contextPath%>' + ctx['EHRStudyContainer'] + '/ehr-colonyOverview.view">' +
                 '<div class="ehr-tool-icon-wrapper-lg tool-icon">' +
                     '<div class="ehr-tool-icon-lg">' +
                         '<img src="<%=contextPath%>/ehr/icons/icon_center_lg.png">Colony Overview' +

@@ -18,13 +18,17 @@ package org.labkey.ehr.history;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.history.LabworkType;
+import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
+import org.labkey.api.util.Pair;
+import org.labkey.ehr.EHRServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,15 +58,20 @@ public class LabworkManager
 
     public Collection<LabworkType> getTypes(Container c)
     {
-        List<LabworkType> result = new ArrayList<>(_types.size());
+        Map<String, LabworkType> map = new LinkedHashMap<>();
         for (LabworkType type : _types)
         {
+            // NOTE: Because modules initialize in dependency order, they will be registered in order and the code below should allow
+            // center modules to override default EHR labwork types.
+            // Also, if it ever becomes necessary for a center module to simply eliminate a built-in labwork type we could consider making a
+            // NoOpLabworkType. A module could register this to replace a built-in Labwork type with one that doesnt do anything.
             if (type.isEnabled(c))
             {
-                result.add(type);
+                map.put(type.getName(), type);
             }
         }
-        return Collections.unmodifiableCollection(result);
+
+        return Collections.unmodifiableCollection(map.values());
     }
 
     public List<String> getResults(Container c, User u, String runId, boolean redacted)

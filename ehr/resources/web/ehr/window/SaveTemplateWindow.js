@@ -263,16 +263,71 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
     },
 
     saveTemplate: function(rows){
+        const title = this.down('#templateName').getValue();
+        const userid = this.down('#templateUser').getValue();
+        const description = this.down('#templateDescription').getValue();
+        const formType = this.formType;
+        const category = 'Section';
+
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            columns: 'formType,userid,entityid',
+            filterArray: [
+                LABKEY.Filter.create('category', category),
+                LABKEY.Filter.create('formtype', formType),
+                LABKEY.Filter.create('title', title),
+            ],
+            scope: this,
+            error: LDK.Utils.getErrorCallback(),
+            success: function (results) {
+                if (results && results.rows && results.rows.length > 0) {
+                    const entityid = results.rows[0]['entityid'];
+                    Ext4.Msg.confirm('Update Template', 'A template with that name already exists. Overwrite this template?', function (val) {
+                        if (val == 'yes') {
+                            this.overwriteTemplate(entityid, title, userid, description, formType, rows)
+                        }
+                        else {
+                            Ext4.Msg.hide();
+                        }
+                    }, this);
+                }
+                else {
+                    this.createTemplate(title, userid, description, formType, rows);
+                }
+
+            }
+        });
+    },
+
+    overwriteTemplate: function(oldEntityId, title, userid, description, formType, rows){
+        // Deleting existing form template first. Trigger script will delete from FormTemplateSections.
+        LABKEY.Query.deleteRows({
+            method: 'POST',
+            schemaName: 'ehr',
+            queryName: 'formtemplates',
+            scope: this,
+            rows: [{
+                entityId: oldEntityId
+            }],
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(data) {
+                this.createTemplate(title, userid, description, formType, rows);
+            }
+        });
+    },
+
+    createTemplate: function(title, userid, description, formType, rows){
         LABKEY.Query.insertRows({
             method: 'POST',
             schemaName: 'ehr',
             queryName: 'formtemplates',
             scope: this,
             rows: [{
-                title: this.down('#templateName').getValue(),
-                userid: this.down('#templateUser').getValue(),
-                description: this.down('#templateDescription').getValue(),
-                formType: this.formType,
+                title: title,
+                userid: userid,
+                description: description,
+                formType: formType,
                 category: 'Section'
             }],
             success: function(data){

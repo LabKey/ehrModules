@@ -1,6 +1,7 @@
 setname	label	keyfield	titleColumn
-alopecia_cause	Alopecia Cause	value	
-alopecia_score	Alopecia Score	value	
+alias_category	Alias Category	value
+alopecia_cause	Alopecia Cause	value
+alopecia_score	Alopecia Score	value
 avail_codes	Availability Code Field Values	value	
 bacteriology_method	Bacteriology Method Field Values	value	
 bacteriology_sensitivity	Bacteriology Sensitivity Field Values	value	
@@ -59,6 +60,7 @@ pe_region	PE Region Field Values	value
 pe_remarks	PE Remarks Field Values	value	
 preservation_solutions	Preservation Solution Field Values	value	
 problem_list_category	Problem List Category Field Values	value
+procedure_category	Category of procedure	value
 reason_food_deprive 	Reason For Deprive Field Values	value
 restraint_duration	Restraint Duration Field Values	value	
 sample_types	Sample Type Field Values	value	

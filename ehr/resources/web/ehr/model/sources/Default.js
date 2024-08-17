@@ -74,7 +74,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 caseSensitive: false,
                 anyMatch: true,
                 listConfig: {
-                    innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                    innerTpl: '{[(values.category ? "<b>" + LABKEY.Utils.encodeHtml(values.category) + ":</b> " : "") + LABKEY.Utils.encodeHtml(values.name)]}',
                     getInnerTpl: function(){
                         return this.innerTpl;
                     }
@@ -96,7 +96,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             editorConfig: {
                 anyMatch: true,
                 listConfig: {
-                    innerTpl: '{[values.lastname + (values.firstname ? ", " + values.firstname : "")]}',
+                    innerTpl: '{[LABKEY.Utils.encodeHtml(values.lastname + (values.firstname ? ", " + values.firstname : ""))]}',
                     getInnerTpl: function(){
                         return this.innerTpl;
                     }
@@ -310,7 +310,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 caseSensitive: false,
                 anyMatch: true,
                 listConfig: {
-                    innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                    innerTpl: '{[(LABKEY.Utils.encodeHtml(values.category) ? "<b>" + LABKEY.Utils.encodeHtml(values.category) + ":</b> " : "") + values.name]}',
                     getInnerTpl: function(){
                         return this.innerTpl;
                     }
@@ -687,6 +687,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {hidden: true},
             species: {allowBlank: false},
             gender: {allowBlank: false}
+        },
+        'study.vitals': {
+            bloodPressure: {
+                columnConfig: {
+                    width: 120
+                }
+            },
+            respRate: {
+                columnConfig: {
+                    width: 120
+                }
+            },
         },
         'study.microbiology': {
             tissue: {
@@ -1262,7 +1274,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     anyMatch: true,
                     listConfig: {
-                        innerTpl: '{[(values.chargetype ? "<b>" + values.chargetype + ":</b> " : "") + values.servicename + (values.outsidelab ? "*" : "")]}',
+                        innerTpl: '{[(values.chargetype ? "<b>" + LABKEY.Utils.encodeHtml(values.chargetype) + ":</b> " : "") + LABKEY.Utils.encodeHtml(values.servicename + (values.outsidelab ? "*" : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1347,7 +1359,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     listConfig: {
-                        innerTpl: '{[(values.meaning) + (values.times ? " (" + values.times + ")" : "")]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml((values.meaning) + (values.times ? " (" + values.times + ")" : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1461,7 +1473,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     caseSensitive: false,
                     anyMatch: true,
                     listConfig: {
-                        innerTpl: '{[(values.category ? "<b>" + values.category + ":</b> " : "") + values.name]}',
+                        innerTpl: '{[(values.category ? "<b>" + LABKEY.Utils.encodeHtml(values.category) + ":</b> " : "") + LABKEY.Utils.encodeHtml(values.name)]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1525,7 +1537,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     listConfig: {
-                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml(values.meaning + " (" + values.code + ")")]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1542,7 +1554,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     listConfig: {
-                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml(values.meaning + " (" + values.code + ")")]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1558,7 +1570,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     listConfig: {
-                        innerTpl: '{[values.meaning + " (" + values.code + ")"]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml(values.meaning + " (" + values.code + ")")]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -1589,7 +1601,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                         allowChooseOther: false
                     })],
                     listConfig: {
-                        innerTpl: '{[(values.category ? ("<b>" + values.category + ":</b> ") : "") + values.value + (values.code ? (" (" + values.code + ")") : "")]}',
+                        innerTpl: '{[(values.category ? ("<b>" + LABKEY.Utils.encodeHtml(values.category) + ":</b> ") : "") + LABKEY.Utils.encodeHtml(values.value + (values.code ? (" (" + values.code + ")") : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }
@@ -2294,7 +2306,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     listConfig: {
-                        innerTpl: '{[(values.type) + (values.color ? " (" + values.color + ")" : "")]}',
+                        innerTpl: '{[LABKEY.Utils.encodeHtml((values.type) + (values.color ? " (" + values.color + ")" : ""))]}',
                         getInnerTpl: function(){
                             return this.innerTpl;
                         }

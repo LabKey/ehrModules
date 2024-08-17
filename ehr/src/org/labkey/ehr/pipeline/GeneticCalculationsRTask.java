@@ -17,6 +17,7 @@ package org.labkey.ehr.pipeline;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
@@ -30,10 +31,9 @@ import org.labkey.api.pipeline.WorkDirectoryTask;
 import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
 import org.labkey.api.reports.ExternalScriptEngineDefinition;
 import org.labkey.api.reports.LabKeyScriptEngineManager;
-import org.labkey.api.reports.RScriptEngineFactory;
+import org.labkey.api.reports.report.r.RScriptEngineFactory;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
-import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.FileType;
 import org.labkey.ehr.EHRModule;
 
@@ -83,7 +83,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public PipelineJob.Task<?> createTask(PipelineJob job)
         {
             GeneticCalculationsRTask task = new GeneticCalculationsRTask(this, job);
             setJoin(false);
@@ -127,7 +127,10 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
 
         List<String> args = new ArrayList<>();
         args.add(exePath);
-        args.add("--vanilla");
+        args.add("--no-save"); // don't save workspace
+        args.add("--no-environ"); // Do not read any user file to set environment variables.
+        args.add("--no-init-file"); // Do not read the user’s profile at startup.
+        args.add("--no-restore"); // don't restore saved objects
         args.add(scriptPath);
         args.add("-f");
         args.add(tsvFile.getPath());

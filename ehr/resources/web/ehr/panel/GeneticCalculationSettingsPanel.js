@@ -25,6 +25,24 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 fieldLabel: 'Is Enabled?',
                 itemId: 'enabled'
             },{
+                xtype: 'checkbox',
+                fieldLabel: 'Allow Import During Business Hours?',
+                itemId: 'allowImportDuringBusinessHours'
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Kinship validation?',
+                itemId: 'kinshipValidation',
+                listeners: {
+                    render: function(c) {
+                        Ext4.create('Ext.tip.ToolTip', {
+                            target: c.getEl(),
+                            html: 'This will iterate pedigree queries to ensure a minimum kinship coefficient exists for parents, ' +
+                                    'grandparents, offspring, full-siblings and half-siblings. This can significantly increase the time to ' +
+                                    'complete the kinship calculations so should only be used when validating kinship and pedigree.'
+                        });
+                    }
+                }
+            },{
                 xtype: 'numberfield',
                 hideTrigger: true,
                 fieldLabel: 'Hour Of Day',
@@ -79,6 +97,8 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#enabled').setValue(results.enabled);
         this.down('#hourOfDay').setValue(results.hourOfDay);
         this.down('#containerPath').setValue(results.containerPath);
+        this.down('#kinshipValidation').setValue(results.kinshipValidation);
+        this.down('#allowImportDuringBusinessHours').setValue(results.allowImportDuringBusinessHours)
     },
 
     saveData: function(){
@@ -88,7 +108,9 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
             params: {
                 containerPath: this.down('#containerPath').getValue(),
                 enabled: this.down('#enabled').getValue(),
-                hourOfDay: this.down('#hourOfDay').getValue()
+                hourOfDay: this.down('#hourOfDay').getValue(),
+                kinshipValidation: this.down('#kinshipValidation').getValue(),
+                allowImportDuringBusinessHours: this.down('#allowImportDuringBusinessHours').getValue()
             },
             method : 'POST',
             scope: this,

@@ -21,7 +21,6 @@ import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;

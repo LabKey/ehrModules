@@ -17,6 +17,7 @@
 package org.labkey.ehr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +29,7 @@ import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.audit.TransactionAuditProvider;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -40,28 +42,39 @@ import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.dataiterator.DataIteratorContext;
+import org.labkey.api.dataiterator.DetailedAuditLogDataIterator;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.query.AbstractQueryImportAction;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryAction;
-import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationError;
 import org.labkey.api.query.ValidationException;
+import org.labkey.api.reader.DataLoader;
+import org.labkey.api.reader.Readers;
+import org.labkey.api.reader.TabLoader;
 import org.labkey.api.resource.FileResource;
+import org.labkey.api.resource.Resource;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -70,14 +83,16 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.HtmlString;
+import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
-import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartFactory;
@@ -95,6 +110,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,6 +125,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.labkey.api.query.AbstractQueryUpdateService.createTransactionAuditEvent;
+
 public class EHRController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new EHRActionResolver();
@@ -116,6 +135,8 @@ public class EHRController extends SpringActionController
     {
         setActionResolver(_actionResolver);
     }
+
+    private static final Logger _log = LogHelper.getLogger(EHRController.class, "EHR API controller.");
 
     public static class GetDataEntryItemsForm
     {
@@ -344,7 +365,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getView(EHRQueryForm form, BindException errors)
         {
-            ensureQueryExists(form);
+            form.ensureQueryExists();
 
             _form = form;
 
@@ -496,42 +517,6 @@ public class EHRController extends SpringActionController
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
         }
 
-        protected void ensureQueryExists(EHRQueryForm form)
-        {
-            if (form.getSchema() == null)
-            {
-                throw new NotFoundException("Could not find schema: " + form.getSchemaName());
-            }
-
-            if (StringUtils.isEmpty(form.getQueryName()))
-            {
-                throw new NotFoundException("Query not specified");
-            }
-
-            if (!queryExists(form))
-            {
-                throw new NotFoundException("Query '" + form.getQueryName() + "' in schema '" + form.getSchemaName() + "' doesn't exist.");
-            }
-        }
-
-        protected boolean queryExists(EHRQueryForm form)
-        {
-            try
-            {
-                return form.getSchema() != null && form.getSchema().getTable(form.getQueryName()) != null;
-            }
-            catch (QueryParseException x)
-            {
-                // exists with errors
-                return true;
-            }
-            catch (QueryException x)
-            {
-                // exists with errors
-                return true;
-            }
-        }
-
         protected boolean isExt4Form(String schemaName, String queryName)
         {
             boolean isExt4Form = false;
@@ -655,7 +640,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -774,6 +759,9 @@ public class EHRController extends SpringActionController
         private String containerPath;
         private int hourOfDay;
 
+        private boolean _kinshipValidation;
+        private boolean _allowImportDuringBusinessHours;
+
         public boolean isEnabled()
         {
             return _enabled;
@@ -803,6 +791,26 @@ public class EHRController extends SpringActionController
         {
             this.hourOfDay = hourOfDay;
         }
+
+        public boolean isKinshipValidation()
+        {
+            return _kinshipValidation;
+        }
+
+        public void setKinshipValidation(boolean kinshipValidation)
+        {
+            _kinshipValidation = kinshipValidation;
+        }
+
+        public boolean isAllowImportDuringBusinessHours()
+        {
+            return _allowImportDuringBusinessHours;
+        }
+
+        public void setAllowImportDuringBusinessHours(boolean allowImportDuringBusinessHours)
+        {
+            _allowImportDuringBusinessHours = allowImportDuringBusinessHours;
+        }
     }
 
     @RequiresPermission(AdminPermission.class)
@@ -820,6 +828,8 @@ public class EHRController extends SpringActionController
             ret.put("isScheduled", GeneticCalculationsJob.isScheduled());
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
+            ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
+            ret.put("allowImportDuringBusinessHours", GeneticCalculationsJob.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse(ret);
         }
@@ -1144,7 +1154,7 @@ public class EHRController extends SpringActionController
                 throw new UnauthorizedException("Only site admins can view this page");
             }
 
-            return new HtmlView("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
+            return HtmlView.of("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
         }
 
         @Override
@@ -1253,7 +1263,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
+            return HtmlView.of("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
         }
 
         @Override
@@ -1280,7 +1290,7 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors)
         {
-            return new HtmlView("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
+            return HtmlView.of("This will cause the system to scan all datasets for records flagged as either Delete: Requested, or Cancelled or Denied Requests and permanently delete these records.  Do you want to continue?");
         }
 
         @Override
@@ -1289,6 +1299,399 @@ public class EHRController extends SpringActionController
             new RecordDeleteRunner().run(getContainer());
 
             return true;
+        }
+    }
+
+    public static class PopulateLookupsForm
+    {
+        private boolean _delete;
+        private String _manifest;
+
+        private String _lookup;
+
+        public boolean isDelete()
+        {
+            return _delete;
+        }
+
+        public void setDelete(boolean delete)
+        {
+            _delete = delete;
+        }
+
+        public String getManifest()
+        {
+            return _manifest;
+        }
+
+        public void setManifest(String manifest)
+        {
+            _manifest = manifest;
+        }
+
+        public String getLookup()
+        {
+            return _lookup;
+        }
+
+        public void setLookup(String lookup)
+        {
+            _lookup = lookup;
+        }
+    }
+
+    private abstract class BaseLookupsAction extends MutatingApiAction<PopulateLookupsForm>
+    {
+        protected final String _manifestDirectory = "data/";
+        protected final String _manifestDefault = "lookupsManifest";
+        protected final String _manifestFileExt = ".tsv";
+        protected final String _lookupSetsPath = "data/lookup_sets.tsv";
+        protected String _lookup = "All";
+        protected Resource _lookupsManifest;
+        protected Resource _lookupSets;
+        protected Module _lookupsManifestModule;
+
+        @Override
+        public void validateForm(PopulateLookupsForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            Module ehrModule = ModuleLoader.getInstance().getModule("ehr");
+            if (null == ehrModule)
+            {
+                errors.reject(ERROR_MSG, "EHR module missing.");
+            }
+            else
+            {
+                ModuleProperty mp = ehrModule.getModuleProperties().get(EHRManager.EHRCustomModulePropName);
+                _lookupsManifestModule = null;
+                if (mp != null && mp.getEffectiveValue(getContainer()) != null)
+                {
+                    _lookupsManifestModule = ModuleLoader.getInstance().getModule(mp.getEffectiveValue(getContainer()));
+                    if (null != _lookupsManifestModule)
+                    {
+                        if (form.getManifest() != null)
+                        {
+                            _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + form.getManifest() + _manifestFileExt);
+                        }
+                        else
+                        {
+                            _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + _manifestDefault + _manifestFileExt);
+                        }
+                        _lookupSets = _lookupsManifestModule.getModuleResource(_lookupSetsPath);
+                    }
+                }
+                else
+                {
+                    _log.warn("Attempted to access EHRCustomModule Module Property, which has not been set for this folder." +
+                            "Populating base EHR lookups.");
+                }
+
+                if (_lookupsManifest == null || !_lookupsManifest.exists() || _lookupSets == null || !_lookupSets.exists())
+                {
+                    if (form.getManifest() != null)
+                    {
+                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + form.getManifest() + _manifestFileExt);
+                    }
+                    else
+                    {
+                        _lookupsManifest = _lookupsManifestModule.getModuleResource(_manifestDirectory + _manifestDefault + _manifestFileExt);
+                    }
+                    _lookupSets = ehrModule.getModuleResource(_lookupSetsPath);
+                    _lookupsManifestModule = ehrModule;
+                }
+
+                if (_lookupsManifest == null || !_lookupsManifest.exists() || _lookupSets == null || !_lookupSets.exists())
+                {
+                    errors.reject(ERROR_MSG, "Unable to find lookups manifest and lookupSets in module '" + _lookupsManifestModule.getName() + "'");
+                }
+
+                // Lookup to populate
+                if (form.getLookup() != null)
+                {
+                    _lookup = form.getLookup();
+                }
+            }
+
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class GetLookupsAction extends BaseLookupsAction
+    {
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (null == _lookupsManifest || null == _lookupSets)
+                return null;
+
+            List<String> lookups = new ArrayList<>();
+            lookups.add("All");
+            lookups.add("lookup_sets");
+
+            BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
+            String line;
+
+            while ((line = reader.readLine()) != null)
+            {
+                String [] cols = line.split("\t");
+                Resource r = _lookupsManifestModule.getModuleResource("data/" + cols[0] + ".tsv");
+                if (r != null && r.exists())
+                {
+                    lookups.add(cols[0]);
+                }
+                else
+                {
+                    _log.warn("File listed in manifest file but data file not found: " + cols[0] + ". Using manifest file: " + _lookupsManifestModule.getName());
+                }
+            }
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            response.put("lookups", lookups);
+            return response;
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class PopulateLookupsAction extends BaseLookupsAction
+    {
+        private void loadFile(UserSchema schema, String tableName, Resource resource, boolean isDelete) throws SQLException, BatchValidationException, QueryUpdateServiceException, IOException
+        {
+            TableInfo table = schema.getTable(tableName);
+            if (table == null)
+            {
+                // If table not created yet just skip on delete
+                if (isDelete)
+                    return;
+
+                throw new IllegalArgumentException("Could not find " + tableName + " table in " + schema.getName() + " schema in " + getContainer().getPath());
+            }
+            QueryUpdateService updateService = table.getUpdateService();
+            if (updateService == null)
+            {
+                throw new IllegalArgumentException("No query update service for " + schema.getName() + "." + tableName + ".");
+            }
+
+            updateService.truncateRows(getUser(), getContainer(), null, null);
+
+            if (!isDelete)
+            {
+                DataLoader loader = DataLoader.get().createLoader(resource, true, null, TabLoader.TSV_FILE_TYPE);
+
+                BatchValidationException batchErrors = new BatchValidationException();
+                AuditBehaviorType behaviorType = table.getAuditBehavior();
+                TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
+                if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                    auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                AbstractQueryImportAction.importData(loader, table, updateService, QueryUpdateService.InsertOption.INSERT,
+                        new HashMap<>(), batchErrors, behaviorType, auditEvent, null, getUser(), getContainer(), null);
+
+                if (batchErrors.hasErrors())
+                {
+                    throw batchErrors;
+                }
+            }
+        }
+
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (null == _lookupsManifest || null == _lookupSets)
+                return null;
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            HtmlStringBuilder responseText = HtmlStringBuilder.of((form.isDelete() ? "Deleting" : "Loading") + " lookups from module: " + _lookupsManifestModule.getName() + "\n");
+
+            UserSchema schema = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr_lookups");
+            if (schema == null)
+            {
+                throw new IllegalArgumentException("Could not find ehr_lookups schema in " + getContainer().getPath());
+            }
+
+            responseText.append("Lookup tables: \n");
+            try (DbScope.Transaction transaction = schema.getDbSchema().getScope().ensureTransaction())
+            {
+                if (_lookup.equals("All") || _lookup.equals("lookup_sets"))
+                {
+                    loadFile(schema, "lookup_sets", _lookupSets, form.isDelete());
+                    responseText.append("lookup_sets\n");
+                }
+
+                BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
+                String line;
+                String header = null;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    if (header == null)
+                    {
+                        header = line;
+                        continue;
+                    }
+
+                    String [] cols = line.split("\t");
+
+                    if (!_lookup.equals("All") && !_lookup.equals(cols[0]))
+                        continue;
+
+                    Resource r = _lookupsManifestModule.getModuleResource("data/" + cols[0] + ".tsv");
+                    if (r != null && r.exists())
+                    {
+                        responseText.append(cols[0] + "\n");
+                        loadFile(schema, cols[0], r, form.isDelete());
+                    }
+                    else
+                    {
+                        responseText.append(cols[0] + " - file not found\n");
+                    }
+                }
+
+                transaction.commit();
+            }
+
+            responseText.append((form.isDelete() ? "Deleting" : "Loading") + " lookups is complete.");
+            response.put("result", responseText);
+            response.put("success", true);
+            return response;
+
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public class PopulateReportsAction extends MutatingApiAction<PopulateLookupsForm>
+    {
+        private final String _reportsPath = "reports/reports.tsv";
+        private final String _additionalReportsPath = "reports/additionalReports.tsv";
+        private Resource _reportsResource;
+        private Resource _additionalReportsResource;
+
+        private Module _additionalReportsModule;
+
+        @Override
+        public void validateForm(PopulateLookupsForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            Module ehrModule = ModuleLoader.getInstance().getModule("ehr");
+            if (null == ehrModule)
+            {
+                errors.reject(ERROR_MSG, "EHR module missing.");
+            }
+            else if (!form.isDelete())
+            {
+                _reportsResource = ehrModule.getModuleResource(_reportsPath);
+                if (_reportsResource == null || !_reportsResource.exists())
+                    errors.reject(ERROR_MSG, "Reports file '" + _reportsPath + "' not found in EHR module.");
+
+                ModuleProperty mp = ehrModule.getModuleProperties().get(EHRManager.EHRCustomModulePropName);
+                if (mp == null || mp.getEffectiveValue(getContainer()) == null)
+                {
+                    _log.warn("Attempted to access EHRCustomModule Module Property, which has not been set for this folder");
+                }
+                else
+                {
+                    _additionalReportsModule = ModuleLoader.getInstance().getModule(mp.getEffectiveValue(getContainer()));
+                    if (null != _additionalReportsModule)
+                    {
+                        _additionalReportsResource = _additionalReportsModule.getModuleResource(_additionalReportsPath);
+                        if (_additionalReportsResource == null || !_additionalReportsResource.exists())
+                            _log.info("No additional reports found in " + mp.getEffectiveValue(getContainer()) + " module.");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public Object execute(PopulateLookupsForm form, BindException errors) throws Exception
+        {
+            // Should reject before getting here
+            if (!form.isDelete() && null == _reportsResource)
+                return null;
+
+            ApiSimpleResponse response = new ApiSimpleResponse();
+            HtmlStringBuilder responseText;
+
+            if (form.isDelete())
+            {
+                responseText = HtmlStringBuilder.of("Deleting reports\n");
+            }
+            else
+            {
+                responseText = HtmlStringBuilder.of("Populating reports from EHR module\n");
+            }
+
+            UserSchema schema = QueryService.get().getUserSchema(getUser(), getContainer(), "ehr");
+            if (schema == null)
+            {
+                throw new IllegalArgumentException("Could not find EHR schema in " + getContainer().getPath());
+            }
+            TableInfo table = schema.getTable("reports");
+            if (table == null)
+            {
+                throw new IllegalArgumentException("Could not find reports table in EHR schema in " + getContainer().getPath());
+            }
+            QueryUpdateService updateService = table.getUpdateService();
+            if (updateService == null)
+            {
+                throw new IllegalArgumentException("No query update service for ehr.reports.");
+            }
+
+            try (DbScope.Transaction transaction = table.getSchema().getScope().ensureTransaction())
+            {
+                updateService.truncateRows(getUser(), getContainer(), null, null);
+
+                if (!form.isDelete())
+                {
+                    // Initially insert core reports
+                    DataLoader loader = DataLoader.get().createLoader(_reportsResource, true, null, TabLoader.TSV_FILE_TYPE);
+
+                    BatchValidationException batchErrors = new BatchValidationException();
+                    AuditBehaviorType behaviorType = table.getAuditBehavior();
+                    TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
+                    if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                        auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                    DataIteratorContext context = new DataIteratorContext(batchErrors);
+
+                    Map<Enum, Object> configParameters = new HashMap<>();
+                    configParameters.put(DetailedAuditLogDataIterator.AuditConfigs.AuditBehavior, behaviorType);
+
+                    context.setConfigParameters(configParameters);
+                    context.setInsertOption(QueryUpdateService.InsertOption.INSERT);
+
+                    AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
+
+                    if (batchErrors.hasErrors())
+                    {
+                        throw batchErrors;
+                    }
+
+                    if (null != _additionalReportsResource)
+                    {
+                        // Merge in additional reports (based on report name) with replace option
+                        responseText.append("Populating additional reports from " + _additionalReportsModule.getName() + " module\n");
+                        if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
+                            auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
+
+                        context = new DataIteratorContext(batchErrors);
+                        context.setConfigParameters(configParameters);
+                        context.setInsertOption(QueryUpdateService.InsertOption.REPLACE);
+                        context.getAlternateKeys().add("reportname");
+
+                        loader = DataLoader.get().createLoader(_additionalReportsResource, true, null, TabLoader.TSV_FILE_TYPE);
+                        AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
+                    }
+                }
+                transaction.commit();
+            }
+
+            responseText.append((form.isDelete() ? "Deleting" : "Loading") + " reports is complete.");
+            response.put("result", responseText);
+            response.put("success", true);
+            return response;
         }
     }
 
@@ -1315,7 +1718,7 @@ public class EHRController extends SpringActionController
         {
             Map<String, Object> resultProperties = new HashMap<>();
 
-            List<Map<String, Object>> ret = new ArrayList<>();
+            List<JSONObject> ret = new ArrayList<>();
 
             if (form.getLinkTypes() == null)
             {
@@ -1440,10 +1843,10 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            DataEntryForm def = DataEntryManager.get().getFormByName(formType, getContainer(), getUser());
             if (def == null)
             {
-                errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
+                errors.reject(ERROR_MSG, "Unknown form type: " + formType);
                 return null;
             }
 
@@ -1821,7 +2224,6 @@ public class EHRController extends SpringActionController
             response.put("columnModel", columnModel);
 
             return response;
-
         }
     }
 

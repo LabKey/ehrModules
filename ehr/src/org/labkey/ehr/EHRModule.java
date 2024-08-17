@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import jakarta.servlet.ServletContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.demographics.ActiveAssignmentsDemographicsProvider;
+import org.labkey.api.ehr.demographics.ActiveGroupsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ActiveProblemsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.api.ehr.demographics.ArrivalDemographicsProvider;
@@ -36,6 +38,7 @@ import org.labkey.api.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.api.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.api.ehr.demographics.MostRecentWeightDemographicsProvider;
 import org.labkey.api.ehr.demographics.WeightsDemographicsProvider;
+import org.labkey.api.ehr.history.DefaultAssignmentDataSource;
 import org.labkey.api.ehr.history.DefaultCasesCloseDataSource;
 import org.labkey.api.ehr.history.DefaultCasesDataSource;
 import org.labkey.api.ehr.history.DefaultTreatmentOrdersDataSource;
@@ -72,7 +75,6 @@ import org.labkey.ehr.dataentry.RecordDeleteRunner;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.EHRDemographicsServiceImpl;
 import org.labkey.ehr.demographics.EHRProjectValidator;
-import org.labkey.ehr.history.DefaultAssignmentDataSource;
 import org.labkey.ehr.history.DefaultBloodDrawDataSource;
 import org.labkey.ehr.history.DefaultHousingDataSource;
 import org.labkey.ehr.history.DefaultLabworkDataSource;
@@ -108,7 +110,6 @@ import org.labkey.ehr.security.EHRSurgeryEntryRole;
 import org.labkey.ehr.security.EHRTemplateCreatorRole;
 import org.labkey.ehr.security.EHRVeterinarianRole;
 
-import javax.servlet.ServletContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -132,7 +133,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 22.001;
+        return 24.002;
     }
 
     @Override
@@ -166,6 +167,7 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider(this));
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider(this));
+        EHRService.get().registerDemographicsProvider(new ActiveGroupsDemographicsProvider(this));
 
         EHRService.get().setProjectValidator(new EHRProjectValidator());
 

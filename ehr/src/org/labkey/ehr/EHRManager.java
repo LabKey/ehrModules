@@ -111,20 +111,23 @@ public class EHRManager
 {
     private static final EHRManager _instance = new EHRManager();
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
+    public static final String EHRCustomModulePropName = "EHRCustomModule";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
     public static final String EHRDefaultClinicalProjectName = "EHRDefaultClinicalProjectName";
     public static final String EHRCacheDemographicsPropName = "CacheDemographicsOnStartup";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
-    public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
-
+    @Queryable
+    public static final String OBS_REVIEWED = "Reviewed";
+    @Queryable
+    public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
     @Queryable
     public static final String VET_REVIEW = "Vet Review";
     @Queryable
     public static final String VET_ATTENTION = "Vet Attention";
     @Queryable
-    public static final String OBS_REVIEWED = "Reviewed";
-    @Queryable
-    public static final String OBS_CATEGORY_OBSERVATIONS = "Observations";
+    public static final String TECH_REVIEW = "Reviewed";
+
+    public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
     private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
 
@@ -255,8 +258,7 @@ public class EHRManager
     }
     
     /**
-     * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
-     * missing columns and make sure the columns point to the correct propertyURI
+     * The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states.
      */
     public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges)
     {
@@ -388,99 +390,44 @@ public class EHRManager
     /**
      * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
      * missing columns and make sure the columns point to the correct propertyURI
-     * @param c
-     * @param u
-     * @param commitChanges
-     * @return
      */
     public List<String> ensureDatasetPropertyDescriptors(Container c, User u, boolean commitChanges, boolean rebuildIndexes)
     {
         List<String> messages = new ArrayList<>();
 
+        Study study = StudyService.get().getStudy(c);
+        if (study == null) {
+            messages.add("No study in this folder");
+            return messages;
+        }
+
+        List<String> propertyURIs = new ArrayList<>();
+        propertyURIs.add(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI());
+        propertyURIs.add(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI());
+
+        Container sharedContainer = ContainerManager.getSharedContainer();
+        List<PropertyDescriptor> properties = resolveProperties(c, sharedContainer, propertyURIs);
+
+        List<String> optionalPropertyURIs = new ArrayList<>();
+        optionalPropertyURIs.add(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI());
+        optionalPropertyURIs.add(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI());
+
+        List<PropertyDescriptor> optionalProperties = resolveProperties(c, sharedContainer, optionalPropertyURIs);
+
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
-            Study study = StudyService.get().getStudy(c);
-            if (study == null) {
-                messages.add("No study in this folder");
-                return messages;
-            }
-
-            List<String> propertyURIs = new ArrayList<>();
-            propertyURIs.add(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.TASKID.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.REQUESTID.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI());
-            propertyURIs.add(EHRProperties.FORMSORT.getPropertyDescriptor().getPropertyURI());
-
-
-            List<PropertyDescriptor> properties = new ArrayList<>();
-            Container sharedContainer = ContainerManager.getSharedContainer();
-            for (String propertyURI : propertyURIs)
-            {
-                PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
-                if (pd == null)
-                {
-                    _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
-                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
-                    if (pdArray.length > 0)
-                    {
-                        for (PropertyDescriptor p : pdArray)
-                        {
-                            _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
-                        }
-                    }
-                    else
-                    {
-                        _log.error("no matching property descriptors found in database");
-                    }
-                }
-                else
-                {
-                    properties.add(pd);
-                }
-            }
-
-            List<String> optionalPropertyURIs = new ArrayList<>();
-            optionalPropertyURIs.add(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.VETREVIEW.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.VETREVIEWDATE.getPropertyDescriptor().getPropertyURI());
-            optionalPropertyURIs.add(EHRProperties.DATEFINALIZED.getPropertyDescriptor().getPropertyURI());
-
-            List<PropertyDescriptor> optionalProperties = new ArrayList<>();
-            for (String propertyURI : optionalPropertyURIs)
-            {
-                PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
-                if (pd == null)
-                {
-                    _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                    String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
-                    PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
-                    if (pdArray.length > 0)
-                    {
-                        for (PropertyDescriptor p : pdArray)
-                        {
-                            _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
-                        }
-                    }
-                    else
-                    {
-                        _log.error("no matching property descriptors found in database");
-                    }
-                }
-                else
-                {
-                    optionalProperties.add(pd);
-                }
-            }
-
             List<? extends Dataset> datasets = study.getDatasets();
 
             // Hack - adding a shared EHR property to a domain ends up reparenting it to the EHR folder. They
@@ -497,31 +444,10 @@ public class EHRManager
                 List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
                 List<PropertyDescriptor> props = new ArrayList<>(properties);
-                if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
+                if (dataset.getViewCategory() != null && "ClinPath".equalsIgnoreCase(dataset.getViewCategory().getLabel()) && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
                     String propertyURI = EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI();
-                    PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
-                    if (pd == null)
-                    {
-                        _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
-                        String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
-                        PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
-                        if (pdArray.length > 0)
-                        {
-                            for (PropertyDescriptor p : pdArray)
-                            {
-                                _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
-                            }
-                        }
-                        else
-                        {
-                            _log.error("no matching property descriptors found in database");
-                        }
-                    }
-                    else
-                    {
-                        props.add(pd);
-                    }
+                    resolveProperty(c, sharedContainer, props, propertyURI);
                 }
 
                 for (PropertyDescriptor pd : props)
@@ -580,7 +506,7 @@ public class EHRManager
                         {
                             if (!dp.getPropertyURI().equals(pd.getPropertyURI()))
                             {
-                                messages.add("Incorrect propertyURI on optional property \"" + pd.getName() + "\" for dataset: " + dataset.getName() +".  Needs to be updated.");
+                                messages.add("Incorrect propertyURI on optional property \"" + pd.getName() + "\" for dataset: " + dataset.getName() + ".  Needs to be updated.");
                                 if (commitChanges)
                                 {
                                     toUpdate.add(pd);
@@ -616,7 +542,7 @@ public class EHRManager
             {
                 SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
                 long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
-                messages.add("Non-demographics datasets updated to use objectId as a managed key: "+ total);
+                messages.add("Non-demographics datasets updated to use objectId as a managed key: " + total);
             }
             else
             {
@@ -625,16 +551,38 @@ public class EHRManager
                 if (total > 0)
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
+            transaction.commit();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+        catch (ChangePropertyDescriptorException e)
+        {
+            throw new RuntimeException(e);
+        }
 
+        // Fetch all the TableInfos outside of a transaction to reduce chances for deadlocks
+        List<Pair<Dataset, TableInfo>> datasetTables = new ArrayList<>();
+        for (Dataset d : study.getDatasets())
+        {
+            TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
+            datasetTables.add(Pair.of(d, realTable));
+        }
+
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+        {
             //add indexes
             String[][] toIndex = new String[][]{{"taskid"}};
             String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
 
             Set<String> distinctIndexes = new HashSet<>();
-            for (Dataset d : study.getDatasets())
+
+            for (Pair<Dataset, TableInfo> datasetTable : datasetTables)
             {
+                Dataset d = datasetTable.first;
                 String tableName = d.getDomain().getStorageTableName();
-                TableInfo realTable = StorageProvisioner.createTableInfo(d.getDomain());
+                TableInfo realTable = datasetTable.second;
 
                 List<String[]> toAdd = new ArrayList<>();
                 Collections.addAll(toAdd, toIndex);
@@ -941,7 +889,7 @@ public class EHRManager
                     if (ds != null)
                     {
                         _log.info("increasing size of remark column for dataset: " + label);
-                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max);");
+                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max)");
                         SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
                         se.execute(sql);
                     }
@@ -956,14 +904,45 @@ public class EHRManager
         catch (SQLException e)
         {
             throw new RuntimeSQLException(e);
-
-        }
-        catch (ChangePropertyDescriptorException e)
-        {
-            throw new RuntimeException(e);
         }
 
         return messages;
+    }
+
+    private List<PropertyDescriptor> resolveProperties(Container c, Container sharedContainer, List<String> propertyURIs)
+    {
+        List<PropertyDescriptor> properties = new ArrayList<>();
+        for (String propertyURI : propertyURIs)
+        {
+            resolveProperty(c, sharedContainer, properties, propertyURI);
+        }
+        return properties;
+    }
+
+    private void resolveProperty(Container c, Container sharedContainer, List<PropertyDescriptor> properties, String propertyURI)
+    {
+        PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
+        if (pd == null)
+        {
+            _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
+            String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
+            PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
+            if (pdArray.length > 0)
+            {
+                for (PropertyDescriptor p : pdArray)
+                {
+                    _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
+                }
+            }
+            else
+            {
+                _log.error("no matching property descriptors found in database");
+            }
+        }
+        else
+        {
+            properties.add(pd);
+        }
     }
 
     //only sqlserver enterprise edition supports index compression.  team city is not enterprise
@@ -1117,7 +1096,7 @@ public class EHRManager
     private void rebuildIndex(String table, String indexName)
     {
         DbSchema ehr = EHRSchema.getInstance().getSchema();
-        SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
+        SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW)");
         SqlExecutor se = new SqlExecutor(ehr);
         se.execute(sql);
     }
@@ -1305,7 +1284,10 @@ public class EHRManager
 
                 if (!requestsToQueue.isEmpty())
                 {
-                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, null, new HashMap<>());
+                    BatchValidationException batchValidationException = new BatchValidationException();
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, batchValidationException, null, new HashMap<>());
+                    if (batchValidationException.hasErrors())
+                        throw batchValidationException;
                 }
             }
             catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
@@ -1535,7 +1517,12 @@ public class EHRManager
         try
         {
             if (rows.size() > 0)
-                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, null, getExtraContext());
+            {
+                BatchValidationException batchValidationException = new BatchValidationException();
+                flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, batchValidationException, null, getExtraContext());
+                if (batchValidationException.hasErrors())
+                    throw batchValidationException;
+            }
 
             return distinctIds;
         }

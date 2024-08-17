@@ -96,7 +96,7 @@ public class BirthFormType  extends TaskForm
     {
         List<String> ret = super.getButtonConfigs();
 
-        List<String> defaultButtons = new ArrayList<String>();
+        List<String> defaultButtons = new ArrayList<>();
         defaultButtons.add("SAVEDRAFT");
         defaultButtons.add("BIRTHARRIVALCLOSE");
         defaultButtons.add("BIRTHARRIVALREVIEW");

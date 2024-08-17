@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class SimpleFormPanelSection extends SimpleFormSection
 {
-    private boolean _createRecordOnLoad;
+    private final boolean _createRecordOnLoad;
 
     public SimpleFormPanelSection(String schemaName, String queryName, String label)
     {

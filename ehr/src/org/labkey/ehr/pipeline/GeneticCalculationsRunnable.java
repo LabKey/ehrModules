@@ -31,6 +31,7 @@ import org.labkey.api.pipeline.file.AbstractFileAnalysisProvider;
 import org.labkey.api.pipeline.file.FileAnalysisTaskPipeline;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.StringUtilsLabKey;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
@@ -73,25 +74,27 @@ public class GeneticCalculationsRunnable
         {
             String taskIdString =  FileAnalysisTaskPipeline.class.getName() + ":" + KINSHIP_PIPELINE_NAME;
             TaskId taskId = new TaskId(taskIdString);
-            TaskPipeline taskPipeline = PipelineJobService.get().getTaskPipeline(taskId);
+            TaskPipeline<?> taskPipeline = PipelineJobService.get().getTaskPipeline(taskId);
             if (taskPipeline == null)
                 throw new PipelineJobException("Unable to find kinship pipeline: " + taskId);
 
             AbstractFileAnalysisProvider provider = (AbstractFileAnalysisProvider) PipelineService.get().getPipelineProvider("File Analysis");
-            AbstractFileAnalysisProtocolFactory factory = provider.getProtocolFactory(taskPipeline);
+            AbstractFileAnalysisProtocolFactory<?> factory = provider.getProtocolFactory(taskPipeline);
             ViewBackgroundInfo bg = new ViewBackgroundInfo(c, u, new ActionURL());
             PipeRoot root = PipelineService.get().getPipelineRootSetting(c);
             String protocolName = "EHR Kinship Calculation";
             String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<bioml>\n" +
-                    (allowRunningDuringDay ? "\t<note label=\"allowRunningDuringDay\" type=\"input\">true</note>" : "") +
+                    "\t<note label=\"allowRunningDuringDay\" type=\"input\">" + allowRunningDuringDay + "</note>" +
                 "</bioml>";
 
-            AbstractFileAnalysisProtocol protocol = factory.createProtocolInstance(protocolName, "", xml);
+            AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml);
             if (protocol == null)
             {
                 return;
             }
+
+            protocol.setTimestampLog(true);
 
             File fileParameters = protocol.getParametersFile(root.getRootPath(), root);
             if (!fileParameters.exists())
@@ -109,7 +112,7 @@ public class GeneticCalculationsRunnable
 
             defaultXml.getParentFile().mkdirs();
             defaultXml.createNewFile();
-            try (FileWriter w = new FileWriter(defaultXml))
+            try (FileWriter w = new FileWriter(defaultXml, StringUtilsLabKey.DEFAULT_CHARSET))
             {
                 w.write(xml);
             }
@@ -133,11 +136,7 @@ public class GeneticCalculationsRunnable
         {
             throw new ConfigurationException("The EHR kinship pipeline has not been configured on this server", e);
         }
-        catch (IOException e)
-        {
-            throw new PipelineJobException(e);
-        }
-        catch (PipelineValidationException e)
+        catch (IOException | PipelineValidationException e)
         {
             throw new PipelineJobException(e);
         }

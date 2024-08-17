@@ -197,6 +197,7 @@ public class EHRSecurityManager
         }
 
         datasets = s.getDatasets();
+
         DataEntryManager.get().getCache().put(cacheKey, datasets);
         return datasets;
     }
@@ -242,6 +243,7 @@ public class EHRSecurityManager
             qcStates.put(qc.getLabel(), qc);
         }
 
+        qcStates = Collections.unmodifiableMap(qcStates);
         DataEntryManager.get().getCache().put(getCacheKey(study, QCSTATE_CACHE_ID), qcStates);
 
         return qcStates;

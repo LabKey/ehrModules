@@ -25,17 +25,17 @@
 
     String renderTarget = "ehrDiv-" + def.getName();
 %>
-<div id='<%=text(renderTarget)%>'></div>
+<div id='<%=unsafe(renderTarget)%>'></div>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=getScriptNonce()%>">
 
     Ext4.onReady(function(){
         EHR.Security.init({
             scope: this,
             success: function(){
                 Ext4.create(<%=q(formClass)%>, {
-                    formConfig: <%=text(json.toString())%>
-                }).render('<%=text(renderTarget)%>');
+                    formConfig: <%=json%>
+                }).render(<%=q(renderTarget)%>);
             }
         });
     });

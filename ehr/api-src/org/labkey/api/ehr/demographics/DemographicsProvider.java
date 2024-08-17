@@ -39,6 +39,16 @@ public interface DemographicsProvider
 
     boolean isAvailable(Container c, User u);
 
+    /**
+     * Allow a provider to run the demographics cache update (triggered from announceIdsModified) in another thread.
+     * This can ensure triggers don't time out if the cache update takes a long time, such as when there are a large amount
+     * of related Ids to process. Note: if switching this to true, the saved data will likely be in a different state than
+     * when the sync update is completed within a trigger, so the provider will likely need to be updated to account.
+     */
+    default boolean isAsync() {
+        return false;
+    }
+
     Map<String, Map<String, Object>> getProperties(DefaultSchema defaultSchema, Collection<String> ids);
 
     /**

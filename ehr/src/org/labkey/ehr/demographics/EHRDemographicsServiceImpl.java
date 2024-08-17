@@ -25,6 +25,7 @@ import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -59,7 +60,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.dao.DeadlockLoserDataAccessException;
+import org.springframework.dao.PessimisticLockingFailureException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -235,6 +236,13 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), ids, false);
     }
 
+    @Override
+    public void recalculateForAllIdsInCache(final Container c, final String schema, final String query, final boolean async)
+    {
+        List<String> cachedIds = _cache.getKeys().stream().map(x -> x.replace(getCacheKeyPrefix(c), "")).toList();
+        reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), cachedIds, async);
+    }
+
     public void reportDataChange(final Container c, final List<Pair<String, String>> changed, final List<String> ids, boolean async)
     {
         final User u = EHRService.get().getEHRUser(c);
@@ -261,7 +269,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     // Issue 35101 - set up environment so auditing in compliance code works
                     QueryService.get().setEnvironment(QueryService.Environment.USER, u);
                     QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-                    doUpdateRecords(c, u, changed, copiedIds);
+                    doUpdateRecords(c, u, changed, copiedIds, true);
                 }
                 finally
                 {
@@ -271,11 +279,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
         else
         {
-            doUpdateRecords(c, u, changed, copiedIds);
+            doUpdateRecords(c, u, changed, copiedIds, false);
         }
     }
 
-    private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids)
+    private void doUpdateRecords(Container c, User u, List<Pair<String, String>> changed, List<String> ids, boolean async)
     {
         try
         {
@@ -332,7 +340,38 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             for (DemographicsProvider p : needsUpdate)
             {
-                updateForProvider(defaultSchema, p, ids, true);
+                // If not already in an async thread, and the provider is async, defer just this provider update to an async thread
+                if (!async && p.isAsync())
+                {
+                    try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
+                    {
+                        // Add post commit task to run provider update in another thread once this transaction is complete.
+                        transaction.addCommitTask(() ->
+                        {
+                            JobRunner.getDefault().execute(() ->
+                            {
+                                try
+                                {
+                                    // Set up environment so auditing in compliance code works
+                                    QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
+
+                                    // Update provider in another thread
+                                    updateForProvider(defaultSchema, p, ids, true, true);
+                                }
+                                finally
+                                {
+                                    QueryService.get().clearEnvironment();
+                                }
+                            });
+                        }, DbScope.CommitTaskOption.POSTCOMMIT);
+
+                        transaction.commit();
+                    }
+                }
+                else {
+                    updateForProvider(defaultSchema, p, ids, true, async);
+                }
             }
         }
         catch (Exception e)
@@ -342,7 +381,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         }
     }
 
-    private void updateForProvider(DefaultSchema defaultSchema, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate)
+    private void updateForProvider(DefaultSchema defaultSchema, DemographicsProvider p, Collection<String> ids, boolean doAfterUpdate, boolean async)
     {
         CPUTimer timer = new CPUTimer(p.getName());
         timer.start();
@@ -387,7 +426,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
             }
 
-            if (!uncachedIds.isEmpty())
+            if (!uncachedIds.isEmpty() && !async)
             {
                 _log.warn("Animal record not found in cache for: " + uncachedIds + ". Not a problem if these are newly inserted animals. Discovered during update of provider: " + p.getName());
             }
@@ -396,7 +435,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             if (!idsToUpdate.isEmpty())
             {
                 _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
-                updateForProvider(defaultSchema, p, idsToUpdate, false);
+                updateForProvider(defaultSchema, p, idsToUpdate, false, async);
             }
         }
 
@@ -429,7 +468,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 }
 
             }
-            catch (DeadlockLoserDataAccessException e)
+            catch (PessimisticLockingFailureException e)
             {
                 _log.error("EHRDemographicsServiceImpl encountered a deadlock", e);
             }

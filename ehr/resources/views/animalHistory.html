@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=scriptNonce%>">
 
     Ext4.onReady(function (){
         var webpart = <%=webpartContext%>;
@@ -10,7 +10,8 @@
             defaultReport: ctx.DefaultAnimalHistoryReport,
             defaultTab: 'General',
             showFilterOptionsTitle: true,
-            renderTo: webpart.wrapperDivId
+            renderTo: webpart.wrapperDivId,
+            caseInsensitive: true
         });
     });
 

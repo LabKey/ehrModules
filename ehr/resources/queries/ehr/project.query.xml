@@ -45,8 +45,15 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>project_types</fkTable>
-                            <fkColumnName>value</fkColumnName>
+                            <fkColumnName>type</fkColumnName>
                             <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="investigatorId">
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>investigators</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="project">

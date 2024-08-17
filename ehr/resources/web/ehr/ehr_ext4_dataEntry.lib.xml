@@ -20,6 +20,7 @@
         <script path="ehr/plugin/DataBind.js"/>
         <script path="ehr/plugin/ResizableTextArea.js"/>
         <script path="ehr/plugin/RowEditor.js"/>
+        <script path="ehr/plugin/CollapsibleDataEntryPanel.js"/>
 
         <!--fields-->
         <script path="ehr/form/field/AnimalField.js"/>
@@ -28,6 +29,7 @@
         <script path="ehr/form/field/TimeOfDayField.js" />
         <script path="ehr/form/field/TriggerNumberField.js" />
         <script path="ehr/form/field/AnimalIdGeneratorField.js" />
+        <script path="ehr/form/field/AnimalIdUpperField.js" />
         <script path="ehr/form/field/ProjectIdGeneratorField.js" />
         <script path="ehr/form/field/DrugDoseField.js" />
         <script path="ehr/form/field/DrugVolumeField.js" />
@@ -41,6 +43,7 @@
         <script path="ehr/panel/DataEntryErrorPanel.js"/>
         <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/FormTemplateWindow.js"/>
+        <script path="ehr/window/CreateFormTemplateWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewWindow.js"/>
         <script path="ehr/window/CopyFromRunsWindow.js"/>

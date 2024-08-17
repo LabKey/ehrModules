@@ -21,6 +21,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.JsonWriter;
 import org.labkey.api.security.User;
+import org.labkey.api.util.JsonUtil;
 
 /**
  * Wrapper for the UI component for a single column in a query
@@ -43,11 +44,11 @@ public class FormElement
 
     public JSONObject toJSON(Container c, User u)
     {
-        JSONObject json = new JSONObject();
-
         DisplayColumn dc = _boundCol.getDisplayColumnFactory().createRenderer(_boundCol);
         dc.prepare(c);
-        json.putAll(JsonWriter.getMetaData(dc, null, true, true, true));
+
+        // Preserve nulls as some EHR forms are expecting null fields.
+        JSONObject json = JsonUtil.toJsonPreserveNulls(JsonWriter.getMetaData(dc, null, true, true, true));
 
         json.put("schemaName", _boundCol.getParentTable().getPublicSchemaName());
         json.put("queryName", _boundCol.getParentTable().getPublicName());

@@ -1,0 +1,72 @@
+<script type="text/javascript" nonce="<%=scriptNonce%>">
+
+    createEHRDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext(undefined, ['EHRStudyContainer', 'EHRCustomModule']);
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR",
+            domainGroup: "ehr",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+    createEHRLookupsDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext();
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR_Lookups",
+            domainGroup: "ehr_lookups",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR_Lookups tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+    createEHRBillingDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext();
+
+        LABKEY.Domain.create({
+            module: ctx ? ctx['EHRCustomModule'] : null,
+            domainKind: "EHR_Billing",
+            domainGroup: "ehr_billing",
+            importData: false,
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            success: function () {
+                LABKEY.Utils.alert("Success","EHR_Billing tables updated successfully.");
+            },
+            failure: function (e) {
+                LABKEY.Utils.alert("Error", e.exception);
+            }
+        });
+    }
+
+    LABKEY.Utils.onReady(function(){
+        document.getElementById('createEHRDomainHandler')['onclick'] = function(){ createEHRDomainHandler(); return false; }
+        document.getElementById('createEHRLookupsDomainHandler')['onclick'] = function(){ createEHRLookupsDomainHandler(); return false; }
+        document.getElementById('createEHRBillingDomainHandler')['onclick'] = function(){ createEHRBillingDomainHandler(); return false; }
+    });
+</script>
+
+<html>
+<div style="margin: 20px 0;">
+    <h5><b>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRDomainHandler'>Load EHR table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRLookupsDomainHandler'>Load EHR_Lookup table definitions</a>
+        <a style="margin-right: 30px; cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
+    </b></h5>
+</div>
+</html>

@@ -53,7 +53,7 @@
                         <columnTitle>Latest Weight (kg)</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=weight&amp;
-                            query.date~eq=${LastestWeightDate}&amp;
+                            query.date~eq=${LatestWeightDate}&amp;
                             query.sort=-date
                         </url>
                     </column>

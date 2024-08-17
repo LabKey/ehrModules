@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ehr;
 
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
@@ -31,6 +32,7 @@ import org.labkey.api.ehr.demographics.ProjectValidator;
 import org.labkey.api.ehr.history.*;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
@@ -43,6 +45,7 @@ import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -77,6 +80,13 @@ abstract public class EHRService
     abstract public Set<Module> getRegisteredModules();
 
     abstract public void registerLabworkType(LabworkType type);
+
+    /** Labwork functions exposed in API for custom data sources and providers */
+    abstract public boolean showLabworkPerformedBy(Container c, @Nullable String type);
+
+    abstract public Map<String, List<String>> getLabworkResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
+
+    abstract public Collection<LabworkType> getLabworkTypes(Container c);
 
     /**
      * Registers an additional JavaScript trigger script that runs whenever the core EHR's trigger script is initialized,
@@ -119,6 +129,8 @@ abstract public class EHRService
      * demographics cache and similar utility operations
      */
     abstract public User getEHRUser(Container c);
+
+    abstract public User getEHRUser(Container c, boolean logOnError);
 
     abstract public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category);
 
@@ -201,6 +213,10 @@ abstract public class EHRService
     abstract public ActionURL getDataEntryFormActionURL(Container c);
 
     abstract public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys);
+
+    abstract public void registerTriggerScriptOption(String name, Object value);
+
+    abstract public Map<String, Object> getTriggerScriptOptions();
 
     public enum FORM_SECTION_LOCATION
     {
@@ -308,4 +324,24 @@ abstract public class EHRService
 
     /** Used to register EHR modules that require the edit url on the grid (with rows having task id values) to navigate to the data entry form **/
     abstract public void addModulePreferringTaskFormEditUI(Module m);
+
+    /** The EHR expects certain QC states to exist. This will inspect the current study and create any missing QC states. **/
+    abstract public List<String> ensureStudyQCStates(Container c, final User u, final boolean commitChanges);
+
+    /**
+     * The EHR has a built-in GeneticsCalculations pipeline job that computes inbreeding and kinship based on the pedigree.
+     * These are normally calculated in R, saved as TSVs, and imported using java code. This method is a separate entrypoint
+     * that allows other code perform the calculations, save the results as TSVs, and then trigger import here.
+     *
+     * A use case is a separate pipeline server that performs the R computation on a cluster, and then triggers the main webserver to import
+     * those results.
+     */
+    abstract public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException;
+
+    /** Applicable for centers who use the model that projects have a reference to a protocol. Caches a protocol for a given project. **/
+    abstract public void updateCachedProtocol(Container c, Integer project, String protocol);
+
+    /** Applicable for centers who use the model that projects have a reference to a protocol. Returns the protocol for a
+     * given project, or null if no protocol is found. **/
+    abstract public String getProtocolForProject(Container c, User u, Integer project);
 }

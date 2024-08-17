@@ -1,0 +1,29 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id/curLocation/room"/>
+        <column name="Id/curLocation/cage"/>
+        <column name="Id"/>
+        <column name="date"/>
+        <column name="timeOfDay"/>
+        <column name="daysElapsed"/>
+
+        <column name="frequency"/>
+        <column name="code"/>
+        <column name="amountAndVolume"/>
+        <column name="route"/>
+        <column name="remark"/>
+        <column name="performedby"/>
+        <column name="startDate"/>
+        <column name="category"/>
+        <column name="reason" />
+        <column name="treatmentStatus" />
+    </columns>
+    <sorts>
+        <sort column="date"/>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
+    </sorts>
+    <filters>
+        <filter column="calculated_status" operator="eq" value="Alive"/>
+    </filters>
+</customView>

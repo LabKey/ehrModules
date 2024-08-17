@@ -1,0 +1,37 @@
+<div id="incorrect-gender"></div>
+<div id="incorrect-species"></div>
+<div id="incorrect-ids"></div>
+<div id="incorrect-age"></div>
+
+<script type="text/javascript" nonce="<%=scriptNonce%>">
+    Ext4.onReady(function (){
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'incorrect-gender',
+            title: 'Parents having incorect gender',
+            schemaName: 'study',
+            queryName: 'parentsIncorrectGender',
+        })
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'incorrect-species',
+            title: 'Parents having different species than offspring',
+            schemaName: 'study',
+            queryName: 'parentsDifferentSpecies',
+        })
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'incorrect-ids',
+            title: 'Parents that are listed as both dam and sire',
+            schemaName: 'study',
+            queryName: 'animalIdsAsDamAndSire',
+        })
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'incorrect-age',
+            title: 'Dam/Sire younger than offspring',
+            schemaName: 'study',
+            queryName: 'parentsYoungerThanOffspring',
+        })
+    });
+</script>

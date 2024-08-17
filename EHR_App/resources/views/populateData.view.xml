@@ -1,0 +1,8 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Populate Initial Data">
+    <permissionClasses>
+        <permissionClass name="org.labkey.api.security.permissions.AdminPermission"/>
+    </permissionClasses>
+    <dependencies>
+        <dependency path="ehr.context" />
+    </dependencies>
+</view>

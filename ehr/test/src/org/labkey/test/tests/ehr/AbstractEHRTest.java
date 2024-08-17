@@ -16,11 +16,11 @@
 package org.labkey.test.tests.ehr;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
@@ -38,7 +38,6 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
-import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
@@ -179,12 +178,24 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             log("EHR test has too many hard coded links and special actions to crawl effectively. Skipping crawl.");
     }
 
+    protected boolean shouldValidateQueries()
+    {
+        return false;
+    }
+
     @Override
     public void validateQueries(boolean validateSubfolders)
     {
-        //NOTE: the queries are also validated as part of study import
-        //also, validation takes place on the project root, while the EHR and required datasets are loaded into a subfolder
-        log("Skipping query validation.");
+        if (shouldValidateQueries())
+        {
+            validateQueries(true, 300000);
+        }
+        else
+        {
+            //NOTE: the queries are also validated as part of study import
+            //also, validation takes place on the project root, while the EHR and required datasets are loaded into a subfolder
+            log("Skipping query validation.");
+        }
     }
 
     protected Pattern[] getIgnoredElements()
@@ -218,7 +229,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         String[] fields;
         Object[][] data;
-        PostCommand<?> insertCommand;
+        SimplePostCommand insertCommand;
 
         //insert into demographics
         log("Creating test subjects");
@@ -287,6 +298,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         insertCommand = getApiHelper().prepareInsertCommand("study", "Assignment", "lsid", fields, data);
         getApiHelper().deleteAllRecords("study", "Assignment", new Filter("Id", StringUtils.join(SUBJECTS, ";"), Filter.Operator.IN));
         getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), insertCommand, getExtraContext());
+
+        primeCaches();
     }
 
     @Override
@@ -340,7 +353,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
         setPipelineRoot(path.getPath());
 
-        beginAt(WebTestHelper.getBaseURL() + "/pipeline-status/" + getContainerPath() + "/begin.view");
+        beginAt(WebTestHelper.getBaseURL() + "/" + getContainerPath() + "/pipeline-status-begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
 
         _fileBrowserHelper.expandFileBrowserRootNode();
@@ -370,7 +383,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     /** Hook for center-specific setup that needs to happen after the containers are created but before the study is imported */
-    protected void doExtraPreStudyImportSetup()
+    protected void doExtraPreStudyImportSetup() throws IOException, CommandException
     {
 
     }
@@ -381,17 +394,18 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         initProject("EHR");
     }
 
-    protected void initProject(String type) throws Exception
+    protected void initCreatedProject() throws Exception
     {
-        createProjectAndFolders(type);
         setFormatStrings();
         setEHRModuleProperties();
         createUsersandPermissions();//note: we create the users prior to study import, b/c that user is used by TableCustomizers
 
         doExtraPreStudyImportSetup();
 
-        populateInitialData();
+        // QC States added before populating data where they may be needed
         defineQCStates();
+        populateInitialData();
+
         // Do this first to establish the QC states before importing
         importStudy();
         disableMiniProfiler();
@@ -403,6 +417,13 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         primeCaches();
     }
 
+    protected void initProject(String type) throws Exception
+    {
+        createProjectAndFolders(type);
+        initCreatedProject();
+    }
+
+
     @LogMethod(quiet = true)
     protected void populate(@LoggedParam String tableLabel)
     {
@@ -410,17 +431,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Populate Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton("Populate " + tableLabel, 0);
-        confirmPopulate();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
-    }
-
-    protected void confirmPopulate()
-    {
-        // Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
@@ -430,17 +445,11 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Delete Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
-        confirmDelete();
         if (completeEl.size() > 0)
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
-    }
-
-    protected void confirmDelete()
-    {
-        //Confirmation only necessary in CNPRC
     }
 
     @LogMethod(quiet = true)
@@ -527,7 +536,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("inves", DUMMY_INVES);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     @LogMethod
@@ -550,7 +559,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("research", true);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     @LogMethod
@@ -569,12 +578,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         rowMap.put("housingCondition", 1);
         insertCmd.addRow(rowMap);
 
-        insertCmd.execute(createDefaultConnection(false), getContainerPath());
+        insertCmd.execute(createDefaultConnection(), getContainerPath());
     }
 
     protected void deleteIfNeeded(String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
-        Connection cn = createDefaultConnection(false);
+        Connection cn = createDefaultConnection();
 
         SelectRowsCommand selectCmd = new SelectRowsCommand(schemaName, queryName);
         selectCmd.addFilter(new Filter(pkName, map.get(pkName)));
@@ -741,15 +750,21 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     @LogMethod
     private void setEhrUserPasswords()
     {
-        setInitialPassword(DATA_ADMIN.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(REQUESTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(BASIC_SUBMITTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(FULL_SUBMITTER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(FULL_UPDATER.getEmail(), PasswordUtil.getPassword());
-        setInitialPassword(REQUEST_ADMIN.getEmail(), PasswordUtil.getPassword());
+        setInitialPassword(DATA_ADMIN.getEmail());
+        setInitialPassword(REQUESTER.getEmail());
+        setInitialPassword(BASIC_SUBMITTER.getEmail());
+        setInitialPassword(FULL_SUBMITTER.getEmail());
+        setInitialPassword(FULL_UPDATER.getEmail());
+        setInitialPassword(REQUEST_ADMIN.getEmail());
     }
 
-    protected static final ArrayList<Permission> allowedActions = new ArrayList<Permission>()
+    protected void validateDemographicsCache()
+    {
+        beginAt(WebTestHelper.buildURL("ehr", getContainerPath(), "cacheLivingAnimals", Map.of("validateOnly", "true")));
+        waitAndClick(WAIT_FOR_JAVASCRIPT, Locator.lkButton("OK"), WAIT_FOR_PAGE * 4);
+    }
+
+    protected static final ArrayList<Permission> allowedActions = new ArrayList<>()
     {
         {
             // Data Admin - Users with this role are permitted to make any edits to datasets

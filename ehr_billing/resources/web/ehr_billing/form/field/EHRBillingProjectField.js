@@ -44,7 +44,7 @@ Ext4.define('EHR_Billing.form.field.EHRBillingProjectField', {
 
     //can be overridden by child modules
     getInnerTpl: function(){
-        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["inves"] ? "(" + (values["inves"] ? values["inves"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["inves"] ? ")" : "")]}&nbsp;</span>'];
+        return ['<span style="white-space:nowrap;">{[LABKEY.Utils.encodeHtml(values["displayName"] + " " + (values["inves"] ? "(" + (values["inves"] ? values["inves"] : "") : "") + (values["account"] ? ": " + values["account"] : "") + (values["inves"] ? ")" : ""))]}&nbsp;</span>'];
     },
 
     getStoreCfg: function(){

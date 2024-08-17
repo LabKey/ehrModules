@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<etl xmlns="http://labkey.org/etl/xml">
+    <!-- Change my name -->
+    <name>Animal Template</name>
+    <description>Animal Id ETL Template (see documentation)</description>
+    <transforms>
+        <transform id="step1" type="org.labkey.di.pipeline.TransformTask">
+            <description>Copy Animal Data to Animal Source</description>
+            <!-- For source, update folderPath to the folder path of your EHR folder using dot notation. queryName can be
+            demographics or another query if you want to copy in a subset of animals -->
+            <source sourceContainerPath="myEHRFolderPath" schemaName="study" queryName="demographics">
+                <sourceColumns>
+                    <column>Id</column>
+                </sourceColumns>
+            </source>
+            <destination schemaName="exp.data" queryName="Animal" targetOption="merge" />
+        </transform>
+    </transforms>
+    <incrementalFilter className="ModifiedSinceFilterStrategy" timestampColumnName="modified">
+        <!-- For deletedRowsSource, update folderPath to the folder path of your EHR folder using dot notation.
+         DemographicsDeleted is a query in the EHR to indicate when an animal record has been deleted using audit logs -->
+        <deletedRowsSource sourceContainerPath="myEHRFolderPath" schemaName="auditLog" queryName="DemographicsDeleted" timestampColumnName="Date" deletedSourceKeyColumnName="Id" targetKeyColumnName="Id"/>
+    </incrementalFilter>
+    <schedule>
+        <poll interval="1d"/>
+    </schedule>
+</etl>

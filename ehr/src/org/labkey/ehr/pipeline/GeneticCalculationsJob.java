@@ -112,6 +112,26 @@ public class GeneticCalculationsJob implements Job
         return _jobKey != null;
     }
 
+    public static boolean isKinshipValidation()
+    {
+        Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
+
+        if (saved.containsKey("kinshipValidation"))
+            return Boolean.parseBoolean(saved.get("kinshipValidation"));
+        else
+            return false;
+    }
+
+    public static boolean isAllowImportDuringBusinessHours()
+    {
+        Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
+
+        if (saved.containsKey("allowImportDuringBusinessHours"))
+            return Boolean.parseBoolean(saved.get("allowImportDuringBusinessHours"));
+        else
+            return false;
+    }
+
     public static boolean isEnabled()
     {
         Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
@@ -142,12 +162,14 @@ public class GeneticCalculationsJob implements Job
         return null;
     }
 
-    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay)
+    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, Boolean isKinshipValidation, Boolean allowImportDuringBusinessHours)
     {
         PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
         props.put("enabled", isEnabled.toString());
         props.put("container", c.getId());
         props.put("hourOfDay", hourOfDay.toString());
+        props.put("kinshipValidation", isKinshipValidation.toString());
+        props.put("allowImportDuringBusinessHours", allowImportDuringBusinessHours.toString());
         props.save();
 
         //unschedule in case settings have changed
@@ -171,7 +193,7 @@ public class GeneticCalculationsJob implements Job
         try
         {
             _log.info("Running Scheduled Genetic Calculations Job");
-            new GeneticCalculationsRunnable().run(c, false);
+            new GeneticCalculationsRunnable().run(c, isAllowImportDuringBusinessHours());
         }
         catch (PipelineJobException e)
         {

@@ -17,6 +17,7 @@ package org.labkey.ehr.query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
@@ -32,6 +33,7 @@ import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
+import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
@@ -39,6 +41,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.ehr.EHRSchema;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -63,6 +66,15 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
         addPermissionMapping(UpdatePermission.class, EHRDataAdminPermission.class);
         addPermissionMapping(DeletePermission.class, EHRDataAdminPermission.class);
         setTitleColumn("testid");
+    }
+
+    @Override
+    public String getDomainURI()
+    {
+        if (_objectUriCol == null)
+            return null;
+
+        return SimpleTableDomainKind.getDomainURI(_userSchema.getName(), EHRSchema.TABLE_LAB_TESTS, getDomainContainer(), _userSchema.getUser());
     }
 
     @Override
@@ -119,10 +131,10 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
         }
 
         @Override
-        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
+        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow, @Nullable Map<Enum, Object> configParameters) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
             normalizeAliases(row);
-            return super.updateRow(user, container, row, oldRow);
+            return super.updateRow(user, container, row, oldRow, configParameters);
         }
     }
 

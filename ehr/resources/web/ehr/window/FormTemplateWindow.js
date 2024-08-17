@@ -31,6 +31,11 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 scope: this,
                 handler: this.onSubmit
             },{
+                text: 'Create',
+                scope: this,
+                handler: this.onCreate,
+                disabled: !EHR.Security.isTemplateCreator()
+            },{
                 text: 'Close',
                 scope: this,
                 handler: function(btn){
@@ -230,6 +235,25 @@ Ext4.define('EHR.window.FormTemplateWindow', {
         return items;
     },
 
+    onCreate: function(btn){
+        var records = [];
+
+        var combos = this.query('combo[section]');
+        Ext4.Array.forEach(combos, function(combo){
+            if (combo.getValue()){
+                records.push([combo.section.name, '', combo.getValue()]);
+            }
+        }, this);
+
+        if (records.length > 0) {
+            Ext4.create('EHR.window.CreateFormTemplateWindow', {
+                formType: this.dataEntryPanel.formConfig.name,
+                records: records,
+                parent: this
+            }).show();
+        }
+    },
+
     onSubmit: function(btn){
         var records = this.getRecordDefaults();
         if (!records){
@@ -306,6 +330,15 @@ Ext4.define('EHR.window.FormTemplateWindow', {
                 store.remove(store.getRange());
                 store.add(recMap[i]);
             }
+        }
+
+        // If expandable, expand sections with template data
+        // This will just have one store with the storeId as the key
+        let storeId = Object.keys(recMap)?.[0];
+        if (storeId) {
+            let grid = this.dataEntryPanel.query('grid').find(g => g.store.storeId === storeId);
+            if (grid)
+                grid.fireEvent('panelDataChange');
         }
 
         this.pendingTemplates--;
