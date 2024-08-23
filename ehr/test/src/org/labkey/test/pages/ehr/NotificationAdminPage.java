@@ -104,6 +104,7 @@ public class NotificationAdminPage extends BaseColonyOverviewPage
     {
         log("Manually Triggering Email for " + name);
         name = name.replace(" ", "");
+        scrollIntoView(Locator.tagWithAttributeContaining("a", "id", name).withText("Manually Trigger Email"));
         clickAndWait(Locator.tagWithAttributeContaining("a", "id", name).withText("Manually Trigger Email"), 0);
         waitAndClick(Ext4Helper.Locators.window("Send Email").append(Ext4Helper.Locators.ext4Button("Yes")));
     }
