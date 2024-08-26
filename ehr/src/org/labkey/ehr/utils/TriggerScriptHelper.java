@@ -1244,7 +1244,13 @@ public class TriggerScriptHelper
     {
         AnimalRecord ar = EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
         Map<String, Object> bloodBySpecies = getBloodForSpecies(ar.getSpecies());
-        return (Double)bloodBySpecies.get("blood_threshold_warning");
+        Double theWarningThresh = (Double)bloodBySpecies.get("blood_threshold_warning");
+        if (theWarningThresh == null)
+        {
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for the blood warning threshold. Please set one in ehr_lookup.species blood_threshold_warning column.");
+        }
+
+        return theWarningThresh;
 
     }
 
