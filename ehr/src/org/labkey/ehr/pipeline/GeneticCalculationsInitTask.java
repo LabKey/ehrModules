@@ -37,9 +37,7 @@ import org.labkey.api.writer.PrintWriters;
 import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;

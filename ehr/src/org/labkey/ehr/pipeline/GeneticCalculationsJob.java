@@ -16,11 +16,21 @@
 package org.labkey.ehr.pipeline;
 
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SqlSelector;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.pipeline.PipelineJobException;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.logging.LogHelper;
+import org.labkey.ehr.EHRManager;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -33,6 +43,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -181,6 +192,25 @@ public class GeneticCalculationsJob implements Job
         }
     }
 
+    public static void setLastRun(Container c, @NotNull Long lastRun)
+    {
+        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
+        pm.put("lastRun", lastRun.toString());
+        pm.save();
+    }
+
+    public @Nullable Long getLastRun(Container c)
+    {
+        PropertyManager.PropertyMap pm = PropertyManager.getProperties(c, GENETICCALCULATIONS_PROPERTY_DOMAIN);
+        String ret = pm.get("lastRun");
+        if (ret != null)
+        {
+            return Long.parseLong(ret);
+        }
+
+        return null;
+    }
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException
     {
@@ -188,6 +218,12 @@ public class GeneticCalculationsJob implements Job
         if (c == null)
         {
             _log.error("Unable to execute GeneticsCalculationTask, no container defined");
+        }
+
+        if (!hasModificationSinceLastRun(c))
+        {
+            _log.info("No modifications to pedigree data, skipping genetics calculation job");
+            return;
         }
 
         try
@@ -199,5 +235,50 @@ public class GeneticCalculationsJob implements Job
         {
             throw new JobExecutionException(e);
         }
+    }
+
+    private boolean hasModificationSinceLastRun(Container c)
+    {
+        Long lastRun = getLastRun(c);
+
+        // Never run before:
+        if (lastRun == null)
+        {
+            return true;
+        }
+
+        // These will be caught elsewhere:
+        User u = EHRManager.get().getEHRUser(c);
+        if (u == null)
+        {
+            return true;
+        }
+
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
+        if (us == null)
+        {
+            return true;
+        }
+
+        TableInfo ti = us.getTable("pedigree");
+        if (ti == null)
+        {
+            return true;
+        }
+
+        // If the table lacks a modified column, we always need to re-run
+        if (ti.getColumn("modified") == null)
+        {
+            return true;
+        }
+
+        SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("Select max(t.modified) FROM (").append(ti.getFromSQL("t")));
+        Date lastModified = ss.getObject(Date.class);
+        if (lastModified == null || lastModified.getTime() > lastRun)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
