@@ -272,7 +272,7 @@ public class GeneticCalculationsJob implements Job
             return true;
         }
 
-        SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("Select max(t.modified) FROM (").append(ti.getFromSQL("t")));
+        SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("Select max(t.modified) FROM ").append(ti.getFromSQL("t")));
         Date lastModified = ss.getObject(Date.class);
         if (lastModified == null || lastModified.getTime() > lastRun)
         {
