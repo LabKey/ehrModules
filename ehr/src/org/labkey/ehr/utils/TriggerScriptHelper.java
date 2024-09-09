@@ -1143,6 +1143,7 @@ public class TriggerScriptHelper
         // Iterate over all of the blood records
         TreeSet<Double> overages = new TreeSet<>();
         TreeSet<Double> closeToThreshold = new TreeSet<>();
+        double bloodThreshold = 0;
         for (BloodInfo blood1 : allBloods)
         {
             double bloodNextInterval = 0;
@@ -1174,7 +1175,8 @@ public class TriggerScriptHelper
                 //because allBloods contains everything and we want to distinguish them
                 if (blood1.getInTransaction())
                 {
-                    double maxAllowableThreshold = maxAllowable - getBloodNearingOveragesThreshold();
+                    bloodThreshold =  getBloodNearingOveragesThreshold(id);
+                    double maxAllowableThreshold = maxAllowable - bloodThreshold;
                     if (bloodNextInterval > maxAllowableThreshold)
                     {
                         closeToThreshold.add(bloodNextInterval);
@@ -1212,7 +1214,7 @@ public class TriggerScriptHelper
                                .append(" over ")
                                .append(interval)
                                .append(" days) is within ")
-                               .append(getBloodNearingOveragesThreshold())
+                               .append(bloodThreshold)
                                .append(" mL of the max allowable limit of ")
                                .append(maxAllowable)
                                .append(" mL (weight: ")
@@ -1229,40 +1231,27 @@ public class TriggerScriptHelper
     }
 
     /**
-     * Gets the center specific threshold from _centerCustomProps.bloodNearOverageThreshold to warn when blood vols are close to the max blood allowed,
-     * only used if the doWarnForBloodNearOverages() is true
+     * Gets the center specific threshold from ehr_lookups.species table
      * e.g., if the max allowable blood drawn vol is 60.0, a threshold of 4.0 will warn users if blood vol is greater than 56.0 ml
-     * this should be set in a JS trigger script via     helper.setCenterCustomProps(), for example:
+     * this should be turned on in a JS trigger script via helper.setCenterCustomProps(), for example:
      * helper.setCenterCustomProps({
      *  doWarnForBloodNearOverages: true,
-     *  bloodNearOverageThreshold: 5.0
      * })
-     * It uses default value "_bloodNearingOveragesThresholdDefaultValue" if none is supplied or incorrect data type is supplied
      *
      * @return      the threshold value of the limit
      */
-    public double getBloodNearingOveragesThreshold()
+    public double getBloodNearingOveragesThreshold(String id)
     {
-        Object theVal = _centerCustomProps.get("bloodNearOverageThreshold");
-        if (null != theVal)
+        AnimalRecord ar = EHRDemographicsServiceImpl.get().getAnimal(getContainer(), id);
+        Map<String, Object> bloodBySpecies = getBloodForSpecies(ar.getSpecies());
+        Double theWarningThresh = (Double)bloodBySpecies.get("blood_threshold_warning");
+        if (theWarningThresh == null)
         {
-            if (theVal instanceof Integer theValInt)
-            {
-                return theValInt.doubleValue();
-            }
-            else if (theVal instanceof Double theValDouble)
-            {
-                return theValDouble;
-            }
-            else
-            {
-                throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold invalid value found for _centerCustomProps.bloodNearOverageThreshold. Required type is a double.");
-            }
+            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for the blood warning threshold. Please set one in ehr_lookup.species blood_threshold_warning column.");
         }
-        else
-        {
-            throw new RuntimeException("TriggerScriptHelper.getBloodNearingOveragesThreshold no value found for _centerCustomProps.bloodNearOverageThreshold. If doWarnForBloodNearOverages is set to true, then bloodNearOverageThreshold must also be set.");
-        }
+
+        return theWarningThresh;
+
     }
 
 
@@ -1272,7 +1261,6 @@ public class TriggerScriptHelper
      * this should be set in a JS trigger script via helper.setCenterCustomProps(), for example:
      * helper.setCenterCustomProps({
      *  doWarnForBloodNearOverages: true,
-     *  bloodNearOverageThreshold: 5.0
      * })
      *
      * @return      whether to warn for bloods nearing overages
