@@ -900,6 +900,10 @@
             <column columnName="isNHP">
                 <columnTitle>Is NHP?</columnTitle>
             </column>
+            <column columnName="blood_threshold_warning">
+                <columnTitle>Blood Threshold Warning</columnTitle>
+                <description>The threshold of blood in ml for when to start warning users they are approaching the amount of blood available</description>
+            </column>
             <column columnName="container">
                 <isUserEditable>false</isUserEditable>
                 <isHidden>true</isHidden>
