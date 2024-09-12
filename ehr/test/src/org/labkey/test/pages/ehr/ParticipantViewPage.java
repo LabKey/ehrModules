@@ -122,6 +122,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
     {
         DataRegionTable dataRegionTable = DataRegion(getDriver()).timeout(60000).find(getActiveReportPanel());
         dataRegionTable.setAsync(true);
+        shortWait().until(ExpectedConditions.visibilityOf(dataRegionTable.getComponentElement()));
         return dataRegionTable;
     }
 
