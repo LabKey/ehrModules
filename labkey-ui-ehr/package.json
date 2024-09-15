@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.2-fb-ehr-react-package-updates.3",
+  "version": "0.0.2-fb-ehr-react-package-updates.4",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -52,8 +52,7 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "5.5.1",
-    "react-bootstrap": "^0.33.1"
+    "@labkey/components": "5.5.1"
   },
   "devDependencies": {
     "@labkey/build": "7.7.1",
