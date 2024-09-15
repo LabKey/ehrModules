@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.1",
+  "version": "0.0.2-fb-ehr-react-package-updates.3",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -51,31 +51,25 @@
     "registry": "https://labkey.jfrog.io/artifactory/api/npm/libs-client"
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
-  "peerDependencies": {
-    "@labkey/api": "1.26.1",
-    "@labkey/components": "2.382.1",
-    "react": "^16.0",
-    "react-bootstrap": "^0.33.1",
-    "react-dom": "^16.0"
-  },
   "dependencies": {
+    "@labkey/components": "5.5.1",
+    "react-bootstrap": "^0.33.1"
   },
   "devDependencies": {
-    "@labkey/api": "1.26.1",
-    "@labkey/build": "6.16.0",
-    "@labkey/components": "2.382.1",
-    "@labkey/eslint-config-react": "0.0.13",
-    "@types/jest": "29.5.4",
-    "@types/react": "16.14.46",
-    "@types/react-dom": "16.9.19",
-    "@types/react-test-renderer": "16.9.6",
-    "execa": "8.0.1",
+    "@labkey/build": "7.7.1",
+    "@labkey/components": "5.5.1",
+    "@labkey/eslint-config-react": "0.0.15",
+    "@types/jest": "29.5.12",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@types/react-test-renderer": "16.9.12",
+    "execa": "9.3.0",
     "jest": "29.7.0",
     "jest-cli": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "jest-teamcity-reporter": "0.9.0",
     "react-test-renderer": "16.14.0",
-    "redux": "3.7.2",
-    "ts-jest": "29.1.1"
+    "redux": "4.2.1",
+    "ts-jest": "29.2.3"
   }
 }
