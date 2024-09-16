@@ -18,12 +18,12 @@ export const renderWithServerContext = (
     });
 };
 
-export function defaultServerContext(overrides?: Partial<ServerContext>): Partial<ServerContext> {
+export function defaultServerContext(overrides?: Partial<ServerContext>): ServerContext {
     return {
         container: new Container(TEST_CONTAINER_CONFIG),
         user: App.TEST_USER_PROJECT_ADMIN,
         ...overrides,
-    };
+    } as ServerContext;
 }
 
 interface ContainerDateFormats {
