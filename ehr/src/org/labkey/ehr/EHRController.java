@@ -1274,7 +1274,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class DeletedRecordsRunnerAction extends ConfirmAction<Object>
+    public static class DeletedRecordsRunnerAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)

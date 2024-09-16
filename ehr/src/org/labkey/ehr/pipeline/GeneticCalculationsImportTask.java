@@ -160,6 +160,13 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             }
         }
 
+        String jobCreateTime = StringUtils.trimToNull(getJob().getParameters().get("jobCreateTime"));
+        if (jobCreateTime != null)
+        {
+            Long time = Long.parseLong(jobCreateTime);
+            GeneticCalculationsJob.setLastRun(getJob().getContainer(), time);
+        }
+
         return new RecordedActionSet(actions);
     }
 
