@@ -3,7 +3,8 @@ import React, { FC, memo } from 'react';
 import {
     GridPanelWithModel,
     SchemaQuery,
-} from "@labkey/components";
+    withServerContext,
+} from '@labkey/components';
 
 const modelId = 'editable_ehr_lookups'
 const queryConfig = {
@@ -27,3 +28,5 @@ export const EHRLookupsPage: FC = memo(() => {
         </div>
     );
 });
+
+export const EHRLookups = withServerContext(EHRLookupsPage);
