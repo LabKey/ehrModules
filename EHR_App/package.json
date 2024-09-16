@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@labkey/components": "5.5.1",
-    "@labkey/ehr": "0.0.2-fb-ehr-react-package-updates.4"
+    "@labkey/ehr": "0.0.2"
   },
   "devDependencies": {
     "@labkey/build": "7.7.1",
