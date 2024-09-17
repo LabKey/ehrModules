@@ -23,7 +23,8 @@ SELECT
         WHEN d.dam IS NOT NULL AND d.sire IS NOT NULL THEN 2
         WHEN d.dam IS NOT NULL OR d.sire IS NOT NULL THEN 1
         ELSE 0
-        END as numParents
+        END as numParents,
+    d.modified
 FROM study.demographics d
 
 UNION ALL
@@ -38,6 +39,7 @@ SELECT
         WHEN s.dam IS NOT NULL AND s.sire IS NOT NULL THEN 2
         WHEN s.dam IS NOT NULL OR s.sire IS NOT NULL THEN 1
         ELSE 0
-        END as numParents
+        END as numParents,
+    s.modified
 FROM ehr.supplemental_pedigree s
 
