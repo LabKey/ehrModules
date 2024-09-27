@@ -272,6 +272,9 @@ abstract public class EHRService
     /** Attaches menu items to the More Actions button in grid views for the specified query */
     abstract public void registerMoreActionsButton(ButtonConfigFactory btn, String schema, String query);
 
+    /** Removes all previously added more action buttons */
+    abstract public void unregisterMoreActionsButtons(String schema, String query);
+
     @NotNull
     abstract public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti);
 
