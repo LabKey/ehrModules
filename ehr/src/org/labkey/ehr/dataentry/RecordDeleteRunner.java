@@ -15,13 +15,14 @@
  */
 package org.labkey.ehr.dataentry;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -45,7 +46,6 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -186,7 +186,7 @@ public class RecordDeleteRunner implements Job
 
     public static void setProperties(Container c, Boolean isEnabled)
     {
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(c, PROPERTY_DOMAIN, true);
+        WritablePropertyMap props = PropertyManager.getWritableProperties(c, PROPERTY_DOMAIN, true);
         props.put(ENABLED_PROP, isEnabled.toString());
         props.save();
     }
