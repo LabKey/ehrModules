@@ -12,7 +12,7 @@ function onInit(event, helper){
     });
 }
 
-function onUpsert(helper, scriptErrors, row, oldRow){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'study', 'clinremarks', function(helper, scriptErrors, row, oldRow){
     //NOTE: each center has slightly different names on the SOAP fields.  this check tests all, and should not get in the way of either
     if(!row.hx && !row.so && !row.s && !row.p2 && !row.o && !row.a && !row.p && !row.remark){
         EHR.Server.Utils.addError(scriptErrors, 'remark', 'Must enter at least one comment', 'WARN');
@@ -23,7 +23,7 @@ function onUpsert(helper, scriptErrors, row, oldRow){
     //for compatibility with old system
     row.userid = row.performedby;
 
-}
+});
 
 function setDescription(row, helper){
     //we need to set description for every field
