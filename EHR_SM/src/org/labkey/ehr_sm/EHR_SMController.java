@@ -20,6 +20,7 @@ import org.labkey.api.action.FormViewAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.exp.api.ExpSampleType;
 import org.labkey.api.exp.api.SampleTypeService;
 import org.labkey.api.security.RequiresPermission;
@@ -124,7 +125,7 @@ public class EHR_SMController extends SpringActionController
         @Override
         public boolean handlePost(AdminForm adminForm, BindException errors)
         {
-            PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME, true);
+            WritablePropertyMap props = PropertyManager.getWritableProperties(getContainer(), EHR_SMManager.ANIMAL_SAMPLE_PROP_SET_NAME, true);
             for (ExpSampleType animalSampleType : SampleTypeService.get().getSampleTypes(getContainer(), getUser(), true))
             {
                 if (Arrays.stream(adminForm.getSelectedAnimalSampleTypes()).anyMatch(s -> s.equals(animalSampleType.getName())))

@@ -19,6 +19,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.ldk.notification.AbstractNotification;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -109,7 +110,7 @@ abstract public class AbstractEHRNotification extends AbstractNotification
 
     protected void saveValues(Container c, Map<String, String> newValues)
     {
-        PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(c, getClass().getName(), true);
+        WritablePropertyMap map = PropertyManager.getWritableProperties(c, getClass().getName(), true);
 
         Long lastSaveMills = map.containsKey(lastSave) ? Long.parseLong(map.get(lastSave)) : null;
 

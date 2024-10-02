@@ -22,6 +22,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.TableInfo;
@@ -175,7 +176,7 @@ public class GeneticCalculationsJob implements Job
 
     public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, Boolean isKinshipValidation, Boolean allowImportDuringBusinessHours)
     {
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
+        WritablePropertyMap props = PropertyManager.getWritableProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
         props.put("enabled", isEnabled.toString());
         props.put("container", c.getId());
         props.put("hourOfDay", hourOfDay.toString());
@@ -194,7 +195,7 @@ public class GeneticCalculationsJob implements Job
 
     public static void setLastRun(Container c, @NotNull Long lastRun)
     {
-        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
+        WritablePropertyMap pm = PropertyManager.getWritableProperties(c, GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
         pm.put("lastRun", lastRun.toString());
         pm.save();
     }
