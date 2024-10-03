@@ -63,8 +63,6 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.DirectoryResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
-import org.labkey.api.security.SecurityPolicy;
-import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.DatasetTable;
@@ -620,6 +618,21 @@ public class EHRServiceImpl extends EHRService
 
         schemaMap.put(query, list);
         map.put(schema, schemaMap);
+    }
+
+    @Override
+    public void unregisterMoreActionsButtons(String schema, String query)
+    {
+        unregisterButtonsForQuery(schema, query, _moreActionsButtons);
+    }
+
+    private void unregisterButtonsForQuery(String schema, String query, Map<String, Map<String, List<ButtonConfigFactory>>> map)
+    {
+        Map<String, List<ButtonConfigFactory>> schemaMap = map.get(schema);
+        if (schemaMap == null)
+            return;
+
+        schemaMap.remove(query);
     }
 
     @Override
