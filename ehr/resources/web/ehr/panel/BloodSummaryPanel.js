@@ -309,14 +309,15 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
             return text;
         });
     },
-    getMaxBloodAvailValue: function(rows){
-
-        var allowableBloodVals = [];
-        for (var i = 0; i < rows.length; i++){
-            allowableBloodVals.push(rows[i].allowableDisplay.value);
-        }
-
-        return Math.round(allowableBloodVals.reduce((a, b) => Math.max(a, b), -Infinity)) + 10;
+    getMaxBloodAvailValue: function(allowableBloodVals){
+        var maxVal = Math.max(...allowableBloodVals);
+        var tenPercent = maxVal * .10;
+        return maxVal + tenPercent;
+    },
+    getMinBloodAvailValue: function(allowableBloodVals){
+        var minVal = Math.min(...allowableBloodVals);
+        var tenPercent = minVal * .10;
+        return minVal < 0 ? minVal + tenPercent : 0;
     },
 
     getTickValues: function(rows){
@@ -400,6 +401,12 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
             });
         }
 
+        //for use later when getting max/min vals for y-axis scale
+        var allowableBloodVals = [];
+        for (var i = 0; i < results.rows.length; i++){
+            allowableBloodVals.push(results.rows[i].allowableDisplay.value);
+        }
+
         var layerName = "Volume";
         toAdd.push({
             xtype: 'container',
@@ -437,7 +444,7 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                             tickValues: this.getTickValues(results.rows)
                         },
                         y: {
-                            domain: [0, this.getMaxBloodAvailValue(results.rows)],
+                            domain: [this.getMinBloodAvailValue(allowableBloodVals), this.getMaxBloodAvailValue(allowableBloodVals)],
                         }
                     },
                     layers: [{
