@@ -125,7 +125,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static Integer[] PROJECTS = {12345, 123456, 1234567};
 
     protected static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
-    protected static final String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd HH:mm";
+    protected static final String TIME_FORMAT_STRING = "HH:mm";
+    protected static final String DATE_TIME_FORMAT_STRING = DATE_FORMAT_STRING + " " + TIME_FORMAT_STRING;
     protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT_STRING);
     protected static final DateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
 
@@ -474,7 +475,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         navigateToFolder(getProjectName(), getFolderName());
         goToProjectSettings();
         setFormElement(Locator.name("defaultDateFormat"), DATE_FORMAT_STRING);
-        setFormElement(Locator.name("defaultDateTimeFormat"), DATE_TIME_FORMAT_STRING);
+        setFormElement(Locator.name("dateSelect"), DATE_FORMAT_STRING);
+        setFormElement(Locator.name("timeSelect"), TIME_FORMAT_STRING);
         clickButton("Save");
     }
 
