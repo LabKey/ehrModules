@@ -16,6 +16,7 @@
 package org.labkey.test.components.ldk.panel;
 
 import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.components.WebDriverComponent;
 import org.labkey.test.components.ext4.RadioButton;
 import org.labkey.test.components.ext4.Window;
@@ -23,6 +24,7 @@ import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import static org.labkey.test.WebDriverWrapper.WAIT_FOR_JAVASCRIPT;
 import static org.labkey.test.components.ext4.RadioButton.RadioButton;
 
 public abstract class AbstractFilterType<A extends AnimalHistoryPage> extends WebDriverComponent
@@ -62,6 +64,7 @@ public abstract class AbstractFilterType<A extends AnimalHistoryPage> extends We
 
     public <F> F select()
     {
+        Locators.pageSignal(FILTER_SIGNAL).waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT);
         final RadioButton radioButton = RadioButton().locatedBy(Locator.name(getRadioName())).find(getDriver());
         if (!radioButton.isChecked())
         {
