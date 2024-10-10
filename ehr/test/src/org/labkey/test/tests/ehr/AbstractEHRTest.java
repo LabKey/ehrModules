@@ -474,7 +474,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     {
         navigateToFolder(getProjectName(), getFolderName());
         goToProjectSettings();
+        uncheckCheckbox(Locator.name("defaultDateFormatInherited"));
         setFormElement(Locator.name("defaultDateFormat"), DATE_FORMAT_STRING);
+        uncheckCheckbox(Locator.name("defaultDateTimeFormatInherited"));
         setFormElement(Locator.name("dateSelect"), DATE_FORMAT_STRING);
         setFormElement(Locator.name("timeSelect"), TIME_FORMAT_STRING);
         clickButton("Save");
