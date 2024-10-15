@@ -46,6 +46,7 @@ public class AnimalHistoryPage<A extends AnimalHistoryPage> extends ParticipantV
     public AnimalHistoryPage(WebDriver driver)
     {
         super(driver);
+        ensureWaitForReports();  // Wait for reports section to load even if empty
     }
 
     public static AnimalHistoryPage beginAt(WebDriverWrapper test)
