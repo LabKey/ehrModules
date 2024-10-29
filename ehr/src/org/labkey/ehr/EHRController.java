@@ -83,7 +83,6 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
-import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
@@ -1679,7 +1678,7 @@ public class EHRController extends SpringActionController
                         context = new DataIteratorContext(batchErrors);
                         context.setConfigParameters(configParameters);
                         context.setInsertOption(QueryUpdateService.InsertOption.REPLACE);
-                        context.getAlternateKeys().add("reportname");
+                        context.addAlternateKeys(Collections.singleton("reportname"));
 
                         loader = DataLoader.get().createLoader(_additionalReportsResource, true, null, TabLoader.TSV_FILE_TYPE);
                         AbstractQueryImportAction.importData(loader, table, updateService, context, auditEvent, getUser(), getContainer());
