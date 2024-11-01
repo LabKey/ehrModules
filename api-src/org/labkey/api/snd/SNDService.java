@@ -67,7 +67,7 @@ public interface SNDService
     void fillInNarrativeCache(Container c, User u, Logger logger);
     void clearNarrativeCache(Container c, User u);
     void deleteNarrativeCacheRows(Container c, User u, List<Map<String, Object>> eventIds);
-    void populateNarrativeCache(Container c, User u, List<Integer> eventIds, Logger logger);
+    void populateNarrativeCache(Container c, User u, List<Integer> eventIds, Logger logger, boolean isFullReload);
     Map<Integer, Category> getAllCategories(Container c, User u);
     Integer getQCStateId(Container c, User u, QCStateEnum qcState);
     QCStateEnum getQCState(Container c, User u, int qcStateId);
