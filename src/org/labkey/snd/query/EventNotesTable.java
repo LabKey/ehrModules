@@ -36,6 +36,7 @@ import org.labkey.snd.SNDUserSchema;
 import org.labkey.snd.security.permissions.SNDViewerPermission;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,7 @@ public class EventNotesTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
         }
 
         private final SNDService _sndService = SNDService.get();
+        private final SNDManager _sndManager = SNDManager.get();
 
         private int getRowCount(DataIteratorBuilder rows, @Nullable Map<Enum,Object> configParameters, BatchValidationException errors)
         {
@@ -94,7 +96,7 @@ public class EventNotesTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
         {
             Logger log = SNDManager.getLogger(configParameters, EventNotesTable.class);
             // Large merge triggers importRows path
-            int result = 0;
+            int result;
             if (getRowCount(rows, configParameters, errors) > SNDManager.MAX_MERGE_ROWS)
             {
                 log.info("More than " + SNDManager.MAX_MERGE_ROWS + " rows. using importRows method.");
@@ -103,11 +105,21 @@ public class EventNotesTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
             else
             {
                 log.info("Merging rows.");
-                result = super.mergeRows(user, container, rows, errors, configParameters, extraScriptContext);
+                DataIteratorBuilder dib = new EventNotesDataIteratorBuilder(rows, user, container);
+
+                result = super.mergeRows(user, container, dib, errors, configParameters, extraScriptContext);
             }
             return result;
         }
 
+        @Override
+        public void configureDataIteratorContext(DataIteratorContext context)
+        {
+            if (context.getInsertOption() == QueryUpdateService.InsertOption.MERGE)
+            {
+                context.addAlternateKeys(Collections.singleton("EventId"));
+            }
+        }
     }
 
     @Override

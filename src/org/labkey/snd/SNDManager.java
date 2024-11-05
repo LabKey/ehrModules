@@ -3113,10 +3113,10 @@ public class SNDManager
                 log.info("Deleting affected narrative cache rows.");
                 deleteNarrativeCacheRows(container, user, rows, errors);
                 //repopulate
-                if (isUpdate)
+                if (!errors.hasErrors() && isUpdate)
                 {
                     log.info("Repopulate affected rows in narrative cache.");
-                    populateNarrativeCache(container, user, eventIds, errors, log);
+                    populateNarrativeCache(container, user, eventIds, errors, log, false);
                 }
             }
 
@@ -3142,7 +3142,7 @@ public class SNDManager
         }
         catch (InvalidKeyException | BatchValidationException | QueryUpdateServiceException | SQLException e)
         {
-            e.printStackTrace();
+            errors.addRowError(new ValidationException(e.getMessage()));
         }
     }
 
@@ -3182,13 +3182,13 @@ public class SNDManager
 
         List<Integer> eventIds = selector.getArrayList(Integer.class);
 
-        populateNarrativeCache(c, u, eventIds, errors, logger);
+        populateNarrativeCache(c, u, eventIds, errors, logger, true);
     }
 
     /**
      * Populate specific event narratives in narrative cache.
      */
-    public void populateNarrativeCache(Container c, User u, List<Integer> eventIds, BatchValidationException errors, @Nullable Logger logger)
+    public void populateNarrativeCache(Container c, User u, List<Integer> eventIds, BatchValidationException errors, @Nullable Logger logger, boolean isFullReload)
     {
         UserSchema sndSchema = getSndUserSchemaAdminRole(c, u);
         QueryUpdateService eventsCacheQus = getNewQueryUpdateService(sndSchema, SNDSchema.EVENTSCACHE_TABLE_NAME);
@@ -3208,7 +3208,7 @@ public class SNDManager
             logger.info("Generating narratives.");
         }
 
-        Map<Integer, SuperPackage> superPackages = getBulkSuperPkgs(c, u, packageExtraFields, pkgQus, null, lookups, errors);
+        Map<Integer, SuperPackage> superPackages = getBulkSuperPkgs(c, u, packageExtraFields, pkgQus, isFullReload ? null : eventIds, lookups, errors, isFullReload);
 
         AtomicInteger count = new AtomicInteger(0);
 
@@ -3801,7 +3801,7 @@ public class SNDManager
         List<GWTPropertyDescriptor> packageExtraFields = getExtraFields(c, u, SNDSchema.PKGS_TABLE_NAME);
 
         // Retrieve all SuperPackages associated with a single event
-        Map<Integer, SuperPackage> superPackages = getBulkSuperPkgs(c, u, packageExtraFields, pkgQus, eventId, lookups, errors);
+        Map<Integer, SuperPackage> superPackages = getBulkSuperPkgs(c, u, packageExtraFields, pkgQus, Collections.singletonList(eventId), lookups, errors, false);
 
         // Map top-level EventDataIds to associated SuperPackage objects and group by EventId
         Map<Integer, Map<Integer, SuperPackage>> topLevelEventDataSuperPkgs = getBulkTopLevelEventDataSuperPkgs(c, u, Collections.singletonList(eventId), superPackages);
@@ -3911,14 +3911,14 @@ public class SNDManager
      * @param u User object representing the current user.
      * @param packageExtraFields Extra fields related to the SuperPackage that need to be included in the response.
      * @param pkgQus QueryUpdateService for handling SuperPackage updates.
-     * @param eventId The ID of the event for which SuperPackages should be retrieved. Can be null to retrieve all SuperPackages.
+     * @param eventIds The ID of the event for which SuperPackages should be retrieved. Can be null to retrieve all SuperPackages.
      * @param lookups Map for additional lookup criteria or filtering, used to retrieve SuperPackages.
      * @param errors BatchValidationException object used to accumulate any errors encountered during the process.
      *
      * @return A map of SuperPackage objects, keyed by SuperPkgId.
      */
-    private Map<Integer, SuperPackage> getBulkSuperPkgs(Container c, User u, List<GWTPropertyDescriptor> packageExtraFields, QueryUpdateService pkgQus, @Nullable Integer eventId,
-                                                        Map<String, String> lookups, BatchValidationException errors) {
+    private Map<Integer, SuperPackage> getBulkSuperPkgs(Container c, User u, List<GWTPropertyDescriptor> packageExtraFields, QueryUpdateService pkgQus, @Nullable List<Integer> eventIds,
+                                                        Map<String, String> lookups, BatchValidationException errors, boolean isFullReload) {
 
         UserSchema schema = getSndUserSchema(c, u);
 
@@ -3929,10 +3929,15 @@ public class SNDManager
         sql.append(schema.getTable(SNDSchema.SUPERPKGS_TABLE_NAME), "sp");
         sql.append(" JOIN " + SNDSchema.NAME + "." + SNDSchema.PKGS_TABLE_NAME + " pkg");
         sql.append(" ON sp.PkgId = pkg.PkgId ");
-        if (eventId != null) {
+        if (eventIds != null) {
             sql.append(" INNER JOIN " + SNDSchema.NAME + "." + SNDSchema.EVENTDATA_TABLE_NAME + " ed");
             sql.append(" ON ed.SuperPkgId = sp.SuperPkgId ");
-            sql.append(" WHERE ed.EventId = ? ").add(eventId);
+            sql.append(" WHERE ed.EventId IN ( ");
+            ArrayDeque<Integer> eventIdsQueue = new ArrayDeque<>(eventIds);
+            while (eventIdsQueue.size() > 1) {
+                sql.append("?, ").add(eventIdsQueue.pop());
+            }
+            sql.append("?) ").add(eventIdsQueue.pop());
         }
         sql.append(" ORDER BY sp.SuperPkgId ");
 
@@ -3943,7 +3948,7 @@ public class SNDManager
 
         List<SuperPackage> fullTreeSuperPkgs;
 
-        if (eventId != null) {
+        if (!isFullReload) {
             fullTreeSuperPkgs = new ArrayList<SuperPackage>();
             pkgIds.forEach(pkgId -> {
                 SQLFragment packageSql = new SQLFragment("SELECT * FROM ");
@@ -4327,6 +4332,7 @@ public class SNDManager
 
         return eventNotesById;
     }
+
 
     /**
      * Query the Projects table and retrieve the ID concatenated with RevisionNum for a set of objectIds
