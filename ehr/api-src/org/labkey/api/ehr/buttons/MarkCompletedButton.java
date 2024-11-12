@@ -85,7 +85,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
         // but the dataset-specific query.xml file will apply a different format to the enddate column.  as a result, defer creating the JS handler as long as we can.
         ColumnInfo col = ti.getColumn("enddate");
         String xtype = "datefield";
-        if (!_forceDateOnlyField && col != null && col.getFormat() != null && col.getFormat().contains("HH"))
+        if (!_forceDateOnlyField && col != null && col.getFormat() != null && (col.getFormat().contains("HH") || col.getFormat().equals("DateTime")))
             xtype = "xdatetime";
 
         String pkColName = null;
