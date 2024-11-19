@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
    apiImplementation "org.apache.tomcat:tomcat-jsp-api:${apacheTomcatVersion}"
-   implementation "com.sun.mail:jakarta.mail:${javaMailVersion}"
+   implementation "org.eclipse.angus:angus-mail:${angusMailVersion}"
    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
    BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiJarFile")
    BuildUtils.addLabKeyDependency(project: project, config: "apiImplementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiJarFile")
