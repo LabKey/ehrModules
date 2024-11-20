@@ -306,13 +306,13 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                     if (lineNum % 250000 == 0)
                     {
-                        log.info("imported " + lineNum + " rows");
+                        log.info("imported " + String.format("%,d", lineNum) + " rows");
                     }
                 }
 
                 stmt.executeBatch();
                 transaction.commit();
-                log.info("Inserted " + lineNum + " rows into ehr.kinship");
+                log.info("Inserted " + String.format("%,d", lineNum) + " rows into ehr.kinship");
             }
         }
         catch (RuntimeSQLException | SQLException | IOException e)
@@ -705,7 +705,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                 transaction.commit();
             }
-            log.info("Inserted " + lineNum + " rows into inbreeding coefficients table");
+            log.info("Inserted " + String.format("%,d", lineNum) + " rows into inbreeding coefficients table");
 
         }
         catch (DuplicateKeyException | SQLException | IOException | QueryUpdateServiceException e)
