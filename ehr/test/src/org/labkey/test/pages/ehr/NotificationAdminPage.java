@@ -111,12 +111,11 @@ public class NotificationAdminPage extends BaseColonyOverviewPage
 
     public void addManageUsers(String notification, String user)
     {
-        log("Adding " + user + "to" + notification);
-        notification = notification.replace(" ", "");
-        notification = "manageUser_" + notification;
-        clickAndWait(Locator.tagWithAttributeContaining("a", "id", notification).withText("Manage Subscribed Users/Groups"), 0);
+        log("Adding " + user + " to" + notification);
+        notification = "manageUser_" +  notification.replace(" ", "");
+        Locator notificationLoc = Locator.tagWithAttributeContaining("a", "id", notification).withText("Manage Subscribed Users/Groups");
+        scrollIntoView(waitForElement(notificationLoc)).click();
         _ext4Helper.selectComboBoxItem("Add User Or Group:", user);
         clickButton("Close", 0);
-
     }
 }
