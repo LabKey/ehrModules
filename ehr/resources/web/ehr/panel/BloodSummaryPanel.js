@@ -309,6 +309,16 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
             return text;
         });
     },
+    getMaxBloodAvailValue: function(allowableBloodVals){
+        var maxVal = Math.max(...allowableBloodVals);
+        var tenPercent = maxVal * .10;
+        return maxVal + tenPercent;
+    },
+    getMinBloodAvailValue: function(allowableBloodVals){
+        var minVal = Math.min(...allowableBloodVals);
+        var tenPercent = minVal * .10;
+        return minVal < 0 ? minVal + tenPercent : 0;
+    },
 
     getTickValues: function(rows){
         var ticks = [], msPerDay = 86400000, totalTicks = 10;
@@ -385,10 +395,16 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                 html: '<p>Total volume of blood collected in the past ' + currentRow.blood_draw_interval.value + ' days: <b>'
                     + Ext4.util.Format.round(currentRow.bloodPrevious.value, 1) + ' mL</b>. '
                     + 'The amount of blood available if drawn today is: <b>' + Ext4.util.Format.round(currentRow.allowableDisplay.value, 1) + ' mL</b>.</p>'
-                    + '<p>The graph below shows how the amount of blood available will change over time, including when previous draws will drop off.</p>',
+                    + '<p>The graph below shows how the amount of blood available will change over time, including when previous draws will drop off. Hover over the timepoints for more information.</p>',
                 border: false,
                 style: 'margin-bottom: 20px'
             });
+        }
+
+        //for use later when getting max/min vals for y-axis scale
+        var allowableBloodVals = [];
+        for (var i = 0; i < results.rows.length; i++){
+            allowableBloodVals.push(results.rows[i].allowableDisplay.value);
         }
 
         var layerName = "Volume";
@@ -426,6 +442,9 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                         },
                         x: {
                             tickValues: this.getTickValues(results.rows)
+                        },
+                        y: {
+                            domain: [this.getMinBloodAvailValue(allowableBloodVals), this.getMaxBloodAvailValue(allowableBloodVals)],
                         }
                     },
                     layers: [{
@@ -455,7 +474,18 @@ Ext4.define('EHR.panel.BloodSummaryPanel', {
                 },
                 getPlotConfig: function(){
                     var cfg = LDK.panel.GraphPanel.prototype.getPlotConfig.call(this);
-                    cfg.legendPos = 'none';
+                    cfg.legendData = [
+                        {
+                            color:'#FC8D62',
+                            text:'Blood Draw',
+                            shape: LABKEY.vis.Scale.Shape()[1]
+                        },
+                        {
+                            color:'#66C2A5',
+                            text:'Reconstitution Status',
+                            shape: LABKEY.vis.Scale.Shape()[0]
+                        }
+                    ]
                     cfg.aes.color = null;
                     cfg.aes.shape = null;
 
