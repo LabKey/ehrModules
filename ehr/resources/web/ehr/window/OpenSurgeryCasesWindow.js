@@ -268,6 +268,16 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
                                     console.log('updating procedure with caseid');
                                     rec.set('caseid', row.objectid);
                                 }, this);
+
+                                this.caseUpdateStores.forEach(function(store){
+                                    if (store.getFields().get('caseid') && store.getFields().get('Id')){
+                                        store.each((rec) => {
+                                            if (rec.get('Id') == row.Id){
+                                                rec.set('caseid', row.objectid);
+                                            }
+                                        }, this);
+                                    }
+                                }, this);
                             }
                         }, this);
                     }
@@ -292,6 +302,16 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
                                 Ext4.Array.forEach(records, function(rec){
                                     console.log('updating procedure with caseid')
                                     rec.set('caseid', row.objectid);
+                                }, this);
+
+                                this.caseUpdateStores.forEach(function(store){
+                                    if (store.getFields().get('caseid') && store.getFields().get('Id')){
+                                        store.each((rec) => {
+                                            if (rec.get('Id') == row.Id){
+                                                rec.set('caseid', row.objectid);
+                                            }
+                                        }, this);
+                                    }
                                 }, this);
                             }
                         }, this);
@@ -336,7 +356,8 @@ EHR.DataEntryUtils.registerDataEntryFormButton('OPENSURGERYCASES', {
         }
 
         Ext4.create('EHR.window.OpenSurgeryCasesWindow', {
-            sourceStore: clientStore
+            sourceStore: clientStore,
+            caseUpdateStores: panel.storeCollection.clientStores.items,
         }).show();
     }
 });
