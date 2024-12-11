@@ -40,6 +40,7 @@ import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.JsonWriter;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.dataiterator.DataIteratorContext;
@@ -2191,7 +2192,7 @@ public class EHRController extends SpringActionController
             SimpleFilter filter = new SimpleFilter();
             filter.addCondition(FieldKey.fromParts("id"), idForm.getIdList(), CompareType.IN);
 
-            TableSelector selector = new TableSelector(bloodDrawsTable, filter, null);
+            TableSelector selector = new TableSelector(bloodDrawsTable, filter, new Sort("date"));
 
             Map<String, Object> params = new HashMap<>();
             params.put("DATE_INTERVAL", idForm.getInterval());
