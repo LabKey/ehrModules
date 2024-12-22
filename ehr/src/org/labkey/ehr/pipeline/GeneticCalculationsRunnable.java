@@ -89,7 +89,7 @@ public class GeneticCalculationsRunnable
                     "\t<note label=\"jobCreateTime\" type=\"input\">" + new Date().getTime() + "</note>" +
                 "</bioml>";
 
-            AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml);
+            AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml, c);
             if (protocol == null)
             {
                 return;
