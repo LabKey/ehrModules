@@ -18,7 +18,6 @@ package org.labkey.ehr_purchasing;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr_purchasing.EHR_PurchasingDomainKind;
 import org.labkey.api.exp.property.PropertyService;
@@ -46,7 +45,7 @@ public class EHR_PurchasingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 24.000;
+        return 25.000;
     }
 
     @Override
@@ -83,13 +82,6 @@ public class EHR_PurchasingModule extends SpringModule
                 return new EHR_PurchasingUserSchema(EHR_PurchasingSchema.NAME, schema.getUser(), schema.getContainer());
             }
         });
-    }
-
-    @Override
-    @NotNull
-    public Collection<String> getSummary(Container c)
-    {
-        return Collections.emptyList();
     }
 
     @Override

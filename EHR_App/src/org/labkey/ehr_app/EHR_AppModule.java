@@ -53,13 +53,7 @@ public class EHR_AppModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 24.000;
-    }
-
-    @Override
-    public boolean hasScripts()
-    {
-        return true;
+        return 25.000;
     }
 
     @Override
@@ -81,7 +75,7 @@ public class EHR_AppModule extends ExtendedSimpleModule
         DefaultSchema.registerProvider(EHR_AppSchema.NAME, new DefaultSchema.SchemaProvider(this)
         {
             @Override
-            public @Nullable QuerySchema createSchema(DefaultSchema schema, Module module)
+            public @NotNull QuerySchema createSchema(DefaultSchema schema, Module module)
             {
                 return new EHR_AppUserSchema(EHR_AppSchema.NAME, null, schema.getUser(), schema.getContainer(), EHR_AppSchema.getInstance().getSchema());
             }
