@@ -4,8 +4,6 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/* ehr_billing-17.20-17.30.sql */
-
 CREATE SCHEMA ehr_billing;
 GO
 
@@ -71,8 +69,6 @@ GO
 
 ALTER TABLE ehr_billing.aliases ADD LSID LSIDtype;
 ALTER TABLE ehr_billing.chargeRates ADD LSID LSIDtype;
-
-/* ehr_billing-17.30-18.10.sql */
 
 --this table contains records of misc charges that have happened that cannot otherwise be
 --automatically inferred from the record
@@ -328,8 +324,6 @@ GO
 CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
 GO
 
-/* ehr_billing-18.20-18.30.sql */
-
 EXEC core.fn_dropifexists 'invoicedItems', 'ehr_billing', 'CONSTRAINT', 'FK_INVOICEDITEMS_INVOICENUM';
 GO
 
@@ -556,8 +550,6 @@ CREATE TABLE ehr_billing.dataAccess (
 CREATE INDEX EHR_BILLING_DATA_ACCESS_CONTAINER_INDEX ON ehr_billing.dataAccess (Container);
 GO
 
-/* ehr_billing-18.30-19.10.sql */
-
 CREATE TABLE ehr_billing.fiscalAuthorities (
   rowid int identity(1,1) NOT NULL,
   faid varchar(100),
@@ -593,8 +585,6 @@ GO
 
 ALTER TABLE ehr_billing.miscCharges ADD investigator nvarchar(100);
 GO
-
-/* ehr_billing-19.10-19.20.sql */
 
 -- dropping to avoid duplicate index, EHR_BILLING_ALIASES_INDEX includes index to container
 EXEC core.fn_dropifexists 'aliases', 'ehr_billing', 'INDEX', 'ehr_billing_aliases_container_index';
@@ -802,3 +792,44 @@ EXEC core.fn_dropifexists 'aliases', 'ehr_billing', 'INDEX', 'EHR_BILLING_ALIASE
 GO
 
 ALTER TABLE ehr_billing.aliases ADD CONSTRAINT UNIQUE_ALIAS UNIQUE (alias, Container);
+
+EXEC core.fn_dropifexists 'invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER';
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN creditedaccount nvarchar(200);
+GO
+
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN debitedaccount nvarchar(200);
+GO
+
+ALTER TABLE ehr_billing.invoice ALTER COLUMN accountnumber nvarchar(200);
+GO
+
+ALTER TABLE ehr_billing.miscCharges ALTER COLUMN creditedaccount nvarchar(200);
+GO
+
+ALTER TABLE ehr_billing.miscCharges ALTER COLUMN debitedaccount nvarchar(200);
+GO
+
+CREATE INDEX IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER ON ehr_billing.invoice (accountnumber);
+GO
+
+CREATE TABLE ehr_billing.procedureQueryChargeIdAssoc (
+
+   rowId INT IDENTITY(1,1) NOT NULL,
+   schemaName nvarchar(200) NOT NULL,
+   queryName nvarchar(500) NOT NULL,
+   description nvarchar(2000) NOT NULL,
+   chargeId int NOT NULL,
+
+   container ENTITYID NOT NULL,
+   createdBy USERID,
+   created DATETIME,
+   modifiedBy USERID,
+   modified DATETIME,
+
+   CONSTRAINT PK_procedureQueryChargeIdAssociations PRIMARY KEY (rowId),
+   CONSTRAINT FK_EHR_BILLING_PROCEDURE_QUERY_CHARGEID_ASSOC_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+);
+
+CREATE INDEX IDX_EHR_BILLING_PROCEDURE_QUERY_CHARGEID_ASSOC_CONTAINER ON ehr_billing.procedureQueryChargeIdAssoc (container);

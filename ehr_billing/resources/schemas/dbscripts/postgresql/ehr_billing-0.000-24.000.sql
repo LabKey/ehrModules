@@ -4,62 +4,58 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/* ehr_billing-17.20-17.30.sql */
-
 CREATE SCHEMA ehr_billing;
 
 CREATE TABLE ehr_billing.aliases (
+    rowid serial,
+    alias varchar(200),
+    aliasEnabled Varchar(100),
+    projectNumber varchar(200),
+    grantNumber varchar(200),
+    agencyAwardNumber varchar(200),
+    investigatorId int,
+    investigatorName varchar(200),
+    fiscalAuthority int,
+    fiscalAuthorityName varchar(200),
+    category varchar(100),
+    faRate double precision,
+    faSchedule varchar(200),
+    budgetStartDate timestamp,
+    budgetEndDate timestamp,
+    projectTitle varchar(1000),
+    projectDescription varchar(1000),
+    projectStatus varchar(200),
+    aliasType VARCHAR(100),
 
-  rowid serial,
-  alias varchar(200),
-  aliasEnabled Varchar(100),
-  projectNumber varchar(200),
-  grantNumber varchar(200),
-  agencyAwardNumber varchar(200),
-  investigatorId int,
-  investigatorName varchar(200),
-  fiscalAuthority int,
-  fiscalAuthorityName varchar(200),
-  category varchar(100),
-  faRate double precision,
-  faSchedule varchar(200),
-  budgetStartDate timestamp,
-  budgetEndDate timestamp,
-  projectTitle varchar(1000),
-  projectDescription varchar(1000),
-  projectStatus varchar(200),
-  aliasType VARCHAR(100),
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
-
-  CONSTRAINT PK_aliases PRIMARY KEY (rowid),
-  CONSTRAINT FK_EHR_BILLING_ALIASES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_aliases PRIMARY KEY (rowid),
+    CONSTRAINT FK_EHR_BILLING_ALIASES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
 CREATE INDEX EHR_BILLING_ALIASES_INDEX ON ehr_billing.aliases (container, alias);
 CREATE INDEX EHR_BILLING_ALIASES_CONTAINER_INDEX ON ehr_billing.aliases (Container);
 
 CREATE TABLE ehr_billing.chargeRates (
+    rowId SERIAL NOT NULL,
+    chargeId int,
+    unitcost double precision,
+    subsidy double precision,
+    startDate timestamp,
+    endDate timestamp,
 
-  rowId SERIAL NOT NULL,
-  chargeId int,
-  unitcost double precision,
-  subsidy double precision,
-  startDate timestamp,
-  endDate timestamp,
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
-
-  CONSTRAINT PK_chargeRates PRIMARY KEY (rowId),
-  CONSTRAINT FK_EHR_BILLING_CHARGE_RATES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_chargeRates PRIMARY KEY (rowId),
+    CONSTRAINT FK_EHR_BILLING_CHARGE_RATES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
 CREATE INDEX EHR_BILLING_CHARGE_RATES_CONTAINER_INDEX ON ehr_billing.chargeRates (Container);
@@ -67,66 +63,64 @@ CREATE INDEX EHR_BILLING_CHARGE_RATES_CONTAINER_INDEX ON ehr_billing.chargeRates
 ALTER TABLE ehr_billing.aliases ADD COLUMN LSID LSIDtype;
 ALTER TABLE ehr_billing.chargeRates ADD COLUMN LSID LSIDtype;
 
-/* ehr_billing-17.30-18.10.sql */
-
 --this table contains records of misc charges that have happened that cannot otherwise be
 --automatically inferred from the record
 CREATE TABLE ehr_billing.miscCharges (
-  objectid entityid NOT NULL,
-  id varchar(100),
-  date timestamp,
-  project integer,
-  category varchar(100),
-  chargeId int,
-  quantity double precision,
-  unitcost double precision,
-  comment varchar(4000),
-  chargeType varchar(200),
-  billingDate timestamp,
-  invoiceId entityid,
-  invoicedItemId entityid,
-  item varchar(500),
-  sourceInvoicedItem entityid,
-  creditedaccount varchar(100),
-  debitedaccount varchar(200),
-  qcstate int,
-  parentid entityid,
-  issueId int,
-  formSort integer,
-  chargeCategory VARCHAR(100),
+    objectid entityid NOT NULL,
+    id varchar(100),
+    date timestamp,
+    project integer,
+    category varchar(100),
+    chargeId int,
+    quantity double precision,
+    unitcost double precision,
+    comment varchar(4000),
+    chargeType varchar(200),
+    billingDate timestamp,
+    invoiceId entityid,
+    invoicedItemId entityid,
+    item varchar(500),
+    sourceInvoicedItem entityid,
+    creditedaccount varchar(100),
+    debitedaccount varchar(200),
+    qcstate int,
+    parentid entityid,
+    issueId int,
+    formSort integer,
+    chargeCategory VARCHAR(100),
 
-  taskid entityid,
-  requestid entityid,
+    taskid entityid,
+    requestid entityid,
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  CONSTRAINT PK_miscCharges PRIMARY KEY (objectid)
+    CONSTRAINT PK_miscCharges PRIMARY KEY (objectid)
 );
 
 --this table contains one row each time a billing run is performed, which gleans items to be charged from a variety of sources
 --and snapshots them into invoicedItems
 CREATE TABLE ehr_billing.invoiceRuns (
-  rowId SERIAL NOT NULL,
-  dataSources varchar(1000),
-  comment varchar(4000),
-  runDate timestamp,
-  billingPeriodStart timestamp,
-  billingPeriodEnd timestamp,
-  objectid entityid NOT NULL,
-  invoiceNumber varchar(200),
-  status varchar(200),
+    rowId SERIAL NOT NULL,
+    dataSources varchar(1000),
+    comment varchar(4000),
+    runDate timestamp,
+    billingPeriodStart timestamp,
+    billingPeriodEnd timestamp,
+    objectid entityid NOT NULL,
+    invoiceNumber varchar(200),
+    status varchar(200),
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  CONSTRAINT pk_invoiceRuns PRIMARY KEY (objectid)
+    CONSTRAINT pk_invoiceRuns PRIMARY KEY (objectid)
 );
 
 --this table contains a snapshot of items actually invoiced, which will draw from many places in the animal record
@@ -303,10 +297,7 @@ ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_INVOICEDITEMS_INVOICENUM
 
 CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
 
-/* ehr_billing-18.20-18.30.sql */
-
 SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'CONSTRAINT', 'FK_INVOICEDITEMS_INVOICENUM');
-
 SELECT core.fn_dropifexists('chargeableItems','ehr_billing','TABLE', NULL);
 SELECT core.fn_dropifexists('chargeRateExemptions','ehr_billing','TABLE', NULL);
 SELECT core.fn_dropifexists('chargeUnits','ehr_billing','TABLE', NULL);
@@ -443,17 +434,17 @@ SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'CONSTRAINT', 'EHR_B
 CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
 
 CREATE TABLE ehr_billing.chargeableItemCategories (
-  rowId SERIAL NOT NULL,
-  name varchar(100) NOT NULL,
-  dateDisabled timestamp,
+    rowId SERIAL NOT NULL,
+    name varchar(100) NOT NULL,
+    dateDisabled timestamp,
 
-  container entityid NOT NULL,
-  createdBy int,
-  created timestamp,
-  modifiedBy int,
-  modified timestamp,
+    container entityid NOT NULL,
+    createdBy int,
+    created timestamp,
+    modifiedBy int,
+    modified timestamp,
 
-  CONSTRAINT PK_chargeableItemCategories PRIMARY KEY (rowId)
+    CONSTRAINT PK_chargeableItemCategories PRIMARY KEY (rowId)
 );
 
 TRUNCATE ehr_billing.chargeableItems;
@@ -470,49 +461,47 @@ ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN totalCost TYPE DECIMAL(13,2);
 ALTER TABLE ehr_billing.miscCharges ALTER COLUMN unitCost TYPE DECIMAL(13,2);
 
 CREATE TABLE ehr_billing.dataAccess (
-  rowId serial NOT NULL,
-  userid int,
-  investigatorId int,
-  project int,
-  allData boolean,
+    rowId serial NOT NULL,
+    userid int,
+    investigatorId int,
+    project int,
+    allData boolean,
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  CONSTRAINT PK_dataAccess PRIMARY KEY (rowId),
-  CONSTRAINT FK_EHR_BILLING_DATA_ACCESS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_dataAccess PRIMARY KEY (rowId),
+    CONSTRAINT FK_EHR_BILLING_DATA_ACCESS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
 CREATE INDEX EHR_BILLING_DATA_ACCESS_CONTAINER_INDEX ON ehr_billing.dataAccess (Container);
 
-/* ehr_billing-18.30-19.10.sql */
-
 CREATE TABLE ehr_billing.fiscalAuthorities (
-  rowid serial,
-  faid varchar(100),
-  firstName varchar(100),
-  lastName varchar(100),
-  position varchar(100),
-  address varchar(500),
-  city varchar(100),
-  state varchar(100),
-  country varchar(100),
-  zip varchar(100),
-  phoneNumber varchar(100),
-  active boolean default true,
-  objectid ENTITYID,
+    rowid serial,
+    faid varchar(100),
+    firstName varchar(100),
+    lastName varchar(100),
+    position varchar(100),
+    address varchar(500),
+    city varchar(100),
+    state varchar(100),
+    country varchar(100),
+    zip varchar(100),
+    phoneNumber varchar(100),
+    active boolean default true,
+    objectid ENTITYID,
 
-  container ENTITYID NOT NULL,
-  createdBy USERID,
-  created timestamp,
-  modifiedBy USERID,
-  modified timestamp,
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
 
-  CONSTRAINT pk_fiscalAuthorities PRIMARY KEY (rowid),
-  CONSTRAINT FK_EHR_BILLING_FISCAL_AUTHORITIES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT pk_fiscalAuthorities PRIMARY KEY (rowid),
+    CONSTRAINT FK_EHR_BILLING_FISCAL_AUTHORITIES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
 CREATE INDEX EHR_BILLING_FISCAL_AUTHORITIES_CONTAINER_INDEX ON ehr_billing.fiscalAuthorities (container);
@@ -522,8 +511,6 @@ ALTER TABLE ehr_billing.aliases ADD isAcceptingCharges boolean DEFAULT true;
 
 ALTER TABLE ehr_billing.invoice ADD balanceDue DECIMAL(13,2);
 ALTER TABLE ehr_billing.miscCharges ADD investigator varchar(100);
-
-/* ehr_billing-19.10-19.20.sql */
 
 -- dropping to avoid duplicate index, EHR_BILLING_ALIASES_INDEX includes index to container
 SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'ehr_billing_aliases_container_index');
@@ -707,3 +694,29 @@ DROP FUNCTION ehr_billing.addTotalCostToMiscCharges();
 SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'EHR_BILLING_ALIASES_INDEX');
 
 ALTER TABLE ehr_billing.aliases ADD CONSTRAINT UNIQUE_ALIAS UNIQUE (Container, alias);
+
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN creditedaccount TYPE varchar(200);
+ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN debitedaccount TYPE varchar(200);
+ALTER TABLE ehr_billing.invoice ALTER COLUMN accountnumber TYPE varchar(200);
+ALTER TABLE ehr_billing.miscCharges ALTER COLUMN creditedaccount TYPE varchar(200);
+ALTER TABLE ehr_billing.miscCharges ALTER COLUMN debitedaccount TYPE varchar(200);
+
+-- this table should consists of the rows with schema name, query name where the resulting rows of that query are associated with a chargeId, chargeId, and description of the query
+CREATE TABLE ehr_billing.procedureQueryChargeIdAssoc (
+    rowId SERIAL NOT NULL,
+    schemaName varchar(200) NOT NULL,
+    queryName varchar(500) NOT NULL,
+    description varchar(2000) NOT NULL,
+    chargeId int NOT NULL,
+
+    container ENTITYID NOT NULL,
+    createdBy USERID,
+    created timestamp,
+    modifiedBy USERID,
+    modified timestamp,
+
+    CONSTRAINT PK_procedureQueryChargeIdAssociations PRIMARY KEY (rowId),
+    CONSTRAINT FK_EHR_BILLING_PROCEDURE_QUERY_CHARGEID_ASSOC_CONTAINER FOREIGN KEY (container) REFERENCES core.Containers (EntityId)
+);
+
+CREATE INDEX IDX_EHR_BILLING_PROCEDURE_QUERY_CHARGEID_ASSOC_CONTAINER ON ehr_billing.procedureQueryChargeIdAssoc (container);
