@@ -4,8 +4,6 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/* EHR-11.30-12.10.sql */
-
 CREATE SCHEMA ehr;
 GO
 
@@ -457,8 +455,6 @@ INSERT INTO ehr.status (label,Description,PublicData,DraftData,isDeleted,isReque
 
 --drop table ehr.qcstatemetadata;
 
-/* EHR-12.20-12.30.sql */
-
 CREATE TABLE ehr.chargedItems (
     rowid INT IDENTITY (1,1) NOT NULL,
     id varchar(100),
@@ -616,11 +612,7 @@ ALTER TABLE ehr.encounter_participants add objectid ENTITYID;
 ALTER TABLE ehr.project add contact_emails varchar(4000);
 ALTER TABLE ehr.project DROP COLUMN qcstate;
 
-/* EHR-12.30-12.301.sql */
-
 ALTER TABLE ehr.snomed_tags ADD objectid ENTITYID;
-
-/* EHR-12.301-12.302.sql */
 
 ALTER TABLE ehr.protocolProcedures ADD startdate datetime;
 ALTER TABLE ehr.protocolProcedures ADD enddate datetime;
@@ -689,8 +681,6 @@ CREATE TABLE ehr.projectAccountHistory (
   modified datetime
 );
 
-/* EHR-12.302-12.303.sql */
-
 ALTER TABLE ehr.tasks ADD billingType int;
 
 alter table ehr.project add name varchar(100);
@@ -698,22 +688,14 @@ alter table ehr.project add investigatorId int;
 
 alter table ehr.protocol add investigatorId int;
 
-/* EHR-12.303-12.304.sql */
-
 DROP TABLE ehr.investigators;
 DROP TABLE ehr.accounts;
 
-/* EHR-12.304-12.305.sql */
-
 DROP TABLE ehr.projectAccountHistory;
-
-/* EHR-12.315-12.316.sql */
 
 ALTER TABLE ehr.snomed_tags ADD set_number int default 1;
 go
 update ehr.snomed_tags set set_number = 1 where set_number is null;
-
-/* EHR-12.316-12.317.sql */
 
 ALTER TABLE ehr.encounter_participants DROP COLUMN procedure_id;
 ALTER TABLE ehr.encounter_participants ADD parentid entityid;
@@ -736,11 +718,7 @@ CREATE INDEX snomed_tags_objectid ON ehr.snomed_tags (objectid);
 
 CREATE INDEX snomed_tags_recordid ON ehr.snomed_tags (recordid);
 
-/* EHR-12.317-12.318.sql */
-
 ALTER TABLE ehr.protocol ADD last_modification datetime;
-
-/* EHR-12.321-12.322.sql */
 
 ALTER TABLE ehr.protocol_counts add project integer;
 ALTER TABLE ehr.protocol_counts add start datetime;
@@ -751,8 +729,6 @@ ALTER TABLE ehr.protocol add first_approval datetime;
 
 ALTER TABLE ehr.protocolProcedures add project integer;
 ALTER TABLE ehr.protocolProcedures add daysBetween integer;
-
-/* EHR-12.322-12.323.sql */
 
 ALTER TABLE ehr.encounter_participants add Id varchar(100);
 
@@ -767,8 +743,6 @@ CREATE INDEX encounter_summaries_id ON ehr.encounter_summaries (id);
 CREATE INDEX snomed_tags_id ON ehr.snomed_tags (id);
 CREATE INDEX snomed_tags_parentid ON ehr.snomed_tags (parentid);
 CREATE INDEX snomed_tags_caseid ON ehr.snomed_tags (caseid);
-
-/* EHR-12.324-12.325.sql */
 
 DROP INDEX snomed_tags_objectid ON ehr.snomed_tags;
 ALTER TABLE ehr.snomed_tags ALTER COLUMN objectid varchar(50);
@@ -786,8 +760,6 @@ DROP INDEX encounter_summaries_objectid ON ehr.encounter_summaries;
 ALTER TABLE ehr.encounter_summaries ALTER COLUMN objectid varchar(50);
 CREATE INDEX encounter_summaries_objectid ON ehr.encounter_summaries (objectid);
 
-/* EHR-12.325-12.326.sql */
-
 DROP INDEX snomed_tags_objectid ON ehr.snomed_tags;
 ALTER TABLE ehr.snomed_tags ALTER COLUMN objectid varchar(60);
 CREATE INDEX snomed_tags_objectid ON ehr.snomed_tags (objectid);
@@ -804,8 +776,6 @@ DROP INDEX encounter_summaries_objectid ON ehr.encounter_summaries;
 ALTER TABLE ehr.encounter_summaries ALTER COLUMN objectid varchar(60);
 CREATE INDEX encounter_summaries_objectid ON ehr.encounter_summaries (objectid);
 
-/* EHR-12.327-12.328.sql */
-
 ALTER TABLE ehr.animal_groups ADD container entityid;
 ALTER TABLE ehr.animal_groups ADD date datetime;
 ALTER TABLE ehr.animal_groups ADD enddate datetime;
@@ -818,46 +788,26 @@ ALTER TABLE ehr.animal_group_members ADD id varchar(200);
 ALTER TABLE ehr.animal_group_members DROP COLUMN groupname;
 ALTER TABLE ehr.animal_group_members ADD groupId int;
 
-/* EHR-12.329-12.330.sql */
-
 DROP INDEX encounter_encounter_participants_id ON ehr.encounter_participants;
 CREATE INDEX encounter_participants_id ON ehr.encounter_participants (id);
 
-/* EHR-12.330-12.331.sql */
-
 ALTER TABLE ehr.protocol_counts ADD objectid entityid;
-
-/* EHR-12.331-12.332.sql */
 
 --remove not null constraint
 alter table ehr.protocol_counts alter column protocol varchar(200) null;
 
-/* EHR-12.332-12.333.sql */
-
 CREATE INDEX snomed_tags_id_recordid ON ehr.snomed_tags (id, recordid);
-
-/* EHR-12.334-12.335.sql */
 
 DROP INDEX snomed_tags_id_recordid ON ehr.snomed_tags;
 
 CREATE INDEX snomed_tags_id_recordid_code on ehr.snomed_tags (id, recordid, code);
 
-/* EHR-12.335-12.336.sql */
-
-;
-
-/* EHR-12.341-12.342.sql */
-
 alter table ehr.project add use_category varchar(100);
-
-/* EHR-12.342-12.343.sql */
 
 CREATE INDEX animal_group_members_groupId_container ON ehr.animal_group_members (groupId, container);
 
 --NOTE: this is different than the SQLServer version
 CREATE INDEX project_investigatorid_project ON ehr.project (investigatorId ASC, project ASC) INCLUDE (name);
-
-/* EHR-12.343-12.344.sql */
 
 CREATE INDEX encounter_participants_container_rowid_id ON ehr.encounter_participants (container, rowid, id);
 CREATE INDEX encounter_participants_container_rowid_parentid ON ehr.encounter_participants (container, rowid, parentid);
@@ -869,34 +819,26 @@ CREATE INDEX encounter_summaries_container_parentid ON ehr.encounter_summaries (
 CREATE INDEX snomed_tags_recordid_rowid_id ON ehr.snomed_tags (recordid, rowid, id);
 CREATE INDEX snomed_tags_code_rowid_id_recordid ON ehr.snomed_tags (code, rowid, id, recordid);
 
-/* EHR-12.344-12.345.sql */
-
 CREATE INDEX snomed_tags_recordid_container_code ON ehr.snomed_tags (recordid, container, code);
 
-/* EHR-12.345-12.346.sql */
-
 CREATE TABLE ehr.treatment_times (
-  rowid int identity(1,1),
-  treatmentid entityid,
-  time int,
+    rowid int identity(1,1),
+    treatmentid entityid,
+    time int,
 
-  objectid entityid,
-  container entityid,
-  created datetime,
-  createdby int,
-  modified datetime,
-  modifiedby int,
+    objectid entityid,
+    container entityid,
+    created datetime,
+    createdby int,
+    modified datetime,
+    modifiedby int,
 
-  constraint PK_teatment_times PRIMARY KEY (rowid)
+    constraint PK_teatment_times PRIMARY KEY (rowid)
 );
-
-/* EHR-12.346-12.347.sql */
 
 CREATE INDEX project_name_project ON ehr.project (name, project);
 
 CREATE INDEX snomed_tags_code_container ON ehr.snomed_tags (code, container);
-
-/* EHR-12.350-12.351.sql */
 
 --NOTE: this change is not applied to postgres
 ALTER TABLE ehr.snomed_tags DROP PK_snomed_tags;
@@ -907,49 +849,35 @@ CREATE CLUSTERED INDEX CIDX_snomed_tags ON
   --NOTE: free versions of SQLServer do not support compression, so we cannot add this in the upgrade script.
   --WITH (DATA_COMPRESSION = ROW);
 
-/* EHR-12.355-12.356.sql */
-
 ALTER TABLE ehr.requests ADD sendemail bit;
 ALTER TABLE ehr.reports ADD subjectIdFieldName varchar(200);
 
-/* EHR-12.356-12.357.sql */
-
 ALTER TABLE ehr.project ADD alwaysavailable bit;
-
-/* EHR-12.358-12.359.sql */
 
 INSERT INTO ehr.qcstateMetadata (QCStateLabel,draftData,isDeleted,isRequest)
 VALUES ('Request: Sample Delivered', 1, 0, 1);
 
-/* EHR-12.359-12.360.sql */
-
 CREATE TABLE ehr.protocolexemptions(
-  rowid int identity(1,1),
-  protocol VARCHAR(100),
-  project INTEGER,
-  exemption VARCHAR(200),
-  startdate DATETIME,
-  enddate DATETIME,
-  remark VARCHAR(4000),
+    rowid int identity(1,1),
+    protocol VARCHAR(100),
+    project INTEGER,
+    exemption VARCHAR(200),
+    startdate DATETIME,
+    enddate DATETIME,
+    remark VARCHAR(4000),
 
-  container ENTITYID,
-  createdby INTEGER,
-  created DATETIME ,
-  modifiedby INTEGER,
-  modified DATETIME,
+    container ENTITYID,
+    createdby INTEGER,
+    created DATETIME ,
+    modifiedby INTEGER,
+    modified DATETIME,
 
-  CONSTRAINT PK_protocolExemptions PRIMARY KEY (rowid)
+    CONSTRAINT PK_protocolExemptions PRIMARY KEY (rowid)
 );
-
-/* EHR-12.361-12.362.sql */
 
 ALTER TABLE ehr.snomed_tags ADD taskid entityid;
 
-/* EHR-12.362-12.363.sql */
-
 ALTER TABLE ehr.encounter_participants ADD taskid entityid;
-
-/* EHR-12.363-12.364.sql */
 
 truncate table ehr.encounter_participants;
 
@@ -966,10 +894,7 @@ EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'index', 'encounter_p
 EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'index', 'encounter_participants_container_rowid_parentid';
 GO
 
-
 ALTER TABLE ehr.encounter_participants DROP COLUMN rowid;
-
-/* EHR-12.364-12.365.sql */
 
 --this might have been created by EHRManager
 EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'index', 'encounter_participants_objectid';
@@ -981,11 +906,7 @@ GO
 
 ALTER TABLE ehr.encounter_participants ADD CONSTRAINT pk_encounter_participants PRIMARY KEY (objectid);
 
-/* EHR-12.371-12.372.sql */
-
 ALTER TABLE ehr.project ADD shortname varchar(200);
-
-/* EHR-12.372-12.373.sql */
 
 --this might have been created by EHRManager
 EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'index', 'encounter_summaries_objectid';
@@ -1001,8 +922,6 @@ ALTER TABLE ehr.encounter_summaries ADD CONSTRAINT PK_encounter_summaries PRIMAR
 GO
 ALTER TABLE ehr.encounter_summaries DROP COLUMN rowid;
 
-/* EHR-12.373-12.374.sql */
-
 CREATE INDEX encounter_summaries_objectid ON ehr.encounter_summaries (objectid);
 CREATE INDEX encounter_summaries_parentid_objectid_container_id ON ehr.encounter_summaries (parentid, objectid, container, id);
 CREATE INDEX encounter_summaries_container_objectid ON ehr.encounter_summaries (container, objectid);
@@ -1012,28 +931,16 @@ CREATE INDEX encounter_participants_taskid ON ehr.encounter_participants (taskid
 
 CREATE INDEX snomed_tags_taskid ON ehr.snomed_tags (taskid);
 
-/* EHR-12.374-12.375.sql */
-
 CREATE INDEX treatment_times_container_treatmentid ON ehr.treatment_times (container, treatmentid);
-
-/* EHR-12.376-12.377.sql */
 
 INSERT INTO ehr.qcStateMetadata (QCStateLabel,DraftData,isDeleted,isRequest,allowFutureDates) VALUES ('Request: Cancelled', 0, 0, 1, 1);
 
-/* EHR-12.378-12.379.sql */
-
 ALTER TABLE ehr.project ADD projecttype varchar(100);
-
-/* EHR-12.379-12.380.sql */
 
 ALTER TABLE ehr.formtemplates ADD category varchar(100);
 
-/* EHR-12.381-12.382.sql */
-
 ALTER TABLE ehr.formtemplates drop column template;
 ALTER TABLE ehr.formtemplaterecords ADD targettemplate varchar(100);
-
-/* EHR-12.384-12.385.sql */
 
 ALTER TABLE ehr.snomed_tags DROP PK_snomed_tags;
 DROP INDEX snomed_tags_recordid_rowid_id ON ehr.snomed_tags;
@@ -1053,8 +960,6 @@ GO
 CREATE INDEX snomed_tags_objectid on ehr.snomed_tags (objectid);
 ALTER TABLE ehr.snomed_tags ADD CONSTRAINT PK_snomed_tags PRIMARY KEY NONCLUSTERED (objectid);
 
-/* EHR-12.385-12.386.sql */
-
 --removed after monitoring usage on site
 DROP INDEX encounter_summaries_parentid ON ehr.encounter_summaries;
 DROP INDEX encounter_summaries_parentid_objectid_container_id ON ehr.encounter_summaries;
@@ -1069,19 +974,11 @@ DROP INDEX snomed_tags_id ON ehr.snomed_tags;
 DROP INDEX snomed_tags_recordid ON ehr.snomed_tags;
 DROP INDEX snomed_tags_recordid_container_code ON ehr.snomed_tags;
 
-/* EHR-12.386-12.387.sql */
-
 DROP INDEX snomed_tags_objectid ON ehr.snomed_tags;
-
-/* EHR-12.387-12.388.sql */
 
 ALTER TABLE ehr.encounter_summaries ADD category varchar(100);
 
-/* EHR-12.388-12.389.sql */
-
 ALTER TABLE ehr.snomed_tags ADD parentid entityid;
-
-/* EHR-12.393-12.394.sql */
 
 ALTER TABLE ehr.project ADD container entityid;
 ALTER TABLE ehr.protocol ADD container entityid;
@@ -1098,8 +995,6 @@ UPDATE ehr.protocol SET container = (SELECT c.entityid from core.containers c LE
 DELETE FROM ehr.project WHERE container IS NULL;
 DELETE FROM ehr.protocol WHERE container IS NULL;
 
-/* EHR-12.394-12.395.sql */
-
 ALTER TABLE ehr.project DROP PK_project;
 ALTER TABLE ehr.protocol DROP PK_protocol;
 GO
@@ -1109,26 +1004,15 @@ GO
 ALTER TABLE ehr.project ADD CONSTRAINT PK_project PRIMARY KEY (objectid);
 ALTER TABLE ehr.protocol ADD CONSTRAINT PK_protocol PRIMARY KEY (objectid);
 
-/* EHR-12.395-12.396.sql */
-
---placeholder for pg changes
-;
-
-/* EHR-12.397-12.398.sql */
-
 CREATE INDEX IDX_project_container_project_protocol ON ehr.project (container, project, protocol);
 CREATE INDEX IDX_project_container_project_investigatorid ON ehr.project (container, project, investigatorid);
 CREATE INDEX IDX_protocol_container_protocol ON ehr.protocol (container, protocol);
 
 CREATE INDEX IDX_container_taskid_formtype ON ehr.tasks (container, taskid, formtype);
 
-/* EHR-12.399-12.400.sql */
-
 ALTER TABLE ehr.animal_group_members ADD releaseType VARCHAR(200);
 ALTER TABLE ehr.animal_group_members ADD taskid entityid;
 ALTER TABLE ehr.animal_group_members ADD qcstate integer;
-
-/* EHR-12.400-12.401.sql */
 
 ALTER TABLE ehr.animal_group_members DROP pk_animal_group_members;
 ALTER TABLE ehr.animal_group_members DROP COLUMN rowid;
@@ -1137,8 +1021,6 @@ ALTER TABLE ehr.animal_group_members ADD remark varchar(4000);
 ALTER TABLE ehr.animal_group_members ALTER COLUMN objectid entityid NOT NULL;
 GO
 ALTER TABLE ehr.animal_group_members ADD CONSTRAINT pk_animal_group_members PRIMARY KEY (objectid);
-
-/* EHR-12.402-12.403.sql */
 
 ALTER TABLE ehr.snomed_tags ADD formsort integer;
 ALTER TABLE ehr.snomed_tags ADD date timestamp;
@@ -1149,17 +1031,11 @@ ALTER TABLE ehr.formtemplates ADD hidden bit default 0;
 GO
 UPDATE ehr.formtemplates SET hidden = 0;
 
-/* EHR-12.403-12.404.sql */
-
 ALTER TABLE ehr.snomed_tags DROP COLUMN date;
 GO
 ALTER TABLE ehr.snomed_tags ADD date datetime;
 
-/* EHR-12.404-12.405.sql */
-
 alter table ehr.kinship alter column coefficient double precision;
-
-/* EHR-12.409-12.410.sql */
 
 CREATE INDEX IDX_requests_requestid_container ON ehr.requests (requestid, container);
 CREATE INDEX IDX_container_project_objectid_name ON ehr.project (container, project, objectid, name);
@@ -1168,34 +1044,21 @@ CREATE INDEX IDX_container_project_objectid_name ON ehr.project (container, proj
 CREATE STATISTICS STATS_project_objectid_container_project ON ehr.project (objectid, container, project);
 CREATE STATISTICS STATS_project_project_objectid ON ehr.project (project, objectid);
 
-/* EHR-12.415-12.416.sql */
-
 ALTER TABLE ehr.protocol ADD lastAnnualReview datetime;
-
-/* EHR-12.416-12.417.sql */
 
 ALTER TABLE ehr.protocol_counts ADD description varchar(4000);
 
-/* EHR-12.417-12.418.sql */
-
 DROP INDEX encounter_flags_objectid on ehr.encounter_flags;
 DROP INDEX encounter_flags_parentid on ehr.encounter_flags;
-
-/* EHR-12.418-12.419.sql */
 
 ALTER TABLE ehr.formtemplates DROP CONSTRAINT UNIQUE_formTemplates;
 
 ALTER TABLE ehr.formtemplates ADD CONSTRAINT UNIQUE_formTemplates UNIQUE (container, formtype, title);
 
-/* EHR-12.419-12.420.sql */
-
 UPDATE ehr.qcStateMetadata SET draftData = 1 WHERE QCStateLabel = 'Review Required';
-
-/* EHR-12.421-12.422.sql */
 
 CREATE INDEX IDX_treatment_times_treatmentid ON ehr.treatment_times (treatmentid);
 
-/* EHR-12.424-12.425.sql */
 GO
 
 CREATE PROCEDURE ehr.handleUpgrade AS
@@ -1220,43 +1083,35 @@ EXEC core.fn_dropifexists 'treatment_times', 'ehr', 'Index', 'IDX_treatment_time
 
 CREATE INDEX IDX_treatment_times_treatmentid ON ehr.treatment_times (treatmentid);
 
-/* EHR-12.425-12.426.sql */
-
 ALTER TABLE ehr.project ALTER COLUMN Title VARCHAR(400);
-
-/* ehr-16.10-16.20.sql */
 
 EXEC core.fn_dropifexists 'animal_group_members','ehr','TABLE';
 
-/* ehr-16.20-16.30.sql */
-
 CREATE TABLE ehr.institutions (
-  id int not null,
-  name NVARCHAR(50),
-  abbreviation NVARCHAR(10),
-  city NVARCHAR(40),
-  state NVARCHAR(2),
-  country NVARCHAR(20),
-  affiliate varchar(50),
-  web_site varchar(200),
-  fileStatus NVARCHAR(2),
-  recordClass NVARCHAR(4),
-  objectid nvarchar(100),
-  Created DATETIME,
-  CreatedBy USERID,
-  Modified DATETIME,
-  ModifiedBy USERID,
-  Container	entityId NOT NULL,
+    id int not null,
+    name NVARCHAR(50),
+    abbreviation NVARCHAR(10),
+    city NVARCHAR(40),
+    state NVARCHAR(2),
+    country NVARCHAR(20),
+    affiliate varchar(50),
+    web_site varchar(200),
+    fileStatus NVARCHAR(2),
+    recordClass NVARCHAR(4),
+    objectid nvarchar(100),
+    Created DATETIME,
+    CreatedBy USERID,
+    Modified DATETIME,
+    ModifiedBy USERID,
+    Container	entityId NOT NULL,
 
-  CONSTRAINT PK_EHR_INSTITUTIONS PRIMARY KEY (id),
-  CONSTRAINT FK_EHR_INSTITUTIONS FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_EHR_INSTITUTIONS PRIMARY KEY (id),
+    CONSTRAINT FK_EHR_INSTITUTIONS FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 GO
 
 CREATE INDEX EHR_INSTITUTIONS_CONTAINER_INDEX ON ehr.institutions(Container);
 GO
-
-/* ehr-16.30-17.10.sql */
 
 ALTER TABLE ehr.animal_groups ADD diCreated DATETIME;
 ALTER TABLE ehr.animal_groups ADD diModified DATETIME;
@@ -1273,24 +1128,22 @@ ALTER TABLE ehr.protocol ADD diModified DATETIME;
 ALTER TABLE ehr.protocol ADD diCreatedBy USERID;
 ALTER TABLE ehr.protocol ADD diModifiedBy USERID;
 
-/* ehr-17.20-17.30.sql */
-
 CREATE TABLE ehr.observation_types (
-  rowid INT IDENTITY(1,1) NOT NULL,
-  value varchar(200),
-  category varchar(200),
-  editorconfig varchar(4000),
-  schemaname varchar(200),
-  queryname varchar(200),
-  valuecolumn varchar(200),
-  Created DATETIME,
-  CreatedBy USERID,
-  Modified DATETIME,
-  ModifiedBy USERID,
-  Container	entityId NOT NULL,
+    rowid INT IDENTITY(1,1) NOT NULL,
+    value varchar(200),
+    category varchar(200),
+    editorconfig varchar(4000),
+    schemaname varchar(200),
+    queryname varchar(200),
+    valuecolumn varchar(200),
+    Created DATETIME,
+    CreatedBy USERID,
+    Modified DATETIME,
+    ModifiedBy USERID,
+    Container	entityId NOT NULL,
 
-  CONSTRAINT PK_EHR_OBSERVATION_TYPES PRIMARY KEY (rowid),
-  CONSTRAINT FK_EHR_OBSERVATION_TYPES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_EHR_OBSERVATION_TYPES PRIMARY KEY (rowid),
+    CONSTRAINT FK_EHR_OBSERVATION_TYPES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 GO
 
@@ -1302,70 +1155,64 @@ ALTER TABLE ehr.project ADD Lsid LsidType null;
 
 ALTER TABLE ehr.reports ADD ReportStatus NVARCHAR(MAX);
 
-/* ehr-17.30-18.10.sql */
-
 -- add LSID column to tables to allow them to be extensible
 ALTER TABLE ehr.protocol_counts ADD lsid LsidType;
 ALTER TABLE ehr.snomed_tags ADD lsid LsidType;
 
 CREATE TABLE ehr.protocol_amendments
 (
-  RowId INT IDENTITY (1, 1) NOT NULL,
-  Created DATETIME,
-  CreatedBy USERID,
-  Modified DATETIME,
-  ModifiedBy USERID,
-  Container ENTITYID NOT NULL,
-  ObjectId ENTITYID,
+    RowId INT IDENTITY (1, 1) NOT NULL,
+    Created DATETIME,
+    CreatedBy USERID,
+    Modified DATETIME,
+    ModifiedBy USERID,
+    Container ENTITYID NOT NULL,
+    ObjectId ENTITYID,
 
-  Project INTEGER,
-  Protocol VARCHAR(200),
-  Date DATETIME,
-  Submitted DATETIME,
-  Approved DATETIME,
-  Comment VARCHAR(4000),
-  Lsid LSIDtype,
+    Project INTEGER,
+    Protocol VARCHAR(200),
+    Date DATETIME,
+    Submitted DATETIME,
+    Approved DATETIME,
+    Comment VARCHAR(4000),
+    Lsid LSIDtype,
 
-  CONSTRAINT PK_protocol_amendments PRIMARY KEY (RowId),
-  CONSTRAINT FK_protocol_amendments_Container FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_protocol_amendments PRIMARY KEY (RowId),
+    CONSTRAINT FK_protocol_amendments_Container FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 
-/* ehr-18.20-18.30.sql */
-
 CREATE TABLE ehr.investigators (
-  rowid INT IDENTITY (1, 1) NOT NULL,
-  firstName varchar(100),
-  lastName varchar(100),
-  position varchar(100),
-  address varchar(500),
-  city varchar(100),
-  state varchar(100),
-  country varchar(100),
-  zip varchar(100),
-  phoneNumber varchar(100),
-  investigatorType varchar(100),
-  emailAddress varchar(100),
-  dateCreated datetime,
-  dateDisabled datetime,
-  division varchar(100),
-  userid int,
+    rowid INT IDENTITY (1, 1) NOT NULL,
+    firstName varchar(100),
+    lastName varchar(100),
+    position varchar(100),
+    address varchar(500),
+    city varchar(100),
+    state varchar(100),
+    country varchar(100),
+    zip varchar(100),
+    phoneNumber varchar(100),
+    investigatorType varchar(100),
+    emailAddress varchar(100),
+    dateCreated datetime,
+    dateDisabled datetime,
+    division varchar(100),
+    userid int,
 
-  Lsid LSIDtype,
-  Created DATETIME,
-  CreatedBy USERID,
-  Modified DATETIME,
-  ModifiedBy USERID,
-  Container ENTITYID NOT NULL,
+    Lsid LSIDtype,
+    Created DATETIME,
+    CreatedBy USERID,
+    Modified DATETIME,
+    ModifiedBy USERID,
+    Container ENTITYID NOT NULL,
 
-  CONSTRAINT PK_EHR_INVESTIGATORS PRIMARY KEY (rowid),
-  CONSTRAINT FK_EHR_INVESTIGATORS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+    CONSTRAINT PK_EHR_INVESTIGATORS PRIMARY KEY (rowid),
+    CONSTRAINT FK_EHR_INVESTIGATORS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
 );
 GO
 
 CREATE INDEX IX_EHR_INVESTIGATORS_CONTAINER ON ehr.investigators (Container);
 GO
-
-/* ehr-18.30-19.10.sql */
 
 ALTER TABLE ehr.investigators ADD financialanalyst int;
 
@@ -1389,19 +1236,19 @@ VALUES
 -- ehr-17.21-17.22.sql
 -- contents of ehr-17.21-17.22.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup, so including it below
 CREATE TABLE ehr.form_framework_types (
-  RowId INT IDENTITY(1,1) NOT NULL,
+    RowId INT IDENTITY(1,1) NOT NULL,
 
-  schemaname varchar(255) DEFAULT NULL,
-  queryname varchar(255) DEFAULT NULL,
-  framework varchar(255) DEFAULT NULL,
+    schemaname varchar(255) DEFAULT NULL,
+    queryname varchar(255) DEFAULT NULL,
+    framework varchar(255) DEFAULT NULL,
 
-  Container ENTITYID NOT NULL,
-  CreatedBy USERID,
-  Created datetime,
-  ModifiedBy USERID,
-  Modified datetime,
+    Container ENTITYID NOT NULL,
+    CreatedBy USERID,
+    Created datetime,
+    ModifiedBy USERID,
+    Modified datetime,
 
-  CONSTRAINT PK_form_framework_types PRIMARY KEY (schemaname, queryname)
+    CONSTRAINT PK_form_framework_types PRIMARY KEY (schemaname, queryname)
 );
 
 ALTER TABLE ehr.supplemental_pedigree ADD species NVARCHAR(4000);
@@ -1410,13 +1257,11 @@ ALTER TABLE ehr.supplemental_pedigree ADD species NVARCHAR(4000);
 ALTER TABLE ehr.form_framework_types add url varchar(255) DEFAULT NULL;
 ALTER TABLE ehr.form_framework_types ADD CONSTRAINT ehr_form_framework_types_unique UNIQUE (RowId);
 
-/* 21.xxx SQL scripts */
-
 -- same contents as ehr-20.001-20.002.sql.
 -- Rationale: When ehr-20.001-20.002.sql was created, the module version was bumped from 21.001 to 21.002
 -- rendering ehr-20.001-20.002.sql useless if the ehr module v. was already at 21.00x in the db.
 -- The script should have been numbered ehr-21.001-21.002.sql instead of ehr-20.001-20.002.sql.
--- This script is an correction attempt to get in sync with the ehr module v. 21.00x so that this script runs
+-- This script is a correction attempt to get in sync with the ehr module v. 21.00x so that this script runs
 -- and below col and constraint gets added as intended.
 
 EXEC core.fn_dropifexists 'form_framework_types', 'ehr', 'column', 'url';
@@ -1441,3 +1286,438 @@ VALUES
 ('Request: On Hold', 'Request has been put on hold', 0, 0, 0, 1, 1);
 
 CREATE INDEX snomed_tags_recordid ON ehr.snomed_tags (recordid);
+
+ALTER TABLE ehr.animal_groups ALTER COLUMN name NVARCHAR(255) NOT NULL;
+ALTER TABLE ehr.animal_groups ALTER COLUMN category NVARCHAR(100);
+ALTER TABLE ehr.animal_groups ALTER COLUMN purpose NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.cage_observations ALTER COLUMN room NVARCHAR(100);
+ALTER TABLE ehr.cage_observations ALTER COLUMN cage NVARCHAR(100);
+ALTER TABLE ehr.cage_observations ALTER COLUMN userid NVARCHAR(100);
+ALTER TABLE ehr.cage_observations ALTER COLUMN feces NVARCHAR(100);
+GO
+
+EXEC core.fn_dropifexists 'encounter_flags', 'ehr', 'index', 'encounter_flags_id';
+ALTER TABLE ehr.encounter_flags ALTER COLUMN id NVARCHAR(100);
+GO
+CREATE INDEX encounter_flags_id ON ehr.encounter_flags(id);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN schemaName NVARCHAR(100);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN queryName NVARCHAR(100);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN flag NVARCHAR(200);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN value NVARCHAR(100);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN remark NVARCHAR(MAX);
+ALTER TABLE ehr.encounter_flags ALTER COLUMN objectid NVARCHAR(60);
+GO
+
+EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'index', 'encounter_participants_id';
+ALTER TABLE ehr.encounter_participants ALTER COLUMN id NVARCHAR(100);
+GO
+CREATE INDEX encounter_participants_id ON ehr.encounter_participants(id);
+ALTER TABLE ehr.encounter_participants ALTER COLUMN username NVARCHAR(500);
+ALTER TABLE ehr.encounter_participants ALTER COLUMN comment NVARCHAR(MAX);
+ALTER TABLE ehr.encounter_participants ALTER COLUMN role NVARCHAR(200);
+EXEC core.fn_dropifexists 'encounter_participants', 'ehr', 'constraint', 'pk_encounter_participants';
+ALTER TABLE ehr.encounter_participants ALTER COLUMN objectid NVARCHAR(60) NOT NULL;
+GO
+ALTER TABLE ehr.encounter_participants ADD CONSTRAINT pk_encounter_participants PRIMARY KEY (objectid);
+GO
+
+EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'index', 'encounter_summaries_id';
+ALTER TABLE ehr.encounter_summaries ALTER COLUMN id NVARCHAR(100);
+GO
+CREATE INDEX encounter_summaries_id ON ehr.encounter_summaries(id);
+ALTER TABLE ehr.encounter_summaries ALTER COLUMN schemaName NVARCHAR(100);
+ALTER TABLE ehr.encounter_summaries ALTER COLUMN queryName NVARCHAR(100);
+EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'index', 'encounter_summaries_container_objectid';
+EXEC core.fn_dropifexists 'encounter_summaries', 'ehr', 'constraint', 'PK_encounter_summaries';
+ALTER TABLE ehr.encounter_summaries ALTER COLUMN objectid NVARCHAR(60) NOT NULL;
+GO
+ALTER TABLE ehr.encounter_summaries ADD CONSTRAINT PK_encounter_summaries PRIMARY KEY (objectid);
+CREATE INDEX encounter_summaries_container_objectid ON ehr.encounter_summaries(container, objectid);
+ALTER TABLE ehr.encounter_summaries ALTER COLUMN category NVARCHAR(100);
+GO
+
+ALTER TABLE ehr.extracts ALTER COLUMN queryname NVARCHAR(100);
+ALTER TABLE ehr.extracts ALTER COLUMN schemaname NVARCHAR(100);
+ALTER TABLE ehr.extracts ALTER COLUMN containerpath NVARCHAR(100);
+ALTER TABLE ehr.extracts ALTER COLUMN viewname NVARCHAR(100);
+ALTER TABLE ehr.extracts ALTER COLUMN filename NVARCHAR(100);
+ALTER TABLE ehr.extracts ALTER COLUMN columns NVARCHAR(500);
+ALTER TABLE ehr.extracts ALTER COLUMN fieldstohash NVARCHAR(500);
+GO
+
+DECLARE @ConstraintName nvarchar(200)
+SELECT @ConstraintName = Name FROM sys.default_constraints
+    WHERE parent_object_id = OBJECT_ID('ehr.form_framework_types') AND
+    parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.form_framework_types') AND name = 'schemaname');
+    IF @ConstraintName IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name FROM sys.default_constraints
+    WHERE parent_object_id = OBJECT_ID('ehr.form_framework_types') AND
+    parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.form_framework_types') AND name = 'queryname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name FROM sys.default_constraints
+    WHERE parent_object_id = OBJECT_ID('ehr.form_framework_types') AND
+    parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.form_framework_types') AND name = 'framework');
+IF @ConstraintName IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name FROM sys.default_constraints
+    WHERE parent_object_id = OBJECT_ID('ehr.form_framework_types') AND
+    parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.form_framework_types') AND name = 'url');
+IF @ConstraintName IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE ehr.form_framework_types DROP CONSTRAINT ' + @ConstraintName)
+END
+
+EXEC core.fn_dropifexists 'form_framework_types', 'ehr', 'constraint', 'PK_form_framework_types';
+ALTER TABLE ehr.form_framework_types ALTER COLUMN schemaname NVARCHAR(255) NOT NULL;
+ALTER TABLE ehr.form_framework_types ALTER COLUMN queryname NVARCHAR(255) NOT NULL;
+GO
+ALTER TABLE ehr.form_framework_types ADD CONSTRAINT PK_form_framework_types PRIMARY KEY (schemaname, queryname);
+ALTER TABLE ehr.form_framework_types ALTER COLUMN framework NVARCHAR(255);
+ALTER TABLE ehr.form_framework_types ALTER COLUMN url NVARCHAR(255);
+GO
+
+ALTER TABLE ehr.formpanelsections ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formpanelsections ALTER COLUMN destination NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formpanelsections ALTER COLUMN xtype NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formpanelsections ALTER COLUMN schemaname NVARCHAR(200);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN queryname NVARCHAR(200);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN title NVARCHAR(200);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN metadatasources NVARCHAR(MAX);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN buttons NVARCHAR(MAX);
+ALTER TABLE ehr.formpanelsections ALTER COLUMN initialtemplates NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.formtemplaterecords ALTER COLUMN storeid NVARCHAR(1000) NOT NULL;
+ALTER TABLE ehr.formtemplaterecords ALTER COLUMN targettemplate NVARCHAR(100);
+GO
+
+EXEC core.fn_dropifexists 'formtemplates', 'ehr', 'constraint', 'UNIQUE_formTemplates';
+ALTER TABLE ehr.formtemplates ALTER COLUMN title NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.formtemplates ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
+GO
+ALTER TABLE ehr.formtemplates ADD CONSTRAINT UNIQUE_formTemplates UNIQUE (container, formtype, title);
+ALTER TABLE ehr.formtemplates ALTER COLUMN category NVARCHAR(100);
+GO
+
+EXEC core.fn_dropifexists 'formtypes', 'ehr', 'constraint', 'unique_formtypes';
+ALTER TABLE ehr.formtypes ALTER COLUMN formtype NVARCHAR(200) NOT NULL;
+GO
+ALTER TABLE ehr.formtypes ADD CONSTRAINT unique_formtypes UNIQUE (container , formtype);
+ALTER TABLE ehr.formtypes ALTER COLUMN category NVARCHAR(100);
+ALTER TABLE ehr.formtypes ALTER COLUMN configjson NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.institutions ALTER COLUMN affiliate NVARCHAR(50);
+ALTER TABLE ehr.institutions ALTER COLUMN web_site NVARCHAR(200);
+GO
+
+ALTER TABLE ehr.investigators ALTER COLUMN firstName NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN lastName NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN position NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN address NVARCHAR(500);
+ALTER TABLE ehr.investigators ALTER COLUMN city NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN state NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN country NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN zip NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN phoneNumber NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN investigatorType NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN emailAddress NVARCHAR(100);
+ALTER TABLE ehr.investigators ALTER COLUMN division NVARCHAR(100);
+GO
+
+ALTER TABLE ehr.kinship ALTER COLUMN id NVARCHAR(100) NOT NULL;
+ALTER TABLE ehr.kinship ALTER COLUMN id2 NVARCHAR(100) NOT NULL;
+GO
+
+DECLARE @ConstraintName nvarchar(200)
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.module_properties') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.module_properties') AND name = 'prop_name');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.module_properties DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.module_properties') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.module_properties') AND name = 'stringvalue');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.module_properties DROP CONSTRAINT ' + @ConstraintName)
+END
+
+EXEC core.fn_dropifexists 'module_properties', 'ehr', 'constraint', 'unique_module_properties';
+ALTER TABLE ehr.module_properties ALTER COLUMN prop_name NVARCHAR(255);
+GO
+ALTER TABLE ehr.module_properties ADD CONSTRAINT unique_module_properties UNIQUE (prop_name , container);
+ALTER TABLE ehr.module_properties ALTER COLUMN stringvalue NVARCHAR(255);
+GO
+
+ALTER TABLE ehr.notificationrecipients ALTER COLUMN notificationtype NVARCHAR(200);
+GO
+
+EXEC core.fn_dropifexists 'notificationtypes', 'ehr', 'constraint', 'pk_notificationtypes';
+ALTER TABLE ehr.notificationtypes ALTER COLUMN notificationtype NVARCHAR(200) NOT NULL;
+GO
+ALTER TABLE ehr.notificationtypes ADD CONSTRAINT pk_notificationtypes PRIMARY KEY (notificationtype )
+
+ALTER TABLE ehr.observation_types ALTER COLUMN value NVARCHAR(200);
+ALTER TABLE ehr.observation_types ALTER COLUMN category NVARCHAR(200);
+ALTER TABLE ehr.observation_types ALTER COLUMN editorconfig NVARCHAR(MAX);
+ALTER TABLE ehr.observation_types ALTER COLUMN schemaname NVARCHAR(200);
+ALTER TABLE ehr.observation_types ALTER COLUMN queryname NVARCHAR(200);
+ALTER TABLE ehr.observation_types ALTER COLUMN valuecolumn NVARCHAR(200);
+GO
+
+EXEC core.fn_dropifexists 'project', 'ehr', 'index', 'IDX_project_container_project_protocol';
+ALTER TABLE ehr.project ALTER COLUMN protocol NVARCHAR(200);
+GO
+CREATE INDEX IDX_project_container_project_protocol ON ehr.project (container, project, protocol);
+ALTER TABLE ehr.project ALTER COLUMN account NVARCHAR(200);
+ALTER TABLE ehr.project ALTER COLUMN inves NVARCHAR(200);
+ALTER TABLE ehr.project ALTER COLUMN avail NVARCHAR(100);
+ALTER TABLE ehr.project ALTER COLUMN title NVARCHAR(400);
+ALTER TABLE ehr.project ALTER COLUMN reqname NVARCHAR(200);
+ALTER TABLE ehr.project ALTER COLUMN contact_emails NVARCHAR(MAX);
+ALTER TABLE ehr.project ALTER COLUMN inves2 NVARCHAR(200);
+EXEC core.fn_dropifexists 'project', 'ehr', 'index', 'project_name_project';
+EXEC core.fn_dropifexists 'project', 'ehr', 'index', 'project_investigatorid_project';
+EXEC core.fn_dropifexists 'project', 'ehr', 'index', 'IDX_container_project_objectid_name';
+ALTER TABLE ehr.project ALTER COLUMN name NVARCHAR(100);
+GO
+CREATE INDEX project_investigatorid_project ON ehr.project (investigatorId ASC, project ASC) INCLUDE (name);
+CREATE INDEX project_name_project ON ehr.project (name, project);
+CREATE INDEX IDX_container_project_objectid_name ON ehr.project (container, project, objectid, name);
+ALTER TABLE ehr.project ALTER COLUMN use_category NVARCHAR(100);
+ALTER TABLE ehr.project ALTER COLUMN shortname NVARCHAR(200);
+ALTER TABLE ehr.project ALTER COLUMN projecttype NVARCHAR(100);
+GO
+
+EXEC core.fn_dropifexists 'protocol', 'ehr', 'index', 'IDX_protocol_container_protocol';
+ALTER TABLE ehr.protocol ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
+GO
+CREATE INDEX IDX_protocol_container_protocol ON ehr.protocol (container, protocol);
+ALTER TABLE ehr.protocol ALTER COLUMN inves NVARCHAR(200);
+ALTER TABLE ehr.protocol ALTER COLUMN title NVARCHAR(1000);
+ALTER TABLE ehr.protocol ALTER COLUMN usda_level NVARCHAR(100);
+ALTER TABLE ehr.protocol ALTER COLUMN external_id NVARCHAR(200);
+ALTER TABLE ehr.protocol ALTER COLUMN project_type NVARCHAR(200);
+ALTER TABLE ehr.protocol ALTER COLUMN ibc_approval_num NVARCHAR(200);
+ALTER TABLE ehr.protocol ALTER COLUMN contacts NVARCHAR(200);
+GO
+
+ALTER TABLE ehr.protocol_amendments ALTER COLUMN protocol NVARCHAR(200);
+ALTER TABLE ehr.protocol_amendments ALTER COLUMN Comment NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.protocol_counts ALTER COLUMN protocol NVARCHAR(200);
+ALTER TABLE ehr.protocol_counts ALTER COLUMN species NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.protocol_counts ALTER COLUMN gender NVARCHAR(100);
+ALTER TABLE ehr.protocol_counts ALTER COLUMN description NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.protocolexemptions ALTER COLUMN protocol NVARCHAR(100);
+ALTER TABLE ehr.protocolexemptions ALTER COLUMN exemption NVARCHAR(200);
+ALTER TABLE ehr.protocolexemptions ALTER COLUMN remark NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN protocol NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN procedurename NVARCHAR(200);
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN code NVARCHAR(100);
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN frequency NVARCHAR(200);
+ALTER TABLE ehr.protocolprocedures ALTER COLUMN remark NVARCHAR(MAX);
+GO
+
+EXEC core.fn_dropifexists 'qcstatemetadata', 'ehr', 'constraint', 'pk_qcstatemetadata';
+ALTER TABLE ehr.qcstatemetadata ALTER COLUMN qcstatelabel NVARCHAR(200) NOT NULL;
+GO
+ALTER TABLE ehr.qcstatemetadata ADD CONSTRAINT pk_qcstatemetadata PRIMARY KEY (qcstatelabel)
+GO
+
+DECLARE @ConstraintName nvarchar(200)
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'reportname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'datefieldname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'qcstatepublicdatafieldname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'report');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'reporttype');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'reporttitle');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'schemaname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'viewname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'category');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'containerpath');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+SELECT @ConstraintName = Name
+FROM sys.default_constraints
+WHERE parent_object_id = OBJECT_ID('ehr.reports') AND
+        parent_column_id = (SELECT column_id FROM sys.columns WHERE object_id = OBJECT_ID('ehr.reports') AND name = 'queryname');
+IF @ConstraintName IS NOT NULL
+BEGIN
+EXEC('ALTER TABLE ehr.reports DROP CONSTRAINT ' + @ConstraintName)
+END
+
+ALTER TABLE ehr.reports ALTER COLUMN reportname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN category NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN reporttype NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN reporttitle NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN containerpath NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN schemaname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN queryname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN viewname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN report NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN datefieldname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN qcstatepublicdatafieldname NVARCHAR(255);
+ALTER TABLE ehr.reports ALTER COLUMN jsonconfig NVARCHAR(MAX);
+ALTER TABLE ehr.reports ALTER COLUMN description NVARCHAR(MAX);
+ALTER TABLE ehr.reports ALTER COLUMN subjectIdFieldName NVARCHAR(200);
+GO
+
+ALTER TABLE ehr.requests ALTER COLUMN title NVARCHAR(200);
+ALTER TABLE ehr.requests ALTER COLUMN formtype NVARCHAR(200);
+ALTER TABLE ehr.requests ALTER COLUMN priority NVARCHAR(200);
+ALTER TABLE ehr.requests ALTER COLUMN pi NVARCHAR(200);
+ALTER TABLE ehr.requests ALTER COLUMN remark NVARCHAR(MAX);
+GO
+
+EXEC core.fn_dropifexists 'scheduled_task_types', 'ehr', 'constraint', 'pk_scheduled_task_types';
+ALTER TABLE ehr.scheduled_task_types ALTER COLUMN tasktype NVARCHAR(200) NOT NULL;
+GO
+ALTER TABLE ehr.scheduled_task_types ADD CONSTRAINT pk_scheduled_task_types PRIMARY KEY (tasktype)
+
+ALTER TABLE ehr.scheduled_tasks ALTER COLUMN tasktype NVARCHAR(200);
+ALTER TABLE ehr.scheduled_tasks ALTER COLUMN id NVARCHAR(100);
+ALTER TABLE ehr.scheduled_tasks ALTER COLUMN location NVARCHAR(100);
+ALTER TABLE ehr.scheduled_tasks ALTER COLUMN description NVARCHAR(MAX);
+GO
+
+EXEC core.fn_dropifexists 'snomed_tags', 'ehr', 'index', 'snomed_tags_recordid';
+EXEC core.fn_dropifexists 'snomed_tags', 'ehr', 'index', 'CIDX_snomed_tags';
+ALTER TABLE ehr.snomed_tags ALTER COLUMN recordid NVARCHAR(200);
+GO
+CREATE INDEX snomed_tags_recordid ON ehr.snomed_tags (recordid);
+CREATE CLUSTERED INDEX CIDX_snomed_tags ON ehr.snomed_tags (container, recordid, set_number, sort)
+EXEC core.fn_dropifexists 'snomed_tags', 'ehr', 'index', 'snomed_tags_code_container';
+ALTER TABLE ehr.snomed_tags ALTER COLUMN code NVARCHAR(32);
+GO
+CREATE INDEX snomed_tags_code_container ON ehr.snomed_tags (code, container);
+ALTER TABLE ehr.snomed_tags ALTER COLUMN qualifier NVARCHAR(200);
+EXEC core.fn_dropifexists 'snomed_tags', 'ehr', 'constraint', 'PK_snomed_tags';
+ALTER TABLE ehr.snomed_tags ALTER COLUMN objectid NVARCHAR(60) NOT NULL;
+GO
+ALTER TABLE ehr.snomed_tags ADD CONSTRAINT PK_snomed_tags PRIMARY KEY NONCLUSTERED (objectid);
+ALTER TABLE ehr.snomed_tags ALTER COLUMN id NVARCHAR(100);
+GO
+
+ALTER TABLE ehr.status ALTER COLUMN label NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.status ALTER COLUMN description NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN id NVARCHAR(50) NOT NULL;
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN gender NVARCHAR(50);
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN dam NVARCHAR(50);
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN sire NVARCHAR(50);
+ALTER TABLE ehr.supplemental_pedigree ALTER COLUMN species NVARCHAR(MAX);
+GO
+
+ALTER TABLE ehr.tasks ALTER COLUMN category NVARCHAR(200) NOT NULL;
+ALTER TABLE ehr.tasks ALTER COLUMN title NVARCHAR(200);
+
+EXEC core.fn_dropifexists 'tasks', 'ehr', 'index', 'IDX_container_taskid_formtype';
+ALTER TABLE ehr.tasks ALTER COLUMN formtype NVARCHAR(200);
+GO
+CREATE INDEX IDX_container_taskid_formtype ON ehr.tasks (container, taskid, formtype);
+
+ALTER TABLE ehr.notificationrecipients ADD Lsid LsidType null;
