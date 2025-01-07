@@ -30,7 +30,7 @@ import org.labkey.snd.security.permissions.SNDViewerPermission;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventsCacheTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
+public class EventsCacheTable extends AbstractSNDTableInfo
 {
     /**
      * Create the simple table.
@@ -39,9 +39,9 @@ public class EventsCacheTable extends SimpleUserSchema.SimpleTable<SNDUserSchema
      * @param schema
      * @param table
      */
-    public EventsCacheTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
+    public EventsCacheTable(SNDUserSchema schema, TableInfo table)
     {
-        super(schema, table, cf);
+        super(schema, table);
     }
 
     static final List<FieldKey> defaultVisibleColumns = new ArrayList<>();

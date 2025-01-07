@@ -15,12 +15,17 @@
  */
 package org.labkey.api.snd;
 
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.query.ExtendedTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.settings.AppProps;
 import org.labkey.data.xml.domainTemplate.DomainTemplateType;
 import org.labkey.data.xml.domainTemplate.SNDTemplateType;
 
@@ -88,5 +93,24 @@ public class SNDDomainKind extends ExtendedTableDomainKind
     public boolean matchesTemplateXML(String templateName, DomainTemplateType template, List<GWTPropertyDescriptor> properties)
     {
         return template instanceof SNDTemplateType;
+    }
+
+
+    public static String formatSndDomainURI(int containerRowId, int packageId)
+    {
+        return String.format("urn:lsid:%s:package-snd.Folder-%d:Package-%d",
+                AppProps.getInstance().getDefaultLsidAuthority(),
+                containerRowId,
+                packageId);
+    }
+
+    public static SQLFragment likeSndDomainURI(Integer containerRowId, Integer packageId)
+    {
+        String pattern = String.format("urn:lsid:%s:package-snd.Folder-%s:Package-%s",
+                CompareType.escapeLikePattern(AppProps.getInstance().getDefaultLsidAuthority(), '!'),
+                null==containerRowId ? "%" : Integer.toString(containerRowId),
+                null==packageId ? "%" : Integer.toString(packageId)
+        );
+        return new SQLFragment("LIKE ").appendValue(pattern).append(" ESCAPE '!'");
     }
 }

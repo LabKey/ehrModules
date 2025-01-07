@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class EventNotesTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
+public class EventNotesTable extends AbstractSNDTableInfo
 {
     /**
      * Create the simple table.
@@ -49,9 +49,9 @@ public class EventNotesTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
      * @param schema
      * @param table
      */
-    public EventNotesTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
+    public EventNotesTable(SNDUserSchema schema, TableInfo table)
     {
-        super(schema, table, cf);
+        super(schema, table);
     }
 
     @Override

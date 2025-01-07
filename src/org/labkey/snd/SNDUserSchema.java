@@ -26,10 +26,12 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.Role;
+import org.labkey.snd.query.AbstractSNDTableInfo;
 import org.labkey.snd.query.AttributeDataTable;
 import org.labkey.snd.query.CategoriesTable;
 import org.labkey.snd.query.EventDataTable;
@@ -67,6 +69,26 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
     }
 
     @Override
+    public Set<String> getSchemaNames()
+    {
+        if (_restricted)
+            return Set.of();
+        return Set.of(PackageUserSchema.SCHEMA_NAME, CategoryUserSchema.SCHEMA_NAME);
+    }
+
+    @Override
+    public QuerySchema getSchema(String name)
+    {
+        if (_restricted)
+            return null;
+        if (PackageUserSchema.SCHEMA_NAME.equalsIgnoreCase(name))
+            return new PackageUserSchema(this);
+        if (CategoryUserSchema.SCHEMA_NAME.equalsIgnoreCase(name))
+            return new CategoryUserSchema(this);
+        return super.getSchema(name);
+    }
+
+    @Override
     public @NotNull Set<Role> getContextualRoles()
     {
         return null != _contextualRole ? Set.of(_contextualRole) : Set.of();
@@ -79,7 +101,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     @Override
                     public TableInfo createTable(SNDUserSchema schema, ContainerFilter cf)
                     {
-                        return new SuperPackagesTable(schema, SNDSchema.getInstance().getTableInfoSuperPkgs(), cf).init();
+                        return new SuperPackagesTable(schema, SNDSchema.getInstance().getTableInfoSuperPkgs()).init();
                     }
                 },
         Pkgs
@@ -87,7 +109,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     @Override
                     public TableInfo createTable(SNDUserSchema schema, ContainerFilter cf)
                     {
-                        return new PackagesTable(schema, SNDSchema.getInstance().getTableInfoPkgs(), cf).init();
+                        return new PackagesTable(schema, SNDSchema.getInstance().getTableInfoPkgs()).init();
                     }
                 },
         PkgCategories
@@ -104,10 +126,8 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     @Override
                     public TableInfo createTable(SNDUserSchema schema, ContainerFilter cf)
                     {
-                        SimpleUserSchema.SimpleTable<SNDUserSchema> table =
-                                new SimpleUserSchema.SimpleTable<>(
-                                        schema, SNDSchema.getInstance().getTableInfoPkgCategoryJunction(), cf).init();
-
+                        var table = new AbstractSNDTableInfo(schema, SNDSchema.getInstance().getTableInfoPkgCategoryJunction()) {};
+                        table.init();
                         return table;
                     }
                 },
@@ -116,10 +136,8 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     @Override
                     public TableInfo createTable(SNDUserSchema schema, ContainerFilter cf)
                     {
-                        SimpleUserSchema.SimpleTable<SNDUserSchema> table =
-                                new SimpleUserSchema.SimpleTable<>(
-                                        schema, SNDSchema.getInstance().getTableInfoProjectItems(), cf).init();
-
+                        var table = new AbstractSNDTableInfo(schema, SNDSchema.getInstance().getTableInfoProjectItems()) {};
+                        table.init();
                         return table;
                     }
                 },
@@ -138,7 +156,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     {
                         if (schema.getContainer().hasPermission(schema.getUser(), SNDViewerPermission.class, schema.getContextualRoles()))
                         {
-                            return new EventsTable(schema, SNDSchema.getInstance().getTableInfoEvents(), cf).init();
+                            return new EventsTable(schema, SNDSchema.getInstance().getTableInfoEvents()).init();
                         }
                         return null;
                     }
@@ -150,7 +168,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     {
                         if (schema.getContainer().hasPermission(schema.getUser(), SNDViewerPermission.class, schema.getContextualRoles()))
                         {
-                            return new EventNotesTable(schema, SNDSchema.getInstance().getTableInfoEventNotes(), cf).init();
+                            return new EventNotesTable(schema, SNDSchema.getInstance().getTableInfoEventNotes()).init();
                         }
 
                         return null;
@@ -163,7 +181,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     {
                         if (schema.getContainer().hasPermission(schema.getUser(), SNDViewerPermission.class, schema.getContextualRoles()))
                         {
-                            return new EventDataTable(schema, SNDSchema.getInstance().getTableInfoEventData(), cf).init();
+                            return new EventDataTable(schema, SNDSchema.getInstance().getTableInfoEventData()).init();
                         }
 
                         return null;
@@ -218,7 +236,7 @@ public class SNDUserSchema extends SimpleUserSchema implements UserSchema.HasCon
                     {
                         if (schema.getContainer().hasPermission(schema.getUser(), SNDViewerPermission.class, schema.getContextualRoles()))
                         {
-                            return new EventsCacheTable(schema, SNDSchema.getInstance().getTableInfoEventsCache(), cf).init();
+                            return new EventsCacheTable(schema, SNDSchema.getInstance().getTableInfoEventsCache()).init();
                         }
 
                         return null;

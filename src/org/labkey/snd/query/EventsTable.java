@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EventsTable extends SimpleTable<SNDUserSchema>
+public class EventsTable extends AbstractSNDTableInfo
 {
     /**
      * Create the simple table.
@@ -64,9 +64,15 @@ public class EventsTable extends SimpleTable<SNDUserSchema>
      */
     private final SNDManager _sndManager = SNDManager.get();
 
-    public EventsTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
+    public EventsTable(SNDUserSchema schema, TableInfo table)
     {
-        super(schema, table, cf);
+        super(schema, table);
+    }
+
+    @Override
+    public boolean supportsContainerFilter()
+    {
+        return super.supportsContainerFilter();
     }
 
     @Override

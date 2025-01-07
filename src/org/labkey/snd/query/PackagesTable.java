@@ -63,7 +63,7 @@ import java.util.Set;
 /**
  * Created by marty on 8/23/2017.
  */
-public class PackagesTable extends SimpleTable<SNDUserSchema>
+public class PackagesTable extends AbstractSNDTableInfo
 {
 
     /**
@@ -73,9 +73,9 @@ public class PackagesTable extends SimpleTable<SNDUserSchema>
      * @param schema
      * @param table
      */
-    public PackagesTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
+    public PackagesTable(SNDUserSchema schema, TableInfo table)
     {
-        super(schema, table, cf);
+        super(schema, table);
     }
 
     @Override

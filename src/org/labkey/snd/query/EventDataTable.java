@@ -18,10 +18,11 @@ package org.labkey.snd.query;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
+import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.TableInfo;
@@ -39,6 +40,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.snd.SNDDomainKind;
 import org.labkey.api.snd.SNDService;
 import org.labkey.snd.SNDManager;
 import org.labkey.snd.SNDUserSchema;
@@ -51,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EventDataTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
+public class EventDataTable extends AbstractSNDTableInfo
 {
     /**
      * Create the simple table.
@@ -60,9 +62,36 @@ public class EventDataTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
      * @param schema
      * @param table
      */
-    public EventDataTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
+    public EventDataTable(SNDUserSchema schema, TableInfo table)
     {
-        super(schema, table, cf);
+        super(schema, table);
+    }
+
+    public void addColumns()
+    {
+        BaseColumnInfo objectid = new BaseColumnInfo("ObjectId", this, JdbcType.INTEGER)
+        {
+            @Override
+            public SQLFragment getValueSql(String tableAliasName)
+            {
+                return new SQLFragment(tableAliasName).append(".").append("ObjectId");
+            }
+        };
+        objectid.setHidden(true);
+        objectid.setFk(new BaseColumnInfo.SchemaForeignKey(objectid, "exp", "Object", "ObjectId", false));
+        // SimpleTableSchema.SimpleTable.wrapColumn() is weird. It calls addColumn() which is not the usual pattern.
+        fixupWrappedColumn(objectid, objectid);
+        addColumn(objectid);
+        super.addColumns();
+    }
+
+    @Override
+    public @NotNull SQLFragment getFromSQL(String alias)
+    {
+        SQLFragment table = super.getFromSQL("_evnt_data_");
+        SQLFragment join = new SQLFragment("(SELECT _evnt_data_.*, ObjectId FROM ")
+                .append(table).append(" INNER JOIN exp.Object ON _evnt_data_.ObjectURI = Object.ObjectURI").append(") ").append(alias);
+        return join;
     }
 
     @Override
@@ -257,9 +286,9 @@ public class EventDataTable extends SimpleUserSchema.SimpleTable<SNDUserSchema>
                 SqlExecutor executor = new SqlExecutor(_expSchema);
                 SQLFragment truncObjProp = new SQLFragment("delete from " + _expSchema.getName() + ".ObjectProperty\n");
                 truncObjProp.append("where objectId in\n");
-                truncObjProp.append("(select objectId from exp.object where objectURI like '%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%')\n");
+                truncObjProp.append("(select objectId from exp.object where objectURI like ").appendValue("%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%").append("\n");
                 truncObjProp.append("and propertyId in\n");
-                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI like '%urn:lsid:"+ defaultLsidAuthority +":package-snd.Folder%')");
+                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(null,null));
                 numDeletedRows = executor.execute(truncObjProp);
                 tx.commit();
             }

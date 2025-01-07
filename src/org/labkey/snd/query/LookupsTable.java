@@ -20,29 +20,24 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
-import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.data.TableSelector;
 import org.labkey.api.dataiterator.DataIteratorBuilder;
 import org.labkey.api.exp.OntologyManager;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.ExprColumn;
-import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.SimpleUserSchema.SimpleTable;
 import org.labkey.api.security.User;
-import org.labkey.api.settings.AppProps;
+import org.labkey.api.snd.SNDDomainKind;
 import org.labkey.snd.SNDManager;
 import org.labkey.snd.SNDSchema;
 import org.labkey.snd.SNDUserSchema;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class LookupsTable extends SimpleTable<SNDUserSchema>
 {
@@ -71,13 +66,12 @@ public class LookupsTable extends SimpleTable<SNDUserSchema>
         isInUseQuery.append(" INNER JOIN ");
         isInUseQuery.append(OntologyManager.getTinfoPropertyDescriptor(), "pd");
         isInUseQuery.append(" ON ls.SetName = pd.LookupQuery ");
-        isInUseQuery.append(" AND pd.PropertyURI LIKE ? ");
+        isInUseQuery.append(" AND pd.PropertyURI ").append(SNDDomainKind.likeSndDomainURI(null,null));
         isInUseQuery.append(" INNER JOIN  ");
         isInUseQuery.append(OntologyManager.getTinfoObjectProperty(), "op");
         isInUseQuery.append(" ON op.PropertyId = pd.PropertyId ");
         isInUseQuery.append(" WHERE CAST(" + ExprColumn.STR_TABLE_ALIAS + ".LookupId AS FLOAT) = op.FloatValue) ");
         isInUseQuery.append(" THEN 'true' else 'false' END)");
-        isInUseQuery.add("urn:lsid:" + AppProps.getInstance().getDefaultLsidAuthority() + ":package-snd.Folder-%");
         ExprColumn isInUseColumn = new ExprColumn(this, "IsInUse", isInUseQuery, JdbcType.BOOLEAN);
         addColumn(isInUseColumn);
 

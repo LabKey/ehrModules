@@ -46,6 +46,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.snd.SNDDomainKind;
 import org.labkey.api.snd.SNDService;
 import org.labkey.api.util.UnexpectedException;
 import org.labkey.snd.SNDManager;
@@ -122,15 +123,12 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
         sql.append(" INNER JOIN ");
         sql.append(OntologyManager.getTinfoPropertyDescriptor(), "pd");
         // Filter to include only properties associated with packages
-        sql.append(" ON x.PropertyId = pd.PropertyId AND pd.PropertyURI LIKE ? INNER JOIN ");
+        sql.append(" ON x.PropertyId = pd.PropertyId AND pd.PropertyURI ").append(SNDDomainKind.likeSndDomainURI(null,null)).append(" INNER JOIN ");
         // Filter to include only values associated with EventDatas
         sql.append(SNDSchema.getInstance().getTableInfoEventData(), "ed");
         sql.append(" ON ed.ObjectURI = o.ObjectURI ");
         sql.append(") ");
         sql.append(alias);
-
-        // Note - this must be kept in sync with the PropertyURIs generated for the packages
-        sql.add("urn:lsid:" + AppProps.getInstance().getDefaultLsidAuthority() + ":package-snd.Folder-%");
 
         return sql;
     }
@@ -399,7 +397,7 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
                 truncObjProp.append("where objectId in\n");
                 truncObjProp.append("(select objectId from exp.object where objectURI like '%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%')\n");
                 truncObjProp.append("and propertyId in\n");
-                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI like '%urn:lsid:"+ defaultLsidAuthority +":package-snd.Folder%')");
+                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(container.getRowId(), null));
                 numDeletedRows = executor.execute(truncObjProp);
                 tx.commit();
             }
