@@ -63,7 +63,7 @@ public class EHR_BillingModule extends SpringModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 24.001;
+        return 25.000;
     }
 
     @Override
@@ -118,13 +118,6 @@ public class EHR_BillingModule extends SpringModule
                 Table.delete(EHR_BillingSchema.getInstance().getDataAccessTable(), new SimpleFilter(FieldKey.fromParts("UserId"), user.getUserId()));
             }
         });
-    }
-
-    @Override
-    @NotNull
-    public Collection<String> getSummary(Container c)
-    {
-        return Collections.emptyList();
     }
 
     @Override
