@@ -14,6 +14,7 @@ public class EHRLookupPage extends LabKeyPage<EHRLookupPage.ElementCache>
     public EHRLookupPage(WebDriverWrapper driver)
     {
         super(driver);
+        waitForPage();
     }
     public void waitForPage()
     {
