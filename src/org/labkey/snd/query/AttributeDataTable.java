@@ -397,7 +397,7 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
                 truncObjProp.append("where objectId in\n");
                 truncObjProp.append("(select objectId from exp.object where objectURI like '%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%')\n");
                 truncObjProp.append("and propertyId in\n");
-                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(container.getRowId(), null));
+                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(container.getRowId(), null).append(")"));
                 numDeletedRows = executor.execute(truncObjProp);
                 tx.commit();
             }
