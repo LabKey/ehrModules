@@ -286,9 +286,9 @@ public class EventDataTable extends AbstractSNDTableInfo
                 SqlExecutor executor = new SqlExecutor(_expSchema);
                 SQLFragment truncObjProp = new SQLFragment("delete from " + _expSchema.getName() + ".ObjectProperty\n");
                 truncObjProp.append("where objectId in\n");
-                truncObjProp.append("(select objectId from exp.object where objectURI like ").appendValue("%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%").append("\n");
+                truncObjProp.append("(select objectId from exp.object where objectURI like ").appendValue("%urn:lsid:"+ defaultLsidAuthority +":SND.EventData.Folder%").append(")\n");
                 truncObjProp.append("and propertyId in\n");
-                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(null,null));
+                truncObjProp.append("(select propertyId from exp.propertyDescriptor where PropertyURI ").append(SNDDomainKind.likeSndDomainURI(null,null)).append(")");
                 numDeletedRows = executor.execute(truncObjProp);
                 tx.commit();
             }
