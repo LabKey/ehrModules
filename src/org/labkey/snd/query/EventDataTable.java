@@ -77,6 +77,7 @@ public class EventDataTable extends AbstractSNDTableInfo
                 return new SQLFragment(tableAliasName).append(".").append("ObjectId");
             }
         };
+        objectid.setUserEditable(false);
         objectid.setHidden(true);
         objectid.setFk(new BaseColumnInfo.SchemaForeignKey(objectid, "exp", "Object", "ObjectId", false));
         // SimpleTableSchema.SimpleTable.wrapColumn() is weird. It calls addColumn() which is not the usual pattern.
