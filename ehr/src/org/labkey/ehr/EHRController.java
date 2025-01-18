@@ -383,7 +383,7 @@ public class EHRController extends SpringActionController
 
             ActionURL url = getViewContext().getActionURL().clone();
 
-            if (keyField != null)
+            if (keyField != null && ti.getUpdateService() != null)
             {
                 String detailsStr;
                 String importStr;
@@ -1427,7 +1427,14 @@ public class EHRController extends SpringActionController
                 return null;
 
             List<String> lookups = new ArrayList<>();
-            lookups.add("All");
+
+            // This is too dangerous to leave in production so only include it if a manifest is provided as a URL parameter
+            // such as in automated testing
+            if (form.getManifest() != null)
+            {
+                lookups.add("All");
+            }
+
             lookups.add("lookup_sets");
 
             BufferedReader reader = Readers.getReader(_lookupsManifest.getInputStream());
