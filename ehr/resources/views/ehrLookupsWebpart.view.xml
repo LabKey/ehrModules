@@ -1,7 +1,7 @@
 <view xmlns="http://labkey.org/data/xml/view" title="EHR Lookups">
-    <permissionClasses>
+    <requiresPermissions>
         <permissionClass name="org.labkey.api.security.permissions.ReadPermission"/>
-    </permissionClasses>
+    </requiresPermissions>
     <dependencies>
         <dependency path="gen/EHRLookupsWebpart"/>
     </dependencies>
