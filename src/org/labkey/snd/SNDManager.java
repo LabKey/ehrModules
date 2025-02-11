@@ -151,7 +151,7 @@ public class SNDManager
         return new SNDUserSchema(SNDSchema.NAME, null, u, c, SNDSchema.getInstance().getSchema(), RoleManager.getRole(FolderAdminRole.class));
     }
 
-    public static int MAX_MERGE_ROWS = 100000;
+    public static int MAX_MERGE_ROWS = 2000;
 
     public static Logger getLogger(Map<Enum, Object> configParameters, Class<?> clazz)
     {
