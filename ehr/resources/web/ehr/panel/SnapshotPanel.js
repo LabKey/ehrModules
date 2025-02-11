@@ -853,12 +853,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 },
                 items: [{
                     html: '<hr>'
-                }],
-                listeners: {
-                    afterrender: function(panel){
-                        debugger
-                    }
-                }
+                }]
             }]
         });
 
