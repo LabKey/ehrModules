@@ -212,6 +212,9 @@
             <column columnName="description">
                 <nullable>true</nullable>
             </column>
+            <column columnName="caseid">
+                <nullable>true</nullable>
+            </column>
         </columns>
     </table>
     <table tableName="requests" tableDbType="TABLE" useColumnOrder="true">
