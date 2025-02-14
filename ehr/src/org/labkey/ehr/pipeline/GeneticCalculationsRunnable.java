@@ -89,7 +89,7 @@ public class GeneticCalculationsRunnable
                     "\t<note label=\"jobCreateTime\" type=\"input\">" + new Date().getTime() + "</note>" +
                 "</bioml>";
 
-            AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml);
+            AbstractFileAnalysisProtocol<?> protocol = factory.createProtocolInstance(protocolName, "", xml, c);
             if (protocol == null)
             {
                 return;
@@ -122,7 +122,7 @@ public class GeneticCalculationsRunnable
             if (!inputFile.exists())
                 inputFile.createNewFile();
 
-            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters, null);
+            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile.toPath()), fileParameters.toPath(), null);
             PipelineService.get().queueJob(job);
 
             String dateFormat = "yyyy_MM_dd_hh_mm_ss";
