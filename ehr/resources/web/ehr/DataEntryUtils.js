@@ -885,7 +885,7 @@ EHR.DataEntryUtils = new function(){
             var vol;
             if (!fixedAmount){
                 if (valMap.concentration && valMap.dosage && valMap.weight){
-                    if (valMap.dosage_units === 'ml/kg') {
+                    if (valMap.dosage_units?.toLowerCase() === 'ml/kg') {
                         // Some drugs are in ml/kg instead of mg/kg. In those cases, concentration is irrelevant.
                         vol = valMap.dosage * valMap.weight;
 
