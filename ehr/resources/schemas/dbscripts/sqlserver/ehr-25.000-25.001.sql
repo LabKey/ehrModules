@@ -1,0 +1,1 @@
+ALTER TABLE ehr.tasks ADD caseid ENTITYID null;

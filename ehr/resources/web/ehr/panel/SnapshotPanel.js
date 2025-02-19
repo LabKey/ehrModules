@@ -39,24 +39,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             this.setLoading(true);
             this.loadData();
         }
-
-        this.on('afterrender', function() {
-
-            var displayField = this.down('#flags');
-            if (displayField && displayField.getEl()) {
-
-                var anchor = displayField.getEl('flagsLink');
-
-                if (anchor) {
-                    Ext4.get(anchor).on('click', function(e) {
-                        e.preventDefault();
-                        if (anmId) {
-                            EHR.Utils.showFlagPopup(anmId, this);
-                        }
-                    });
-                }
-            }
-        }, this);
     },
 
     getBaseItems: function(){
@@ -145,7 +127,23 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         xtype: 'displayfield',
                         fieldLabel: 'Flags',
                         name: 'flags',
-                        itemId: 'flags'
+                        itemId: 'flags',
+                        listeners: {
+                            change: function(field, newValue, oldValue){
+                                let anchor = field.getEl('flagsLink');
+                                if (this?.up('panel')?.up('panel')) {
+                                    let anmId = this.up('panel').up('panel').subjectId;
+                                    if (anchor) {
+                                        Ext4.get(anchor).on('click', function(e) {
+                                            e.preventDefault();
+                                            if (anmId) {
+                                                EHR.Utils.showFlagPopup(anmId, this);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Last TB Date',
@@ -723,7 +721,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }
         }
 
-        toSet['flags'] = values.length ? '<a id="flagsLink">' + values.join('<br>') + '</div>' : null;
+        toSet['flags'] = values.length ? '<a id="flagsLink" class="labkey-text-link">' + values.join('<br>') + '</div>' : null;
     },
 
     getFlagDisplayValue: function(row) {
