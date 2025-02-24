@@ -361,11 +361,19 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
             Logger log = SNDManager.getLogger(configParameters, AttributeDataTable.class);
 
             List<Map<String, Object>> data = getMutableData(rows, getDataIteratorContext(errors, InsertOption.MERGE, configParameters));
+
             // Large merge triggers importRows path
-            if (data.size() > SNDManager.MAX_MERGE_ROWS)
+            Set<Object> distinctEventIds = new HashSet<>();
+            for (Map<String, Object> map : data) {
+                distinctEventIds.add(map.get("eventId"));
+            }
+
+            int max_merge_rows = SNDManager.MAX_MERGE_ROWS * 10; //ensure this code path is only triggered by the initial data load
+
+            if (distinctEventIds.size() >= max_merge_rows)
             {
                 data.clear();
-                log.info("More than " + SNDManager.MAX_MERGE_ROWS + " rows. using importRows method.");
+                log.info("More than " + max_merge_rows + " rows. using importRows method.");
                 return importRows(user, container, rows, errors, configParameters, extraScriptContext);
             }
             log.info("Merging rows.");
