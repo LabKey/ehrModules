@@ -1,0 +1,16 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Events Cache" tableDbType="TABLE" useColumnOrder="true">
+                <columns>
+                    <column columnName="EventId">
+                        <columnTitle>Event ID</columnTitle>
+                    </column>
+                    <column columnName="HtmlNarrative">
+                        <columnTitle>HTML Narrative</columnTitle>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

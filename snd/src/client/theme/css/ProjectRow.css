@@ -1,0 +1,24 @@
+
+.project-row_icon {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.project-row {
+    padding: 3px 10px 0 20px;
+    width: 95%;
+}
+
+.project-row:hover {
+    background-color: lightgrey;
+    border-radius: 5px;
+}
+
+.fa-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.icon-inline {
+    display: inline-block;
+}

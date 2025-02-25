@@ -1,0 +1,10 @@
+<view xmlns="http://labkey.org/data/xml/view">
+    <dependencies>
+        <dependency path="internal/jQuery"/>
+        <dependency path="snd/test/data.js"/>
+        <dependency path="snd/test/driver.js"/>
+        <dependency path="snd/test/tests.js"/>
+        <dependency path="snd/test/LKEquals.js"/>
+        <dependency path="snd/test/deepmerge.js"/>
+    </dependencies>
+</view>

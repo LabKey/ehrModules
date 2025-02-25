@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<export xmlns="http://txbiomed.org/snd" xmlns:dat="http://labkey.org/data/xml">
+    <packages>
+        <package id="878" description="Vitals" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Check Vitals Test</narrative>
+            <attributes>
+                <attribute columnName="vital1">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Vital 1</dat:columnTitle>
+                    <dat:defaultValue>1</dat:defaultValue>
+                    <dat:inputType>select</dat:inputType>
+                    <dat:redactedText>redacted vital</dat:redactedText>
+                    <dat:fk>
+                        <dat:fkTable>GenderType</dat:fkTable>
+                        <dat:fkDbSchema>snd</dat:fkDbSchema>
+                    </dat:fk>
+                </attribute>
+                <attribute columnName="vital2">
+                    <dat:datatype>double</dat:datatype>
+                    <dat:nullable>true</dat:nullable>
+                    <dat:columnTitle>Vital 2</dat:columnTitle>
+                    <dat:precision>2</dat:precision>
+                    <dat:inputType>text</dat:inputType>
+                    <dat:validators>
+                        <dat:validator>
+                            <dat:name>Range</dat:name>
+                            <dat:typeURI>urn:lsid:labkey.com:PropertyValidator:range</dat:typeURI>
+                            <dat:expression>~lte=109&amp;~gte=80</dat:expression>
+                        </dat:validator>
+                    </dat:validators>
+                </attribute>
+                <attribute columnName="vital3">
+                    <dat:datatype>double</dat:datatype>
+                    <dat:nullable>true</dat:nullable>
+                    <dat:columnTitle>Vital 3</dat:columnTitle>
+                    <dat:precision>2</dat:precision>
+                    <dat:inputType>text</dat:inputType>
+                    <dat:defaultValue>5.25</dat:defaultValue>
+                    <dat:validators>
+                        <dat:validator>
+                            <dat:name>Range</dat:name>
+                            <dat:typeURI>urn:lsid:labkey.com:PropertyValidator:range</dat:typeURI>
+                            <dat:expression>~lte=10&amp;~gte=0</dat:expression>
+                        </dat:validator>
+                    </dat:validators>
+                </attribute>
+            </attributes>
+        </package>
+    </packages>
+    <superPackages>
+        <superPackage superPkgId="878" pkgId="878">
+            <children/>
+        </superPackage>
+    </superPackages>
+</export>

@@ -1,0 +1,12 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="SuperPkgId"/>
+        <column name="PkgId"/>
+        <column name="Description"/>
+        <column name="Narrative"/>
+        <column name="IsPrimitive"/>
+    </columns>
+    <sorts>
+        <sort column="PkgId"/>
+    </sorts>
+</customView>

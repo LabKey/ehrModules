@@ -1,0 +1,33 @@
+
+.superpackage-row {
+    padding: 3px 15px;
+    width: 100%;
+}
+
+.superpackage-selected-row {
+    background-color: #FFFFCC;
+    border-radius: 10px;
+}
+
+.superpackage-row:hover {
+    background-color: lightgrey;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.superpackage-row-option-btn {
+    font-size: 9px;
+    padding: 2px 4px;
+}
+
+.superpackage-row-dropdown {
+    position: absolute;
+    right: 30px;
+    cursor: pointer;
+}
+
+.superpackage-row-leaf {
+    font-size: 6px;
+    line-height: 15px;
+    vertical-align: middle;
+}

@@ -1,0 +1,11 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Value"/>
+        <column name="Displayable"/>
+        <column name="SortOrder"/>
+    </columns>
+    <sorts>
+        <sort column="SortOrder"/>
+        <sort column="Value"/>
+    </sorts>
+</customView>

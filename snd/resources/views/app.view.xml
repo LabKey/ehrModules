@@ -1,0 +1,7 @@
+<view xmlns="http://labkey.org/data/xml/view" frame="none" title="SND (Structured Narrative Datasets)">
+    <requiresLogin/>
+    <dependencies>
+        <dependency path="snd/gen/app/app.css"/>
+        <dependency path="snd/gen/app/app.js"/>
+    </dependencies>
+</view>

@@ -1,0 +1,19 @@
+
+.packages-button {
+    padding: 2.5px 15px;
+}
+
+.packages-new_pkg_btn {
+    float: left;
+    margin: 0 0 0 20%;
+}
+
+.packages-options {
+    float: right;
+    margin: 0 20% 0 0;
+}
+
+.packages-show_drafts {
+    margin: 25px 0 10px 3%;
+    cursor: pointer;
+}

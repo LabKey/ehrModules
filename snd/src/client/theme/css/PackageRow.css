@@ -1,0 +1,15 @@
+
+.package-row_icon {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.package-row {
+    padding: 3px 10px 0 20px;
+    width: 95%;
+}
+
+.package-row:hover {
+    background-color: lightgrey;
+    border-radius: 5px;
+}

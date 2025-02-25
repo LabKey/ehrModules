@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xmlns="http://labkey.org/data/xml/domainTemplate"
+           xmlns:dat="http://labkey.org/data/xml"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <template xsi:type="SNDTemplateType">
+        <table tableName="Pkgs" tableDbType="NOT_IN_DB">
+            <dat:columns>
+                <dat:column columnName="testPkgs1">
+                    <dat:rangeURI>string</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testPkgs2">
+                    <dat:rangeURI>string</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testPkgs3">
+                    <dat:rangeURI>string</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testPkgs4">
+                    <dat:rangeURI>string</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testPkgs5">
+                    <dat:rangeURI>string</dat:rangeURI>
+                </dat:column>
+            </dat:columns>
+        </table>
+    </template>
+    <template xsi:type="SNDTemplateType">
+        <table tableName="Projects" tableDbType="NOT_IN_DB">
+            <dat:columns>
+                <dat:column columnName="testProjects1">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testProjects2">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testProjects3">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testProjects4">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testProjects5">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+                <dat:column columnName="testProjects6">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+            </dat:columns>
+        </table>
+    </template>
+    <template xsi:type="SNDTemplateType">
+        <table tableName="Events" tableDbType="NOT_IN_DB">
+            <dat:columns>
+                <dat:column columnName="testEvents">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+            </dat:columns>
+        </table>
+    </template>
+    <template xsi:type="SNDTemplateType">
+        <table tableName="EventData" tableDbType="NOT_IN_DB">
+            <dat:columns>
+                <dat:column columnName="testEventData">
+                    <dat:rangeURI>int</dat:rangeURI>
+                </dat:column>
+            </dat:columns>
+        </table>
+    </template>
+</templates>

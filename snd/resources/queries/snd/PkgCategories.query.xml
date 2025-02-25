@@ -1,0 +1,9 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="PkgCategories" tableDbType="NOT_IN_DB">
+                <tableTitle>Package Categories</tableTitle>
+            </table>
+        </tables>
+    </metadata>
+</query>

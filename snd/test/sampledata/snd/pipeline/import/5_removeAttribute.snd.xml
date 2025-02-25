@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<export xmlns="http://txbiomed.org/snd" xmlns:dat="http://labkey.org/data/xml">
+    <packages>
+        <package id="100" description="Example Surgery" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Research surgery</narrative>
+            <attributes />
+        </package>
+        <package id="150" description="TB and Weight" repeatable="true" displayable="true" usda-category="U">
+            <narrative>TB test and weight</narrative>
+            <attributes />
+        </package>
+        <package id="200" description="Surgery Sedation" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Research surger sedation</narrative>
+            <attributes />
+        </package>
+        <package id="275" description="Empty Package" repeatable="true" displayable="true" usda-category="U">
+            <narrative>This is an empty package</narrative>
+            <attributes />
+        </package>
+        <package id="250" description="Vet Comment" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Vet comment: {comment}</narrative>
+            <attributes>
+                <attribute columnName="comment">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Comment</dat:columnTitle>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="300" description="Weight" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Weight: {weight} kg</narrative>
+            <attributes>
+                <attribute columnName="weight">
+                    <dat:datatype>double</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Weight</dat:columnTitle>
+                    <dat:inputType>text</dat:inputType>
+                    <dat:validators>
+                        <dat:validator>
+                            <dat:name>Range</dat:name>
+                            <dat:typeURI>urn:lsid:labkey.com:PropertyValidator:range</dat:typeURI>
+                            <dat:expression>~lte=10&amp;~gte=0</dat:expression>
+                        </dat:validator>
+                    </dat:validators>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="350" description="TB" repeatable="true" displayable="true" usda-category="U">
+            <narrative>TB test result: {result}</narrative>
+            <attributes>
+                <attribute columnName="result">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Result</dat:columnTitle>
+                    <dat:defaultValue>pending</dat:defaultValue>
+                    <dat:inputType>select</dat:inputType>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="400" description="Ketamine Sedation" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Animal sedated with {amount} mg of Ketamine</narrative>
+            <attributes>
+                <attribute columnName="amount">
+                    <dat:datatype>int</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Amount</dat:columnTitle>
+                    <dat:inputType>text</dat:inputType>
+                    <dat:validators>
+                        <dat:validator>
+                            <dat:name>Range</dat:name>
+                            <dat:typeURI>urn:lsid:labkey.com:PropertyValidator:range</dat:typeURI>
+                            <dat:expression>~lte=999&amp;~gte=0</dat:expression>
+                        </dat:validator>
+                    </dat:validators>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="877" description="Therapy" repeatable="true" displayable="false" usda-category="U">
+            <narrative>Therapy started</narrative>
+            <attributes>
+                <attribute columnName="therapyA">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Therapy A</dat:columnTitle>
+                    <dat:defaultValue>Drug A</dat:defaultValue>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="878" description="Vitals" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Check Vitals</narrative>
+            <attributes>
+                <attribute columnName="vital1">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Vital 1</dat:columnTitle>
+                    <dat:defaultValue>1</dat:defaultValue>
+                    <dat:inputType>select</dat:inputType>
+                    <dat:redactedText>redacted vital</dat:redactedText>
+                    <dat:fk>
+                        <dat:fkTable>GenderType</dat:fkTable>
+                        <dat:fkDbSchema>snd</dat:fkDbSchema>
+                    </dat:fk>
+                </attribute>
+                <!-- Removed attribute 'vital2' -->
+                <attribute columnName="vital3">
+                    <dat:datatype>double</dat:datatype>
+                    <dat:nullable>true</dat:nullable>
+                    <dat:columnTitle>Vital 3</dat:columnTitle>
+                    <dat:precision>2</dat:precision>
+                    <dat:inputType>text</dat:inputType>
+                    <dat:defaultValue>5.25</dat:defaultValue>
+                    <dat:validators>
+                        <dat:validator>
+                            <dat:name>Range</dat:name>
+                            <dat:typeURI>urn:lsid:labkey.com:PropertyValidator:range</dat:typeURI>
+                            <dat:expression>~lte=10&amp;~gte=0</dat:expression>
+                        </dat:validator>
+                    </dat:validators>
+                </attribute>
+            </attributes>
+        </package>
+    </packages>
+    <superPackages>
+        <superPackage superPkgId="878" pkgId="878">
+            <children/>
+        </superPackage>
+        <superPackage superPkgId="877" pkgId="877">
+            <children/>
+        </superPackage>
+        <superPackage superPkgId="5100" pkgId="100">
+            <children>
+                <child superPkgId="5101" pkgId="150"/>
+                <child superPkgId="5102" pkgId="200"/>
+                <child superPkgId="5103" pkgId="250"/>
+            </children>
+        </superPackage>
+        <superPackage superPkgId="5150" pkgId="150">
+            <children>
+                <child superPkgId="5151" pkgId="300"/>
+                <child superPkgId="5152" pkgId="350"/>
+            </children>
+        </superPackage>
+        <superPackage superPkgId="5200" pkgId="200">
+            <children>
+                <child superPkgId="5201" pkgId="400"/>
+            </children>
+        </superPackage>
+        <superPackage superPkgId="5250" pkgId="250">
+            <children />
+        </superPackage>
+        <superPackage superPkgId="5275" pkgId="275">
+            <children />
+        </superPackage>
+        <superPackage superPkgId="5300" pkgId="300">
+            <children />
+        </superPackage>
+        <superPackage superPkgId="5350" pkgId="350">
+            <children />
+        </superPackage>
+        <superPackage superPkgId="5400" pkgId="400">
+            <children />
+        </superPackage>
+    </superPackages>
+</export>
