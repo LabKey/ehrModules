@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "jsx": "react",
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "../snd/node_modules",
+    "resources"
+  ],
+  "files": [
+    "src/client/typings/main.d.ts",
+    "src/client/app.tsx"
+  ],
+  "include": [
+    "src/client/__tests__/*"
+  ]
+}
+

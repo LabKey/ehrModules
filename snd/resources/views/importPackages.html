@@ -1,0 +1,39 @@
+<div xmlns:labkey="http://www.w3.org/1999/xhtml">
+</div>
+
+<script type="text/javascript" nonce="<%=scriptNonce%>">
+
+    var selectedFileNames = LABKEY.ActionURL.getParameterArray("file");
+    var taskId = LABKEY.ActionURL.getParameter("taskId");
+    var path = LABKEY.ActionURL.getParameter("path");
+
+    function startAnalysis() {
+
+        var protocolName = "SND_Import_" + Date.now();
+
+        //need this to keep PipelineService.startFileAnalysis() happy otherwise get an error 'parameters should be defined as XML or JSON'
+        var xmlParameters_stub =
+                "<?xml version=\"1.0\"?>\n" +
+                "<bioml>\n" +
+                "</bioml>";
+
+        var config = {
+            taskId: taskId,
+            path: path,
+            files: selectedFileNames,
+            protocolName: protocolName,
+            xmlParameters: xmlParameters_stub,
+            saveProtocol: true,
+            pipelineDescription: "SND Import (" + selectedFileNames + ")" ,
+            successCallback: function() { window.location = LABKEY.ActionURL.buildURL("pipeline-status", "showList.view") }
+        };
+
+        LABKEY.Pipeline.startAnalysis(config);
+    }
+
+    Ext4.onReady(function() {
+        selectedFileNames = LABKEY.ActionURL.getParameterArray("file");
+        startAnalysis();
+    });
+
+</script>

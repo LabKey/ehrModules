@@ -1,0 +1,15 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="ProjectId"/>
+        <column name="RevisionNum"/>
+        <column name="ReferenceId"/>
+        <column name="StartDate"/>
+        <column name="EndDate"/>
+        <column name="Description"/>
+        <column name="HasEvent"/>
+    </columns>
+    <sorts>
+        <sort column="ProjectId"/>
+        <sort column="RevisionNum"/>
+    </sorts>
+</customView>

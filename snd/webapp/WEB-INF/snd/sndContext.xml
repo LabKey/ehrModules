@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="sndPipelineRegistry" class="org.labkey.api.pipeline.TaskPipelineRegistrar">
+        <property name="factoryImpls">
+            <list>
+                <bean class="org.labkey.api.pipeline.file.FileImportTask$Factory"/>
+            </list>
+        </property>
+        <property name="pipelines">
+            <list>
+                <bean class="org.labkey.api.pipeline.file.FileAnalysisTaskPipelineSettings">
+                    <constructor-arg value="sndPipeline"/>
+                    <property name="analyzeURL" value="/snd-importPackages.view"/>
+                    <property name="description" value="SND document import"/>
+                    <property name="protocolObjectId" value="snd.documentImport"/>
+                    <property name="protocolName" value="SND document import"/>
+                    <property name="protocolFactoryName" value="import"/>
+                    <property name="initialInputExts">
+                        <list>
+                            <ref bean="sndFileType"/>
+                        </list>
+                    </property>
+                    <property name="taskProgressionSpec"> <!-- Wires DataHandler to Pipeline -->
+                        <list>
+                            <bean id="importTask" class="org.labkey.api.pipeline.cmd.FileImportTaskFactorySettings">
+                                <constructor-arg value="sndDocumentImport"/> <!--TODO: change "Document Import" to something appropriate for SND-->
+                            </bean>
+                            <ref bean="xarGeneratorId"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Tasks registered in experiment module -->
+    <bean id="xarGeneratorId" class="org.labkey.api.pipeline.TaskId">
+        <constructor-arg>
+            <value type="java.lang.Class">org.labkey.api.exp.pipeline.XarGeneratorId</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="sndFileType" class="org.labkey.api.util.FileType">
+        <constructor-arg value=".snd.xml"/>
+    </bean>
+
+</beans>

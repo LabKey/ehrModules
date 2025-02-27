@@ -1,0 +1,16 @@
+{
+  "presets": [["env", {
+    "targets": {
+      "browsers": ["> 0.2%", "last 2 versions", "Firefox 45", "not dead"]
+    }
+  }
+  ], "react"],
+  "env": {
+    "development": {
+      "presets": ["react-hmre"]
+    },
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}

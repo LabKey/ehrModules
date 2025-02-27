@@ -1,0 +1,18 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="PkgId"/>
+        <column name="Description"/>
+        <column name="Active"/>
+        <column name="Repeatable"/>
+        <column name="QcState" />
+        <column name="ObjectId" />
+        <column name="HasEvent" />
+        <column name="HasProject" />
+        <column name="Narrative" />
+        <column name="Container" />
+        <column name="Created" />
+        <column name="CreatedBy" />
+        <column name="Modified " />
+        <column name="ModifiedBy" />
+    </columns>
+</customView>

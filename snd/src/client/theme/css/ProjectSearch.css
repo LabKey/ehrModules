@@ -1,0 +1,24 @@
+
+.projects-button {
+    padding: 2.5px 15px;
+}
+
+.projects-new_project_btn {
+    float: left;
+    margin: 0 0 0 20%;
+}
+
+.projects-options {
+    float: right;
+    margin: 0 20% 0 0;
+}
+
+.projects-show_drafts {
+    margin: 25px 0 10px 3%;
+    cursor: pointer;
+}
+
+.projects-show_not_active {
+    margin: 25px 0 10px;
+    cursor: pointer;
+}

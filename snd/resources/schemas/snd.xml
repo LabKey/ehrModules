@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+ * Copyright (c) 2017-2019 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+
+ -->
+<tables xsi:schemaLocation="http://labkey.org/data/xml ../../../../modules/platform/api/schemas/tableInfo.xsd"
+        xmlns="http://labkey.org/data/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <table tableName="Pkgs" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl>/snd/app.view?#/packages/new</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/packages/edit/{PkgId}-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="PkgId"/>
+            <column columnName="Description"/>
+            <column columnName="Narrative"/>
+            <column columnName="Active"/>
+            <column columnName="Repeatable"/>
+            <column columnName="QcState"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="SuperPkgs" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl>/snd/app.view?#/packages/new</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/packages/edit/{PkgId}-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="SuperPkgId"/>
+            <column columnName="ParentSuperPkgId"/>
+            <column columnName="PkgId"/>
+            <column columnName="SuperPkgPath"/>
+            <column columnName="SortOrder"/>
+            <column columnName="Required"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="PkgCategories" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl>/snd/app.view?#/categories</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/categories-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="CategoryId"/>
+            <column columnName="Description"/>
+            <column columnName="Comment"/>
+            <column columnName="Active"/>
+            <column columnName="SortOrder"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="PkgCategoryJunction" tableDbType="TABLE">
+        <insertUrl>/snd/app.view?#/categories</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/categories-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="PkgId"/>
+            <column columnName="CategoryId"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="Projects" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl>/snd/app.view?#/projects/new</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/projects-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+
+        <columns>
+            <column columnName="ProjectId"/>
+            <column columnName="RevisionNum"/>
+            <column columnName="ReferenceId"/>
+            <column columnName="StartDate"/>
+            <column columnName="EndDate"/>
+            <column columnName="Description"/>
+            <column columnName="Active"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="ProjectItems" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <insertUrl>/snd/app.view?#/projects/new</insertUrl>
+        <updateUrl></updateUrl> <!--TODO: /snd/app.view?#/projects-->
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="ProjectItemId"/>
+            <column columnName="ParentObjectId"/>
+            <column columnName="SuperPkgId"/>
+            <column columnName="Active"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="Events" tableDbType="TABLE">
+        <columns>
+            <column columnName="EventId"/>
+            <column columnName="SubjectId"/>
+            <column columnName="ParentObjectId"/>
+            <column columnName="Date"/>
+            <column columnName="QcState"/>
+            <column columnName="ObjectId"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="EventData" tableDbType="TABLE">
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="EventDataId"/>
+            <column columnName="EventId">
+                <displayColumnFactory>
+                    <className>NOLOOKUP</className>
+                </displayColumnFactory>
+            </column>
+            <column columnName="SuperPkgId">
+                <displayColumnFactory>
+                    <className>NOLOOKUP</className>
+                </displayColumnFactory>
+            </column>
+            <column columnName="ParentEventDataId"/>
+            <column columnName="SortOrder"/>
+            <column columnName="ObjectURI">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="Container">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="EventNotes" tableDbType="TABLE">
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="EventNoteId"/>
+            <column columnName="EventId"/>
+            <column columnName="Note"/>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="LookupSets" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="LookupSetId"/>
+            <column columnName="SetName"/>
+            <column columnName="Label"/>
+            <column columnName="Description"/>
+            <column columnName="ObjectId">
+                <nullable>true</nullable>
+                <isReadOnly>true</isReadOnly>
+            </column>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="Lookups" tableDbType="TABLE">
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="LookupId"/>
+            <column columnName="LookupSetId"/>
+            <column columnName="Value"/>
+            <column columnName="Displayable"/>
+            <column columnName="SortOrder"/>
+            <column columnName="ObjectId">
+                <nullable>true</nullable>
+                <isReadOnly>true</isReadOnly>
+            </column>
+            <column columnName="Container"/>
+            <column columnName="CreatedBy"/>
+            <column columnName="Created"/>
+            <column columnName="ModifiedBy"/>
+            <column columnName="Modified"/>
+            <column columnName="Lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
+        </columns>
+    </table>
+    <table tableName="EventsCache" tableDbType="TABLE">
+        <insertUrl></insertUrl>
+        <updateUrl></updateUrl>
+        <importUrl></importUrl>
+        <deleteUrl></deleteUrl>
+        <columns>
+            <column columnName="EventId"/>
+            <column columnName="HtmlNarrative"/>
+            <column columnName="Container"/>
+        </columns>
+    </table>
+</tables>

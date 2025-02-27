@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://txbiomed.org/snd"
+           xmlns:dat="http://labkey.org/data/xml"
+           xmlns="http://txbiomed.org/snd">
+
+    <xs:import namespace="http://labkey.org/data/xml" schemaLocation="../../../modules/platform/api/schemas/tableInfo.xsd"/>
+
+    <xs:element name="export">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="packages" type="PackagesType" minOccurs="1"/>
+                <xs:element name="superPackages" type="SuperPackagesType" minOccurs="1"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="PackagesType">
+        <xs:sequence>
+            <xs:element name="package" type="PackageType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PackageType">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="narrative" type="xs:string"/>
+            <xs:element name="attributes" type="AttributesType" />
+        </xs:sequence>
+        <xs:attribute name="id" use="required" type="xs:int"/>
+        <xs:attribute name="description" type="xs:string" use="required" />
+        <xs:attribute name="repeatable" type="xs:boolean"  use="required"/>
+        <xs:attribute name="displayable" type="xs:boolean" use="required" />
+        <xs:attribute name="usda-category" type="USDACategoryType" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="AttributesType">
+        <xs:sequence>
+            <xs:element name="attribute" type="dat:ColumnType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="USDACategoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="C"/>
+            <xs:enumeration value="D"/>
+            <xs:enumeration value="E"/>
+            <xs:enumeration value="U"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="SuperPackagesType">
+        <xs:sequence>
+            <xs:element name="superPackage" type="SuperPackageType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SuperPackageType">
+        <xs:all>
+            <xs:element name="children" type="ChildrenType" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+        <xs:attribute name="superPkgId" type="xs:int" use="required"/>
+        <xs:attribute name="pkgId" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="ChildrenType">
+        <xs:sequence>
+            <xs:element name="child" type="ChildType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ChildType">
+        <xs:attribute name="superPkgId" type="xs:int"/>
+        <xs:attribute name="pkgId" type="xs:int"/>
+    </xs:complexType>
+
+</xs:schema>

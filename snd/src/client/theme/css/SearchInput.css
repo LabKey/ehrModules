@@ -1,0 +1,35 @@
+.searchinput-search {
+    border-radius: 4px;
+    padding: 5px 5px 5px 25px;
+    font-size: 1.1em;
+    width: 100%;
+}
+
+.searchinput-search:disabled {
+    background: #eee;
+    cursor: not-allowed;
+}
+
+.searchinput-icon {
+    position: absolute;
+    left: 21px;
+    font-size: 1.1em;
+    top: 8px
+}
+
+.searchinput-clear {
+    position: absolute;
+    cursor: pointer;
+    right: 41px;
+    font-size: 1.1em;
+    top: 8px;
+    color: lightgray;
+}
+
+.searchinput-caret {
+    position: absolute;
+    cursor: pointer;
+    font-size: 1.1em;
+    right: 25px;
+    top: 8px;
+}

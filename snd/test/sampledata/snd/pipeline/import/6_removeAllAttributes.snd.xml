@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<export xmlns="http://txbiomed.org/snd" xmlns:dat="http://labkey.org/data/xml">
+    <packages>
+        <package id="877" description="Therapy" repeatable="true" displayable="false" usda-category="U">
+            <narrative>Therapy started</narrative>
+            <attributes>
+                <attribute columnName="therapyA">
+                    <dat:datatype>string</dat:datatype>
+                    <dat:nullable>false</dat:nullable>
+                    <dat:columnTitle>Therapy A</dat:columnTitle>
+                    <dat:defaultValue>Drug A</dat:defaultValue>
+                </attribute>
+            </attributes>
+        </package>
+        <package id="878" description="Vitals" repeatable="true" displayable="true" usda-category="U">
+            <narrative>Check Vitals</narrative>
+            <!-- Removed all attributes for this package. Importing this file should throw a Validation Error -->
+        </package>
+    </packages>
+    <superPackages>
+        <superPackage superPkgId="878" pkgId="878">
+            <children/>
+        </superPackage>
+        <superPackage superPkgId="877" pkgId="877">
+            <children/>
+        </superPackage>
+    </superPackages>
+</export>

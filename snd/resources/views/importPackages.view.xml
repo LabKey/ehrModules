@@ -1,0 +1,8 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Import SND Packages and SuperPackages">
+    <dependencies>
+        <dependency path="Ext4"/>
+        <dependency path="pipeline/AnalyzeForm.js"/>
+        <dependency path="codemirror-4.2/lib/codemirror.js"/>
+        <dependency path="codemirror-4.2/util.js"/>
+    </dependencies>
+</view>
