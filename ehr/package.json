@@ -15,12 +15,12 @@
     "lint-fix": "eslint --fix"
   },
   "dependencies": {
-    "@labkey/components": "5.5.1"
+    "@labkey/components": "6.26.3"
   },
   "devDependencies": {
-    "@labkey/build": "7.7.1",
-    "@types/jest": "29.5.12",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0"
+    "@labkey/build": "8.4.0",
+    "@types/jest": "29.5.14",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1"
   }
 }
