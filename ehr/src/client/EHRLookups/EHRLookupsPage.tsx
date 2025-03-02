@@ -2,6 +2,7 @@ import React, { FC, memo } from 'react';
 
 import {
     GridPanelWithModel,
+    NotificationsContextProvider,
     SchemaQuery,
     withServerContext,
 } from '@labkey/components';
@@ -19,12 +20,14 @@ export const EHRLookupsPage: FC = memo(() => {
 
     return (
         <div>
-            <GridPanelWithModel
-                title={'Select table to edit values'}
-                asPanel={true}
-                queryConfig={queryConfig}
-                allowSelections={false}
-            />
+            <NotificationsContextProvider>
+                <GridPanelWithModel
+                    title={'Select table to edit values'}
+                    asPanel={true}
+                    queryConfig={queryConfig}
+                    allowSelections={false}
+                />
+            </NotificationsContextProvider>
         </div>
     );
 });
