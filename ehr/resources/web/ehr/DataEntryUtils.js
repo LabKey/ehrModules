@@ -874,7 +874,7 @@ EHR.DataEntryUtils = new function(){
                 }
             }
 
-            if (!amount && Ext4.isEmpty(rounding)){
+            if (amount && !Ext4.isEmpty(rounding)){
                 amount = EHR.Utils.roundToNearest(amount, rounding);
             }
 
