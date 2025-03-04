@@ -316,7 +316,7 @@ Ext4.define('EHR.window.OpenSurgeryCasesWindow', {
 EHR.DataEntryUtils.registerDataEntryFormButton('OPENSURGERYCASES', {
     text: 'Open Cases',
     name: 'openSurgeryCase',
-    successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+    successURL: LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
     disabled: true,
     itemId: 'openSurgeryCases',
     requiredPermissions: [

@@ -32,7 +32,7 @@ Ext4.define('EHR.panel.BulkEditDataEntryPanel', {
 
         if(extraContext && extraContext.successURL){
             window.onbeforeunload = Ext4.emptyFn;
-            window.location = LABKEY.ActionURL.getParameter('srcURL') || extraContext.successURL;
+            window.location = LABKEY.ActionURL.getParameter('returnUrl') || extraContext.successURL;
         }
         else {
             this.updateDirtyStateMessage();
