@@ -16,6 +16,7 @@
 
 package org.labkey.test.tests.snd;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -56,7 +57,10 @@ import org.labkey.test.pages.snd.ProjectListPage;
 import org.labkey.test.util.ApiPermissionsHelper;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
+import org.labkey.test.util.OptionalFeatureHelper;
+import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.SqlserverOnlyTest;
+import org.labkey.test.util.StudyHelper;
 import org.labkey.test.util.core.webdav.WebDavUploadHelper;
 import org.openqa.selenium.WebElement;
 
@@ -107,6 +111,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private static final int TEST_CATEGORY_ID2 = 51;
     private static final int TEST_CATEGORY_ID3 = 52;
     private static final int TEST_CATEGORY_ID4 = 53;
+    private static final int TEST_CATEGORY_ID5 = 54;
     private static final int TEST_SUPER_PKG_START_ID1 = 130;
     private static final int TEST_SUPER_PKG_START_ID2 = 140;
     private static final int TEST_SUPER_PKG_START_ID3 = 150;
@@ -140,6 +145,8 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private static final String UITEST_PROJECT_SUBPKG1 = "TB and Weight";
     private static final String UITEST_PROJECT_SUBPKG2 = "Vet Comment";
     private static final String UITEST_PROJECT_SUBPKG3 = "Ketamine Sedation";
+
+    private static final String STUDY_NAME = "Query provisioned snapshot test";
 
     private static final String CREATEDOMAINSAPI ="LABKEY.Domain.create({\n" +
             "   domainGroup: 'test',        \n" +
@@ -553,7 +560,12 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         "				'Description':  'Weight',           \n"+
         "				'Active': true,                     \n"+
         "				'Comment': 'This is a weight'       \n"+
-        "				},{                                 \n"+
+        "				},{                                \n" +
+                "        'CategoryId': " + TEST_CATEGORY_ID5 + " ,\n" +
+                "        'Description':  'Sodium',          \n" +
+                "        'Active': true,                    \n" +
+                "        'Comment': 'This is Sodium'         \n" +
+                "        },{                                 \n"+
         "				'CategoryId':  " + TEST_CATEGORY_ID4 + ",\n"+
         "				'Description':  'Vitals',           \n"+
         "				'Active': true,                     \n"+
@@ -870,8 +882,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     @BeforeClass
     public static void setupProject()
     {
-         SNDTest init = (SNDTest) getCurrentTest();
-
+         SNDTest init = getCurrentTest();
          init.doSetup();
     }
 
@@ -879,7 +890,8 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     {
         _containerHelper.createProject(getProjectName(), "Collaboration");
         goToProjectHome();
-        _containerHelper.enableModules(Arrays.asList("SND"));
+        _containerHelper.enableModules(Arrays.asList("SND", "Study"));
+
         _containerHelper.createSubfolder(getProjectName(), getProjectName(), TEST1SUBFOLDER, "Collaboration", new String[]{"SND"});
         setupTest1Project();
 
@@ -2089,8 +2101,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertFalse("Unassigned package found assigned.", viewPage.isAssignedPackagePresent(UITEST_PROJECT_SUBPKG2));
     }
 
-    @Test
-    public void verifyTestFrameworkAPITests()
+    private boolean runTestsInAPIFrameWork()
     {
         log("Launching the Testing framework");
         goToProjectHome();
@@ -2101,11 +2112,10 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         clickButton("Run tests", 0);
         waitForText("Total tests:", 1, WAIT_FOR_PAGE);
 
-        log("Verifying no test failed");
-        assertTextPresent("Complete","Failed tests: 0");
+        return isTextPresent("Complete","Failed tests: 0");
     }
 
-    private String getPerimissionTableValue(int row, int col)
+    private String getPermissionTableValue(int row, int col)
     {
         List<WebElement> els = ((Locator.XPathLocator)getSimpleTableCell(Locator.id("category-security"), row, col)).child("div").child("a").child("input").findElements(getDriver());
         if (els.size() > 0)
@@ -2157,7 +2167,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         {
             if (categories.contains(getTableCellText(Locator.id("category-security"), i, 0)))
             {
-                value = getPerimissionTableValue(i, 1);
+                value = getPermissionTableValue(i, 1);
                 assertNotNull(value);
                 assertTrue(value.equals("None"));
                 categoryRows.add(i);
@@ -2169,7 +2179,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         for (Integer r : categoryRows)
         {
-            value = getPerimissionTableValue(r, 1);
+            value = getPermissionTableValue(r, 1);
             assertNotNull(value);
             assertTrue(value.equals("SND Reader"));
         }
@@ -2179,7 +2189,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         for (int k = 0; k < categoryRows.size(); k++)
         {
-            value = getPerimissionTableValue(categoryRows.get(k), 1);
+            value = getPermissionTableValue(categoryRows.get(k), 1);
             assertNotNull(value);
             assertTrue(value.equals("None"));
             click(getSimpleTableCell(Locator.id("category-security"), categoryRows.get(k), 1));
@@ -2190,11 +2200,94 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         for (int j = 0; j < categoryRows.size(); j++)
         {
-            value = getPerimissionTableValue(categoryRows.get(j), 1);
+            value = getPermissionTableValue(categoryRows.get(j), 1);
             assertNotNull(value);
             assertTrue(value.equals(permissions.get(j)));
         }
 
+    }
+
+    @Test
+    public void testQueryProvisionedSnapshot()
+    {
+        String SOURCE_QUERY_NAME = "SND: Source query";
+        String SNAPSHOT_NAME = SOURCE_QUERY_NAME + " Snapshot";
+        String SOURCE_QUERY = "SELECT\n" +
+                "lsid AS _key,\n" +
+                "SubjectId AS participantid,\n" +
+                "date,\n" +
+                "qcstate,\n" +
+                "lsid,\n" +
+                "amount,\n" +
+                "units,\n" +
+                "kit_type\n" +
+                "FROM SND.Categories.Sodium\n";
+
+        String UPDATED_SOURCE_QUERY = "SELECT\n" +
+                "lsid AS _key,\n" +
+                "SubjectId AS participantid,\n" +
+                "date,\n" +
+                "qcstate,\n" +
+                "lsid,\n" +
+                "'8976' AS amount,\n" +
+                "units,\n" +
+                "kit_type\n" +
+                "FROM SND.Categories.Sodium";
+
+        log("Run the tests from the framework for set up");
+        if (!runTestsInAPIFrameWork())
+            Assert.fail("Tests failed in the framework");
+
+        log("Enable Allow query based dataset snapshots");
+        OptionalFeatureHelper.enableOptionalFeature(createDefaultConnection(), "queryBasedDatasets");
+
+        log("Enable study module and create continuous study");
+        goToProjectHome();
+        goToManageStudy();
+        _studyHelper.startCreateStudy()
+                .setTimepointType(StudyHelper.TimepointType.CONTINUOUS)
+                .createStudy();
+
+        log("Adding dataset webpart");
+        goToProjectHome();
+        PortalHelper _portalHelper = new PortalHelper(getDriver());
+        _portalHelper.addBodyWebPart("Datasets");
+
+        log("Create source query from study");
+        goToSchemaBrowser();
+        createNewQuery("study");
+        setFormElement(Locator.id("ff_newQueryName"), SOURCE_QUERY_NAME);
+        selectOptionByText(Locator.name("ff_baseTableName"), "DataSets");
+        clickButton("Create and Edit Source");
+        setCodeEditorValue("queryText", SOURCE_QUERY);
+        clickButton("Save & Finish");
+
+        log("Create the snapshot");
+        DataRegionTable queryTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").waitFor();
+        queryTable.goToReport("Create Query Snapshot");
+        checkCheckbox(Locator.name("queryDataset"));
+        clickButton("Create Snapshot");
+
+        log("Verify the dataset snapshot");
+        goToProjectHome();
+        clickAndWait(Locator.linkWithText(SNAPSHOT_NAME));
+        DataRegionTable dataRegionTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("Dataset").waitFor();
+        Assert.assertEquals("Incorrect number of rows", 3, dataRegionTable.getDataRowCount());
+        Assert.assertEquals("Incorrect column titles", Arrays.asList("ParticipantId", "_key", "date", "amount", "units", "kit_type"),
+                dataRegionTable.getColumnNames());
+        Assert.assertEquals("Incorrect value in amount column", Arrays.asList("100", "100", " "), dataRegionTable.getColumnDataAsText("amount"));
+
+        log("Edit the source query and verify snapshot is updated");
+        goToSchemaBrowser();
+        selectQuery("study", SOURCE_QUERY_NAME);
+        clickAndWait(Locator.linkContainingText("edit source"));
+        setCodeEditorValue("queryText", UPDATED_SOURCE_QUERY);
+        clickButton("Save & Finish");
+
+        goToProjectHome();
+        clickAndWait(Locator.linkWithText(SNAPSHOT_NAME));
+        dataRegionTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("Dataset").waitFor();
+        Assert.assertEquals("Incorrect value in amount column", Arrays.asList("8976", "8976", "8976"), dataRegionTable.getColumnDataAsText("amount"));
     }
 
     private void truncateSndPkg() throws Exception
