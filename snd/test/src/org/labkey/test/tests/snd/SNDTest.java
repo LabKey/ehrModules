@@ -2223,16 +2223,9 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
                 "kit_type\n" +
                 "FROM SND.Categories.Sodium\n";
 
-        String UPDATED_SOURCE_QUERY = "SELECT\n" +
-                "lsid AS _key,\n" +
-                "SubjectId AS participantid,\n" +
-                "date,\n" +
-                "qcstate,\n" +
-                "lsid,\n" +
-                "'8976' AS amount,\n" +
-                "units,\n" +
-                "kit_type\n" +
-                "FROM SND.Categories.Sodium";
+        String UPDATED_SOURCE_QUERY = SOURCE_QUERY.replace(
+                "amount,",
+                "'8976' AS amount,");
 
         log("Run the tests from the framework for set up");
         if (!runTestsInAPIFrameWork())
