@@ -394,7 +394,8 @@ Ext4.define('EHR.window.DrugAmountWindow', {
                     found = true;
                     editor = {
                         xtype: 'ldk-numberfield',
-                        fieldName: fieldName
+                        fieldName: fieldName,
+                        decimalPrecision: 6
                     }
                 }
 

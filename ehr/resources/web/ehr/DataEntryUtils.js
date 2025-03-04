@@ -728,7 +728,7 @@ EHR.DataEntryUtils = new function(){
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'drug_defaults',
-                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,amount_rounding,volume,vol_units,volume_rounding,route,frequency,duration,remark,offset',
+                columns: 'code,code/meaning,dosage,dosage_units,concentration,conc_units,amount,amount_units,amount_rounding,volume,vol_units,volume_rounding,route,frequency,frequency/meaning,duration,remark,offset',
                 sort: 'code',
                 storeId: storeId,
                 autoLoad: true,
@@ -874,7 +874,7 @@ EHR.DataEntryUtils = new function(){
                 }
             }
 
-            if (!amount && Ext4.isEmpty(rounding)){
+            if (amount && !Ext4.isEmpty(rounding)){
                 amount = EHR.Utils.roundToNearest(amount, rounding);
             }
 

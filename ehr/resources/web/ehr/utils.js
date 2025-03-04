@@ -497,19 +497,9 @@ EHR.Utils = new function(){
                 return val;
             }
 
-            var remainder = val % round;
-            var remainderPct = remainder / round;
-            var base = Math.floor(val / round);
-            if (remainder === 0){
-                return val;
-            }
-            //note: JS seems to handle division poorly in situations like 4 / 0.1
-            else if (remainderPct < 0.5 || remainderPct > 0.9999){
-                return (base * round);
-            }
-            else {
-                return (base * round) + round;
-            }
+            let rounded = Math.round(val / round) * round;
+            let precision = (round.toString().split('.')[1] || "").length; // Get decimal places in `round`
+            return rounded.toFixed(precision); // toFixed handles floating point precision issues
         },
 
         editUIButtonCore: function(schemaName, queryName, dataRegionName, paramMap, copyFilters, params){
