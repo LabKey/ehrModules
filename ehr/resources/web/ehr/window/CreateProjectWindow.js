@@ -76,7 +76,7 @@ Ext4.define('EHR.window.CreateProjectWindow', {
                             };
 
                             var newForm = Ext4.DomHelper.append(document.getElementsByTagName('body')[0],
-                                            '<form method="POST" action="' + LABKEY.ActionURL.buildURL('ehr', 'dataEntryFormForQuery', null, {schemaName: 'ehr', queryName: 'project', project: ''}) + '&returnUrl=' + LDK.Utils.getSrcURL() + '">' +
+                                            '<form method="POST" action="' + LABKEY.ActionURL.buildURL('ehr', 'dataEntryFormForQuery', null, {schemaName: 'ehr', queryName: 'project', project: ''}) + '&returnUrl=' + LDK.Utils.getReturnUrl() + '">' +
                                             '<input type="hidden" name="initialData" value="' + Ext4.htmlEncode(Ext4.encode(initialData)) + '" />' +
                                             '<input type="hidden" name="X-LABKEY-CSRF" value="' + Ext4.htmlEncode(LABKEY.CSRF) + '" />' +
                                             '</form>');

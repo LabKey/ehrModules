@@ -169,7 +169,7 @@ public class EHR_BillingController extends SpringActionController
         @Override
         public @NotNull URLHelper getSuccessURL(QueryForm form)
         {
-            URLHelper url = form.getReturnURLHelper();
+            URLHelper url = form.getReturnUrlHelper();
             return url != null ? url : QueryService.get().urlFor(getUser(), getContainer(), QueryAction.executeQuery, EHR_BillingSchema.NAME, EHR_BillingSchema.TABLE_INVOICE_RUNS);
         }
     }
