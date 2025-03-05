@@ -2228,11 +2228,11 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
                 "amount,",
                 "'8976' AS amount,");
 
-        log("Run the tests from the framework for set up");
-        runTestsInAPIFrameWork();
-
         log("Enable Allow query based dataset snapshots");
         OptionalFeatureHelper.enableOptionalFeature(createDefaultConnection(), "queryBasedDatasets");
+
+        log("Run the tests from the framework for set up");
+        runTestsInAPIFrameWork();
 
         log("Enable study module and create continuous study");
         goToProjectHome();
