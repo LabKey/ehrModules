@@ -49,6 +49,7 @@ import org.labkey.test.components.snd.FilterSelect;
 import org.labkey.test.components.snd.PackageViewerResult;
 import org.labkey.test.components.snd.ProjectViewerResult;
 import org.labkey.test.components.snd.SuperPackageRow;
+import org.labkey.test.pages.query.SourceQueryPage;
 import org.labkey.test.pages.snd.EditCategoriesPage;
 import org.labkey.test.pages.snd.EditPackagePage;
 import org.labkey.test.pages.snd.EditProjectPage;
@@ -2101,7 +2102,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertFalse("Unassigned package found assigned.", viewPage.isAssignedPackagePresent(UITEST_PROJECT_SUBPKG2));
     }
 
-    private boolean runTestsInAPIFrameWork()
+    private void runTestsInAPIFrameWork()
     {
         log("Launching the Testing framework");
         goToProjectHome();
@@ -2112,7 +2113,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         clickButton("Run tests", 0);
         waitForText("Total tests:", 1, WAIT_FOR_PAGE);
 
-        return isTextPresent("Complete","Failed tests: 0");
+        assertTextPresent("Complete","Failed tests: 0");
     }
 
     private String getPermissionTableValue(int row, int col)
@@ -2210,9 +2211,9 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     @Test
     public void testQueryProvisionedSnapshot()
     {
-        String SOURCE_QUERY_NAME = "SND: Source query";
-        String SNAPSHOT_NAME = SOURCE_QUERY_NAME + " Snapshot";
-        String SOURCE_QUERY = "SELECT\n" +
+        String sourceQueryName = "SND: Source query";
+        String snapshotName = sourceQueryName + " Snapshot";
+        String sourceQuery = "SELECT\n" +
                 "lsid AS _key,\n" +
                 "SubjectId AS participantid,\n" +
                 "date,\n" +
@@ -2223,13 +2224,12 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
                 "kit_type\n" +
                 "FROM SND.Categories.Sodium\n";
 
-        String UPDATED_SOURCE_QUERY = SOURCE_QUERY.replace(
+        String updatedSourceQuery = sourceQuery.replace(
                 "amount,",
                 "'8976' AS amount,");
 
         log("Run the tests from the framework for set up");
-        if (!runTestsInAPIFrameWork())
-            Assert.fail("Tests failed in the framework");
+        runTestsInAPIFrameWork();
 
         log("Enable Allow query based dataset snapshots");
         OptionalFeatureHelper.enableOptionalFeature(createDefaultConnection(), "queryBasedDatasets");
@@ -2248,12 +2248,12 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         log("Create source query from study");
         goToSchemaBrowser();
-        createNewQuery("study");
-        setFormElement(Locator.id("ff_newQueryName"), SOURCE_QUERY_NAME);
-        selectOptionByText(Locator.name("ff_baseTableName"), "DataSets");
-        clickButton("Create and Edit Source");
-        setCodeEditorValue("queryText", SOURCE_QUERY);
-        clickButton("Save & Finish");
+        SourceQueryPage querySourcePage = createNewQuery("study", null)
+                .setName(sourceQueryName)
+                .setBaseTable("DataSets")
+                .clickCreate();
+        querySourcePage.setSource(sourceQuery)
+                .clickSaveAndFinish();
 
         log("Create the snapshot");
         DataRegionTable queryTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").waitFor();
@@ -2263,7 +2263,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         log("Verify the dataset snapshot");
         goToProjectHome();
-        clickAndWait(Locator.linkWithText(SNAPSHOT_NAME));
+        clickAndWait(Locator.linkWithText(snapshotName));
         DataRegionTable dataRegionTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("Dataset").waitFor();
         Assert.assertEquals("Incorrect number of rows", 3, dataRegionTable.getDataRowCount());
         Assert.assertEquals("Incorrect column titles", Arrays.asList("ParticipantId", "_key", "date", "amount", "units", "kit_type"),
@@ -2272,13 +2272,12 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         log("Edit the source query and verify snapshot is updated");
         goToSchemaBrowser();
-        selectQuery("study", SOURCE_QUERY_NAME);
-        clickAndWait(Locator.linkContainingText("edit source"));
-        setCodeEditorValue("queryText", UPDATED_SOURCE_QUERY);
-        clickButton("Save & Finish");
+        querySourcePage = editSource("study", sourceQueryName);
+        querySourcePage.setSource(updatedSourceQuery)
+                .clickSaveAndFinish();
 
         goToProjectHome();
-        clickAndWait(Locator.linkWithText(SNAPSHOT_NAME));
+        clickAndWait(Locator.linkWithText(snapshotName));
         dataRegionTable = new DataRegionTable.DataRegionFinder(getDriver()).withName("Dataset").waitFor();
         Assert.assertEquals("Incorrect value in amount column", Arrays.asList("8976", "8976", "8976"), dataRegionTable.getColumnDataAsText("amount"));
     }
