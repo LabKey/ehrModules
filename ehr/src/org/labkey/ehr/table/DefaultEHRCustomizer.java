@@ -1216,7 +1216,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         ds.addColumn(col20);
 
         var col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
-        col8.setLabel("Required Case Size");
+        col8.setLabel("Required Cage Size");
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight using The Guide requirements");
         ds.addColumn(col8);
 
