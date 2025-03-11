@@ -47,8 +47,6 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
         keys.add(FieldKey.fromString("date"));
         keys.add(FieldKey.fromString("cond"));
         keys.add(FieldKey.fromString("reason"));
-
-        //cnprc
         keys.add(FieldKey.fromString("location"));
 
         return keys;
