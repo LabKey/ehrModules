@@ -60,7 +60,7 @@ public class DurationColumn extends DataColumn
     }
 
     @Override
-    public Class getDisplayValueClass()
+    public Class<String> getDisplayValueClass()
     {
         //NOTE: this is required in order to get excel to output correctly
         //the raw value is numeric, but the displayValue is text
