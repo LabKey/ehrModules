@@ -15,6 +15,7 @@
  */
 package org.labkey.api.snd;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
@@ -28,7 +29,7 @@ public class PlainTextNarrativeDisplayColumn extends DataColumn
     }
 
     @Override
-    public HtmlString getFormattedHtml(RenderContext ctx)
+    public @NotNull HtmlString getFormattedHtml(RenderContext ctx)
     {
         String htmlNarrative = (String)ctx.get(getColumnInfo().getFieldKey());
         return HtmlString.of(removeHtmlTagsFromNarrative(htmlNarrative));
