@@ -127,7 +127,6 @@ Ext4.define('EHR.panel.DataEntryFormDetailsPanel', {
                 success: this.onDataRegionLoad,
                 scope: this
             });
-            qwp.render();
         }, this);
 
         this.showEditBtn('Completed', results.form.permissions);
