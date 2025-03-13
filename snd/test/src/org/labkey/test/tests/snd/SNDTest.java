@@ -2217,6 +2217,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
                 "lsid AS _key,\n" +
                 "SubjectId AS participantid,\n" +
                 "date,\n" +
+                "SequenceNum,\n" +
                 "qcstate,\n" +
                 "lsid,\n" +
                 "amount,\n" +
