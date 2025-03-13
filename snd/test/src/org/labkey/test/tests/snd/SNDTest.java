@@ -2273,7 +2273,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         log("Edit the source query and verify snapshot is updated");
         goToSchemaBrowser();
-        querySourcePage = editSource("study", sourceQueryName);
+        querySourcePage = editQuerySource("study", sourceQueryName);
         querySourcePage.setSource(updatedSourceQuery)
                 .clickSaveAndFinish();
 
