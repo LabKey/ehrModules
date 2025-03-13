@@ -59,7 +59,7 @@
                         active: true,
                         repeatable: true,
                         narrative: 'Sodium: {amount} {units} measured using {kit_type}',
-                        categories: [],
+                        categories: [54],
                         subPackages: [],
                         attributes: [
                             {
