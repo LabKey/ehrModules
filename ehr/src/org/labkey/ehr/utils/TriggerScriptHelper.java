@@ -1118,7 +1118,7 @@ public class TriggerScriptHelper
         intervalStop = DateUtils.truncate(intervalStop, Calendar.DATE);
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
-        filter.addCondition(FieldKey.fromString("date"), intervalStart, CompareType.DATE_GTE);
+        filter.addCondition(FieldKey.fromString("date"), intervalStart, CompareType.DATE_GT);
         filter.addCondition(FieldKey.fromString("date"), intervalStop, CompareType.DATE_LTE);
         filter.addCondition(FieldKey.fromString("quantity"), null, CompareType.NONBLANK);
         filter.addCondition(FieldKey.fromString("countsAgainstVolume"), true);
