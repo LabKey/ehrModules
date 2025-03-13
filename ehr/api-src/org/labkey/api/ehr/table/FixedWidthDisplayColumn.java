@@ -3,13 +3,16 @@ package org.labkey.api.ehr.table;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
+import org.labkey.api.util.DOM;
+import org.labkey.api.writer.HtmlWriter;
 
-import java.io.IOException;
-import java.io.Writer;
+import static org.labkey.api.util.DOM.Attribute.style;
+import static org.labkey.api.util.DOM.DIV;
+import static org.labkey.api.util.DOM.at;
 
 public class FixedWidthDisplayColumn extends DataColumn
 {
-    private int _maxWidth;
+    private final int _maxWidth;
 
     public FixedWidthDisplayColumn(ColumnInfo col, int maxWidth)
     {
@@ -18,10 +21,14 @@ public class FixedWidthDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
     {
-        out.write("<div style=\"max-width:" + _maxWidth + ";\">");
-        super.renderGridCellContents(ctx, out);
-        out.write("</div>");
+        DIV(
+            at(style, "max-width:" + _maxWidth + ";"),
+            (DOM.Renderable) ret -> {
+                super.renderGridCellContents(ctx, out);
+                return ret;
+            }
+        ).appendTo(out);
     }
 }
