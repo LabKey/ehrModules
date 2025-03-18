@@ -69,6 +69,7 @@ import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.HttpView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.api.writer.HtmlWriter;
 import org.labkey.ehr.EHRModule;
 import org.labkey.ehr.EHRSchema;
 
@@ -824,13 +825,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 return new DataColumn(colInfo)
                 {
                     @Override
-                    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+                    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
                     {
                         Object objectid = ctx.get("objectid");
                         Date date = (Date) ctx.get("date");
                         Object id = ctx.get(ID_COL);
 
-                        out.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\" data-id=\"" + PageFlowUtil.filter(id) + "\">[Show Hx]</a></span>");
+                        oldWriter.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\" data-id=\"" + PageFlowUtil.filter(id) + "\">[Show Hx]</a></span>");
                         if (!_clickHandlerAdded)
                         {
                             HttpView.currentPageConfig().addHandlerForQuerySelector("a.anm-history", "click", "EHR.window.ClinicalHistoryWindow.showClinicalHistory(null , this.attributes.getNamedItem('data-id').value, null, this);");

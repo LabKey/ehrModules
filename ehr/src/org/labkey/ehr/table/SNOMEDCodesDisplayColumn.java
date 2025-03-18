@@ -24,6 +24,7 @@ import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.api.writer.HtmlWriter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -47,7 +48,7 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
     {
         Object o = getValue(ctx);
         if (o != null)
@@ -85,9 +86,9 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
             for (Integer sort : ret.keySet())
             {
                 text = ret.get(sort).replaceAll("\\r?\\n", "<br>");
-                out.write(delim);
+                oldWriter.write(delim);
                 delim = "<br>";
-                out.write(text);
+                oldWriter.write(text);
             }
         }
     }
