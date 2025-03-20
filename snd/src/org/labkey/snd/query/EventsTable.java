@@ -146,10 +146,12 @@ public class EventsTable extends AbstractSNDTableInfo
             Set<Integer> eventIds = handleNarrativeCache(rows, configParameters, errors);
 
             int result = 0;
+            int maxMergeRows = SNDManager.MAX_MERGE_ROWS * 10;
+
             // Large merge triggers importRows path
-            if (eventIds.size() > SNDManager.MAX_MERGE_ROWS)
+            if (eventIds.size() > maxMergeRows)
             {
-                log.info("More than " + SNDManager.MAX_MERGE_ROWS + " rows. using importRows method.");
+                log.info("More than " + maxMergeRows + " rows. using importRows method.");
                 result = super.importRows(user, container, rows, errors, configParameters, extraScriptContext);
             }
             else
