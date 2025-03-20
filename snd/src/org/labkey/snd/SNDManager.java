@@ -3884,7 +3884,7 @@ public class SNDManager
                     List<EventData> sortedEventData = eventData
                             .get(event.getEventId())
                             .stream()
-                            .sorted(Comparator.comparing((EventData e) -> Integer.toString(e.getSuperPkgId()))).collect(Collectors.toList());
+                            .sorted(Comparator.comparing((EventData e) -> Integer.toString(e.getEventDataId()))).collect(Collectors.toList());
                     event.setEventData(sortedEventData);
                 }
 
