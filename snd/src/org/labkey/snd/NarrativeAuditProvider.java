@@ -95,7 +95,7 @@ public class NarrativeAuditProvider extends AbstractAuditTypeProvider implements
 
     public static void addAuditEntry(Container container, User user, Integer eventId, String subjectId, Date eventDate, String narrative, Integer qcState, String comment)
     {
-        NarrativeAuditProvider.NarrativeAuditTypeEvent event = new NarrativeAuditProvider.NarrativeAuditTypeEvent(container.getId(), comment);
+        NarrativeAuditProvider.NarrativeAuditTypeEvent event = new NarrativeAuditProvider.NarrativeAuditTypeEvent(container, comment);
         event.setNarrative(narrative);
         event.setEventId(eventId);
         event.setSubjectId(subjectId);
@@ -118,7 +118,7 @@ public class NarrativeAuditProvider extends AbstractAuditTypeProvider implements
             super();
         }
 
-        public NarrativeAuditTypeEvent(String container, String comment)
+        public NarrativeAuditTypeEvent(Container container, String comment)
         {
             super(NARRATIVE_AUDIT_EVENT, container, comment);
         }
