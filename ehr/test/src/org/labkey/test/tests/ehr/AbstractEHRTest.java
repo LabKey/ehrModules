@@ -114,6 +114,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static EHRUser NON_PATHOLOGY_REPORT = new EHRUser("non_pathology_report_user@ehrstudy.test","EHR Non Pathology", EHRRole.FULL_UPDATER);
     protected static EHRUser INVESTIGATOR = new EHRUser("investigator@ehrstudy.test", "EHR Lab", EHRRole.REQUESTER);
     protected static EHRUser INVESTIGATOR_PRINCIPAL = new EHRUser("investigator_principal@ehrstudy.test", "EHR Lab", EHRRole.DATA_ADMIN);
+    protected static EHRUser VET = new EHRUser("vet@ehrstudy.test", "EHR Vet", EHRRole.VETERINARIAN);
 
     protected static String REQUESTER_USER = "requester@ehrstudy.test";
     protected static String REQUEST_ADMIN_USER ="request_admin@ehrstudy.test";
@@ -667,6 +668,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _userHelper.createUser(NON_PATHOLOGY_REPORT.getEmail(), true, true);
         _userHelper.createUser(INVESTIGATOR.getEmail(), true, true);
         _userHelper.createUser(INVESTIGATOR_PRINCIPAL.getEmail(), true, true);
+        _userHelper.createUser(VET.getEmail(), true, true);
         goToEHRFolder();
 
         _permissionsHelper.createPermissionsGroup(DATA_ADMIN.getGroup(), DATA_ADMIN.getEmail());
@@ -679,6 +681,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _permissionsHelper.createPermissionsGroup(NON_PATHOLOGY_REPORT.getGroup(), NON_PATHOLOGY_REPORT.getEmail());
         _permissionsHelper.createPermissionsGroup(INVESTIGATOR.getGroup(), INVESTIGATOR.getEmail());
         _permissionsHelper.createPermissionsGroup(INVESTIGATOR_PRINCIPAL.getGroup(), INVESTIGATOR_PRINCIPAL.getEmail());
+        _permissionsHelper.createPermissionsGroup(VET.getGroup(), VET.getEmail());
 
         if (!getContainerPath().equals(getProjectName()))
             _permissionsHelper.uncheckInheritedPermissions();
@@ -690,6 +693,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         _permissionsHelper.setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(FULL_UPDATER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
+        _permissionsHelper.setPermissions(VET.getGroup(), "EHR Veterinarian");
 
         _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Requestor");
         _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Request Admin");
@@ -1015,7 +1019,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         BASIC_SUBMITTER ("EHR Basic Submitter"),
         FULL_SUBMITTER ("EHR Full Submitter"),
         FULL_UPDATER ("EHR Full Updater"),
-        REQUEST_ADMIN ("EHR Request Admin");
+        REQUEST_ADMIN ("EHR Request Admin"),
+        VETERINARIAN("EHR Veterinarian");
 
         private final String name;
 
