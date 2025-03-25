@@ -23,7 +23,6 @@ import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.SimpleUserSchema;
-import org.labkey.api.query.UserSchema;
 
 import java.util.Map;
 
@@ -32,7 +31,7 @@ import java.util.Map;
  * Date: 1/31/13
  * Time: 4:33 PM
  */
-public class LookupSetTable extends AbstractDataDefinedTable
+public class LookupSetTable extends AbstractDataDefinedTable<EHRLookupsUserSchema>
 {
     private static final String CACHE_KEY = LookupSetTable.class.getName() + "||values";
 
@@ -46,7 +45,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
         return CACHE_KEY + "||" + c.getId();
     }
 
-    public LookupSetTable(UserSchema schema, SchemaTableInfo table, ContainerFilter cf, String setName, Map<String, Object> map)
+    public LookupSetTable(EHRLookupsUserSchema schema, SchemaTableInfo table, ContainerFilter cf, String setName, Map<String, Object> map)
     {
         super(schema, table, cf, FILTER_COL, VALUE_COL, setName, setName);
 
@@ -78,13 +77,13 @@ public class LookupSetTable extends AbstractDataDefinedTable
             if (keyCol != null)
             {
                 keyCol.setKeyField(true);
-                getMutableColumn("rowid").setKeyField(false);
+                getMutableColumnOrThrow("rowid").setKeyField(false);
             }
         }
         else
         {
-            getMutableColumn(VALUE_COL).setKeyField(false);
-            getMutableColumn("rowid").setKeyField(true);
+            getMutableColumnOrThrow(VALUE_COL).setKeyField(false);
+            getMutableColumnOrThrow("rowid").setKeyField(true);
         }
 
         if (_titleColumn != null)
@@ -107,7 +106,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
     protected class EHRLookupsUpdateService extends UpdateService
     {
-        public EHRLookupsUpdateService(SimpleUserSchema.SimpleTable ti)
+        public EHRLookupsUpdateService(SimpleUserSchema.SimpleTable<EHRLookupsUserSchema> ti)
         {
             super(ti);
         }

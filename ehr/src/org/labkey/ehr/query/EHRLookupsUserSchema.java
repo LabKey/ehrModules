@@ -36,9 +36,7 @@ import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.QueryForeignKey;
-import org.labkey.api.query.QueryService;
 import org.labkey.api.query.SimpleUserSchema;
-import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.MemberType;
 import org.labkey.api.security.RoleAssignment;
@@ -68,15 +66,12 @@ import java.util.Set;
 public class EHRLookupsUserSchema extends SimpleUserSchema
 {
     public static final String TABLE_AREAS = "areas";
-    public static final String TABLE_BUILDINGS = "buildings";
     public static final String TABLE_CAGE = "cage";
     public static final String TABLE_CAGE_POSITIONS = "cage_positions";
     public static final String TABLE_CAGE_TYPE = "cage_type";
-    public static final String TABLE_GEOGRAPHIC_ORIGINS = "geographic_origins";
     public static final String TABLE_ROOMS = "rooms";
     public static final String TABLE_SNOMED = "snomed";
     public static final String TABLE_SNOMED_SUBSET_CODES = "snomed_subset_codes";
-    public static final String TABLE_TREATMENT_CODES = "treatment_codes";
     public static final String TABLE_VETERINARIANS = "veterinarians";
 
     public EHRLookupsUserSchema(User user, Container container, DbSchema dbschema)
@@ -218,7 +213,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             // By default, any hard tables in the ehr_lookups schema not accounted for above will fall into one of the
             // two categories below. Both of these will add a check that makes sure the user has EHRDataAdminPermission
             // in order to insert/update/delete on the table. The ContainerScopedTable case is for those tables that
-            // have a true DB PK or rowid but a User psedoPK that should be accounted for at the container level.
+            // have a true DB PK or rowid but a User pseudoPK that should be accounted for at the container level.
             String pkColName = getPkColName(ti);
             if (pkColName != null && !"rowid".equalsIgnoreCase(pkColName) && ti.getColumn("container") != null)
                 return getContainerScopedTable(name, cf, pkColName, EHRDataAdminPermission.class);
@@ -252,7 +247,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private TableInfo createVeterinariansTable(String name, ContainerFilter cf)
     {
-        FilteredTable ti = new FilteredTable<>(CoreSchema.getInstance().getTableInfoUsersData(), this, cf);
+        FilteredTable<EHRLookupsUserSchema> ti = new FilteredTable<>(CoreSchema.getInstance().getTableInfoUsersData(), this, cf);
         ti.setPublicSchemaName(EHRSchema.EHR_LOOKUPS);
 
         Set<Integer> userIds = new HashSet<>();
@@ -271,9 +266,9 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
                 else
                 {
                     Group assignedGroup = SecurityManager.getGroup(r.getUserId());
-                    if (assignedGroup != null && !assignedGroup.isProjectGroup())
+                    if (assignedGroup != null)
                     {
-                        // Add all site groups
+                        // Add all groups, both site and project-scoped
                         groupsToExpand.add(assignedGroup);
                     }
                 }
@@ -293,7 +288,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
         ti.addWrapColumn(ti.getRealTable().getColumn("UserId"));
         ti.addWrapColumn(ti.getRealTable().getColumn("DisplayName"));
-        ti.getMutableColumn("UserId").setFk(new QueryForeignKey(QueryService.get().getUserSchema(getUser(), getContainer(), "core"), null, "Users", "UserId", "DisplayName"));
+        ti.getMutableColumnOrThrow("UserId").setFk(new QueryForeignKey.Builder(this, getDefaultContainerFilter()).schema(CoreSchema.getInstance().getSchemaName()).table("Users"));
         ti.setName(name);
         ti.setTitle("Veterinarians");
 
@@ -302,7 +297,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private TableInfo getContainerScopedTable(String name, ContainerFilter cf, String psuedoPk, @Nullable Class<? extends Permission> perm)
     {
-        EHR_LookupsContainerScopedTable ret = new EHR_LookupsContainerScopedTable<>(this, this.createSourceTable(name), cf, psuedoPk);
+        EHR_LookupsContainerScopedTable<?> ret = new EHR_LookupsContainerScopedTable<>(this, this.createSourceTable(name), cf, psuedoPk);
         if (perm != null)
         {
             ret.addPermissionMapping(InsertPermission.class, perm);
@@ -314,14 +309,14 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
     private TableInfo getCustomPermissionTable(TableInfo schemaTable, ContainerFilter cf, Class<? extends Permission> perm)
     {
-        EHR_LookupsCustomPermissionsTable ret = new EHR_LookupsCustomPermissionsTable<>(this, schemaTable, cf);
+        EHR_LookupsCustomPermissionsTable<?> ret = new EHR_LookupsCustomPermissionsTable<>(this, schemaTable, cf);
         ret.addPermissionMapping(InsertPermission.class, perm);
         ret.addPermissionMapping(UpdatePermission.class, perm);
         ret.addPermissionMapping(DeletePermission.class, perm);
         return ret.init();
     }
 
-    private LookupSetTable createForPropertySet(UserSchema us, ContainerFilter cf, String setName, Map<String, Object> map)
+    private LookupSetTable createForPropertySet(EHRLookupsUserSchema us, ContainerFilter cf, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LOOKUPS);
         LookupSetTable ret = new LookupSetTable(us, table, cf, setName, map);
@@ -331,7 +326,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return ret.init();
     }
 
-    private LabworkTypeTable createForLabwork(UserSchema us, ContainerFilter cf, String tableName, String typeName)
+    private LabworkTypeTable createForLabwork(EHRLookupsUserSchema us, ContainerFilter cf, String tableName, String typeName)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LAB_TESTS);
         return new LabworkTypeTable(us, table, cf, tableName, typeName).init();

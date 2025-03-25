@@ -35,7 +35,6 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.query.SimpleUserSchema;
-import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -45,21 +44,21 @@ import org.labkey.ehr.EHRSchema;
 
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
  * Date: 3/27/13
  * Time: 6:20 PM
  */
-public class LabworkTypeTable extends AbstractDataDefinedTable
+public class LabworkTypeTable extends AbstractDataDefinedTable<EHRLookupsUserSchema>
 {
     public static final String CACHE_KEY = LabworkTypeTable.class.getName() + "||types";
 
     private static final String FILTER_FIELD = "testid";
     private static final String TYPE_FIELD = "type";
 
-    public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, ContainerFilter cf, String tableName, String filterValue)
+    public LabworkTypeTable(EHRLookupsUserSchema schema, SchemaTableInfo table, ContainerFilter cf, String tableName, String filterValue)
     {
         super(schema, table, cf, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
         addPermissionMapping(InsertPermission.class, EHRDataAdminPermission.class);
@@ -117,7 +116,7 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
 
     private class LabWorkTableUpdateService extends UpdateService
     {
-        public LabWorkTableUpdateService(SimpleUserSchema.SimpleTable ti)
+        public LabWorkTableUpdateService(SimpleUserSchema.SimpleTable<EHRLookupsUserSchema> ti)
         {
             super(ti);
         }
@@ -188,19 +187,14 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
                 //append a column that will normalize whitespace in aliases
                 ColumnInfo aliasColInfo = getRealTable().getColumn(aliasColName);
                 final int inputIdx = aliasInputIdx;
-                it.addColumn(aliasColInfo, new Callable()
-                {
-                    @Override
-                    public Object call()
+                it.addColumn(aliasColInfo, (Supplier<Object>) () -> {
+                    Object val = it.getInputColumnValue(inputIdx);
+                    if (val instanceof String s)
                     {
-                        Object val = it.getInputColumnValue(inputIdx);
-                        if (val != null && val instanceof String)
-                        {
-                            val = normalizeAliasString((String)val);
-                        }
-
-                        return val;
+                        val = normalizeAliasString(s);
                     }
+
+                    return val;
                 });
             }
         }
