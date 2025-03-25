@@ -16,6 +16,7 @@
 package org.labkey.api.ehr.security;
 
 import org.labkey.api.audit.query.AbstractAuditDomainKind;
+import org.labkey.api.data.Container;
 import org.labkey.api.study.security.SecurityEscalationAuditProvider;
 
 /**
@@ -53,6 +54,11 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
 
     public static class EHRSecurityEscalationEvent extends SecurityEscalationEvent
     {
+        public EHRSecurityEscalationEvent(Container container, String comment)
+        {
+            super(EVENT_TYPE, container, comment);
+        }
+
         @Override
         public String getEventType() {
             return EVENT_TYPE;

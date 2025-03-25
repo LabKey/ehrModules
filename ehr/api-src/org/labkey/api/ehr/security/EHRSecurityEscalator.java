@@ -65,8 +65,8 @@ public class EHRSecurityEscalator extends SecurityEscalator
      * @return A blank new {@link SecurityEscalationAuditProvider.SecurityEscalationEvent}.
      */
     @Override
-    protected SecurityEscalationAuditProvider.SecurityEscalationEvent getNewSecurityEvent() {
-        return new EHRSecurityEscalatorAuditProvider.EHRSecurityEscalationEvent();
+    protected SecurityEscalationAuditProvider.SecurityEscalationEvent getNewSecurityEvent(Container container, String comment) {
+        return new EHRSecurityEscalatorAuditProvider.EHRSecurityEscalationEvent(container, comment);
     }
 
     /**
