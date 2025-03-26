@@ -54,6 +54,8 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
 
     public static class EHRSecurityEscalationEvent extends SecurityEscalationEvent
     {
+        /** Important for reflection-based instantiation */
+        @SuppressWarnings("unused")
         public EHRSecurityEscalationEvent() {}
 
         public EHRSecurityEscalationEvent(Container container, String comment)
