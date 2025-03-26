@@ -85,8 +85,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
                 public void exec(ResultSet object) throws SQLException
                 {
                     Results rs = new ResultsImpl(object, cols);
-
-                    String id = rs.getString(FieldKey.fromString(ti.getColumn("Id").getAlias()));
+                    String id = ti.getColumn("Id").getStringValue(rs);
 
                     Map<String, Object> map = ret.get(id);
                     if (map == null)
