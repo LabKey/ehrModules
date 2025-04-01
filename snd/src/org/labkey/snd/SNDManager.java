@@ -2744,12 +2744,14 @@ public class SNDManager
         for (SuperPackage superPackage : pkg.getSubpackages())
         {
             found = false;
-            for (EventData data : eventData.getSubPackages())
-            {
-                if (data.getSuperPkgId() == superPackage.getSuperPkgId())
+            if (eventData.getSubPackages() != null) {
+                for (EventData data : eventData.getSubPackages())
                 {
-                    found = true;
-                    ensureValidPackage(event, data, superPackage.getPkg());
+                    if (data.getSuperPkgId() == superPackage.getSuperPkgId())
+                    {
+                        found = true;
+                        ensureValidPackage(event, data, superPackage.getPkg());
+                    }
                 }
             }
 
