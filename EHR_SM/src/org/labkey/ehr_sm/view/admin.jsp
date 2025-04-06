@@ -19,12 +19,12 @@
 <%@ page import="org.labkey.api.exp.api.ExpSampleType" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
-<%@ page import="org.labkey.ehr_sm.EHR_SMController" %>
+<%@ page import="org.labkey.ehr_sm.EHR_SMController.AdminForm" %>
 <%@ page import="java.util.Set" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%
-    JspView<EHR_SMController.AdminForm> me = (JspView<EHR_SMController.AdminForm>) HttpView.currentView();
-    EHR_SMController.AdminForm form = me.getModelBean();
+    JspView<AdminForm> me = HttpView.currentView();
+    AdminForm form = me.getModelBean();
 %>
 <labkey:errors/>
 <labkey:form method="POST">
