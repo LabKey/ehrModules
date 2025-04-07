@@ -36,8 +36,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Created by marty on 8/4/2017.
- *
  * Class for project data and related methods. Used when saving, updating, deleting and getting a project
  */
 
@@ -181,7 +179,7 @@ public class Project
     @Nullable
     public String startDateToString()
     {
-        return DateUtil.formatDateISO8601(getStartDate());
+        return DateUtil.formatIsoDate(getStartDate());
     }
 
     public void setStartDate(Date startDate)
@@ -198,7 +196,7 @@ public class Project
     @Nullable
     public String endDateToString()
     {
-        return DateUtil.formatDateISO8601(getEndDate());
+        return DateUtil.formatIsoDate(getEndDate());
     }
 
     public void setEndDate(Date endDate)
@@ -330,7 +328,7 @@ public class Project
         if (getEndDate() != null)
             json.put(PROJECT_ENDDATE, endDateToString());
 
-        if (getProjectItems().size() > 0)
+        if (!getProjectItems().isEmpty())
         {
             JSONArray jsonProjectItems = new JSONArray();
             for (ProjectItem projectItem : getProjectItems())
@@ -342,7 +340,7 @@ public class Project
 
         JSONArray extras = new JSONArray();
         Map<GWTPropertyDescriptor, Object> extraFields = getExtraFields();
-        if(extraFields.size() > 0)
+        if (!extraFields.isEmpty())
         {
             JSONObject jsonExtra;
             Set<GWTPropertyDescriptor> keys = new TreeSet<>(
