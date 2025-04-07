@@ -2455,8 +2455,7 @@ public class TriggerScriptHelper
             Date date = _dateTimeFormat.parse(row.get("date").toString());
             if (!dateOnly && date.getHours() == 0 && date.getMinutes() == 0)
             {
-                Exception e = new Exception();
-                _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date), e);
+                _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date));
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
