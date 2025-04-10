@@ -252,7 +252,8 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
     helper.logDebugMsg(row);
 
     if (EHR.Server.Security.verifyPermissions('update', row, oldRow) === false){
-        errors._form = 'Insufficient permissions to update: ' + helper.getQueryName() + ' to status: ' + row.QCStateLabel + ', from: ' + (oldRow ? oldRow.QCStateLabel : '<none>');
+        console.log((EHR.Server.Security.verifyPermissions('update', row, oldRow)));
+        errors._form = 'Insufficient permissions to updateee: ' + helper.getQueryName() + ' to status: ' + row.QCStateLabel + ', from: ' + (oldRow ? oldRow.QCStateLabel : '<none>');
         return;
     }
 
