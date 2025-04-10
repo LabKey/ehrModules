@@ -24,7 +24,6 @@
 <%@ page import="org.labkey.snd.SNDController.AdminAction" %>
 <%@ page import="org.labkey.snd.SNDController.CategorySecurityAction" %>
 <%@ page import="org.labkey.snd.security.SNDSecurityManager" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
@@ -49,19 +48,9 @@
 %>
 
 <%
-    List<Group> groups = org.labkey.api.security.SecurityManager.getGroups(getContainer().getProject(), true);
-    ArrayList<Group> validGroups = new ArrayList<>();
+    List<Group> validGroups = org.labkey.api.security.SecurityManager.getGroups(getContainer().getProject(), true);
     SNDService sndService = SNDService.get();
     SNDSecurityManager sndSecurityManager = SNDSecurityManager.get();
-
-    for (Group g : groups)
-    {
-        if (g.getUserId() == Group.groupAdministrators || g.getUserId() == Group.groupDevelopers)
-            continue;
-
-        validGroups.add(g);
-    }
-
     Map<Integer, Category> categories = sndService.getAllCategories(getContainer(), getUser());
     Map<String, Role> roles = sndSecurityManager.getAllSecurityRoles();
 
@@ -98,8 +87,6 @@
         }
         roleMapping.put(category.getCategoryId(), roleNameMap);
     }
-
-
 %>
 <style type="text/css">
     .input-append .btn.dropdown-toggle {
