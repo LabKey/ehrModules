@@ -15,15 +15,19 @@
  * limitations under the License.
  */
 %>
+<%@ page import="org.labkey.api.data.ContainerManager" %>
 <%@ page import="org.labkey.api.security.Group" %>
 <%@ page import="org.labkey.api.security.SecurityPolicy" %>
 <%@ page import="org.labkey.api.security.SecurityPolicyManager" %>
+<%@ page import="org.labkey.api.security.permissions.AdminOperationsPermission" %>
+<%@ page import="org.labkey.api.security.permissions.PlatformDeveloperPermission" %>
 <%@ page import="org.labkey.api.security.roles.Role" %>
 <%@ page import="org.labkey.api.snd.Category" %>
 <%@ page import="org.labkey.api.snd.SNDService" %>
 <%@ page import="org.labkey.snd.SNDController.AdminAction" %>
 <%@ page import="org.labkey.snd.SNDController.CategorySecurityAction" %>
 <%@ page import="org.labkey.snd.security.SNDSecurityManager" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
@@ -48,9 +52,19 @@
 %>
 
 <%
-    List<Group> validGroups = org.labkey.api.security.SecurityManager.getGroups(getContainer().getProject(), true);
+    List<Group> groups = org.labkey.api.security.SecurityManager.getGroups(getContainer().getProject(), true);
+    ArrayList<Group> validGroups = new ArrayList<>();
     SNDService sndService = SNDService.get();
     SNDSecurityManager sndSecurityManager = SNDSecurityManager.get();
+
+    for (Group g : groups)
+    {
+        if (ContainerManager.getRoot().hasPermission(g, AdminOperationsPermission.class) || ContainerManager.getRoot().hasPermission(g, PlatformDeveloperPermission.class))
+            continue;
+
+        validGroups.add(g);
+    }
+
     Map<Integer, Category> categories = sndService.getAllCategories(getContainer(), getUser());
     Map<String, Role> roles = sndSecurityManager.getAllSecurityRoles();
 
