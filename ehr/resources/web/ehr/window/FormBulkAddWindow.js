@@ -22,6 +22,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
     fieldNames: [],
     requiredFieldConfigs: [],
     requiredFieldNames: [],
+    upperCaseAnimalId: false,
 
     initComponent: function(){
         const section = this.targetStore?.sectionCfg;
@@ -183,7 +184,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
 
     processRow: function(headers, row, errors, rowIdx){
         const obj = {
-            Id: row[headers.indexOf('Id')],
+            Id: this.upperCaseAnimalId ? row[headers.indexOf('Id')].toUpperCase() : row[headers.indexOf('Id')],
             date: LDK.ConvertUtils.parseDate(row[headers.indexOf('date')]),
             project: this.resolveProjectByName(row[headers.indexOf('project')], errors, rowIdx)
         }
