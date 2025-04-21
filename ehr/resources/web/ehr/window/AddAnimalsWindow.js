@@ -17,6 +17,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     MAX_ANIMALS: 350,
 
     bulkEditCheckDisabled: false,
+    upperCaseAnimalId: false,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -170,7 +171,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
 
             var records = [];
             Ext4.Array.forEach(subjectList, function(s){
-                var model = Ext4.isObject(s) ? s : {Id: s};
+                var model = Ext4.isObject(s) ? s : { Id: this.upperCaseAnimalId ? s.toUpperCase() : s };
                 if (date) {
                     model.date = date;
                 }
