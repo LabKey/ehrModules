@@ -204,7 +204,8 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
         var rows = [];
 
         this.down('#theForm').items.each(function(tab){
-            var selections = tab.down('#recordSelector').getValue().inputValue;
+            var radioGroup = tab.down('#recordSelector');
+            var selections = radioGroup.getValue()[radioGroup.down('[name]').name];
             var fields = tab.down('#fieldSelector').getValue().fields;
 
             if (!fields.length)
@@ -220,7 +221,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
             var records = [];
             if (selections == 'selected'){
-                records = this.grid.getSelectionModel().getSelections();
+                records = this.targetGrid.getSelectionModel().getSelection();
 
                 if (!records.length){
                     Ext4.Msg.hide();

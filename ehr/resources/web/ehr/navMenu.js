@@ -107,11 +107,19 @@ Ext4.define('EHR.NavMenu', {
                     item = this.renderer(tmp.items[j])
                 }
                 else {
-                   //NOTE: this is the default renderer
-                   item = {
-                       //Creates links for the navigation panel
-                        html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>'
+                    if (tmp.items[j].target){
+                        item = {
+                            //Creates links for the navigation panel to a target
+                            html: '<a target="'+tmp.items[j].target+'" href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>'
+                        }
+                    }else{
+                        item = {
+                            //Creates links for the navigation panel
+                            html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>'
+                        }
                     }
+                   //NOTE: this is the default renderer
+
                 }
                 section.add(item)
             }
