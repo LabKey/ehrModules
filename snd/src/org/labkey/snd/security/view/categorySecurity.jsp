@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 %>
+<%@ page import="org.labkey.api.data.ContainerManager" %>
 <%@ page import="org.labkey.api.security.Group" %>
 <%@ page import="org.labkey.api.security.SecurityPolicy" %>
 <%@ page import="org.labkey.api.security.SecurityPolicyManager" %>
+<%@ page import="org.labkey.api.security.permissions.AdminOperationsPermission" %>
+<%@ page import="org.labkey.api.security.permissions.PlatformDeveloperPermission" %>
 <%@ page import="org.labkey.api.security.roles.Role" %>
 <%@ page import="org.labkey.api.snd.Category" %>
 <%@ page import="org.labkey.api.snd.SNDService" %>
@@ -56,7 +59,7 @@
 
     for (Group g : groups)
     {
-        if (g.getUserId() == Group.groupAdministrators || g.getUserId() == Group.groupDevelopers)
+        if (ContainerManager.getRoot().hasPermission(g, AdminOperationsPermission.class) || ContainerManager.getRoot().hasPermission(g, PlatformDeveloperPermission.class))
             continue;
 
         validGroups.add(g);
@@ -98,8 +101,6 @@
         }
         roleMapping.put(category.getCategoryId(), roleNameMap);
     }
-
-
 %>
 <style type="text/css">
     .input-append .btn.dropdown-toggle {
