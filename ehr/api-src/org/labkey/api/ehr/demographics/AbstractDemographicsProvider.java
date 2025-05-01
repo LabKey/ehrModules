@@ -116,16 +116,10 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
             public void exec(ResultSet object) throws SQLException
             {
                 Results rs = new ResultsImpl(object, cols);
+                String id = ti.getColumn("Id").getStringValue(rs);
 
-                String id = rs.getString(FieldKey.fromString(ti.getColumn("Id").getAlias()));
-
-                Map<String, Object> map = ret.get(id);
-                if (map == null)
-                    map = new TreeMap<>();
-
+                Map<String, Object> map = ret.computeIfAbsent(id, (x)->new TreeMap<>());
                 processRow(rs, cols, map);
-
-                ret.put(id, map);
             }
         });
         if (debugEnabled)

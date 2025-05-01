@@ -85,16 +85,10 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
                 public void exec(ResultSet object) throws SQLException
                 {
                     Results rs = new ResultsImpl(object, cols);
+                    String id = ti.getColumn("Id").getStringValue(rs);
 
-                    String id = rs.getString(FieldKey.fromString(ti.getColumn("Id").getAlias()));
-
-                    Map<String, Object> map = ret.get(id);
-                    if (map == null)
-                        map = new HashMap<>();
-
+                    Map<String, Object> map = ret.computeIfAbsent(id, (x)->new HashMap<>());
                     processRow(rs, cols, map);
-
-                    ret.put(id, map);
                 }
             });
         }
