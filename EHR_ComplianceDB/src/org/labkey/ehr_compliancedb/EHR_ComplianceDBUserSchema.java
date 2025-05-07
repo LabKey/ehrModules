@@ -25,8 +25,10 @@ import org.labkey.api.ldk.table.ContainerScopedTable;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
+import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
+import org.labkey.ehr_compliancedb.model.EHRComplianceDBDomainKind;
 
 /**
  * User: bimber
@@ -36,6 +38,7 @@ import org.labkey.api.security.User;
 public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
 {
     public static final String TABLE_REQUIREMENTS = "requirements";
+    private static final String TABLE_REQUIREMENTSPEREMPLOYEE = "requirementsperemployee";
 
     public EHR_ComplianceDBUserSchema(User user, Container container, DbSchema dbschema)
     {
@@ -49,6 +52,23 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
         {
             SchemaTableInfo table = _dbSchema.getTable(name);
             return new ContainerScopedTable<>(this, table, cf, "requirementname").init();
+        }
+        else if (TABLE_REQUIREMENTSPEREMPLOYEE.equalsIgnoreCase(name))
+        {
+            SchemaTableInfo table = _dbSchema.getTable(name);
+            return new ContainerScopedTable<>(this, table, cf, "rowid")
+            {
+                // There are issues with the '_' in the name of this module and creating template domains. This addresses
+                // the domain URI by normalizing with the domain kind.
+                @Override
+                public String getDomainURI()
+                {
+                    if (_objectUriCol == null)
+                        return null;
+
+                    return SimpleTableDomainKind.getDomainURI(EHRComplianceDBDomainKind.KIND_NAME, getName(), getDomainContainer(), _userSchema.getUser());
+                }
+            }.init();
         }
 
         return super.createTable(name, cf);
