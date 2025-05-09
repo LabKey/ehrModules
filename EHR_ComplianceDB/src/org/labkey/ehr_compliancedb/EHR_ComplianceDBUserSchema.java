@@ -56,7 +56,7 @@ public class EHR_ComplianceDBUserSchema extends SimpleUserSchema
         else if (TABLE_REQUIREMENTSPEREMPLOYEE.equalsIgnoreCase(name))
         {
             SchemaTableInfo table = _dbSchema.getTable(name);
-            return new ContainerScopedTable<>(this, table, cf, "rowid")
+            return new SimpleTable<>(this, table, cf)
             {
                 // There are issues with the '_' in the name of this module and creating template domains. This addresses
                 // the domain URI by normalizing with the domain kind.
