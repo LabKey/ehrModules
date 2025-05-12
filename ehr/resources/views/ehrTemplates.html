@@ -54,19 +54,52 @@
         });
     }
 
+    createEHRComplianceDomainHandler = function () {
+        var ctx = EHR.Utils.getEHRContext();
+        var container = document.getElementById("ehrcompliance_container").value;
+        if (!container) {
+            LABKEY.Utils.alert("Error", "Must enter the container path of the compliance folder.");
+        }
+        else {
+            LABKEY.Domain.create({
+                module: ctx ? ctx['EHRCustomModule'] : null,
+                domainKind: "EHRComplianceDB",
+                domainGroup: "ehrcompliancedb",
+                importData: false,
+                containerPath: container,
+                success: function () {
+                    LABKEY.Utils.alert("Success", "EHR_ComplianceDB tables updated successfully.");
+                },
+                failure: function (e) {
+                    LABKEY.Utils.alert("Error", e.exception);
+                }
+            });
+        }
+    }
+
     LABKEY.Utils.onReady(function(){
         document.getElementById('createEHRDomainHandler')['onclick'] = function(){ createEHRDomainHandler(); return false; }
         document.getElementById('createEHRLookupsDomainHandler')['onclick'] = function(){ createEHRLookupsDomainHandler(); return false; }
         document.getElementById('createEHRBillingDomainHandler')['onclick'] = function(){ createEHRBillingDomainHandler(); return false; }
+        document.getElementById('createEHRComplianceDomainHandler')['onclick'] = function(){ createEHRComplianceDomainHandler(); return false; }
     });
 </script>
 
 <html>
 <div style="margin: 20px 0;">
     <h5><b>
-        <a style="margin-right: 30px; cursor: pointer;" id='createEHRDomainHandler'>Load EHR table definitions</a>
-        <a style="margin-right: 30px; cursor: pointer;" id='createEHRLookupsDomainHandler'>Load EHR_Lookup table definitions</a>
-        <a style="margin-right: 30px; cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
+        <a style="cursor: pointer;" id='createEHRDomainHandler'>Load EHR table definitions</a>
+        <br><br>
+        <a style="cursor: pointer;" id='createEHRLookupsDomainHandler'>Load EHR_Lookup table definitions</a>
+        <br><br>
+        <a style="cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
+        <br><br>
+        <div>
+            <a style="margin-right: 10px; cursor: pointer;" id='createEHRComplianceDomainHandler'>Load EHR_Compliance table definitions</a>
+            <label for="ehrcompliance_container">Container:</label>
+            <input type="text" id="ehrcompliance_container" name="ehrcompliance_container" style="width: 300px;">
+
+        </div>
     </b></h5>
 </div>
 </html>
