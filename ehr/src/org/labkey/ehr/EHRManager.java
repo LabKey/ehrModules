@@ -533,7 +533,6 @@ public class EHRManager
                 for (PropertyDescriptor sharedPD : pdsToReparentInShared)
                 {
                     sharedPD.setContainer(ContainerManager.getSharedContainer());
-                    sharedPD.setProject(ContainerManager.getSharedContainer());
                     OntologyManager.updatePropertyDescriptor(sharedPD);
                 }
             }
