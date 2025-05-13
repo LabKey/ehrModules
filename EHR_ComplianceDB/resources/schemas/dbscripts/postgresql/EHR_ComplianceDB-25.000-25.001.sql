@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.requirementsperemployee ADD COLUMN LSID LSIDtype;
