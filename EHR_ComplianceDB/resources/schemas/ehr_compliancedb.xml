@@ -453,6 +453,17 @@
                 <isKeyField>true</isKeyField>
                 <columnTitle>Key</columnTitle>
             </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="employeeid">
                 <columnTitle>Employee Id</columnTitle>
                 <fk>
