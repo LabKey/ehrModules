@@ -203,6 +203,23 @@ Ext4.define('EHR.data.StoreCollection', {
         console.log(arguments);
     },
 
+    normalizeInvalidLookups: function() {
+        this.clientStores.each(clientStore => {
+            if (clientStore.hasInvalidLookups) {
+                clientStore.sectionCfg.fieldConfigs.forEach(config => {
+                    if (config.hasInvalidLookups) {
+                        clientStore.each(rec => {
+                            let val = rec.get(config.name);
+                            if (val && val.startsWith('[')) {
+                                rec.set(config.name, val.slice(1, -1));
+                            }
+                        });
+                    }
+                }, this);
+            }
+        }, this);
+    },
+
     transformClientToServer: function(){
         if (EHR.debug)
             console.log('client to server');

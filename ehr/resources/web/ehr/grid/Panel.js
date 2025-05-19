@@ -11,6 +11,8 @@ Ext4.define('EHR.grid.Panel', {
     extend: 'LDK.grid.Panel',
     alias: 'widget.ehr-gridpanel',
 
+    editingPluginId: 'cellediting',
+
     initComponent: function(){
         if (!this.store){
             alert('Must provide a storeConfig');
@@ -105,6 +107,13 @@ Ext4.define('EHR.grid.Panel', {
             this.heightResize = false;
             this.callParent(options);
         }
+    },
+
+    getEditingPlugin: function(){
+        return Ext4.create('EHR.grid.plugin.CellEditing', {
+            pluginId: this.editingPluginId,
+            clicksToEdit: this.clicksToEdit
+        });
     },
 
     resizeHeight: function(){
