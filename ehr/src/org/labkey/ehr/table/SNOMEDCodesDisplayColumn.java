@@ -54,7 +54,7 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
             Map<Integer, HtmlStringBuilder> ret = new TreeMap<>();
             for (String part : parts)
             {
-                part = StringUtils.trimToNull(part); // TODO: trimToEmpty()? null means an NPE on the next line!
+                part = StringUtils.trimToEmpty(part);
                 String[] tokens = part.split(": ");
                 if (tokens.length == 2 && StringUtils.trimToNull(tokens[0]) != null)
                 {
