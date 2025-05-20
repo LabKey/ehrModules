@@ -19,9 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
+import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
+import org.labkey.ehr_compliancedb.model.EHRComplianceDBDomainKind;
 import org.labkey.ehr_compliancedb.notification.EmployeeComplianceNotification;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.ehr_compliancedb.api.EHR_ComplianceService;
@@ -49,7 +51,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 12.44;
+        return 25.001;
     }
 
     @Override
@@ -64,6 +66,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
         addController(CONTROLLER_NAME, EHR_ComplianceDBController.class);
 
         EHR_ComplianceService.setInstance(new EHR_ComplianceServiceImpl());
+        PropertyService.get().registerDomainKind(new EHRComplianceDBDomainKind());
     }
 
     @Override
