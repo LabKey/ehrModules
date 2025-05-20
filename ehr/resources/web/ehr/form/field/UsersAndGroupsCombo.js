@@ -20,6 +20,7 @@ Ext4.define('EHR.form.field.UsersAndGroupsCombo', {
                 queryName: 'PrincipalsWithoutAdmin',
                 columns: 'UserId,DisplayName,FirstName,LastName',
                 sort: 'Type,DisplayName',
+                filterArray: [LABKEY.Filter.create('active', true, LABKEY.Filter.Types.EQUAL)],
                 autoLoad: true
             },
             anyMatch: true,
