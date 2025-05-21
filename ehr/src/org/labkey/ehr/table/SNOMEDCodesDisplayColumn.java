@@ -16,28 +16,24 @@
 package org.labkey.ehr.table;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.labkey.api.collections.LabKeyCollectors;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.HtmlString;
+import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.HtmlWriter;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * User: bimber
- * Date: 10/23/13
- * Time: 3:49 PM
- */
 public class SNOMEDCodesDisplayColumn extends DataColumn
 {
     private static final Logger _log = LogManager.getLogger(SNOMEDCodesDisplayColumn.class);
@@ -48,17 +44,17 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
     {
         Object o = getValue(ctx);
         if (o != null)
         {
             String val = o.toString();
             String[] parts = val.split("\\n");
-            Map<Integer, String> ret = new TreeMap<>();
+            Map<Integer, HtmlStringBuilder> ret = new TreeMap<>();
             for (String part : parts)
             {
-                part = StringUtils.trimToNull(part);
+                part = StringUtils.trimToEmpty(part);
                 String[] tokens = part.split(": ");
                 if (tokens.length == 2 && StringUtils.trimToNull(tokens[0]) != null)
                 {
@@ -66,30 +62,23 @@ public class SNOMEDCodesDisplayColumn extends DataColumn
                     if (ret.containsKey(sort))
                     {
                         Object objectid = ctx.get(FieldKey.fromString("objectid"));
-                        _log.error("Duplicate sort for snomed: " + sort + (objectid == null ? "" : ".  objectid: " + objectid));
-                        ret.put(sort, ret.get(sort) + "<br>" + part);
+                        _log.error("Duplicate sort for snomed: {}{}", sort, objectid == null ? "" : ".  objectid: " + objectid);
+                        ret.get(sort).append(HtmlString.BR).append(part);
                     }
                     else
                     {
-                        ret.put(sort, part);
+                        ret.put(sort, HtmlStringBuilder.of(part));
                     }
-
                 }
                 else
                 {
-                    _log.error("Invalid SNOMED string: " + val);
+                    _log.error("Invalid SNOMED string: {}", val);
                 }
             }
 
-            String text;
-            String delim = "";
-            for (Integer sort : ret.keySet())
-            {
-                text = ret.get(sort).replaceAll("\\r?\\n", "<br>");
-                oldWriter.write(delim);
-                delim = "<br>";
-                oldWriter.write(text);
-            }
+            out.write(ret.values().stream()
+                .map(HtmlStringBuilder::getHtmlString)
+                .collect(LabKeyCollectors.joining(HtmlString.BR)));
         }
     }
 
