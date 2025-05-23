@@ -64,7 +64,6 @@ import org.labkey.api.study.Dataset;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
-import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.HttpView;
 import org.labkey.api.view.NavTree;
@@ -73,13 +72,10 @@ import org.labkey.api.writer.HtmlWriter;
 import org.labkey.ehr.EHRModule;
 import org.labkey.ehr.EHRSchema;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -87,11 +83,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 12/7/12
- * Time: 2:29 PM
- */
+import static org.labkey.api.util.DOM.A;
+import static org.labkey.api.util.DOM.Attribute.style;
+import static org.labkey.api.util.DOM.SPAN;
+import static org.labkey.api.util.DOM.at;
+import static org.labkey.api.util.DOM.cl;
+
 public class DefaultEHRCustomizer extends AbstractTableCustomizer
 {
     public static final String ID_COL = "Id";
@@ -825,13 +822,18 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 return new DataColumn(colInfo)
                 {
                     @Override
-                    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
+                    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
                     {
-                        Object objectid = ctx.get("objectid");
-                        Date date = (Date) ctx.get("date");
                         Object id = ctx.get(ID_COL);
 
-                        oldWriter.write("<span style=\"white-space:nowrap\"><a class=\"labkey-text-link anm-history\" data-id=\"" + PageFlowUtil.filter(id) + "\">[Show Hx]</a></span>");
+                        SPAN(
+                            at(style, "white-space:nowrap"),
+                            A(
+                                cl("labkey-text-link anm-history").data("id", id),
+                                "[Show Hx]"
+                            )
+                        ).appendTo(out);
+
                         if (!_clickHandlerAdded)
                         {
                             HttpView.currentPageConfig().addHandlerForQuerySelector("a.anm-history", "click", "EHR.window.ClinicalHistoryWindow.showClinicalHistory(null , this.attributes.getNamedItem('data-id').value, null, this);");
