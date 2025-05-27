@@ -71,9 +71,7 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
         // Keep upward pointer correct for each use - editors are shared between locking sides
         editor.editingPlugin = me;
 
-        if( editor?.field?.xtype === 'labkey-combo' || editor?.field?.xtype === 'ehr-simplecombo') {
-            this.ensureLookups(record, column, editor);
-        }
+        this.ensureLookups(record, column, editor);
 
         return editor;
     }

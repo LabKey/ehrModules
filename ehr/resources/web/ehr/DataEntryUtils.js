@@ -501,7 +501,6 @@ EHR.DataEntryUtils = new function(){
             }
 
             meta.showTooltip = EHR.DataEntryUtils.shouldShowTooltips();
-
             col.renderer = LABKEY.ext4.Util.getDefaultRenderer(col, meta, grid);
 
             //HTML-encode the column header
