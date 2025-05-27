@@ -3,10 +3,8 @@ Ext4.define('EHR.grid.plugin.CellEditing', {
     extend: 'LDK.grid.plugin.CellEditing',
     alias: 'plugin.ehr-cellediting',
 
-    getEditor: function(record, column) {
-        const editor = this.callParent(arguments);
-
-        if (record.data[column.dataIndex] && editor?.field?.xtype === 'labkey-combo' && editor?.field?.store) {
+    ensureLookups: function(record, column, editor) {
+        if (record.data[column.dataIndex] && editor?.field?.store) {
             const valid = editor.field.store.findExact("value", record.data[column.dataIndex]) !== -1
 
             if (!valid) {
@@ -19,6 +17,14 @@ Ext4.define('EHR.grid.plugin.CellEditing', {
                 editor.field.plugins.push(plugin);
                 plugin.init(editor.field);
             }
+        }
+    },
+
+    getEditor: function(record, column) {
+        const editor = this.callParent(arguments);
+
+        if( editor?.field?.xtype === 'labkey-combo' || editor?.field?.xtype === 'ehr-simplecombo') {
+            this.ensureLookups(record, column, editor);
         }
 
         return editor;

@@ -472,21 +472,6 @@ EHR.DataEntryUtils = new function(){
             return cfg;
         },
 
-        handleColInvalidLookups: function(recName, fieldName, recordStore, fieldStore) {
-            recordStore.each(rec => {
-                let recData = rec.get(recName);
-                if (recData && !recordStore.hasInvalidLookups && fieldStore.findExact(fieldName, recData) === -1) {
-                    rec.set(recName, '[' + recData + ']');
-                    recordStore.hasInvalidLookups = true;
-                    recordStore.sectionCfg.fieldConfigs.forEach(f => {
-                        if (f.name === recName) {
-                            f.hasInvalidLookups = true;
-                        }
-                    }, this);
-                }
-            })
-        },
-
         getColumnConfigFromMetadata: function(meta, grid){
             var col = {};
             col.dataIndex = meta.dataIndex || meta.name;
@@ -517,11 +502,6 @@ EHR.DataEntryUtils = new function(){
 
             meta.showTooltip = EHR.DataEntryUtils.shouldShowTooltips();
 
-            if (meta.lookup && col.editor.store) {
-                col.editor.store.on('load', function(store, y, z) {
-                    EHR.DataEntryUtils.handleColInvalidLookups(col.dataIndex, col.editor.valueField, grid.store, store);
-                });
-            }
             col.renderer = LABKEY.ext4.Util.getDefaultRenderer(col, meta, grid);
 
             //HTML-encode the column header

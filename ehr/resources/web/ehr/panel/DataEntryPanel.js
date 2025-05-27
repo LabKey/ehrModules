@@ -605,7 +605,6 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         Ext4.Msg.wait("Saving Changes...");
-        this.storeCollection.normalizeInvalidLookups();
         this.storeCollection.transformClientToServer();
 
         //add a context flag to the request to saveRows

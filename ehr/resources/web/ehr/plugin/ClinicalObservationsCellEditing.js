@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
-    extend: 'LDK.grid.plugin.CellEditing',
+    extend: 'EHR.grid.plugin.CellEditing',
     alias: 'plugin.clinicalobservationscellediting',
 
     constructor: function(config){
@@ -70,6 +70,10 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
 
         // Keep upward pointer correct for each use - editors are shared between locking sides
         editor.editingPlugin = me;
+
+        if( editor?.field?.xtype === 'labkey-combo' || editor?.field?.xtype === 'ehr-simplecombo') {
+            this.ensureLookups(record, column, editor);
+        }
 
         return editor;
     }
