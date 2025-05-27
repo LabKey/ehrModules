@@ -24,7 +24,7 @@ Ext4.define('EHR.panel.SimpleDataEntryFormPanel', {
             if (item.cfg && (item.cfg.xtype == 'combo' || item.cfg.xtype == 'labkey-combo')){
                 if (!item.cfg.plugins){
                     item.cfg.plugins = [];
-                    item.cfg.plugins.push(Ext4.create('LDK.plugin.UserEditableCombo', {
+                    item.cfg.plugins.push(Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     }));
                 }

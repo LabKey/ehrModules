@@ -29,7 +29,7 @@ Ext4.define('EHR.form.field.RoomFieldSingle', {
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
             },
-            plugins: ['ldk-usereditablecombo']
+            plugins: ['ehr-usereditablecombo']
         });
 
         this.callParent(arguments);

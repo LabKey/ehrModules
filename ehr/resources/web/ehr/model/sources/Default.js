@@ -122,7 +122,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             lookup: {columns: '*'},
             compositeField: 'Dosage',
             editorConfig: {
-                plugins: ['ldk-usereditablecombo']
+                plugins: ['ehr-usereditablecombo']
             },
             columnConfig: {
                 width: 120
@@ -140,7 +140,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             lookup: {columns: '*'},
             compositeField: 'Drug Conc',
             editorConfig: {
-                plugins: ['ldk-usereditablecombo'],
+                plugins: ['ehr-usereditablecombo'],
                 listeners: {
                     select: function(combo, recs){
                         if (!recs || recs.length != 1)
@@ -181,7 +181,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             compositeField: 'Volume',
             header: 'Vol Units',
             editorConfig: {
-                plugins: ['ldk-usereditablecombo']
+                plugins: ['ehr-usereditablecombo']
             },
             columnConfig: {
                 width: 90
@@ -203,7 +203,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 120
             },
             editorConfig: {
-                plugins: ['ldk-usereditablecombo']
+                plugins: ['ehr-usereditablecombo']
             }
         },
         chargetype: {
@@ -215,7 +215,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             editorConfig: {
                 caseSensitive: false,
                 anyMatch: true,
-                plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                     allowChooseOther: false
                 })]
             },
@@ -227,7 +227,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             editorConfig: {
                 caseSensitive: false,
                 anyMatch: true,
-                plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                     allowChooseOther: false
                 })]
             },
@@ -892,7 +892,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             qualifier: {
                 hidden: true,
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 shownInGrid: false
             },
@@ -908,7 +908,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 shownInGrid: false
             },
@@ -940,7 +940,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 defaultValue: 'Hematoxylin & Eosin',
                 hidden: true,
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             tissue: {
@@ -953,7 +953,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             qualifier: {
                 hidden: true,
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             remark: {
@@ -1087,7 +1087,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     sort: 'Type,DisplayName'
                 },
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo'],
+                    plugins: ['ehr-usereditablecombo'],
                     anyMatch: true,
                     listConfig: {
                         innerTpl: '{[LABKEY.Utils.encodeHtml(values.DisplayName + (values.LastName ? " (" + values.LastName + (values.FirstName ? ", " + values.FirstName : "") + ")" : ""))]}',
@@ -1237,7 +1237,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             sampleType : {
                 hidden: true,
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 columnConfig: {
                     width: 160
@@ -1597,7 +1597,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     caseSensitive: false,
                     anyMatch: true,
-                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     })],
                     listConfig: {
@@ -1666,7 +1666,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             chargecategory: {
                 editorConfig: {
-                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     })]
                 },
@@ -1723,7 +1723,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             category: {
                 allowBlank: false,
                 editorConfig: {
-                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     })]
                 },
@@ -1770,7 +1770,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             testid: {
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 lookup: {
                     columns: '*'
@@ -1790,7 +1790,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             qualifier: {
                 hidden: false,
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             agent: {
@@ -1814,7 +1814,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             method: {
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             result: {
@@ -1981,7 +1981,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     caseSensitive: false,
                     anyMatch: true,
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 columnConfig: {
                     width: 180
@@ -2091,7 +2091,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             destination: {
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 columnConfig: {
                     width: 200
@@ -2219,7 +2219,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 200
                 },
                 editorConfig: {
-                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     })]
                 }
@@ -2423,7 +2423,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             route: {
                 editorConfig: {
-                    plugins: ['ldk-usereditablecombo']
+                    plugins: ['ehr-usereditablecombo']
                 },
                 allowBlank: false
             },
@@ -2456,7 +2456,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 180
                 },
                 editorConfig: {
-                    plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+                    plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                         allowChooseOther: false
                     })]
                 }

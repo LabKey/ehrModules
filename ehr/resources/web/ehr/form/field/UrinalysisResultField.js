@@ -9,7 +9,7 @@ Ext4.define('EHR.form.field.UrinalysisResultField', {
 
     initComponent: function(){
         this.plugins = this.plugins || [];
-        this.plugins.push('ldk-usereditablecombo');
+        this.plugins.push('ehr-usereditablecombo');
 
         this.store = this.store || {
             store: {

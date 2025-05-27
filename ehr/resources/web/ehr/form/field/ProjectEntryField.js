@@ -32,7 +32,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
       displayField: 'displayName',
       valueField: 'project',
       queryMode: 'local',
-      plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
+      plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
         createWindow: function(){
           this.window = Ext4.create('Ext.window.Window', {
             modal: true,

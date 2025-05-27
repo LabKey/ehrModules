@@ -11,7 +11,7 @@ EHR.model.DataModelManager.registerMetadata('LabworkChild', {
         testid: {
             editorConfig: {
                 plugins: [{
-                    ptype: 'ldk-usereditablecombo',
+                    ptype: 'ehr-usereditablecombo',
                     allowChooseOther: false
                 }]
             }
