@@ -10,7 +10,7 @@ Ext4.define('EHR.grid.plugin.CellEditing', {
             const valid = editor.field.store.findExact("value", record.data[column.dataIndex]) !== -1
 
             if (!valid) {
-                const plugin = Ext4.create('EHR.plugin.UserEditableCombo', {
+                const plugin = Ext4.create('LDK.plugin.UserEditableCombo', {
                     allowChooseOther: false,
                     name: 'invalidLookup',
                 });

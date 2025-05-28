@@ -37,7 +37,7 @@ Ext4.define('EHR.form.field.RoomEntryField', {
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
             },
-            plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
+            plugins: [Ext4.create('LDK.plugin.UserEditableCombo', {
                 allowChooseOther: false
             })]
         });
