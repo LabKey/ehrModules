@@ -488,6 +488,7 @@ public class EHRManager
                         messages.add("Missing property \"" + pd.getName() + "\" on dataset: " + dataset.getName() + ".  Needs to be created.");
                         if (commitChanges)
                         {
+                            domain = dataset.getDomain(true);
                             DomainProperty d = domain.addProperty();
                             d.setPropertyURI(pd.getPropertyURI());
                             d.setRangeURI(pd.getRangeURI());
