@@ -11,8 +11,6 @@ Ext4.define('EHR.grid.Panel', {
     extend: 'LDK.grid.Panel',
     alias: 'widget.ehr-gridpanel',
 
-    editingPluginId: 'cellediting',
-
     initComponent: function(){
         if (!this.store){
             alert('Must provide a storeConfig');
@@ -91,6 +89,8 @@ Ext4.define('EHR.grid.Panel', {
             this.dataEntryPanel.updateMinWidth(this.minWidth);
         }
 
+        this.addComboEditorPlugin(this.columns);
+
     },
 
     pendingChanges: {},
@@ -109,11 +109,12 @@ Ext4.define('EHR.grid.Panel', {
         }
     },
 
-    getEditingPlugin: function(){
-        return Ext4.create('EHR.grid.plugin.CellEditing', {
-            pluginId: this.editingPluginId,
-            clicksToEdit: this.clicksToEdit
-        });
+    addComboEditorPlugin: function(columns){
+        Ext4.Array.forEach(columns, function(col){
+            if (col.editor) {
+                col.editor = EHR.DataEntryUtils.ensureLookupPlugin(col.editor, false);
+            }
+        }, this);
     },
 
     resizeHeight: function(){

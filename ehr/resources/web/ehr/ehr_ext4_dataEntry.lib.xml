@@ -21,7 +21,6 @@
         <script path="ehr/plugin/ResizableTextArea.js"/>
         <script path="ehr/plugin/RowEditor.js"/>
         <script path="ehr/plugin/CollapsibleDataEntryPanel.js"/>
-        <script path="ehr/plugin/CellEditing.js"/>
 
         <!--fields-->
         <script path="ehr/form/field/AnimalField.js"/>
