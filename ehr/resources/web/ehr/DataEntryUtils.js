@@ -1111,10 +1111,8 @@ EHR.DataEntryUtils = new function(){
         },
 
         ensureLookupPlugin(editor, initPlugin) {
-            // const xtype = editor?.xtype;
             const xtype = editor?.xtype;
             if ((xtype === 'combo' || xtype === 'labkey-combo' || xtype === 'ehr-simplecombo')
-                    // && !editor.plugins?.find(p => p.ptype === 'ldk-usereditablecombo')) {
                     && !editor.plugins?.find(p => p.ptype === 'ldk-usereditablecombo')) {
 
                 const plugin = Ext4.create('LDK.plugin.UserEditableCombo', {
