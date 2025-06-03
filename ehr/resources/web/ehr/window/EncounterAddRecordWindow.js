@@ -96,8 +96,14 @@ Ext4.define('EHR.window.EncounterAddRecordWindow', {
             var model = this.targetGrid.store.createModel({});
             var obj = {};
             Ext4.Array.forEach(['Id', 'date', 'parentid', 'project'], function(field){
-                if (this.targetGrid.store.getFields().get(field)){
-                    obj[field] = rec.get(field);
+                const fieldConfig = this.targetGrid.store.getFields().get(field);
+                if (fieldConfig){
+                    if (field === 'date' && fieldConfig.inheritDateFromParent) {
+                        obj[field] = rec.get(field);
+                    }
+                    else if (fieldConfig.inheritFromParent) {
+                        obj[field] = rec.get(field);
+                    }
                 }
             }, this);
 
