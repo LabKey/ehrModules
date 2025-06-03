@@ -60,19 +60,19 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
             var parentRec = this.getEncountersRecord(model.get('parentid'));
             if (parentRec){
                 model.beginEdit();
-                if (parentRec.get('Id') !== model.get('Id') && model.fields.get('Id')?.inheritFromParent){
+                if (parentRec.get('Id') !== model.get('Id')){
                     model.set('Id', parentRec.get('Id'));
                 }
 
-                if (model.fields.get('date')?.inheritDateFromParent && !model.get('date') && parentRec.get('date')){
+                if (model.fields.get('date')?.inheritDefaultDateFromParent && !model.get('date') && parentRec.get('date')){
                     model.set('date', parentRec.get('date'));
                 }
 
-                if (model.fields.get('project')?.inheritFromParent && !model.get('project') && parentRec.get('project')){
+                if (model.fields.get('project') && !model.get('project') && parentRec.get('project')){
                     model.set('project', parentRec.get('project'));
                 }
 
-                if (model.fields.get('chargetype')?.inheritFromParent && !model.get('chargetype') && parentRec.get('chargetype')){
+                if (model.fields.get('chargetype') && !model.get('chargetype') && parentRec.get('chargetype')){
                     model.set('chargetype', parentRec.get('chargetype'));
                 }
 

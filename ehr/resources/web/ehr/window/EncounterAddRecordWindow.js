@@ -98,10 +98,12 @@ Ext4.define('EHR.window.EncounterAddRecordWindow', {
             Ext4.Array.forEach(['Id', 'date', 'parentid', 'project'], function(field){
                 const fieldConfig = this.targetGrid.store.getFields().get(field);
                 if (fieldConfig){
-                    if (field === 'date' && fieldConfig.inheritDateFromParent) {
-                        obj[field] = rec.get(field);
+                    if (field === 'date') {
+                        if (fieldConfig.inheritDefaultDateFromParent) {
+                            obj[field] = rec.get(field);
+                        }
                     }
-                    else if (fieldConfig.inheritFromParent) {
+                    else {
                         obj[field] = rec.get(field);
                     }
                 }
