@@ -18,7 +18,6 @@ package org.labkey.snd.query;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
@@ -150,7 +149,7 @@ public class PackagesTable extends AbstractSNDTableInfo
 
                 try
                 {
-                    DomainUtil.createDomain(PackageDomainKind.getPackageKindName(), newDomain, null, container, user, null, null);
+                    DomainUtil.createDomain(PackageDomainKind.getPackageKindName(), newDomain, null, container, user, null, null, false);
                 }
                 catch (ValidationException ve)
                 {
