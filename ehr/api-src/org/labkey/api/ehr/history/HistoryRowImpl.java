@@ -29,14 +29,14 @@ import java.util.Date;
  */
 public class HistoryRowImpl implements HistoryRow
 {
-    private HistoryDataSource _source;
-    private String _subjectId;
-    private Date _date;
+    private final HistoryDataSource _source;
+    private final String _subjectId;
+    private final Date _date;
     private Date _enddate;
     private Integer _projectId;
-    private String _primaryGroup;
-    private String _categoryText;
-    private String _categoryColor;
+    private final String _primaryGroup;
+    private final String _categoryText;
+    private final String _categoryColor;
     private String _performedBy;
     private String _caseId;
     private String _runId;
@@ -44,11 +44,11 @@ public class HistoryRowImpl implements HistoryRow
     private String _qcStateLabel;
     private Boolean _isPublicData;
     private Boolean _showTime = false;
-    private String _taskId = null;
-    private Integer _taskRowId;
-    private String _formType;
-    private String _objectId;
-    private String _html;
+    private String _taskId;
+    private final Integer _taskRowId;
+    private final String _formType;
+    private final String _objectId;
+    private final String _html;
 
     protected static final Logger _log = LogManager.getLogger(HistoryRowImpl.class);
 

@@ -34,7 +34,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
     protected String _schemaName;
     protected String _queryName;
     protected Boolean _forceDateOnlyField;
-    private Class<? extends Permission> _perm;
+    private final Class<? extends Permission> _perm;
 
     public MarkCompletedButton(Module owner, String schemaName, String queryName)
     {

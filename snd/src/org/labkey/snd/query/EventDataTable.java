@@ -59,14 +59,13 @@ public class EventDataTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public EventDataTable(SNDUserSchema schema, TableInfo table)
     {
         super(schema, table);
     }
 
+    @Override
     public void addColumns()
     {
         BaseColumnInfo objectid = new BaseColumnInfo("ObjectId", this, JdbcType.INTEGER)
@@ -104,10 +103,10 @@ public class EventDataTable extends AbstractSNDTableInfo
     @Override
     public QueryUpdateService getUpdateService()
     {
-        return new EventDataTable.UpdateService(this);
+        return new UpdateService(this);
     }
 
-    protected class UpdateService extends SNDQueryUpdateService
+    protected static class UpdateService extends SNDQueryUpdateService
     {
         private final SNDManager _sndManager = SNDManager.get();
         private final SNDService _sndService = SNDService.get();
@@ -184,7 +183,7 @@ public class EventDataTable extends AbstractSNDTableInfo
             log.info("End updating exp.Object table. Updated total of " + count + " rows.");
 
             int rowCount = 0;
-            if(data.size() > 0 && null != data.get(0))
+            if(!data.isEmpty() && null != data.get(0))
             {
                 DataIteratorBuilder rowsWithObjectURI = new ListofMapsDataIterator.Builder(data.get(0).keySet(), data);
                 rowCount = _importRowsUsingDIB(user, container, rowsWithObjectURI, null, dataIteratorContext, extraScriptContext);

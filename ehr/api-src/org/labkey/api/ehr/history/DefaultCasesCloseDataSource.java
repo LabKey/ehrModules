@@ -53,13 +53,12 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
         {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Category", "category"));
-        sb.append(safeAppend(rs, "Case #", "caseno"));
-        sb.append("Opened On: ").append(DateUtil.formatDate(c, start));
+        String sb = safeAppend(rs, "Category", "category") +
+                safeAppend(rs, "Case #", "caseno") +
+                "Opened On: " + DateUtil.formatDate(c, start);
 
-        return sb.toString();
+        return sb;
     }
 
     @Override

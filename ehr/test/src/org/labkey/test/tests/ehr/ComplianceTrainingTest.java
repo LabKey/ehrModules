@@ -50,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 @BaseWebDriverTest.ClassTimeout(minutes = 5)
 public abstract class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
-    private String listZIP = TestFileUtils.getLabKeyRoot() + "/server/modules/ehrModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
+    private final String listZIP = TestFileUtils.getLabKeyRoot() + "/server/modules/ehrModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
 
     @Override
     protected String getProjectName()
@@ -61,7 +61,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
     @BeforeClass
     public static void doSetup()
     {
-        ComplianceTrainingTest initTest = (ComplianceTrainingTest)getCurrentTest();
+        ComplianceTrainingTest initTest = getCurrentTest();
         initTest.setUpTest();
         initTest.cleanupRecords(false);
     }
@@ -74,7 +74,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
     private final String requirementName1 = prefix + "req1";
     private final String requirementName2 = prefix + "req2";
     private final String requirementName3 = prefix + "req3";
-    private EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getProjectName());
+    private final EHRClientAPIHelper _apiHelper = new EHRClientAPIHelper(this, getProjectName());
 
 
 
@@ -358,7 +358,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
             select.addFilter(new Filter("requirementname", reqName, Filter.Operator.EQUAL));
             SelectRowsResponse resp = select.execute(cn, getProjectName());
 
-            if (resp.getRows().size() == 0)
+            if (resp.getRows().isEmpty())
             {
                 insertCmd = new InsertRowsCommand("ehr_compliancedb", "requirements");
                 rowMap = new HashMap<>();
@@ -374,7 +374,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
             select.addFilter(new Filter("categoryname", category, Filter.Operator.EQUAL));
             resp = select.execute(cn, getProjectName());
 
-            if (resp.getRows().size() == 0)
+            if (resp.getRows().isEmpty())
             {
                 insertCmd = new InsertRowsCommand("ehr_compliancedb", "employeecategory");
                 rowMap = new HashMap<>();

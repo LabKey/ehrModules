@@ -102,7 +102,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresLogin
-    public class BeginAction extends SimpleRedirectAction
+    public static class BeginAction extends SimpleRedirectAction<Object>
     {
         @Override
         public URLHelper getRedirectURL(Object o)
@@ -258,7 +258,7 @@ public class SNDController extends SpringActionController
 
                 superPackage.setRequired(false); // Top level super packages required is always false
 
-                if (null != jsonSubPackages && jsonSubPackages.length() > 0)
+                if (null != jsonSubPackages && !jsonSubPackages.isEmpty())
                 {
                     for (JSONObject jsonSubPackage : JsonUtil.toJSONObjectList(jsonSubPackages))
                     {
@@ -415,7 +415,7 @@ public class SNDController extends SpringActionController
             return new ApiSimpleResponse();
         }
 
-        private class SuperPackageInfo
+        private static class SuperPackageInfo
         {
             int _sortOrder;
             boolean _required;
@@ -460,7 +460,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(SNDPackageViewerPermission.class)
-    public class GetPackagesAction extends ReadOnlyApiAction<SimpleApiJsonForm>
+    public static class GetPackagesAction extends ReadOnlyApiAction<SimpleApiJsonForm>
     {
         @Override
         public void validateForm(SimpleApiJsonForm form, Errors errors)
@@ -525,7 +525,7 @@ public class SNDController extends SpringActionController
                 }
 
                 SNDService sndService = SNDService.get();
-                if (ids.size() > 0 && sndService != null)
+                if (!ids.isEmpty() && sndService != null)
                 {
                     pkgs.addAll(sndService.getPackages(getViewContext().getContainer(), getUser(), ids,
                             includeExtraFields, includeLookups, includeFullSubpackages));
@@ -576,7 +576,7 @@ public class SNDController extends SpringActionController
                 errors.reject(ERROR_MSG, "Missing referenceId.");
             }
 
-            if (!json.has("startDate") || json.getString("startDate") == null || json.getString("startDate").equals(""))
+            if (!json.has("startDate") || json.getString("startDate") == null || json.getString("startDate").isEmpty())
             {
                 errors.reject(ERROR_MSG, "Missing startDate.");
             }
@@ -627,7 +627,7 @@ public class SNDController extends SpringActionController
                 }
             }
 
-            if (json.has("endDate") && (json.isNull("endDate") || json.getString("endDate").equals("")))
+            if (json.has("endDate") && (json.isNull("endDate") || json.getString("endDate").isEmpty()))
             {
                 json.remove("endDate");
             }
@@ -733,7 +733,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(SNDProjectViewerPermission.class)
-    public class GetProjectAction extends ReadOnlyApiAction<SimpleApiJsonForm>
+    public static class GetProjectAction extends ReadOnlyApiAction<SimpleApiJsonForm>
     {
         @Override
         public void validateForm(SimpleApiJsonForm form, Errors errors)
@@ -789,7 +789,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetEventAction extends ReadOnlyApiAction<SimpleApiJsonForm>
+    public static class GetEventAction extends ReadOnlyApiAction<SimpleApiJsonForm>
     {
         @Override
         public void validateForm(SimpleApiJsonForm form, Errors errors)
@@ -1063,7 +1063,7 @@ public class SNDController extends SpringActionController
         {
             List<EventData> eventDataList = new ArrayList<>();
 
-            if ((eventDataJson != null) && (eventDataJson.length() > 0))
+            if ((eventDataJson != null) && (!eventDataJson.isEmpty()))
             {
                 for (int i = 0; i < eventDataJson.length(); i++)
                 {
@@ -1113,7 +1113,7 @@ public class SNDController extends SpringActionController
         {
             List<AttributeData> attributesDataList = new ArrayList<>();
 
-            if ((attributesDataJson != null) && (attributesDataJson.length() > 0))
+            if ((attributesDataJson != null) && (!attributesDataJson.isEmpty()))
             {
                 String propertyName = null;
                 int propertyId = -1;
@@ -1152,7 +1152,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class RegisterTestTriggerFactoryAction extends ReadOnlyApiAction<SimpleApiJsonForm>
+    public static class RegisterTestTriggerFactoryAction extends ReadOnlyApiAction<SimpleApiJsonForm>
     {
         @Override
         public Object execute(SimpleApiJsonForm form, BindException errors)
@@ -1191,7 +1191,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class ClearNarrativeCacheAction extends MutatingApiAction<SimpleApiJsonForm>
+    public static class ClearNarrativeCacheAction extends MutatingApiAction<SimpleApiJsonForm>
     {
         @Override
         public Object execute(SimpleApiJsonForm form, BindException errors)
@@ -1202,7 +1202,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class FillInNarrativeCacheAction extends MutatingApiAction<SimpleApiJsonForm>
+    public static class FillInNarrativeCacheAction extends MutatingApiAction<SimpleApiJsonForm>
     {
         @Override
         public Object execute(SimpleApiJsonForm form, BindException errors)
@@ -1213,7 +1213,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class PopulateQCStatesAction extends MutatingApiAction<SimpleApiJsonForm>
+    public static class PopulateQCStatesAction extends MutatingApiAction<SimpleApiJsonForm>
     {
         @Override
         public Object execute(SimpleApiJsonForm form, BindException errors)
@@ -1225,7 +1225,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SecurityAction extends SimpleViewAction
+    public static class SecurityAction extends SimpleViewAction
     {
 
         @Override
@@ -1271,7 +1271,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class AdminAction extends SimpleViewAction
+    public static class AdminAction extends SimpleViewAction<Object>
     {
 
         @Override
@@ -1292,7 +1292,7 @@ public class SNDController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class UpdateRoleAction extends MutatingApiAction<SimpleApiJsonForm>
+    public static class UpdateRoleAction extends MutatingApiAction<SimpleApiJsonForm>
     {
         @Override
         public Object execute(SimpleApiJsonForm form, BindException errors)

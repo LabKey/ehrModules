@@ -68,7 +68,6 @@ import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.FolderAdminRole;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.settings.AppProps;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.snd.AttributeData;
 import org.labkey.api.snd.Category;
@@ -122,7 +121,7 @@ public class SNDManager
 
     private final Cache<String, Map<String, Map<String, Object>>> _cache;
 
-    private List<TableInfo> _attributeLookups = new ArrayList<>();
+    private final List<TableInfo> _attributeLookups = new ArrayList<>();
 
     public static final String RANGE_PARTICIPANTID = "ParticipantId";
 
@@ -262,7 +261,7 @@ public class SNDManager
             throw new RuntimeException(e);
         }
 
-        if (rows == null || rows.size() < 1)
+        if (rows == null || rows.isEmpty())
             return null;
 
         return rows.get(0).get(tableInfo.getTitleColumn());
@@ -297,7 +296,7 @@ public class SNDManager
         SqlSelector selector = new SqlSelector(userSchema.getDbSchema(), sql);
         List<Object> lookupRows = selector.getArrayList(Object.class);
 
-        if (lookupRows.size() < 1)
+        if (lookupRows.isEmpty())
             return null;
 
         return lookupRows.get(0);
@@ -573,11 +572,6 @@ public class SNDManager
      * Return a cached map of Package Categories by PkgId
      * If pkgIds is not null, get for list of pkgIds, else get for entire database.
      *
-     * @param c
-     * @param u
-     * @param pkgIds
-     * @param errors
-     * @return
      */
     private Map<Integer, Map<Integer, String>> getBulkPackageCategories(Container c, User u, @Nullable List<Integer> pkgIds, BatchValidationException errors)
     {
@@ -657,10 +651,6 @@ public class SNDManager
 
     /**
      * Retrieve extensible fields as an argument and add them as extraFields to pkg object
-     * @param pkg
-     * @param extraFields
-     * @param row
-     * @return
      */
     public Package addExtraFieldsToPackage(Package pkg, List<GWTPropertyDescriptor> extraFields, @Nullable Map<String, Object> row)
     {
@@ -714,7 +704,7 @@ public class SNDManager
         sql.append(" WHERE sp.PkgId = ?").add(packageId);
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(SuperPackage.class).size() > 0)
+        if (!selector.getArrayList(SuperPackage.class).isEmpty())
             return selector.getArrayList(Integer.class);
         else
             return null;
@@ -755,7 +745,7 @@ public class SNDManager
         sql.append(")");
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(SuperPackage.class).size() > 0)
+        if (!selector.getArrayList(SuperPackage.class).isEmpty())
             return selector.getArrayList(SuperPackage.class);
         else
             return null;
@@ -780,7 +770,7 @@ public class SNDManager
         sql.append(") AND sp2.ParentSuperPkgId IS NULL");
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(SuperPackage.class).size() > 0)
+        if (!selector.getArrayList(SuperPackage.class).isEmpty())
             return selector.getArrayList(SuperPackage.class);
         else
             return null;
@@ -792,7 +782,7 @@ public class SNDManager
     @Nullable
     public static List<SuperPackage> filterTopLevelSuperPkgs(Container c, User u, List<Integer> superPackageIds)
     {
-        if ((superPackageIds == null) || (superPackageIds.size() == 0))
+        if ((superPackageIds == null) || (superPackageIds.isEmpty()))
             return null;
 
         UserSchema schema = getSndUserSchema(c, u);
@@ -804,7 +794,7 @@ public class SNDManager
         sql.append(") AND sp.ParentSuperPkgId IS NULL");
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(SuperPackage.class).size() > 0)
+        if (!selector.getArrayList(SuperPackage.class).isEmpty())
             return selector.getArrayList(SuperPackage.class);
         else
             return null;
@@ -823,7 +813,7 @@ public class SNDManager
         sql.append(" WHERE sp.ParentSuperPkgId = ?").add(parentSuperPackageId);
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(Integer.class).size() > 0)
+        if (!selector.getArrayList(Integer.class).isEmpty())
             return selector.getArrayList(SuperPackage.class);
         else
             return null;
@@ -835,7 +825,7 @@ public class SNDManager
     @Nullable
     public static List<SuperPackage> filterChildSuperPkgs(Container c, User u, List<Integer> superPackageIds, Integer parentSuperPackageId)
     {
-        if ((superPackageIds == null) || (superPackageIds.size() == 0))
+        if ((superPackageIds == null) || (superPackageIds.isEmpty()))
             return null;
 
         UserSchema schema = getSndUserSchema(c, u);
@@ -847,7 +837,7 @@ public class SNDManager
         sql.append(") AND sp.ParentSuperPkgId = ?").add(parentSuperPackageId);
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(SuperPackage.class).size() > 0)
+        if (!selector.getArrayList(SuperPackage.class).isEmpty())
             return selector.getArrayList(SuperPackage.class);
         else
             return null;
@@ -864,7 +854,7 @@ public class SNDManager
         SQLFragment sql = new SQLFragment("SELECT sp.SuperPkgId FROM ");
         sql.append(schema.getTable(SNDSchema.SUPERPKGS_TABLE_NAME), "sp");
         sql.append(" WHERE");
-        if ((superPackages != null) && (superPackages.size() > 0))
+        if ((superPackages != null) && (!superPackages.isEmpty()))
         {
             sql.append(" sp.SuperPkgId NOT IN (");
             Iterator<SuperPackage> superPackageIterator = superPackages.iterator();
@@ -881,7 +871,7 @@ public class SNDManager
         sql.append(" sp.ParentSuperPkgId = ?").add(parentSuperPackageId);
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        if (selector.getArrayList(Integer.class).size() > 0)
+        if (!selector.getArrayList(Integer.class).isEmpty())
             return selector.getArrayList(Integer.class);
         else
             return null;
@@ -952,7 +942,7 @@ public class SNDManager
             List<Integer> pkgIds = new ArrayList<>();
             pkgIds.add(superPackage.getPkgId());
             List<Package> pkgs = getPackages(c, u, pkgIds, true, true, true, errors);
-            if (pkgs.size() > 0)
+            if (!pkgs.isEmpty())
             {
                 superPackage.setPkg(pkgs.get(0));
             }
@@ -1115,19 +1105,6 @@ public class SNDManager
 
     /**
      * Does same as createPackage but retrieves superPackage and package info from cached map objects from arguments instead of database queries
-     * @param c
-     * @param u
-     * @param row
-     * @param packageExtraFields
-     * @param superPackages
-     * @param childrenByParentId
-     * @param pkgCategoriesByPkgId
-     * @param lookups
-     * @param includeExtraFields
-     * @param includeLookups
-     * @param includeFullSubpackages
-     * @param errors
-     * @return
      */
     private Package getBulkPackage(Container c, User u, Map<String, Object> row, List<GWTPropertyDescriptor> packageExtraFields,
                                  List<SuperPackage> superPackages, Map<Integer, List<SuperPackage>> childrenByParentId,
@@ -1216,20 +1193,6 @@ public class SNDManager
 
     /**
      * Does same as getPackages but retrieves the superPackage and package info from cached object maps instead of database queries
-     * @param c
-     * @param u
-     * @param pkgIds
-     * @param pkgQus
-     * @param packageExtraFields
-     * @param superPackages
-     * @param childrenByParentId
-     * @param pkgCategoriesByPkgId
-     * @param lookups
-     * @param includeExtraFields
-     * @param includeLookups
-     * @param includeFullSubpackages
-     * @param errors
-     * @return
      */
     public List<Package> getBulkPackages(Container c, User u, List<Integer> pkgIds, QueryUpdateService pkgQus,
                                          List<GWTPropertyDescriptor> packageExtraFields, List<SuperPackage> superPackages,
@@ -1396,7 +1359,7 @@ public class SNDManager
                     rows.add(r);
                 }
 
-                if (rows.size() > 0)
+                if (!rows.isEmpty())
                 {
                     Map<String, Object> row = rows.get(0);
                     if ((Integer) row.get("ReferenceId") != project.getReferenceId() && Boolean.parseBoolean((String) row.get("HasEvent")))
@@ -1426,7 +1389,7 @@ public class SNDManager
                     rows.add(r);
                 }
 
-                if (rows.size() > 0)
+                if (!rows.isEmpty())
                 {
                     for (Map<String, Object> row : rows)
                     {
@@ -1954,7 +1917,7 @@ public class SNDManager
         TableInfo eventDataTable = getTableInfo(schema, SNDSchema.EVENTDATA_TABLE_NAME);
 
         Map<String, ObjectProperty> properties = null;
-        EventData eventData = null;
+        EventData eventData;
         TableSelector ts = null;
 
         // Get from EventData table
@@ -2287,12 +2250,12 @@ public class SNDManager
                     SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
                     List<String> results = selector.getArrayList(String.class);
-                    if (results.size() < 1)
+                    if (results.isEmpty())
                     {
                         event.setException(new ValidationException("Project|revision not found: " + event.getProjectIdRev()));
                     }
 
-                    return results.size() > 0 ? results.get(0) : null;
+                    return !results.isEmpty() ? results.get(0) : null;
                 }
             }
         }
@@ -2546,7 +2509,7 @@ public class SNDManager
                 // Validate first to catch validation errors.  Relying on exception thrown in insertProperties creates issues
                 // with nested transactions containing a lock.
                 List<ValidationException> validationExceptions = validateProperty(c, u, propertyDescriptor, objectProperty);
-                if (validationExceptions.size() > 0)
+                if (!validationExceptions.isEmpty())
                 {
                     attributeData.setException(event, validationExceptions.get(0)); // just handling on exception
                 }
@@ -2629,7 +2592,7 @@ public class SNDManager
             event.setException(new ValidationException("Project is not found."));
         }
 
-        if (!event.hasErrors() && event.getEventData() != null && event.getEventData().size() > 0)
+        if (!event.hasErrors() && event.getEventData() != null && !event.getEventData().isEmpty())
         {
             UserSchema schema = getSndUserSchema(c, u);
 
@@ -2697,7 +2660,7 @@ public class SNDManager
         Map<AttributeData, Boolean> incomingProps = Maps.newHashMap();
         boolean found;
 
-        if (attributes.size() > 0)
+        if (!attributes.isEmpty())
         {
             for (AttributeData attribute : attributes)
             {
@@ -2825,7 +2788,7 @@ public class SNDManager
                                 QueryUpdateService eventNotesQus = null;
 
                                 // make sure there is an event note to insert - event notes are optional - trim spaces
-                                if (event.getEventNotesRow(c).containsKey("note") && event.getEventNotesRow(c).get("note") != null && event.getEventNotesRow(c).get("note").toString().trim().length() > 0)
+                                if (event.getEventNotesRow(c).containsKey("note") && event.getEventNotesRow(c).get("note") != null && !event.getEventNotesRow(c).get("note").toString().trim().isEmpty())
                                     eventNotesQus = getNewQueryUpdateService(schema, SNDSchema.EVENTNOTES_TABLE_NAME);
 
                                 try (DbScope.Transaction tx = eventTable.getSchema().getScope().ensureTransaction())
@@ -3029,7 +2992,7 @@ public class SNDManager
                                 QueryUpdateService eventNotesQus = null;
 
                                 // make sure there is an event note to insert - event notes are optional - trim spaces
-                                if (event.getEventNotesRow(c).containsKey("note") && event.getEventNotesRow(c).get("note") != null && event.getEventNotesRow(c).get("note").toString().trim().length() > 0)
+                                if (event.getEventNotesRow(c).containsKey("note") && event.getEventNotesRow(c).get("note") != null && !event.getEventNotesRow(c).get("note").toString().trim().isEmpty())
                                     eventNotesQus = getNewQueryUpdateService(schema, SNDSchema.EVENTNOTES_TABLE_NAME);
 
                                 QueryUpdateService eventsCacheQus = getNewQueryUpdateService(schema, SNDSchema.EVENTSCACHE_TABLE_NAME);
@@ -3089,7 +3052,7 @@ public class SNDManager
     /* deletes and updates cached narratives */
     public int updateNarrativeCache(Container container, User user, Set<Integer>cacheData, @NotNull Logger log, boolean isUpdate)
     {
-        if (cacheData.size() > 0)
+        if (!cacheData.isEmpty())
         {
             log.info("Deleting affected narrative cache rows.");
             List<Map<String, Object>> rows = new ArrayList<>();
@@ -3651,7 +3614,7 @@ public class SNDManager
 
             Map<GWTPropertyDescriptor, Object> extraFields = project.getExtraFields();
 
-            if (extraFields.size() > 0)
+            if (!extraFields.isEmpty())
             {
                 for (Map.Entry<GWTPropertyDescriptor, Object> pd : extraFields.entrySet())
                 {
@@ -3693,7 +3656,7 @@ public class SNDManager
             // add projectItems
             List<Map<String, Object>> pItems = getProjectItemsList(c, u, project.getProjectId(), project.getRevisionNum(), eventDate == null ? activeProjectItemsOnly : false);
 
-            if (pItems.size() > 0)
+            if (!pItems.isEmpty())
             {
                 projectMap.put("ProjectItems", pItems);
             }
@@ -3952,7 +3915,7 @@ public class SNDManager
         List<SuperPackage> fullTreeSuperPkgs;
 
         if (!isFullReload) {
-            fullTreeSuperPkgs = new ArrayList<SuperPackage>();
+            fullTreeSuperPkgs = new ArrayList<>();
             pkgIds.forEach(pkgId -> {
                 SQLFragment packageSql = new SQLFragment("SELECT * FROM ");
                 packageSql.append(SNDSchema.NAME + "." + SNDSchema.SUPERPKGS_FUNCTION_NAME + "(?)").add(pkgId);
@@ -4315,10 +4278,6 @@ public class SNDManager
     /**
      * Query EventNotes table for set of eventIds
      *
-     * @param c
-     * @param u
-     * @param eventIds
-     * @return
      */
     private Map<Integer, String> getBulkEventNotes(Container c, User u, List<Integer> eventIds) {
 
@@ -4340,10 +4299,6 @@ public class SNDManager
     /**
      * Query the Projects table and retrieve the ID concatenated with RevisionNum for a set of objectIds
      *
-     * @param c
-     * @param u
-     * @param objectIds
-     * @return
      */
     private Map<String, String> getBulkProjectIdRevs(Container c, User u, List<String> objectIds) {
 
@@ -4366,14 +4321,6 @@ public class SNDManager
     /**
      * Create a TableSelector object to query a table
      *
-     * @param c
-     * @param u
-     * @param filterValues
-     * @param tableName
-     * @param filterColumn
-     * @param sortColumn
-     * @param isNullColumn
-     * @return
      */
     public <T> TableSelector getTableSelector(Container c, User u, List<T> filterValues, String tableName, String filterColumn, String sortColumn, String isNullColumn) {
 

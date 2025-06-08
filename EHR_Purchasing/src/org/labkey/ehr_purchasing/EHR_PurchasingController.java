@@ -36,13 +36,15 @@ public class EHR_PurchasingController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class BeginAction extends SimpleViewAction
+    public static class BeginAction extends SimpleViewAction<Object>
     {
+        @Override
         public ModelAndView getView(Object o, BindException errors)
         {
-            return new JspView("/org/labkey/ehr_purchasing/view/hello.jsp");
+            return new JspView<>("/org/labkey/ehr_purchasing/view/hello.jsp");
         }
 
+        @Override
         public void addNavTrail(NavTree root) { }
     }
 }

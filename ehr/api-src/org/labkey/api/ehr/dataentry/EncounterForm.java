@@ -45,7 +45,7 @@ public class EncounterForm extends TaskForm
 
     public static EncounterForm create(DataEntryFormContext ctx, Module owner, String category, String name, String label, List<FormSection> formSections)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         sections.add(new TaskFormSection());
         sections.add(new EncounterFormSection());
         sections.add(new AnimalDetailsFormSection());

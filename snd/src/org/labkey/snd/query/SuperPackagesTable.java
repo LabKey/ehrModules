@@ -17,7 +17,6 @@ package org.labkey.snd.query;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
@@ -57,8 +56,6 @@ public class SuperPackagesTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public SuperPackagesTable(SNDUserSchema schema, TableInfo table)
     {

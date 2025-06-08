@@ -26,10 +26,10 @@ import org.labkey.api.module.Module;
  */
 public class SingleQueryFormProvider
 {
-    private Module _owner;
-    private String _schemaName;
-    private String _queryName;
-    private SingleQueryFormSection _section;
+    private final Module _owner;
+    private final String _schemaName;
+    private final String _queryName;
+    private final SingleQueryFormSection _section;
 
     public SingleQueryFormProvider(Module owner, String schemaName, String queryName, SingleQueryFormSection section)
     {

@@ -22,7 +22,7 @@ public enum EventNarrativeOption
     HTML_NARRATIVE("htmlNarrative"),
     REDACTED_HTML_NARRATIVE("redactedHtmlNarrative");
 
-    private String _key;
+    private final String _key;
 
     EventNarrativeOption(String key)
     {

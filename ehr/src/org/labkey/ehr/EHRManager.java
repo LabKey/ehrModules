@@ -364,7 +364,7 @@ public class EHRManager
                     }
                 }
 
-                if (commitChanges && toUpdate.size() > 0)
+                if (commitChanges && !toUpdate.isEmpty())
                 {
                     Table.update(u, studyTable, toUpdate, s.getContainer().getId());
                     shouldClearCache = true;
@@ -1131,7 +1131,7 @@ public class EHRManager
             }
         }
 
-        if (oldIds.size() == 0)
+        if (oldIds.isEmpty())
         {
             //this should not happen
             throw new SQLException("Unexpected: propertyId " + pd.getPropertyURI() + " does not exists for domain: " + d.getTypeURI());
@@ -1251,27 +1251,27 @@ public class EHRManager
 
             // forEachMap is much more efficient than iterating ResultSet and calling ResultSetUtil.mapRow(rs)
             TableSelector ts = new TableSelector(ti, colNames, filter, null);
-            ts.forEachMap(new Selector.ForEachBlock<Map<String, Object>>()
+            ts.forEachMap(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(Map<String, Object> map)
                 {
-                Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                row.putAll(map);
+                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                    row.putAll(map);
 
-                if (row.containsKey("requestid") && row.get("requestid") != null)
-                {
-                    row.put("requestid", null);
-                    row.put("qcstate", null);
-                    row.put("taskid", null);
-                    row.put("qcstateLabel", "Request: Approved");
+                    if (row.containsKey("requestid") && row.get("requestid") != null)
+                    {
+                        row.put("requestid", null);
+                        row.put("qcstate", null);
+                        row.put("taskid", null);
+                        row.put("qcstateLabel", "Request: Approved");
 
-                    requestsToQueue.add(row);
-                }
-                else
-                {
-                    keysToDelete.add(row);
-                }
+                        requestsToQueue.add(row);
+                    }
+                    else
+                    {
+                        keysToDelete.add(row);
+                    }
                 }
             });
 
@@ -1402,7 +1402,7 @@ public class EHRManager
         filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
 
         TableSelector ts =  new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet rs) throws SQLException
@@ -1444,7 +1444,7 @@ public class EHRManager
             }
 
             BatchValidationException errors = new BatchValidationException();
-            if (rows.size() > 0)
+            if (!rows.isEmpty())
                 flagsTable.getUpdateService().insertRows(u, flagsTable.getUserSchema().getContainer(), rows, errors, null, getExtraContext());
 
             if (errors.hasErrors())
@@ -1498,7 +1498,7 @@ public class EHRManager
         filter.addCondition(FieldKey.fromString("Id"), animalIds, CompareType.IN);
         filter.addCondition(FieldKey.fromString("isActive"), true);
         TableSelector ts = new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "date", "enddate", "remark"), filter, null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet rs) throws SQLException
@@ -1517,7 +1517,7 @@ public class EHRManager
 
         try
         {
-            if (rows.size() > 0)
+            if (!rows.isEmpty())
             {
                 BatchValidationException batchValidationException = new BatchValidationException();
                 flagsTable.getUpdateService().updateRows(u, flagsTable.getUserSchema().getContainer(), rows, oldKeys, batchValidationException, null, getExtraContext());
@@ -1539,7 +1539,7 @@ public class EHRManager
 
     public Map<String, Object> getExtraContext()
     {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("quickValidation", true);
         map.put("generatedByServer", true);
 
@@ -1604,7 +1604,7 @@ public class EHRManager
         return ret;
     }
 
-    private String LOCK_PROP_KEY = getClass().getName() + "||animalLock";
+    private final String LOCK_PROP_KEY = getClass().getName() + "||animalLock";
 
     public void lockAnimalCreation(Container c, User u, Boolean lock, Integer startingId, Integer idCount)
     {

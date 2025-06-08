@@ -494,7 +494,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     procedureRow.put("chargeId", chargeId);
 
                     // add additional charge info
-                    ChargeInfo ci = getChargeInfo(chargeId, chargeInfoArrayList, (Date) procedureRow.get("date"));
+                    ChargeInfo ci = getChargeInfo(chargeId, chargeInfoArrayList, procedureRow.get("date"));
                     procedureRow.put("item", ci.getItem());
                     procedureRow.put("category", ci.getCategory());
 
@@ -509,7 +509,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                     // calculate total cost with additional/other rate (ex. tier rate for WNPRC)
                     Double otherRate = (Double) procedureRow.get("otherRate");
                     Double unitCostWithOtherRate;
-                    Double totalCostWithOtherRate;
+                    double totalCostWithOtherRate;
                     if (null != otherRate &&
                             null != processingService.getAdditionalUnitCostColName() &&
                             null != processingService.getAdditionalTotalCostColName())

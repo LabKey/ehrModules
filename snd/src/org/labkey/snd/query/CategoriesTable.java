@@ -53,8 +53,6 @@ public class CategoriesTable extends SimpleTable<SNDUserSchema>
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public CategoriesTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
     {

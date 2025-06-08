@@ -761,7 +761,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             {
                 sb.append(d.getName() + ", ");
             }
-            _log.info("datasets present: " + sb.toString());
+            _log.info("datasets present: " + sb);
 
             return null;
         }
@@ -1044,9 +1044,8 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         {
             for (ButtonConfig btn : existingBtns)
             {
-                if (btn instanceof UserDefinedButtonConfig)
+                if (btn instanceof UserDefinedButtonConfig ub)
                 {
-                    UserDefinedButtonConfig ub = (UserDefinedButtonConfig)btn;
                     if (MORE_ACTIONS.equals(ub.getText()))
                     {
                         moreActionsBtn = ub;
@@ -1059,7 +1058,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (moreActionsBtn == null)
         {
             //abort if there are no custom buttons
-            if (buttons.size() == 0)
+            if (buttons.isEmpty())
                 return;
 
             moreActionsBtn = new UserDefinedButtonConfig();
@@ -1590,7 +1589,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
-                if (errors.size() > 0 || ti == null)
+                if (!errors.isEmpty() || ti == null)
                 {
                     _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
@@ -1712,7 +1711,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
-                if (errors.size() > 0)
+                if (!errors.isEmpty())
                 {
                     _log.warn("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
@@ -1871,7 +1870,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
-                if (errors.size() > 0)
+                if (!errors.isEmpty())
                 {
                     _log.warn("Error creating age at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
                     for (QueryException e : errors)

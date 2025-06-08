@@ -39,14 +39,13 @@ public class DefaultDeliveryDataSource extends AbstractDataSource
     @Override
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Delivery Type", "deliveryType/value"));
-        sb.append(safeAppend(rs, "Sire", "sire"));
-        sb.append(safeAppend(rs, "Infant", "infant"));
-        sb.append(safeAppend(rs, "Remark", "remark"));
+        String sb = safeAppend(rs, "Delivery Type", "deliveryType/value") +
+                safeAppend(rs, "Sire", "sire") +
+                safeAppend(rs, "Infant", "infant") +
+                safeAppend(rs, "Remark", "remark");
 
-        return sb.toString();
+        return sb;
     }
 
     @Override

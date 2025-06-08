@@ -150,7 +150,7 @@ public class RecordDeleteRunner implements Job
                 }
 
                 _log.info("deleting " + keys.size() + " records from table: " + ti.getName() + " in container: " + ti.getUserSchema().getContainer().getPath());
-                ti.getUpdateService().deleteRows(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), keys, null, new HashMap<String, Object>());
+                ti.getUpdateService().deleteRows(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), keys, null, new HashMap<>());
             }
         }
         catch (BatchValidationException | InvalidKeyException | QueryUpdateServiceException | SQLException e)

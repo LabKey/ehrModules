@@ -123,7 +123,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             }
         }
 
-        if (sb.length() > 0)
+        if (!sb.isEmpty())
         {
             return sb.toString();
         }
@@ -164,9 +164,8 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         SimpleFilter newFilter = new SimpleFilter();
         for (SimpleFilter.FilterClause fc : filter.getClauses())
         {
-            if (fc instanceof CompareType.CompareClause)
+            if (fc instanceof CompareType.CompareClause cc)
             {
-                CompareType.CompareClause cc = (CompareType.CompareClause)fc;
                 Object val = (cc.getParamVals() != null && cc.getParamVals().length > 0) ? cc.getParamVals()[0] : null;
                 FieldKey fk = FieldKey.fromParts(FieldKey.fromString("recordid"), cc.getFieldKeys().get(0));
                 newFilter.addCondition(fk, val, cc.getCompareType());
@@ -188,7 +187,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         TableSelector ts = new TableSelector(snomed, columns.values(), newFilter, null);
         final Map<String, Map<Integer, Map<Integer, String>>> snomedMap = new HashMap<>();
 
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException

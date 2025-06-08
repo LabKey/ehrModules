@@ -401,10 +401,10 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             map.put("sampleVol", 1.0);
 
         //This is the size (ml or mg) of the source material (plasma/serum/urine/etc.)
-        Double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
+        double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
 
-        Double viralLoad = 0.0;
-        Double dilutionFactor = 0.0;
+        double viralLoad = 0.0;
+        double dilutionFactor = 0.0;
         if (copiesPerRxn != null && sampleVol > 0)
         {
             dilutionFactor = (1.0 / sampleVol) * (eluateVol / volPerRxn);
@@ -417,8 +417,8 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
     }
 
     protected class Parser extends DefaultAssayParser {
-        private String HAS_RESULT = "__hasResult__";
-        private int _assayId;
+        private final String HAS_RESULT = "__hasResult__";
+        private final int _assayId;
         final String[] lookup = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.".split("");
         //The expected number of columns in the import data
         private int _expectedColumnCount = Integer.MAX_VALUE;
@@ -444,6 +444,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
         }
 
         //Needs to be overridden within the Parser class of each ImportMethod that extends AbstractWNPRCImportMethod
+        @Override
         protected TabLoader getTabLoader(String contents) throws IOException {
             return null;
         }
@@ -531,6 +532,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             return newRows;
         }
 
+        @Override
         protected void ensureTemplateRowsHaveResults(Map<String, Map<String, Object>> templateRows, ImportContext context) throws BatchValidationException {
             for (String key : templateRows.keySet()) {
                 Map<String, Object> row = templateRows.get(key);
@@ -563,7 +565,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                 else if (hexString.length() == 2) {
                     hexString = "0" + hexString;
                 }
-                else if (hexString.length() == 0) {
+                else if (hexString.isEmpty()) {
                     hexString = "000" + hexString;
                 }
 
@@ -577,19 +579,17 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
             }
             char[] objectId = base16Duples.toString().toCharArray();
 
-            StringBuilder returnObjectId = new StringBuilder();
+            String returnObjectId = String.valueOf(objectId, 0, 8) +
+                    "-" +
+                    String.valueOf(objectId, 8, 4) +
+                    "-" +
+                    String.valueOf(objectId, 12, 4) +
+                    "-" +
+                    String.valueOf(objectId, 16, 4) +
+                    "-" +
+                    String.valueOf(objectId, 20, 12);
 
-            returnObjectId.append(objectId, 0, 8);
-            returnObjectId.append("-");
-            returnObjectId.append(objectId, 8, 4);
-            returnObjectId.append("-");
-            returnObjectId.append(objectId, 12, 4);
-            returnObjectId.append("-");
-            returnObjectId.append(objectId, 16, 4);
-            returnObjectId.append("-");
-            returnObjectId.append(objectId, 20, 12);
-
-            return returnObjectId.toString();
+            return returnObjectId;
         }
     }
 

@@ -38,12 +38,11 @@ public class DefaultArrivalDataSource extends AbstractDataSource
     @Override
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(safeAppend(rs, "Source", "source/value"));
-        sb.append(safeAppend(rs, "Rearing Type", "rearingType/value"));
-        sb.append(safeAppend(rs, "Acquisition Type", "acquisitionType/value"));
-        sb.append(safeAppend(rs, "Remark", "remark"));
-        return sb.toString();
+        String sb = safeAppend(rs, "Source", "source/value") +
+                safeAppend(rs, "Rearing Type", "rearingType/value") +
+                safeAppend(rs, "Acquisition Type", "acquisitionType/value") +
+                safeAppend(rs, "Remark", "remark");
+        return sb;
     }
 
     @Override

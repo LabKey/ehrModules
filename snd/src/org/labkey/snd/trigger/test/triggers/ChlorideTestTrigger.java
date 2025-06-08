@@ -39,7 +39,7 @@ public class ChlorideTestTrigger implements EventTrigger
         AttributeData unitsAttribute = TriggerHelper.getAttribute("units", eventData, pkg);
         String amountValue = amountAttribute.getValue();
         String unitsValue = unitsAttribute.getValue();
-        Double newAmountValue;
+        double newAmountValue;
 
         if (unitsValue != null && amountValue != null)
         {

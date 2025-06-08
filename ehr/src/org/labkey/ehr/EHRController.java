@@ -154,7 +154,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataEntryItemsAction extends ReadOnlyApiAction<GetDataEntryItemsForm>
+    public static class GetDataEntryItemsAction extends ReadOnlyApiAction<GetDataEntryItemsForm>
     {
         @Override
         public ApiResponse execute(GetDataEntryItemsForm form, BindException errors)
@@ -191,7 +191,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class CacheLivingAnimalsAction extends ConfirmAction<CacheLivingAnimalsForm>
+    public static class CacheLivingAnimalsAction extends ConfirmAction<CacheLivingAnimalsForm>
     {
         @Override
         public void validateCommand(CacheLivingAnimalsForm form, Errors errors)
@@ -220,7 +220,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class PrimeDataEntryCacheAction extends ConfirmAction<Object>
+    public static class PrimeDataEntryCacheAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -275,7 +275,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(DeletePermission.class)
-    public class DiscardFormAction extends MutatingApiAction<DiscardFormForm>
+    public static class DiscardFormAction extends MutatingApiAction<DiscardFormForm>
     {
         @Override
         public ApiResponse execute(DiscardFormForm form, BindException errors)
@@ -358,7 +358,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class UpdateQueryAction extends SimpleViewAction<EHRQueryForm>
+    public static class UpdateQueryAction extends SimpleViewAction<EHRQueryForm>
     {
         private EHRQueryForm _form;
 
@@ -590,7 +590,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDemographicsAction extends ReadOnlyApiAction<GetDemographicsForm>
+    public static class GetDemographicsAction extends ReadOnlyApiAction<GetDemographicsForm>
     {
         @Override
         public ApiResponse execute(GetDemographicsForm form, BindException errors)
@@ -624,7 +624,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetGeneticCalculationTaskSettingsAction extends MutatingApiAction<ScheduleGeneticCalculationForm>
+    public static class SetGeneticCalculationTaskSettingsAction extends MutatingApiAction<ScheduleGeneticCalculationForm>
     {
         @Override
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
@@ -673,7 +673,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetRecordDeleteSettingsAction extends MutatingApiAction<RecordDeleteForm>
+    public static class SetRecordDeleteSettingsAction extends MutatingApiAction<RecordDeleteForm>
     {
         @Override
         public ApiResponse execute(RecordDeleteForm form, BindException errors)
@@ -733,13 +733,13 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAnimalDetailsAction extends ReadOnlyApiAction<AnimalDetailsForm>
+    public static class GetAnimalDetailsAction extends ReadOnlyApiAction<AnimalDetailsForm>
     {
         @Override
         public ApiResponse execute(AnimalDetailsForm form, BindException errors)
         {
-            Map<String, Object> props = new HashMap<String, Object>();
-            Set<String> sources = new HashSet<String>();
+            Map<String, Object> props = new HashMap<>();
+            Set<String> sources = new HashSet<>();
             if (form.isIncludeAssignment())
                 sources.add("assignment");
             if (form.isIncludeFlags())
@@ -814,7 +814,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetGeneticCalculationTaskSettingsAction extends ReadOnlyApiAction<ScheduleGeneticCalculationForm>
+    public static class GetGeneticCalculationTaskSettingsAction extends ReadOnlyApiAction<ScheduleGeneticCalculationForm>
     {
         @Override
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
@@ -836,7 +836,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetRecordDeleteSettingsAction extends ReadOnlyApiAction<Object>
+    public static class GetRecordDeleteSettingsAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors)
@@ -865,7 +865,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetLabResultSummary extends ReadOnlyApiAction<LabResultSummaryForm>
+    public static class GetLabResultSummary extends ReadOnlyApiAction<LabResultSummaryForm>
     {
         @Override
         public ApiResponse execute(LabResultSummaryForm form, BindException errors)
@@ -981,7 +981,7 @@ public class EHRController extends SpringActionController
 
     @RequiresPermission(ReadPermission.class)
     //TODO: should enable @CSRF if we have SSRS updated to pass token.
-    public class GetClinicalHistoryAction extends ReadOnlyApiAction<HistoryForm>
+    public static class GetClinicalHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
         @Override
         public ApiResponse execute(HistoryForm form, BindException errors)
@@ -1025,7 +1025,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetCaseHistoryAction extends ReadOnlyApiAction<HistoryForm>
+    public static class GetCaseHistoryAction extends ReadOnlyApiAction<HistoryForm>
     {
         @Override
         public ApiResponse execute(HistoryForm form, BindException errors)
@@ -1089,7 +1089,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
+    public static class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
         @Override
         public void validateCommand(EnsureDatasetPropertiesForm form, Errors errors)
@@ -1115,7 +1115,7 @@ public class EHRController extends SpringActionController
                 msg.append("\t").append(message).append("<br>");
             }
 
-            if (messages.size() > 0)
+            if (!messages.isEmpty())
                 msg.append("<br>Do you want to make these changes?");
             else
                 msg.append("There are no changes to be made");
@@ -1132,7 +1132,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
+    public static class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -1166,7 +1166,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class EnsureQcStatesAction extends ConfirmAction<Object>
+    public static class EnsureQcStatesAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -1192,7 +1192,7 @@ public class EHRController extends SpringActionController
                 msg.append("\t").append(message).append("<br>");
             }
 
-            if (messages.size() > 0)
+            if (!messages.isEmpty())
                 msg.append("<br>Do you want to make these changes?");
             else
                 msg.append("There are no changes to be made");
@@ -1209,7 +1209,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class VerifyDatasetResourcesAction extends SimpleViewAction<Object>
+    public static class VerifyDatasetResourcesAction extends SimpleViewAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
         {
@@ -1233,7 +1233,7 @@ public class EHRController extends SpringActionController
                 msg.append("\t").append(message).append("<br>");
             }
 
-            if (messages.size() == 0)
+            if (messages.isEmpty())
                 msg.append("There are no missing files");
 
             return new HtmlView(msg.toString());
@@ -1247,7 +1247,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class DoGeneticCalculationsAction extends ConfirmAction<Object>
+    public static class DoGeneticCalculationsAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -1340,7 +1340,7 @@ public class EHRController extends SpringActionController
         }
     }
 
-    private abstract class BaseLookupsAction extends MutatingApiAction<PopulateLookupsForm>
+    private abstract static class BaseLookupsAction extends MutatingApiAction<PopulateLookupsForm>
     {
         protected final String _manifestDirectory = "data/";
         protected final String _manifestDefault = "lookupsManifest";
@@ -1568,7 +1568,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class PopulateReportsAction extends MutatingApiAction<PopulateLookupsForm>
+    public static class PopulateReportsAction extends MutatingApiAction<PopulateLookupsForm>
     {
         private final String _reportsPath = "reports/reports.tsv";
         private final String _additionalReportsPath = "reports/additionalReports.tsv";
@@ -1718,7 +1718,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetReportLinksAction extends ReadOnlyApiAction<ReportLinkForm>
+    public static class GetReportLinksAction extends ReadOnlyApiAction<ReportLinkForm>
     {
         @Override
         public ApiResponse execute(ReportLinkForm form, BindException errors)
@@ -1820,12 +1820,12 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataEntryFormDetailsAction extends ReadOnlyApiAction<EnterDataForm>
+    public static class GetDataEntryFormDetailsAction extends ReadOnlyApiAction<EnterDataForm>
     {
         @Override
         public ApiResponse execute(EnterDataForm form, BindException errors)
         {
-            Map<String, Object> props = new HashMap<String, Object>();
+            Map<String, Object> props = new HashMap<>();
 
             if (form.getFormType() == null && form.getTaskId() == null && form.getRequestId() == null)
             {
@@ -1874,7 +1874,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
+    public static class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
         private DataEntryForm _def;
@@ -1911,7 +1911,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class DataEntryFormForQueryAction extends SimpleViewAction<EnterDataForm>
+    public static class DataEntryFormForQueryAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
 
@@ -1951,7 +1951,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class DataEntryFormJsonForQueryAction extends ReadOnlyApiAction<EnterDataForm>
+    public static class DataEntryFormJsonForQueryAction extends ReadOnlyApiAction<EnterDataForm>
     {
         @Override
         public ApiResponse execute(EnterDataForm form, BindException errors)
@@ -2073,7 +2073,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class ManageFlagsAction extends MutatingApiAction<ManageFlagsForm>
+    public static class ManageFlagsAction extends MutatingApiAction<ManageFlagsForm>
     {
         @Override
         public ApiResponse execute(ManageFlagsForm form, BindException errors)
@@ -2185,7 +2185,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class BloodPlotDataAction extends ReadOnlyApiAction<IdForm>
+    public static class BloodPlotDataAction extends ReadOnlyApiAction<IdForm>
     {
 
         @Override
@@ -2235,7 +2235,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class ValidateDatasetColsAction extends ConfirmAction<Object>
+    public static class ValidateDatasetColsAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -2297,7 +2297,7 @@ public class EHRController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAnimalLockAction extends ReadOnlyApiAction<Object>
+    public static class GetAnimalLockAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors)
@@ -2307,7 +2307,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(EHRDataEntryPermission.class)
-    public class SetAnimalLockAction extends MutatingApiAction<LockAnimalForm>
+    public static class SetAnimalLockAction extends MutatingApiAction<LockAnimalForm>
     {
         @Override
         public ApiResponse execute(LockAnimalForm form, BindException errors)

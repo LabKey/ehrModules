@@ -43,8 +43,8 @@ import static org.junit.Assert.assertEquals;
 
 public class EHRBillingHelper
 {
-    private BaseWebDriverTest _test;
-    private String _projectName;
+    private final BaseWebDriverTest _test;
+    private final String _projectName;
     private String _folderName;
     private String _modulePath;
     private String _containerPath;
@@ -168,7 +168,7 @@ public class EHRBillingHelper
             {
                 for (Map.Entry<String, List<String>> entry : item.getColumnTextCheckMap().entrySet())
                 {
-                    List<String> input = new ArrayList<String>();
+                    List<String> input = new ArrayList<>();
                     for (Map<String, Object> row : resp.getRows())
                     {
                         if (row.get(entry.getKey()) != null)
@@ -225,7 +225,6 @@ public class EHRBillingHelper
             {
                 results.setFilter("chargeId/chargeCategoryid", "Equals", item.getChargeCategoryID());
                 filterDescription += separator + "ChargeCategoryId: " + item.getChargeCategoryID();
-                separator = ", ";
             }
 
             assertEquals("Wrong row count for " + filterDescription, item.getRowCount(), results.getDataRowCount());
@@ -266,13 +265,13 @@ public class EHRBillingHelper
     public static class InvoicedItem
     {
         private String _animalId;
-        private String _category;
-        private int _rowCount;
-        private String _totalCost;
-        private String _totalQuantity;
+        private final String _category;
+        private final int _rowCount;
+        private final String _totalCost;
+        private final String _totalQuantity;
         private String _chargeCategoryId;
         private String _chargeID;
-        private Map<String, List<String>> _columnTextChecks = new HashMap<>();
+        private final Map<String, List<String>> _columnTextChecks = new HashMap<>();
 
         public InvoicedItem(String category, int rowCount, String totalQuantity, String totalCost)
         {

@@ -15,13 +15,8 @@
  */
 package org.labkey.ehr.security;
 
-import org.labkey.api.data.Container;
-import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.security.SecurableResource;
-import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.roles.AbstractModuleScopedRole;
-import org.labkey.api.security.roles.AbstractRole;
 import org.labkey.ehr.EHRModule;
 
 /**

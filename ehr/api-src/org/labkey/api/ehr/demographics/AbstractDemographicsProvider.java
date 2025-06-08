@@ -110,7 +110,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 
         if (debugEnabled)
             startRowProcessing = LocalDateTime.now();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException
@@ -118,7 +118,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
                 Results rs = new ResultsImpl(object, cols);
                 String id = ti.getColumn("Id").getStringValue(rs);
 
-                Map<String, Object> map = ret.computeIfAbsent(id, (x)->new TreeMap<>());
+                Map<String, Object> map = ret.computeIfAbsent(id, (x) -> new TreeMap<>());
                 processRow(rs, cols, map);
             }
         });
@@ -209,7 +209,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
 
     protected Map<FieldKey, ColumnInfo> getColumns(TableInfo ti)
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("Id"));
         keys.addAll(getFieldKeys());
 

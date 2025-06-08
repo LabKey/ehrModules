@@ -63,9 +63,9 @@ public class DefaultLabworkType implements LabworkType
     protected String _performedByField = "performedby";
     protected String _remarkField = "remark";
 
-    private String _name;
-    private String _schemaName;
-    private String _queryName;
+    private final String _name;
+    private final String _schemaName;
+    private final String _queryName;
 
     protected String _testIdField = "testid";
     protected String _resultField = "result";
@@ -190,7 +190,7 @@ public class DefaultLabworkType implements LabworkType
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, List<String>> rows = new CaseInsensitiveHashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException
@@ -349,10 +349,9 @@ public class DefaultLabworkType implements LabworkType
 
     protected String getResultTable(List<String> results)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<table>");
-        sb.append("<tr><td>").append(StringUtils.join(results, "</td></tr><tr><td>")).append("</td></tr>");
-        sb.append("</table>");
-        return sb.toString();
+        String sb = "<table>" +
+                "<tr><td>" + StringUtils.join(results, "</td></tr><tr><td>") + "</td></tr>" +
+                "</table>";
+        return sb;
     }
 }

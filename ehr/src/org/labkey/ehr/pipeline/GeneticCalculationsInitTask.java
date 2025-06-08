@@ -142,13 +142,13 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
                 long count = ts.getRowCount();
                 if (count > 0)
                 {
-                    ts.forEach(new Selector.ForEachBlock<ResultSet>()
+                    ts.forEach(new Selector.ForEachBlock<>()
                     {
                         @Override
                         public void exec(ResultSet rs) throws SQLException
                         {
                             String[] row = new String[]{rs.getString("Id"), rs.getString("Dam"), rs.getString("Sire"), rs.getString("Gender"), rs.getString("Species")};
-                            for (int i=0;i<row.length;i++)
+                            for (int i = 0; i < row.length; i++)
                             {
                                 //R wont accept empty strings in the input, so we need to replace them with NA
                                 if (StringUtils.isEmpty(row[i]))

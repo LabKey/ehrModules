@@ -21,10 +21,10 @@ import org.labkey.api.query.FieldKey;
 import java.sql.SQLException;
 
 public class FieldDescriptor {
-    private String _fieldName;
-    private boolean _flagIfNonNull;
-    private String _label;
-    private boolean _shouldHighlight;
+    private final String _fieldName;
+    private final boolean _flagIfNonNull;
+    private final String _label;
+    private final boolean _shouldHighlight;
 
     public FieldDescriptor(String fieldName, boolean flagIfNonNull, String label, boolean shouldHighlight)
     {

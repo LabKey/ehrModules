@@ -91,7 +91,6 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
 
     /**
      * find animals not weighed in the past 60 days
-     * @param msg
      */
     private void animalsNotWeightedInPast60Days(Container c, User u, StringBuilder msg)
     {
@@ -187,7 +186,8 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following animals do not have a weight:</b><br>\n");
-            ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+            ts.forEach(new TableSelector.ForEachBlock<>()
+            {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
                 {

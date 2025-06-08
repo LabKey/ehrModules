@@ -116,9 +116,8 @@ public class DefaultDrugsDataSource extends AbstractDataSource
         Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<>();
         for (HistoryRow r : rows)
         {
-            if (r instanceof HistoryRowImpl)
+            if (r instanceof HistoryRowImpl row)
             {
-                HistoryRowImpl row = (HistoryRowImpl)r;
                 String key = row.getSubjectId() + "<>" + row.getSortDateString() + "<>" + row.getTimeString();
 
                 List<HistoryRowImpl> existing = groupedRowMap.get(key);

@@ -16,11 +16,9 @@
 package org.labkey.snd.query;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryUpdateService;
-import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.snd.SNDUserSchema;
@@ -36,8 +34,6 @@ public class EventsCacheTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public EventsCacheTable(SNDUserSchema schema, TableInfo table)
     {

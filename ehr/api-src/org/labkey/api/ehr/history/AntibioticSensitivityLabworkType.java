@@ -85,7 +85,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, Map<String, List<String>>> rows = new CaseInsensitiveHashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException

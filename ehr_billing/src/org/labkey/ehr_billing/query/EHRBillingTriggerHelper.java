@@ -41,9 +41,9 @@ import java.util.Map;
  */
 public class EHRBillingTriggerHelper
 {
-    private Container _container;
-    private User _user;
-    private Map<Integer, Map<String, Object>> _cachedCharges = new HashMap<>();
+    private final Container _container;
+    private final User _user;
+    private final Map<Integer, Map<String, Object>> _cachedCharges = new HashMap<>();
 
     public EHRBillingTriggerHelper(int userId, String containerId)
     {

@@ -221,7 +221,7 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
             catch (ValidationException e)
             {
                 logger.error(e.getMessage() + " PkgId " + pkgId, e);
-                throw new UnexpectedException(e, e.getMessage() + "For PkgId: " + pkgId + ".\n");
+                throw UnexpectedException.wrap(e, e.getMessage() + "For PkgId: " + pkgId + ".\n");
             }
 
             return inserted;
@@ -341,7 +341,7 @@ public class AttributeDataTable extends FilteredTable<SNDUserSchema>
                 }
             }
 
-            if (prevObjProps.size() > 0 && pkgId != null)
+            if (!prevObjProps.isEmpty() && pkgId != null)
             {
                 inserted = insertObject(container, user, prevUri, prevObjProps, pkgId, inserted, logger);
             }

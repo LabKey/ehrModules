@@ -21,7 +21,7 @@ import org.labkey.snd.SNDModule;
 
 public class SNDQCStatePermission extends AbstractPermission
 {
-    private QCStateEnum _qcState;
+    private final QCStateEnum _qcState;
 
     SNDQCStatePermission(String name, String description, QCStateEnum qcState)
     {
