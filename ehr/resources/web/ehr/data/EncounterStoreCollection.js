@@ -64,7 +64,7 @@ Ext4.define('EHR.data.EncounterStoreCollection', {
                     model.set('Id', parentRec.get('Id'));
                 }
 
-                if (model.fields.get('date') && !model.get('date') && parentRec.get('date')){
+                if (model.fields.get('date')?.inheritDefaultDateFromParent && !model.get('date') && parentRec.get('date')){
                     model.set('date', parentRec.get('date'));
                 }
 
