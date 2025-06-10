@@ -12,7 +12,8 @@ EHR.model.DataModelManager.registerMetadata('EncounterChild', {
             }
         },
         date: {
-            inheritDateFromParent: true
+            inheritDateFromParent: true,
+            inheritDefaultDateFromParent: true
         },
         project: {
             inheritFromParent: true
