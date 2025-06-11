@@ -18,12 +18,8 @@ package org.labkey.snd.query;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
-import org.labkey.api.data.JdbcType;
-import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.SimpleUserSchema.SimpleTable;
-import org.labkey.snd.SNDSchema;
 import org.labkey.snd.SNDUserSchema;
 
 import java.util.Map;
@@ -38,7 +34,7 @@ public class LookupSetsVirtualTable extends SimpleTable<SNDUserSchema>
     private static final String LABEL_COL = "Label";
     private static final String DESCRIPTION_COL = "Description";
     private static final String LOOKUPSETID_COL = "LookupSetId";
-    private Integer _lookupSetId;
+    private final Integer _lookupSetId;
 
 
     public LookupSetsVirtualTable(SNDUserSchema schema, TableInfo table, String setName, Map<String, Object> map, ContainerFilter cf)

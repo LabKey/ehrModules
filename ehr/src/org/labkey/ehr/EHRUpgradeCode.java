@@ -44,7 +44,7 @@ public class EHRUpgradeCode implements UpgradeCode
              PreparedStatement stmt = transaction.getConnection().prepareStatement(
                 "INSERT INTO ehr_lookups.calendar\n" +
                         "\t(TargetDateTime, TargetDate, Year, Month, Day, DayAfter)\n" +
-                        "\tVALUES (?, ?, ?, ?, ?, ?)");)
+                        "\tVALUES (?, ?, ?, ?, ?, ?)"))
         {
             while (cal.get(Calendar.YEAR) < 2030)
             {

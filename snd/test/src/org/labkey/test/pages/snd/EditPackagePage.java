@@ -19,7 +19,6 @@ import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.components.html.Checkbox;
-import org.labkey.test.components.html.Input;
 import org.labkey.test.components.snd.AttributesGrid;
 import org.labkey.test.components.snd.FilterSelect;
 import org.labkey.test.components.snd.SuperPackageRow;
@@ -30,8 +29,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 public class EditPackagePage extends LabKeyPage<EditPackagePage.ElementCache>
 {

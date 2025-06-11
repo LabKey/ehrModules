@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class AgeYearMonthsDisplayColumn extends AbstractAgeDisplayColumn
 {

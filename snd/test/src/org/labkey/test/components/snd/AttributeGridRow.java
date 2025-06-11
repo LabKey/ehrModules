@@ -69,7 +69,7 @@ public class AttributeGridRow extends WebDriverComponent<AttributeGridRow.Elemen
     public AttributeGridRow selectLookupKey(String key)
     {
         elementCache().lookupKeySelect.selectByVisibleText(key);
-        if (!key.equals(""))
+        if (!key.isEmpty())
         {
             getWrapper().waitForElement(elementCache().DEFAULT_VALUE_SELECT);
         }
@@ -205,7 +205,7 @@ public class AttributeGridRow extends WebDriverComponent<AttributeGridRow.Elemen
     public static class AttributeGridRowFinder extends WebDriverComponent.WebDriverComponentFinder<AttributeGridRow, AttributeGridRowFinder>
     {
         private Locator _locator;
-        private AttributesGrid _grid;
+        private final AttributesGrid _grid;
 
         private AttributeGridRowFinder(AttributesGrid grid)
         {

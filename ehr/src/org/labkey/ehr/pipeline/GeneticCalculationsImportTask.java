@@ -255,7 +255,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                             "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?)"))
             {
                 log.info("Inserting rows");
-                String line = null;
+                String line;
                 int lineNum = 0;
                 while ((line = reader.readLine()) != null)
                 {

@@ -38,7 +38,7 @@ public class CalciumTestTrigger implements EventTrigger
         AttributeData unitsAttribute = TriggerHelper.getAttribute("units", eventData, pkg);
         String amountValue = amountAttribute.getValue();
         String unitsValue = unitsAttribute.getValue();
-        Double newAmountValue = Double.parseDouble(amountValue);
+        double newAmountValue = Double.parseDouble(amountValue);
 
         if (unitsValue != null && amountValue != null)
         {

@@ -17,9 +17,7 @@ package org.labkey.api.snd;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.SQLFragment;
-import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.query.ExtendedTableDomainKind;

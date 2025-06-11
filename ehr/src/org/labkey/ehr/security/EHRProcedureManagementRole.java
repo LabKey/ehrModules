@@ -15,7 +15,6 @@
  */
 package org.labkey.ehr.security;
 
-import org.labkey.api.ehr.security.EHRBehaviorEntryPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.ehr.security.EHRProcedureManagementPermission;
 import org.labkey.api.security.permissions.DeletePermission;

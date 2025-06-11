@@ -262,7 +262,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
         }
     }
 
-    public abstract class Tab
+    public abstract static class Tab
     {
         final WebElement _el;
         private String _label;

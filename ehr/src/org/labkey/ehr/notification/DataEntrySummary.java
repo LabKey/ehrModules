@@ -108,7 +108,7 @@ public class DataEntrySummary implements NotificationSection
             if (tsRequest.exists())
             {
                 hasRequests = true;
-                tsRequest.forEach(new Selector.ForEachBlock<ResultSet>()
+                tsRequest.forEach(new Selector.ForEachBlock<>()
                 {
                     @Override
                     public void exec(ResultSet rs) throws SQLException
@@ -156,7 +156,7 @@ public class DataEntrySummary implements NotificationSection
             if (tsTasks.exists())
             {
                 hasTasks = true;
-                tsTasks.forEach(new Selector.ForEachBlock<ResultSet>()
+                tsTasks.forEach(new Selector.ForEachBlock<>()
                 {
                     @Override
                     public void exec(ResultSet rs) throws SQLException

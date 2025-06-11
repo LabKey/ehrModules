@@ -25,7 +25,6 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.ehr.EHRService;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -48,7 +47,7 @@ import java.util.Map;
 
 public class EHR_BillingManager
 {
-    private static EHR_BillingManager _instance = new EHR_BillingManager();
+    private static final EHR_BillingManager _instance = new EHR_BillingManager();
     public static final String EHR_BillingContainerPropName = "BillingContainer";
 
     private EHR_BillingManager()
@@ -101,7 +100,7 @@ public class EHR_BillingManager
                 {
                     Map<String, Object> map = new CaseInsensitiveHashMap<>();
                     map.put("invoiceId", null);
-                    map = Table.update(user, miscCharges, map, objectid);
+                    Table.update(user, miscCharges, map, objectid);
                 }
 
                 TableSelector tsInvoiceRuns = new TableSelector(invoiceRuns, objectIdFilter, null);

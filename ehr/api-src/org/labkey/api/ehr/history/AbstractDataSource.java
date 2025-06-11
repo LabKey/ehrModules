@@ -59,11 +59,11 @@ import java.util.Set;
  */
 abstract public class AbstractDataSource extends EHROwnable implements HistoryDataSource
 {
-    private String _schema;
-    private String _query;
+    private final String _schema;
+    private final String _query;
     private String _categoryText;
     private String _primaryGroup;
-    private String _name;
+    private final String _name;
     private boolean _showTime = false;
     protected String _subjectIdField = "Id";
     protected static final Logger _log = LogManager.getLogger(HistoryDataSource.class);

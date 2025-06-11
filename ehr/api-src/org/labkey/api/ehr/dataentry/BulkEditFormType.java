@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class BulkEditFormType extends AbstractDataEntryForm
 {
-    private String _keyField;
+    private final String _keyField;
 
     protected BulkEditFormType(DataEntryFormContext ctx, Module owner, String name, String label, String category, String keyField, List<FormSection> sections)
     {

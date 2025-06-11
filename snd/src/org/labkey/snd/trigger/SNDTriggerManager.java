@@ -46,7 +46,7 @@ public class SNDTriggerManager
         return _instance;
     }
 
-    private Map<Module, EventTriggerFactory> _eventTriggerFactories = new HashMap<>();
+    private final Map<Module, EventTriggerFactory> _eventTriggerFactories = new HashMap<>();
 
     /**
      * Called from SNDService to allow event trigger factories to be registered.  These will be queried for category
@@ -169,7 +169,7 @@ public class SNDTriggerManager
         List<EventTriggerFactory> factories = getTriggerFactories(c);
 
         // Nothing to do
-        if (factories.size() < 1)
+        if (factories.isEmpty())
             return;
 
         List<TriggerAction> triggerActions = getTriggerActions(event, topLevelEventDataPkgs, factories);
@@ -189,7 +189,7 @@ public class SNDTriggerManager
         List<EventTriggerFactory> factories = getTriggerFactories(c);
 
         // Nothing to do
-        if (factories.size() < 1)
+        if (factories.isEmpty())
             return;
 
         List<TriggerAction> triggers = getTriggerActions(event, topLevelEventDataSuperPkgs, factories);

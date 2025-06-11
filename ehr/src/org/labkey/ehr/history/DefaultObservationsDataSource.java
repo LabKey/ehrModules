@@ -89,7 +89,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
 
                 //onprc issue 2324: because items within a task can have different times, the assumption of grouping on taskid can break.  therefore group based on full date/time
                 Date roundedDate = DateUtils.truncate((Date)rowMap.get("date"), Calendar.MINUTE);
-                String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate.toString();
+                String key = results.getString(FieldKey.fromString("taskid")) + "||" + rowMap.get("Id") + "||" + rowMap.get("categoryText") + "||" + rowMap.get("categoryGroup") + "||" + roundedDate;
                 List<Map<String, Object>> obsRows = idMap.get(key);
                 if (obsRows == null)
                     obsRows = new ArrayList<>();
@@ -192,7 +192,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
 
         if (rs.getString(FieldKey.fromString("remark")) != null)
         {
-            if (sb.length() > 0)
+            if (!sb.isEmpty())
                 sb.append(".  ");
             sb.append(rs.getString(FieldKey.fromString("remark")));
         }
@@ -205,7 +205,7 @@ public class DefaultObservationsDataSource extends AbstractDataSource
             sb.append("</span>");
         }
 
-        if (sb.length() > 0)
+        if (!sb.isEmpty())
             sb.append("\n");
 
         return sb.toString();

@@ -39,7 +39,7 @@ public abstract class BaseColonyOverviewPage extends LabKeyPage
         return Locator.tag("div").withClasses("tab-pane", "active").notHidden().findElement(getDriver());
     }
 
-    protected abstract class OverviewTab extends Component
+    protected abstract static class OverviewTab extends Component
     {
         private final WebElement el;
 

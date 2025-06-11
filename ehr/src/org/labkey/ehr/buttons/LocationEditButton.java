@@ -15,14 +15,9 @@
  */
 package org.labkey.ehr.buttons;
 
-import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.security.EHRLocationEditPermission;
-import org.labkey.api.ehr.security.EHRProjectEditPermission;
 import org.labkey.api.ldk.buttons.ShowEditUIButton;
 import org.labkey.api.module.Module;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
 

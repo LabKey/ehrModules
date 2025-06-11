@@ -30,7 +30,7 @@ public class TriggerHelper
 {
     public static final String orderPropName = "triggerOrder";
 
-    private static Map<String, Integer> ELECTROLYTES_TRIGGER_ORDER = new HashMap<>();
+    private static final Map<String, Integer> ELECTROLYTES_TRIGGER_ORDER = new HashMap<>();
 
     static {
         ELECTROLYTES_TRIGGER_ORDER.put("Chloride Test Trigger", 0);

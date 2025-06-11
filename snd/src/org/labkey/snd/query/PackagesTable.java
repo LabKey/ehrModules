@@ -69,8 +69,6 @@ public class PackagesTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public PackagesTable(SNDUserSchema schema, TableInfo table)
     {

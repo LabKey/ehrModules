@@ -55,7 +55,7 @@ import static org.labkey.test.util.TestLogger.log;
 
 public class EHRTestHelper
 {
-    private BaseWebDriverTest _test;
+    private final BaseWebDriverTest _test;
 
     public EHRTestHelper(BaseWebDriverTest test)
     {
@@ -104,7 +104,7 @@ public class EHRTestHelper
         WebDriverWait wait = new WebDriverWait(test.getDriver(), Duration.ofSeconds(secTimeout));
         try
         {
-            return wait.until(new ExpectedCondition<Boolean>()
+            return wait.until(new ExpectedCondition<>()
             {
                 @Override
                 public Boolean apply(WebDriver d)

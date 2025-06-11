@@ -26,7 +26,7 @@ import org.labkey.api.exp.property.SystemProperty;
  */
 public class EHRProperties
 {
-    static private String URI = "urn:ehr.labkey.org/#";
+    static private final String URI = "urn:ehr.labkey.org/#";
 
     public static SystemProperty REMARK = new SystemProperty(URI + "Remark", PropertyType.MULTI_LINE)
     {

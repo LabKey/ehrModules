@@ -295,10 +295,10 @@ public class BillingNotification extends AbstractNotification
         TableInfo ti = qd.getTable(us, errors, true);
 
         Map<String, Object> params = new HashMap<>();
-        Long numDays = ((DateUtils.truncate(new Date(), Calendar.DATE).getTime() - start.getTimeInMillis()) / DateUtils.MILLIS_PER_DAY) + 1;
+        long numDays = ((DateUtils.truncate(new Date(), Calendar.DATE).getTime() - start.getTimeInMillis()) / DateUtils.MILLIS_PER_DAY) + 1;
         params.put("StartDate", start.getTime());
         params.put("EndDate", endDate.getTime());
-        params.put("NumDays", numDays.intValue());
+        params.put("NumDays", (int) numDays);
 
         Set<FieldKey> fieldKeys = new HashSet<>();
         for (ColumnInfo col : ti.getColumns())
@@ -319,7 +319,7 @@ public class BillingNotification extends AbstractNotification
         final double[] totalQuantity = {0.0}; // 1 element final array since 'final' is required in the below exec method
         final double[] totalCost = {0.0};// 1 element final array since 'final' is required in the below exec method
 
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException
@@ -327,7 +327,7 @@ public class BillingNotification extends AbstractNotification
                 Results rs = new ResultsImpl(object, cols);
 
                 Double unitCost = rs.getDouble(FieldKey.fromString("unitCost"));
-                Double quantity = rs.getDouble(FieldKey.fromString("quantity"));
+                double quantity = rs.getDouble(FieldKey.fromString("quantity"));
                 totalQuantity[0] += quantity;
                 totalCost[0] += (unitCost * quantity);
 

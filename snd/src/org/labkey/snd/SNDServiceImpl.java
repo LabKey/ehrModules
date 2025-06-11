@@ -354,7 +354,7 @@ public class SNDServiceImpl implements SNDService
                 if ((event.getEventData() == null || event.getEventData().isEmpty()) &&
                         (!event.getEventNotesRow(c).containsKey("note") ||
                                 event.getEventNotesRow(c).get("note") == null ||
-                                event.getEventNotesRow(c).get("note").toString().trim().length() == 0))
+                                event.getEventNotesRow(c).get("note").toString().trim().isEmpty()))
                 {
                     event = SNDManager.get().deleteEvent(c, u, event);
                 }

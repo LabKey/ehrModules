@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.dataiterator.DataIteratorBuilder;
@@ -59,8 +58,6 @@ public class EventsTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     private final SNDManager _sndManager = SNDManager.get();
 
@@ -145,7 +142,7 @@ public class EventsTable extends AbstractSNDTableInfo
 
             Set<Integer> eventIds = handleNarrativeCache(rows, configParameters, errors);
 
-            int result = 0;
+            int result;
             int maxMergeRows = SNDManager.MAX_MERGE_ROWS * 10;
 
             // Large merge triggers importRows path

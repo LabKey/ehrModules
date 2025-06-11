@@ -42,7 +42,7 @@ public class EHRActionResolver extends SpringActionController.DefaultActionResol
         return new EHRHTMLFileActionResolver();
     }
 
-    private class EHRHTMLFileActionResolver extends SpringActionController.HTMLFileActionResolver
+    private static class EHRHTMLFileActionResolver extends SpringActionController.HTMLFileActionResolver
     {
         public EHRHTMLFileActionResolver()
         {

@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class BillingNotificationServiceImpl extends BillingNotificationService
 {
-    private Map<String, BillingNotificationProvider> _billingNotificationProviders = new HashMap<>();
+    private final Map<String, BillingNotificationProvider> _billingNotificationProviders = new HashMap<>();
 
 
     @Override

@@ -42,7 +42,7 @@ public class EHR_SMTest extends BaseWebDriverTest
     @BeforeClass
     public static void setupProject()
     {
-        EHR_SMTest init = (EHR_SMTest)getCurrentTest();
+        EHR_SMTest init = getCurrentTest();
 
         init.doSetup();
     }

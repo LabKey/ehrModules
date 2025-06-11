@@ -39,14 +39,13 @@ public class DefaultPregnanciesDataSource extends AbstractDataSource
     @Override
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Sire", "sire"));
-        sb.append(safeAppend(rs, "Confirmation Type", "confirmationType/value"));
-        sb.append(safeAppend(rs, "Estimated Delivery Date", "estDeliveryDate"));
-        sb.append(safeAppend(rs, "Remark", "remark"));
+        String sb = safeAppend(rs, "Sire", "sire") +
+                safeAppend(rs, "Confirmation Type", "confirmationType/value") +
+                safeAppend(rs, "Estimated Delivery Date", "estDeliveryDate") +
+                safeAppend(rs, "Remark", "remark");
 
-        return sb.toString();
+        return sb;
     }
 
     @Override

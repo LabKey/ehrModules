@@ -79,7 +79,7 @@ public class EHR_BillingController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class RunBillingPipelineAction extends MutatingApiAction<BillingPipelineForm>
+    public static class RunBillingPipelineAction extends MutatingApiAction<BillingPipelineForm>
     {
         @Override
         public ApiResponse execute(BillingPipelineForm form, BindException errors)
@@ -129,13 +129,13 @@ public class EHR_BillingController extends SpringActionController
     }
 
     @RequiresPermission(EHR_BillingAdminPermission.class)
-    public class DeleteBillingPeriodAction extends ConfirmAction<QueryForm>
+    public static class DeleteBillingPeriodAction extends ConfirmAction<QueryForm>
     {
         @Override
         public void validateCommand(QueryForm form, Errors errors)
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
-            if (ids.size() == 0)
+            if (ids.isEmpty())
             {
                 errors.reject(ERROR_MSG, "Must select at least one item to delete");
             }
@@ -175,7 +175,7 @@ public class EHR_BillingController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class UpdateQueryAction extends SimpleViewAction<QueryForm>
+    public static class UpdateQueryAction extends SimpleViewAction<QueryForm>
     {
         private QueryForm _form;
 

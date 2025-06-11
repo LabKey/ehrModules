@@ -230,7 +230,7 @@ public class AnimalRecordImpl implements AnimalRecord
     public String getCurrentRoom()
     {
         List<Map<String, Object>> housing = getActiveHousing();
-        if (housing != null && housing.size() > 0)
+        if (housing != null && !housing.isEmpty())
             return (String)housing.get(0).get("room");
 
         return null;
@@ -240,7 +240,7 @@ public class AnimalRecordImpl implements AnimalRecord
     public String getCurrentCage()
     {
         List<Map<String, Object>> housing = getActiveHousing();
-        if (housing != null && housing.size() > 0)
+        if (housing != null && !housing.isEmpty())
             return (String)housing.get(0).get("cage");
 
         return null;
@@ -300,7 +300,7 @@ public class AnimalRecordImpl implements AnimalRecord
         if (_props.containsKey("source"))
         {
             List<Map<String, Object>> rows = (List)_props.get("source");
-            if (rows.size() > 0)
+            if (!rows.isEmpty())
                 return (Date)rows.get(0).get("date");
         }
 

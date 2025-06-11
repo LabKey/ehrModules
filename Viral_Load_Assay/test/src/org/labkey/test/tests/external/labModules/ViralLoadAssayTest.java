@@ -1020,7 +1020,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
                 }
                 expectedVals = expected.get(sb.toString());
             }
-            assertNotNull("Unable to find expected values: " + sb.toString(), expectedVals);
+            assertNotNull("Unable to find expected values: " + sb, expectedVals);
 
             assertEquals("Incorrect subjectId on row: " + i, expectedVals[0], subjectId);
             assertEquals("Incorrect category on row: " + i, expectedVals[1], category);

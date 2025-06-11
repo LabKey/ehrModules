@@ -162,7 +162,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         return meta;
     }
 
-    private class Parser extends DefaultAssayParser
+    private static class Parser extends DefaultAssayParser
     {
         private final Double CYCLE_LIMIT = 45.0;
         private static final String TASK_FIELD = "Task";
@@ -178,7 +178,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         @Override
         public Pair<ExpExperiment, ExpRun> saveBatch(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException
         {
-            Integer templateId = json.getInt("TemplateId");
+            int templateId = json.getInt("TemplateId");
 
             Pair<ExpExperiment, ExpRun> result = super.saveBatch(json, file, fileName, ctx);
 
@@ -217,7 +217,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
                     if (!inResults)
                     {
-                        if (row.size() == 0)
+                        if (row.isEmpty())
                             continue;
 
                         if (row.get(0).equals("Detector Name"))
@@ -229,7 +229,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                         if (inDetectors)
                         {
                             String detector = row.get(0);
-                            Map<String, Double> map = new HashMap<String, Double>();
+                            Map<String, Double> map = new HashMap<>();
                             map.put("slope", Double.parseDouble(row.get(1)));
                             map.put("intercept", Double.parseDouble(row.get(2)));
                             map.put("rSquared", Double.parseDouble(row.get(3)));
@@ -262,7 +262,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                     }
                     else
                     {
-                        out.writeNext(row.toArray(new String[row.size()]));
+                        out.writeNext(row.toArray(new String[0]));
                     }
                 }
 
@@ -284,7 +284,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         @Override
         protected List<Map<String, Object>> processRowsFromFile(List<Map<String, Object>> rows, ImportContext context) throws BatchValidationException
         {
-            List<Map<String, Object>> newRows = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> newRows = new ArrayList<>();
             ParserErrors errors = context.getErrors();
 
             //add slope to run info
@@ -308,7 +308,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 {
                     rowIdx++;
                     Map<String, Object> row = rowsIter.next();
-                    Map<String, Object> map = new CaseInsensitiveHashMap<Object>(row);
+                    Map<String, Object> map = new CaseInsensitiveHashMap<>(row);
 
                     if (row.size() != 9)
                     {
@@ -444,7 +444,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         {
             Map<String, Double> detectorInfo = _detectorMap.get(map.get(DETECTOR_FIELD));
             Double ct = map.get("cp") == null ? null : Double.parseDouble(map.get("cp").toString());
-            Double sampleVol = Double.parseDouble(String.valueOf(map.get("sampleVol")));
+            double sampleVol = Double.parseDouble(String.valueOf(map.get("sampleVol")));
             Double intercept = detectorInfo.get("intercept");
             Double slope = detectorInfo.get("slope");
             Double volPerRxn = Double.parseDouble(String.valueOf(map.get("volPerRxn")));
@@ -463,14 +463,14 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
         private void calculateViralLoads(List<Map<String, Object>> rows)
         {
-            Map<String, List<Map<String, Object>>> rowMap = new HashMap<String, List<Map<String, Object>>>();
+            Map<String, List<Map<String, Object>>> rowMap = new HashMap<>();
             Double lowestStd = 0.0;
             for (Map<String, Object> row : rows)
             {
                 String key = (String)row.get(NAME_FIELD);
                 List<Map<String, Object>> list = rowMap.get(key);
                 if (list == null)
-                    list = new ArrayList<Map<String, Object>>();
+                    list = new ArrayList<>();
 
                 if (TYPE.Standard.getTemplateText().equals(row.get(CATEGORY_FIELD)))
                 {
@@ -505,7 +505,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
                 avgCopies = avgCopies / list.size();
                 Double stdDev = new StandardDeviation().evaluate(values);
-                Double cv = stdDev / avgCopies;
+                double cv = stdDev / avgCopies;
 
                 //NOTE: at some point I should make this configurable
                 //flag any record with %CV > 66, but only if at least 1 replicate has copies/rxn above limitOfDetection
@@ -573,14 +573,14 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             response.setHeader("Pragma", "private");
             response.setHeader("Cache-Control", "private");
 
-            Map<Integer, String[]> rowMap = new HashMap<Integer, String[]>();
+            Map<Integer, String[]> rowMap = new HashMap<>();
 
             int rowIdx = 0;
             for (JSONObject row : results)
             {
                 rowIdx++;
 
-                List<String> fields = new ArrayList<String>();
+                List<String> fields = new ArrayList<>();
 
                 //build the row
                 Integer wellNum = (Integer)wellMap.get(row.getString("well"));
@@ -594,13 +594,13 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                 fields.add(type.getTemplateText());
                 fields.add(TYPE.getQuantity(type, row.getString(SUBJECT_FIELD)));
 
-                rowMap.put(wellNum, fields.toArray(new String[fields.size()]));
+                rowMap.put(wellNum, fields.toArray(new String[0]));
             }
 
             if (errors.hasErrors())
                 throw errors;
 
-            List<String[]> rows = new ArrayList<String[]>();
+            List<String[]> rows = new ArrayList<>();
             rows.add(new String[]{"*** SDS Setup File Version", "3"});
             rows.add(new String[]{"*** Output Plate Size", "96"});
             rows.add(new String[]{"*** Output Plate ID", json.getString("templateName") + ".sds"});
@@ -642,8 +642,8 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
     private Map<String, Map<String, String>> getDetectorsForResults(List<JSONObject> results)
     {
-        final Map<String, Map<String, String>> ret = new HashMap<String, Map<String, String>>();
-        Set<String> distinctAssays = new HashSet<String>();
+        final Map<String, Map<String, String>> ret = new HashMap<>();
+        Set<String> distinctAssays = new HashSet<>();
         for (JSONObject row : results)
         {
             distinctAssays.add(row.getString(ASSAYNAME_FIELD));
@@ -651,12 +651,12 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
         TableInfo table = Viral_Load_AssaySchema.getInstance().getSchema().getTable(Viral_Load_AssaySchema.TABLE_ABI7500_DETECTORS);
         TableSelector ts = new TableSelector(table, new SimpleFilter(FieldKey.fromString("assayName"), distinctAssays, CompareType.IN), null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException
             {
-                Map<String, String> row = new HashMap<String, String>();
+                Map<String, String> row = new HashMap<>();
                 row.put("detector", object.getString("detector"));
                 row.put("reporter", object.getString("reporter"));
                 row.put("quencher", object.getString("quencher"));
@@ -673,8 +673,8 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         //ensure each subject/date has at least 2 neg controls
         JSONObject resultDefaults = json.optJSONObject("Results");
         JSONArray rawResults = json.getJSONArray("ResultRows");
-        List<JSONObject> results = new ArrayList<JSONObject>();
-        Set<String> distinctWells = new HashSet<String>();
+        List<JSONObject> results = new ArrayList<>();
+        Set<String> distinctWells = new HashSet<>();
         Map<Object, Object> wellMap = getWellMap96("well_96", "addressbyrow_96");
 
         String[] requiredFields = new String[]{"well", SUBJECT_FIELD, CATEGORY_FIELD, ASSAYNAME_FIELD};
@@ -710,7 +710,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             if (missingRequired)
                 continue;
 
-            TYPE type = null;
+            TYPE type;
             try
             {
                 type = TYPE.getByDatabaseCategoryValue(row.getString(CATEGORY_FIELD));
@@ -782,7 +782,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
         }
 
         Map<String, Map<String, String>> detectorRows = getDetectorsForResults(results);
-        if (detectorRows.size() == 0)
+        if (detectorRows.isEmpty())
         {
             errors.addRowError(new ValidationException("No detectors were found for these samples."));
             throw errors;

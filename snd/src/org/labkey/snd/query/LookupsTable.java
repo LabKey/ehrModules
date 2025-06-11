@@ -45,8 +45,6 @@ public class LookupsTable extends SimpleTable<SNDUserSchema>
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public LookupsTable(SNDUserSchema schema, TableInfo table, ContainerFilter cf)
     {
@@ -81,10 +79,10 @@ public class LookupsTable extends SimpleTable<SNDUserSchema>
     @Override
     public QueryUpdateService getUpdateService()
     {
-        return new LookupsTable.UpdateService(this);
+        return new UpdateService(this);
     }
 
-    protected class UpdateService extends SNDQueryUpdateService
+    protected static class UpdateService extends SNDQueryUpdateService
     {
         public UpdateService(SimpleTable ti)
         {

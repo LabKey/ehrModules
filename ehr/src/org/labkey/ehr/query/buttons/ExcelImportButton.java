@@ -15,14 +15,12 @@
  */
 package org.labkey.ehr.query.buttons;
 
-import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.security.EHRCompletedUpdatePermission;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DetailsURL;
-import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.template.ClientDependency;
 
 /**
