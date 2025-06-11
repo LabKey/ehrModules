@@ -824,7 +824,8 @@ public class TriggerScriptHelper
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
         // updatedRows object may be a JS array where isEmpty() isn't reliable, so use size() == 0 instead
-        if (updatedRows == null || updatedRows.isEmpty())
+        //noinspection SizeReplaceableByIsEmpty
+        if (updatedRows == null || updatedRows.size() == 0)
             return;
 
         updatedRows = new ArrayList<>(updatedRows);
@@ -1885,7 +1886,7 @@ public class TriggerScriptHelper
         Set<String> ignoredObjectIds = new HashSet<>();
         Date highestOpenEnded = null;
 
-        if (recordsInTransaction != null && !recordsInTransaction.isEmpty())
+        if (recordsInTransaction != null)
         {
             for (Map<String, Object> origMap : recordsInTransaction)
             {
@@ -2205,7 +2206,7 @@ public class TriggerScriptHelper
 
                 animals.add(id);
 
-                if (recordsInTransaction != null && !recordsInTransaction.isEmpty())
+                if (recordsInTransaction != null)
                 {
                     for (Map<String, Object> r : recordsInTransaction)
                     {
