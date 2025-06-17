@@ -732,8 +732,12 @@ EHR.DataEntryUtils = new function(){
                 autoLoad: true,
                 listeners: {
                     delay: 100,
-                    load: function(store){
-                        store.getFormularyMap();
+                    load: function(store, records, successful) {
+                        // Avoid logging complaints about an empty formulary when the browser navigates away mid-load
+                        // The store gives the user feedback already for 500 or similar errors from the server
+                        if (successful) {
+                            store.getFormularyMap();
+                        }
                     }
                 },
                 getFormularyRecords: function(code){
