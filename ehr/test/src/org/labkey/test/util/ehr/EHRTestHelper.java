@@ -239,6 +239,7 @@ public class EHRTestHelper
         return bulkEditWindow;
     }
 
+    // This method toggles the bulk edit field that CONTAINS the label parameter in the label
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
@@ -246,6 +247,7 @@ public class EHRTestHelper
         _test.waitForElement(l.enabled());
     }
 
+    // This method toggles the bulk edit field that has the exact label
     public void toggleBulkEditExactField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagWithText("label", label + ":").withClass("x4-form-item-label"));
