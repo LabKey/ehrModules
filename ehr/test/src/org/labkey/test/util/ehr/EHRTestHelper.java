@@ -230,9 +230,27 @@ public class EHRTestHelper
         }
     }
 
+    public Locator.XPathLocator openBulkEdit(Ext4GridRef grid)
+    {
+        grid.clickTbarButton("More Actions");
+        _test.waitAndClick(Locator.tag("span").withText("Bulk Edit"));
+        Locator.XPathLocator bulkEditWindow = Ext4Helper.Locators.window("Bulk Edit");
+        _test.waitForElement(bulkEditWindow);
+        return bulkEditWindow;
+    }
+
+    // This method toggles the bulk edit field that CONTAINS the label parameter in the label
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
+        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
+        _test.waitForElement(l.enabled());
+    }
+
+    // This method toggles the bulk edit field that has the exact label
+    public void toggleBulkEditExactField(String label)
+    {
+        Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagWithText("label", label + ":").withClass("x4-form-item-label"));
         _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
         _test.waitForElement(l.enabled());
     }
