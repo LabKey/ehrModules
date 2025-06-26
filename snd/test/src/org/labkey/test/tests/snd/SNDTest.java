@@ -1168,8 +1168,8 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         _fileBrowserHelper.checkFileBrowserFileCheckbox(REMOVE_ALL_ATTRIBUTES_FILE);
         _fileBrowserHelper.selectImportDataAction("SND document import");
         waitForPipelineJobsToComplete(++EXPECTED_IMPORT_JOBS, "SND Import ("+REMOVE_ALL_ATTRIBUTES_FILE+")", true, IMPORT_WAIT_TIME);
-            resetErrors();
-//        checkExpectedErrors(1);
+
+        checkExpectedErrors(1);
     }
 
     @Test
