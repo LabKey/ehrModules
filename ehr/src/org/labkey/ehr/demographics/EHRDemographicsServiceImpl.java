@@ -74,11 +74,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-/**
- * User: bimber
- * Date: 9/17/12
- * Time: 8:35 PM
- */
 public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
     private static final Logger _log = LogHelper.getLogger(EHRDemographicsServiceImpl.class, "Demographics caching, refreshing, and consistency checking");
