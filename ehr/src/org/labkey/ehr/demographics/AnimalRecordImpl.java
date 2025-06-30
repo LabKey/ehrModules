@@ -18,9 +18,11 @@ package org.labkey.ehr.demographics;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.GUID;
 
 import java.util.Collections;
 import java.util.Date;
@@ -29,27 +31,24 @@ import java.util.Map;
 
 /**
  * Immutable cached animal demographic record
- *
- * User: bimber
- * Date: 7/14/13
  */
 public class AnimalRecordImpl implements AnimalRecord
 {
-    private Map<String, Object> _props = Collections.unmodifiableMap(new CaseInsensitiveHashMap<>());
-    private final Container _container;
+    private Map<String, Object> _props = Collections.emptyMap();
+    private final GUID _containerId;
     private final String _id;
     private final Date _created;
 
-    private AnimalRecordImpl(Container c, String id)
+    private AnimalRecordImpl(GUID containerId, String id)
     {
-        _container = c;
+        _containerId = containerId;
         _id = id;
         _created = new Date();
     }
 
-    private AnimalRecordImpl(Container c, String id, Map<String, Object> props)
+    private AnimalRecordImpl(GUID containerId, String id, Map<String, Object> props)
     {
-        this(c, id);
+        this(containerId, id);
         if (props != null)
         {
             _props = Collections.unmodifiableMap(new CaseInsensitiveHashMap<>(props));
@@ -58,13 +57,13 @@ public class AnimalRecordImpl implements AnimalRecord
 
     public static AnimalRecordImpl create(Container c, String id, Map<String, Object> props)
     {
-        return new AnimalRecordImpl(c, id, props);
+        return new AnimalRecordImpl(c.getEntityId(), id, props);
     }
 
     @Override
     public AnimalRecord createCopy()
     {
-        return new AnimalRecordImpl(getContainer(), getId(), _props);
+        return new AnimalRecordImpl(_containerId, getId(), _props);
     }
 
     public synchronized void update(DemographicsProvider p, Map<String, Object> props)
@@ -90,7 +89,7 @@ public class AnimalRecordImpl implements AnimalRecord
     @Override
     public Container getContainer()
     {
-        return _container;
+        return ContainerManager.getForId(_containerId);
     }
 
     @Override
