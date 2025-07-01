@@ -97,13 +97,15 @@ public class GeneticCalculationsJob implements Job
         if (hour == null)
             hour = 2;
 
+        Integer day = getDayOfWeek();
+
         JobDetail job = JobBuilder.newJob(GeneticCalculationsJob.class)
                 .withIdentity(GeneticCalculationsJob.class.getCanonicalName())
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(GeneticCalculationsJob.class.getCanonicalName())
-                .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(hour, 0))
+                .withSchedule(day == null ? CronScheduleBuilder.dailyAtHourAndMinute(hour, 0) : CronScheduleBuilder.weeklyOnDayAndHourAndMinute(day, hour, 0))
                 .forJob(job)
                 .build();
 
@@ -174,12 +176,23 @@ public class GeneticCalculationsJob implements Job
         return null;
     }
 
-    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, Boolean isKinshipValidation, Boolean allowImportDuringBusinessHours)
+    public static Integer getDayOfWeek()
+    {
+        Map<String, String> saved = PropertyManager.getProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN);
+
+        if (saved.containsKey("dayOfWeek") & saved.get("dayOfWeek") != null)
+            return Integer.parseInt(saved.get("dayOfWeek"));
+
+        return null;
+    }
+
+    public static void setProperties(Boolean isEnabled, Container c, Integer hourOfDay, @Nullable Integer dayOfWeek, Boolean isKinshipValidation, Boolean allowImportDuringBusinessHours)
     {
         WritablePropertyMap props = PropertyManager.getWritableProperties(GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
         props.put("enabled", isEnabled.toString());
         props.put("container", c.getId());
         props.put("hourOfDay", hourOfDay.toString());
+        props.put("dayOfWeek", dayOfWeek == null ?  null : dayOfWeek.toString());
         props.put("kinshipValidation", isKinshipValidation.toString());
         props.put("allowImportDuringBusinessHours", allowImportDuringBusinessHours.toString());
         props.save();

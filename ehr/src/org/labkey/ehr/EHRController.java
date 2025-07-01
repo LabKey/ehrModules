@@ -640,7 +640,7 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
-            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.getDayOfWeek(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
         }
@@ -758,6 +758,7 @@ public class EHRController extends SpringActionController
         private boolean _enabled;
         private String containerPath;
         private int hourOfDay;
+        private Integer dayOfWeek;
 
         private boolean _kinshipValidation;
         private boolean _allowImportDuringBusinessHours;
@@ -790,6 +791,16 @@ public class EHRController extends SpringActionController
         public void setHourOfDay(int hourOfDay)
         {
             this.hourOfDay = hourOfDay;
+        }
+
+        public Integer getDayOfWeek()
+        {
+            return dayOfWeek;
+        }
+
+        public void setDayOfWeek(Integer dayOfWeek)
+        {
+            this.dayOfWeek = dayOfWeek;
         }
 
         public boolean isKinshipValidation()
@@ -828,6 +839,7 @@ public class EHRController extends SpringActionController
             ret.put("isScheduled", GeneticCalculationsJob.isScheduled());
             ret.put("enabled", GeneticCalculationsJob.isEnabled());
             ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
+            ret.put("dayOfWeek", GeneticCalculationsJob.getDayOfWeek());
             ret.put("kinshipValidation", GeneticCalculationsJob.isKinshipValidation());
             ret.put("allowImportDuringBusinessHours", GeneticCalculationsJob.isAllowImportDuringBusinessHours());
 

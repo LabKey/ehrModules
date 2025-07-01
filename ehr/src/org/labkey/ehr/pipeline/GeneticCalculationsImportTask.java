@@ -307,6 +307,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     if (lineNum % 250000 == 0)
                     {
                         log.info("imported " + String.format("%,d", lineNum) + " rows");
+                        if (job != null)
+                        {
+                            job.updateStatusForTask();
+                            if (job.isCancelled())
+                            {
+                                throw new CancelledException();
+                            }
+                        }
                     }
                 }
 
