@@ -239,7 +239,7 @@ abstract public class EHRService
         Scheduled("Scheduled"),
         Completed("Completed");
 
-        private String _label;
+        private final String _label;
 
         QCSTATES(String label)
         {

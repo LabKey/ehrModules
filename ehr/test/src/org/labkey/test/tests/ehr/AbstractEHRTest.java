@@ -433,7 +433,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Populate Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton("Populate " + tableLabel, 0);
-        if (completeEl.size() > 0)
+        if (!completeEl.isEmpty())
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
@@ -447,7 +447,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         Locator completeDiv = Locator.tagContainingText("div", "Delete Complete");
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
-        if (completeEl.size() > 0)
+        if (!completeEl.isEmpty())
             longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));

@@ -56,9 +56,9 @@ public class DataEntryManager
 {
     private static final DataEntryManager _instance = new DataEntryManager();
     private static final Logger _log = LogManager.getLogger(DataEntryManager.class);
-    private List<DataEntryFormFactory> _forms = new ArrayList<>();
-    private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
-    private List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
+    private final List<DataEntryFormFactory> _forms = new ArrayList<>();
+    private final Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
+    private final List<SingleQueryFormProvider> _queryProviders =  new ArrayList<>();
     private final Cache<String, Object> _cache;
 
     private DataEntryManager()
@@ -205,10 +205,10 @@ public class DataEntryManager
 
     public static class DataEntryFormContextImpl implements DataEntryFormContext
     {
-        private User _user;
-        private Container _container;
-        private Map<String, TableInfo> _tableMap = new HashMap<>();
-        private Map<String, UserSchema> _userSchemas = new HashMap<>();
+        private final User _user;
+        private final Container _container;
+        private final Map<String, TableInfo> _tableMap = new HashMap<>();
+        private final Map<String, UserSchema> _userSchemas = new HashMap<>();
         private Map<String, Dataset> _datasetMap = null;
 
         public DataEntryFormContextImpl(Container c, User u)

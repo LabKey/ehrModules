@@ -255,7 +255,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                             "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?)"))
             {
                 log.info("Inserting rows");
-                String line = null;
+                String line;
                 int lineNum = 0;
                 while ((line = reader.readLine()) != null)
                 {
@@ -307,6 +307,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     if (lineNum % 250000 == 0)
                     {
                         log.info("imported " + String.format("%,d", lineNum) + " rows");
+                        if (job != null)
+                        {
+                            job.updateStatusForTask();
+                            if (job.isCancelled())
+                            {
+                                throw new CancelledException();
+                            }
+                        }
                     }
                 }
 

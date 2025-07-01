@@ -157,7 +157,7 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
         if (!map.containsKey("sampleVol"))
             map.put("sampleVol", 1.0);
 
-        Double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
+        double sampleVol = Double.parseDouble(map.get("sampleVol").toString());
 
         double viralLoad;
         if (copiesPerRxn != null)

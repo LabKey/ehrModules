@@ -54,12 +54,10 @@ public class DefaultProblemListCloseDataSource extends AbstractDataSource
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        String sb = safeAppend(rs, "Category", "category") +
+                "Opened On: " + DateUtil.formatDate(c, start);
 
-        sb.append(safeAppend(rs, "Category", "category"));
-        sb.append("Opened On: ").append(DateUtil.formatDate(c, start));
-
-        return sb.toString();
+        return sb;
     }
 
     @Override

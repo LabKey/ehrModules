@@ -16,7 +16,6 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRTemplateCreatorPermission;
-import org.labkey.api.security.permissions.Permission;
 
 /**
  * Created by Josh on 2/25/2016.

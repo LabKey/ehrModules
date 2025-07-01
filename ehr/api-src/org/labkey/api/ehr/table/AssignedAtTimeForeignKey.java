@@ -34,9 +34,9 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
 {
     private static final Logger _log = LogManager.getLogger(AssignedAtTimeForeignKey.class);
 
-    private AbstractTableInfo _tableInfo;
-    private ColumnInfo _pkCol;
-    private UserSchema _ehrSchema;
+    private final AbstractTableInfo _tableInfo;
+    private final ColumnInfo _pkCol;
+    private final UserSchema _ehrSchema;
 
     public AssignedAtTimeForeignKey(AbstractTableInfo tableInfo, ColumnInfo pkCol, UserSchema ehrSchema)
     {
@@ -66,7 +66,7 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
 
         List<QueryException> errors = new ArrayList<>();
         TableInfo ti = qd.getTable(errors, true);
-        if (errors.size() > 0)
+        if (!errors.isEmpty())
         {
             _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
             for (QueryException error : errors)

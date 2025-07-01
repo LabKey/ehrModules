@@ -79,7 +79,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
             ts.setForDisplay(true);
             ts.setMaxRows(3);
 
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet object) throws SQLException
@@ -87,7 +87,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
                     Results rs = new ResultsImpl(object, cols);
                     String id = ti.getColumn("Id").getStringValue(rs);
 
-                    Map<String, Object> map = ret.computeIfAbsent(id, (x)->new HashMap<>());
+                    Map<String, Object> map = ret.computeIfAbsent(id, (x) -> new HashMap<>());
                     processRow(rs, cols, map);
                 }
             });

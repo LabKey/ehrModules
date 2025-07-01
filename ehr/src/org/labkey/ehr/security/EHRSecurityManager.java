@@ -21,10 +21,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.security.EHRSecurityEscalator;
-import org.labkey.api.security.HasPermission;
 import org.labkey.api.security.SecurableResource;
-import org.labkey.api.security.SecurityPolicy;
-import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
@@ -37,7 +34,6 @@ import org.labkey.api.study.StudyService;
 import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.dataentry.DataEntryManager;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -173,7 +169,7 @@ public class EHRSecurityManager
         return true;
     }
 
-    public static enum EVENT_TYPE {
+    public enum EVENT_TYPE {
         insert(InsertPermission.class),
         update(UpdatePermission.class),
         delete(DeletePermission.class);

@@ -66,7 +66,7 @@ abstract public class AbstractFormSection implements FormSection
 
     private List<String> _configSources = new ArrayList<>();
 
-    private List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
+    private final List<Supplier<ClientDependency>> _clientDependencies = new ArrayList<>();
 
     protected static final Logger _log = LogManager.getLogger(AbstractFormSection.class);
 
@@ -195,8 +195,8 @@ abstract public class AbstractFormSection implements FormSection
         ENCOUNTER("TEMPLATE_ENCOUNTER", "APPLYFORMTEMPLATE_ENCOUNTER"),
         NONE(null, null);
 
-        private String _formBtn;
-        private String _sectionBtn;
+        private final String _formBtn;
+        private final String _sectionBtn;
 
         TEMPLATE_MODE(String sectionBtn, String formBtn)
         {

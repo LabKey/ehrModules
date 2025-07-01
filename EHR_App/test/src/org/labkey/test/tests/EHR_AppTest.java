@@ -74,7 +74,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     @BeforeClass
     public static void setupProject() throws Exception
     {
-        EHR_AppTest init = (EHR_AppTest) getCurrentTest();
+        EHR_AppTest init = getCurrentTest();
         init.doSetup();
     }
 

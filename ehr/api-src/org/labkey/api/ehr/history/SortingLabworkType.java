@@ -44,9 +44,9 @@ import java.util.TreeMap;
  */
 public class SortingLabworkType extends DefaultLabworkType
 {
-    private String _testType;
-    private String _testCol = "testid";
-    private String _sortCol = "sort_order";
+    private final String _testType;
+    private final String _testCol = "testid";
+    private final String _sortCol = "sort_order";
 
     private Map<String, Integer> _tests = null;
 
@@ -66,7 +66,7 @@ public class SortingLabworkType extends DefaultLabworkType
 
             _tests = new CaseInsensitiveHashMap<>();
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set(_sortCol, _testCol), new SimpleFilter(FieldKey.fromString("type"), _testType), null);
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
@@ -84,7 +84,7 @@ public class SortingLabworkType extends DefaultLabworkType
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, Map<Integer, List<String>>> rows = new CaseInsensitiveHashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException

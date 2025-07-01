@@ -36,11 +36,10 @@ public class DefaultAlopeciaDataSource extends AbstractDataSource
     @Override
     protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException
     {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Alopecia Score", "score"));
-        sb.append(safeAppend(rs, "Cause", "cause"));
+        String sb = safeAppend(rs, "Alopecia Score", "score") +
+                safeAppend(rs, "Cause", "cause");
 
-        return sb.toString();
+        return sb;
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
 
 public class NewAnimalFormSection extends SimpleFormSection
 {
-    private boolean _allowSetSpecies;
+    private final boolean _allowSetSpecies;
 
     public NewAnimalFormSection(String schemaName, String queryName, String label, boolean allowSetSpecies)
     {

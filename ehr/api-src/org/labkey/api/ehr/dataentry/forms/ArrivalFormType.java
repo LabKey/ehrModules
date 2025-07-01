@@ -15,14 +15,11 @@
  */
 package org.labkey.api.ehr.dataentry.forms;
 
-import org.labkey.api.ehr.dataentry.AnimalDetailsFormSection;
 import org.labkey.api.ehr.dataentry.DataEntryFormContext;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.dataentry.TaskForm;
-import org.labkey.api.ehr.dataentry.TaskFormSection;
 import org.labkey.api.module.Module;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ArrivalFormType extends TaskForm

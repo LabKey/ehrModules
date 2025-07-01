@@ -7,6 +7,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
     extend: 'Ext.panel.Panel',
 
     initComponent: function(){
+        Ext4.QuickTips.init();
         Ext4.apply(this, {
             //width: 550,
             border: false,
@@ -48,6 +49,15 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 fieldLabel: 'Hour Of Day',
                 itemId: 'hourOfDay',
                 width: 400
+            },{
+                xtype: 'numberfield',
+                hideTrigger: true,
+                fieldLabel: 'Day of Week',
+                itemId: 'dayOfWeek',
+                helpPopup: 'If provided, the job will run on the specified day of the week (1-7 or Sun-Sat). If blank, it will run each day.',
+                width: 400,
+                minValue: 1,
+                maxValue: 7
             },{
                 xtype: 'textfield',
                 fieldLabel: 'Container Path',
@@ -96,6 +106,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
         this.down('#isScheduled').setValue(results.isScheduled);
         this.down('#enabled').setValue(results.enabled);
         this.down('#hourOfDay').setValue(results.hourOfDay);
+        this.down('#dayOfWeek').setValue(results.dayOfWeek);
         this.down('#containerPath').setValue(results.containerPath);
         this.down('#kinshipValidation').setValue(results.kinshipValidation);
         this.down('#allowImportDuringBusinessHours').setValue(results.allowImportDuringBusinessHours)
@@ -109,6 +120,7 @@ Ext4.define('EHR.panel.GeneticCalculationSettingsPanel', {
                 containerPath: this.down('#containerPath').getValue(),
                 enabled: this.down('#enabled').getValue(),
                 hourOfDay: this.down('#hourOfDay').getValue(),
+                dayOfWeek: this.down('#dayOfWeek').getValue(),
                 kinshipValidation: this.down('#kinshipValidation').getValue(),
                 allowImportDuringBusinessHours: this.down('#allowImportDuringBusinessHours').getValue()
             },

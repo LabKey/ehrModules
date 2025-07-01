@@ -26,7 +26,7 @@ import org.labkey.api.security.User;
  */
 public abstract class EHROwnable
 {
-    protected Module _owner = null;
+    protected Module _owner;
 
     public EHROwnable(Module owner)
     {

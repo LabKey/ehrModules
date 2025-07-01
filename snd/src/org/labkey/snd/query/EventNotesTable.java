@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.dataiterator.DataIteratorBuilder;
 import org.labkey.api.dataiterator.DataIteratorContext;
@@ -46,8 +45,6 @@ public class EventNotesTable extends AbstractSNDTableInfo
      * Create the simple table.
      * SimpleTable doesn't add columns until .init() has been called to allow derived classes to fully initialize themselves before adding columns.
      *
-     * @param schema
-     * @param table
      */
     public EventNotesTable(SNDUserSchema schema, TableInfo table)
     {
@@ -57,10 +54,10 @@ public class EventNotesTable extends AbstractSNDTableInfo
     @Override
     public QueryUpdateService getUpdateService()
     {
-        return new EventNotesTable.UpdateService(this);
+        return new UpdateService(this);
     }
 
-    protected class UpdateService extends SNDQueryUpdateService
+    protected static class UpdateService extends SNDQueryUpdateService
     {
         public UpdateService(SimpleUserSchema.SimpleTable ti)
         {

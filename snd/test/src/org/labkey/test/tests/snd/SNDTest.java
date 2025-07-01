@@ -219,7 +219,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         "    }                                                                  \n" +
         "})";
 
-    private static String SAVEPACKAGEAPI_CHILDREN = "LABKEY.Ajax.request({      \n" +
+    private static final String SAVEPACKAGEAPI_CHILDREN = "LABKEY.Ajax.request({      \n" +
         "       method: 'POST',                                                 \n" +
         "		url: LABKEY.ActionURL.buildURL('snd', 'savePackage.api'),       \n" +
         "		success: function(){ callback('Success!'); },                   \n" +
@@ -289,7 +289,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         "		}                                                               \n" +
         "	});";
 
-    private static String UPDATESUPERPACKAGEAPI_CHILDREN = "LABKEY.Ajax.request({\n" +
+    private static final String UPDATESUPERPACKAGEAPI_CHILDREN = "LABKEY.Ajax.request({\n" +
         "		method: 'POST',                                                 \n" +
         "		url: LABKEY.ActionURL.buildURL('snd', 'savePackage.api'),       \n" +
         "		success: function(){ callback('Success!'); },\n" +
@@ -368,7 +368,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         "		}                                                               \n" +
         "	});";
 
-    private static String UPDATESUPERPACKAGEAPI_CLONE = "LABKEY.Ajax.request({      \n" +
+    private static final String UPDATESUPERPACKAGEAPI_CLONE = "LABKEY.Ajax.request({      \n" +
             "		method: 'POST',                                                 \n" +
             "		url: LABKEY.ActionURL.buildURL('snd', 'savePackage.api'),       \n" +
             "		success: function(){ callback('Success!'); },                   \n" +
@@ -448,7 +448,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
             "		}                                                               \n" +
             "	});";
 
-    private static String UPDATESUPERPACKAGEAPI_NOCHILDREN = "LABKEY.Ajax.request({ \n" +
+    private static final String UPDATESUPERPACKAGEAPI_NOCHILDREN = "LABKEY.Ajax.request({ \n" +
             "		method: 'POST',                                                 \n" +
             "		url: LABKEY.ActionURL.buildURL('snd', 'savePackage.api'),       \n" +
             "		success: function(){ callback('Success!'); },                   \n" +
@@ -966,16 +966,16 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         InsertRowsCommand command = new InsertRowsCommand("snd", "LookupSets");
         List<Map<String, Object>> lookupSetRows = Arrays.asList(
-                new HashMap<String, Object>(Maps.of("SetName", "SurgeryType",
+                new HashMap<>(Maps.of("SetName", "SurgeryType",
                         "Label", "Surgery Type",
                         "Description", "These are surgery types",
                         "ObjectId", UUID.randomUUID().toString())),
-                new HashMap<String, Object>(Maps.of("SetName", "BloodDrawType",
+                new HashMap<>(Maps.of("SetName", "BloodDrawType",
                         "ObjectId", UUID.randomUUID().toString())),
-                new HashMap<String, Object>(Maps.of("SetName", "GenderType",
+                new HashMap<>(Maps.of("SetName", "GenderType",
                         "Label", "Gender",
                         "ObjectId", UUID.randomUUID().toString())),
-                new HashMap<String, Object>(Maps.of("SetName", "VolumeUnitTypes",
+                new HashMap<>(Maps.of("SetName", "VolumeUnitTypes",
                         "Label", "Volume",
                         "Description", "Units of volume",
                         "ObjectId", UUID.randomUUID().toString())));
@@ -1048,6 +1048,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         //TODO: once exp tables are exposed - do a full cleanup from snd.pkgs, exp.DomainDescriptor, exp.PropertyDomain, exp.PropertyDescriptor
     }
 
+    @SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class") // Explicitly called as part of setup
     public void testSNDImport()
     {
         //go to SND Project
@@ -1264,7 +1265,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertEquals("2", fairReviewRow.getMin());
         assertEquals("7", fairReviewRow.getMax());
         assertEquals(":-)", fairReviewRow.getDefault());
-        assertEquals(true, fairReviewRow.getRequired());
+        assertTrue(fairReviewRow.getRequired());
         assertEquals("lol", fairReviewRow.getRedactedText());
     }
 
@@ -1404,7 +1405,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertEquals("2", reviewRow.getMin());
         assertEquals("7", reviewRow.getMax());
         assertEquals("men", reviewRow.getDefault());
-        assertEquals(true, reviewRow.getRequired());
+        assertTrue(reviewRow.getRequired());
         assertEquals("and women", reviewRow.getRedactedText());
     }
 
@@ -1475,7 +1476,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         // create a new one via the UI
         catPage.addCategory(ourNewCategory, true);
-        catPage = catPage.clickSave();
+        catPage.clickSave();
         waitFor(()-> false, 2000);
 
         SelectRowsCommand catsCmd = new SelectRowsCommand("snd", "PkgCategories");
@@ -1545,11 +1546,11 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         CategoryEditRow surgeryRowCat = catPage.getCategory("Surgery");
         assertNotNull("Surgery category should exist", surgeryRowCat);
-        assertEquals("Surgery category should be active", true, surgeryRowCat.getIsActive());
+        assertTrue("Surgery category should be active", surgeryRowCat.getIsActive());
 
         CategoryEditRow ourCat = catPage.getCategory(editedCategory);
         assertNotNull("test edit category should exist", ourCat);
-        assertEquals("test edit category should be inactive", false, ourCat.getIsActive());
+        assertFalse("test edit category should be inactive", ourCat.getIsActive());
         assertEquals("test edit category should have new description", editedCategory, ourCat.getDescription());
 
         SelectRowsCommand catsCmd = new SelectRowsCommand("snd", "PkgCategories");
@@ -1572,7 +1573,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         insertRowsCommand.addRow(TEST1ROW2MAP);
         insertRowsCommand.addRow(TEST1ROW3MAP);
         SaveRowsResponse resp = insertRowsCommand.execute(cn, getProjectName() + "/" + TEST1SUBFOLDER);
-        assertEquals(resp.getRowsAffected().intValue(), 3);
+        assertEquals(3, resp.getRowsAffected().intValue());
 
         goToSchemaBrowser();
         selectQuery("snd", "Pkgs");
@@ -1592,7 +1593,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         UpdateRowsCommand updateRowsCommand = new UpdateRowsCommand("snd", "Pkgs");
         updateRowsCommand.addRow(TEST1ROW3AMAP);
         resp = updateRowsCommand.execute(cn, getProjectName() + "/" + TEST1SUBFOLDER);
-        assertEquals(resp.getRowsAffected().intValue(), 1);
+        assertEquals(1, resp.getRowsAffected().intValue());
 
         goToSchemaBrowser();
         selectQuery("snd", "Pkgs");
@@ -1604,7 +1605,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         DeleteRowsCommand deleteRowsCommand = new DeleteRowsCommand("snd", "Pkgs");
         deleteRowsCommand.addRow(TEST1ROW2MAP);
         resp = deleteRowsCommand.execute(cn, getProjectName() + "/" + TEST1SUBFOLDER);
-        assertEquals(resp.getRowsAffected().intValue(), 1);
+        assertEquals(1, resp.getRowsAffected().intValue());
 
         goToSchemaBrowser();
         selectQuery("snd", "Pkgs");
@@ -1803,12 +1804,17 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     public void testSuperPackageApis() throws Exception
     {
         goToProjectHome();
-        goToSchemaBrowser();
 
         //insert super package
         runScript(SAVEPACKAGEAPI_CHILDREN);
         goToSchemaBrowser();
-        viewQueryData("snd", "SuperPkgs");
+        selectQuery("snd", "SuperPkgs");
+        // Issue 52277: Be sure that the call to analyze the query has completed by waiting for the dependency report,
+        // ensuring it won't be chosen as a deadlock victim
+        waitForText("Dependency Report");
+        Locator viewData = Locator.linkWithText("view data");
+        waitAndClickAndWait(viewData);
+
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_1, 1);
         checkResults(TEST_SUPER_PKG_DESCRIPTION_1,
                 Arrays.asList(TEST_SUPER_PKG_START_ID1 + 1,  // top-level super package is the + 0, so start at + 1
@@ -1818,8 +1824,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         //update super package without cloning, with children
         runScript(UPDATESUPERPACKAGEAPI_CHILDREN);
-        goToSchemaBrowser();
-        viewQueryData("snd", "SuperPkgs");
+        refresh();
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_2, 1);
         assertTextNotPresent(TEST_SUPER_PKG_DESCRIPTION_1);
         checkResults(TEST_SUPER_PKG_DESCRIPTION_2,
@@ -1832,8 +1837,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         //update super package with cloning
         runScript(UPDATESUPERPACKAGEAPI_CLONE);
-        goToSchemaBrowser();
-        viewQueryData("snd", "SuperPkgs");
+        refresh();
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_3, 1);
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_2, 1);
         checkResults(TEST_SUPER_PKG_DESCRIPTION_3,
@@ -1846,8 +1850,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         //update super package without cloning, without children
         runScript(UPDATESUPERPACKAGEAPI_NOCHILDREN);
-        goToSchemaBrowser();
-        viewQueryData("snd", "SuperPkgs");
+        refresh();
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_4, 1);
         assertTextPresent(TEST_SUPER_PKG_DESCRIPTION_3, 1);
         assertTextNotPresent(TEST_SUPER_PKG_DESCRIPTION_2);
@@ -2119,7 +2122,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private String getPermissionTableValue(int row, int col)
     {
         List<WebElement> els = ((Locator.XPathLocator)getSimpleTableCell(Locator.id("category-security"), row, col)).child("div").child("a").child("input").findElements(getDriver());
-        if (els.size() > 0)
+        if (!els.isEmpty())
         {
             return els.get(0).getAttribute("value");
         }
@@ -2130,7 +2133,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private void clickRoleInOpenDropDown(String name)
     {
         List<WebElement> els = Locator.tagWithClassContaining("div", "btn-group open").child("ul").child("li").child("a").withText(name).findElements(getDriver());
-        if (els.size() > 0)
+        if (!els.isEmpty())
         {
             els.get(0).click();
         }
@@ -2170,7 +2173,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
             {
                 value = getPermissionTableValue(i, 1);
                 assertNotNull(value);
-                assertTrue(value.equals("None"));
+                assertEquals("None", value);
                 categoryRows.add(i);
             }
         }
@@ -2182,7 +2185,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         {
             value = getPermissionTableValue(r, 1);
             assertNotNull(value);
-            assertTrue(value.equals("SND Reader"));
+            assertEquals("SND Reader", value);
         }
 
         findButton("Clear All").click();
@@ -2192,7 +2195,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         {
             value = getPermissionTableValue(categoryRows.get(k), 1);
             assertNotNull(value);
-            assertTrue(value.equals("None"));
+            assertEquals("None", value);
             click(getSimpleTableCell(Locator.id("category-security"), categoryRows.get(k), 1));
             clickRoleInOpenDropDown(permissions.get(k));
         }
@@ -2203,7 +2206,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         {
             value = getPermissionTableValue(categoryRows.get(j), 1);
             assertNotNull(value);
-            assertTrue(value.equals(permissions.get(j)));
+            assertEquals(value, permissions.get(j));
         }
 
     }

@@ -31,9 +31,9 @@ import java.util.Set;
  */
 public class SerologyLabworkType extends DefaultLabworkType
 {
-    private String _sampleTypeField = "tissue/meaning";
-    private String _methodField = "method";
-    private String _numericResultsField = "numericresult";
+    private final String _sampleTypeField = "tissue/meaning";
+    private final String _methodField = "method";
+    private final String _numericResultsField = "numericresult";
 
     public SerologyLabworkType(Module module)
     {

@@ -48,8 +48,9 @@ public class EHR_SMController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class BeginAction extends SimpleViewAction
+    public static class BeginAction extends SimpleViewAction<Object>
     {
+        @Override
         public ModelAndView getView(Object o, BindException errors)
         {
             JspView<Void> view = new JspView<>("/org/labkey/ehr_sm/view/hello.jsp");
@@ -57,6 +58,7 @@ public class EHR_SMController extends SpringActionController
             return view;
         }
 
+        @Override
         public void addNavTrail(NavTree root) { }
     }
 
@@ -100,6 +102,7 @@ public class EHR_SMController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class AdminAction extends FormViewAction<AdminForm>
     {
+        @Override
         public void addNavTrail(NavTree root) { }
 
         @Override

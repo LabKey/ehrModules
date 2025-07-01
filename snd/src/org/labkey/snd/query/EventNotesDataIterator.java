@@ -22,12 +22,12 @@ public class EventNotesDataIterator extends AbstractDataIterator
 {
     private static final SNDManager _sndManager = SNDManager.get();
     private static final String EVENT_ID_COL = "eventId";
-    private User _user;
-    private Container _container;
-    private int _eventIdColIndex;
-    private Set<Integer> _eventIds = new HashSet<>();
-    private DataIterator _in;
-    private Logger log = LogHelper.getLogger(EventNotesDataIterator.class, "Fill out event notes");
+    private final User _user;
+    private final Container _container;
+    private final int _eventIdColIndex;
+    private final Set<Integer> _eventIds = new HashSet<>();
+    private final DataIterator _in;
+    private final Logger log = LogHelper.getLogger(EventNotesDataIterator.class, "Fill out event notes");
 
     public static DataIterator wrap(DataIterator in, DataIteratorContext context, Container c, User u)
     {

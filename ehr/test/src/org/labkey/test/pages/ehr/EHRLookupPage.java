@@ -16,6 +16,7 @@ public class EHRLookupPage extends LabKeyPage<EHRLookupPage.ElementCache>
         super(driver);
         waitForPage();
     }
+    @Override
     public void waitForPage()
     {
         waitFor(() -> {

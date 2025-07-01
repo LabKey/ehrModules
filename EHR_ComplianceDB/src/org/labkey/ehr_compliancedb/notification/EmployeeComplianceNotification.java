@@ -15,15 +15,10 @@
  */
 package org.labkey.ehr_compliancedb.notification;
 
-import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.apache.commons.lang3.time.DateUtils;
-import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.module.Module;
 import org.labkey.api.data.CompareType;
-import org.labkey.api.data.Results;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -36,20 +31,15 @@ import org.labkey.api.security.User;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.ldk.notification.AbstractNotification;
 import org.labkey.api.util.DateUtil;
-import org.labkey.ehr_compliancedb.EHR_ComplianceDBModule;
-import org.labkey.ehr_compliancedb.EHR_ComplianceDBUserSchema;
 
 
-import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 //Added 3-29-2016  Blasa
 
@@ -153,12 +143,12 @@ public class EmployeeComplianceNotification extends AbstractNotification
             msg.append("<tr style='font-weight: bold;'><td>Employee ID</td><td>First Name</td><td>Last Name</td><td>Category</td><td>Unit</td><td>Supervisor</td><td>Location</td></tr>\n");
 
 
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td><td>" + rs.getString("firstName") + "</td><td>" + rs.getString("lastName")  + "</td><td>" + rs.getString("category")  + "</td><td>" + rs.getString("unit")  + "</td><td>" + rs.getString("supervisor") + "</td><td>" + rs.getString("location")+ "</td></tr>\n");
+                    msg.append("<tr><td>" + (rs.getString("employeeid") == null ? "" : rs.getString("employeeid")) + "</td><td>" + rs.getString("firstName") + "</td><td>" + rs.getString("lastName") + "</td><td>" + rs.getString("category") + "</td><td>" + rs.getString("unit") + "</td><td>" + rs.getString("supervisor") + "</td><td>" + rs.getString("location") + "</td></tr>\n");
 
                 }
             });

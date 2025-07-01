@@ -22,7 +22,7 @@ import java.util.List;
 
 public class BloodDrawFormSection extends SimpleGridPanel
 {
-    boolean _isRequest = false;
+    boolean _isRequest;
 
     public BloodDrawFormSection(boolean isRequest)
     {

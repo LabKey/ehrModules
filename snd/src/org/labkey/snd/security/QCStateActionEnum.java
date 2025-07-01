@@ -46,8 +46,8 @@ public enum QCStateActionEnum
     DELETE("Delete", new SNDCompletedDeletePermission(), new SNDInProgressDeletePermission(), new SNDRejectedDeletePermission(), new SNDReviewRequiredDeletePermission()),
     READ("Read", new SNDCompletedReadPermission(), new SNDInProgressReadPermission(), new SNDRejectedReadPermission(), new SNDReviewRequiredReadPermission());
 
-    private List<SNDQCStatePermission> _permissions = new ArrayList<>();
-    private String _name;
+    private final List<SNDQCStatePermission> _permissions = new ArrayList<>();
+    private final String _name;
 
     QCStateActionEnum(String name, SNDQCStatePermission... perms)
     {

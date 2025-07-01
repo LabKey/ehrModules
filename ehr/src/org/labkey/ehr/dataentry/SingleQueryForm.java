@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class SingleQueryForm extends AbstractDataEntryForm
 {
-    private TableInfo _table;
+    private final TableInfo _table;
 
     private SingleQueryForm(DataEntryFormContext ctx, Module owner, String name, String label, String category, TableInfo ti, List<FormSection> sections)
     {

@@ -18,10 +18,7 @@ package org.labkey.ehr.history;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.history.LabworkType;
-import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
-import org.labkey.api.util.Pair;
-import org.labkey.ehr.EHRServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +37,7 @@ import java.util.Map;
 public class LabworkManager
 {
     private static final LabworkManager _instance = new LabworkManager();
-    private List<LabworkType> _types = new ArrayList<>();
+    private final List<LabworkType> _types = new ArrayList<>();
 
     private LabworkManager()
     {

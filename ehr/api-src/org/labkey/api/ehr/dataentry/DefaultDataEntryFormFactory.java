@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class DefaultDataEntryFormFactory implements DataEntryFormFactory
 {
-    private Logger _log = LogManager.getLogger(DefaultDataEntryFormFactory.class);
+    private final Logger _log = LogManager.getLogger(DefaultDataEntryFormFactory.class);
     Class<? extends DataEntryForm> _clazz;
     Module _module;
 
@@ -62,11 +62,11 @@ public class DefaultDataEntryFormFactory implements DataEntryFormFactory
     /** Implementation for creating instances of {@link TaskForm} variations */
     public static class TaskFactory implements DataEntryFormFactory
     {
-        private Module _owner;
-        private String _category;
-        private String _name;
-        private String _label;
-        private List<FormSection> _sections;
+        private final Module _owner;
+        private final String _category;
+        private final String _name;
+        private final String _label;
+        private final List<FormSection> _sections;
 
         public TaskFactory(Module owner, String category, String name, String label, List<FormSection> sections)
         {

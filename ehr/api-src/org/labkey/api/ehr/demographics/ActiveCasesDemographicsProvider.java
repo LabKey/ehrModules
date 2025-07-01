@@ -39,7 +39,7 @@ public class ActiveCasesDemographicsProvider extends AbstractListDemographicsPro
     @Override
     protected Set<FieldKey> getFieldKeys()
     {
-        Set<FieldKey> keys = new HashSet<FieldKey>();
+        Set<FieldKey> keys = new HashSet<>();
         keys.add(FieldKey.fromString("lsid"));
         keys.add(FieldKey.fromString("objectid"));
         keys.add(FieldKey.fromString("Id"));

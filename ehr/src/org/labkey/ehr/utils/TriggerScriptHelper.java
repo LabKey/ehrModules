@@ -824,6 +824,7 @@ public class TriggerScriptHelper
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
         // updatedRows object may be a JS array where isEmpty() isn't reliable, so use size() == 0 instead
+        //noinspection SizeReplaceableByIsEmpty
         if (updatedRows == null || updatedRows.size() == 0)
             return;
 
@@ -936,7 +937,7 @@ public class TriggerScriptHelper
             return null;
 
         List<String> testNames = Arrays.asList(StringUtils.split(services, ",;"));
-        if (testNames.size() == 0)
+        if (testNames.isEmpty())
             return null;
 
         Map<String, Map<String, Object>> serviceMap = getBloodDrawServicesMap();
@@ -981,13 +982,13 @@ public class TriggerScriptHelper
             }
         }
 
-        if (msgs.size() == 0)
+        if (msgs.isEmpty())
         {
             return null;
         }
         else
         {
-            return msgs.toArray(new String[msgs.size()]);
+            return msgs.toArray(new String[0]);
         }
     }
 
@@ -1124,7 +1125,7 @@ public class TriggerScriptHelper
         filter.addCondition(FieldKey.fromString("countsAgainstVolume"), true);
 
         // Don't pull database records that may be old versions of records that are changing in this transaction
-        if (ignoredObjectIds.size() > 0)
+        if (!ignoredObjectIds.isEmpty())
         {
             filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
         }
@@ -1485,7 +1486,7 @@ public class TriggerScriptHelper
                 {
                     String subject = "EHR " + formtype + " " + label;
                     Set<UserPrincipal> recipients = getRecipients(notify1, notify2, notify3);
-                    if (recipients.size() == 0)
+                    if (recipients.isEmpty())
                     {
                         _log.warn("No recipients, unable to send EHR trigger script email");
                         return;
@@ -1639,7 +1640,7 @@ public class TriggerScriptHelper
                     {
                         for (UserPrincipal u : SecurityManager.getAllGroupMembers((Group)up, MemberType.ACTIVE_USERS))
                         {
-                            if (((User)u).isActive())
+                            if (u.isActive())
                                 recipients.add(u);
                         }
                     }
@@ -1655,7 +1656,7 @@ public class TriggerScriptHelper
     {
         List<String> errorMsgs = new ArrayList<>();
 
-        Map<String, Object> demographicsProps = new HashMap<String, Object>();
+        Map<String, Object> demographicsProps = new HashMap<>();
         for (String key : new String[]{"Id", "gender", "species", "dam", "sire", "origin", "source", "geographic_origin", "birth"})
         {
             if (row.containsKey(key))
@@ -1730,7 +1731,7 @@ public class TriggerScriptHelper
 
         TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
 
-        Set<String> ret = new HashSet<String>();
+        Set<String> ret = new HashSet<>();
         ret.addAll(Arrays.asList(ts.getArray(String.class)));
 
         return ret;
@@ -1738,7 +1739,7 @@ public class TriggerScriptHelper
 
     public void updateStatusField(List<String> ids, Map<String, List<Date>> liveBirths, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
     {
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
 
         Set<String> idsInDemographics = hasDemographicsRecord(ids);
         for (String id : ids)
@@ -1885,7 +1886,7 @@ public class TriggerScriptHelper
         Set<String> ignoredObjectIds = new HashSet<>();
         Date highestOpenEnded = null;
 
-        if (recordsInTransaction != null && recordsInTransaction.size() > 0)
+        if (recordsInTransaction != null)
         {
             for (Map<String, Object> origMap : recordsInTransaction)
             {
@@ -2013,7 +2014,7 @@ public class TriggerScriptHelper
                 }
             }
 
-            if (emails.size() == 0)
+            if (emails.isEmpty())
             {
                 _log.warn("No emails, unable to send EHR trigger script email");
                 return;
@@ -2049,7 +2050,7 @@ public class TriggerScriptHelper
                     String subject = "Death notification: " + id;
 
                     Set<UserPrincipal> recipients = NotificationService.get().getRecipients(new DeathNotification(), getContainer());
-                    if (recipients.size() == 0)
+                    if (recipients.isEmpty())
                     {
                         _log.warn("No recipients, skipping death notification");
                         return;
@@ -2070,7 +2071,7 @@ public class TriggerScriptHelper
                     //find housing overlapping date of death
                     TableInfo housing = getTableInfo("study", "demographicsLastHousing");
                     TableSelector housingTs = new TableSelector(housing, PageFlowUtil.set("room", "cage"), new SimpleFilter(FieldKey.fromString("Id"), id), null);
-                    housingTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                    housingTs.forEach(new Selector.ForEachBlock<>()
                     {
                         @Override
                         public void exec(ResultSet rs) throws SQLException
@@ -2100,7 +2101,7 @@ public class TriggerScriptHelper
 
                     if (assignmentTs.exists())
                     {
-                        assignmentTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                        assignmentTs.forEach(new Selector.ForEachBlock<>()
                         {
                             @Override
                             public void exec(ResultSet object) throws SQLException
@@ -2137,7 +2138,7 @@ public class TriggerScriptHelper
 
                         if (groupTs.exists())
                         {
-                            groupTs.forEach(new Selector.ForEachBlock<ResultSet>()
+                            groupTs.forEach(new Selector.ForEachBlock<>()
                             {
                                 @Override
                                 public void exec(ResultSet object) throws SQLException
@@ -2188,7 +2189,7 @@ public class TriggerScriptHelper
         TableSelector ts = new TableSelector(ti, filter, null);
         final List<String> errors = new ArrayList<>();
         final String ALL_SPECIES = "All Species";
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet rs) throws SQLException
@@ -2205,12 +2206,12 @@ public class TriggerScriptHelper
 
                 animals.add(id);
 
-                if (recordsInTransaction != null && recordsInTransaction.size() > 0)
+                if (recordsInTransaction != null)
                 {
                     for (Map<String, Object> r : recordsInTransaction)
                     {
-                        String id = (String)r.get("Id");
-                        Number project = (Number)r.get("project");
+                        String id = (String) r.get("Id");
+                        Number project = (Number) r.get("project");
                         if (id == null || project == null)
                         {
                             continue;
@@ -2239,7 +2240,7 @@ public class TriggerScriptHelper
                 int remaining = totalAllowed - animals.size();
                 if (remaining < 0)
                 {
-                    errors.add("There are not enough spaces on protocol: " + protocol + ". Allowed: " + (totalAllowedNull ? "none": totalAllowed) + ", used: " + animals.size());
+                    errors.add("There are not enough spaces on protocol: " + protocol + ". Allowed: " + (totalAllowedNull ? "none" : totalAllowed) + ", used: " + animals.size());
                 }
             }
         });
@@ -2378,7 +2379,7 @@ public class TriggerScriptHelper
             return null;
 
         List<String> testNames = Arrays.asList(StringUtils.split(services, ",;"));
-        if (testNames.size() == 0)
+        if (testNames.isEmpty())
             return null;
 
         Map<String, Map<String, Object>> serviceMap = getBloodDrawServicesMap();
@@ -2531,9 +2532,9 @@ public class TriggerScriptHelper
 
         //sort on date
         records = new ArrayList<>(records);
-        records.sort(new Comparator<Map<String, Object>>()
+        records.sort(new Comparator<>()
         {
-            private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+            private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2)
@@ -2621,9 +2622,9 @@ public class TriggerScriptHelper
         }
 
         TableSelector ts = new TableSelector(flagTable, Collections.singleton("lsid"), filter, null);
-        Long count = ts.getRowCount();
+        long count = ts.getRowCount();
 
-        return count.intValue();
+        return (int) count;
     }
 
     public void ensureSingleFlagCategoryActive(String id, String flag, String objectId, final Date enddate)
@@ -2666,7 +2667,7 @@ public class TriggerScriptHelper
             QueryUpdateService qus = flagsTable.getUpdateService();
 
             TableSelector ts = new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "enddate"), filter, null);
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
@@ -2683,7 +2684,7 @@ public class TriggerScriptHelper
 
             try
             {
-                if (rows.size() > 0)
+                if (!rows.isEmpty())
                 {
                     Map<String, Object> extraContext = getExtraContext();
                     extraContext.put("skipAnnounceChangedParticipants", true);
@@ -2693,15 +2694,7 @@ public class TriggerScriptHelper
                         throw batchValidationException;
                 }
             }
-            catch (InvalidKeyException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (BatchValidationException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (QueryUpdateServiceException e)
+            catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -2730,7 +2723,7 @@ public class TriggerScriptHelper
 
     public void reportCageChange(List<String> keys)
     {
-        if (keys == null || keys.size() == 0)
+        if (keys == null || keys.isEmpty())
             return;
 
         SimpleFilter.OrClause clause = new SimpleFilter.OrClause();

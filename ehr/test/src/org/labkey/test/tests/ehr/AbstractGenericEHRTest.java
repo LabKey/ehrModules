@@ -320,7 +320,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
     private void calculateAverage()
     {
-        if (_saveRowsTimes.size() == 0)
+        if (_saveRowsTimes.isEmpty())
             return;
 
         long sum = 0;

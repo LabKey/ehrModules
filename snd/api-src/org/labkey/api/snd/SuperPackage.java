@@ -26,7 +26,6 @@ import org.labkey.api.security.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static org.labkey.api.snd.Package.PKG_ATTRIBUTES;
 

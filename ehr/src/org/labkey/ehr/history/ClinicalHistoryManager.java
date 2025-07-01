@@ -42,7 +42,7 @@ public class ClinicalHistoryManager
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
     private static final Logger _log = LogHelper.getLogger(ClinicalHistoryManager.class, "Management of clinical history data providers");
 
-    private List<HistoryDataSource> _dataSources = new ArrayList<>();
+    private final List<HistoryDataSource> _dataSources = new ArrayList<>();
 
     private ClinicalHistoryManager()
     {
@@ -104,7 +104,7 @@ public class ClinicalHistoryManager
 
     public void sortRowsByDate(List<HistoryRow> rows)
     {
-        Collections.sort(rows, new Comparator<HistoryRow>()
+        Collections.sort(rows, new Comparator<>()
         {
             @Override
             public int compare(HistoryRow o1, HistoryRow o2)

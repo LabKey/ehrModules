@@ -59,7 +59,7 @@ public class Event
     private String _objectId;
 
     // This will store a count of the different severity of exceptions
-    private Map<ValidationException.SEVERITY, Integer> _exceptionCount = new HashMap<>();
+    private final Map<ValidationException.SEVERITY, Integer> _exceptionCount = new HashMap<>();
     private ValidationException _eventException = null;
 
     public static final String EVENT_ID = "eventId";
@@ -428,7 +428,7 @@ public class Event
                 if (severity == null)
                     severity = ValidationException.SEVERITY.WARN;
 
-                if (msg.length() > 0)
+                if (!msg.isEmpty())
                     msg.append(", ");
 
                 msg.append(count + " warning");
@@ -442,7 +442,7 @@ public class Event
                 if (severity == null)
                     severity = ValidationException.SEVERITY.INFO;
 
-                if (msg.length() > 0)
+                if (!msg.isEmpty())
                     msg.append(", ");
 
                 msg.append(count + " info");
@@ -450,7 +450,7 @@ public class Event
                     msg.append("s");
             }
 
-            if (msg.length() > 0)
+            if (!msg.isEmpty())
             {
                 msg.append(" found");
 
