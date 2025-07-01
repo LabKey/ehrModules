@@ -474,7 +474,10 @@ public class SNDServiceImpl implements SNDService
                             Object displayable = rs.getObject("displayable");
                             jsonObject.put("displayable",displayable);
                         }
-
+                        if(colNames.contains("sortOrder")) {
+                            Object sortOrder = rs.getObject("sortOrder");
+                            jsonObject.put("sortOrder",sortOrder);
+                        }
                         array.put(jsonObject);
                     }
                 }
