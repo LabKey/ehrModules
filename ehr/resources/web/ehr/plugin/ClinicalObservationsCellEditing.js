@@ -71,6 +71,9 @@ Ext4.define('EHR.grid.plugin.ClinicalObservationsCellEditing', {
         // Keep upward pointer correct for each use - editors are shared between locking sides
         editor.editingPlugin = me;
 
+        if (editor.field)
+            editor.field = EHR.DataEntryUtils.ensureLookupPlugin(editor.field, true);
+
         return editor;
     }
 });

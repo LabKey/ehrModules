@@ -89,6 +89,8 @@ Ext4.define('EHR.grid.Panel', {
             this.dataEntryPanel.updateMinWidth(this.minWidth);
         }
 
+        this.addComboEditorPlugin(this.columns);
+
     },
 
     pendingChanges: {},
@@ -105,6 +107,14 @@ Ext4.define('EHR.grid.Panel', {
             this.heightResize = false;
             this.callParent(options);
         }
+    },
+
+    addComboEditorPlugin: function(columns){
+        Ext4.Array.forEach(columns, function(col){
+            if (col.editor) {
+                col.editor = EHR.DataEntryUtils.ensureLookupPlugin(col.editor, false);
+            }
+        }, this);
     },
 
     resizeHeight: function(){
