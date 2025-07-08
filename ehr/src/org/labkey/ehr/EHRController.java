@@ -491,7 +491,7 @@ public class EHRController extends SpringActionController
             url.addParameter("allowChooseQuery", false);
             url.addParameter("dataRegionName", "query");
 
-            WebPartFactory factory = Portal.getPortalPartCaseInsensitive("Query");
+            WebPartFactory factory = Portal.getPortalPart("Query");
             Portal.WebPart part = factory.createWebPart();
             part.setProperties(url.getQueryString());
 
