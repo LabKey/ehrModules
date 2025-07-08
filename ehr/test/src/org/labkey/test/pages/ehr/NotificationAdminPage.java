@@ -97,7 +97,7 @@ public class NotificationAdminPage extends BaseColonyOverviewPage
     {
         log("Clicking Run Report in browser for " + name);
         name = name.replace(" ", "");
-        clickAndWait(Locator.tagWithAttributeContaining("a", "href", name).withText("Run Report In Browser"));
+        waitAndClickAndWait(Locator.tagWithAttributeContaining("a", "href", name).withText("Run Report In Browser"));
     }
 
     public void clickManuallyTriggerEmail(String name)
