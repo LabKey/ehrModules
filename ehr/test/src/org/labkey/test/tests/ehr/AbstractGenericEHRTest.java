@@ -29,6 +29,7 @@ import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 //Inherit from this class instead of AbstractEHRTest when you want to run these tests, which should work across all ehr modules
 public abstract class AbstractGenericEHRTest extends AbstractEHRTest
@@ -298,6 +300,106 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         simpleSignIn(); //NOTE: this is designed to force the test to sign in, assuming our session was timed out from all the API tests
         resetErrors();  //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
+    }
+
+    protected List<String> skipLinksForValidation()
+    {
+        return List.of(); // Override if there are links to pages that are known to throw errors
+    }
+
+    private List<String> skipLinksForCrawling()
+    {
+        return List.of(
+                "query-begin.view",
+                "query-searchPanel.view",
+                "query-executeQuery.view",
+                "study-manageStudy.view",
+                "ehr-animalHistory.view",
+                "ehr-updateQuery.view",
+                "ehr-updateTable.view"
+        );
+    }
+
+    private String validLink(WebElement anchor)
+    {
+        boolean clickable = false;
+        String validUrl = null;
+
+        String href = anchor.getDomAttribute("href");
+        if (href != null && skipLinksForValidation().stream().anyMatch(href::contains))
+        {
+            log(href + " is specified as an exception to link validation. Skipping.");
+            return validUrl;
+        }
+        
+        if (anchor.isDisplayed() && anchor.isEnabled())
+        {
+            clickable = true;
+
+            try
+            {
+                openLinkInNewWindow(anchor);
+            }
+            catch (WebDriverException | IllegalStateException e)
+            {
+                clickable = false;
+            }
+
+            if (clickable)
+            {
+                assertFalse(isPageEmpty());
+                assertNoLabKeyErrors();
+                validUrl = getURL().toString(); // wait all the way to here before declaring link valid to handle different types of links
+                switchToWindow(0);
+                quietlyCloseExtraWindows();
+            }
+        }
+        return validUrl;
+    }
+
+    private void validatePageLinks(Set<String> crawledLinks)
+    {
+        log("Validating links on " + getURL());
+        List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form])]"));
+
+        log(anchors.size() + " possible links found.");
+        int validatedCount = 0;
+        Set<String> validLinksOnPage = new HashSet<>();
+        for (WebElement anchor : anchors)
+        {
+            String href = anchor.getDomAttribute("href");
+            if (href != null && validLinksOnPage.contains(href))
+                continue;
+
+            String validUrl = validLink(anchor);
+            if (validUrl != null)
+            {
+                validatedCount++;
+                validLinksOnPage.add(validUrl);
+            }
+
+        }
+        log(validatedCount + " links validated.");
+
+        for (String s : validLinksOnPage)
+        {
+            if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(s::contains))
+            {
+                beginAt(s);
+                crawledLinks.add(s); // mark page as crawled to avoid loops
+                validatePageLinks(crawledLinks);
+
+            }
+        }
+    }
+
+    @Test
+    public void crawlEhrLinks()
+    {
+        goToEHRFolder();
+        Set<String> crawledLinks = new HashSet<>();
+        crawledLinks.add(getURL().toString());
+        validatePageLinks(crawledLinks);
     }
 
     @Test
