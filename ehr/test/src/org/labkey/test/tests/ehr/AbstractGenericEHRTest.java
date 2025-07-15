@@ -316,7 +316,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "study-manageStudy.view",
                 "ehr-animalHistory.view",
                 "ehr-updateQuery.view",
-                "ehr-updateTable.view"
+                "ehr-updateTable.view",
+                "ehr-populateLookupData.view",
+                "ehr-ensureQcStates.view",
+                "ehr-ehrTemplates.view",
+                "ehr-primeDataEntryCache.view",
+                "ehr-cacheLivingAnimals.view",
+                "core-modulePropertyAdmin.view"
         );
     }
 
@@ -360,7 +366,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     private void validatePageLinks(Set<String> crawledLinks)
     {
         log("Validating links on " + getURL());
-        List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form])]"));
+        List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form]) and not(@role='button') and not(contains(@class, 'labkey-button'))]"));
 
         log(anchors.size() + " possible links found.");
         int validatedCount = 0;
