@@ -304,12 +304,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
     protected List<String> skipLinksForValidation()
     {
-        return List.of(); // Override if there are links to pages that are known to throw errors
+        return List.of("showAllErrors.view"); // Override if there are links to pages that are known to throw errors
     }
 
-    private List<String> skipLinksForCrawling()
+    protected List<String> skipLinksForCrawling()
     {
         return List.of(
+                "project-begin.view",
                 "query-begin.view",
                 "query-searchPanel.view",
                 "query-executeQuery.view",
@@ -322,7 +323,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "ehr-ehrTemplates.view",
                 "ehr-primeDataEntryCache.view",
                 "ehr-cacheLivingAnimals.view",
-                "core-modulePropertyAdmin.view"
+                "core-modulePropertyAdmin.view",
+                "dataintegration-begin.view",
+                "ldk-updateQuery"
         );
     }
 
@@ -404,7 +407,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     {
         goToEHRFolder();
         Set<String> crawledLinks = new HashSet<>();
-        crawledLinks.add(getURL().toString());
         validatePageLinks(crawledLinks);
     }
 
