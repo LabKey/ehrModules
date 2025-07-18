@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
@@ -32,6 +33,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -304,7 +307,11 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
     protected List<String> skipLinksForValidation()
     {
-        return List.of("showAllErrors.view"); // Override if there are links to pages that are known to throw errors
+        return List.of(
+                "showAllErrors.view",
+                "query-exportRowsExcel.view",
+                "ldk-runNotification.view"  // need to scope notifications to enabled modules then can remove this
+        ); // Override if there are links to pages that are known to throw errors
     }
 
     protected List<String> skipLinksForCrawling()
@@ -325,7 +332,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "ehr-cacheLivingAnimals.view",
                 "core-modulePropertyAdmin.view",
                 "dataintegration-begin.view",
-                "ldk-updateQuery"
+                "ldk-updateQuery",
+                "junit-begin.view"
         );
     }
 
@@ -335,10 +343,35 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         String validUrl = null;
 
         String href = anchor.getDomAttribute("href");
-        if (href != null && skipLinksForValidation().stream().anyMatch(href::contains))
+        if (href != null && !href.startsWith("#"))
         {
-            log(href + " is specified as an exception to link validation. Skipping.");
-            return validUrl;
+            if (skipLinksForValidation().stream().anyMatch(s -> href.toLowerCase().contains(s.toLowerCase())))
+            {
+                log(href + " is specified as an exception to link validation. Skipping validation.");
+                return validUrl;
+            }
+
+            // Ensure link is not external
+            try
+            {
+                URL url = new URL(href);
+                if (!url.getHost().equalsIgnoreCase(getURL().getHost()))
+                {
+                    log(href + " is an external link. Skipping validation.");
+                    return validUrl;
+                }
+            }
+            catch (MalformedURLException e)
+            {
+                // not a full URL so not external. Carry on.
+            }
+
+            // scope this to ehr folder and subfolders
+            if (!href.contains(getContainerPath()))
+            {
+                log(href + " is in a different folder. Skipping validation.");
+                return validUrl;
+            }
         }
         
         if (anchor.isDisplayed() && anchor.isEnabled())
@@ -358,6 +391,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             {
                 assertFalse(isPageEmpty());
                 assertNoLabKeyErrors();
+                assertElementNotPresent(Locators.labkeyErrorHeading);
                 validUrl = getURL().toString(); // wait all the way to here before declaring link valid to handle different types of links
                 switchToWindow(0);
                 quietlyCloseExtraWindows();
@@ -392,12 +426,11 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         for (String s : validLinksOnPage)
         {
-            if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(s::contains))
+            if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(link -> s.toLowerCase().contains(link.toLowerCase())))
             {
                 beginAt(s);
                 crawledLinks.add(s); // mark page as crawled to avoid loops
                 validatePageLinks(crawledLinks);
-
             }
         }
     }
