@@ -28,7 +28,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.RowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.TruncateTableCommand;
@@ -1497,7 +1497,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         catMap.put("Active", true);
         catMap.put("Comment", "delete me");
         cmd.addRow(catMap);
-        SaveRowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
+        RowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
 
         PackageListPage listPage = PackageListPage.beginAt(this , getProjectName());
         EditCategoriesPage catPage = listPage.clickEditCategories();
@@ -1530,7 +1530,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         catMap.put("Active", true);
         catMap.put("Comment", "edit me so hard!"); // comment is not shown in the UI
         cmd.addRow(catMap);
-        SaveRowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
+        RowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
         assertEquals(200, response.getStatusCode());
 
         PackageListPage listPage = PackageListPage.beginAt(this , getProjectName());
@@ -1572,7 +1572,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         insertRowsCommand.addRow(TEST1ROW1MAP);
         insertRowsCommand.addRow(TEST1ROW2MAP);
         insertRowsCommand.addRow(TEST1ROW3MAP);
-        SaveRowsResponse resp = insertRowsCommand.execute(cn, getProjectName() + "/" + TEST1SUBFOLDER);
+        RowsResponse resp = insertRowsCommand.execute(cn, getProjectName() + "/" + TEST1SUBFOLDER);
         assertEquals(3, resp.getRowsAffected().intValue());
 
         goToSchemaBrowser();

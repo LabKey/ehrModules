@@ -28,8 +28,7 @@ import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.RowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
@@ -110,13 +109,13 @@ public class EHRClientAPIHelper
         return resp.getRowCount().intValue();
     }
 
-    public SaveRowsResponse insertRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
+    public RowsResponse insertRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
     {
         try
         {
             InsertRowsCommand insertCmd = new InsertRowsCommand(schema, query);
             insertCmd.addRow(row);
-            SaveRowsResponse resp = insertCmd.execute(getConnection(), _containerPath);
+            RowsResponse resp = insertCmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
                 throw new RuntimeException("Expected command to fail");
@@ -137,14 +136,14 @@ public class EHRClientAPIHelper
         }
     }
 
-    public SaveRowsResponse updateRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
+    public RowsResponse updateRow(String schema, String query, Map<String, Object> row, boolean expectFailure) throws CommandException
     {
         try
         {
-            SaveRowsCommand cmd = new UpdateRowsCommand(schema, query);
+            UpdateRowsCommand cmd = new UpdateRowsCommand(schema, query);
             cmd.addRow(row);
 
-            SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
+            RowsResponse resp = cmd.execute(getConnection(), _containerPath);
 
             if (expectFailure)
                 throw new RuntimeException("Expected command to fail");
@@ -172,14 +171,14 @@ public class EHRClientAPIHelper
         }
     }
 
-    public SaveRowsResponse deleteRow(String schema, String query, Map<String, Object> row, String pkCol, boolean expectFailure) throws CommandException
+    public RowsResponse deleteRow(String schema, String query, Map<String, Object> row, String pkCol, boolean expectFailure) throws CommandException
     {
         try
         {
             DeleteRowsCommand cmd = new DeleteRowsCommand(schema, query);
             cmd.addRow(row);
 
-            SaveRowsResponse resp = cmd.execute(getConnection(), _containerPath);
+            RowsResponse resp = cmd.execute(getConnection(), _containerPath);
             if (expectFailure)
                 throw new RuntimeException("Expected command to fail");
 
@@ -445,7 +444,7 @@ public class EHRClientAPIHelper
 
         if (!dr.getRows().isEmpty())
         {
-            SaveRowsResponse resp = dr.execute(getConnection(), _containerPath);
+            RowsResponse resp = dr.execute(getConnection(), _containerPath);
             return resp.getRowsAffected().intValue();
         }
 

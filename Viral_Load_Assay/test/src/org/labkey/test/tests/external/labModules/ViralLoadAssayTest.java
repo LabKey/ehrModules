@@ -24,7 +24,7 @@ import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.RowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.Locator;
@@ -394,7 +394,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
             rowMap.put("detector", DETECTOR_NAME);
             rowMap.put("reporter", "FAM");
             insertCmd.addRow(rowMap);
-            SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+            RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
             assertEquals("Problem creating record", 1, saveResp.getRowsAffected());
         }
         else
