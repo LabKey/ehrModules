@@ -24,6 +24,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.Locators;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.EscapeUtil;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
@@ -367,9 +368,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             }
 
             // scope this to ehr folder and subfolders
-            if (!href.contains(getContainerPath()))
+            if (!EscapeUtil.decodeUriPath(href).contains(getContainerPath()))
             {
-                log(href + " is in a different folder. Skipping validation.");
+                log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
                 return validUrl;
             }
         }
