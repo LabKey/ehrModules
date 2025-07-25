@@ -346,7 +346,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         String href = anchor.getDomAttribute("href");
         if (href != null && !href.startsWith("#"))
         {
-            if (skipLinksForValidation().stream().anyMatch(s -> href.toLowerCase().contains(s.toLowerCase())))
+            String decodedHref = EscapeUtil.decodeUriPath(href);
+            if (skipLinksForValidation().stream().anyMatch(s -> decodedHref.toLowerCase().contains(s.toLowerCase())))
             {
                 log(href + " is specified as an exception to link validation. Skipping validation.");
                 return validUrl;
@@ -367,8 +368,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 // not a full URL so not external. Carry on.
             }
 
-            // scope this to ehr folder and subfolders
-            if (!EscapeUtil.decodeUriPath(href).contains(getContainerPath()))
+            // scope this to admin, ehr folder and subfolders
+            if (!decodedHref.contains(getContainerPath()) && !decodedHref.startsWith("/admin"))
             {
                 log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
                 return validUrl;
