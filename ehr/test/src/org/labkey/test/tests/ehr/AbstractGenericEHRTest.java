@@ -439,7 +439,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     }
 
     @Test
-    public void crawlEhrLinks()
+    public void testCrawlEhrLinks()
     {
         goToEHRFolder();
         Set<String> crawledLinks = new HashSet<>();
