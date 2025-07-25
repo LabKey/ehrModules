@@ -391,10 +391,11 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
             if (clickable)
             {
-                assertFalse(isPageEmpty());
+                URL url = getURL();
+                assertFalse("URL " + url + " is empty.", isPageEmpty());
                 assertNoLabKeyErrors();
-                assertElementNotPresent(Locators.labkeyErrorHeading);
-                validUrl = getURL().toString(); // wait all the way to here before declaring link valid to handle different types of links
+                assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+                validUrl = url.toString(); // wait all the way to here before declaring link valid to handle different types of links
                 switchToWindow(0);
                 quietlyCloseExtraWindows();
             }
