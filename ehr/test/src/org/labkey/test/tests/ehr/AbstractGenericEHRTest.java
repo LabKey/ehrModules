@@ -391,6 +391,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
             if (clickable)
             {
+                waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_JAVASCRIPT);
                 URL url = getURL();
                 assertFalse("URL " + url + " is empty.", isPageEmpty());
                 assertNoLabKeyErrors();
