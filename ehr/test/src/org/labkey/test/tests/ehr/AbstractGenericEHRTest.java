@@ -391,14 +391,20 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
             if (clickable)
             {
-                waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_JAVASCRIPT);
-                URL url = getURL();
-                assertFalse("URL " + url + " is empty.", isPageEmpty());
-                assertNoLabKeyErrors();
-                assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
-                validUrl = url.toString(); // wait all the way to here before declaring link valid to handle different types of links
-                switchToWindow(0);
-                quietlyCloseExtraWindows();
+                if (waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_JAVASCRIPT))
+                {
+                    URL url = getURL();
+                    assertFalse("URL " + url + " is empty.", isPageEmpty());
+                    assertNoLabKeyErrors();
+                    assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+                    validUrl = url.toString(); // wait all the way to here before declaring link valid to handle different types of links
+                    switchToWindow(0);
+                    quietlyCloseExtraWindows();
+                }
+                else
+                {
+                    log("Link " + href + " did not load properly.");
+                }
             }
         }
         return validUrl;
