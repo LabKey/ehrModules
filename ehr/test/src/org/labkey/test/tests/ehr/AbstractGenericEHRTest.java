@@ -16,7 +16,6 @@
 package org.labkey.test.tests.ehr;
 
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.SimplePostCommand;
@@ -49,6 +48,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 //Inherit from this class instead of AbstractEHRTest when you want to run these tests, which should work across all ehr modules
 public abstract class AbstractGenericEHRTest extends AbstractEHRTest
@@ -227,7 +227,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         recallLocation();
         List<String> submenuItems = dr.getHeaderMenuOptions("More Actions");
         List<String> expectedSubmenu = Arrays.asList("Jump To History", "Return Distinct Values","Show Record History","Compare Weights","Edit Records");
-        Assert.assertTrue("More actions menu did not contain expected options. Expected: " + expectedSubmenu + ", but found: " + submenuItems, submenuItems.containsAll(expectedSubmenu));
+        assertTrue("More actions menu did not contain expected options. Expected: " + expectedSubmenu + ", but found: " + submenuItems, submenuItems.containsAll(expectedSubmenu));
     }
 
     private void testUserAgainstAllStates(@LoggedParam EHRUser user)
@@ -391,20 +391,22 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
             if (clickable)
             {
-                if (waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_JAVASCRIPT))
-                {
-                    URL url = getURL();
-                    assertFalse("URL " + url + " is empty.", isPageEmpty());
-                    assertNoLabKeyErrors();
-                    assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
-                    validUrl = url.toString(); // wait all the way to here before declaring link valid to handle different types of links
-                    switchToWindow(0);
-                    quietlyCloseExtraWindows();
-                }
-                else
-                {
-                    log("Link " + href + " did not load properly.");
-                }
+                // Give page time to load
+                boolean loaded = waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_PAGE);
+                assertTrue("Link " + href + " did not load in " + WAIT_FOR_PAGE + "ms.", loaded);
+
+                // Assert page is not empty and does not have errors
+                URL url = getURL();
+                assertFalse("URL " + url + " is empty.", isPageEmpty());
+                assertNoLabKeyErrors();
+
+                // assertNoLabKeyErrors does not catch all types of errors
+                assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+
+                // record link as valid and cleanup
+                validUrl = url.toString();
+                switchToWindow(0);
+                quietlyCloseExtraWindows();
             }
         }
         return validUrl;
