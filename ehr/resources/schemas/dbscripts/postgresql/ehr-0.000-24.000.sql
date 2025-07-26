@@ -276,7 +276,7 @@ CREATE TABLE ehr.notificationTypes
     CONSTRAINT PK_notificationTypes PRIMARY KEY (NotificationType)
 );
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT into ehr.notificationTypes
 (NotificationType, description)
 VALUES
@@ -286,7 +286,7 @@ VALUES
 ('Animal Care Service Request', ''),
 ('Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.')
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 CREATE TABLE ehr.notificationRecipients
 (
@@ -409,7 +409,7 @@ CREATE TABLE ehr.qcStateMetadata
     CONSTRAINT PK_qcStateMetadata PRIMARY KEY (QCStateLabel)
 );
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata
 (QCStateLabel,draftData,isDeleted,isRequest)
 VALUES
@@ -424,7 +424,7 @@ VALUES
 ('Request: Approved', TRUE, FALSE, TRUE),
 ('Request: Complete', FALSE, FALSE, TRUE)
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 DROP TABLE IF EXISTS ehr.module_properties;
 
@@ -511,14 +511,14 @@ ALTER TABLE ehr.reports
   add column description varchar(4000)
 ;
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata
 (QCStateLabel,draftData,isDeleted,isRequest)
 VALUES
 ('Completed', FALSE, FALSE, FALSE),
 ('Scheduled', TRUE, FALSE, FALSE)
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 ALTER TABLE ehr.formTypes ADD COLUMN configJson text;
 
@@ -607,7 +607,7 @@ ALTER table ehr.qcStateMetadata
 
 DELETE from ehr.qcStateMetadata;
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata
 (QCStateLabel,DraftData,isDeleted,isRequest,allowFutureDates)
 VALUES
@@ -623,7 +623,7 @@ VALUES
 ('Request: Complete', FALSE, FALSE, TRUE, TRUE),
 ('Scheduled', TRUE, FALSE, FALSE, TRUE)
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 UPDATE ehr.qcStateMetadata
 SET DraftData = FALSE
@@ -633,12 +633,12 @@ ALTER table ehr.reports
   add column sort_order integer
   ;
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 insert into ehr.notificationtypes
 (notificationtype,description) VALUES
 ('Incompleted Treatments', 'An email will be sent each day at 8:30, 15:30 and 20:30 notifying of any incompleted treatments')
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 CREATE TABLE ehr.automatic_alerts (
     rowid serial not null,
@@ -695,7 +695,7 @@ UPDATE ehr.qcStateMetadata
 SET DraftData = TRUE
 WHERE QCStateLabel = 'Review Requested';
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 insert into ehr.notificationtypes
 (notificationtype,description) VALUES
 ('Blood Draw Request Completed', 'An email will be sent each time a blood draw request is completed'),
@@ -703,7 +703,7 @@ insert into ehr.notificationtypes
 ('Clinpath Request Completed', 'An email will be sent each time a clinpath request is completed'),
 ('Clinpath Request Denied', 'An email will be sent each time a clinpath request is denied')
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 alter TABLE ehr.notificationRecipients
   add column Recipient2 integer
@@ -791,12 +791,12 @@ alter TABLE ehr.protocol
   add column maxAnimals integer
 ;
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 insert into ehr.notificationtypes
 (notificationtype,description) VALUES
 ('Prenatal Death', 'An email will be sent each time a prenatal death is reported')
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 delete from ehr.notificationtypes where notificationtype in (
 'Clinpath Abnormal Results',
@@ -817,7 +817,7 @@ delete from ehr.notificationtypes where notificationtype in (
 
 delete from ehr.notificationtypes where notificationtype = 'Colony Validation - General';
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 insert into ehr.notificationtypes
 (notificationtype,description) VALUES
 ('Clinpath Abnormal Results', 'An email will be sent periodically to summarize abnormal clinpath results'),
@@ -834,7 +834,7 @@ insert into ehr.notificationtypes
 ('Overdue Weight Alerts', 'An email will be sent daily to summarize animals overdue for weights.'),
 ('Site Error Alerts', 'An hourly email will be sent if a new site error is reported.')
 ;
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 drop TABLE ehr.client_errors;
 
@@ -1279,10 +1279,10 @@ ALTER TABLE ehr.reports ADD subjectIdFieldName varchar(200);
 
 ALTER TABLE ehr.project ADD alwaysavailable bool;
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcstateMetadata (QCStateLabel,draftData,isDeleted,isRequest)
 VALUES ('Request: Sample Delivered', TRUE, FALSE, TRUE);
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 CREATE TABLE ehr.protocolexemptions (
   rowid SERIAL,
@@ -1355,9 +1355,9 @@ CREATE INDEX snomed_tags_taskid ON ehr.snomed_tags (taskid);
 
 CREATE INDEX treatment_times_container_treatmentid ON ehr.treatment_times (container, treatmentid);
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata (QCStateLabel,DraftData,isDeleted,isRequest,allowFutureDates) VALUES ('Request: Cancelled', false, false, true, true);
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 ALTER TABLE ehr.project ADD projecttype varchar(100);
 
@@ -1654,7 +1654,7 @@ DROP FUNCTION ehr.handleAddContactToProtocol();
 DELETE FROM ehr.qcStateMetadata WHERE QCStateLabel = 'Started';
 DELETE FROM ehr.status WHERE Label = 'Started';
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata
     (QCStateLabel,draftData,isDeleted,isRequest)
 VALUES
@@ -1663,7 +1663,7 @@ INSERT INTO ehr.status
     (label,Description,PublicData,DraftData,isDeleted,isRequest,allowFutureDates)
 VALUES
        ('Started', 'Record has started, but not completed',TRUE,FALSE,FALSE,FALSE,FALSE);
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 -- ehr-17.21-17.22.sql
 -- contents of ehr-17.21-17.22.sql script are not in rolled up ehr-0.00-18.10.sql, since they got added and merged after the rollup.
@@ -1802,7 +1802,7 @@ DROP FUNCTION ehr.addConstraintToFormFrameworkTypes();
 DELETE FROM ehr.qcStateMetadata WHERE QCStateLabel = 'Request: On Hold';
 DELETE FROM ehr.status WHERE Label = 'Request: On Hold';
 
-@SkipOnEmptySchemasBegin
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr.qcStateMetadata
 (QCStateLabel, draftData, isDeleted, isRequest, allowFutureDates)
 VALUES
@@ -1812,7 +1812,7 @@ INSERT INTO ehr.status
 (label, description, publicData, draftData, isDeleted, isRequest, allowFutureDates)
 VALUES
 ('Request: On Hold', 'Request has been put on hold', FALSE, FALSE, FALSE, TRUE, TRUE);
-@SkipOnEmptySchemasEnd
+-- @SkipOnEmptySchemasEnd
 
 CREATE INDEX snomed_tags_recordid ON ehr.snomed_tags (recordid);
 
