@@ -415,6 +415,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     private void validatePageLinks(Set<String> crawledLinks)
     {
         log("Validating links on " + getURL());
+
+        // Find all anchors in the body content area, excluding buttons and those in data regions
         List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form]) and not(@role='button') and not(contains(@class, 'labkey-button'))]"));
 
         log(anchors.size() + " possible links found.");
@@ -422,10 +424,12 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         Set<String> validLinksOnPage = new HashSet<>();
         for (WebElement anchor : anchors)
         {
+            // Only validate links once
             String href = anchor.getDomAttribute("href");
             if (href != null && validLinksOnPage.contains(href))
                 continue;
 
+            // Validate and record valid links
             String validUrl = validLink(anchor);
             if (validUrl != null)
             {
@@ -436,6 +440,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         }
         log(validatedCount + " links validated.");
 
+        // Recursively crawl valid links that have not yet been crawled and aren't listed as a skip.
         for (String s : validLinksOnPage)
         {
             if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(link -> s.toLowerCase().contains(link.toLowerCase())))
