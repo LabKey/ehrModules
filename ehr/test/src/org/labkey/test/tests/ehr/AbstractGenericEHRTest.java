@@ -382,7 +382,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
             try
             {
-                openLinkInNewWindow(anchor);
+                openLinkInNewWindowOrThrow(anchor);
             }
             catch (WebDriverException | IllegalStateException e)
             {
