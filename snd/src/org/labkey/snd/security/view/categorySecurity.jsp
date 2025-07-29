@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 %>
+<%@ page import="org.labkey.api.collections.IntHashMap" %>
 <%@ page import="org.labkey.api.data.ContainerManager" %>
 <%@ page import="org.labkey.api.security.Group" %>
 <%@ page import="org.labkey.api.security.SecurityPolicy" %>
@@ -68,7 +69,7 @@
     Map<Integer, Category> categories = sndService.getAllCategories(getContainer(), getUser());
     Map<String, Role> roles = sndSecurityManager.getAllSecurityRoles();
 
-    Map<Integer, Map<Integer, String>> roleMapping = new HashMap<>();
+    Map<Integer, Map<Integer, String>> roleMapping = new IntHashMap<>();
     Map<Integer, String> roleNameMap;
     SecurityPolicy policy;
     List<Role> policyRoles;

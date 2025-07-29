@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.Aggregate;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -122,7 +123,7 @@ public class TriggerScriptHelper
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
-    private final Map<Integer, String> _cachedAccounts = new HashMap<>();
+    private final Map<Integer, String> _cachedAccounts = new IntHashMap<>();
     /**
      *  Options that can be set in modules using EHR trigger scripts to opt in/out of or alter the behavior
      *  of certain validations and business logic.  If there are specific aspects of the core EHR trigger code that

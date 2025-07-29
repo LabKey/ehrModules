@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
@@ -573,7 +574,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
             response.setHeader("Pragma", "private");
             response.setHeader("Cache-Control", "private");
 
-            Map<Integer, String[]> rowMap = new HashMap<>();
+            Map<Integer, String[]> rowMap = new IntHashMap<>();
 
             int rowIdx = 0;
             for (JSONObject row : results)

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
@@ -92,7 +93,7 @@ public class PackageUserSchema extends UserSchema
     PackageTableInfo createPackageTable(String name)
     {
         // find domain for name
-        Map<Integer,Package> pkgs = new HashMap<>();
+        Map<Integer,Package> pkgs = new IntHashMap<>();
         visitAll(p -> {
             if (name.equalsIgnoreCase(p.description))
                 pkgs.put(p.packageId, p);
@@ -291,7 +292,7 @@ public class PackageUserSchema extends UserSchema
             List<SuperPkg> supers = new SqlSelector(getDbSchema(), new SQLFragment(
                     new SQLFragment("SELECT SuperPkgId, ParentSuperPkgId, Pkgs.PkgId, Description FROM snd.Pkgs INNER JOIN snd.SuperPkgs ON Pkgs.PkgId = SuperPkgs.PkgId WHERE Pkgs.Container = ").appendValue(getContainer())
             )).getArrayList(SuperPkg.class);
-            Map<Integer, Package> map = new HashMap<>();
+            Map<Integer, Package> map = new IntHashMap<>();
             supers.forEach(superPkg -> {
                 var package_ = map.computeIfAbsent(superPkg.pkgId, id ->
                 {

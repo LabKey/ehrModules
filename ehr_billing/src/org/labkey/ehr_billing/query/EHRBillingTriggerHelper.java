@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr_billing.query;
 
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -32,7 +33,6 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr_billing.EHR_BillingManager;
 import org.labkey.ehr_billing.EHR_BillingSchema;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,7 +43,7 @@ public class EHRBillingTriggerHelper
 {
     private final Container _container;
     private final User _user;
-    private final Map<Integer, Map<String, Object>> _cachedCharges = new HashMap<>();
+    private final Map<Integer, Map<String, Object>> _cachedCharges = new IntHashMap<>();
 
     public EHRBillingTriggerHelper(int userId, String containerId)
     {

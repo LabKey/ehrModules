@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.collections.ArrayListMap;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.security.User;
@@ -49,7 +50,7 @@ public class Package
     private boolean _hasEvent;
     private boolean _hasProject;
     private Date _modified; // column will be used as a timestamp
-    private Map<Integer, String> _categories = new HashMap<>();
+    private Map<Integer, String> _categories = new IntHashMap<>();
     private List<GWTPropertyDescriptor> _attributes = new ArrayList<>();
     private List<SuperPackage> _subpackages = new ArrayList<>();
     private Map<GWTPropertyDescriptor, Object> _extraFields = new HashMap<>();

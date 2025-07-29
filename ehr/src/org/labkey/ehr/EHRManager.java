@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -1338,7 +1339,7 @@ public class EHRManager
     {
         DataEntryForm def = getDataEntryFormForTask(c, u, taskId);
 
-        Map<Integer, EHRQCState> qcStateMap = new HashMap<>();
+        Map<Integer, EHRQCState> qcStateMap = new IntHashMap<>();
         for (EHRQCState qc : EHRManager.get().getQCStates(c))
         {
             qcStateMap.put(qc.getRowId(), qc);

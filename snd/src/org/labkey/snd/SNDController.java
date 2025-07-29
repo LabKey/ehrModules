@@ -27,6 +27,7 @@ import org.labkey.api.action.SimpleApiJsonForm;
 import org.labkey.api.action.SimpleRedirectAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.gwt.client.DefaultValueType;
 import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
 import org.labkey.api.module.Module;
@@ -188,7 +189,7 @@ public class SNDController extends SpringActionController
             JSONArray jsonCategories = json.getJSONArray("categories");
             if (null != jsonCategories)
             {
-                Map<Integer, String> categories = new HashMap<>();
+                Map<Integer, String> categories = new IntHashMap<>();
                 for (int j = 0; j < jsonCategories.length(); j++)
                 {
                     categories.put(jsonCategories.getInt(j), null);
@@ -227,7 +228,7 @@ public class SNDController extends SpringActionController
             {
                 // Get super packages
                 JSONArray jsonSubPackages = json.getJSONArray("subPackages");  // only first-level children (as super package IDs) should be here
-                Map<Integer, LinkedList<SuperPackageInfo>> superPkgIdToExtraInfoMap = new HashMap<>();  // uses lists because top-level super package IDs might show up multiple times
+                Map<Integer, LinkedList<SuperPackageInfo>> superPkgIdToExtraInfoMap = new IntHashMap<>();  // uses lists because top-level super package IDs might show up multiple times
                 List<Integer> uiSubSuperPkgIds = new ArrayList<>();
 
                 // create super package for root, if needed
@@ -301,7 +302,7 @@ public class SNDController extends SpringActionController
                         {
                             topLevelSuperPkgs = SNDManager.convertToTopLevelSuperPkgs(getContainer(), getUser(), uiSubSuperPkgIds);
                             List<SuperPackage> uiSuperPkgs = SNDManager.getSuperPkgs(getContainer(), getUser(), uiSubSuperPkgIds);
-                            Map<Integer, Integer> superPkgIdToPkgIdMap = new HashMap<>();
+                            Map<Integer, Integer> superPkgIdToPkgIdMap = new IntHashMap<>();
 
                             // need to get proper package IDs from db since they're not coming in from UI
                             if (uiSuperPkgs != null)
