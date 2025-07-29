@@ -372,7 +372,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             if (!decodedHref.contains(getContainerPath()) && !decodedHref.startsWith("/admin"))
             {
                 log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
-                return validUrl;
+                return null;
             }
         }
 
