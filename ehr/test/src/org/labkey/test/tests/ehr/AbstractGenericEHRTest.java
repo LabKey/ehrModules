@@ -350,7 +350,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             if (skipLinksForValidation().stream().anyMatch(s -> decodedHref.toLowerCase().contains(s.toLowerCase())))
             {
                 log(href + " is specified as an exception to link validation. Skipping validation.");
-                return validUrl;
+                return null;
             }
 
             // Ensure link is not external
