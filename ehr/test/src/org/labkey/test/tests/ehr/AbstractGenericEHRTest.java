@@ -360,7 +360,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 if (!url.getHost().equalsIgnoreCase(getURL().getHost()))
                 {
                     log(href + " is an external link. Skipping validation.");
-                    return validUrl;
+                    return null;
                 }
             }
             catch (MalformedURLException e)
