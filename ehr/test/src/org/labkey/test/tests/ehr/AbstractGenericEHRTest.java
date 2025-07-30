@@ -22,6 +22,7 @@ import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
+import org.labkey.test.util.Crawler;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.EscapeUtil;
 import org.labkey.test.util.Ext4Helper;
@@ -334,15 +335,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "core-modulePropertyAdmin.view",
                 "dataintegration-begin.view",
                 "ldk-updateQuery",
-                "junit-begin.view"
+                "junit-begin.view",
+                "admin-"
         );
     }
 
     private String validLink(WebElement anchor)
     {
-        boolean clickable = false;
-        String validUrl = null;
-
         String href = anchor.getDomAttribute("href");
         if (href != null && !href.startsWith("#"))
         {
@@ -369,46 +368,49 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
             }
 
             // scope this to admin, ehr folder and subfolders
-            if (!decodedHref.contains(getContainerPath()) && !decodedHref.startsWith("/admin"))
+            String controller = new Crawler.ControllerActionId(decodedHref).getController();
+            if (!decodedHref.contains(getContainerPath()) && !controller.equalsIgnoreCase("admin"))
             {
                 log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
                 return null;
             }
         }
 
-        if (anchor.isDisplayed() && anchor.isEnabled())
+        if (!anchor.isDisplayed())
+            return null;
+
+        boolean clickable = true;
+        String validUrl = null;
+
+        try
         {
-            clickable = true;
-
-            try
-            {
-                openLinkInNewWindowOrThrow(anchor);
-            }
-            catch (WebDriverException | IllegalStateException e)
-            {
-                clickable = false;
-            }
-
-            if (clickable)
-            {
-                // Give page time to load
-                boolean loaded = waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_PAGE);
-                assertTrue("Link " + href + " did not load in " + WAIT_FOR_PAGE + "ms.", loaded);
-
-                // Assert page is not empty and does not have errors
-                URL url = getURL();
-                assertFalse("URL " + url + " is empty.", isPageEmpty());
-                assertNoLabKeyErrors();
-
-                // assertNoLabKeyErrors does not catch all types of errors
-                assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
-
-                // record link as valid and cleanup
-                validUrl = url.toString();
-                switchToWindow(0);
-                quietlyCloseExtraWindows();
-            }
+            openLinkInNewWindowOrThrow(anchor);
         }
+        catch (WebDriverException | IllegalStateException e)
+        {
+            clickable = false;
+        }
+
+        if (clickable)
+        {
+            // Give page time to load
+            boolean loaded = waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_PAGE);
+            assertTrue("Link " + href + " did not load in " + WAIT_FOR_PAGE + "ms.", loaded);
+
+            // Assert page is not empty and does not have errors
+            URL url = getURL();
+            assertFalse("URL " + url + " is empty.", isPageEmpty());
+            assertNoLabKeyErrors();
+
+            // assertNoLabKeyErrors does not catch all types of errors
+            assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+
+            // record link as valid and cleanup
+            validUrl = url.toString();
+            getDriver().close();
+            switchToWindow(0);
+        }
+
         return validUrl;
     }
 
@@ -426,7 +428,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         {
             // Only validate links once
             String href = anchor.getDomAttribute("href");
-            if (href != null && validLinksOnPage.contains(href))
+            if (href != null && (validLinksOnPage.contains(href) || crawledLinks.contains(href)))
                 continue;
 
             // Validate and record valid links
