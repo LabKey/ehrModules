@@ -336,7 +336,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "dataintegration-begin.view",
                 "ldk-updateQuery",
                 "junit-begin.view",
-                "admin-"
+                "admin-",
+                "ehr-datasets.view"
         );
     }
 
