@@ -344,7 +344,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     private String validLink(WebElement anchor)
     {
         String href = anchor.getDomAttribute("href");
-        if (href != null && !href.startsWith("#"))
+        if (href != null && !href.startsWith("#") && !href.equalsIgnoreCase("undefined"))
         {
             String decodedHref = EscapeUtil.decodeUriPath(href);
             if (skipLinksForValidation().stream().anyMatch(s -> decodedHref.toLowerCase().contains(s.toLowerCase())))
