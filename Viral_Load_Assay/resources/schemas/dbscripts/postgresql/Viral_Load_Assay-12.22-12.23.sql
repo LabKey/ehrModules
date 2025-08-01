@@ -13,4 +13,6 @@ CREATE TABLE viral_load_assay.fluors (
   constraint PK_fluors PRIMARY KEY (name)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO viral_load_assay.fluors (name) VALUES ('FAM');
+-- @SkipOnEmptySchemasEnd

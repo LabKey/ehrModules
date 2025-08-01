@@ -19,6 +19,7 @@ import org.labkey.api.data.DbScope;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.module.ModuleLoader;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -34,34 +35,37 @@ public class EHRUpgradeCode implements UpgradeCode
     @SuppressWarnings({"UnusedDeclaration"})
     public void populateCalendar(final ModuleContext moduleContext) throws SQLException
     {
-        GregorianCalendar cal = new GregorianCalendar(1950, Calendar.JANUARY, 1, 0, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        // Insert rows from January 1, 1950 to December 31, 2029
-        TableInfo calendar = EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar");
-
-        try (DbScope.Transaction transaction = calendar.getSchema().getScope().ensureTransaction();
-             PreparedStatement stmt = transaction.getConnection().prepareStatement(
-                "INSERT INTO ehr_lookups.calendar\n" +
-                        "\t(TargetDateTime, TargetDate, Year, Month, Day, DayAfter)\n" +
-                        "\tVALUES (?, ?, ?, ?, ?, ?)"))
+        if (ModuleLoader.getInstance().shouldInsertData())
         {
-            while (cal.get(Calendar.YEAR) < 2030)
+            GregorianCalendar cal = new GregorianCalendar(1950, Calendar.JANUARY, 1, 0, 0, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+
+            // Insert rows from January 1, 1950 to December 31, 2029
+            TableInfo calendar = EHRSchema.getInstance().getEHRLookupsSchema().getTable("Calendar");
+
+            try (DbScope.Transaction transaction = calendar.getSchema().getScope().ensureTransaction();
+                 PreparedStatement stmt = transaction.getConnection().prepareStatement(
+                     "INSERT INTO ehr_lookups.calendar\n" +
+                         "\t(TargetDateTime, TargetDate, Year, Month, Day, DayAfter)\n" +
+                         "\tVALUES (?, ?, ?, ?, ?, ?)"))
             {
-                stmt.setDate(1, new Date(cal.getTimeInMillis()));
-                stmt.setDate(2, new Date(cal.getTimeInMillis()));
-                stmt.setInt(3, cal.get(Calendar.YEAR));
-                // java.util.Calendar months are 0-based
-                stmt.setInt(4, cal.get(Calendar.MONTH) + 1);
-                stmt.setInt(5, cal.get(Calendar.DAY_OF_MONTH));
+                while (cal.get(Calendar.YEAR) < 2030)
+                {
+                    stmt.setDate(1, new Date(cal.getTimeInMillis()));
+                    stmt.setDate(2, new Date(cal.getTimeInMillis()));
+                    stmt.setInt(3, cal.get(Calendar.YEAR));
+                    // java.util.Calendar months are 0-based
+                    stmt.setInt(4, cal.get(Calendar.MONTH) + 1);
+                    stmt.setInt(5, cal.get(Calendar.DAY_OF_MONTH));
 
-                cal.add(Calendar.DATE, 1);
-                stmt.setDate(6, new Date(cal.getTimeInMillis()));
+                    cal.add(Calendar.DATE, 1);
+                    stmt.setDate(6, new Date(cal.getTimeInMillis()));
 
-                stmt.addBatch();
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                transaction.commit();
             }
-            stmt.executeBatch();
-            transaction.commit();
         }
     }
 }

@@ -34,10 +34,12 @@ CREATE TABLE Viral_Load_Assay.assays
 -- ----------------------------
 -- Records of assays
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO Viral_Load_Assay.assays
 (assayName, virus)
 VALUES
 ('SIVmac239-Gag', 'SIVmac239');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for vl_category
@@ -71,8 +73,10 @@ WITH (OIDS=FALSE);
 -- ----------------------------
 -- Records of vl_instrument
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO Viral_Load_Assay.vl_instrument VALUES ('LC480');
 INSERT INTO Viral_Load_Assay.vl_instrument VALUES ('Light Cycler');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for vl_sampletype
@@ -105,7 +109,9 @@ WITH (OIDS=FALSE);
 -- ----------------------------
 -- Records of vl_technique
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO Viral_Load_Assay.vl_technique VALUES ('Lifson 1-Step VL');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for vl_virus
@@ -122,5 +128,3 @@ WITH (OIDS=FALSE);
 -- Records of vl_virus
 -- ----------------------------
 INSERT INTO Viral_Load_Assay.vl_virus VALUES ('SIVmac239');
-
-
