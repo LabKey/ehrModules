@@ -37,14 +37,18 @@
     }
 
     createEHRBillingDomainHandler = function () {
-        var ctx = EHR.Utils.getEHRContext();
+        const ctx = EHR.Utils.getEHRContext();
+        const container = document.getElementById("ehrbilling_container").value;
+        if (!container) {
+            LABKEY.Utils.alert("Error", "Must enter the container path of the compliance folder.");
+        }
 
         LABKEY.Domain.create({
             module: ctx ? ctx['EHRCustomModule'] : null,
             domainKind: "EHR_Billing",
             domainGroup: "ehr_billing",
             importData: false,
-            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            containerPath: container,
             success: function () {
                 LABKEY.Utils.alert("Success","EHR_Billing tables updated successfully.");
             },
@@ -55,8 +59,8 @@
     }
 
     createEHRComplianceDomainHandler = function () {
-        var ctx = EHR.Utils.getEHRContext();
-        var container = document.getElementById("ehrcompliance_container").value;
+        const ctx = EHR.Utils.getEHRContext();
+        const container = document.getElementById("ehrcompliance_container").value;
         if (!container) {
             LABKEY.Utils.alert("Error", "Must enter the container path of the compliance folder.");
         }
@@ -90,16 +94,19 @@
     <h5><b>
         <a style="cursor: pointer;" id='createEHRDomainHandler'>Load EHR table definitions</a>
         <br><br>
+
         <a style="cursor: pointer;" id='createEHRLookupsDomainHandler'>Load EHR_Lookup table definitions</a>
         <br><br>
-        <a style="cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
-        <br><br>
-        <div>
-            <a style="margin-right: 10px; cursor: pointer;" id='createEHRComplianceDomainHandler'>Load EHR_Compliance table definitions</a>
-            <label for="ehrcompliance_container">Container:</label>
-            <input type="text" id="ehrcompliance_container" name="ehrcompliance_container" style="width: 300px;">
 
-        </div>
+        <a style="margin-right: 10px; cursor: pointer;" id='createEHRBillingDomainHandler'>Load EHR_Billing table definitions</a>
+        <label for="ehrbilling_container">Container:</label>
+        <input type="text" id="ehrbilling_container" name="ehrbilling_container" style="width: 300px;">
+        <br><br>
+
+        <a style="margin-right: 10px; cursor: pointer;" id='createEHRComplianceDomainHandler'>Load EHR_Compliance table definitions</a>
+        <label for="ehrcompliance_container">Container:</label>
+        <input type="text" id="ehrcompliance_container" name="ehrcompliance_container" style="width: 300px;">
+
     </b></h5>
 </div>
 </html>
