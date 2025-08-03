@@ -30,7 +30,9 @@ import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
+import org.labkey.test.util.selenium.WebDriverUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
@@ -307,6 +309,21 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         resetErrors();  //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
     }
 
+    // Clicks the link and switches to the window if it's a viable link. Otherwise throws an exception.
+    private void verifyLInk(WebElement link)
+    {
+        int winCount = getDriver().getWindowHandles().size();
+        link.sendKeys(Keys.chord(WebDriverUtils.MODIFIER_KEY, Keys.ENTER));
+
+        // Short wait for a new window to open. If not then throw exception
+        boolean winOpen = waitFor(() -> getDriver().getWindowHandles().size() > winCount, 1000);
+        if (!winOpen)
+            throw new IllegalStateException("Link did not open new window in tab.");
+
+        List<String> windows = new ArrayList<>(getDriver().getWindowHandles());
+        getDriver().switchTo().window(windows.get(1));
+    }
+
     protected List<String> skipLinksForValidation()
     {
         return List.of(
@@ -385,7 +402,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         try
         {
-            openLinkInNewWindowOrThrow(anchor);
+            verifyLInk(anchor);
         }
         catch (WebDriverException | IllegalStateException e)
         {
