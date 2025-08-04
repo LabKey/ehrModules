@@ -115,7 +115,7 @@ public class ParticipantViewPage<EC extends ParticipantViewPage.ElementCache> ex
 
     public WebElement getActiveReportPanel()
     {
-        return activeReportPanel.findElementOrNull(getDriver());
+        return activeReportPanel.waitForElement(getDriver(), 2_000);
     }
 
     public DataRegionTable getActiveReportDataRegion()
