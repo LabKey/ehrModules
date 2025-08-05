@@ -16,21 +16,28 @@
 package org.labkey.test.tests.ehr;
 
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
+import org.labkey.test.util.Crawler;
 import org.labkey.test.util.DataRegionTable;
+import org.labkey.test.util.EscapeUtil;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
+import org.labkey.test.util.selenium.WebDriverUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,6 +50,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 //Inherit from this class instead of AbstractEHRTest when you want to run these tests, which should work across all ehr modules
 public abstract class AbstractGenericEHRTest extends AbstractEHRTest
@@ -221,7 +230,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         recallLocation();
         List<String> submenuItems = dr.getHeaderMenuOptions("More Actions");
         List<String> expectedSubmenu = Arrays.asList("Jump To History", "Return Distinct Values","Show Record History","Compare Weights","Edit Records");
-        Assert.assertTrue("More actions menu did not contain expected options. Expected: " + expectedSubmenu + ", but found: " + submenuItems, submenuItems.containsAll(expectedSubmenu));
+        assertTrue("More actions menu did not contain expected options. Expected: " + expectedSubmenu + ", but found: " + submenuItems, submenuItems.containsAll(expectedSubmenu));
     }
 
     private void testUserAgainstAllStates(@LoggedParam EHRUser user)
@@ -298,6 +307,177 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         simpleSignIn(); //NOTE: this is designed to force the test to sign in, assuming our session was timed out from all the API tests
         resetErrors();  //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
+    }
+
+    // Clicks the link and switches to the window if it's a viable link. Otherwise throws an exception.
+    private void verifyLInk(WebElement link)
+    {
+        int winCount = getDriver().getWindowHandles().size();
+        link.sendKeys(Keys.chord(WebDriverUtils.MODIFIER_KEY, Keys.ENTER));
+
+        // Short wait for a new window to open. If not then throw exception
+        boolean winOpen = waitFor(() -> getDriver().getWindowHandles().size() > winCount, 1000);
+        if (!winOpen)
+            throw new IllegalStateException("Link did not open new window in tab.");
+
+        List<String> windows = new ArrayList<>(getDriver().getWindowHandles());
+        getDriver().switchTo().window(windows.get(1));
+    }
+
+    protected List<String> skipLinksForValidation()
+    {
+        return List.of(
+                "showAllErrors.view",
+                "query-exportRowsExcel.view",
+                "ldk-runNotification.view"  // need to scope notifications to enabled modules then can remove this
+        ); // Override if there are links to pages that are known to throw errors
+    }
+
+    protected List<String> skipLinksForCrawling()
+    {
+        return List.of(
+                "project-begin.view",
+                "query-begin.view",
+                "query-searchPanel.view",
+                "query-executeQuery.view",
+                "study-manageStudy.view",
+                "ehr-animalHistory.view",
+                "ehr-updateQuery.view",
+                "ehr-updateTable.view",
+                "ehr-populateLookupData.view",
+                "ehr-ensureQcStates.view",
+                "ehr-ehrTemplates.view",
+                "ehr-primeDataEntryCache.view",
+                "ehr-cacheLivingAnimals.view",
+                "core-modulePropertyAdmin.view",
+                "dataintegration-begin.view",
+                "ldk-updateQuery",
+                "junit-begin.view",
+                "admin-",
+                "ehr-datasets.view"
+        );
+    }
+
+    private String validLink(WebElement anchor)
+    {
+        String href = anchor.getDomAttribute("href");
+        if (href != null && !href.startsWith("#") && !href.equalsIgnoreCase("undefined"))
+        {
+            String decodedHref = EscapeUtil.decodeUriPath(href);
+            if (skipLinksForValidation().stream().anyMatch(s -> decodedHref.toLowerCase().contains(s.toLowerCase())))
+            {
+                log(href + " is specified as an exception to link validation. Skipping validation.");
+                return null;
+            }
+
+            // Ensure link is not external
+            try
+            {
+                URL url = new URL(href);
+                if (!url.getHost().equalsIgnoreCase(getURL().getHost()))
+                {
+                    log(href + " is an external link. Skipping validation.");
+                    return null;
+                }
+            }
+            catch (MalformedURLException e)
+            {
+                // not a full URL so not external. Carry on.
+            }
+
+            // scope this to admin, ehr folder and subfolders
+            String controller = new Crawler.ControllerActionId(decodedHref).getController();
+            if (!decodedHref.contains(getContainerPath()) && !controller.equalsIgnoreCase("admin"))
+            {
+                log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
+                return null;
+            }
+        }
+
+        if (!anchor.isDisplayed())
+            return null;
+
+        boolean clickable = true;
+        String validUrl = null;
+
+        try
+        {
+            verifyLInk(anchor);
+        }
+        catch (WebDriverException | IllegalStateException e)
+        {
+            clickable = false;
+        }
+
+        if (clickable)
+        {
+            // Give page time to load
+            boolean loaded = waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_PAGE);
+            assertTrue("Link " + href + " did not load in " + WAIT_FOR_PAGE + "ms.", loaded);
+
+            // Assert page is not empty and does not have errors
+            URL url = getURL();
+            assertFalse("URL " + url + " is empty.", isPageEmpty());
+            assertNoLabKeyErrors();
+
+            // assertNoLabKeyErrors does not catch all types of errors
+            assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+
+            // record link as valid and cleanup
+            validUrl = url.toString();
+            getDriver().close();
+            switchToWindow(0);
+        }
+
+        return validUrl;
+    }
+
+    private void validatePageLinks(Set<String> crawledLinks)
+    {
+        log("Validating links on " + getURL());
+
+        // Find all anchors in the body content area, excluding buttons and those in data regions
+        List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form]) and not(@role='button') and not(contains(@class, 'labkey-button'))]"));
+
+        log(anchors.size() + " possible links found.");
+        int validatedCount = 0;
+        Set<String> validLinksOnPage = new HashSet<>();
+        for (WebElement anchor : anchors)
+        {
+            // Only validate links once
+            String href = anchor.getDomAttribute("href");
+            if (href != null && (validLinksOnPage.contains(href) || crawledLinks.contains(href)))
+                continue;
+
+            // Validate and record valid links
+            String validUrl = validLink(anchor);
+            if (validUrl != null)
+            {
+                validatedCount++;
+                validLinksOnPage.add(validUrl);
+            }
+
+        }
+        log(validatedCount + " links validated.");
+
+        // Recursively crawl valid links that have not yet been crawled and aren't listed as a skip.
+        for (String s : validLinksOnPage)
+        {
+            if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(link -> s.toLowerCase().contains(link.toLowerCase())))
+            {
+                beginAt(s);
+                crawledLinks.add(s); // mark page as crawled to avoid loops
+                validatePageLinks(crawledLinks);
+            }
+        }
+    }
+
+    @Test
+    public void testCrawlEhrLinks()
+    {
+        goToEHRFolder();
+        Set<String> crawledLinks = new HashSet<>();
+        validatePageLinks(crawledLinks);
     }
 
     @Test
