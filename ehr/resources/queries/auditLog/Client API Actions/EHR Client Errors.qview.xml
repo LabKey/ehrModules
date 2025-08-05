@@ -3,15 +3,12 @@
         <column name="CreatedBy"/>
         <column name="Date"/>
         <column name="EventType"/>
-        <column name="Key1"/>
-        <column name="Key2"/>
-        <!--<column name="Key3"/>-->
-
+        <column name="SubType"/>
+        <column name="String1"/>
         <column name="Comment" />
     </columns>
     <filters>
-        <filter column="EventType" operator="eq" value="Client API Actions"/>
-        <filter column="Key1" operator="neqornull" value="LabKey Server Backup" />
+        <filter column="SubType" operator="neqornull" value="LabKey Server Backup" />
     </filters>
    <sorts>
        <sort column="Date" descending="true"/>
