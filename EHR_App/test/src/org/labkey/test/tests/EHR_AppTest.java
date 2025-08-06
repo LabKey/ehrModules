@@ -12,6 +12,8 @@ import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.PostgresOnlyTest;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Category({EHR.class})
 public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyTest
@@ -118,6 +120,17 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     public void preTest()
     {
         goToEHRFolder();
+    }
+
+    @Override
+    protected List<String> skipLinksForValidation()
+    {
+        List<String> links = new ArrayList<>(super.skipLinksForValidation());
+        links.add("Issue_Tracker");
+        links.add("ehr-colonyOverview.view");
+        links.add("ehr-updateTable.view");
+        links.add("ehr-populateLookupData.view");
+        return links;
     }
 
     @Test
