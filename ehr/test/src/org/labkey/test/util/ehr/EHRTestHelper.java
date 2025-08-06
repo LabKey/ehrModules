@@ -290,6 +290,14 @@ public class EHRTestHelper
         verifyReportTabs(participantView, Collections.emptyMap());
     }
 
+    public WebElement fillAnInputByName(String name, String value)
+    {
+        WebElement el = Locator.name(name).findElement(_test.getDriver());
+        el.click();
+        el.sendKeys(value);
+        return el;
+    }
+
     /**
      * Verify that the specified reports have no errors
      * @param participantView Should be on a participant view or animal history page with some animals selected
