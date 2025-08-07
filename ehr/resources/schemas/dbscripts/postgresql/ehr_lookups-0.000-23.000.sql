@@ -3345,6 +3345,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of months
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT into ehr_lookups.months (month) VALUES
 ('January'),
 ('February'),
@@ -3358,7 +3359,7 @@ INSERT into ehr_lookups.months (month) VALUES
 ('October'),
 ('November'),
 ('December');
-
+-- @SkipOnEmptySchemasEnd
 
 
 -- ----------------------------
@@ -3807,9 +3808,11 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of tb_eye
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr_lookups.tb_eye VALUES ('b', 'Both');
 INSERT INTO ehr_lookups.tb_eye VALUES ('l', 'Left');
 INSERT INTO ehr_lookups.tb_eye VALUES ('r', 'Right');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for tb_result
@@ -3992,9 +3995,11 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of yesno
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr_lookups.yesno VALUES ('Yes');
 INSERT INTO ehr_lookups.yesno VALUES ('No');
 INSERT INTO ehr_lookups.yesno VALUES ('NA');
+-- @SkipOnEmptySchemasEnd
 
 
 
@@ -4443,13 +4448,14 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of normal_abnormal
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr_lookups.normal_abnormal
 (state)
 VALUES
 ('Normal'),
 ('Abnormal')
 ;
-
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for observations_anesthesia_recovery
@@ -4620,12 +4626,14 @@ WITH (OIDS=FALSE)
 
 ;
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr_lookups.oor_indicators
 (indicator)
 VALUES
 ('<'),
 ('>')
 ;
+-- @SkipOnEmptySchemasEnd
 
 INSERT INTO ehr_lookups.blood_draw_services
 (service) VALUES
@@ -5009,13 +5017,14 @@ WITH (OIDS=FALSE)
 
 ;
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ehr_lookups.qualitative_results
 (result) VALUES
 ('Positive'),
 ('Negative'),
 ('Indeterminate')
  ;
-
+-- @SkipOnEmptySchemasEnd
 
 DROP TABLE IF EXISTS ehr_lookups.urine_method;
 -- ----------------------------
@@ -7031,11 +7040,12 @@ update ehr_lookups.lab_test_range set type = 'Chemistry' where test = 'UA';
 update ehr_lookups.lab_test_range set type = 'Hematology' where test = 'WBC';
 
 delete from ehr.notificationtypes where notificationtype = 'Animal Death';
+-- @SkipOnEmptySchemasBegin
 insert into ehr.notificationtypes
 (notificationtype,description) VALUES
 ('Animal Death', 'An email will be sent each time an animal is marked as dead')
 ;
-
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for ehr_lookups.death_remarks

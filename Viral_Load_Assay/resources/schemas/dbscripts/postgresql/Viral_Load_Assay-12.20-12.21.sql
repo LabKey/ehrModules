@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+-- @SkipOnEmptySchemasBegin
 INSERT INTO viral_load_assay.vl_instrument VALUES ('ABI 7500');
+-- @SkipOnEmptySchemasEnd
 
 DROP TABLE viral_load_assay.vl_category;
