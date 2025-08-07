@@ -1,9 +1,10 @@
 WITH cte0 AS (
     SELECT
         a.Date,
-        substring(a.DataChanges, a.IdStart, CAST(LOCATE('&', a.DataChanges, LOCATE('&Id=', a.DataChanges) + 1) - a.IdStart AS INTEGER)) as Id
+        substring(a.DataChanges, a.IdStart, CAST(LOCATE('&', a.DataChanges, LOCATE('&Id=', a.DataChanges) + 1) - a.IdStart AS INTEGER)
+        ) as Id
     FROM (
-             SELECT Date,
+             SELECT Created AS Date,
                  DataChanges,
                  LOCATE('&Id=', DataChanges) + LENGTH('&Id=') as IdStart
              FROM DatasetAuditEvent
