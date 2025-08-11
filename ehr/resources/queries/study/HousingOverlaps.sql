@@ -1,5 +1,9 @@
-PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Area CHAR DEFAULT NULL, Room CHAR DEFAULT NULL, Cage CHAR DEFAULT NULL)
+/**
+  * This query is designed to find housing records that overlap.  In this query, the overlap to calculated based on both date and time
+  * A record that ends at the same time that a second record begins is not considered an overlap.
 
+  Modified by Kollil on 7/23/25 - Added Area field to the query and the rooms are filtered by area(s) selected, refer to tkt # 12894
+  */
 SELECT
     h.lsid,
     h.id,
@@ -11,21 +15,7 @@ SELECT
     h.reason,
     h.remark,
     h.qcstate
-
 FROM study.housing h
-
 WHERE
-    (h.room.area = Area OR Area IS NULL OR Area = '') AND -- Added by Kollil
-    (h.room = ROOM OR ROOM IS NULL or ROOM = '') AND
-    (h.cage = CAGE OR CAGE IS NULL OR CAGE = '') AND
+    h.qcstate = 18
 
-/* entered startdate must be <= entered enddate */
-    coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as timestamp)) <= coalesce(ENDDATE, now())
-  and
-
-/* entered startdate must be less than record's enddate */
-    coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as timestamp)) < coalesce(h.enddate, now())
-  and
-
-/* entered enddate must be greater than record's startdate */
-    coalesce(ENDDATE, now()) >= coalesce(h.date, now())

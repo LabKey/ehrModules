@@ -1,5 +1,3 @@
-<!--Created the html code on the onprc side by Kollil 7/23/2025 - Changing the query to add Area field as per the tkt request - 12894-->
-
 <script type="text/javascript" nonce="<%=scriptNonce%>">
 
     Ext4.onReady(function(){
@@ -80,12 +78,12 @@
                 fieldLabel: 'End (optional)',
                 itemId: 'endField'
             },{
+
                 xtype: 'ehr-areafield',
                 itemId: 'areaField',
                 addAllSelector: true,
                 editable: true,
-                helpPopup: 'If included, only records from this area will be used.  It can be left blank.',
-                fieldLabel: 'Area(s) (optional)',
+                fieldLabel: 'Area(s)',
                 width: 400,
                 pairedWithRoomField: true,
                 getRoomField: function(){
@@ -94,9 +92,8 @@
             },{
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField',
-                width: 500,
-                helpPopup: 'If included, only records from this room will be used.  It can be left blank.',
-                fieldLabel: 'Room(s) (optional)',
+                width: 400,
+                fieldLabel: 'Room(s)',
                 multiSelect: true,
                 listeners: {
                     change: function(field){
@@ -104,16 +101,8 @@
                         areaField.reset();
                     }
                 }
-                // value: LABKEY.ActionURL.getParameter('room'),
-                // itemId: 'roomField'
-                // hidden: LABKEY.ActionURL.getParameter('groupById') ? true : false
-            },{
-                xtype: 'textfield',
-                helpPopup: 'If included, only records from this cage will be used.  It can be left blank.',
-                fieldLabel: 'Cage (optional)',
-                itemId: 'cageField'
-                //hidden: LABKEY.ActionURL.getParameter('groupById') ? true : false
             }],
+
             dockedItems: {
                 xtype: 'toolbar',
                 dock: 'bottom',
@@ -130,19 +119,6 @@
             },
             onGroupingChange: function(){
                 var type = this.down('#groupingType').getValue().groupingType;
-//            var room = this.down('#roomField');
-//            var cage = this.down('#cageField');
-//
-//            if (type == 'grouped'){
-//                room.setVisible(false);
-//                room.setValue(null);
-//                cage.setVisible(false);
-//                cage.setValue(null);
-//            }
-//            else {
-//                room.setVisible(true);
-//                cage.setVisible(true);
-//            }
 
             },
             onSearchTypeChange: function(){
@@ -169,15 +145,15 @@
 
                 this.insert(3, {
                     xtype: xtype,
-                    helpPopup: 'This will be used at the start of the interval.  It can be left blank to include all records.',
-                    fieldLabel: 'Start (optional - leave blank for all)',
+                    helpPopup: 'This will be used at the start of the interval.',
+                    fieldLabel: 'Start (Not optional )',
                     itemId: 'startField'
                 });
 
                 this.insert(4, {
                     xtype: xtype,
-                    helpPopup: 'This will be used at the end of the interval.  It can be left blank the current time will be used.',
-                    fieldLabel: 'End (optional - leave blank for all)',
+                    helpPopup: 'This will be used at the end of the interval.  ',
+                    fieldLabel: 'End (Not optional)',
                     itemId: 'endField'
                 });
 
@@ -189,41 +165,30 @@
                 var start = this.down('#startField').getValue();
                 var end = this.down('#endField').getValue();
                 var room = this.down('#roomField').getValue();
-                var cage = this.down('#cageField').getValue();
-                var area = this.down('#areaField').getValue();
+                // var cage = this.down('#cageField').getValue();
 
                 var title = 'Overlapping Housing Records';
                 var queryName = 'HousingOverlaps';
-                if (grouping == 'grouped'){
-                    queryName += 'ById';
-                    title = 'Overlapping Ids';
-                }
-
-                if (type == 'date')
-                    queryName += 'DateOnly';
+                // if (grouping == 'grouped'){
+                //     queryName += 'ById';
+                //     title = 'Overlapping Ids';
+                // }
+                //
+                // if (type == 'date')
+                //     queryName += 'DateOnly';
 
                 var config = {
                     frame: 'portal',
                     renderTo: this.qwpDiv.id,
                     schemaName: 'study',
                     queryName: queryName,
+                    filterArray: [
+                        LABKEY.Filter.create('room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF),  //Modified: 7-23-2019  R.Blasa
+                        LABKEY.Filter.create('date', end, LABKEY.Filter.Types.LT),
+                        LABKEY.Filter.create('enddate', start, LABKEY.Filter.Types.GTE),
+                    ],
                     title: title
                 };
-
-                var params = {
-                    StartDate: start,
-                    EndDate: end
-                };
-
-                if (room)
-                    params.Room = room;
-                if (cage)
-                    params.Cage = cage;
-                if (area)
-                    params.Area = area;
-
-                if (!LABKEY.Utils.isEmptyObj(params))
-                    config.parameters = params;
 
                 LDK.Utils.getReadOnlyQWP(config);
             }
