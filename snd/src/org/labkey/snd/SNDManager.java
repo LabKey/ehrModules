@@ -31,6 +31,7 @@ import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.ArrayListMap;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
@@ -77,6 +78,7 @@ import org.labkey.api.snd.EventNarrativeOption;
 import org.labkey.api.snd.EventNote;
 import org.labkey.api.snd.Package;
 import org.labkey.api.snd.PackageDomainKind;
+import org.labkey.api.snd.PlainTextNarrativeDisplayColumn;
 import org.labkey.api.snd.Project;
 import org.labkey.api.snd.ProjectItem;
 import org.labkey.api.snd.SNDDomainKind;
@@ -87,7 +89,6 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.snd.query.PackagesTable;
 import org.labkey.snd.security.QCStateActionEnum;
 import org.labkey.snd.security.SNDSecurityManager;
-import org.labkey.api.snd.PlainTextNarrativeDisplayColumn;
 import org.labkey.snd.trigger.SNDTriggerManager;
 
 import java.sql.SQLException;
@@ -552,7 +553,7 @@ public class SNDManager
         sql.append(" WHERE PkgId = ?").add(pkgId);
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        Map<Integer, String> categories = new HashMap<>();
+        Map<Integer, String> categories = new IntHashMap<>();
         try (TableResultSet rs = selector.getResultSet())
         {
             for (Map<String, Object> r : rs)
@@ -592,7 +593,7 @@ public class SNDManager
         }
         SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
 
-        Map<Integer, Map<Integer, String>> pkgCategoriesByPkgId = new HashMap<>();
+        Map<Integer, Map<Integer, String>> pkgCategoriesByPkgId = new IntHashMap<>();
 
         try (TableResultSet resultSet = selector.getResultSet())
         {
@@ -3364,7 +3365,7 @@ public class SNDManager
         {
             List<GWTPropertyDescriptor> properties = superPackage.getPkg().getAttributes();
             Map<String, GWTPropertyDescriptor> propsByName = new HashMap<>();
-            Map<Integer, GWTPropertyDescriptor> propsById = new HashMap<>();
+            Map<Integer, GWTPropertyDescriptor> propsById = new IntHashMap<>();
             for (GWTPropertyDescriptor p : properties)
             {
                 propsByName.put(p.getName(), p);
@@ -4210,7 +4211,7 @@ public class SNDManager
                 ));
 
         // Prepare a map for the next level of SuperPackages
-        Map<Integer, Map<Integer, Pair<SuperPackage, Integer>>> nextLevelEventDataSuperPkgs = new HashMap<>();
+        Map<Integer, Map<Integer, Pair<SuperPackage, Integer>>> nextLevelEventDataSuperPkgs = new IntHashMap<>();
         nextLevelEventDataSuperPkgs.put(eventData.getEventId(), new HashMap<>());
 
         // Iterate over child event data and link it to the corresponding child SuperPackage

@@ -17,6 +17,7 @@ package org.labkey.snd.security;
 
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
@@ -50,7 +51,6 @@ import org.labkey.snd.SNDManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -127,7 +127,7 @@ public class SNDSecurityManager
 
         SecurityManager.getGroups(c.getProject(), true);
 
-        Map<Integer, MutableSecurityPolicy> policyMap = new HashMap<>();  // Policy cache
+        Map<Integer, MutableSecurityPolicy> policyMap = new IntHashMap<>();  // Policy cache
         MutableSecurityPolicy policy;
         Group group;
         Role role;

@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.jetbrains.annotations.NotNull;
+import org.labkey.api.collections.StringHashMap;
 import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -39,7 +40,6 @@ import org.labkey.ehr.EHRSchema;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +185,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         final Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(snomed, colKeys);
 
         TableSelector ts = new TableSelector(snomed, columns.values(), newFilter, null);
-        final Map<String, Map<Integer, Map<Integer, String>>> snomedMap = new HashMap<>();
+        final Map<String, Map<Integer, Map<Integer, String>>> snomedMap = new StringHashMap<>();
 
         ts.forEach(new Selector.ForEachBlock<>()
         {

@@ -347,7 +347,7 @@ public class SNDDataHandler extends AbstractExperimentDataHandler
     }
 
     @Override
-    public void runMoved(ExpData newData, Container container, Container targetContainer, String oldRunLSID, String newRunLSID, User user, int oldDataRowID)
+    public void runMoved(ExpData newData, Container container, Container targetContainer, String oldRunLSID, String newRunLSID, User user, long oldDataRowID)
     {
 
     }

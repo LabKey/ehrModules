@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -107,6 +108,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static org.labkey.api.exp.api.ExperimentService.asInteger;
+import static org.labkey.api.exp.api.ExperimentService.asLong;
 
 public class EHRManager
 {
@@ -314,7 +318,7 @@ public class EHRManager
                     row.put("publicdata", qc[2]);
                     row = Table.insert(u, ti, row);
 
-                    qcMap.put((String)row.get("label"), (Integer)row.get("rowid"));
+                    qcMap.put((String)row.get("label"), asInteger(row.get("rowid")));
 
                     shouldClearCache = true;
                 }
@@ -1110,24 +1114,24 @@ public class EHRManager
 
         //find propertyId
         TableSelector ts = new TableSelector(propertyDescriptor, Collections.singleton("propertyid"), new SimpleFilter(FieldKey.fromString("PropertyURI"), pd.getPropertyURI()), null);
-        Integer[] ids = ts.getArray(Integer.class);
+        Long[] ids = ts.getArray(Long.class);
         if (ids.length == 0)
         {
             throw new SQLException("Unknown propertyURI: " + pd.getPropertyURI());
         }
-        int propertyId = ids[0];
+        long propertyId = ids[0];
 
         //first ensure the propertyURI exists
         SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name " + (expSchema.getSqlDialect().isPostgreSQL() ? "ilike" : "like") + " ?)", d.getTypeId(), pd.getName());
         SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
-        List<Integer> oldIds = new ArrayList<>();
+        List<Long> oldIds = new ArrayList<>();
 
         try (TableResultSet results = selector.getResultSet())
         {
             while (results.next())
             {
                 Map<String, Object> row = results.getRowMap();
-                oldIds.add((Integer) row.get("propertyid"));
+                oldIds.add(asLong(row.get("propertyid")));
             }
         }
 
@@ -1170,7 +1174,7 @@ public class EHRManager
             executor.execute(updateSql, propertyId, d.getTypeId(), oldIds, minSort);
 
             oldIds.remove(propertyId);
-            for (Integer id : oldIds)
+            for (Long id : oldIds)
             {
                 PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(id);
                 if (toDelete != null)
@@ -1338,7 +1342,7 @@ public class EHRManager
     {
         DataEntryForm def = getDataEntryFormForTask(c, u, taskId);
 
-        Map<Integer, EHRQCState> qcStateMap = new HashMap<>();
+        Map<Integer, EHRQCState> qcStateMap = new IntHashMap<>();
         for (EHRQCState qc : EHRManager.get().getQCStates(c))
         {
             qcStateMap.put(qc.getRowId(), qc);
