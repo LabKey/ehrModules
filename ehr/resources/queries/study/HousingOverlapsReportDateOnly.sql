@@ -8,7 +8,7 @@
   * This query is designed to find housing records that overlap.  In this query, the overlap to calculated based on date only
   * A record that ends at the same time that a second record begins is not considered an overlap.
   */
-PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Room CHAR DEFAULT NULL, Cage CHAR DEFAULT NULL)
+PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP)
 
 SELECT
 h.lsid,
@@ -24,9 +24,6 @@ h.qcstate
 FROM study.housing h
 
 WHERE
-
-(h.room = ROOM OR ROOM IS NULL or ROOM = '') AND
-(h.cage = CAGE OR CAGE IS NULL OR CAGE = '') AND
 
 (
   (cast(COALESCE(STARTDATE, '1900-01-01') AS DATE) >= cast(h.date AS DATE) AND cast(COALESCE(STARTDATE, '1900-01-01') AS DATE) < cast(COALESCE(h.enddate, now()) AS DATE))
