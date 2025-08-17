@@ -18,7 +18,7 @@
             style: 'margin-bottom: 20px;',
             defaults: {
                 border: false,
-                labelWidth: 180,
+                labelWidth: 200,
                 width: 550
             },
             items: [{
@@ -62,13 +62,7 @@
                     checked: LABKEY.ActionURL.getParameter('groupById') ? true : false,
                     name: 'groupingType',
                     inputValue: 'grouped'
-                }],
-                listeners: {
-                    change: function(btn){
-                        var panel = btn.up('panel');
-                        panel.onGroupingChange();
-                    }
-                }
+                }]
             },{
                 xtype: 'xdatetime',
                 helpPopup: 'This will be used at the start of the interval.  It can be left blank to include all records.',
@@ -89,6 +83,33 @@
                 pairedWithRoomField: true,
                 getRoomField: function(){
                     return this.up('panel').down('#roomField');
+                },
+                listeners: {
+                    change: function(field){
+                        const buildingField = field.up('panel').down('#buildingField');
+                        if (this.value?.length) { // check value first to avoid reset loop
+                            buildingField.reset();
+                        }
+                    }
+                }
+            },{
+                xtype: 'ehr-buildingfield',
+                itemId: 'buildingField',
+                addAllSelector: true,
+                editable: true,
+                helpPopup: "Selects rooms in the room field that are located in the selected building(s). Not specifically added to query.",
+                fieldLabel: 'Select Rooms by Building(s)',
+                pairedWithRoomField: true,
+                getRoomField: function(){
+                    return this.up('panel').down('#roomField');
+                },
+                listeners: {
+                    change: function(field){
+                        const areaField = field.up('panel').down('#areaField');
+                        if (this.value?.length) { // check value first to avoid reset loop
+                            areaField.reset();
+                        }
+                    }
                 }
             },{
                 xtype: 'ehr-roomfield',
@@ -98,8 +119,11 @@
                 multiSelect: true,
                 listeners: {
                     change: function(field){
-                        var areaField = field.up('panel').down('#areaField');
+                        const areaField = field.up('panel').down('#areaField');
                         areaField.reset();
+
+                        const buildingField = field.up('panel').down('#buildingField');
+                        buildingField.reset();
                     }
                 }
             },{
@@ -121,27 +145,6 @@
                         btn.up('panel').onSubmit();
                     }
                 }]
-            },
-            onGroupingChange: function(){
-                const type = this.down('#groupingType').getValue().groupingType;
-                const room = this.down('#roomField');
-                const cage = this.down('#cageField');
-                const area = this.down('#areaField');
-
-                if (type === 'grouped'){
-                    area.setDisabled(true);
-                    area.setValue(null);
-                    room.setDisabled(true);
-                    room.setValue(null);
-                    cage.setDisabled(true);
-                    cage.setValue(null);
-                }
-                else {
-                    area.setDisabled(false);
-                    room.setDisabled(false);
-                    cage.setDisabled(false);
-                }
-
             },
             onSearchTypeChange: function(){
                 const type = this.down('#searchType').getValue().searchType;
@@ -190,12 +193,8 @@
                 const rooms = this.down('#roomField').getValue();
                 const cage = this.down('#cageField').getValue();
 
-                let title = 'Overlapping Housing Records';
+                const title = 'Overlapping Housing Records';
                 let queryName = 'HousingOverlapsReport';
-                if (groupById){
-                    queryName += 'ById';
-                    title = 'Overlapping Ids';
-                }
 
                 if (type === 'date')
                     queryName += 'DateOnly';
@@ -203,10 +202,42 @@
                 const config = {
                     frame: 'portal',
                     renderTo: this.qwpDiv.id,
-                    schemaName: 'study',
-                    queryName: queryName,
-                    title: title
+                    title: title,
+                    schemaName: 'study'
                 };
+
+                if (!groupById) {
+                    config.queryName = queryName;
+                }
+                else {
+                    // Group by Id - have to build custom SQL
+                    if (type === 'date') {
+                        config.sql = 'SELECT Id FROM HousingOverlapsReportDateOnly';
+                    }
+                    else {
+                        config.sql = 'SELECT Id FROM HousingOverlapsReport';
+                    }
+
+                    if ((rooms && rooms.length) || cage) {
+                        config.sql += ' WHERE ';
+
+                        let filterSql;
+                        if (rooms && rooms.length)
+                            filterSql = 'room IN (' + rooms.map(item => `'${item}'`).join(", ") + ')';
+
+                        if (cage) {
+                            if (filterSql)
+                                filterSql += ' AND ';
+
+                            filterSql += 'cage = ' + cage;
+                        }
+
+                        if (filterSql)
+                            config.sql += filterSql;
+
+                        config.sql += ' GROUP BY Id';
+                    }
+                }
 
                 const params = {
                     StartDate: start,

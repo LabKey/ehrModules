@@ -63,6 +63,7 @@
         <script path="ehr/form/field/ProtocolField.js"/>
         <script path="ehr/form/field/CageField.js"/>
         <script path="ehr/form/field/RoomField.js"/>
+        <script path="ehr/form/field/BuildingField.js"/>
         <script path="ehr/form/field/AreaField.js"/>
         <script path="ehr/form/field/AnimalGroupField.js"/>
         <script path="ehr/form/field/RoomFieldSingle.js"/>
