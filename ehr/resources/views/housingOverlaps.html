@@ -1,9 +1,11 @@
+<!--Created the html code on the onprc side by Kollil 7/23/2025 - Changing the query to add Area field as per the tkt request - 12894-->
+
 <script type="text/javascript" nonce="<%=scriptNonce%>">
 
     Ext4.onReady(function(){
-        var webpart = <%=webpartContext%>;
+        const webpart = <%=webpartContext%>;
 
-        var qwpDiv = Ext4.DomHelper.insertAfter(webpart.wrapperDivId, {
+        const qwpDiv = Ext4.DomHelper.insertAfter(webpart.wrapperDivId, {
             tag: 'div',
             id: 'qwp_' + Ext4.id()
         });
@@ -16,7 +18,7 @@
             style: 'margin-bottom: 20px;',
             defaults: {
                 border: false,
-                labelWidth: 180,
+                labelWidth: 200,
                 width: 550
             },
             items: [{
@@ -60,49 +62,76 @@
                     checked: LABKEY.ActionURL.getParameter('groupById') ? true : false,
                     name: 'groupingType',
                     inputValue: 'grouped'
-                }],
-                listeners: {
-                    change: function(btn){
-                        var panel = btn.up('panel');
-                        panel.onGroupingChange();
-                    }
-                }
+                }]
             },{
                 xtype: 'xdatetime',
                 helpPopup: 'This will be used at the start of the interval.  It can be left blank to include all records.',
-                fieldLabel: 'Start (optional)',
+                fieldLabel: 'Start',
                 itemId: 'startField'
             },{
                 xtype: 'xdatetime',
                 helpPopup: 'This will be used at the end of the interval.  It can be left blank the current time will be used.',
-                fieldLabel: 'End (optional)',
+                fieldLabel: 'End',
                 itemId: 'endField'
             },{
-
                 xtype: 'ehr-areafield',
                 itemId: 'areaField',
                 addAllSelector: true,
                 editable: true,
-                fieldLabel: 'Area(s)',
-                width: 400,
+                helpPopup: "Selects rooms in the room field that are located in the selected area(s). Not specifically added to query.",
+                fieldLabel: 'Select Rooms by Area(s)',
                 pairedWithRoomField: true,
                 getRoomField: function(){
                     return this.up('panel').down('#roomField');
+                },
+                listeners: {
+                    change: function(field){
+                        const buildingField = field.up('panel').down('#buildingField');
+                        if (this.value?.length) { // check value first to avoid reset loop
+                            buildingField.reset();
+                        }
+                    }
+                }
+            },{
+                xtype: 'ehr-buildingfield',
+                itemId: 'buildingField',
+                addAllSelector: true,
+                editable: true,
+                helpPopup: "Selects rooms in the room field that are located in the selected building(s). Not specifically added to query.",
+                fieldLabel: 'Select Rooms by Building(s)',
+                pairedWithRoomField: true,
+                getRoomField: function(){
+                    return this.up('panel').down('#roomField');
+                },
+                listeners: {
+                    change: function(field){
+                        const areaField = field.up('panel').down('#areaField');
+                        if (this.value?.length) { // check value first to avoid reset loop
+                            areaField.reset();
+                        }
+                    }
                 }
             },{
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField',
-                width: 400,
+                helpPopup: 'If included, only records from this room will be used.  It can be left blank.',
                 fieldLabel: 'Room(s)',
                 multiSelect: true,
                 listeners: {
                     change: function(field){
-                        var areaField = field.up('panel').down('#areaField');
+                        const areaField = field.up('panel').down('#areaField');
                         areaField.reset();
+
+                        const buildingField = field.up('panel').down('#buildingField');
+                        buildingField.reset();
                     }
                 }
+            },{
+                xtype: 'textfield',
+                helpPopup: 'If included, only records from this cage will be used.  It can be left blank.',
+                fieldLabel: 'Cage',
+                itemId: 'cageField'
             }],
-
             dockedItems: {
                 xtype: 'toolbar',
                 dock: 'bottom',
@@ -117,24 +146,20 @@
                     }
                 }]
             },
-            onGroupingChange: function(){
-                var type = this.down('#groupingType').getValue().groupingType;
-
-            },
             onSearchTypeChange: function(){
-                var type = this.down('#searchType').getValue().searchType;
-                var start = this.down('#startField');
-                var end = this.down('#endField');
+                const type = this.down('#searchType').getValue().searchType;
+                const start = this.down('#startField');
+                const end = this.down('#endField');
 
-                var xtype = 'datefield';
-                if(type == 'date'){
-                    if (start.xtype == 'datefield')
+                let xtype = 'datefield';
+                if(type === 'date'){
+                    if (start.xtype === 'datefield')
                         return;
 
                     xtype = 'datefield';
                 }
                 else {
-                    if (start.xtype == 'xdatetime')
+                    if (start.xtype === 'xdatetime')
                         return;
 
                     xtype = 'xdatetime'
@@ -145,56 +170,97 @@
 
                 this.insert(3, {
                     xtype: xtype,
-                    helpPopup: 'This will be used at the start of the interval.',
-                    fieldLabel: 'Start (Not optional )',
+                    helpPopup: 'This will be used at the start of the interval.  It can be left blank to include all records.',
+                    fieldLabel: 'Start',
                     itemId: 'startField'
                 });
 
                 this.insert(4, {
                     xtype: xtype,
-                    helpPopup: 'This will be used at the end of the interval.  ',
-                    fieldLabel: 'End (Not optional)',
+                    helpPopup: 'This will be used at the end of the interval.  It can be left blank the current time will be used.',
+                    fieldLabel: 'End',
                     itemId: 'endField'
                 });
 
                 this.doLayout();
             },
             onSubmit: function(){
-                var type = this.down('#searchType').getValue().searchType;
-                var grouping = this.down('#groupingType').getValue().groupingType;
-                var start = this.down('#startField').getValue();
-                var end = this.down('#endField').getValue();
-                var room = this.down('#roomField').getValue();
-                // var cage = this.down('#cageField').getValue();
+                const type = this.down('#searchType').getValue().searchType;
+                const grouping = this.down('#groupingType').getValue().groupingType;
+                const groupById = (grouping === 'grouped');
+                const start = this.down('#startField').getValue();
+                const end = this.down('#endField').getValue();
+                const rooms = this.down('#roomField').getValue();
+                const cage = this.down('#cageField').getValue();
 
-                var title = 'Overlapping Housing Records';
-                var queryName = 'HousingOverlaps';
-                // if (grouping == 'grouped'){
-                //     queryName += 'ById';
-                //     title = 'Overlapping Ids';
-                // }
-                //
-                // if (type == 'date')
-                //     queryName += 'DateOnly';
+                const title = 'Overlapping Housing Records';
+                let queryName = 'HousingOverlapsReport';
 
-                var config = {
+                if (type === 'date')
+                    queryName += 'DateOnly';
+
+                const config = {
                     frame: 'portal',
                     renderTo: this.qwpDiv.id,
-                    schemaName: 'study',
-                    queryName: queryName,
-                    filterArray: [
-                        LABKEY.Filter.create('room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF),  //Modified: 7-23-2019  R.Blasa
-                        LABKEY.Filter.create('date', end, LABKEY.Filter.Types.LT),
-                        LABKEY.Filter.create('enddate', start, LABKEY.Filter.Types.GTE),
-                    ],
-                    title: title
+                    title: title,
+                    schemaName: 'study'
                 };
+
+                if (!groupById) {
+                    config.queryName = queryName;
+                }
+                else {
+                    // Group by Id - have to build custom SQL
+                    if (type === 'date') {
+                        config.sql = 'SELECT Id FROM HousingOverlapsReportDateOnly';
+                    }
+                    else {
+                        config.sql = 'SELECT Id FROM HousingOverlapsReport';
+                    }
+
+                    if ((rooms && rooms.length) || cage) {
+                        config.sql += ' WHERE ';
+
+                        let filterSql;
+                        if (rooms && rooms.length)
+                            filterSql = 'room IN (' + rooms.map(item => `'${item}'`).join(", ") + ')';
+
+                        if (cage) {
+                            if (filterSql)
+                                filterSql += ' AND ';
+
+                            filterSql += 'cage = ' + cage;
+                        }
+
+                        if (filterSql)
+                            config.sql += filterSql;
+
+                        config.sql += ' GROUP BY Id';
+                    }
+                }
+
+                const params = {
+                    StartDate: start,
+                    EndDate: end
+                };
+
+                const filterArray = [];
+
+                if (rooms && !groupById)
+                    filterArray.push(LABKEY.Filter.create('room', rooms.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+                if (cage && !groupById)
+                    filterArray.push(LABKEY.Filter.create('cage', cage));
+
+                if (!LABKEY.Utils.isEmptyObj(params))
+                    config.parameters = params;
+
+                if (filterArray.length)
+                    config.filterArray = filterArray;
 
                 LDK.Utils.getReadOnlyQWP(config);
             }
 
         }).render(webpart.wrapperDivId);
-
     });
-
 </script>
