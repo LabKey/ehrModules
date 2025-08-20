@@ -14,7 +14,7 @@ null as weightField,
 cast((
     SELECT round(cast(AVG(w2.weight) as double), 2) AS _expr
     FROM study.weight w2
-    WHERE w.id=w2.id AND w.MostRecentWeightDate=w2.date
+    WHERE w2.qcstate.publicdata = true AND w.id=w2.id AND w.MostRecentWeightDate=w2.date
 ) as double) AS MostRecentWeight
 
 FROM (
