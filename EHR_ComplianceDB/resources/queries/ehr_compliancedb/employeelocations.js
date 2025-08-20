@@ -22,7 +22,7 @@ function beforeDelete(row, errors){
     var fields = ['location'], fieldName;
     for (var i=0;i<fields.length;i++){
         fieldName = fields[i];
-        if (helper.verifyNotUsed('ehr_compliancedb', 'employees', 'location', row[fieldName])){
+        if (helper.verifyNotUsed('ehr_compliancedb', 'employees', 'location', row[fieldName], 'employeelocations')){
             errors[fieldName] = ['Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the employees table'];
         }
     }

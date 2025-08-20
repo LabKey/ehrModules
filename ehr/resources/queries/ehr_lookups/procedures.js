@@ -6,15 +6,17 @@
 
 var console = require("console");
 var LABKEY = require("labkey");
+var triggers = require("ehr/triggers");
+triggers.initScript(this);
+var EHR = triggers.EHR;
 
 var helper = org.labkey.ldk.query.LookupValidationHelper.create(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, 'ehr_lookups', 'procedures');
 
-
-function beforeDelete(row, errors){
-    if (helper.verifyNotUsed('study', 'encounters', 'procedureid', row['rowid'])){
+EHR.Server.TriggerManager.registerHandlerForQuery(EHR.Server.TriggerManager.Events.BEFORE_DELETE, 'ehr_lookups', 'procedures', function(helper, scriptErrors, row, oldRow){
+    if (helper.verifyNotUsed('study', 'encounters', 'procedureid', row['rowid'], 'procedures')) {
         addError(errors, 'name', 'Cannot delete row with ID: ' + row['rowid'] + ' because it is referenced by the table encounters.  You should inactivate this item instead.');
     }
-}
+});
 
 function addError(errors, fieldName, msg){
     if (!errors[fieldName])

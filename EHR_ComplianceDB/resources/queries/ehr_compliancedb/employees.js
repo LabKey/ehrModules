@@ -63,14 +63,14 @@ function beforeDelete(row, errors){
         query = queries[j];
         for (var i=0;i<fields.length;i++){
             fieldName = fields[i];
-            if (helper.verifyNotUsed('ehr_compliancedb', query, 'employeeid', row[fieldName])){
+            if (helper.verifyNotUsed('ehr_compliancedb', query, 'employeeid', row[fieldName], 'employees')){
                 addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the table ' + query);
             }
         }
     }
 
     //also check trainer
-    if (helper.verifyNotUsed('ehr_compliancedb', 'completiondates', 'trainer', row[fieldName])){
+    if (helper.verifyNotUsed('ehr_compliancedb', 'completiondates', 'trainer', row[fieldName], 'employees')){
         addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the table completiondates');
     }
 }
