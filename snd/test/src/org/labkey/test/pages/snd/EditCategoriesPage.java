@@ -18,10 +18,12 @@ package org.labkey.test.pages.snd;
 import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.components.bootstrap.ModalDialog;
 import org.labkey.test.components.snd.CategoryEditRow;
 import org.labkey.test.pages.LabKeyPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 
@@ -73,18 +75,32 @@ public class EditCategoriesPage extends LabKeyPage<EditCategoriesPage.ElementCac
 
     public EditCategoriesPage clickSave()
     {
-        waitFor(()-> elementCache().saveButton.getAttribute("disabled")==null,
-                "'Save' button is disabled", 2000);
-        elementCache().saveButton.click();
-        sleep(1000);    // todo: wait for save button to detatch/unmount before re-mounting into next page view
+        return clickSave(false);
+    }
+
+    public EditCategoriesPage clickSaveAndConfirmDelete()
+    {
+        return clickSave(true);
+    }
+
+    public EditCategoriesPage clickSave(boolean confirmDelete)
+    {
+        shortWait().until(ExpectedConditions.elementToBeClickable(elementCache().saveButton)).click();
+        if (confirmDelete)
+        {
+            new ModalDialog.ModalDialogFinder(getDriver())
+                .withBodyTextContaining("Are you sure you want to delete row").find()
+                .dismiss("Submit Changes");
+        }
+        shortWait().until(ExpectedConditions.stalenessOf(elementCache().saveButton));
+        clearCache();
         return new EditCategoriesPage(getDriver());
     }
 
     public PackageListPage clickCancel()
     {
-        waitFor(()-> elementCache().cancelButton.getAttribute("disabled")==null,
-                "'Cancel' button is disabled", 2000);
-        elementCache().cancelButton.click();
+        shortWait().until(ExpectedConditions.elementToBeClickable(elementCache().cancelButton)).click();
+        shortWait().until(ExpectedConditions.stalenessOf(elementCache().cancelButton));
         return new PackageListPage(getDriver());
     }
 
@@ -98,7 +114,7 @@ public class EditCategoriesPage extends LabKeyPage<EditCategoriesPage.ElementCac
     {
         // TODO: Add other elements that are on the page
         WebElement addCategoriesBtn = Locator.tag("div").containing("Add Category")
-                .withChild(Locator.tagWithClass("i", "fa fa-plus-circle"))
+                .withChild(Locator.tagWithClass("i", "fa-plus-circle"))
                 .findWhenNeeded(getDriver()).withTimeout(4000);
         WebElement cancelButton = Locator.button("Cancel").findWhenNeeded(getDriver()).withTimeout(4000);
         WebElement saveButton = Locator.button("Save").findWhenNeeded(getDriver()).withTimeout(4000);
