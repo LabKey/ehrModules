@@ -3421,7 +3421,12 @@ public class SNDManager
                         value = "<span class='" + AttributeData.ATTRIBUTE_DATA_CSS_CLASS + "'>" + value + "</span>";
                     }
 
-                    eventDataNarrative = new StringBuilder(eventDataNarrative.toString().replace("{" + pd.getName() + "}", value));
+                    // Trim any spaces immediately inside '{' and '}' to make tokens like "{ route 2}" -> "{route 2}"
+                    String normalized = eventDataNarrative.toString()
+                            .replaceAll("\\{\\s+", "{")
+                            .replaceAll("\\s+\\}", "}");
+
+                    eventDataNarrative = new StringBuilder(normalized.replace("{" + pd.getName() + "}", value));
                 }
             }
 
