@@ -211,11 +211,23 @@
                 }
                 else {
                     // Group by Id - have to build custom SQL
+                    config.sql = 'SELECT i.Id, \n' +
+                            'i.Id.Dataset.Demographics.gender, \n' +
+                            'i.Id.Demographics.species, \n' +
+                            'i.Id.Demographics.calculated_status, \n' +
+                            'i.Id.Demographics.birth, \n' +
+                            'i.Id.Demographics.death, \n' +
+                            'i.Id.curLocation.room AS CurrentRoom, \n' +
+                            'i.Id.curLocation.cage AS CurrentCage, \n' +
+                            'i.Id.MostRecentWeight.MostRecentWeight, \n' +
+                            'i.Id.MostRecentWeight.MostRecentWeightDate \n' +
+                            'FROM ('
+
                     if (type === 'date') {
-                        config.sql = 'SELECT Id FROM HousingOverlapsReportDateOnly';
+                        config.sql += 'SELECT Id FROM HousingOverlapsReportDateOnly';
                     }
                     else {
-                        config.sql = 'SELECT Id FROM HousingOverlapsReport';
+                        config.sql += 'SELECT Id FROM HousingOverlapsReport';
                     }
 
                     if ((rooms && rooms.length) || cage) {
@@ -234,9 +246,9 @@
 
                         if (filterSql)
                             config.sql += filterSql;
-
-                        config.sql += ' GROUP BY Id';
                     }
+
+                    config.sql += ' GROUP BY Id) i';
                 }
 
                 const params = {
