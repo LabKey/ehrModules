@@ -307,6 +307,19 @@ public class AnimalRecordImpl implements AnimalRecord
     }
 
     @Override
+    public String getMostRecentArrivalSource()
+    {
+        if (_props.containsKey("source"))
+        {
+            List<Map<String, Object>> rows = (List)_props.get("source");
+            if (!rows.isEmpty())
+                return (String)rows.get(0).get("source/meaning");
+        }
+
+        return null;
+    }
+
+    @Override
     public Integer getDaysSinceWeight()
     {
         return (Integer)_props.get(FieldKey.fromString("daysSinceWeight").toString());
