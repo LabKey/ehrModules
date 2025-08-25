@@ -1668,7 +1668,7 @@ public class EHRController extends SpringActionController
                     DataLoader loader = DataLoader.get().createLoader(_reportsResource, true, null, TabLoader.TSV_FILE_TYPE);
 
                     BatchValidationException batchErrors = new BatchValidationException();
-                    AuditBehaviorType behaviorType = table.getAuditBehavior();
+                    AuditBehaviorType behaviorType = table.getEffectiveAuditBehavior();
                     TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
                     if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
                         auditEvent = createTransactionAuditEvent(getContainer(), QueryService.AuditAction.INSERT);
