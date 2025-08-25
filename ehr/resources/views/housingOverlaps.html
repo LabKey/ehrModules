@@ -233,7 +233,7 @@
                     if ((rooms && rooms.length) || cage) {
                         config.sql += ' WHERE ';
 
-                        let filterSql;
+                        let filterSql = '';
                         if (rooms && rooms.length)
                             filterSql = 'room IN (' + rooms.map(item => `'${item}'`).join(", ") + ')';
 
@@ -241,10 +241,10 @@
                             if (filterSql)
                                 filterSql += ' AND ';
 
-                            filterSql += 'cage = ' + cage;
+                            filterSql += "cage = '" + cage + "'";
                         }
 
-                        if (filterSql)
+                        if (filterSql?.length)
                             config.sql += filterSql;
                     }
 
