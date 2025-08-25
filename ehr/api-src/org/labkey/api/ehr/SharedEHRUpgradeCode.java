@@ -317,7 +317,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
         updateService.truncateRows(user, container, null, null);
 
         BatchValidationException errors = new BatchValidationException();
-        AuditBehaviorType behaviorType = table.getAuditBehavior();
+        AuditBehaviorType behaviorType = table.getEffectiveAuditBehavior();
         TransactionAuditProvider.TransactionAuditEvent auditEvent = null;
         if (behaviorType != null && behaviorType != AuditBehaviorType.NONE)
             auditEvent = createTransactionAuditEvent(container, QueryService.AuditAction.INSERT);
