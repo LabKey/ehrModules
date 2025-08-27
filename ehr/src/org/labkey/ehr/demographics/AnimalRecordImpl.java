@@ -300,7 +300,7 @@ public class AnimalRecordImpl implements AnimalRecord
         {
             List<Map<String, Object>> rows = (List)_props.get("source");
             if (!rows.isEmpty())
-                return (Date)rows.get(0).get("date");
+                return (Date)rows.get(0).get("mostRecentArrival");
         }
 
         return null;
