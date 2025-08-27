@@ -48,8 +48,9 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
     }
 
     @Override
-    protected AbstractAuditDomainKind getDomainKind() {
-        return new EHRSecurityEscalationDomain();
+    protected AbstractAuditDomainKind getDomainKind()
+    {
+        return new EHRSecurityEscalationDomainKind();
     }
 
     public static class EHRSecurityEscalationEvent extends SecurityEscalationEvent
@@ -69,9 +70,10 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
         }
     }
 
-    public static class EHRSecurityEscalationDomain extends SecurityEscalationAuditDomainKind
+    public static class EHRSecurityEscalationDomainKind extends SecurityEscalationAuditDomainKind
     {
-        public EHRSecurityEscalationDomain() {
+        public EHRSecurityEscalationDomainKind()
+        {
             super(EVENT_TYPE, EHRSecurityEscalationEvent.class.getName());
         }
     }
