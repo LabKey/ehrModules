@@ -16,6 +16,8 @@
 
 package org.labkey.test.tests.snd;
 
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,7 +43,6 @@ import org.labkey.test.TestTimeoutException;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.components.CustomizeView;
-import org.labkey.test.components.bootstrap.ModalDialog;
 import org.labkey.test.components.snd.AttributeGridRow;
 import org.labkey.test.components.snd.AttributesGrid;
 import org.labkey.test.components.snd.CategoryEditRow;
@@ -63,12 +64,11 @@ import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.StudyHelper;
 import org.labkey.test.util.core.webdav.WebDavUploadHelper;
-import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -859,7 +859,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     // If values exist this will delete them.  Path of project folder must be valid.
     protected void deleteIfNeeded(String path, String schemaName, String queryName, Map<String, Object> map, String pkName) throws IOException, CommandException
     {
-        Connection cn = createDefaultConnection(false);
+        Connection cn = createDefaultConnection();
 
         SelectRowsCommand selectCmd = new SelectRowsCommand(schemaName, queryName);
         selectCmd.addFilter(new Filter(pkName, map.get(pkName)));
@@ -906,6 +906,12 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         // These will run as part of project setup to populate data
         testSNDImport();
         testPackageApis();
+    }
+
+    @Override
+    protected boolean allowTimeZoneShifting()
+    {
+        return false;
     }
 
     private void setupTest1Project()
@@ -1480,7 +1486,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         waitFor(()-> false, 2000);
 
         SelectRowsCommand catsCmd = new SelectRowsCommand("snd", "PkgCategories");
-        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(false), getProjectName());
+        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(), getProjectName());
 
         assertTrue("our category should have been created, but was not",
                 afterCats.getRows().stream().anyMatch((a)-> a.get("Description").equals(ourNewCategory)));
@@ -1497,22 +1503,18 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         catMap.put("Active", true);
         catMap.put("Comment", "delete me");
         cmd.addRow(catMap);
-        RowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
+        RowsResponse response = cmd.execute(createDefaultConnection(), getProjectName());
 
         PackageListPage listPage = PackageListPage.beginAt(this , getProjectName());
         EditCategoriesPage catPage = listPage.clickEditCategories();
 
-        // after clicking 'save' we expect to have to dismiss the dialog for deleting the 'weight' category
-
         catPage.deleteCategory(ourCategory);
-        catPage.clickSave();
-        ModalDialog.finder(getDriver())
-                .withBodyTextContaining("Are you sure you want to delete row").find()
-                .dismiss("Submit Changes");
-        waitFor(()-> false, 2000);
+        catPage.clickSaveAndConfirmDelete();
+
+        sleep(2000);
 
         SelectRowsCommand catsCmd = new SelectRowsCommand("snd", "PkgCategories");
-        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(false), getProjectName());
+        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(), getProjectName());
 
         assertFalse("our category should have been deleted, but was not",
                 afterCats.getRows().stream().anyMatch((a)-> a.get("Description").equals(ourCategory)));
@@ -1530,7 +1532,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         catMap.put("Active", true);
         catMap.put("Comment", "edit me so hard!"); // comment is not shown in the UI
         cmd.addRow(catMap);
-        RowsResponse response = cmd.execute(createDefaultConnection(false), getProjectName());
+        RowsResponse response = cmd.execute(createDefaultConnection(), getProjectName());
         assertEquals(200, response.getStatusCode());
 
         PackageListPage listPage = PackageListPage.beginAt(this , getProjectName());
@@ -1554,7 +1556,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertEquals("test edit category should have new description", editedCategory, ourCat.getDescription());
 
         SelectRowsCommand catsCmd = new SelectRowsCommand("snd", "PkgCategories");
-        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(false), getProjectName());
+        SelectRowsResponse afterCats = catsCmd.execute(createDefaultConnection(), getProjectName());
         assertTrue("our category should have been edited, but was not",
                 afterCats.getRows().stream().anyMatch((a)-> a.get("Description").equals(editedCategory)));
         assertFalse("our category should have been edited, but was not",
@@ -1566,7 +1568,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     {
         clickFolder(TEST1SUBFOLDER);
 
-        Connection cn = createDefaultConnection(false);
+        Connection cn = createDefaultConnection();
 
         InsertRowsCommand insertRowsCommand = new InsertRowsCommand("snd", "Pkgs");
         insertRowsCommand.addRow(TEST1ROW1MAP);
@@ -2121,22 +2123,16 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
     private String getPermissionTableValue(int row, int col)
     {
-        List<WebElement> els = ((Locator.XPathLocator)getSimpleTableCell(Locator.id("category-security"), row, col)).child("div").child("a").child("input").findElements(getDriver());
-        if (!els.isEmpty())
-        {
-            return els.get(0).getAttribute("value");
-        }
-
-        return null;
+        return ((Locator.XPathLocator)getSimpleTableCell(Locator.id("category-security"), row, col)).child("div").child("a").child("input").findElement(getDriver())
+            .getAttribute("value");
     }
 
     private void clickRoleInOpenDropDown(String name)
     {
-        List<WebElement> els = Locator.tagWithClassContaining("div", "btn-group open").child("ul").child("li").child("a").withText(name).findElements(getDriver());
-        if (!els.isEmpty())
-        {
-            els.get(0).click();
-        }
+        Locator.tag("div").withClasses("btn-group", "open").child("ul").child("li").child("a")
+            .withText(name)
+            .findElement(getDriver())
+            .click();
     }
 
     @Test
@@ -2147,7 +2143,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         log("Create permission categories");
         List<String> categories = Arrays.asList("Permission category 1", "Permission category 2", "Permission category 3");
         List<String> permissions = Arrays.asList("SND Reader", "SND Basic Submitter", "SND Data Reviewer");
-        List<Integer> categoryRows = new ArrayList<>();
+        Map<String, Integer> categoryRows = new HashMap<>();
         PackageListPage listPage = PackageListPage.beginAt(this , getProjectName());
         EditCategoriesPage catPage = listPage.clickEditCategories();
 
@@ -2155,58 +2151,57 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         for (String category : categories)
         {
             catPage.addCategory(category, true);
-            catPage = catPage.clickSave();
-            waitFor(() -> false, 2000);
         }
+        catPage.clickSave();
 
         log("Check link on admin page.");
         beginAt(WebTestHelper.buildURL("snd",getProjectName(), "admin"));
 
-        assertElementPresent(Locator.linkWithText("SND Security"));
-        click(Locator.linkWithText("SND Security"));
-        String value;
+        clickAndWait(Locator.linkWithText("SND Security"));
         int rowCount = getTableRowCount("category-security") - 1;
 
         for (int i = 0; i < rowCount; i++)
         {
-            if (categories.contains(getTableCellText(Locator.id("category-security"), i, 0)))
+            String categoryName = getTableCellText(Locator.id("category-security"), i, 0);
+            if (categories.contains(categoryName))
             {
-                value = getPermissionTableValue(i, 1);
-                assertNotNull(value);
+                String value = getPermissionTableValue(i, 1); // Administrator permission
                 assertEquals("None", value);
-                categoryRows.add(i);
+                categoryRows.put(categoryName, i);
             }
         }
+        Assertions.assertThat(categoryRows.keySet()).as("Custom categories")
+            .containsExactlyElementsOf(categories);
 
-        click(Locator.id("a_all_-3"));
+        click(Locator.id("a_all_-3")); // All Categories for Guests
         clickRoleInOpenDropDown("SND Reader");
 
-        for (Integer r : categoryRows)
+        for (Integer r : categoryRows.values())
         {
-            value = getPermissionTableValue(r, 1);
-            assertNotNull(value);
-            assertEquals("SND Reader", value);
+            String value = getPermissionTableValue(r, 1);
+            // Wait for setting to propagate
+            Awaitility.await().atMost(Duration.ofSeconds(1)).untilAsserted(() -> assertEquals("SND Reader", value));
         }
 
         findButton("Clear All").click();
         acceptAlert();
 
-        for (int k = 0; k < categoryRows.size(); k++)
+        for (String category : categories)
         {
-            value = getPermissionTableValue(categoryRows.get(k), 1);
-            assertNotNull(value);
+            Integer row = categoryRows.get(category);
+            String value = getPermissionTableValue(row, 1);
             assertEquals("None", value);
-            click(getSimpleTableCell(Locator.id("category-security"), categoryRows.get(k), 1));
-            clickRoleInOpenDropDown(permissions.get(k));
+            click(getSimpleTableCell(Locator.id("category-security"), row, 1));
+            clickRoleInOpenDropDown(permissions.get(categories.indexOf(category)));
         }
 
         waitAndClickAndWait(Locator.linkContainingText("Save"));
 
-        for (int j = 0; j < categoryRows.size(); j++)
+        for (String category : categories)
         {
-            value = getPermissionTableValue(categoryRows.get(j), 1);
-            assertNotNull(value);
-            assertEquals(value, permissions.get(j));
+            Integer row = categoryRows.get(category);
+            String value = getPermissionTableValue(row, 1);
+            assertEquals(permissions.get(categories.indexOf(category)), value);
         }
 
     }
@@ -2289,11 +2284,11 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private void truncateSndPkg() throws Exception
     {
         //cleanup - truncate snd.pkgs
-        Connection conn = createDefaultConnection(false);
+        Connection conn = createDefaultConnection();
         TruncateTableCommand command = new TruncateTableCommand("snd", "Pkgs");
         command.execute(conn, getProjectName());
 
-        conn = createDefaultConnection(false);
+        conn = createDefaultConnection();
         SelectRowsCommand selectRowsCommand = new SelectRowsCommand("snd", "Pkgs");
         SelectRowsResponse selectRowsResponse = selectRowsCommand.execute(conn, getProjectName());
         assertEquals("Zero row count expected after truncating snd.Pkgs", 0, selectRowsResponse.getRows().size());
