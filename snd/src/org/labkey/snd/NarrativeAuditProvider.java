@@ -42,10 +42,10 @@ public class NarrativeAuditProvider extends AbstractAuditTypeProvider implements
     public static final String COLUMN_NAME_EVENTDATE = "EventDate";
     public static final String COLUMN_NAME_QCSTATE = "QcState";
 
-    static final List<FieldKey> defaultVisibleColumns = new ArrayList<>();
+    private static final List<FieldKey> defaultVisibleColumns = new ArrayList<>();
 
-    static {
-
+    static
+    {
         defaultVisibleColumns.add(FieldKey.fromParts(COLUMN_NAME_CREATED));
         defaultVisibleColumns.add(FieldKey.fromParts(COLUMN_NAME_CREATED_BY));
         defaultVisibleColumns.add(FieldKey.fromParts(COLUMN_NAME_IMPERSONATED_BY));
@@ -57,10 +57,9 @@ public class NarrativeAuditProvider extends AbstractAuditTypeProvider implements
         defaultVisibleColumns.add(FieldKey.fromParts(COLUMN_NAME_QCSTATE));
     }
 
-    @Override
-    protected AbstractAuditDomainKind getDomainKind()
+    public NarrativeAuditProvider()
     {
-        return new org.labkey.snd.NarrativeAuditProvider.NarrativeAuditDomainKind();
+        super(new NarrativeAuditDomainKind());
     }
 
     @Override
