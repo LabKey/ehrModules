@@ -689,8 +689,8 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     continue;
                 }
 
-                //row.put("Id", subjectId);
-                row.put("participantid", subjectId);
+                row.put("Id", subjectId);
+                //row.put("participantid", subjectId);
                 row.put("date", date);
                 row.put("coefficient", Double.parseDouble(fields[1]));
 
