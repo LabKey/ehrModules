@@ -76,5 +76,11 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
         {
             super(EVENT_TYPE, EHRSecurityEscalationEvent.class.getName());
         }
+
+        @Override
+        protected String getNamespacePrefix()
+        {
+            return NAMESPACE_PREFIX + "EHRSecurityEscalationDomain";
+        }
     }
 }
