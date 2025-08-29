@@ -98,5 +98,7 @@ public interface AnimalRecord
 
     Date getMostRecentArrival();
 
+    String getMostRecentArrivalSource();
+
     Integer getDaysSinceWeight();
 }
