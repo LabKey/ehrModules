@@ -2178,9 +2178,9 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
 
         for (Integer r : categoryRows.values())
         {
-            String value = getPermissionTableValue(r, 1);
             // Wait for setting to propagate
-            Awaitility.await().atMost(Duration.ofSeconds(1)).untilAsserted(() -> assertEquals("SND Reader", value));
+            Awaitility.await().atMost(Duration.ofSeconds(1)).untilAsserted(() ->
+                assertEquals("SND Reader", getPermissionTableValue(r, 1)));
         }
 
         findButton("Clear All").click();
