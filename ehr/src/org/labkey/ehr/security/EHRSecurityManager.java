@@ -224,29 +224,25 @@ public class EHRSecurityManager
         if (targetContainer == null)
             return Collections.emptyMap();
 
-        Study study = StudyService.get().getStudy(targetContainer);
-        if (study == null)
-            return Collections.emptyMap();
-
-        String cacheKey = getCacheKey(study, QCSTATE_CACHE_ID);
+        String cacheKey = getCacheKey(c, QCSTATE_CACHE_ID);
         Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>) DataEntryManager.get().getCache().get(cacheKey);
         if (qcStates != null)
             return qcStates;
 
         qcStates = new HashMap<>();
-        for (EHRQCState qc : EHRManager.get().getQCStates(study.getContainer()))
+        for (EHRQCState qc : EHRManager.get().getQCStates(c))
         {
             qcStates.put(qc.getLabel(), qc);
         }
 
         qcStates = Collections.unmodifiableMap(qcStates);
-        DataEntryManager.get().getCache().put(getCacheKey(study, QCSTATE_CACHE_ID), qcStates);
+        DataEntryManager.get().getCache().put(getCacheKey(c, QCSTATE_CACHE_ID), qcStates);
 
         return qcStates;
     }
 
-    private String getCacheKey(Study s, String suffix)
+    private String getCacheKey(Container c, String suffix)
     {
-        return getClass().getName() + "||" + s.getEntityId() + "||" + suffix;
+        return getClass().getName() + "||" + c.getEntityId() + "||" + suffix;
     }
 }
