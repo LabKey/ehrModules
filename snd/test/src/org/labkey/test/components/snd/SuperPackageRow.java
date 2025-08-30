@@ -61,38 +61,41 @@ public class SuperPackageRow extends WebDriverComponent<SuperPackageRow.ElementC
     public SuperPackageRow select() // note: this 'selection' behavior is expressed among assigned packages, not among available packages
     {
         if (!isSelected())
-            newElementCache().desc.click();
-        getWrapper().waitFor(()-> isSelected(),
+            elementCache().desc.click();
+        WebDriverWrapper.waitFor(this::isSelected,
                 "row item never became selected",2000);
         return this;
     }
 
     public String getLabel()
     {
-        return newElementCache().desc.getText();
+        return elementCache().desc.getText();
     }
 
     public SuperPackageRow clickMenuItem(String menuText)
     {
-       getWrapper().fireEvent(newElementCache().menuToggle, WebDriverWrapper.SeleniumEvent.mouseover);
-       newElementCache().menuToggle.click();
-       // wait for the menu to expand
-       getWrapper().waitFor(()-> newElementCache().menuToggle.getAttribute("class").contains("open"), 1000);
-       Locator menuItem = Locator.tagWithAttribute("li", "role", "presentation")
-               .child(Locator.tagWithAttribute("a", "role", "menuitem")
-                       .containing(menuText));
-       WebElement itemToClick = menuItem.waitForElement(getComponentElement(), 2000);
-       getWrapper().fireEvent(newElementCache().menuToggle, WebDriverWrapper.SeleniumEvent.mouseover);
-       getWrapper().waitFor(()-> itemToClick.isEnabled(), 2000);
-       itemToClick.click();
-       // wait for the menu to collapse (or disappear, if 'remove' was the action')
-       getWrapper().waitFor(()-> {
-           try
-           {
-               return newElementCache().menuToggle.getAttribute("aria-expanded").equals("false");
-           }catch (StaleElementReferenceException sere){return true;}
-           }, 1000);
-       return this;
+        getWrapper().mouseOver(this.getComponentElement());
+        elementCache().menuToggle.click();
+        // wait for the menu to expand
+        WebDriverWrapper.waitFor(() -> elementCache().menuToggle.getAttribute("aria-expanded").equals("true"), () -> "Menu didn't open: " + getLabel(), 1000);
+        Locator menuItem = Locator.tagWithAttribute("li", "role", "presentation")
+            .child(Locator.tagWithAttribute("a", "role", "menuitem")
+                .containing(menuText));
+        WebElement itemToClick = menuItem.waitForElement(getComponentElement(), 2000);
+        WebDriverWrapper.waitFor(itemToClick::isEnabled, () -> "Menu item not enabled: " + menuText, 2000);
+        itemToClick.click();
+        // wait for the menu to collapse (or disappear, if 'remove' was the action')
+        WebDriverWrapper.waitFor(() -> {
+            try
+            {
+                return elementCache().menuToggle.getAttribute("aria-expanded").equals("false");
+            }
+            catch (StaleElementReferenceException sere)
+            {
+                return true;
+            }
+        }, "Menu didn't close", 1000);
+        return this;
     }
 
     @Override
@@ -101,7 +104,7 @@ public class SuperPackageRow extends WebDriverComponent<SuperPackageRow.ElementC
         return new ElementCache();
     }
 
-    protected class ElementCache extends Component.ElementCache
+    protected class ElementCache extends Component<?>.ElementCache
     {
         public WebElement menuToggle = Locator.tagWithClassContaining("div", "btn-group") // sometimes dropdown, dropup
                         .child(Locator.id("superpackage-actions"))

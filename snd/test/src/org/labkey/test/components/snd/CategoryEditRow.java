@@ -57,7 +57,7 @@ public class CategoryEditRow extends WebDriverComponent<CategoryEditRow.ElementC
     public CategoryEditRow setDescription(String value)
     {
         elementCache().descriptionInput.set(value);
-        getWrapper().waitFor(()-> elementCache().descriptionInput.get() == value, 2000);
+        WebDriverWrapper.waitFor(()-> value.equals(elementCache().descriptionInput.get()), 2000);
         return this;
     }
 
@@ -80,7 +80,7 @@ public class CategoryEditRow extends WebDriverComponent<CategoryEditRow.ElementC
     public void delete()
     {
         getWrapper().fireEvent(elementCache().deleteLI, WebDriverWrapper.SeleniumEvent.mouseover);
-        getWrapper().waitFor(()-> elementCache().deleteLI.isEnabled() && elementCache().deleteLI.isSelected(), 2000);
+        WebDriverWrapper.waitFor(()-> elementCache().deleteLI.isEnabled() && elementCache().deleteLI.isSelected(), 2000);
         elementCache().deleteLI.click();
     }
 
@@ -90,7 +90,7 @@ public class CategoryEditRow extends WebDriverComponent<CategoryEditRow.ElementC
         return new ElementCache();
     }
 
-    protected class ElementCache extends Component.ElementCache
+    protected class ElementCache extends Component<?>.ElementCache
     {
         Input descriptionInput = Input(Locators.descriptionEdit(), getDriver()).timeout(4000).findWhenNeeded(this);
         Checkbox activeCheckBox  = Checkbox.Checkbox(
