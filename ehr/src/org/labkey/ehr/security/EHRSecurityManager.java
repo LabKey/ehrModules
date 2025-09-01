@@ -224,19 +224,19 @@ public class EHRSecurityManager
         if (targetContainer == null)
             return Collections.emptyMap();
 
-        String cacheKey = getCacheKey(c, QCSTATE_CACHE_ID);
+        String cacheKey = getCacheKey(targetContainer, QCSTATE_CACHE_ID);
         Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>) DataEntryManager.get().getCache().get(cacheKey);
-        if (qcStates != null)
+        if (qcStates != null && !qcStates.isEmpty())
             return qcStates;
 
         qcStates = new HashMap<>();
-        for (EHRQCState qc : EHRManager.get().getQCStates(c))
+        for (EHRQCState qc : EHRManager.get().getQCStates(targetContainer))
         {
             qcStates.put(qc.getLabel(), qc);
         }
 
         qcStates = Collections.unmodifiableMap(qcStates);
-        DataEntryManager.get().getCache().put(getCacheKey(c, QCSTATE_CACHE_ID), qcStates);
+        DataEntryManager.get().getCache().put(getCacheKey(targetContainer, QCSTATE_CACHE_ID), qcStates);
 
         return qcStates;
     }
