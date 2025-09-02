@@ -36,8 +36,10 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.ApiPermissionsHelper;
+import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
+import org.labkey.test.util.PasswordUtil;
 import org.labkey.test.util.PermissionsHelper;
 import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
@@ -1054,6 +1056,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             this.description = description;
             this.publicData = publicData;
         }
+    }
+
+    protected void setupNotificationService()
+    {
+        //set general settings
+        beginAt(WebTestHelper.buildURL("ldk", getContainerPath(),"notificationAdmin"));
+        _helper.waitForCmp("field[fieldLabel='Notification User']");
+        Ext4FieldRef.getForLabel(this, "Notification User").setValue(PasswordUtil.getUsername());
+        Ext4FieldRef.getForLabel(this, "Reply Email").setValue("fakeEmail@fakeDomain.test");
+        Ext4CmpRef btn = _ext4Helper.queryOne("button[text='Save']", Ext4CmpRef.class);
+        btn.waitForEnabled();
+        waitAndClick(Ext4Helper.Locators.ext4Button("Save"));
+        waitForElement(Ext4Helper.Locators.window("Success"));
+        waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
     }
 
     /**
