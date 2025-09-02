@@ -24,15 +24,15 @@ function beforeDelete(row, errors){
     var fields = ['categoryname'], fieldName;
     for (var i=0;i<fields.length;i++){
         fieldName = fields[i];
-        if (helper.verifyNotUsed('ehr_compliancedb', 'employees', 'category', row[fieldName])){
+        if (helper.verifyNotUsed('ehr_compliancedb', 'employees', 'category', row[fieldName], 'employeecategory')){
             addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the employees table');
         }
 
-        if (helper.verifyNotUsed('ehr_compliancedb', 'requirementspercategory', 'category', row[fieldName])){
+        if (helper.verifyNotUsed('ehr_compliancedb', 'requirementspercategory', 'category', row[fieldName], 'employeecategory')){
             addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the requirementspercategory table');
         }
 
-        if (helper.verifyNotUsed('ehr_compliancedb', 'sopbycategory', 'category', row[fieldName])){
+        if (helper.verifyNotUsed('ehr_compliancedb', 'sopbycategory', 'category', row[fieldName], 'employeecategory')){
             addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the sopbycategory table');
         }
     }
