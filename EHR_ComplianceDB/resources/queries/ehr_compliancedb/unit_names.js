@@ -26,7 +26,7 @@ function beforeDelete(row, errors){
         query = queries[j];
         for (var i=0;i<fields.length;i++){
             fieldName = fields[i];
-            if (helper.verifyNotUsed('ehr_compliancedb', query, 'unit', row[fieldName])){
+            if (helper.verifyNotUsed('ehr_compliancedb', query, 'unit', row[fieldName], 'unit_names')){
                 addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the table ' + query);
             }
         }
