@@ -19,7 +19,7 @@ Ext4.define('EHR.form.field.RoomField', {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
-                columns: 'room,room_sortValue,area',
+                columns: 'room,room_sortValue,area,building',
                 sort: 'room_sortValue',
                 filterArray: this.getStoreFilterArray(),
                 autoLoad: true
@@ -67,6 +67,35 @@ Ext4.define('EHR.form.field.RoomField', {
                 var values = [];
                 this.store.each(function(rec){
                     if (areas.indexOf(rec.get('area')) != -1){
+                        values.push(rec.get('room'));
+                    }
+                }, this);
+
+                this.setValue(values);
+            }
+        }
+    },
+
+    selectByBuildings: function(buildings){
+        if (!this.rendered || !this.store){
+            this.on('afterrender', function(field){
+                field.selectByBuildings(buildings);
+            }, this, {single: true});
+
+            return;
+        }
+
+        this.store.clearFilter();
+        if (!this.store.getCount()){
+            this.store.on('load', function(store){
+                this.selectByBuildings(buildings);
+            }, this, {single: true});
+        }
+        else {
+            if (buildings && buildings.length){
+                var values = [];
+                this.store.each(function(rec){
+                    if (buildings.indexOf(rec.get('building')) != -1){
                         values.push(rec.get('room'));
                     }
                 }, this);
