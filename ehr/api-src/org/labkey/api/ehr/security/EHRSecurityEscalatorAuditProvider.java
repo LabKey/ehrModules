@@ -15,7 +15,6 @@
  */
 package org.labkey.api.ehr.security;
 
-import org.labkey.api.audit.query.AbstractAuditDomainKind;
 import org.labkey.api.data.Container;
 import org.labkey.api.study.security.SecurityEscalationAuditProvider;
 
@@ -27,8 +26,14 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
     public static String EVENT_TYPE = EHRSecurityEscalationEvent.class.getSimpleName();
     public static String AUDIT_LOG_TITLE = "EHR Security Escalations";
 
+    public EHRSecurityEscalatorAuditProvider()
+    {
+        super(new EHRSecurityEscalationDomainKind());
+    }
+
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "This audits all uses of the EHR Security Escalation";
     }
 
@@ -45,11 +50,6 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
     @Override
     public String getAuditLogTitle() {
         return AUDIT_LOG_TITLE;
-    }
-
-    @Override
-    protected AbstractAuditDomainKind getDomainKind() {
-        return new EHRSecurityEscalationDomain();
     }
 
     public static class EHRSecurityEscalationEvent extends SecurityEscalationEvent
@@ -69,10 +69,17 @@ public class EHRSecurityEscalatorAuditProvider extends SecurityEscalationAuditPr
         }
     }
 
-    public static class EHRSecurityEscalationDomain extends SecurityEscalationAuditDomainKind
+    public static class EHRSecurityEscalationDomainKind extends SecurityEscalationAuditDomainKind
     {
-        public EHRSecurityEscalationDomain() {
+        public EHRSecurityEscalationDomainKind()
+        {
             super(EVENT_TYPE, EHRSecurityEscalationEvent.class.getName());
+        }
+
+        @Override
+        protected String getNamespacePrefix()
+        {
+            return NAMESPACE_PREFIX + "EHRSecurityEscalationDomain";
         }
     }
 }
