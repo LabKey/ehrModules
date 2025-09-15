@@ -86,10 +86,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     onBeforeValidation: function(sc){
         function processItem(item) {
-            item.setDisabled(true);
-            if (item.setTooltip)
-                item.setTooltip('Disabled waiting on validation.');
-
+            if(item.disableOn) {
+                item.setDisabled(true);
+                if (item.setTooltip)
+                    item.setTooltip('Disabled waiting on validation. Select "More Actions" -> "Re-Validate" if this is not clearing.');
+            }
+            
             if (item.menu) {
                 item.menu.items.each(function (menuItem) {
                     processItem(menuItem);
