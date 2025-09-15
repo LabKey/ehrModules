@@ -33,6 +33,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.storeCollection.on('initialload', this.onStoreCollectionInitialLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
+        this.storeCollection.on('beforevalidation', this.onBeforeValidation, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
         this.storeCollection.on('commitexception', this.onStoreCollectionCommitException, this);
         //this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
@@ -80,6 +81,29 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
         else {
             this.updateDirtyStateMessage();
+        }
+    },
+
+    onBeforeValidation: function(sc){
+        function processItem(item) {
+            item.setDisabled(true);
+            if (item.setTooltip)
+                item.setTooltip('Disabled waiting on validation.');
+
+            if (item.menu) {
+                item.menu.items.each(function (menuItem) {
+                    processItem(menuItem);
+                }, this);
+            }
+        }
+
+        var btns = this.getToolbarItems();
+        if (btns){
+            Ext4.Array.forEach(btns, function(toolbar){
+                toolbar.items.each(function(item){
+                    processItem(item);
+                }, this);
+            }, this);
         }
     },
 

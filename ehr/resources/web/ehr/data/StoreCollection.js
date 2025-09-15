@@ -230,6 +230,9 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     validateRecords: function(recordMap){
+        if(this.fireEvent('beforevalidation', this)===false)
+            return;
+
         for (var serverStoreId in recordMap){
             var serverStore = this.serverStores.get(serverStoreId);
             serverStore.validateRecords(Ext4.Object.getValues(recordMap[serverStoreId]), true);
