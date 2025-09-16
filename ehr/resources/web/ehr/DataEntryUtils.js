@@ -455,6 +455,135 @@ EHR.DataEntryUtils = new function(){
                 panel.onSubmit(btn);
             },
             disableOn: 'WARN'
+        },
+        /**
+         * This button will give the option to close treatment orders associated with a case when closing the case.
+         */
+        SUBMITCASE: {
+            text: 'Submit Final',
+            name: 'submit',
+            requiredQC: 'Completed',
+            targetQC: 'Completed',
+            errorThreshold: 'INFO',
+            successURL: LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
+            disabled: true,
+            itemId: 'submitBtn',
+            handler: function(btn){
+                const panel = btn.up('ehr-dataentrypanel');
+
+                const casesStore = panel.storeCollection.getClientStoreByName('cases');
+                const rec = casesStore?.getAt(0);
+                if (!rec){
+                    console.error('Case record not found.');
+                    return;
+                }
+
+                const showConfirm = () => {
+                    Ext4.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function (v) {
+                        if (v == 'yes')
+                            this.onSubmit(btn);
+                    }, this);
+                }
+
+                const enddate = rec.get('enddate');
+                if (enddate) {
+
+                    // Define this only when needed
+                    const closeTreatmentOrders = (enddate, objectids) => {
+
+                        // Close treatment orders in form
+                        const treatmentOrderStore = panel.storeCollection.getClientStoreByName('Treatment Orders');
+                        treatmentOrderStore.each((order) => {
+                            if (!order.get("enddate")) {
+                                order.set("enddate", enddate)
+                            }
+                        }, this);
+
+                        // If saved treatment orders associated with the case, then close those
+                        if (objectids) {
+                            const commands = [];
+                            const updateRows = [];
+
+                            objectids.forEach(row => {
+                                updateRows.push({ objectid: row.objectid, enddate: enddate });
+                            })
+
+                            commands.push({
+                                command: 'update',
+                                schemaName: 'study',
+                                queryName: 'treatment_order',
+                                rows: updateRows
+                            })
+
+                            LABKEY.Query.saveRows({
+                                commands: commands,
+                                scope: this,
+                                failure: LDK.Utils.getErrorCallback(),
+                                success: function (results) {
+                                    this.onSubmit(btn);
+                                }
+                            });
+                        }
+                        else {
+                            this.onSubmit(btn);
+                        }
+                    }
+
+                    // First check if open treatment orders in the form
+                    let openFoundInForm = false;
+                    const treatmentOrderStore = panel.storeCollection.getClientStoreByName('Treatment Orders');
+                    treatmentOrderStore.each((order) => {
+                        if (!openFoundInForm && !order.get("enddate"))
+                            openFoundInForm = true;
+                    }, this);
+
+                    const caseId = rec.get('caseid');
+                    if (!caseId) {
+                        Ext4.Msg.confirm('Finalize Closed Case', 'There are treatment orders still active for this case. Do you want to end all treatment orders on the same end date as this case?', function(v){
+                            if(v == 'yes') {
+                                closeTreatmentOrders(enddate);
+                            }
+                            else {
+                                this.onSubmit(btn);
+                            }
+                        }, this);
+                        return;
+                    }
+
+                    // Check for open treatment orders associated with the case
+                    LABKEY.Query.selectRows({
+                        schemaName: 'study',
+                        queryName: 'treatment_order',
+                        columns: 'objectid',
+                        filterArray: [
+                            LABKEY.Filter.create('caseid', caseId, LABKEY.Filter.Types.EQUAL),
+                            LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)
+                        ],
+                        failure: LDK.Utils.getErrorCallback(),
+                        scope: this,
+                        success: function (results) {
+                            if(results?.rows?.length || openFoundInForm) {
+                                Ext4.Msg.confirm('Finalize Closed Case', 'There are treatment orders still active for this case. Do you want to end all treatment orders on the same end date as this case?', function(v){
+                                    if(v == 'yes') {
+                                        closeTreatmentOrders(enddate, results?.rows);
+                                    }
+                                    else {
+                                        this.onSubmit(btn);
+                                    }
+                                }, this);
+                            }
+                            else {
+                                showConfirm();
+                            }
+                        }
+                    });
+                }
+
+                else {
+                    showConfirm();
+                }
+            },
+            disableOn: 'WARN'
         }
     };
 
