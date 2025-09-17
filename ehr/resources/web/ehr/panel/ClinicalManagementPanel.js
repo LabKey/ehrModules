@@ -244,8 +244,11 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
         },
 
         updateVetColumn: function(el, storeCollection, objectId){
-            el.style.setProperty('text-decoration', 'line-through');
-            el.setAttribute( 'onclick', 'EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: \'' + objectId + '\', scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}})');
+            el.style?.setProperty?.('text-decoration', 'line-through');
+            Ext4.get(el).on('click', function(e){
+                e.preventDefault();
+                EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: objectId, scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}})
+            })
         },
 
         displayActionMenu: function(el, subjectId){
