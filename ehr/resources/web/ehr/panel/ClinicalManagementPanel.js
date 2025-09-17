@@ -244,11 +244,16 @@ Ext4.define('EHR.panel.ClinicalManagementPanel', {
         },
 
         updateVetColumn: function(el, storeCollection, objectId){
-            el.style?.setProperty?.('text-decoration', 'line-through');
-            Ext4.get(el).on('click', function(e){
+            const me = this;
+            const newEl = el.cloneNode(true);
+            el.parentNode.replaceChild(newEl, el);
+
+            newEl.addEventListener('click', function(e) {
                 e.preventDefault();
-                EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: objectId, scope: this, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(this, arguments[0], arguments[1]);}})
-            })
+                EHR.panel.ClinicalManagementPanel.replaceSoap({objectid: objectId, scope: me, callback: function(){EHR.panel.ClinicalManagementPanel.updateVetColumn(newEl, arguments[0], arguments[1]);}})
+            });
+
+            newEl.style.setProperty('text-decoration', 'line-through');
         },
 
         displayActionMenu: function(el, subjectId){
