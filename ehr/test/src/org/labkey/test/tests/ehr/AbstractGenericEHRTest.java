@@ -340,7 +340,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "query-begin.view",
                 "query-searchPanel.view",
                 "query-executeQuery.view",
-                "study-manageStudy.view",
                 "ehr-animalHistory.view",
                 "ehr-updateQuery.view",
                 "ehr-updateTable.view",
@@ -354,7 +353,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "ldk-updateQuery",
                 "junit-begin.view",
                 "admin-",
-                "ehr-datasets.view"
+                "ehr-datasets.view",
+                "study-"    // Don't crawl any study links
         );
     }
 
