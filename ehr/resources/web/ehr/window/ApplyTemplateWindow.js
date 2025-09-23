@@ -13,6 +13,7 @@
  * @cfg defaultTemplate
  * @cfg allowChooseIds
  * @cfg idSelectionMode
+ * @cfg showDate
  */
 Ext4.define('EHR.window.ApplyTemplateWindow', {
     extend: 'Ext.window.Window',
@@ -20,6 +21,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     idSelectionMode: 'multi',
     title: 'Apply Template',
     closeAction: 'destroy',
+    showDate: true,
 
     initComponent: function(){
         Ext4.applyIf(this, {
@@ -91,14 +93,26 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
             itemId: 'customizeValues',
             checked: false
-        },this.getIdSelectionItems(),{
-            xtype: 'xdatetime',
-            fieldLabel: 'Date (optional)',
-            itemId: 'dateField',
-            value: null
-        }];
+        },
+            this.getIdSelectionItems(),
+            this.getDateItem()
+        ];
 
         return items;
+    },
+
+    getDateItem: function() {
+        if (this.showDate === false){
+            return {}
+        }
+        else {
+            return {
+                xtype: 'xdatetime',
+                fieldLabel: 'Date (optional)',
+                itemId: 'dateField',
+                value: null
+            }
+        }
     },
 
     getIdSelectionItems: function(){
@@ -243,14 +257,15 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     },
 
     getInitialRecordValues: function(){
-        var ret = [];
-        var date = this.down('#dateField').getValue();
-        var obj = {
-            date: date
-        };
+        const ret = [];
+        const dateField = this.down('#dateField');
+        const obj = {};
+        if (dateField) {
+            obj.date = dateField.getValue();
+        }
 
         if   (this.down('#subjectIds')){
-            var   subjectArray = LDK.Utils.splitIds(this.down('#subjectIds').getValue(),true);
+            const subjectArray = LDK.Utils.splitIds(this.down('#subjectIds').getValue(),true);
             Ext4.Array.each(subjectArray, function(subj){
                 ret.push(Ext4.apply({
                     Id: subj
@@ -258,17 +273,17 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             }, this);
         }
         else if (this.down('#encounterRecords')){
-            var combo = this.down('#encounterRecords');
-            var encounterIds = combo.getValue() || [];
+            const combo = this.down('#encounterRecords');
+            const encounterIds = combo.getValue() || [];
             if (!encounterIds.length){
                 Ext4.Msg.alert('Error', 'Must choose at least one procedure');
                 return;
             }
 
             Ext4.Array.forEach(encounterIds, function(encounterId){
-                var recIdx = combo.store.findExact('parentid', encounterId);
+                const recIdx = combo.store.findExact('parentid', encounterId);
                 if (recIdx != -1){
-                    var rec = combo.store.getAt(recIdx);
+                    const rec = combo.store.getAt(recIdx);
                     ret.push({
                         Id: rec.get('Id'),
                         date: rec.get('date'),
@@ -470,7 +485,8 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
                                 idSelectionMode: menuBtn.idSelectionMode || 'multi',
                                 targetGrid: this.grid,
                                 formType: this.grid.formConfig.name,
-                                defaultTemplate: btn.templateId
+                                defaultTemplate: btn.templateId,
+                                showDate: menuBtn.showDate || true
                             }).show();
                         }
                     })
@@ -510,13 +526,15 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
                     Ext4.create('EHR.window.ApplyTemplateWindow', {
                         targetGrid: grid,
                         formType: grid.formConfig.name,
-                        idSelectionMode: menu.idSelectionMode || 'multi'
+                        idSelectionMode: menu.idSelectionMode || 'multi',
+                        showDate: menu.showDate ?? true
                     }).show();
                 }
             },{
                 text: 'Templates',
                 itemId: 'templatesMenu',
                 idSelectionMode: config.idSelectionMode,
+                showDate: config.showDate,
                 menu: []
             }]
         }
@@ -526,6 +544,15 @@ EHR.DataEntryUtils.registerGridButton('TEMPLATE', function(config){
 EHR.DataEntryUtils.registerGridButton('TEMPLATE_NO_ID', function(config){
     var cfg = EHR.DataEntryUtils.getGridButton('TEMPLATE', {
         idSelectionMode: 'none'
+    });
+
+    return Ext4.apply(cfg, config);
+});
+
+EHR.DataEntryUtils.registerGridButton('TEMPLATE_NO_ID_NO_DATE', function(config){
+    var cfg = EHR.DataEntryUtils.getGridButton('TEMPLATE', {
+        idSelectionMode: 'none',
+        showDate: false
     });
 
     return Ext4.apply(cfg, config);
