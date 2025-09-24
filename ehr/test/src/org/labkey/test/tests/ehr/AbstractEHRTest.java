@@ -64,6 +64,7 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.labkey.test.WebTestHelper.buildURL;
+import static org.labkey.test.util.PermissionsHelper.READER_ROLE;
 
 @BaseWebDriverTest.ClassTimeout(minutes = 60)
 abstract public class AbstractEHRTest extends BaseWebDriverTest implements AdvancedSqlTest
@@ -689,7 +690,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             _permissionsHelper.uncheckInheritedPermissions();
 
         _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(), "EHR Data Entry");
-        _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(),"Folder Administrator");
+        _permissionsHelper.setPermissions(DATA_ADMIN.getGroup(),PermissionsHelper.FOLDER_ADMIN_ROLE);
         _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
         _permissionsHelper.setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
@@ -699,10 +700,10 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
         _permissionsHelper.setPermissions(REQUESTER.getGroup(), "EHR Requestor");
         _permissionsHelper.setPermissions(REQUEST_ADMIN.getGroup(), "EHR Request Admin");
-        _permissionsHelper.setPermissions(PATHOLOGY_REPORT.getGroup(), "Reader");
-        _permissionsHelper.setPermissions(NON_PATHOLOGY_REPORT.getGroup(), "Reader");
+        _permissionsHelper.setPermissions(PATHOLOGY_REPORT.getGroup(), READER_ROLE);
+        _permissionsHelper.setPermissions(NON_PATHOLOGY_REPORT.getGroup(), READER_ROLE);
         _permissionsHelper.setPermissions(INVESTIGATOR.getGroup(), "EHR Requestor");
-        _permissionsHelper.setPermissions(INVESTIGATOR_PRINCIPAL.getGroup(), "Reader");
+        _permissionsHelper.setPermissions(INVESTIGATOR_PRINCIPAL.getGroup(), READER_ROLE);
 
         //this is slow, so dont set passwords unless subclasses need it
         if (doSetUserPasswords())
