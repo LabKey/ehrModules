@@ -64,6 +64,7 @@ import org.labkey.test.util.PortalHelper;
 import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.StudyHelper;
 import org.labkey.test.util.core.webdav.WebDavUploadHelper;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
 import java.io.IOException;
@@ -2121,6 +2122,18 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         assertTextPresent("Complete","Failed tests: 0");
     }
 
+    private int getPermissionTableColumnIndex(String column)
+    {
+        var headersLoc = Locator.id("category-security").descendant(Locator.tagWithClass("th", "group-hdr"));
+        var columnHeaders =  getTexts(headersLoc.findElements(getDriver()));
+        checker().withScreenshot("column_not_found").fatal()
+                .wrapAssertion(()-> Assertions.assertThat(columnHeaders)
+                .as(String.format("Column %s not found", column))
+                .contains(column));
+
+        return columnHeaders.indexOf(column) +1;
+    }
+
     private String getPermissionTableValue(int row, int col)
     {
         return ((Locator.XPathLocator)getSimpleTableCell(Locator.id("category-security"), row, col)).child("div").child("a").child("input").findElement(getDriver())
@@ -2173,14 +2186,18 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         Assertions.assertThat(categoryRows.keySet()).as("Custom categories")
             .containsExactlyElementsOf(categories);
 
-        click(Locator.id("a_all_-3")); // All Categories for Guests
+        Locator allGuestCategoriesDropdownLoc = Locator.id("a_all_-3");
+        shortWait().until(ExpectedConditions.elementToBeClickable(allGuestCategoriesDropdownLoc));
+        click(allGuestCategoriesDropdownLoc); // All Categories for Guests
         clickRoleInOpenDropDown("SND Reader");
+
+        int guestColIndex = getPermissionTableColumnIndex("Guests");
 
         for (Integer r : categoryRows.values())
         {
             // Wait for setting to propagate
             Awaitility.await().atMost(Duration.ofSeconds(1)).untilAsserted(() ->
-                assertEquals("SND Reader", getPermissionTableValue(r, 1)));
+                assertEquals("SND Reader", getPermissionTableValue(r, guestColIndex)));
         }
 
         findButton("Clear All").click();
@@ -2191,7 +2208,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
             Integer row = categoryRows.get(category);
             String value = getPermissionTableValue(row, 1);
             assertEquals("None", value);
-            click(getSimpleTableCell(Locator.id("category-security"), row, 1));
+            click(getSimpleTableCell(Locator.id("category-security"), row, guestColIndex));
             clickRoleInOpenDropDown(permissions.get(categories.indexOf(category)));
         }
 
@@ -2200,7 +2217,7 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
         for (String category : categories)
         {
             Integer row = categoryRows.get(category);
-            String value = getPermissionTableValue(row, 1);
+            String value = getPermissionTableValue(row, guestColIndex);
             assertEquals(permissions.get(categories.indexOf(category)), value);
         }
 
