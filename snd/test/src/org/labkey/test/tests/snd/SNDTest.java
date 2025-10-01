@@ -2125,7 +2125,13 @@ public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
     private int getPermissionTableColumnIndex(String column)
     {
         var headersLoc = Locator.id("category-security").descendant(Locator.tagWithClass("th", "group-hdr"));
-        return getTexts(headersLoc.findElements(getDriver())).indexOf(column) +1;
+        var columnHeaders =  getTexts(headersLoc.findElements(getDriver()));
+        checker().withScreenshot("column_not_found").fatal()
+                .wrapAssertion(()-> Assertions.assertThat(columnHeaders)
+                .as(String.format("Column %s not found", column))
+                .contains(column));
+
+        return columnHeaders.indexOf(column) +1;
     }
 
     private String getPermissionTableValue(int row, int col)
