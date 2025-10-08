@@ -229,6 +229,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return id.toLowerCase();
     }
 
+    protected String[] getWeightFields()
+    {
+        return weightFields;
+    }
+
+    protected Object[] getWeightData1()
+    {
+        return weightData1;
+    }
+
     @LogMethod
     protected void createTestSubjects() throws Exception
     {
