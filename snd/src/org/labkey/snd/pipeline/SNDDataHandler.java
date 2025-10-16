@@ -45,6 +45,7 @@ import org.labkey.api.view.ViewBackgroundInfo;
 import org.labkey.data.xml.ColumnType;
 import org.labkey.data.xml.ValidatorType;
 import org.labkey.data.xml.ValidatorsType;
+import org.labkey.vfs.FileLike;
 import org.txbiomed.snd.AttributesType;
 import org.txbiomed.snd.ChildType;
 import org.txbiomed.snd.ExportDocument;
@@ -57,6 +58,7 @@ import org.txbiomed.snd.USDACategoryType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -77,7 +79,7 @@ public class SNDDataHandler extends AbstractExperimentDataHandler
     }
 
     @Override
-    public void importFile(@NotNull ExpData data, File dataFile, @NotNull ViewBackgroundInfo info, @NotNull Logger log, @NotNull XarContext context) throws ExperimentException
+    public void importFile(@NotNull ExpData data, @NotNull FileLike dataFile, @NotNull ViewBackgroundInfo info, @NotNull Logger log, @NotNull XarContext context) throws ExperimentException
     {
         ExportDocument exportDocument;
         String inputFileName = dataFile.getName();
@@ -92,7 +94,7 @@ public class SNDDataHandler extends AbstractExperimentDataHandler
         }
 
         //read xml data
-        try(FileInputStream in = FileUtils.openInputStream(dataFile))
+        try(InputStream in = dataFile.openInputStream())
         {
             XmlOptions options = XmlBeansUtil.getDefaultParseOptions();
             options.setValidateStrict();
