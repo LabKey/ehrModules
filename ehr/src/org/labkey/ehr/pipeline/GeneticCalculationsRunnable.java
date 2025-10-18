@@ -31,11 +31,13 @@ import org.labkey.api.pipeline.file.AbstractFileAnalysisProvider;
 import org.labkey.api.pipeline.file.FileAnalysisTaskPipeline;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.StringUtilsLabKey;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
 import org.labkey.ehr.EHRManager;
+import org.labkey.vfs.FileLike;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -97,11 +99,11 @@ public class GeneticCalculationsRunnable
 
             protocol.setTimestampLog(true);
 
-            File fileParameters = protocol.getParametersFile(root.getRootPath(), root);
+            FileLike fileParameters = protocol.getParametersFile(root.getRootFileLike(), root);
             if (!fileParameters.exists())
             {
-                fileParameters.getParentFile().mkdirs();
-                fileParameters.createNewFile();
+                fileParameters.getParent().mkdirs();
+                FileUtil.createNewFile(fileParameters, true);
             }
             protocol.saveInstance(fileParameters, c);
 
@@ -118,11 +120,11 @@ public class GeneticCalculationsRunnable
                 w.write(xml);
             }
 
-            File inputFile = new File(root.getRootPath(), "kinship.txt");
+            FileLike inputFile = root.resolvePathToFileLike("kinship.txt");
             if (!inputFile.exists())
-                inputFile.createNewFile();
+                FileUtil.createNewFile(inputFile, true);
 
-            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile.toPath()), fileParameters.toPath(), null);
+            AbstractFileAnalysisJob job = protocol.createPipelineJob(bg, root, Collections.singletonList(inputFile), fileParameters, null);
             PipelineService.get().queueJob(job);
 
             String dateFormat = "yyyy_MM_dd_hh_mm_ss";
