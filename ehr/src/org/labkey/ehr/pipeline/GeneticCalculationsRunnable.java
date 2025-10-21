@@ -133,7 +133,7 @@ public class GeneticCalculationsRunnable
             Date now = cal.getTime();
             String timestamp = formatter.format(now);
 
-            job.setLogFile(new File(job.getLogFile().getParent() + "/kinship_" + timestamp + ".txt.log"));
+            job.setLogFile(job.getLogFileLike().getParent().resolveChild("kinship_" + timestamp + ".txt.log"));
         }
         catch (ClassNotFoundException e)
         {
