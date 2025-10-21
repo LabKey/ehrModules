@@ -45,9 +45,6 @@ public class EHRBillingHelper
 {
     private final BaseWebDriverTest _test;
     private final String _projectName;
-    private String _folderName;
-    private String _modulePath;
-    private String _containerPath;
     private String _billingFolder;
     public Ext4Helper _ext4Helper;
 
@@ -58,12 +55,9 @@ public class EHRBillingHelper
         _ext4Helper = new Ext4Helper(_test);
     }
 
-    public EHRBillingHelper(BaseWebDriverTest test, String projectName, String folderName, String modulePath, String containerPath, String billingFolder)
+    public EHRBillingHelper(BaseWebDriverTest test, String projectName, String billingFolder)
     {
         this(test, projectName);
-        _folderName = folderName;
-        _modulePath = modulePath;
-        _containerPath = containerPath;
         _billingFolder = billingFolder;
     }
 
@@ -88,7 +82,7 @@ public class EHRBillingHelper
 
     public void checkMessageWindow(String title, @Nullable String bodyText, String buttonText)
     {
-        Window msgWindow = new Window.WindowFinder(_test.getDriver()).withTitle(title).waitFor();
+        Window<?> msgWindow = new Window.WindowFinder(_test.getDriver()).withTitle(title).waitFor();
         assertEquals("Message window Title mismatch", title, msgWindow.getTitle());
 
         if (null != bodyText)
@@ -149,7 +143,7 @@ public class EHRBillingHelper
                 int sumQuantity = 0;
                 for (Map<String, Object> row : resp.getRows())
                     if (row.get("quantity") != null)
-                        sumQuantity += (double) row.get("quantity");
+                        sumQuantity += ((Number) row.get("quantity")).intValue();
 
                 assertEquals("Total quantity is not as expected", String.valueOf(sumQuantity), item.getTotalQuantity());
             }
