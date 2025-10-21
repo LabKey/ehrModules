@@ -276,7 +276,7 @@ Ext4.define('EHR.panel.ManageTreatmentsPanel', {
                 dataIndex: 'amountAndVolume',
                 renderer: function(value, cellMetaData, record){
                     if (value){
-                        return value.replace(/\n/, '<br>');
+                        return value.replace(/\n/g, '<br>');
                     }
 
                     return value;
