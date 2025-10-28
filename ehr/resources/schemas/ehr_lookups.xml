@@ -2981,4 +2981,18 @@
         </columns>
     </table>
 
+    <table tableName="editable_lookups" tableDbType="TABLE">
+        <description>Table containing the list of lookups that can be edited by admin users.</description>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowid" />
+            <!-- schema and schemaName are reserved so using sch -->
+            <column columnName="sch" />
+            <column columnName="query" />
+            <column columnName="category" />
+            <column columnName="title" />
+            <column columnName="description" />
+        </columns>
+    </table>
+
 </tables>
