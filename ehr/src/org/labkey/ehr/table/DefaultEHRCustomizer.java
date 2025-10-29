@@ -1280,7 +1280,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "title";
         if (table.getColumn(name) != null)
         {
-            DetailsURL url = DetailsURL.fromString("ehr-updateTable.view?schemaName=ehr_lookups&query.queryName=${value}");
+            DetailsURL url = DetailsURL.fromString("ehr-updateTable.view?schemaName=${sch}&query.queryName=${query}");
             MutableColumnInfo col = ((MutableColumnInfo) table.getColumn(name));
             col.setURL(url);
             col.setLabel("Table");

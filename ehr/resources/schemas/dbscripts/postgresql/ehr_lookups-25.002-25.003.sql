@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.treatment_frequency ADD COLUMN LSID LSIDtype;
