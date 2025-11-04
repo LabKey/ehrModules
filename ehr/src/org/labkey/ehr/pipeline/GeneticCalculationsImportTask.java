@@ -249,7 +249,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             }
 
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
-                 BufferedReader reader = Readers.getReader(output.getParent().openInputStream());
+                 BufferedReader reader = Readers.getReader(output.openInputStream());
                  PreparedStatement stmt = transaction.getConnection().prepareStatement(
                     "INSERT INTO " + EHRSchema.EHR_SCHEMANAME + ".kinship\n" +
                             "\t(Id, Id2, coefficient, container, created, createdby, modified, modifiedby)\n" +
