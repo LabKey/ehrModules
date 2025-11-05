@@ -44,8 +44,8 @@ import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.vfs.FileLike;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -339,7 +339,7 @@ abstract public class EHRService
      * A use case is a separate pipeline server that performs the R computation on a cluster, and then triggers the main webserver to import
      * those results.
      */
-    abstract public void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException;
+    abstract public void standaloneProcessKinshipAndInbreeding(Container c, User u, FileLike pipelineDir, Logger log) throws PipelineJobException;
 
     /** Applicable for centers who use the model that projects have a reference to a protocol. Caches a protocol for a given project. **/
     abstract public void updateCachedProtocol(Container c, Integer project, String protocol);

@@ -50,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 @BaseWebDriverTest.ClassTimeout(minutes = 5)
 public abstract class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
-    private final String listZIP = TestFileUtils.getLabKeyRoot() + "/server/modules/ehrModules/EHR_ComplianceDB/tools/SOP_Lists.zip";
+    private final String listZIP = new File(TestFileUtils.getLabKeyRoot(), "server/modules/ehrModules/EHR_ComplianceDB/tools/SOP_Lists.zip").getPath();
 
     @Override
     protected String getProjectName()

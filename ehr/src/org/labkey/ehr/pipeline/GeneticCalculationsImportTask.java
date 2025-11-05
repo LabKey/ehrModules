@@ -57,6 +57,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr.EHRSchema;
+import org.labkey.vfs.FileLike;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -151,8 +152,8 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             PipelineJob job = getJob();
             FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
 
-            processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger());
-            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryPath().toFile(), job.getLogger(), job);
+            processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectoryFileLike(), job.getLogger());
+            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryFileLike(), job.getLogger(), job);
 
             if (GeneticCalculationsJob.isKinshipValidation())
             {
@@ -170,15 +171,15 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         return new RecordedActionSet(actions);
     }
 
-    public static void standaloneProcessKinshipAndInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
+    public static void standaloneProcessKinshipAndInbreeding(Container c, User u, FileLike pipelineDir, Logger log) throws PipelineJobException
     {
         processInbreeding(c, u, pipelineDir, log);
         processKinship(c, u, pipelineDir, log, null);
     }
 
-    private static void processKinship(Container c, User u, File pipelineDir, Logger log, @Nullable PipelineJob job) throws PipelineJobException
+    private static void processKinship(Container c, User u, FileLike pipelineDir, Logger log, @Nullable PipelineJob job) throws PipelineJobException
     {
-        File output = new File(pipelineDir, KINSHIP_FILE);
+        FileLike output = pipelineDir.resolveChild(KINSHIP_FILE);
         if (!output.exists())
             throw new PipelineJobException("Unable to find file: " + output.getPath());
 
@@ -190,7 +191,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         try
         {
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
-                 LineNumberReader lnr = new LineNumberReader(Readers.getReader(output)))
+                 LineNumberReader lnr = new LineNumberReader(Readers.getReader(output.openInputStream())))
             {
                 while (lnr.readLine() != null)
                 {
@@ -248,7 +249,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             }
 
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction();
-                 BufferedReader reader = Readers.getReader(output);
+                 BufferedReader reader = Readers.getReader(output.openInputStream());
                  PreparedStatement stmt = transaction.getConnection().prepareStatement(
                     "INSERT INTO " + EHRSchema.EHR_SCHEMANAME + ".kinship\n" +
                             "\t(Id, Id2, coefficient, container, created, createdby, modified, modifiedby)\n" +
@@ -619,9 +620,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         return null;
     }
 
-    private static void processInbreeding(Container c, User u, File pipelineDir, Logger log) throws PipelineJobException
+    private static void processInbreeding(Container c, User u, FileLike pipelineDir, Logger log) throws PipelineJobException
     {
-        File output = new File(pipelineDir, INBREEDING_FILE);
+        FileLike output = pipelineDir.resolveChild(INBREEDING_FILE);
         if (!output.exists())
             throw new PipelineJobException("Unable to find file: " + output.getPath());
 
@@ -636,12 +637,12 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         QueryUpdateService qus = ti.getUpdateService();
         qus.setBulkLoad(true);
 
-        try (BufferedReader reader = Readers.getReader(output))
+        try (BufferedReader reader = Readers.getReader(output.openInputStream()))
         {
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
                 log.info("Inspecting file length: " + output.getPath());
-                try (LineNumberReader lnr = new LineNumberReader(Readers.getReader(output)))
+                try (LineNumberReader lnr = new LineNumberReader(Readers.getReader(output.openInputStream())))
                 {
                     while (lnr.readLine() != null)
                     {

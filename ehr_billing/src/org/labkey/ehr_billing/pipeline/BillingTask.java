@@ -111,9 +111,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         }
 
         @Override
-        public PipelineJob.Task createTask(PipelineJob job)
+        public BillingTask createTask(PipelineJob job)
         {
-
             return new BillingTask(this, job);
         }
 

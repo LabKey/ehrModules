@@ -18,6 +18,8 @@ package org.labkey.test.tests.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.labkey.api.util.FileUtil;
+import org.labkey.api.util.Path;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.SimplePostCommand;
@@ -59,7 +61,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -144,7 +145,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected List<Long> _saveRowsTimes;
 
     protected abstract String getModuleDirectory();
-    protected EHRBillingHelper _billingHelper = new EHRBillingHelper(this, getProjectName(), FOLDER_NAME, getModulePath(), getContainerPath(),BILLING_FOLDER);
+    protected EHRBillingHelper _billingHelper = new EHRBillingHelper(this, getProjectName(), BILLING_FOLDER);
 
     //xpath fragment
     public static final String VISIBLE = "not(ancestor-or-self::*[contains(@style,'visibility: hidden') or contains(@class, 'x-hide-display')])";
@@ -201,14 +202,6 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             //also, validation takes place on the project root, while the EHR and required datasets are loaded into a subfolder
             log("Skipping query validation.");
         }
-    }
-
-    protected Pattern[] getIgnoredElements()
-    {
-        return new Pattern[] {
-                Pattern.compile("qcstate", Pattern.CASE_INSENSITIVE),//qcstate IDs aren't predictable
-                Pattern.compile("stacktrace", Pattern.CASE_INSENSITIVE)
-        };
     }
 
     protected String getMale() {
@@ -365,8 +358,8 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected void importFolderFromPath(int jobCount)
     {
-        File path = new File(TestFileUtils.getLabKeyRoot(), getModulePath() + "/resources/referenceStudy");
-        setPipelineRoot(path.getPath());
+        File path = FileUtil.appendPath(TestFileUtils.getLabKeyRoot(), Path.parse(getModulePath() + "/resources/referenceStudy"));
+        setPipelineRoot(path.getPath(), false);
 
         beginAt(WebTestHelper.getBaseURL() + "/" + getContainerPath() + "/pipeline-status-begin.view");
         clickButton("Process and Import Data", defaultWaitForPage);
