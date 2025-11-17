@@ -36,6 +36,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.security.User;
 import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.util.HtmlString;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class EHR_BillingManager
         return _instance;
     }
 
-    public List<String> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws QueryUpdateServiceException, BatchValidationException, InvalidKeyException
+    public List<HtmlString> deleteBillingRuns(User user, Container container, Collection<String> pks, boolean testOnly) throws QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
         TableInfo invoice = EHR_BillingSchema.getInstance().getSchema().getTable(EHR_BillingSchema.TABLE_INVOICE);
         TableInfo invoiceRuns = QueryService.get().getUserSchema(user, container,EHR_BillingSchema.NAME).getTable(EHR_BillingSchema.TABLE_INVOICE_RUNS);
@@ -75,17 +76,17 @@ public class EHR_BillingManager
         SimpleFilter miscChargesFilter = new SimpleFilter(FieldKey.fromString("invoiceId"), pks, CompareType.IN);
 
         //perform the work
-        List<String> ret = new ArrayList<>();
+        List<HtmlString> ret = new ArrayList<>();
         if (testOnly)
         {
             TableSelector tsInvItems = new TableSelector(invoicedItems, invoiceIdFilter, null);
-            ret.add(tsInvItems.getRowCount() + " records from invoiced items");
+            ret.add(HtmlString.of(tsInvItems.getRowCount() + " records from invoiced items"));
 
             TableSelector tsInvoice = new TableSelector(invoice, invoiceRunIdFilter, null);
-            ret.add(tsInvoice.getRowCount() + " records from invoice");
+            ret.add(HtmlString.of(tsInvoice.getRowCount() + " records from invoice"));
 
             TableSelector tsMiscCharges2 = new TableSelector(miscCharges, miscChargesFilter, null);
-            ret.add(tsMiscCharges2.getRowCount() + " invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted.");
+            ret.add(HtmlString.of(tsMiscCharges2.getRowCount() + " invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted."));
         }
         else
         {
