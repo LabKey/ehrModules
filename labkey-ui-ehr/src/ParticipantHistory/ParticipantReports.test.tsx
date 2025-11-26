@@ -17,7 +17,7 @@ describe('ParticipantReports', () => {
             userEvent.click(tab2);
         });
 
-        expect(await screen.findByText('User: FolderAdminDisplayName')).toBeVisible();
+        expect(await screen.findByText('User: guest')).toBeVisible();
 
     });
 });
