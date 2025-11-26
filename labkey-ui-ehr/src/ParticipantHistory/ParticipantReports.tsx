@@ -1,5 +1,5 @@
 import React, { FC, memo, useState } from 'react';
-import { GridPanelWithModel, SchemaQuery, useServerContext } from '@labkey/components';
+import { GridPanelWithModel, SchemaQuery, useServerContext, withServerContext, NotificationsContextProvider } from '@labkey/components';
 
 
 const modelId = 'editable_ehr_lookups'
@@ -11,7 +11,7 @@ const queryConfig = {
     includeTotalCount: true,
 };
 
-export const ParticipantReports: FC = memo(() => {
+const ParticipantReportsImpl: FC = memo(() => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const { user } = useServerContext();
@@ -29,11 +29,13 @@ export const ParticipantReports: FC = memo(() => {
                 </ul>
                 {activeTab === 0 &&
                         <div>
-                            <GridPanelWithModel
-                                    asPanel={true}
-                                    queryConfig={queryConfig}
-                                    allowSelections={false}
-                            />
+                            <NotificationsContextProvider>
+                                <GridPanelWithModel
+                                        asPanel={true}
+                                        queryConfig={queryConfig}
+                                        allowSelections={false}
+                                />
+                            </NotificationsContextProvider>
                         </div>
                 }
                 {activeTab === 1 &&
@@ -45,3 +47,5 @@ export const ParticipantReports: FC = memo(() => {
     )
 
 });
+
+export const ParticipantReports = withServerContext(ParticipantReportsImpl);
