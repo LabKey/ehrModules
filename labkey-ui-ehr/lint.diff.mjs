@@ -49,7 +49,7 @@ if (process.argv.length > 2) {
         const branch = stdout;
 
         // Diff current branch against develop to get changed file names
-        ({stdout} = await execa('git', ['diff', 'develop...' + branch, '--name-only', '--diff-filter=AM']));
+        ({stdout} = await execa('git', ['diff', 'develop...' + branch, '--name-only', '--diff-filter=AM', '--relative']));
         if (!stdout) {
             console.log('No changed files in branch ' + branch);
         }
@@ -57,7 +57,7 @@ if (process.argv.length > 2) {
         files = stdout;
     } else {
         // Diff uncommitted changes against committed to
-        ({stdout} = await execa('git', ['diff', '--name-only', '--diff-filter=AM', lintPath]));
+        ({stdout} = await execa('git', ['diff', '--name-only', '--diff-filter=AM', '--relative', lintPath]));
         if (!stdout) {
             console.log('No changed files at ' + lintPath);
         }
