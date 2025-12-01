@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@labkey/components": "6.72.1",
-    "@labkey/ehr": "0.0.2-fb-ehr-nov-2025-npm.0"
+    "@labkey/ehr": "0.0.3"
   },
   "devDependencies": {
     "@labkey/build": "8.7.0",

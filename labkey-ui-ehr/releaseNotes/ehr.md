@@ -1,6 +1,13 @@
 # @labkey/ehr
 Components, models, actions, and utility functions for LabKey EHR applications and pages.
 
+### version 0.0.3
+*Released*: 12 December 2025
+* Package Updates
+    * Update @labkey and external dependencies
+    * Fix eslint config
+    * Refactors necessary for package updates
+
 ### version 0.0.2
 *Released*: 16 September 2024
 * Package Updates
