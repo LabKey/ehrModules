@@ -1,0 +1,6 @@
+
+<script nonce="<%=scriptNonce%>">
+    const id = LABKEY.ActionURL.getParameter("participantId");
+    const url = LABKEY.ActionURL.buildURL("ehr", "participantView", null, {participantId: id})
+    window.location.href = url;
+</script>
