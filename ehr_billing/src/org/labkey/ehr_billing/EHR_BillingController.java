@@ -153,7 +153,7 @@ public class EHR_BillingController extends SpringActionController
             msg.startTag("p");
             for (HtmlString m : EHR_BillingManager.get().deleteBillingRuns(getUser(),getContainer(), ids, true))
             {
-                msg.append(m).append(msg.startTag("<br>"));
+                msg.append(m).append(msg.startTag("br"));
             }
 
             msg.startTag("p").append("Are you sure you want to do this?");
