@@ -3,7 +3,7 @@ import { ParticipantReports } from './ParticipantReports';
 import { screen } from '@testing-library/react';
 import { defaultServerContext, renderWithServerContext } from '../test/utils';
 import { act } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event';
 
 describe('ParticipantReports', () => {
     test('render', async () => {
@@ -17,7 +17,6 @@ describe('ParticipantReports', () => {
             userEvent.click(tab2);
         });
 
-        expect(await screen.findByText('User: FolderAdminDisplayName')).toBeVisible();
-
+        expect(await screen.findByText('User: guest')).toBeVisible();
     });
 });
