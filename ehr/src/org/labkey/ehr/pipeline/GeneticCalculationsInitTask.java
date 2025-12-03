@@ -34,6 +34,7 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.writer.PrintWriters;
+import org.labkey.vfs.FileLike;
 import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.File;
@@ -135,9 +136,9 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
             }
             TableSelector ts = new TableSelector(pedTable, PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species"), null, new Sort("Species, Id"));
 
-            File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
+            FileLike outputFile = support.getAnalysisDirectory().resolveChild(GeneticCalculationsImportTask.PEDIGREE_FILE);
 
-            try (CSVWriter writer = new CSVWriter(PrintWriters.getPrintWriter(outputFile), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER))
+            try (CSVWriter writer = new CSVWriter(PrintWriters.getPrintWriter(outputFile.openOutputStream()), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER))
             {
                 long count = ts.getRowCount();
                 if (count > 0)

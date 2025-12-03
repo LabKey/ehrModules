@@ -30,8 +30,10 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewBackgroundInfo;
+import org.labkey.vfs.FileLike;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,31 +43,29 @@ import java.util.Date;
  */
 public class BillingPipelineJob extends PipelineJob implements BillingPipelineJobSupport
 {
-    private File _analysisDir;
     private BillingPipelineForm _form;
 
     // For serialization
     protected BillingPipelineJob() {}
 
-    public BillingPipelineJob(Container c, User user, ActionURL url, PipeRoot pipeRoot, File analysisDir, BillingPipelineForm form)
+    public BillingPipelineJob(Container c, User user, ActionURL url, PipeRoot pipeRoot, FileLike analysisDir, BillingPipelineForm form)
     {
         super(null, new ViewBackgroundInfo(c, user, url), pipeRoot);
 
-        _analysisDir = analysisDir;
-        setLogFile(new File(analysisDir, FileUtil.makeFileNameWithTimestamp("billingPipeline", "log")));
+        setLogFile(analysisDir.resolveChild(FileUtil.makeFileNameWithTimestamp("billingPipeline", "log")));
         _form = form;
     }
 
-    public static File createAnalysisDir(PipeRoot pipeRoot, String name)
+    public static FileLike createAnalysisDir(PipeRoot pipeRoot, String name) throws IOException
     {
         String trialName = FileUtil.makeLegalName(name);
-        File analysisDir = new File(pipeRoot.getRootPath(), trialName);
+        FileLike analysisDir = pipeRoot.getRootFileLike().resolveChild(trialName);
         int suffix = 0;
         while (analysisDir.exists())
         {
             suffix++;
             trialName = FileUtil.makeLegalName(name) + "." + suffix;
-            analysisDir = new File(pipeRoot.getRootPath(), trialName);
+            analysisDir = pipeRoot.getRootFileLike().resolveChild(trialName);
         }
 
         analysisDir.mkdirs();
@@ -86,7 +86,7 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
     }
 
     @Override
-    public TaskPipeline getTaskPipeline()
+    public TaskPipeline<?> getTaskPipeline()
     {
         return PipelineJobService.get().getTaskPipeline(new TaskId(BillingPipelineJob.class));
     }
@@ -113,12 +113,6 @@ public class BillingPipelineJob extends PipelineJob implements BillingPipelineJo
     public String getName()
     {
         return _form.getProtocolName();
-    }
-
-    @Override
-    public File getAnalysisDir()
-    {
-        return _analysisDir;
     }
 
     @Override

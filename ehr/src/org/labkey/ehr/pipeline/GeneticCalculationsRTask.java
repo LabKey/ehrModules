@@ -35,6 +35,7 @@ import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.util.FileType;
 import org.labkey.ehr.EHRModule;
+import org.labkey.vfs.FileLike;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         String exePath = getRPath();
 
         String scriptPath = getScriptPath(scriptName);
-        File tsvFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
+        FileLike tsvFile = support.getAnalysisDirectory().resolveChild(GeneticCalculationsImportTask.PEDIGREE_FILE);
         if (!tsvFile.exists())
             throw new PipelineJobException("Unable to find TSV file at location: " + tsvFile.getPath());
 
@@ -132,13 +133,13 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         args.add("--no-restore"); // don't restore saved objects
         args.add(scriptPath);
         args.add("-f");
-        args.add(tsvFile.getPath());
+        args.add(tsvFile.toNioPathForRead().toFile().getPath());
 
         getJob().getLogger().info("Using working directory of: " + support.getAnalysisDirectory().getPath());
         ProcessBuilder pb = new ProcessBuilder(args);
         job.runSubProcess(pb, support.getAnalysisDirectory());
 
-        File output = new File(support.getAnalysisDirectory(), outputFileName);
+        FileLike output = support.getAnalysisDirectory().resolveChild(outputFileName);
         if (!output.exists())
             throw new PipelineJobException("Unable to find file: " + output.getPath());
 

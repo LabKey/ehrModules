@@ -60,7 +60,6 @@ import org.labkey.ehr.EHRSchema;
 import org.labkey.vfs.FileLike;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.sql.PreparedStatement;
@@ -152,8 +151,8 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             PipelineJob job = getJob();
             FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
 
-            processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectoryFileLike(), job.getLogger());
-            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectoryFileLike(), job.getLogger(), job);
+            processInbreeding(job.getContainer(), job.getUser(), support.getAnalysisDirectory(), job.getLogger());
+            processKinship(job.getContainer(), job.getUser(), support.getAnalysisDirectory(), job.getLogger(), job);
 
             if (GeneticCalculationsJob.isKinshipValidation())
             {

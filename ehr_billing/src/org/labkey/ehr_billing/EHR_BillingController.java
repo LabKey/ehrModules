@@ -47,6 +47,8 @@ import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.HtmlString;
+import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -57,11 +59,12 @@ import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
 import org.labkey.ehr_billing.pipeline.BillingPipelineForm;
 import org.labkey.ehr_billing.pipeline.BillingPipelineJob;
+import org.labkey.vfs.FileLike;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -113,12 +116,12 @@ public class EHR_BillingController extends SpringActionController
                 }
 
                 PipeRoot pipelineRoot = PipelineService.get().findPipelineRoot(getContainer());
-                File analysisDir = BillingPipelineJob.createAnalysisDir(pipelineRoot, form.getProtocolName());
+                FileLike analysisDir = BillingPipelineJob.createAnalysisDir(pipelineRoot, form.getProtocolName());
                 PipelineService.get().queueJob(new BillingPipelineJob(getContainer(), getUser(), getViewContext().getActionURL(), pipelineRoot, analysisDir, form));
 
                 resultProperties.put("success", true);
             }
-            catch (PipelineValidationException | PipelineJobException e)
+            catch (PipelineValidationException | PipelineJobException | IOException e)
             {
                 errors.reject(ERROR_MSG, e.getMessage());
                 return null;
@@ -146,15 +149,16 @@ public class EHR_BillingController extends SpringActionController
         {
             Set<String> ids = DataRegionSelection.getSelected(form.getViewContext(), true);
 
-            StringBuilder msg = new StringBuilder("You have selected " + ids.size() + " billing runs to delete.  This will also delete: <p>");
-            for (String m : EHR_BillingManager.get().deleteBillingRuns(getUser(),getContainer(), ids, true))
+            HtmlStringBuilder msg = HtmlStringBuilder.of("You have selected ").append(ids.size()).append(" billing runs to delete.  This will also delete: ");
+            msg.startTag("p");
+            for (HtmlString m : EHR_BillingManager.get().deleteBillingRuns(getUser(),getContainer(), ids, true))
             {
-                msg.append(m).append("<br>");
+                msg.append(m).append(msg.startTag("br"));
             }
 
-            msg.append("<p>Are you sure you want to do this?");
+            msg.startTag("p").append("Are you sure you want to do this?");
 
-            return new HtmlView(msg.toString());
+            return new HtmlView(msg.getHtmlString());
         }
 
         @Override

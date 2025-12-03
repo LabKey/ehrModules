@@ -31,8 +31,6 @@ public interface BillingPipelineJobSupport
 
     String getName();
 
-    File getAnalysisDir();
-
     /*
      * Returns Pair of previous matching billing run's objectId and rowId
      * */
