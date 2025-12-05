@@ -104,6 +104,10 @@
                     <fkDbSchema>exp</fkDbSchema>
                 </fk>
             </column>
+            <column columnName="billing_contact_info">
+                <columnTitle>Billing Contact Info</columnTitle>
+            </column>
+            <column columnName="institution"/>
             <column columnName="container"/>
             <column columnName="createdBy"/>
             <column columnName="created"/>
