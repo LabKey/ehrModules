@@ -21,6 +21,7 @@ import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
+import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.Crawler;
 import org.labkey.test.util.DataRegionTable;
@@ -32,6 +33,7 @@ import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
 import org.labkey.test.util.selenium.WebDriverUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -435,6 +437,13 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     private void validatePageLinks(Set<String> crawledLinks)
     {
         log("Validating links on " + getURL());
+
+        // Wait for DOM to be fully loaded and stable
+        WebDriverWrapper.waitFor(() -> {
+            String readyState = (String) ((JavascriptExecutor) getDriver())
+                    .executeScript("return document.readyState");
+            return "complete".equals(readyState);
+        }, 5000);
 
         // Find all anchors in the body content area, excluding buttons and those in data regions
         List<WebElement> anchors = getDriver().findElements(By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' lk-body-ct ')]//a[not(ancestor::form[@data-region-form]) and not(@role='button') and not(contains(@class, 'labkey-button'))]"));
