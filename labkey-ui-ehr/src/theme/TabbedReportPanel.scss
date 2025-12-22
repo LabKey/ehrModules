@@ -1,0 +1,49 @@
+.tabbed-report-panel {
+    .category-tabs {
+        margin-bottom: 0;
+        background-color: #f8f9fa;
+        padding: 5px 10px 0 10px;
+        border-radius: 4px 4px 0 0;
+
+        .category-tab {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 20px;
+            color: #333;
+        }
+
+        .category-tab-active {
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px 20px;
+            background-color: #e9ecef !important;
+            color: #337ab7;
+        }
+    }
+
+    // Report tabs (second level - subordinate)
+    .report-tabs {
+        margin-bottom: 15px;
+        background-color: #e9ecef;
+        padding: 8px 10px 0 10px;
+        border-bottom: 1px solid #dee2e6;
+
+        .report-tab {
+            cursor: pointer;
+            font-size: 13px;
+            padding: 8px 15px;
+            color: #555;
+        }
+
+        .report-tab-active {
+            cursor: pointer;
+            font-size: 13px;
+            padding: 8px 15px;
+            background-color: #f8f8f8;
+            color: #337ab7;
+            font-weight: 600;
+        }
+    }
+}

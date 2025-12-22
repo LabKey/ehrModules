@@ -58,6 +58,8 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
+import org.labkey.api.settings.AppProps;
+import org.labkey.api.settings.OptionalFeatureService;
 import org.labkey.api.util.ContextListener;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.StartupListener;
@@ -289,6 +291,16 @@ public class EHRModule extends ExtendedSimpleModule
 
         // Register the Security Escalation Audit Log
         AuditLogService.get().registerAuditType(new EHRSecurityEscalatorAuditProvider());
+
+        OptionalFeatureService.get().addExperimentalFeatureFlag(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS,
+                "Use React EHR participant history",
+                "Links on animal Ids will go to the new React participant history.",
+                true);
+
+        if (AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS))
+        {
+            EHRService.get().registerActionOverride("participantView", this, "views/gen/participantViewNew.html");
+        }
     }
 
     @Override

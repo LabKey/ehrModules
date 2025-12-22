@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event';
 import { AnimalHistoryPage } from './AnimalHistoryPage';
 import { defaultServerContext, renderWithServerContext } from '@labkey/ehr';
 
@@ -18,6 +18,5 @@ describe('AnimalHistoryPage', () => {
         });
 
         expect(await screen.findByText('User: FolderAdminDisplayName')).toBeVisible();
-
     });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './AnimalHistoryPage';
+import { App } from './ParticipantView';
 
 import './index.scss';
 
