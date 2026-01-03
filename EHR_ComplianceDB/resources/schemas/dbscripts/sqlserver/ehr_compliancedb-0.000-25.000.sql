@@ -319,3 +319,108 @@ ALTER TABLE ehr_compliancedb.sopdates
   ADD CONSTRAINT fk_sopdates_employeeid FOREIGN KEY (employeeid)
       REFERENCES ehr_compliancedb.employees (employeeid)
       ON UPDATE CASCADE;
+
+ALTER TABLE ehr_compliancedb.requirements DROP column container;
+
+ALTER TABLE ehr_compliancedb.CompletionDates ADD trainer varchar(100);
+
+ALTER TABLE ehr_compliancedb.employees ADD middleName varchar(100);
+
+ALTER TABLE ehr_compliancedb.employees ADD contactsSla bit default 0;
+ALTER TABLE ehr_compliancedb.requirements ADD contactsSla bit;
+
+ALTER TABLE ehr_compliancedb.requirements ADD container entityid;
+GO
+--upgrade of sorts.  both wnprc/onprc should have a single container, so set container based on employees
+UPDATE ehr_compliancedb.requirements SET container = (SELECT max(cast(c.container as varchar(38))) as container from ehr_compliancedb.employees c);
+
+--delete potential orphans
+DELETE FROM ehr_compliancedb.requirements WHERE container IS NULL OR (select entityid FROM core.containers WHERE entityid = container) IS NULL;
+
+ALTER TABLE ehr_compliancedb.requirements ADD rowid int identity(1,1);
+
+-- refactor foreign keys back into trigger scripts / java code.  this was done b/c
+-- some tables are now scoped to a container, like requirements, and it is simply easier to enforce them from triggers than DB FKs
+ALTER TABLE ehr_compliancedb.completiondates DROP CONSTRAINT fk_completiondates_employeeid;
+ALTER TABLE ehr_compliancedb.employeerequirementexemptions DROP CONSTRAINT fk_employeerequirementexemptions_employeeid;
+ALTER TABLE ehr_compliancedb.completiondates DROP CONSTRAINT fk_completiondates_requirementname;
+ALTER TABLE ehr_compliancedb.employeerequirementexemptions DROP CONSTRAINT fk_employeerequirementexemptions_requirementname;
+ALTER TABLE ehr_compliancedb.employees DROP CONSTRAINT fk_employees_type;
+ALTER TABLE ehr_compliancedb.employees DROP CONSTRAINT fk_employees_category;
+ALTER TABLE ehr_compliancedb.employees DROP CONSTRAINT fk_employees_title;
+ALTER TABLE ehr_compliancedb.employees DROP CONSTRAINT fk_employees_unit;
+ALTER TABLE ehr_compliancedb.employees DROP CONSTRAINT fk_employees_location;
+ALTER TABLE ehr_compliancedb.requirements DROP CONSTRAINT fk_requirements_type;
+ALTER TABLE ehr_compliancedb.requirementspercategory DROP CONSTRAINT fk_requirementspercategory_requirementname;
+ALTER TABLE ehr_compliancedb.requirementspercategory DROP CONSTRAINT fk_requirementspercategory_category;
+ALTER TABLE ehr_compliancedb.requirementspercategory DROP CONSTRAINT fk_requirementspercategory_unit;
+ALTER TABLE ehr_compliancedb.requirementsperemployee DROP CONSTRAINT fk_requirementsperemployee_employeeid;
+ALTER TABLE ehr_compliancedb.requirementsperemployee DROP CONSTRAINT fk_requirementsperemployee_requirementname;
+ALTER TABLE ehr_compliancedb.sopbycategory DROP CONSTRAINT fk_sopbycategory_category;
+ALTER TABLE ehr_compliancedb.sopdates DROP CONSTRAINT fk_sopdates_employeeid;
+
+EXEC core.fn_dropifexists 'requirements', 'ehr_compliancedb', 'CONSTRAINT', 'PK_requirements';
+ALTER TABLE ehr_compliancedb.requirements ADD CONSTRAINT pk_requirements PRIMARY KEY (rowid);
+
+ALTER TABLE ehr_compliancedb.requirements ADD datedisabled DATETIME;
+
+ALTER TABLE ehr_compliancedb.employeerequirementexemptions ADD Comments varchar(500);
+
+CREATE INDEX IX_completiondates_employeeid ON ehr_compliancedb.completiondates(employeeid);
+CREATE INDEX IX_completiondates_requirementname ON ehr_compliancedb.completiondates(requirementname);
+
+CREATE INDEX IX_employeerequirementexemptions_employeeid ON ehr_compliancedb.employeerequirementexemptions(employeeid);
+CREATE INDEX IX_employeerequirementexemptions_requirementname ON ehr_compliancedb.employeerequirementexemptions(requirementname);
+
+CREATE INDEX IX_requirementspercategory_requirementname ON ehr_compliancedb.requirementspercategory(requirementname);
+
+CREATE INDEX IX_requirementsperemployee_requirementname ON ehr_compliancedb.requirementsperemployee(requirementname);
+CREATE INDEX IX_requirementsperemployee_employeeid ON ehr_compliancedb.requirementsperemployee(employeeid);
+
+CREATE INDEX IX_sopdates_employeeid ON ehr_compliancedb.sopdates(employeeid);
+
+ALTER TABLE ehr_compliancedb.CompletionDates ADD FileName nvarchar(500);
+
+ALTER TABLE ehr_compliancedb.Employees ALTER COLUMN Notes NVARCHAR (4000);
+
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add trackingflag nvarchar(100);
+
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add objectid ENTITYID;
+
+ALTER TABLE ehr_compliancedb.RequirementsPerCategory add taskid ENTITYID;
+
+
+CREATE TABLE ehr_compliancedb.EmployeePerUnit
+(
+    RowId INT IDENTITY(1,1) NOT NULL,
+    EmployeeId nvarchar(255) not null,
+    unit nvarchar(255) null,
+    category nvarchar(255) null,
+    Container ENTITYID NOT NULL,
+    CreatedBy USERID,
+    Created datetime,
+    ModifiedBy USERID,
+    Modified datetime,
+    taskid entityid,
+    objectid entityid
+
+        CONSTRAINT PK_EmployeePerUnits PRIMARY KEY (RowId)
+);
+
+ALTER TABLE ehr_compliancedb.Requirements add reviewdate datetime;
+
+CREATE TABLE ehr_compliancedb.Compliance_Reference_Data
+(
+        rowId int identity(1,1),
+        label varchar(250) NULL,
+        value varchar(255) ,
+        columnName varchar(255)  NOT NULL,
+        sort_order integer  null,
+        endDate  datetime  NULL,
+        objectid entityid
+
+            CONSTRAINT pk_compliance_reference PRIMARY KEY (value)
+
+);
+
+ALTER TABLE ehr_compliancedb.CompletionDates ADD snooze_date datetime;
