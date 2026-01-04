@@ -295,12 +295,7 @@ public class EHRModule extends ExtendedSimpleModule
         OptionalFeatureService.get().addExperimentalFeatureFlag(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS,
                 "Use React EHR participant history",
                 "Links on animal Ids will go to the new React participant history.",
-                true);
-
-        if (AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS))
-        {
-            EHRService.get().registerActionOverride("participantView", this, "views/gen/participantViewNew.html");
-        }
+                false);
     }
 
     @Override
@@ -338,6 +333,9 @@ public class EHRModule extends ExtendedSimpleModule
         Container c = context.getContainer();
         Map<String, String> map = getDefaultPageContextJson(c);
         Map<String, Object> ret = new HashMap<>(map);
+
+        // Expose the experimental React participant reports flag to client-side JavaScript
+        ret.put("isReactAnimalHistoryEnabled", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS));
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
