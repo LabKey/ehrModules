@@ -368,17 +368,23 @@ WHERE lower(a.alias) IN (${lowercaseUnresolvedInputIds})
 
 The URL hash format follows the existing pattern in `ParticipantReports.tsx`:
 
+**ID Search mode:**
 ```
-# ID Search mode:
 #subjects:{id1};{id2};{id3}&filterType:idSearch&activeReport:{reportId}&showReport:1
+```
 
-# All Records mode:
+**All Records mode:**
+```
 #filterType:all&activeReport:{reportId}&showReport:1
+```
 
-# Alive at Center mode:
+**Alive at Center mode:**
+```
 #filterType:aliveAtCenter&activeReport:{reportId}&showReport:1
+```
 
-# URL Params mode (shared/bookmarked link - read-only):
+**URL Params mode (shared/bookmarked link - read-only):**
+```
 #subjects:{id1};{id2};{id3}&readOnly:true&activeReport:{reportId}&showReport:1
 ```
 
@@ -1616,9 +1622,7 @@ private void ensureStatusVariety()
 - Mix of alive and dead animals for Alive at Center testing - ensured by `ensureStatusVariety()`
   - Define test constant: `private static final String DEAD_ANIMAL_ID = "<specific_dead_animal_id>";`
   - Use in test 9 to verify exclusion from Alive at Center results
-- At least two test reports: one supporting non-ID filters, one not supporting - configured by `configureTestReportMetadata()` 
-
-## 
+- At least two test reports: one supporting non-ID filters, one not supporting - configured by `configureTestReportMetadata()`
 
 # User Education Handoff 
 
