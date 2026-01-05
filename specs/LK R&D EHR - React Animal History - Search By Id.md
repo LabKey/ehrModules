@@ -12,7 +12,6 @@ Base branch: develop
 Feature branch(es): fb\_xx
 
 # Feature Summary
-
 Implement a React Animal History using the React Participant View and a new Search by Id filter. Supports single and multi-animal selection and reports.
 
 ## User Value Statement
@@ -812,25 +811,812 @@ Add tracking for:
 
 ### Related Areas
 
-* 
+* **Animal History Reports** - All existing animal history reports must function with new filter modes
+* **URL Sharing/Bookmarking** - URLs with subjects and readOnly parameter must work across sessions and users
+* **Demographics and Alias Data** - ID resolution depends on study.demographics and study.alias tables
+* **Report Metadata** - ehr.reports.supportsNonIdFilters field affects "Alive at Center" button state
+* **Permissions** - Report access controlled by folder and dataset permissions
+* **ExtJS Reports** - Legacy JavaScript reports must receive correct filter data
+* **React Reports** - QueryReportWrapper and JSReportWrapper must handle all filter modes
+* **TabbedReportPanel** - Existing report tab navigation and filter application
 
 ### User Scenarios
 
-* 
+**ID Search Mode:**
+1. **Single Animal Search (Direct ID)**
+   - Navigate to Animal History page
+   - Verify default state: ID Search mode active with empty textarea
+   - Enter single animal ID in textarea
+   - Click "Update Report"
+   - Verify ID resolves and reports display for that animal
+   - Verify no "ID Resolution" feedback section appears (all direct matches)
+
+2. **Single Animal Search (Alias)**
+   - Enter animal alias (tattoo, chip number, etc.) in textarea
+   - Click "Update Report"
+   - Verify ID Resolution feedback section appears
+   - Verify "Resolved" section shows: input alias → resolved ID (alias type)
+     Example: "test123 → ID12345 (tattoo)"
+   - Verify correct animal ID is displayed and reports load
+
+3. **Multi-Animal Search (Various Separators)**
+   - Enter 5 animal IDs separated by newlines
+   - Click "Update Report", verify all resolved
+   - Clear and re-enter same 5 IDs separated by commas
+   - Click "Update Report", verify same results
+   - Repeat with tab-separated and semicolon-separated lists
+
+4. **Multi-Animal Search (Mixed Separators)**
+   - Enter IDs using multiple separators in single input: "ID1, ID2\nID3;ID4\tID5"
+   - Click "Update Report"
+   - Verify all 5 IDs parsed correctly
+   - Verify reports show all 5 animals
+
+5. **Mixed Direct and Alias IDs**
+   - Enter 3 direct IDs and 2 aliases in textarea
+   - Click "Update Report"
+   - Verify ID Resolution feedback section appears (contains aliases)
+   - Verify "Resolved" section shows:
+     - Direct matches without arrow: "ID123"
+     - Alias matches with arrow and type: "alias456 → ID789 (tattoo)"
+   - Verify all 5 animals appear in reports
+
+6. **IDs Not Found**
+   - Enter mix of valid direct IDs and invalid/non-existent IDs
+   - Click "Update Report"
+   - Verify ID Resolution feedback section appears (contains not-found IDs)
+   - Verify "Resolved" section shows valid IDs without arrow: "ID123"
+   - Verify "Not Found" section lists invalid IDs
+   - Verify reports only show data for valid IDs
+
+7. **Duplicate IDs**
+   - Enter "ID123, ID456, ID123, ID456" (duplicates)
+   - Click "Update Report"
+   - Verify de-duplication occurs
+   - Verify only 2 unique IDs used in resolution
+   - Verify reports show 2 animals (not 4)
+
+8. **100 ID Limit**
+   - Enter exactly 100 unique IDs
+   - Verify no validation error, "Update Report" enabled
+   - Click "Update Report", verify all resolve
+   - Add 1 more ID (101 total)
+   - Verify validation error appears: "Maximum of 100 animal IDs allowed. You entered 101 IDs."
+   - Verify "Update Report" button is disabled
+   - Remove one ID to get back to 100
+   - Verify error clears and "Update Report" button re-enables
+
+9. **Case Insensitivity**
+   - Enter animal ID in lowercase
+   - Verify resolution finds ID regardless of stored casing
+   - Enter same ID in uppercase, verify same result
+
+**All Records Mode:**
+10. **View All Animals**
+    - Click "All Records" button
+    - Verify ID input textarea is cleared and hidden
+    - Verify reports display data for all animals in database
+    - Verify no ID filters applied
+    - Test with multiple report tabs
+
+11. **URL Bookmarking - All Records**
+    - While in All Records mode, copy URL
+    - Open URL in new browser tab
+    - Verify All Records mode is active
+    - Verify all animals shown
+
+**Alive at Center Mode:**
+12. **View Alive Animals (Supported Report)**
+    - Navigate to report with `supportsNonIdFilters = true`
+    - Verify "Alive at Center" button is enabled
+    - Click "Alive at Center"
+    - Verify reports show only animals with `calculated_status = 'Alive'`
+    - Verify ID input is cleared/hidden
+
+13. **Disabled for Unsupported Reports**
+    - Navigate to report with `supportsNonIdFilters = false`
+    - Verify "Alive at Center" button is disabled/grayed out
+    - Hover over button, verify tooltip explains why disabled
+    - Switch to another report with `supportsNonIdFilters = true`
+    - Verify button becomes enabled
+
+14. **Report Tab Switching**
+    - Start in Alive at Center mode on supported report
+    - Switch to report tab with `supportsNonIdFilters = false`
+    - Verify "Alive at Center" button becomes disabled
+    - Verify filter mode stays as "Alive at Center" (selected)
+    - Verify error message appears: "This report does not support Alive at Center filtering"
+    - Verify report shows unfiltered data (all animals, not just alive)
+    - Switch back to supported report tab
+    - Verify error message clears
+    - Verify "Alive at Center" button becomes enabled again
+    - Verify alive-only filter reapplies
+
+**URL Params Mode (Read-Only):**
+15. **Shared Link with Subjects**
+    - Perform ID search for 3 animals, get results
+    - Generate shareable URL with `readOnly=true` parameter
+    - Open URL in incognito/private browser window
+    - Verify no filter toggle buttons visible
+    - Verify no ID input textarea visible
+    - Verify read-only summary shows resolved animal IDs with count (e.g., "Viewing 3 animal(s): ID123, ID456, ID789")
+    - Verify "Modify Search" button is visible
+    - Verify reports display data for the 3 animals
+
+16. **Modify Shared Link**
+    - From URL Params mode (shared link)
+    - Click "Modify Search" button
+    - Verify switches to ID Search mode
+    - Verify filter toggle buttons now visible
+    - Verify subjects pre-populated in textarea
+    - Verify URL no longer contains `readOnly=true`
+    - Modify ID list, click "Update Report"
+    - Verify new IDs resolve and reports update
+
+17. **Bookmark with Many Subjects**
+    - Create URL Params mode link with 50 animal IDs
+    - Bookmark the URL
+    - Close browser, reopen bookmark
+    - Verify exactly 50 animals display correctly
+    - Verify no ID limit validation (URL Params mode bypasses 100 limit)
+    - Verify URL hash length doesn't cause browser issues
+
+18. **URL with Subjects but No readOnly Flag**
+    - Build URL with subjects in hash but without `readOnly=true` parameter
+    - Navigate to URL
+    - Verify ID Search mode active (not URL Params mode)
+    - Verify subjects pre-populated in textarea (editable)
+    - Verify filter toggle buttons visible
+
+**Filter Mode Switching:**
+19. **ID Search → All Records**
+    - Enter 5 animal IDs, click "Update Report"
+    - Verify reports show 5 animals
+    - Click "All Records" button
+    - Verify ID textarea is cleared
+    - Verify reports now show all animals
+
+20. **All Records → ID Search**
+    - While in All Records mode showing all animals
+    - Click "ID Search" button
+    - Verify empty ID textarea appears
+    - Verify filter toggle buttons visible
+    - Enter animal IDs and proceed with search
+
+21. **ID Search → Alive at Center**
+    - From ID Search with 5 animals
+    - Click "Alive at Center" button (on supported report)
+    - Verify ID textarea cleared
+    - Verify reports now show only alive animals (not just the 5)
+
+22. **Alive at Center → ID Search**
+    - From Alive at Center mode
+    - Click "ID Search" button
+    - Verify empty ID textarea appears
+    - Enter IDs and verify can return to ID search
+
+23. **Browser Back/Forward Navigation**
+    - Perform ID search for 3 animals
+    - Click "All Records"
+    - Click browser back button
+    - Verify returns to ID Search with 3 animals
+    - Click browser forward button
+    - Verify returns to All Records mode
+    - Verify state and URL hash sync correctly
+
+**Cross-Report Consistency:**
+24. **Data Consistency Across Report Types**
+    - Search for 3 animals
+    - Navigate through all report tabs (Demographics, Weight, Housing, etc.)
+    - Verify all reports show same 3 animals
+    - Verify filter is maintained across tabs
+
+25. **Single vs Multi-Animal Report Variants**
+    - Search for 1 animal
+    - Verify reports using single-animal view layout
+    - Search for 10 animals
+    - Verify same reports switch to multi-animal grid layout
+    - Verify data correctness in both views
 
 ### Error Cases
 
-* 
+**ID Resolution Errors:**
+* All IDs invalid/not found - verify "Not Found" section only, no reports data
+* Network error during resolution - verify error message displayed, user can retry
+* Timeout during long-running alias query (e.g., 100 IDs) - verify timeout error with retry option
+* Permission denied to demographics/alias tables - verify appropriate error message
+* Malformed IDs with special characters (e.g., "###", "***") - verify treated as literal ID string, appears in "Not Found" section
+* IDs with SQL injection patterns (e.g., "'; DROP TABLE--") - verify treated as literal string, no security issue
+
+**Validation Errors:**
+* Empty ID input - verify validation message: "Please enter at least one animal ID"
+* Whitespace-only input - verify treated as empty, validation error shown
+* 101+ IDs entered - verify limit error and disabled button
+
+**Report Loading Errors:**
+* Report query fails - verify error message in report panel, other tabs still accessible
+* No data for selected animals - verify "No data found" message
+* Report doesn't support filter mode - verify appropriate message or disabled state
+
+**URL/Navigation Errors:**
+* URL with `readOnly=true` but no subjects - verify defaults to All Records mode or shows error
+* Malformed URL hash - verify defaults to ID Search mode with no subjects
+* URL with conflicting parameters (e.g., `readOnly=true` AND `filterType=all`) - verify `readOnly` takes priority, switches to urlParams mode
+* URL hash exceeds browser limit (~2000 chars with many subjects) - verify graceful degradation or error
+* Browser back/forward with filter changes - verify state maintained correctly
+
+**Permission Errors:**
+* User lacks folder read permission - verify redirect to permission denied page
+* User lacks dataset permissions - verify reports show "permission denied" for those datasets
+* Shared URL accessed by user without permissions - verify appropriate error message
+
+### Accessibility Scenarios
+
+**Keyboard Navigation:**
+26. **Keyboard-Only Operation**
+    - Navigate Animal History page using only keyboard (Tab, Enter, Space)
+    - Verify all filter buttons accessible via Tab
+    - Verify textarea accessible and functional
+    - Verify "Update Report" button activates with Enter/Space
+    - Verify focus indicators clearly visible
+    - Verify logical tab order through interface
+
+**Screen Reader Compatibility:**
+27. **Screen Reader Accessibility**
+    - Use screen reader (NVDA/JAWS) to navigate page
+    - Verify filter mode changes announced
+    - Verify textarea has descriptive label
+    - Verify validation errors announced via role="alert"
+    - Verify ID Resolution feedback sections have proper headings
+    - Verify report data accessible and properly labeled
+
+### Performance Scenarios
+
+28. **ID Resolution Performance**
+    - Enter 100 animal IDs (maximum)
+    - Click "Update Report"
+    - Verify ID resolution completes in < 5 seconds
+    - Verify UI remains responsive during resolution
+
+29. **Report Rendering Performance**
+    - After resolving 100 animals
+    - Verify reports render in < 10 seconds
+    - Switch between report tabs
+    - Verify tab switching completes in < 2 seconds
+
+30. **Filter Mode Switching Performance**
+    - Switch between filter modes (ID Search, All Records, Alive at Center)
+    - Verify mode transitions complete in < 200ms
+    - Verify no UI lag or freezing
+
+### Cross-Browser Testing
+
+**Browser Coverage:**
+* Chrome (primary) - All scenarios
+* Firefox - Core scenarios (ID Search, All Records, Alive at Center, URL Params)
+* Safari (Mac) - Core scenarios
+* Edge - Core scenarios
+
+**Mobile Browsers (if supported):**
+* Chrome Mobile (Android) - ID Search and URL Params scenarios
+* Safari Mobile (iOS) - ID Search and URL Params scenarios
 
 ## Automated Test Plan
 
-### Unit Tests
+### Unit Tests (Jest)
 
-* 
+**File: `idResolutionService.test.ts`**
+* Test `resolveAnimalIds()` with direct ID matches
+* Test `resolveAnimalIds()` with alias matches
+* Test `resolveAnimalIds()` with mixed valid/invalid IDs
+* Test case-insensitive matching with `lower()` function
+* Test empty input handling
+* Test de-duplication of input IDs
+* Test multiple aliases resolving to same animal ID (ensure no duplicate results)
+* Test 100+ IDs to verify no client-side limit in service
+* Test special characters in IDs/aliases (spaces, dashes, underscores)
+* Test response timing/performance expectations with large datasets
+* Test API error handling (network, permissions, timeouts)
+* Test LabKey API returns 500 error - verify error handling
+* Test LabKey API returns empty result set - verify handled gracefully
+* Test LabKey API returns malformed response - verify doesn't crash
+* Mock LabKey.Query.selectRows calls
 
-### Integration Tests 
+**File: `SearchByIdPanel.test.tsx`**
+* Test ID parsing with newline separators
+* Test ID parsing with comma separators
+* Test ID parsing with tab separators
+* Test ID parsing with semicolon separators
+* Test ID parsing with mixed separators
+* Test whitespace trimming
+* Test duplicate ID de-duplication across different separators
+* Test empty input shows validation error: "Please enter at least one animal ID"
+* Test whitespace-only input treated as empty (shows validation error)
+* Test input with empty strings filtered out: ["ID1", "", "ID2"] → ["ID1", "ID2"]
+* Test 100 ID limit validation - exactly 100 IDs
+* Test 100 ID limit validation - 101 IDs shows error
+* Test validation error clears when IDs reduced below limit
+* Test component behavior when `initialSubjects` prop provided (URL Params → ID Search transition)
+* Test filter mode toggle buttons render correctly
+* Test switching between filter modes updates state
+* Test ID textarea visible only in ID Search mode
+* Test "Update Report" button visible only in ID Search mode
+* Test "Update Report" button disabled when validation fails
+* Test "Update Report" button re-enables after fixing validation error
+* Test "Alive at Center" button disabled when `activeReportSupportsNonIdFilters = false`
+* Test "Alive at Center" button enabled when `activeReportSupportsNonIdFilters = true`
+* Test "Alive at Center" selected but on unsupported report shows error message
+* Test URL Params mode hides filter buttons
+* Test URL Params mode shows read-only summary
+* Test "Modify Search" button switches to ID Search mode
+* Test input cleared when switching to All Records or Alive at Center
+* Test accessibility: ARIA labels on textarea and buttons
+* Test accessibility: keyboard navigation works correctly
+* Test IDs with SQL injection patterns treated as literal strings (security test)
 
-* 
+**File: `IdResolutionFeedback.test.tsx`**
+* Test component hidden when all IDs are direct matches (no aliases, no not-found)
+* Test component visible when aliases present
+* Test component visible when not-found IDs present
+* Test component visible when both aliases and not-found IDs present
+* Test "Resolved" section displays direct matches without arrow: "ID123"
+* Test "Resolved" section displays alias matches with arrow and type: "alias456 → ID123 (tattoo)"
+* Test "Not Found" section displays unresolved IDs
+* Test multiple inputs resolving to same ID displayed correctly
+
+**File: `ParticipantReports.test.tsx`**
+* Test initial filter type determined from URL hash
+* Test `readOnly=true` in URL activates URL Params mode
+* Test filter state management (subjects, filterType)
+* Test `handleFilterChange` callback updates state and URL
+* Test `activeReportSupportsNonIdFilters` queried from report metadata
+* Test switching filter modes updates URL hash
+* Test switching from URL Params mode removes `readOnly` parameter
+* Test race condition: rapid filter mode changes before state updates
+* Test initial load with malformed URL hash (fallback behavior)
+* Test `activeReportSupportsNonIdFilters` updates when switching report tabs
+
+**File: `TabbedReportPanel.test.tsx`**
+* Test ID Search mode creates subject ID filters
+* Test URL Params mode creates subject ID filters
+* Test All Records mode creates no filters
+* Test Alive at Center mode creates `calculated_status = 'Alive'` filter
+* Test filter switching updates report filters correctly
+* Test filter structure matches LabKey Filter.create() API format
+* Test empty subjects array in ID Search mode shows validation error (not passed to reports)
+* Test report with `supportsNonIdFilters = false` in Alive at Center mode shows error message
+
+**File: `urlHashUtils.test.ts`**
+* Test `updateUrlHash()` for ID Search mode
+* Test `updateUrlHash()` for All Records mode
+* Test `updateUrlHash()` for Alive at Center mode
+* Test `updateUrlHash()` for URL Params mode with `readOnly=true`
+* Test `getFiltersFromUrl()` parses all filter types
+* Test URL with conflicting parameters resolved correctly
+* Test URL hash with 100+ subjects (ensure no truncation)
+* Test special character encoding in subject IDs (spaces, semicolons)
+* Test `updateUrlHash()` doesn't create duplicate history entries
+
+### Integration Tests (Selenium - Java)
+
+**Add to existing test class: `EHR_AppTest`**
+
+Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_app/EHR_AppTest.java`
+
+**New Test Methods:**
+
+**ID Search Mode Tests:**
+
+1. **`testAnimalHistorySearchById_SingleDirect()`**
+   - Navigate to Animal History page in EHR_App
+   - Enter single animal ID from test data
+   - Click "Update Report" button
+   - Assert report loads with animal data
+   - Assert no ID Resolution feedback visible (all direct matches, no aliases/not-found)
+
+2. **`testAnimalHistorySearchById_SingleAlias()`**
+   - Set up alias in test data (if not already present)
+   - Enter alias (e.g., tattoo number) in search field
+   - Click "Update Report"
+   - Assert ID Resolution feedback section visible
+   - Assert "Resolved" section shows alias → ID with type (e.g., "TATTOO_001 → ID123 (tattoo)")
+   - Assert correct animal displayed in reports
+
+3. **`testAnimalHistorySearchById_MultiAnimal()`**
+   - Build comma-separated list of 3-5 direct test animal IDs
+   - Enter in search textarea
+   - Click "Update Report"
+   - Assert no ID Resolution feedback visible (all direct matches)
+   - Assert all animals appear in first visible report
+   - Navigate to different report tabs: Demographics, Weight, Housing
+   - For each tab, assert all 3-5 animals shown
+
+4. **`testAnimalHistorySearchById_NotFound()`**
+   - Enter mix of valid direct test IDs and "INVALID_ID_999"
+   - Click "Update Report"
+   - Assert ID Resolution feedback section visible
+   - Assert "Resolved" section shows valid IDs without arrow
+   - Assert "Not Found" section contains "INVALID_ID_999"
+   - Assert reports show only valid IDs
+
+5. **`testAnimalHistorySearchById_100IdLimit()`**
+   - Generate 100 unique test IDs (or mock if needed)
+   - Enter in textarea
+   - Assert no validation error
+   - Add 101st ID
+   - Assert validation error visible: "Maximum of 100 animal IDs allowed. You entered 101 IDs."
+   - Assert "Update Report" button disabled
+   - Remove one ID
+   - Assert error clears
+
+6. **`testAnimalHistorySearchById_CaseInsensitive()`**
+   - Enter animal ID in lowercase
+   - Click "Update Report"
+   - Assert resolves correctly
+   - Clear and enter same ID in uppercase
+   - Click "Update Report"
+   - Assert same result
+
+**All Records Mode Tests:**
+
+7. **`testAnimalHistorySearchById_AllRecords()`**
+   - Navigate to Animal History
+   - Click "All Records" button
+   - Assert ID textarea not visible or disabled
+   - Assert reports load without subject filters
+   - Verify multiple animals displayed (more than test subset)
+
+8. **`testAnimalHistorySearchById_AllRecordsUrl()`**
+   - Click "All Records" button
+   - Capture URL containing `filterType:all`
+   - Navigate away, then to captured URL
+   - Assert All Records mode active
+   - Assert reports show all animals
+
+**Alive at Center Mode Tests:**
+
+9. **`testAnimalHistorySearchById_AliveAtCenter()`**
+   - Navigate to report supporting non-ID filters (verify in test setup)
+   - Assert "Alive at Center" button enabled
+   - Click button
+   - Assert reports filter to animals with `calculated_status = 'Alive'`
+   - Verify DEAD_ANIMAL_ID not included in results
+   - Verify at least one alive animal is shown
+
+10. **`testAnimalHistorySearchById_AliveAtCenterDisabled()`**
+    - Navigate to report with `supportsNonIdFilters = true` and click "Alive at Center"
+    - Verify alive filter active
+    - Switch to report tab with `supportsNonIdFilters = false`
+    - Assert "Alive at Center" button disabled (but still selected)
+    - Assert error message visible: "This report does not support Alive at Center filtering"
+    - Assert report shows unfiltered data (all animals, not just alive)
+    - Switch back to supported report tab
+    - Assert error message clears
+    - Assert button becomes enabled again
+    - Assert alive filter reapplies
+
+**URL Params Mode Tests:**
+
+11. **`testAnimalHistorySearchById_UrlParamsReadOnly()`**
+    - Build URL with 2-3 test animal IDs and `readOnly=true` parameter
+    - Navigate to URL
+    - Assert filter toggle buttons not visible
+    - Assert ID textarea not visible
+    - Assert read-only summary displays animal count
+    - Assert reports show specified animals
+
+12. **`testAnimalHistorySearchById_ModifySharedLink()`**
+    - Navigate to URL Params mode URL (with `readOnly=true`)
+    - Click "Modify Search" button
+    - Assert switches to ID Search mode
+    - Assert filter buttons visible
+    - Assert subjects pre-populated in textarea
+    - Assert URL no longer contains `readOnly=true`
+
+**Filter Mode Switching Tests:**
+
+13. **`testAnimalHistorySearchById_SwitchModes()`**
+    - Start with ID search for 3 animals
+    - Assert 3 animals in reports
+    - Click "All Records"
+    - Assert reports now show all animals
+    - Click "ID Search"
+    - Assert empty textarea visible
+    - Click "Alive at Center" (on supported report)
+    - Assert reports show only alive animals
+
+14. **`testAnimalHistorySearchById_MultipleTransitions()`**
+    - ID Search with 3 IDs → verify reports show 3 animals
+    - Switch to All Records → verify shows all animals
+    - Switch to Alive at Center → verify shows only alive animals
+    - Switch back to ID Search → verify empty textarea
+    - Enter 5 different IDs and click "Update Report" → verify reports update to 5 animals
+    - Verify state maintained correctly through all transitions
+    - Verify URL hash updates at each step
+
+**Performance Tests:**
+
+15. **`testAnimalHistorySearchById_LargeDataset()`**
+    - Note: Requires test environment with sufficient animal data
+    - Enter maximum IDs supported (or realistic large number like 50)
+    - Click "Update Report"
+    - Measure and verify: Resolution completes within acceptable time (< 10 seconds)
+    - Verify: Report rendering doesn't hang
+    - Verify: Browser remains responsive
+    - Switch to different report tab
+    - Verify: Tab switching completes promptly
+
+**Accessibility Tests:**
+
+16. **`testAnimalHistorySearchById_KeyboardNavigation()`**
+    - Navigate to Animal History page
+    - Use keyboard only (Tab, Enter keys) to:
+      - Focus on ID textarea
+      - Enter animal IDs
+      - Tab to "Update Report" button
+      - Press Enter to submit
+    - Verify reports load correctly
+    - Tab to filter mode buttons and activate with keyboard
+    - Verify filter modes switch correctly via keyboard
+
+**Test Constants to Add:**
+
+```java
+// Add to EHR_AppTest class constants section
+private static final String DEAD_ANIMAL_ID = "<specific_dead_animal_id>";  // TODO: Set based on test data
+```
+
+**Helper Methods to Add:**
+
+```java
+private void navigateToAnimalHistorySearchById()
+{
+    // Handle different navigation contexts - ensure we can reach the page
+    if (!isElementPresent(Locator.css(".search-by-id-panel")))
+    {
+        goToProjectHome(); // Or goToEHRFolder() if needed
+        clickAndWait(Locator.linkWithText("Animal History")); // Parent menu
+        clickAndWait(Locator.linkWithText("Search By Id")); // Submenu if needed
+    }
+    waitForElement(Locator.css(".search-by-id-panel"));
+}
+
+private void enterAnimalIds(String... ids)
+{
+    if (ids == null || ids.length == 0)
+        throw new IllegalArgumentException("Must provide at least one ID");
+
+    Locator textarea = Locator.css("textarea.animal-id-input");
+    waitForElement(textarea); // Ensure visible before interacting
+    setFormElement(textarea, String.join(",", ids));
+}
+
+private void clickUpdateReport()
+{
+    clickButton("Update Report");
+
+    // Wait for loading indicator to appear then disappear (if present)
+    Locator loadingIndicator = Locator.css(".loading-indicator");
+    if (isElementPresent(loadingIndicator))
+    {
+        waitForElementToDisappear(loadingIndicator, WAIT_FOR_PAGE);
+    }
+
+    // Then wait for content
+    waitForElement(Locator.css(".report-content"));
+}
+
+private void clickFilterButton(String buttonText)
+{
+    clickButton(buttonText); // "All Records", "Alive at Center", or "ID Search"
+    sleep(500); // Allow mode transition
+}
+
+private void assertIdResolutionVisible(boolean shouldBeVisible)
+{
+    if (shouldBeVisible)
+        assertElementPresent(Locator.css(".id-resolution-feedback"));
+    else
+        assertElementNotPresent(Locator.css(".id-resolution-feedback"));
+}
+
+private void assertNotFoundContains(String id)
+{
+    assertElementPresent(Locator.css(".not-found-section").containing(id));
+}
+
+private void assertValidationError(String expectedMessage)
+{
+    // Allow partial match for flexibility
+    Locator validationError = Locator.css(".validation-error").containing(expectedMessage);
+    assertElementPresent(validationError);
+
+    // Also verify error is visible (not just present in DOM)
+    assertTrue("Validation error should be visible",
+               validationError.findElement(getDriver()).isDisplayed());
+}
+
+private void assertReportContainsAnimal(String animalId)
+{
+    assertTextPresent(animalId);
+}
+
+private void assertFilterButtonState(String buttonText, boolean shouldBeEnabled)
+{
+    Locator button = Locator.button(buttonText);
+    assertElementPresent(button);
+
+    if (shouldBeEnabled)
+        assertElementPresent(button.notWithClass("disabled"));
+    else
+        assertElementPresent(button.withClass("disabled"));
+}
+
+private void assertUrlContains(String paramName, String paramValue)
+{
+    String currentUrl = getDriver().getCurrentUrl();
+    assertTrue("URL should contain " + paramName + ":" + paramValue,
+               currentUrl.contains(paramName + ":" + paramValue));
+}
+
+private void assertUrlDoesNotContain(String paramName)
+{
+    String currentUrl = getDriver().getCurrentUrl();
+    assertFalse("URL should not contain " + paramName,
+                currentUrl.contains(paramName + ":"));
+}
+
+private void assertReadOnlySummaryText(int expectedCount)
+{
+    String expectedText = String.format("Viewing %d animal(s)", expectedCount);
+    assertElementPresent(Locator.css(".read-only-summary").containing(expectedText));
+}
+
+private void assertTextareaVisible(boolean shouldBeVisible)
+{
+    Locator textarea = Locator.css("textarea.animal-id-input");
+    if (shouldBeVisible)
+    {
+        assertElementPresent(textarea);
+        assertTrue("Textarea should be visible",
+                   textarea.findElement(getDriver()).isDisplayed());
+    }
+    else
+    {
+        // Either not present or not visible
+        if (isElementPresent(textarea))
+        {
+            assertFalse("Textarea should not be visible",
+                       textarea.findElement(getDriver()).isDisplayed());
+        }
+    }
+}
+
+private void assertUpdateReportButtonEnabled(boolean shouldBeEnabled)
+{
+    Locator button = Locator.button("Update Report");
+    assertElementPresent(button);
+
+    boolean isDisabled = button.findElement(getDriver()).getAttribute("disabled") != null;
+
+    if (shouldBeEnabled)
+    {
+        assertFalse("Update Report button should not be disabled", isDisabled);
+    }
+    else
+    {
+        assertTrue("Update Report button should be disabled", isDisabled);
+    }
+}
+
+private String buildUrlWithParams(String filterType, String[] subjects, boolean readOnly)
+{
+    StringBuilder url = new StringBuilder(getProjectHome() + "/ehr-animalHistory.view");
+    url.append("#filterType:").append(filterType);
+
+    if (subjects != null && subjects.length > 0)
+        url.append("&subjects:").append(String.join(";", subjects));
+
+    if (readOnly)
+        url.append("&readOnly:true");
+
+    return url.toString();
+}
+```
+
+**Test Data Setup:**
+
+**IMPORTANT:** Before running these tests, implement the stub methods below. Alternatively, mark tests requiring this data as `@Ignore` until data setup is complete.
+
+Add to `EHR_AppTest` setup methods:
+
+```java
+@Override
+protected void doCreateSteps()
+{
+    super.doCreateSteps();
+
+    // Ensure test subjects exist (existing method)
+    createTestSubjects();
+
+    // NEW: Create alias test data
+    setupAliasTestData();
+
+    // NEW: Configure report metadata
+    configureTestReportMetadata();
+
+    // NEW: Ensure mix of alive/dead animals
+    ensureStatusVariety();
+}
+
+private void setupAliasTestData()
+{
+    // Create aliases for first 3 test animals
+    String[] tattoos = {"TATTOO_001", "TATTOO_002", "TATTOO_003"};
+    String[] chips = {"CHIP_12345", "CHIP_67890", "CHIP_11111"};
+
+    for (int i = 0; i < 3 && i < MORE_ANIMAL_IDS.length; i++)
+    {
+        // Insert tattoo alias
+        insertAlias(MORE_ANIMAL_IDS[i], tattoos[i], "tattoo");
+
+        // Insert chip alias
+        insertAlias(MORE_ANIMAL_IDS[i], chips[i], "chip");
+    }
+}
+
+private void insertAlias(String animalId, String alias, String aliasType)
+{
+    InsertRowsCommand cmd = new InsertRowsCommand("study", "alias");
+    Map<String, Object> row = new HashMap<>();
+    row.put("Id", animalId);
+    row.put("alias", alias);
+    row.put("aliasType", aliasType);
+    cmd.addRow(row);
+    cmd.execute(createDefaultConnection(), getProjectName());
+}
+
+private void configureTestReportMetadata()
+{
+    // TODO: Implement this method before running tests 9, 10, 13, 14
+    // Mark "Demographics" report as supporting non-ID filters
+    // Mark "Blood Draws" report (or similar) as NOT supporting non-ID filters
+    // Implementation approaches:
+    // 1. Update ehr.reports table directly via SQL
+    // 2. Use LabKey API to update supportsNonIdFilters field
+    // 3. Ensure test reports are already configured in test database
+
+    // Example (adjust based on actual implementation):
+    // executeQuery("UPDATE ehr.reports SET supportsNonIdFilters = true WHERE reportId = 'demographics'");
+    // executeQuery("UPDATE ehr.reports SET supportsNonIdFilters = false WHERE reportId = 'blood_draws'");
+}
+
+private void ensureStatusVariety()
+{
+    // TODO: Implement this method before running tests 9, 10
+    // Ensure at least one animal has calculated_status = 'Alive'
+    // Ensure at least one animal has calculated_status = 'Dead'
+    // Implementation depends on how calculated_status is computed
+
+    // Options:
+    // 1. Update demographics records directly
+    // 2. Ensure test data already has variety
+    // 3. Trigger calculation if it's computed field
+
+    // Example (adjust based on actual schema):
+    // Use existing test data or update demographics for specific test animals
+    // DEAD_ANIMAL_ID should be defined as constant and used in tests
+}
+```
+
+**Test Data Requirements:**
+- Minimum 5-10 test animal IDs (use existing `MORE_ANIMAL_IDS` array)
+- For 100 ID limit test: Either generate 100 test IDs programmatically or use realistic count (e.g., 20-50) and adjust test expectations
+- At least 3 animals with aliases (tattoos, chips) for alias resolution testing - configured by `setupAliasTestData()`
+- Mix of alive and dead animals for Alive at Center testing - ensured by `ensureStatusVariety()`
+  - Define test constant: `private static final String DEAD_ANIMAL_ID = "<specific_dead_animal_id>";`
+  - Use in test 9 to verify exclusion from Alive at Center results
+- At least two test reports: one supporting non-ID filters, one not supporting - configured by `configureTestReportMetadata()` 
 
 ## 
 
