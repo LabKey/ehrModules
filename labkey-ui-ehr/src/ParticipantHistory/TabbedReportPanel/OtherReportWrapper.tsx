@@ -8,7 +8,6 @@ declare const LABKEY: any;
 
 export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo(({ tab, report }) => {
     // Generate a unique ID for the render target - LABKEY.WebPart expects a string ID, not a DOM element
-    // Down the
     const uniqueId = useId();
     const targetId = `report-target-${report.id}-${uniqueId.replace(/:/g, '-')}`;
 
@@ -41,7 +40,6 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
                 schemaName: report.schemaName,
                 reportId: report.reportId,
                 'query.queryName': report.queryName,
-                participantId: '12345',
             };
 
             // Add filter parameters to partConfig

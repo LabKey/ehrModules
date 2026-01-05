@@ -3,15 +3,24 @@ import { useServerContext } from '@labkey/components';
 import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
 
 interface UrlFilters {
+    [key: string]: any;
     activeReport?: string;
     inputType?: string;
+    participantId?: string;
     showReport?: boolean;
     subjects?: string[];
-    [key: string]: any;
 }
 
 const getFiltersFromUrl = (): UrlFilters => {
     const context: UrlFilters = {};
+
+    // Parse participantId from URL query parameters (e.g., ?participantId=44444)
+    const urlParams = new URLSearchParams(document.location.search);
+    const participantId = urlParams.get('participantId');
+    if (participantId) {
+        context.participantId = participantId;
+        context.subjects = [participantId];
+    }
 
     if (document.location.hash) {
         const token = document.location.hash.split('#');
@@ -23,17 +32,23 @@ const getFiltersFromUrl = (): UrlFilters => {
             const value = t.length > 1 ? decodeURIComponent(t[1]) : undefined;
 
             switch (key) {
+                case 'activeReport':
+                    context.activeReport = value;
+                    break;
                 case 'inputType':
                     context.inputType = value;
                     break;
                 case 'showReport':
                     context.showReport = value === '1';
                     break;
-                case 'activeReport':
-                    context.activeReport = value;
-                    break;
                 case 'subjects':
-                    context.subjects = value ? value.split(';') : [];
+                    // If subjects are in hash, merge with participantId if present
+                    const hashSubjects = value ? value.split(';') : [];
+                    if (context.participantId && !hashSubjects.includes(context.participantId)) {
+                        context.subjects = [context.participantId, ...hashSubjects];
+                    } else {
+                        context.subjects = hashSubjects;
+                    }
                     break;
                 default:
                     if (value !== undefined) {
@@ -47,14 +62,15 @@ const getFiltersFromUrl = (): UrlFilters => {
 };
 
 export const ParticipantReports: FC = memo(() => {
-    // const { user } = useServerContext();
-
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
 
-    const filters = useMemo(() => ({
-        subjects: urlFilters.subjects || ['12345'],
-        ...urlFilters,
-    }), [urlFilters]);
+    const filters = useMemo(
+        () => ({
+            subjects: urlFilters.subjects || [],
+            ...urlFilters,
+        }),
+        [urlFilters]
+    );
 
     const onTabChange = useCallback((reportId: string) => {
         const hash = document.location.hash;

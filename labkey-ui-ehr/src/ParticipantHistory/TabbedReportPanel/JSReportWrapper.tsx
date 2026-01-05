@@ -5,7 +5,7 @@ import { ReportConfig } from './TabbedReportPanel';
 // Declare global variables for ExtJS
 declare const Ext4: any;
 
-export const JSReportWrapper: FC<{ report: ReportConfig; reportNamespace?: any; tab: any }> = memo(
+export const JSReportWrapper: FC<{ report: ReportConfig; reportNamespace?: string; tab: any }> = memo(
     ({ tab, report, reportNamespace }) => {
         useEffect(() => {
             if (!tab || !Ext4) {
@@ -21,14 +21,10 @@ export const JSReportWrapper: FC<{ report: ReportConfig; reportNamespace?: any; 
                 } else {
                     // Try to resolve from namespace if provided
                     if (reportNamespace) {
-                        let ns = reportNamespace;
-                        if (typeof ns === 'string') {
-                            const parts = ns.split('.');
-                            let ctx = window as any;
-                            for (const part of parts) {
-                                ctx = ctx && ctx[part];
-                            }
-                            ns = ctx;
+                        const parts = reportNamespace.split('.');
+                        let ns: any = window;
+                        for (const part of parts) {
+                            ns = ns && ns[part];
                         }
 
                         if (ns && ns[handlerName] && typeof ns[handlerName] === 'function') {
@@ -67,16 +63,18 @@ export const JSReportWrapper: FC<{ report: ReportConfig; reportNamespace?: any; 
                     // Pass panel as the first argument, matching ExtJS TabbedReportPanel behavior
                     jsFunction.call(null, panel, tab);
                 } else {
+                    const reportName = report.title ? ` for report '${report.title}'` : '';
                     tab.add({
-                        html: `<div class="labkey-error">Could not find JavaScript function '${handlerName}'</div>`,
+                        html: `<div class="labkey-error">Could not find JavaScript function '${handlerName}'${reportName}</div>`,
                     });
-                    console.error(`Could not find JavaScript function '${handlerName}'`);
+                    console.error(`Could not find JavaScript function '${handlerName}'${reportName}`);
                 }
             } catch (e) {
-                console.error('Error loading JS report', e);
+                const reportName = report.title ? ` '${report.title}'` : '';
+                console.error(`Error loading JS report${reportName}`, e);
                 if (tab && !tab.isDestroyed) {
                     tab.add({
-                        html: `<div class="labkey-error">Error loading JS report: ${e}</div>`,
+                        html: `<div class="labkey-error">Error loading JS report${reportName}: ${e}</div>`,
                     });
                 }
             }

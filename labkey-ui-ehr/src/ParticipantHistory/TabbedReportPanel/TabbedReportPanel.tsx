@@ -25,7 +25,7 @@ interface TabbedReportPanelProps {
     activeReport?: string;
     filters: any;
     onTabChange?: (reportId: string) => void;
-    reportNamespace?: any;
+    reportNamespace?: string;
     reports?: ReportConfig[];
     reportsQuery?: string;
     reportsSchema?: string;
