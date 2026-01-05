@@ -14,5 +14,11 @@ module.exports = {
         title: 'EHRLookups Webpart',
         path: './src/client/EHRLookups/webpart',
         generateLib: true // used by views/ehrLookups.html
+    },{
+        name: 'participantViewNew',
+        dependencies: ["Ext4", "LDK.context"],
+        title: 'Animal Details',
+        permissionClasses: ['org.labkey.api.security.permissions.ReadPermission'],
+        path: './src/client/AnimalHistory'
     }]
 };

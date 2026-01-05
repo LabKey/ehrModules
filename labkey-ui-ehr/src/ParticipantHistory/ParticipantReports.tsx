@@ -1,47 +1,111 @@
-import React, { FC, memo, useState } from 'react';
-import {
-    GridPanelWithModel,
-    NotificationsContextProvider,
-    SchemaQuery,
-    useServerContext,
-    withServerContext,
-} from '@labkey/components';
+import React, { FC, memo, useCallback, useMemo } from 'react';
+import { useServerContext } from '@labkey/components';
+import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
 
-const modelId = 'editable_ehr_lookups';
-const queryConfig = {
-    bindURL: false,
-    id: modelId,
-    maxRows: 500,
-    schemaQuery: new SchemaQuery('core', 'Users'),
-    includeTotalCount: true,
+interface UrlFilters {
+    [key: string]: any;
+    activeReport?: string;
+    inputType?: string;
+    participantId?: string;
+    showReport?: boolean;
+    subjects?: string[];
+}
+
+const getFiltersFromUrl = (): UrlFilters => {
+    const context: UrlFilters = {};
+
+    // Parse participantId from URL query parameters (e.g., ?participantId=44444)
+    const urlParams = new URLSearchParams(document.location.search);
+    const participantId = urlParams.get('participantId');
+    if (participantId) {
+        context.participantId = participantId;
+        context.subjects = [participantId];
+    }
+
+    if (document.location.hash) {
+        const token = document.location.hash.split('#');
+        const params = token[1]?.split('&') || [];
+
+        for (let i = 0; i < params.length; i++) {
+            const t = params[i].split(':');
+            const key = decodeURIComponent(t[0]);
+            const value = t.length > 1 ? decodeURIComponent(t[1]) : undefined;
+
+            switch (key) {
+                case 'activeReport':
+                    context.activeReport = value;
+                    break;
+                case 'inputType':
+                    context.inputType = value;
+                    break;
+                case 'showReport':
+                    context.showReport = value === '1';
+                    break;
+                case 'subjects':
+                    // If subjects are in hash, merge with participantId if present
+                    const hashSubjects = value ? value.split(';') : [];
+                    if (context.participantId && !hashSubjects.includes(context.participantId)) {
+                        context.subjects = [context.participantId, ...hashSubjects];
+                    } else {
+                        context.subjects = hashSubjects;
+                    }
+                    break;
+                default:
+                    if (value !== undefined) {
+                        context[key] = value;
+                    }
+            }
+        }
+    }
+
+    return context;
 };
 
-const ParticipantReportsImpl: FC = memo(() => {
-    const [activeTab, setActiveTab] = useState<number>(0);
-    const { user } = useServerContext();
+export const ParticipantReports: FC = memo(() => {
+    const urlFilters = useMemo(() => getFiltersFromUrl(), []);
+
+    const filters = useMemo(
+        () => ({
+            subjects: urlFilters.subjects || [],
+            ...urlFilters,
+        }),
+        [urlFilters]
+    );
+
+    const onTabChange = useCallback((reportId: string) => {
+        const hash = document.location.hash;
+        const params = hash ? hash.substring(1).split('&') : [];
+        const newParams: string[] = [];
+        let found = false;
+
+        for (const param of params) {
+            const [key] = param.split(':');
+            if (decodeURIComponent(key) === 'activeReport') {
+                newParams.push(`activeReport:${encodeURIComponent(reportId)}`);
+                found = true;
+            } else {
+                newParams.push(param);
+            }
+        }
+
+        if (!found) {
+            newParams.push(`activeReport:${encodeURIComponent(reportId)}`);
+        }
+
+        document.location.hash = newParams.join('&');
+    }, []);
 
     return (
         <div>
-            <div className="panel-body table-responsive">
-                <ul className="nav nav-tabs">
-                    <li className={activeTab === 0 ? 'active' : ''} id={'tab1'} key={'tab1'}>
-                        <a onClick={() => setActiveTab(0)}>tab1</a>
-                    </li>
-                    <li className={activeTab === 1 ? 'active' : ''} id={'tab2'} key={'tab2'}>
-                        <a onClick={() => setActiveTab(1)}>tab2</a>
-                    </li>
-                </ul>
-                {activeTab === 0 && (
-                    <div>
-                        <NotificationsContextProvider>
-                            <GridPanelWithModel allowSelections={false} asPanel={true} queryConfig={queryConfig} />
-                        </NotificationsContextProvider>
-                    </div>
-                )}
-                {activeTab === 1 && <div className={'col-xs-12'}>{'User: ' + user.displayName}</div>}
-            </div>
+            <TabbedReportPanel
+                activeReport={urlFilters.activeReport}
+                filters={filters}
+                onTabChange={onTabChange}
+                reportNamespace="EHR.reports"
+                reportsQuery="reports"
+                reportsSchema="ehr"
+                showReport={urlFilters.showReport}
+            />
         </div>
     );
 });
-
-export const ParticipantReports = withServerContext(ParticipantReportsImpl);

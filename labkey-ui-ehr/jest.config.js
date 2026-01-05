@@ -44,9 +44,7 @@ module.exports = {
         '^.+\\.tsx?$': [
             'ts-jest',
             {
-                // This increases test perf by a considerable margin
-                isolatedModules: true,
-                tsconfig: "node_modules/@labkey/build/webpack/tsconfig.json"
+                tsconfig: "tsconfig.json"
             }
         ]
     },

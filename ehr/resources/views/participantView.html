@@ -17,6 +17,22 @@
         document.title = title;
         LABKEY.Utils.setWebpartTitle(title, webpart.id);
 
+        // Add "New Participant View" link in upper left corner if experimental feature is enabled
+        var ehrContext = LABKEY.getModuleContext('ehr');
+        if (ehrContext && ehrContext.isReactAnimalHistoryEnabled) {
+            var newViewUrl = LABKEY.ActionURL.buildURL(
+                LABKEY.ActionURL.getController(),
+                'participantViewNew',
+                LABKEY.ActionURL.getContainer(),
+                LABKEY.ActionURL.getParameters()
+            );
+            var linkDiv = document.createElement('div');
+            linkDiv.style.cssText = 'text-align: left;';
+            linkDiv.innerHTML = '<a href="' + newViewUrl + '">New Participant View</a>';
+            var wrapperDiv = document.getElementById(webpart.wrapperDivId);
+            wrapperDiv.insertBefore(linkDiv, wrapperDiv.firstChild);
+        }
+
         Ext4.create('EHR.panel.ParticipantDetailsPanel', {
             participantId: participantId,
             defaultReport: ctx.DefaultAnimalHistoryReport,

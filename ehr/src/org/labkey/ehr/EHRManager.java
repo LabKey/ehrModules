@@ -134,6 +134,8 @@ public class EHRManager
 
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
+    public static final String EXPERIMENTAL_REACT_PARTICIPANT_REPORTS = "ehrReactParticipantReports";
+
     private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
 
     private EHRManager()

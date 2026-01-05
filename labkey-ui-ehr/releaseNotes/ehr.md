@@ -1,6 +1,14 @@
 # @labkey/ehr
 Components, models, actions, and utility functions for LabKey EHR applications and pages.
 
+### version 0.0.4
+*Released*: 5 January 2026
+* Add experimental version of participant view with React wrapper. Currently hidden behind experimental flag and not
+* considered to be MVP.
+    * React Tabbed Report Panel
+    * React wrapper for queries, js reports and R reports.
+    * Participant view with URL parsing
+
 ### version 0.0.3
 *Released*: 12 December 2025
 * Package Updates
