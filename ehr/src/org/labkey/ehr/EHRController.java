@@ -684,6 +684,54 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermission(AdminPermission.class)
+    public static class DropEHRIndicesAction extends MutatingApiAction<Object>
+    {
+        @Override
+        public ApiResponse execute(Object form, BindException errors)
+        {
+            try
+            {
+                List<String> messages = EHRManager.get().dropEHRIndices(getContainer(), getUser());
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("messages", messages);
+                return new ApiSimpleResponse(response);
+            }
+            catch (Exception e)
+            {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", e.getMessage());
+                return new ApiSimpleResponse(response);
+            }
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public static class AddEHRIndicesAction extends MutatingApiAction<Object>
+    {
+        @Override
+        public ApiResponse execute(Object form, BindException errors)
+        {
+            try
+            {
+                List<String> messages = EHRManager.get().addEHRIndices(getContainer(), getUser());
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("messages", messages);
+                return new ApiSimpleResponse(response);
+            }
+            catch (Exception e)
+            {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", e.getMessage());
+                return new ApiSimpleResponse(response);
+            }
+        }
+    }
+
     public static class AnimalDetailsForm
     {
         private String[] _animalIds;

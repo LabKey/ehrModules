@@ -1046,10 +1046,149 @@ public class EHRManager
     private void dropIndex(DbSchema schema, TableInfo realTable, String indexName, List<String> cols, String tableName, List<String> messages)
     {
         messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + tableName);
-        String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+        String sqlString;
+        if (realTable.getSqlDialect().isSqlServer())
+        {
+            sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+        }
+        else
+        {
+            sqlString = "DROP INDEX " + schema.getName() + "." + indexName;
+        }
         SQLFragment sql = new SQLFragment(sqlString);
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
+    }
+
+    /**
+     * Context holder for EHR index operations on the clinical_observations dataset.
+     */
+    private static class EHRIndexContext
+    {
+        final Dataset dataset;
+        final TableInfo realTable;
+        final String tableName;
+        final DbSchema schema;
+        final String indexName;
+        final List<String> cols;
+        final String[] includedCols;
+
+        EHRIndexContext(Dataset dataset, TableInfo realTable, String tableName, DbSchema schema, String indexName, List<String> cols, String[] includedCols)
+        {
+            this.dataset = dataset;
+            this.realTable = realTable;
+            this.tableName = tableName;
+            this.schema = schema;
+            this.indexName = indexName;
+            this.cols = cols;
+            this.includedCols = includedCols;
+        }
+    }
+
+    /**
+     * Prepares the context for EHR index operations on the clinical_observations dataset.
+     * @return the context, or null if study or dataset is not found (messages will be populated with the reason)
+     */
+    @Nullable
+    private EHRIndexContext prepareEHRIndexContext(Container c, List<String> messages)
+    {
+        Study study = StudyService.get().getStudy(c);
+        if (study == null)
+        {
+            messages.add("No study in this folder");
+            return null;
+        }
+
+        Dataset dataset = study.getDatasetByName("clinical_observations");
+        if (dataset == null)
+        {
+            messages.add("clinical_observations dataset not found");
+            return null;
+        }
+
+        TableInfo realTable = StorageProvisioner.createTableInfo(dataset.getDomain());
+        String tableName = dataset.getDomain().getStorageTableName();
+        DbSchema schema = realTable.getSchema();
+
+        String[] indexCols = new String[]{"participantid", "date", "include:taskid,lsid,category,observation,area,remark"};
+        String indexName = getIndexName(schema.getSqlDialect(), tableName, indexCols);
+
+        List<String> cols = Arrays.asList("participantid", "date");
+        String[] includedCols = new String[]{"taskid", "lsid", "category", "observation", "area", "remark"};
+
+        return new EHRIndexContext(dataset, realTable, tableName, schema, indexName, cols, includedCols);
+    }
+
+    /**
+     * Drop indices created for EHR datasets.
+     */
+    public List<String> dropEHRIndices(Container c, User u)
+    {
+        List<String> messages = new ArrayList<>();
+
+        EHRIndexContext ctx = prepareEHRIndexContext(c, messages);
+        if (ctx == null)
+        {
+            return messages;
+        }
+
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+        {
+            boolean exists = doesIndexExist(ctx.schema, ctx.tableName, ctx.indexName);
+            if (exists)
+            {
+                dropIndex(ctx.schema, ctx.realTable, ctx.indexName, ctx.cols, ctx.dataset.getLabel(), messages);
+                messages.add("Successfully dropped clinical_observations index: " + ctx.indexName);
+            }
+            else
+            {
+                messages.add("Index does not exist: " + ctx.indexName);
+            }
+
+            transaction.commit();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+
+        return messages;
+    }
+
+    /**
+     * Add indices for EHR datasets.
+     */
+    public List<String> addEHRIndices(Container c, User u)
+    {
+        List<String> messages = new ArrayList<>();
+
+        EHRIndexContext ctx = prepareEHRIndexContext(c, messages);
+        if (ctx == null)
+        {
+            return messages;
+        }
+
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+        {
+            boolean exists = doesIndexExist(ctx.schema, ctx.tableName, ctx.indexName);
+            if (exists)
+            {
+                messages.add("Index already exists: " + ctx.indexName);
+            }
+            else
+            {
+                createIndex(ctx.schema, ctx.realTable, ctx.dataset.getLabel(), ctx.indexName, ctx.cols, ctx.includedCols, messages);
+                messages.add("Successfully created clinical_observations index: " + ctx.indexName);
+            }
+
+            transaction.commit();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+
+        return messages;
     }
 
     //the module's SQL scripts create indexes, but apparently only SQL server enterprise supports compression,
