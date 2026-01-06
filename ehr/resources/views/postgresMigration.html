@@ -5,10 +5,13 @@
     </div>
 </div>
 <script type="text/javascript" nonce="<%=scriptNonce%>">
-    function indexAction(actionName) {
+    function indexAction(operation) {
         LABKEY.Ajax.request({
-            url: LABKEY.ActionURL.buildURL('ehr', actionName),
+            url: LABKEY.ActionURL.buildURL('ehr', 'updateEHRIndices'),
             method: 'POST',
+            jsonData: {
+                operation: operation
+            },
             success: function(response) {
                 var json = JSON.parse(response.responseText);
                 if (json.success) {
@@ -34,11 +37,11 @@
 
     LABKEY.Utils.attachEventHandler('dropIndicesLink', 'click', function(e) {
         e.preventDefault();
-        indexAction('dropEHRIndices');
+        indexAction('drop');
     }, 1);
 
     LABKEY.Utils.attachEventHandler('addIndicesLink', 'click', function(e) {
         e.preventDefault();
-        indexAction('addEHRIndices');
+        indexAction('add');
     }, 1);
 </script>

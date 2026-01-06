@@ -684,39 +684,55 @@ public class EHRController extends SpringActionController
         }
     }
 
-    @RequiresPermission(AdminPermission.class)
-    public static class DropEHRIndicesAction extends MutatingApiAction<Object>
+    public static class UpdateEHRIndicesForm
     {
-        @Override
-        public ApiResponse execute(Object form, BindException errors)
+        private String _operation;
+
+        public String getOperation()
         {
-            try
-            {
-                List<String> messages = EHRManager.get().dropEHRIndices(getContainer(), getUser());
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("messages", messages);
-                return new ApiSimpleResponse(response);
-            }
-            catch (Exception e)
-            {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", e.getMessage());
-                return new ApiSimpleResponse(response);
-            }
+            return _operation;
+        }
+
+        public void setOperation(String operation)
+        {
+            _operation = operation;
         }
     }
 
     @RequiresPermission(AdminPermission.class)
-    public static class AddEHRIndicesAction extends MutatingApiAction<Object>
+    public static class UpdateEHRIndicesAction extends MutatingApiAction<UpdateEHRIndicesForm>
     {
         @Override
-        public ApiResponse execute(Object form, BindException errors)
+        public void validateForm(UpdateEHRIndicesForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            if (form.getOperation() == null)
+            {
+                errors.reject(ERROR_MSG, "Operation parameter is required.");
+            }
+            else if (!"add".equalsIgnoreCase(form.getOperation()) && !"drop".equalsIgnoreCase(form.getOperation()))
+            {
+                errors.reject(ERROR_MSG, "Invalid operation. Must be 'add' or 'drop'.");
+            }
+        }
+
+        @Override
+        public ApiResponse execute(UpdateEHRIndicesForm form, BindException errors)
         {
             try
             {
-                List<String> messages = EHRManager.get().addEHRIndices(getContainer(), getUser());
+                List<String> messages;
+
+                if ("drop".equalsIgnoreCase(form.getOperation()))
+                {
+                    messages = EHRManager.get().dropEHRIndices(getContainer(), getUser());
+                }
+                else
+                {
+                    messages = EHRManager.get().addEHRIndices(getContainer(), getUser());
+                }
+
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", true);
                 response.put("messages", messages);
