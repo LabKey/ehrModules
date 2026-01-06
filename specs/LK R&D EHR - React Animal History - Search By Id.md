@@ -587,18 +587,21 @@ Add tracking for:
 7. Enter 101+ IDs (should show validation error and prevent search)
 8. Verify report data matches selected animals for ID Search
 
-**All Records Mode:**
+#### All Records Mode
+
 9. Click "All Records" button and verify reports show all animals
 10. Verify no ID limit applies in All Records mode
 11. Verify URL bookmarking works for All Records mode
 
-**Alive at Center Mode:**
+#### Alive at Center Mode
+
 12. Click "Alive at Center" on a report with `supportsNonIdFilters = true`
 13. Verify reports show only animals with `calculated_status = 'Alive'`
 14. Verify "Alive at Center" button is disabled on report with `supportsNonIdFilters = false`
 15. Switch to a different report and verify button state updates based on new report's `supportsNonIdFilters` value
 
-**URL Params Mode (Read-Only):**
+#### URL Params Mode (Read-Only)
+
 16. Navigate to URL with `readOnly=true` and subjects parameter
 17. Verify no filter toggle buttons shown
 18. Verify no ID input textarea or Update Report button shown
@@ -612,7 +615,8 @@ Add tracking for:
 22. Test URL with `readOnly=true` but no subjects (should default to All Records)
 23. Test URL with both `filterType` and `readOnly=true` (should use URL Params mode)
 
-**Filter Mode Switching:**
+#### Filter Mode Switching
+
 24. Switch from ID Search to All Records (verify input cleared)
 25. Switch from ID Search to Alive at Center (verify input cleared)
 26. Switch from All Records to ID Search (verify input textarea available)
