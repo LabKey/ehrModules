@@ -657,7 +657,7 @@ Add tracking for:
 1. Add `supportsNonIdFilters` field to ehr.reports table
    - Create SQL migration scripts for PostgreSQL and SQL Server
    - Add column: `supportsNonIdFilters BOOLEAN DEFAULT FALSE`
-   - Increment schema version in module.properties
+   - Increment schema version in EHRModule.java
    - Test migration on both database platforms
 
 2. Update select reports to support non-ID filters
@@ -796,24 +796,6 @@ Add tracking for:
     - Alive at Center mode with supported/unsupported reports
     - URL Params mode (shared links, modify search)
     - Filter mode switching
-
-20. Integration Test Plan
-
-21. Integration Test Plan Review
-
-22. Integration tests implementation
-
-23. Code review
-
-24. Review risks and update risk assessment
-
-25. Feature verification
-
-26. TeamCity review and merge
-
-27. Docs handoff
-
-28. Metrics handoff 
 
 # Testing
 
