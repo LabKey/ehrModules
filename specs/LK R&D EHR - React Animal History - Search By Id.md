@@ -828,7 +828,8 @@ Add tracking for:
 
 ### User Scenarios
 
-**ID Search Mode:**
+#### ID Search Mode
+
 1. **Single Animal Search (Direct ID)**
    - Navigate to Animal History page
    - Verify default state: ID Search mode active with empty textarea
@@ -897,7 +898,8 @@ Add tracking for:
    - Verify resolution finds ID regardless of stored casing
    - Enter same ID in uppercase, verify same result
 
-**All Records Mode:**
+### All Records Mode
+
 10. **View All Animals**
     - Click "All Records" button
     - Verify ID input textarea is cleared and hidden
@@ -911,7 +913,8 @@ Add tracking for:
     - Verify All Records mode is active
     - Verify all animals shown
 
-**Alive at Center Mode:**
+### Alive at Center Mode
+
 12. **View Alive Animals (Supported Report)**
     - Navigate to report with `supportsNonIdFilters = true`
     - Verify "Alive at Center" button is enabled
@@ -938,7 +941,8 @@ Add tracking for:
     - Verify "Alive at Center" button becomes enabled again
     - Verify alive-only filter reapplies
 
-**URL Params Mode (Read-Only):**
+### URL Params Mode (Read-Only)
+
 15. **Shared Link with Subjects**
     - Perform ID search for 3 animals, get results
     - Generate shareable URL with `readOnly=true` parameter
@@ -974,7 +978,8 @@ Add tracking for:
     - Verify subjects pre-populated in textarea (editable)
     - Verify filter toggle buttons visible
 
-**Filter Mode Switching:**
+### Filter Mode Switching
+
 19. **ID Search → All Records**
     - Enter 5 animal IDs, click "Update Report"
     - Verify reports show 5 animals
@@ -1010,7 +1015,8 @@ Add tracking for:
     - Verify returns to All Records mode
     - Verify state and URL hash sync correctly
 
-**Cross-Report Consistency:**
+### Cross-Report Consistency
+
 24. **Data Consistency Across Report Types**
     - Search for 3 animals
     - Navigate through all report tabs (Demographics, Weight, Housing, etc.)
@@ -1026,7 +1032,8 @@ Add tracking for:
 
 ### Error Cases
 
-**ID Resolution Errors:**
+#### ID Resolution Errors
+
 * All IDs invalid/not found - verify "Not Found" section only, no reports data
 * Network error during resolution - verify error message displayed, user can retry
 * Timeout during long-running alias query (e.g., 100 IDs) - verify timeout error with retry option
@@ -1034,31 +1041,36 @@ Add tracking for:
 * Malformed IDs with special characters (e.g., "###", "***") - verify treated as literal ID string, appears in "Not Found" section
 * IDs with SQL injection patterns (e.g., "'; DROP TABLE--") - verify treated as literal string, no security issue
 
-**Validation Errors:**
+#### Validation Errors
+
 * Empty ID input - verify validation message: "Please enter at least one animal ID"
 * Whitespace-only input - verify treated as empty, validation error shown
 * 101+ IDs entered - verify limit error and disabled button
 
-**Report Loading Errors:**
+#### Report Loading Errors
+
 * Report query fails - verify error message in report panel, other tabs still accessible
 * No data for selected animals - verify "No data found" message
 * Report doesn't support filter mode - verify appropriate message or disabled state
 
-**URL/Navigation Errors:**
+#### URL/Navigation Errors
+
 * URL with `readOnly=true` but no subjects - verify defaults to All Records mode or shows error
 * Malformed URL hash - verify defaults to ID Search mode with no subjects
 * URL with conflicting parameters (e.g., `readOnly=true` AND `filterType=all`) - verify `readOnly` takes priority, switches to urlParams mode
 * URL hash exceeds browser limit (~2000 chars with many subjects) - verify graceful degradation or error
 * Browser back/forward with filter changes - verify state maintained correctly
 
-**Permission Errors:**
+#### Permission Errors
+
 * User lacks folder read permission - verify redirect to permission denied page
 * User lacks dataset permissions - verify reports show "permission denied" for those datasets
 * Shared URL accessed by user without permissions - verify appropriate error message
 
 ### Accessibility Scenarios
 
-**Keyboard Navigation:**
+#### Keyboard Navigation
+
 26. **Keyboard-Only Operation**
     - Navigate Animal History page using only keyboard (Tab, Enter, Space)
     - Verify all filter buttons accessible via Tab
@@ -1067,7 +1079,8 @@ Add tracking for:
     - Verify focus indicators clearly visible
     - Verify logical tab order through interface
 
-**Screen Reader Compatibility:**
+#### Screen Reader Compatibility
+
 27. **Screen Reader Accessibility**
     - Use screen reader (NVDA/JAWS) to navigate page
     - Verify filter mode changes announced
@@ -1097,13 +1110,15 @@ Add tracking for:
 
 ### Cross-Browser Testing
 
-**Browser Coverage:**
+#### Browser Coverage
+
 * Chrome (primary) - All scenarios
 * Firefox - Core scenarios (ID Search, All Records, Alive at Center, URL Params)
 * Safari (Mac) - Core scenarios
 * Edge - Core scenarios
 
-**Mobile Browsers (if supported):**
+#### Mobile Browsers (if supported)
+
 * Chrome Mobile (Android) - ID Search and URL Params scenarios
 * Safari Mobile (iOS) - ID Search and URL Params scenarios
 
@@ -1209,9 +1224,9 @@ Add tracking for:
 
 Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_app/EHR_AppTest.java`
 
-**New Test Methods:**
+#### New Test Methods
 
-**ID Search Mode Tests:**
+#### ID Search Mode Tests
 
 1. **`testAnimalHistorySearchById_SingleDirect()`**
    - Navigate to Animal History page in EHR_App
@@ -1263,7 +1278,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
    - Click "Update Report"
    - Assert same result
 
-**All Records Mode Tests:**
+#### All Records Mode Tests
 
 7. **`testAnimalHistorySearchById_AllRecords()`**
    - Navigate to Animal History
@@ -1279,7 +1294,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
    - Assert All Records mode active
    - Assert reports show all animals
 
-**Alive at Center Mode Tests:**
+#### Alive at Center Mode Tests
 
 9. **`testAnimalHistorySearchById_AliveAtCenter()`**
    - Navigate to report supporting non-ID filters (verify in test setup)
@@ -1301,7 +1316,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Assert button becomes enabled again
     - Assert alive filter reapplies
 
-**URL Params Mode Tests:**
+#### URL Params Mode Tests
 
 11. **`testAnimalHistorySearchById_UrlParamsReadOnly()`**
     - Build URL with 2-3 test animal IDs and `readOnly=true` parameter
@@ -1319,7 +1334,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Assert subjects pre-populated in textarea
     - Assert URL no longer contains `readOnly=true`
 
-**Filter Mode Switching Tests:**
+#### Filter Mode Switching Tests
 
 13. **`testAnimalHistorySearchById_SwitchModes()`**
     - Start with ID search for 3 animals
@@ -1340,7 +1355,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Verify state maintained correctly through all transitions
     - Verify URL hash updates at each step
 
-**Performance Tests:**
+#### Performance Tests
 
 15. **`testAnimalHistorySearchById_LargeDataset()`**
     - Note: Requires test environment with sufficient animal data
@@ -1352,7 +1367,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Switch to different report tab
     - Verify: Tab switching completes promptly
 
-**Accessibility Tests:**
+#### Accessibility Tests
 
 16. **`testAnimalHistorySearchById_KeyboardNavigation()`**
     - Navigate to Animal History page
@@ -1365,14 +1380,14 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Tab to filter mode buttons and activate with keyboard
     - Verify filter modes switch correctly via keyboard
 
-**Test Constants to Add:**
+#### Test Constants to Add
 
 ```java
 // Add to EHR_AppTest class constants section
 private static final String DEAD_ANIMAL_ID = "<specific_dead_animal_id>";  // TODO: Set based on test data
 ```
 
-**Helper Methods to Add:**
+#### Helper Methods to Add
 
 ```java
 private void navigateToAnimalHistorySearchById()
@@ -1530,7 +1545,7 @@ private String buildUrlWithParams(String filterType, String[] subjects, boolean 
 }
 ```
 
-**Test Data Setup:**
+#### Test Data Setup
 
 **IMPORTANT:** Before running these tests, implement the stub methods below. Alternatively, mark tests requiring this data as `@Ignore` until data setup is complete.
 
@@ -1615,7 +1630,8 @@ private void ensureStatusVariety()
 }
 ```
 
-**Test Data Requirements:**
+#### Test Data Requirements
+
 - Minimum 5-10 test animal IDs (use existing `MORE_ANIMAL_IDS` array)
 - For 100 ID limit test: Either generate 100 test IDs programmatically or use realistic count (e.g., 20-50) and adjust test expectations
 - At least 3 animals with aliases (tattoos, chips) for alias resolution testing - configured by `setupAliasTestData()`
