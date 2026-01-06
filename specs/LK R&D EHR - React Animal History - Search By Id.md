@@ -743,59 +743,53 @@ Add tracking for:
 
 ## Testing
 
-12. Unit tests - ID resolution service
-    - Test direct ID match scenario
-    - Test alias resolution scenario
-    - Test mixed valid/invalid IDs
-    - Test case-insensitive matching
-    - Test empty results
-    - Mock LabKey SQL queries
+### Unit Tests (Jest/React Testing Library)
 
-13. Unit tests - SearchByIdPanel component
-    - Test ID parsing with all separator types
-    - Test 100 ID limit validation
-    - Test filter mode toggle behavior
-    - Test URL Params mode read-only view
-    - Test "Modify Search" button
-    - Test "Alive at Center" button disabled state
-    - Test input clearing on mode switch
+12. Unit tests - Core services and utilities
+    - idResolutionService.ts: Direct/alias resolution, case-insensitive matching, de-duplication, special characters, error handling, API mocking
+    - urlHashUtils.ts: URL hash generation/parsing for all filter modes, special character encoding, conflict resolution
 
-14. Unit tests - IdResolutionFeedback component
-    - Test visibility logic
-    - Test resolved vs not-found categorization
-    - Test alias type display
+13. Unit tests - SearchByIdPanel and IdResolutionFeedback components
+    - SearchByIdPanel: ID parsing (all separators), 100 ID limit validation, filter mode toggles, URL Params read-only view, "Modify Search" button, "Alive at Center" button state, input clearing, accessibility (ARIA, keyboard)
+    - IdResolutionFeedback: Visibility logic, resolved/not-found categorization, alias type display
 
-15. Integration tests - Filter mode integration
-    - Test ID Search mode applies correct filters
-    - Test All Records mode applies no filters
-    - Test Alive at Center mode applies status filter
-    - Test URL Params mode applies URL subjects filter
-    - Test mode switching updates reports correctly
-    - Test report metadata query
+14. Unit tests - Report integration components
+    - ParticipantReports.tsx: URL hash detection, filter state management, `activeReportSupportsNonIdFilters` querying, mode switching, race conditions
+    - TabbedReportPanel.tsx: Filter creation for all modes (ID Search, URL Params, All Records, Alive at Center), filter structure validation, error handling for unsupported modes
 
-16. Integration tests - URL hash sync
-    - Test initial load for all filter types
-    - Test URL Params mode activation with readOnly parameter
-    - Test URL update on filter change
-    - Test readOnly parameter removal on mode switch
+### Integration Tests (Selenium - Java)
 
-17. Manual test plan
-    - Document test scenarios for all four filter modes
-    - Document filter switching scenarios
-    - Document edge cases to verify
-    - Create test data for various scenarios
+15. Selenium test setup and test data
+    - Add helper methods to EHR_AppTest: navigation, ID entry, button clicks, assertions
+    - Create test data: animal IDs with aliases (tattoos/chips), mix of alive/dead animals
+    - Configure report metadata: set `supportsNonIdFilters` for test reports
 
-18. Manual testing - ID Search mode
-    - Single animal (direct and alias)
-    - Multiple animals (various combinations)
-    - 100 ID limit validation
-    - Report data verification
+16. Selenium tests - ID Search and All Records modes
+    - ID Search: Single animal (direct and alias), multi-animal, mixed valid/invalid IDs, 100 ID limit, case-insensitive matching
+    - All Records: Click button, verify no filters, URL bookmarking
 
-19. Manual testing - Other filter modes
-    - All Records mode functionality
-    - Alive at Center mode with supported/unsupported reports
-    - URL Params mode (shared links, modify search)
-    - Filter mode switching
+17. Selenium tests - Alive at Center and URL Params modes
+    - Alive at Center: Verify alive filter, test button disabled on unsupported reports, test report tab switching
+    - URL Params: Navigate to readOnly URL, verify read-only view, test "Modify Search" button
+
+18. Selenium tests - Filter mode switching and performance
+    - Mode switching: Test all transitions (ID Search ↔ All Records ↔ Alive at Center), multi-step transitions
+    - Performance: Large dataset handling, keyboard navigation
+
+### Manual Testing
+
+19. Manual test execution - All filter modes and switching
+    - Execute scenarios 1-23: ID Search (single/multi-animal, direct/alias, duplicates, limit, case), All Records, Alive at Center (supported/unsupported reports, tab switching), URL Params (shared links, modify search)
+    - Filter mode transitions and browser navigation
+
+20. Manual test execution - Cross-report consistency and error cases
+    - Scenarios 24-25: Data consistency across report types, single vs multi-animal report variants
+    - Error cases: ID resolution errors, validation errors, report loading errors, URL/navigation errors, permission errors
+
+21. Manual test execution - Accessibility, performance, and cross-browser
+    - Scenarios 26-27: Keyboard-only operation, screen reader compatibility
+    - Scenarios 28-30: ID resolution performance, report rendering performance, filter mode switching performance
+    - Cross-browser testing: Chrome (all scenarios), Firefox/Safari/Edge (core scenarios), mobile browsers if supported
 
 # Testing
 
