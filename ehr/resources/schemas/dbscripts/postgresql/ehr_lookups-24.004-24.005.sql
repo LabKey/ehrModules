@@ -1,1 +1,0 @@
-ALTER TABLE ehr_lookups.cage_type ADD COLUMN LSID LSIDtype;

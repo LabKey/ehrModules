@@ -10155,3 +10155,13 @@ CREATE INDEX IX_Ehr_Lookups_Floors_Container ON ehr_lookups.floors (Container);
 --Added new column called "PainCategories" to record the USDA pain levels.
 --EHR tkt # 8782
 ALTER TABLE ehr_lookups.procedures ADD COLUMN painCategories varchar(50);
+
+/* 24.xxx SQL scripts */
+
+ALTER TABLE ehr_lookups.lab_tests ADD COLUMN LSID LSIDtype;
+
+ALTER TABLE ehr_lookups.species ADD COLUMN isNHP BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE ehr_lookups.species ADD blood_threshold_warning double precision;
+
+ALTER TABLE ehr_lookups.cage_type ADD COLUMN LSID LSIDtype;

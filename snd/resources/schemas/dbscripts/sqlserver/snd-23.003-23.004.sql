@@ -1,1 +1,0 @@
-ALTER TABLE snd.EventData ADD SortOrder INTEGER NULL;

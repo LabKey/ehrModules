@@ -1,1 +1,0 @@
-ALTER TABLE ehr_lookups.lab_tests ADD COLUMN LSID LSIDtype;

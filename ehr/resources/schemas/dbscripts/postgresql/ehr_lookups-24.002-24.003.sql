@@ -1,1 +1,0 @@
-ALTER TABLE ehr_lookups.species ADD COLUMN isNHP BOOLEAN DEFAULT TRUE;
