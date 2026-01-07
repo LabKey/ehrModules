@@ -51,13 +51,7 @@ public class EHR_ComplianceDBModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 25.001;
-    }
-
-    @Override
-    public boolean hasScripts()
-    {
-        return true;
+        return 26.000;
     }
 
     @Override
