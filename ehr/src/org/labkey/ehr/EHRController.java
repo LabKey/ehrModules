@@ -684,6 +684,70 @@ public class EHRController extends SpringActionController
         }
     }
 
+    public static class UpdateEHRIndicesForm
+    {
+        private String _operation;
+
+        public String getOperation()
+        {
+            return _operation;
+        }
+
+        public void setOperation(String operation)
+        {
+            _operation = operation;
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public static class UpdateEHRIndicesAction extends MutatingApiAction<UpdateEHRIndicesForm>
+    {
+        @Override
+        public void validateForm(UpdateEHRIndicesForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            if (form.getOperation() == null)
+            {
+                errors.reject(ERROR_MSG, "Operation parameter is required.");
+            }
+            else if (!"add".equalsIgnoreCase(form.getOperation()) && !"drop".equalsIgnoreCase(form.getOperation()))
+            {
+                errors.reject(ERROR_MSG, "Invalid operation. Must be 'add' or 'drop'.");
+            }
+        }
+
+        @Override
+        public ApiResponse execute(UpdateEHRIndicesForm form, BindException errors)
+        {
+            try
+            {
+                List<String> messages;
+
+                if ("drop".equalsIgnoreCase(form.getOperation()))
+                {
+                    messages = EHRManager.get().dropEHRIndices(getContainer(), getUser());
+                }
+                else
+                {
+                    messages = EHRManager.get().addEHRIndices(getContainer(), getUser());
+                }
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("messages", messages);
+                return new ApiSimpleResponse(response);
+            }
+            catch (Exception e)
+            {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", e.getMessage());
+                return new ApiSimpleResponse(response);
+            }
+        }
+    }
+
     public static class AnimalDetailsForm
     {
         private String[] _animalIds;
