@@ -24,10 +24,30 @@ To install using npm
 ```
 npm install @labkey/ehr
 ```
-You can then import `@labkey/ehr` in your application as follows:
+
+## Usage
+
+### ParticipantHistory Module
+
+The `participanthistory` export provides the `ParticipantReports` component for displaying animal history data with search, filtering, and reporting capabilities.
+
 ```js
-import { TestComponent } from '@labkey/ehr';
+import { ParticipantReports } from '@labkey/ehr/participanthistory';
+
+export const AnimalHistoryPage = () => {
+    return (
+        <div>
+            <ParticipantReports />
+        </div>
+    );
+};
 ```
+
+**Features:**
+- Multi-mode filtering (ID Search, All Animals, Alive at Center, URL Params)
+- ID and alias resolution
+- Tabbed report interface with category grouping
+- URL-based state persistence for shareable links
 
 ## Development
 

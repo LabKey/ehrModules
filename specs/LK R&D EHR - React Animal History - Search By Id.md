@@ -9,7 +9,7 @@ Github Issue/Epic:
 
 Modules involved:  
 Base branch: develop  
-Feature branch(es): fb\_xx
+Feature branch(es): fb_ehr_an_hist_id_search
 
 # Feature Summary
 Implement a React Animal History using the React Participant View and a new Search by Id filter. Supports single and multi-animal selection and reports.
@@ -103,12 +103,13 @@ Beyond migrating to a new framework, this will be an opportunity to rethink and 
 
 The snapshot above is not a redline design but the features and layout represent what will be implemented in this story. The tabbed view of reports below the filters is already implemented for participant view, this new view will use the same component.
 
-1. Single animal search: This will use the same data entry as the multi-animal search. Copy/type in a single Id and click Update Report. The single Id will be added to the selected list as the only id.  
+1. Single animal search: This will use the same data entry as the multi-animal search. Copy/type in a single Id and click Search By Ids. The single Id will be added to the selected list as the only id.  
 2. Multi-animal search: Using the same text area as single animal search. Type or copy in multiple animal Ids. The animal Ids can have letters, numbers, special characters, and spaces in the names. Separators between animal Ids are newlines, tabs, commas and semicolons. Maximum of 100 animal IDs per search. If more than 100 IDs are entered, a validation error will be displayed and the search will not execute.  
 3. Resolve by Alias: Animals can have a number of aliases \- nicknames, tattoos, chip numbers, etc. The animal Id search will resolve the animals by these aliases and provide feedback in the Id Resolution section when an alias is used to find an animal Id. ID matching is case-insensitive, so searching for "id123", "ID123", or "Id123" will all match the same animal. The Id Resolution section will only appear when there are aliases or Ids not found in the search field. The Id Resolution section will have two sections, "Resolved" for the Ids found as they are entered or Ids found by alias lookup; and a "Not Found" section for Ids that don't resolve.   
-4. All Records: This will provide two options, “All Records” and “Alive, at Center”. These operate independently of any other filter, so clicking them will clear any other filters.  
-   1. All Records: No filters applied. All current and historical animals will be included.  
-   2. Alive, at Center: This will apply only one filter “Alive, at Center” on the animal status. Otherwise there will be no filters applied.  
+4. Filter Actions: The interface provides three action buttons: "Search By Ids", "All Animals", and "All Alive at Center".
+   1. Search By Ids: Triggers ID Search mode with the IDs entered in the textarea. The textarea is always visible for entering animal IDs.
+   2. All Animals: No filters applied. All current and historical animals will be included. Clears any previously entered IDs.
+   3. All Alive at Center: Applies the "Id/Demographics/calculated_status = 'Alive'" filter. Otherwise no filters applied. Clears any previously entered IDs.  
 5. All reports displayed in tabs: Single animal reports should already be tested in the previous story for Participant View. Many of these reports have a different view for multiple animals over a certain limit. These can go from a more detailed JS report for 1-5 animals to more of a grid view if more animals are selected in the filter. The multiple animal reports in particular will need to be tested and ensure all necessary data is being passed to the reports.  
 6. Metrics: Add metrics to determine which filters and which reports are being used.
 
@@ -126,18 +127,274 @@ This feature implements a React-based Animal History page with Search By Id func
 ```
 AnimalHistoryPage.tsx
 ├── SearchByIdPanel (new component)
-│   ├── FilterOptionsToggle (ID Search / All Records / Alive at Center)
-│   ├── IdInputArea (textarea for single/multi ID entry - visible in ID Search mode)
-│   ├── UpdateReportButton (visible in ID Search mode)
-│   └── IdResolutionFeedback (child component - visible in ID Search mode when needed)
-│       ├── ResolvedIdsList
-│       └── NotFoundIdsList
+│   ├── IdInputArea (always visible except URL Params mode)
+│   │   ├── Label: "Enter Animal IDs"
+│   │   └── Textarea (for single/multi ID entry)
+│   ├── Validation Error Display (conditional - shown when validation fails)
+│   ├── FilterToggleButtons (always visible except URL Params mode)
+│   │   ├── Search By Ids button (triggers ID Search, shows "Searching..." during resolution)
+│   │   ├── All Animals button (clears filters, shows all animals)
+│   │   └── All Alive at Center button (filters by Id/Demographics/calculated_status = 'Alive')
+│   ├── IdResolutionFeedback (always visible - shows feedback when aliases resolved or IDs not found)
+│   │   ├── ResolvedIdsList
+│   │   └── NotFoundIdsList
+│   └── URLParamsMode (conditional - only for shared/bookmarked links)
+│       ├── Read-only summary
+│       └── Modify Search button
 └── ParticipantReports.tsx (existing)
     └── TabbedReportPanel.tsx (existing)
         ├── Category tabs (primary navigation)
         ├── Report tabs (secondary navigation)
         └── Report renderers (JSReportWrapper, QueryReportWrapper, OtherReportWrapper)
 ```
+
+### Styling Architecture
+
+All inline styles have been refactored to SCSS modules located in `labkey-ui-ehr/src/theme/`:
+
+**SCSS Files:**
+- `SearchByIdPanel.scss` - Styles for search panel, buttons, input fields, validation errors
+- `IdResolutionFeedback.scss` - Styles for ID resolution feedback component
+- `ParticipantReports.scss` - Styles for filter error messages
+- `TabbedReportPanel.scss` - Styles for report tabs, empty state placeholder
+- `OtherReportWrapper.scss` - Styles for other report wrapper component
+- `index.scss` - Main entry point that imports all component styles
+
+**Benefits:**
+- Centralized styling makes maintenance and theming easier
+- Improved performance by leveraging CSS classes instead of inline styles
+- Better code organization and separation of concerns
+- Easier to apply consistent styling across components
+- **Robust selectors:** All layout-dependent selectors (like `nth-child`) have been replaced with semantic class-based selectors for better maintainability and resilience to layout changes
+
+**CSS Classes:**
+Components now use semantic CSS classes that map to their functionality:
+- `.search-by-id-panel` - Main panel container
+- `.panel-container` - Input section wrapper
+- `.button-container` - Button group wrapper
+- `.search-button` - ID search button with `.active` and `.inactive` states
+- `.filter-button` - Filter buttons (All Animals, Alive at Center)
+  - `.all-animals` - Specific class for All Animals button
+  - `.alive-at-center` - Specific class for Alive at Center button
+- `.id-resolution-feedback` - Feedback component container
+- `.filter-not-supported-error` - Error message styling
+- `.empty-state-placeholder` - Empty state message
+
+**Selector Architecture:**
+All button styles use semantic class combinations instead of position-based selectors:
+- Search button: `.search-button.active` (blue), `.search-button.inactive` (gray)
+- All Animals button: `.filter-button.all-animals.active` (green), `.filter-button.all-animals.inactive` (gray)
+- Alive at Center button: `.filter-button.alive-at-center.active` (teal), `.filter-button.alive-at-center.inactive` (gray)
+
+This approach ensures styles remain stable even if button order changes in the DOM.
+
+### Component Modularity
+
+**ReportTab Component Extraction:**
+
+The `ReportTab` component has been extracted from `TabbedReportPanel.tsx` into its own file for better modularity and maintainability:
+
+**Location:** `labkey-ui-ehr/src/ParticipantHistory/TabbedReportPanel/ReportTab.tsx`
+
+**Benefits:**
+- Improved code organization with single-responsibility principle
+- Easier to test the ReportTab component in isolation
+- Better separation of concerns between tab management and report panel orchestration
+- Reduced file size and complexity of TabbedReportPanel.tsx
+- Dedicated test file for ReportTab-specific behavior
+
+**Exports:**
+- `ReportTab` component
+- `ReportConfig` interface
+- `FilterArray` interface
+- `QueryWebPartConfig` interface
+
+**Import Pattern:**
+All components that need these types now import directly from `ReportTab.tsx`:
+```typescript
+import { ReportConfig, QueryWebPartConfig } from './ReportTab';
+```
+
+This eliminates the need for re-exports and creates a clearer dependency structure where:
+- `ReportTab.tsx` is the single source of truth for shared types
+- `TabbedReportPanel.tsx` imports only what it needs from ReportTab
+- Report wrapper components (JSReportWrapper, QueryReportWrapper, OtherReportWrapper) import types from ReportTab
+- Test files import types directly from ReportTab
+
+**Test Coverage:**
+- `ReportTab.test.tsx` - 16 unit tests covering ExtJS integration, lifecycle, props, and filter logic
+- Test coverage: 100% statements, 97.14% branches, 100% functions
+
+### Type System
+
+**TypeScript Type Definitions:**
+
+The codebase uses strongly-typed interfaces for all configuration objects, improving type safety and developer experience:
+
+**ExtReportTab** - Extended ExtJS Container interface:
+```typescript
+export interface ExtReportTab {
+    // ExtJS Container base properties
+    isDestroyed?: boolean;
+    renderTo?: HTMLElement;
+
+    // ExtJS Container methods
+    add: (config: any) => void;
+    removeAll: () => void;
+    destroy: () => void;
+
+    // Custom properties added to tab
+    report: ReportConfig;
+    filters: any;
+
+    // Custom methods added to tab
+    getFilterArray: () => FilterArray;
+    getQWPConfig: () => QueryWebPartConfig;
+}
+```
+
+**JSReportPanel** - Panel object interface for JavaScript report functions:
+```typescript
+export interface JSReportPanel {
+    getFilterArray: () => FilterArray;
+    getQWPConfig: () => QueryWebPartConfig;
+    getTitleSuffix: () => string;
+    resolveSubjectsFromHousing: (
+        tab: ExtReportTab,
+        callback: (subjects: string[], tab: ExtReportTab) => void,
+        scope?: any
+    ) => void;
+}
+```
+
+This interface defines the contract for the panel object passed to legacy JavaScript report functions, providing access to:
+- Filter data via `getFilterArray()`
+- Query configuration via `getQWPConfig()`
+- Formatted subject titles via `getTitleSuffix()`
+- Housing location resolution via `resolveSubjectsFromHousing()`
+
+**Test Coverage for Report Wrappers:**
+
+All three report wrapper components now have comprehensive test suites:
+
+- `JSReportWrapper.test.tsx` - 17 unit tests covering function resolution, panel methods, error handling, and cleanup
+  - Coverage improved from 39.43% to 95.77% statements
+
+- `OtherReportWrapper.test.tsx` - 20 unit tests covering LABKEY.WebPart integration, filter handling, title suffix generation, and error scenarios
+  - Coverage: 100% statements, 89.47% branches, 100% functions
+  - Tests unique ID generation, containerPath, viewName, and filter parameter serialization
+
+- `QueryReportWrapper.test.tsx` - 18 unit tests covering ExtJS ldk-querycmp integration, query configuration, lifecycle management, and server context
+  - Coverage: 100% statements, 100% branches, 100% functions
+  - Tests component cleanup, error handling, and dependency tracking
+
+**FilterArray** - Standardized filter structure:
+```typescript
+export interface FilterArray {
+    nonRemovable: Filter.IFilter[];  // Filters from @labkey/api
+    removable: Filter.IFilter[];      // Filters from @labkey/api
+}
+```
+
+**QueryWebPartConfig** - Query WebPart configuration:
+```typescript
+export interface QueryWebPartConfig {
+    // Core properties
+    partName?: string;
+    schemaName?: string;
+    queryName?: string;
+    viewName?: string;
+    title?: string;
+
+    // Filter properties (from @labkey/api)
+    filters?: Filter.IFilter[];
+    removeableFilters?: Filter.IFilter[];
+
+    // Display options
+    showInsertNewButton?: boolean;
+    showDeleteButton?: boolean;
+    showDetailsColumn?: boolean;
+    showUpdateColumn?: boolean;
+    showRecordSelectors?: boolean;
+    allowChooseQuery?: boolean;
+    allowChooseView?: boolean;
+    allowHeaderLock?: boolean;
+
+    // Layout properties
+    frame?: string;
+    buttonBarPosition?: string;
+    linkTarget?: string;
+    renderTo?: string;
+
+    // Callbacks
+    success?: () => void;
+    failure?: (error: any) => void;
+
+    // Additional properties
+    tab?: any;  // ExtJS tab object
+    containerPath?: string;
+    timeout?: number;
+    suppressRenderErrors?: boolean;
+    partConfig?: any;
+    [key: string]: any;  // Allow additional report config properties
+}
+```
+
+**Benefits:**
+- Compile-time type checking prevents runtime errors
+- IntelliSense support in IDEs for better developer experience
+- Self-documenting code through explicit type definitions
+- Easier refactoring with TypeScript's type safety
+- Standardized interface shared across QueryReportWrapper, OtherReportWrapper, and TabbedReportPanel
+
+### React Component Display Names
+
+All exported React components now have explicit `displayName` properties for improved debugging and error stack traces:
+
+**Components with Display Names:**
+- `JSReportWrapper` - Wrapper for JavaScript-based report functions
+- `OtherReportWrapper` - Wrapper for LABKEY.WebPart report integration
+- `QueryReportWrapper` - Wrapper for ExtJS ldk-querycmp integration
+- `TabbedReportPanel` - Main tabbed panel component
+- `ParticipantReports` - Top-level participant reports container
+
+**Pattern Used:**
+```typescript
+const ComponentNameComponent: FC<Props> = ({ props }) => {
+    // Component logic
+};
+ComponentNameComponent.displayName = 'ComponentName';
+export const ComponentName = memo(ComponentNameComponent);
+```
+
+**Benefits:**
+- Better debugging experience in React DevTools
+- Clearer error messages with component names in stack traces
+- Improved component identification during development
+- Compliance with ESLint react/display-name rule
+
+### Optional Chaining Improvements
+
+Optional chaining (`?.`) has been implemented throughout the codebase to replace verbose null checks, making the code more concise and readable:
+
+**JSReportWrapper.tsx:**
+- `tab?.filters` - Safe access to tab filters (line 152)
+- `ns?.[handlerName]` - Safe property access on namespace object (line 46)
+
+**OtherReportWrapper.tsx:**
+- `tab?.filters` - Safe access to tab filters (line 32)
+- `subjects?.length` - Safe length check on subjects array (line 33)
+- `filters?.length` - Safe length check on filters array (line 47)
+
+**TabbedReportPanel.tsx:**
+- `categoryReports?.length` - Safe length check on category reports (line 146)
+- `activeCategoryReports?.length` - Safe length check in JSX rendering (line 179)
+
+**Benefits:**
+- More concise code compared to `variable && variable.property` patterns
+- Prevents runtime errors from accessing properties on null/undefined
+- Improved readability and maintainability
+- Modern TypeScript/JavaScript best practice
 
 ## New Components
 
@@ -163,42 +420,61 @@ interface SearchByIdPanelProps {
 - `validationError: string | null` - Error message if validation fails (e.g., exceeds 100 ID limit)
 
 **Behavior:**
-- **ID Search Mode (`filterType === 'idSearch'`):**
-  - Accepts single or multiple animal IDs in a textarea
+- **ID Input Area (Always Visible):**
+  - Textarea is always visible, regardless of filter mode
+  - Accepts single or multiple animal IDs
   - Parses input using separators: newlines (`\n`), tabs (`\t`), commas (`,`), semicolons (`;`)
   - Handles IDs with letters, numbers, special characters, and spaces in names
   - Validates that no more than 100 unique IDs are entered (after parsing and de-duplication)
   - Displays validation error if limit exceeded; prevents calling `onFilterChange` until resolved
-  - Calls ID resolution service when "Update Report" button is clicked
-  - Displays `IdResolutionFeedback` component with resolution results (child component)
-  - Calls `onFilterChange` with resolved subjects after successful resolution
-- **All Records Mode (`filterType === 'all'`):**
-  - No ID input required; clears any entered IDs
-  - No ID limit applies
+  - Search By Ids button shows "Searching..." text while ID resolution is in progress
+  - Search By Ids button is disabled only during resolution (not for validation errors)
+
+- **Search By Ids Button (Triggers ID Search Mode):**
+  - When clicked, immediately sets `filterType` to 'idSearch' (making button blue and other buttons gray), then performs ID resolution
+  - This means the button turns blue and becomes the active mode even if validation errors occur
+  - Button text changes to "Searching..." during resolution
+  - Button is disabled only while resolving (not when validation errors exist)
+  - Button styling: Shows blue (#0066cc) when active (filterType === 'idSearch'), gray (#6c757d) when inactive, disabled gray (#ccc) when resolving
+  - If validation fails (e.g., no IDs or >100 IDs), the button stays enabled and blue, but ID resolution doesn't proceed
+  - Updates `IdResolutionFeedback` component with resolution results
+  - Calls `onFilterChange('idSearch', resolvedSubjects)` with resolved subjects after successful resolution
+
+- **All Animals Button:**
+  - When clicked, activates All Animals mode
+  - Clears any entered IDs in the textarea
+  - Clears any validation errors that were displayed
   - Reports show all animals (no filters on IDs or status)
-  - Hides `IdResolutionFeedback` component
-  - Calls `onFilterChange` immediately when button clicked
-- **Alive at Center Mode (`filterType === 'aliveAtCenter'`):**
+  - Button styling: Shows green (#28a745) when active (filterType === 'all'), gray (#6c757d) when inactive
+  - Calls `onFilterChange('all', undefined)` immediately when button clicked
+
+- **All Alive at Center Button:**
+  - When clicked, activates Alive at Center mode
   - Button disabled if `activeReportSupportsNonIdFilters === false`
-  - No ID input required; clears any entered IDs
-  - No ID limit applies
-  - Reports filter on `calculated_status = 'Alive'` in `study.demographics`
-  - Hides `IdResolutionFeedback` component
-  - Calls `onFilterChange` immediately when button clicked
+  - Clears any entered IDs in the textarea
+  - Clears any validation errors that were displayed
+  - Reports filter on `Id/Demographics/calculated_status = 'Alive'` (lookup to demographics table)
+  - Button styling: Shows cyan (#17a2b8) when active (filterType === 'aliveAtCenter'), gray (#6c757d) when inactive, disabled gray (#ccc) when report doesn't support non-ID filters
+  - Calls `onFilterChange('aliveAtCenter', undefined)` immediately when button clicked
 - **URL Params Mode (`filterType === 'urlParams'`):**
   - Activated when URL contains `readOnly=true` parameter (for shared/bookmarked links)
-  - **Hides all filter toggle buttons** (ID Search / All Records / Alive at Center)
-  - **Hides ID input textarea and Update Report button**
+  - **Hides entire filter section** (textarea and all buttons)
   - Shows read-only summary: "Viewing {count} animal(s): {subject1}, {subject2}, ..."
   - Shows "Modify Search" button that switches to ID Search mode with current subjects pre-populated
   - Reports filter by URL subjects without requiring ID resolution
   - No ID limit applies (URL-provided subjects are assumed already validated/resolved)
-  - Hides `IdResolutionFeedback` component
+
+**IdResolutionFeedback:**
+- Always rendered (not conditionally based on filter mode)
+- Component controls its own visibility via `isVisible` prop
+- Shows feedback when aliases are resolved or IDs are not found
+- Remains visible even when switching between filter modes (since textarea is always visible)
 
 **Internal Structure:**
 - `SearchByIdPanel` internally manages `IdResolutionFeedback` component
 - Resolution results are managed as internal state, not passed to parent
 - Parent component (`ParticipantReports`) only receives final resolved subject IDs
+- Textarea and filter buttons are always visible except in URL Params mode
 - URL Params mode provides a read-only view for shared/bookmarked links
 
 ### 2. IdResolutionFeedback
@@ -224,9 +500,17 @@ interface IdResolutionFeedbackProps {
 ```
 
 **Display Logic:**
-- Component only renders when `resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0`
-- "Resolved" section shows IDs found directly and IDs found via alias lookup (with indication of alias type)
-- "Not Found" section lists IDs that couldn't be resolved
+- Component only renders when `isVisible === true` (caller determines visibility using: `resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0`)
+- Returns `null` when `isVisible === false`
+- "Resolved" section (shown when `resolved.length > 0`):
+  - Direct matches displayed as: `ID123` (just the resolved ID)
+  - Alias matches displayed as: `TATTOO_001 → ID123 (tattoo)` (inputId → resolvedId (aliasType))
+  - Direct matches listed first, followed by alias matches
+  - Uses semantic `<ul>` and `<li>` markup for accessibility
+- "Not Found" section (shown when `notFound.length > 0`):
+  - Lists unresolved IDs that couldn't be found directly or via alias
+  - Uses semantic `<ul>` and `<li>` markup for accessibility
+- Uses proper heading hierarchy: `<h2>` for "ID Resolution", `<h3>` for section headings
 
 ## Modified Components
 
@@ -256,12 +540,19 @@ export const ParticipantReports: FC = memo(() => {
 
     const [filterType, setFilterType] = useState<'idSearch' | 'all' | 'aliveAtCenter' | 'urlParams'>(initialFilterType);
     const [activeReport, setActiveReport] = useState(urlFilters.activeReport);
+    const [showReport, setShowReport] = useState<boolean>(urlFilters.showReport ?? false);
 
     // Query active report metadata to get supportsNonIdFilters field
-    const activeReportSupportsNonIdFilters = useMemo(() => {
-        // Query ehr.reports for activeReport and return supportsNonIdFilters value
-        // Returns false if no active report or report doesn't support non-ID filters
-    }, [activeReport]);
+    // Uses LABKEY.Query.selectRows to query ehr.reports table
+    // Filter by reportname field (activeReport contains the report name from TabbedReportPanel)
+    // Stores result in state (activeReportSupportsNonIdFilters)
+    // Defaults to true if query fails or no active report
+
+    // Override filter to 'all' when aliveAtCenter not supported
+    // Compute effectiveFilterType: if filterType is 'aliveAtCenter' and
+    // activeReportSupportsNonIdFilters is false, override to 'all'
+    // Display error message when override occurs
+    // Pass effectiveFilterType to TabbedReportPanel filters
 
     const handleFilterChange = useCallback((
         newFilterType: 'idSearch' | 'all' | 'aliveAtCenter' | 'urlParams',
@@ -269,16 +560,33 @@ export const ParticipantReports: FC = memo(() => {
     ) => {
         setFilterType(newFilterType);
         setSubjects(newSubjects || []);
+
+        // Determine if report should be shown
+        // Show report for 'all' and 'aliveAtCenter' modes always
+        // Show report for 'idSearch' and 'urlParams' only when subjects exist
+        const shouldShowReport =
+            newFilterType === 'all' ||
+            newFilterType === 'aliveAtCenter' ||
+            ((newFilterType === 'idSearch' || newFilterType === 'urlParams') &&
+                (newSubjects?.length ?? 0) > 0);
+        setShowReport(shouldShowReport);
+
         // When switching from urlParams to idSearch (via "Modify Search"), remove readOnly parameter
         const isLeavingReadOnly = filterType === 'urlParams' && newFilterType !== 'urlParams';
-        updateUrlHash(newFilterType, newSubjects, !isLeavingReadOnly && urlFilters.readOnly);
-    }, [filterType, urlFilters.readOnly]);
+        const readOnly = newFilterType === 'urlParams' && !isLeavingReadOnly;
+        updateUrlHash(newFilterType, newSubjects, readOnly, shouldShowReport);
+    }, [filterType]);
+
+    const handleTabChange = useCallback((reportId: string) => {
+        setActiveReport(reportId);
+        // Update URL hash with new activeReport
+        updateUrlHash(filterType, subjects, filterType === 'urlParams', showReport);
+    }, [filterType, subjects, showReport]);
 
     const filters = useMemo(() => ({
         filterType,
         subjects: (filterType === 'idSearch' || filterType === 'urlParams') ? subjects : undefined,
-        ...urlFilters,
-    }), [filterType, subjects, urlFilters]);
+    }), [filterType, subjects]);
 
     return (
         <div>
@@ -291,11 +599,11 @@ export const ParticipantReports: FC = memo(() => {
             <TabbedReportPanel
                 activeReport={activeReport}
                 filters={filters}
-                onTabChange={(newReport) => setActiveReport(newReport)}
+                onTabChange={handleTabChange}
                 reportNamespace="EHR.reports"
                 reportsQuery="reports"
                 reportsSchema="ehr"
-                showReport={urlFilters.showReport}
+                showReport={showReport}
             />
         </div>
     );
@@ -308,6 +616,11 @@ export const ParticipantReports: FC = memo(() => {
 - Simplified state management - parent only tracks final resolved subjects, not resolution details
 - URL Params mode (`readOnly=true`) enables read-only view for shared/bookmarked links
 - "Modify Search" button in URL Params mode removes `readOnly` parameter and switches to ID Search mode
+- `showReport` state controls report visibility:
+  - Defaults to `false` on initial page load (shows placeholder message)
+  - Set to `true` for 'all' and 'aliveAtCenter' modes always
+  - Set to `true` for 'idSearch' and 'urlParams' modes only when subjects exist
+  - Synced to URL hash (showReport:1 when true, omitted when false)
 
 ### 2. AnimalHistoryPage.tsx
 
@@ -335,45 +648,74 @@ export async function resolveAnimalIds(params: ResolveIdsParams): Promise<IdReso
 
 **Database Queries:**
 
-The two-query approach correctly handles multiple aliases per animal ID by filtering to only aliases that match the user's input. Queries use LabKey SQL, which is database-agnostic and supports case-insensitive matching via the `lower()` function.
+The two-query approach correctly handles multiple aliases per animal ID by filtering to only aliases that match the user's input. The service uses pre-defined LabKey queries in `server/modules/ehrModules/ehr/resources/queries/study/` that provide case-insensitive matching via computed lowercase columns.
 
 1. **Direct ID Lookup:**
+
+Query: `study.directIdMatches`
+
+This query is defined in `directIdMatches.sql` and returns:
 ```sql
-SELECT Id as resolvedId, Id as inputId, 'direct' as resolvedBy, NULL as aliasType
+SELECT
+    Id as resolvedId,
+    Id as inputId,
+    'direct' as resolvedBy,
+    NULL as aliasType,
+    LOWER(Id) as lowerIdForMatching
 FROM study.demographics
-WHERE lower(Id) IN (${lowercaseInputIds})
+```
+
+Filter on `lowerIdForMatching` column using lowercase input IDs:
+```typescript
+Filter.create('lowerIdForMatching', lowercaseInputIds, Filter.Types.IN)
 ```
 
 2. **Alias Lookup (for unresolved IDs only):**
+
+Query: `study.aliasIdMatches`
+
+This query is defined in `aliasIdMatches.sql` and returns:
 ```sql
 SELECT
     a.Id as resolvedId,
     a.alias as inputId,
     'alias' as resolvedBy,
-    a.aliasType
+    a.aliasType,
+    LOWER(a.alias) as lowerAliasForMatching
 FROM study.alias a
 INNER JOIN study.demographics d ON a.Id = d.Id
-WHERE lower(a.alias) IN (${lowercaseUnresolvedInputIds})
+```
+
+Filter on `lowerAliasForMatching` column using lowercase unresolved input IDs:
+```typescript
+Filter.create('lowerAliasForMatching', lowercaseUnresolvedInputIds, Filter.Types.IN)
 ```
 
 **Key Points:**
-- Queries use LabKey SQL (database-agnostic) rather than database-specific SQL dialects
-- Case-insensitive matching via `lower()` function on both input IDs and database values
+- Uses pre-defined LabKey query definitions (`study.directIdMatches` and `study.aliasIdMatches`) rather than raw SQL
+- Case-insensitive matching via computed `lowerIdForMatching` and `lowerAliasForMatching` columns
 - Query 2 only runs with IDs not found in Query 1, avoiding unnecessary lookups
-- The `WHERE lower(a.alias) IN (...)` clause ensures we only return aliases that were actually in the user's input, even if an animal has many other aliases in the database
+- The filter on lowercase columns ensures we only return IDs/aliases that match the user's input (case-insensitive)
 - Each query returns the input-to-resolved-ID mapping needed for the IdResolutionFeedback display
 - The application layer de-duplicates resolved IDs when passing to reports (multiple inputs may resolve to the same animal ID)
+- Using pre-defined queries ensures consistency across the EHR module and simplifies maintenance
 
 ## URL Hash Format
 
 The URL hash format follows the existing pattern in `ParticipantReports.tsx`:
 
-**ID Search mode:**
+**Initial Page Load (no filters active):**
+```
+#filterType:idSearch
+```
+(No showReport parameter - reports hidden, placeholder message shown)
+
+**ID Search mode (with subjects):**
 ```
 #subjects:{id1};{id2};{id3}&filterType:idSearch&activeReport:{reportId}&showReport:1
 ```
 
-**All Records mode:**
+**Show All mode:**
 ```
 #filterType:all&activeReport:{reportId}&showReport:1
 ```
@@ -393,7 +735,7 @@ The URL hash format follows the existing pattern in `ParticipantReports.tsx`:
 - `filterType` - `idSearch`, `all`, or `aliveAtCenter` (not used for `urlParams` mode)
 - `readOnly` - `true` to enable URL Params mode (read-only view with no search UI)
 - `activeReport` - Currently selected report ID
-- `showReport` - Whether to show report content (1 = true)
+- `showReport` - Whether to show report content (1 = true). Omitted when reports should not be displayed (initial page load, ID Search with no subjects)
 
 **URL Params Mode Notes:**
 - When `readOnly=true` is present with subjects, automatically activates URL Params mode
@@ -409,11 +751,11 @@ A new boolean field must be added to the `ehr.reports` table to indicate report 
 
 **Field:** `supportsNonIdFilters` (boolean, default: false)
 
-**Purpose:** Indicates whether a report can handle the "Alive at Center" filter mode which filters by status without requiring specific subject IDs.
+**Purpose:** Indicates whether a report can handle the "Alive, at Center" filter mode which filters by status without requiring specific subject IDs.
 
 **Usage:**
-- Reports with `supportsNonIdFilters = true` can filter by `calculated_status = 'Alive'` across all animals
-- Reports with `supportsNonIdFilters = false` will have only the "Alive at Center" button disabled
+- Reports with `supportsNonIdFilters = true` can filter by `Id/Demographics/calculated_status = 'Alive'` across all animals
+- Reports with `supportsNonIdFilters = false` will have only the "Alive, at Center" button disabled
 - All reports support "All Records" (no filters) and "ID Search" (specific IDs) modes regardless of this field
 - Most legacy single/multi-animal reports will default to `false` and require migration to support status filtering
 
@@ -454,11 +796,11 @@ newTab.getFilterArray = () => {
     // Alive at Center mode: Filter by calculated_status
     if (filters && filters.filterType === 'aliveAtCenter') {
         filterArray.nonRemovable.push(
-            Filter.create('calculated_status', 'Alive', Filter.Types.EQUAL)
+            Filter.create('Id/Demographics/calculated_status', 'Alive', Filter.Types.EQUAL)
         );
     }
 
-    // All Records mode: No filters applied (filterType === 'all')
+    // Show All mode: No filters applied (filterType === 'all')
 
     return filterArray;
 };
@@ -467,39 +809,70 @@ newTab.getFilterArray = () => {
 **Key Points:**
 - ID Search mode applies subject ID filters after user-initiated resolution
 - URL Params mode applies subject ID filters from URL without resolution
-- Alive at Center mode applies `calculated_status = 'Alive'` filter on `study.demographics`
-- All Records mode applies no filters (shows all animals)
+- Alive at Center mode applies `Id/Demographics/calculated_status = 'Alive'` filter (lookup to demographics)
+- All Animals mode applies no filters (shows all animals)
 - The 100 ID limit only applies to ID Search mode
 - Non-ID filter modes (all, aliveAtCenter, urlParams) have no ID limits and don't go through ID resolution
+
+## Empty State Placeholder
+
+When `showReport` prop is false (initial page load, ID Search with no subjects), TabbedReportPanel displays a centered placeholder message instead of report content:
+
+```tsx
+<div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '300px',
+    padding: '40px',
+    color: '#666',
+    fontSize: '16px',
+    fontWeight: '500',
+}}>
+    Select Filter to View Reports
+</div>
+```
+
+**When Placeholder is Shown:**
+- Initial page load (no URL hash or filterType:idSearch with no subjects)
+- ID Search mode active but no subjects entered
+- User cleared search without selecting another filter mode
+
+**When Reports are Shown:**
+- User clicks "Search By Ids" with valid subjects
+- User clicks "All Animals"
+- User clicks "All Alive at Center"
+- URL contains `showReport:1` parameter (bookmarked/shared links)
 
 ## Edge Cases
 
 ### ID Search Mode Only:
 
-1. **Empty Input:** Display validation message; do not call API
-2. **Whitespace-only Input:** Treat as empty input after trimming
+1. **Empty Input:** Display validation message; do not call API; pass empty array to reports to show no records
+2. **Whitespace-only Input:** Treat as empty input after trimming; display validation message; pass empty array to reports to show no records
 3. **Duplicate IDs:** De-duplicate before resolution; show each unique ID once in results
 4. **Mixed Valid/Invalid IDs:** Resolve valid IDs; show invalid in "Not Found" section
 5. **All IDs Not Found:** Display "Not Found" section only; reports panel shows no data message
 6. **Alias Resolves to Same ID:** If multiple input values resolve to the same animal ID, show all in "Resolved" section but pass de-duplicated list to reports
 7. **Special Characters in IDs:** Support IDs with hyphens, underscores, and other special characters
 8. **Case Sensitivity:** ID matching is case-insensitive for both direct ID and alias lookups, implemented using LabKey SQL's `lower()` function
-9. **ID Limit Exceeded:** Hard limit of 100 unique IDs (after parsing and de-duplication). Display clear validation error: "Maximum of 100 animal IDs allowed. You entered {count} IDs." Disable "Update Report" button until input is reduced.
+9. **ID Limit Exceeded:** Hard limit of 100 unique IDs (after parsing and de-duplication). Display clear validation error: "Maximum of 100 animal IDs allowed. You entered {count} IDs." Button remains enabled but ID resolution will not proceed until input is reduced. Pass empty array to reports to show no records.
 
 ### All Filter Modes:
 
-10. **Report Doesn't Support Non-ID Filters:** If `activeReportSupportsNonIdFilters === false`, disable only the "Alive at Center" button. "ID Search" and "All Records" modes remain available.
-11. **Switching Filter Modes:** When switching from ID Search to All Records or Alive at Center, clear the ID input textarea and resolution results.
-12. **No Active Report Selected:** Default behavior - may need to handle gracefully or default to first available report.
+10. **Report Doesn't Support Non-ID Filters:** If `activeReportSupportsNonIdFilters === false`, disable only the "All Alive at Center" button. "ID Search" and "All Animals" modes remain available.
+11. **Switching Filter Modes:** When switching from ID Search to All Animals or All Alive at Center, clear the ID input textarea, resolution results, and any validation errors. The textarea remains visible across all modes (except URL Params).
+12. **Search By Ids with Validation Error:** When "Search By Ids" is clicked with a validation error (e.g., no IDs entered or >100 IDs), the button immediately sets the filter mode to ID Search (turns blue, grays out other buttons) but does not proceed with ID resolution. The validation error remains displayed until resolved. An empty array is passed to reports to show no records.
+13. **No Active Report Selected:** Default behavior - may need to handle gracefully or default to first available report.
 
 ### URL Params Mode Only:
 
-13. **No Subjects in URL:** If `readOnly=true` but no subjects parameter, default to "All Records" mode and ignore `readOnly`.
-14. **Invalid Subject IDs:** URL subjects are assumed valid; if reports show no data, display message indicating subjects may not exist or user lacks permissions.
-15. **Modify Search Button:** Clicking "Modify Search" switches to ID Search mode with subjects pre-populated in textarea, removes `readOnly` parameter from URL.
-16. **Direct URL Navigation:** When user shares URL with `readOnly=true`, recipient sees read-only view immediately on page load without search UI.
-17. **URL with Both filterType and readOnly:** If URL has `readOnly=true`, ignore `filterType` parameter and use URL Params mode.
-18. **Excessive Subject Count in URL:** No limit enforced on URL Params mode subjects (assumed to be curated/valid from previous search); browser URL length limits (~2,000 chars) are the only practical constraint.
+14. **No Subjects in URL:** If `readOnly=true` but no subjects parameter, default to "All Animals" mode and ignore `readOnly`.
+15. **Invalid Subject IDs:** URL subjects are assumed valid; if reports show no data, display message indicating subjects may not exist or user lacks permissions.
+16. **Modify Search Button:** Clicking "Modify Search" switches to ID Search mode with subjects pre-populated in textarea, removes `readOnly` parameter from URL.
+17. **Direct URL Navigation:** When user shares URL with `readOnly=true`, recipient sees read-only view immediately on page load without search UI.
+18. **URL with Both filterType and readOnly:** If URL has `readOnly=true`, ignore `filterType` parameter and use URL Params mode.
+19. **Excessive Subject Count in URL:** No limit enforced on URL Params mode subjects (assumed to be curated/valid from previous search); browser URL length limits (~2,000 chars) are the only practical constraint.
 
 ## Permissions
 
@@ -514,8 +887,8 @@ Add tracking for:
    - `animalHistory.filter.idSearch` - ID Search mode used (include count of IDs)
    - `animalHistory.filter.idSearch.single` - Single ID search performed
    - `animalHistory.filter.idSearch.multi` - Multi ID search performed (include count)
-   - `animalHistory.filter.all` - "All Records" filter selected
-   - `animalHistory.filter.aliveAtCenter` - "Alive at Center" filter selected
+   - `animalHistory.filter.all` - "Show All" filter selected
+   - `animalHistory.filter.aliveAtCenter` - "Alive, at Center" filter selected
 
 2. **Resolution Stats (ID Search mode only):**
    - `animalHistory.search.aliasResolved` - Count of IDs resolved via alias
@@ -543,13 +916,21 @@ Add tracking for:
 3. **SearchByIdPanel:**
    - Test input state management for ID Search mode
    - Test filter mode toggle behavior (idSearch, all, aliveAtCenter)
-   - Test URL Params mode hides filter toggle buttons and shows read-only summary
+   - Test conditional rendering: ID Search section visible only in idSearch mode
+   - Test conditional rendering: Filter Mode section visible in all modes except urlParams
+   - Test conditional rendering: Resolution feedback visible only in idSearch mode
+   - Test loading state: Search By Ids button shows "Searching..." during resolution
+   - Test loading state: Search By Ids button disabled only during resolution (not for validation errors)
+   - Test "Search By Ids" button immediately sets filter mode to idSearch when clicked (even with validation errors)
+   - Test button turns blue and other buttons turn gray when clicked with validation error
+   - Test URL Params mode hides entire filter section and shows read-only summary
    - Test "Modify Search" button switches from URL Params to ID Search mode
-   - Test "Update Report" button callback for each mode
+   - Test "Search By Ids" button callback for each mode
    - Test validation error display when exceeding 100 ID limit (ID Search mode only)
-   - Test "Update Report" button disabled state when validation fails
-   - Test "Alive at Center" button disabled when `activeReportSupportsNonIdFilters === false`
-   - Test clearing input when switching to All Records or Alive at Center modes
+   - Test validation errors cleared when switching to All Animals mode
+   - Test validation errors cleared when switching to All Alive at Center mode
+   - Test "Alive, at Center" button disabled when `activeReportSupportsNonIdFilters === false`
+   - Test clearing input when switching to All Animals or All Alive at Center modes
 
 ### Integration Tests
 
@@ -562,10 +943,11 @@ Add tracking for:
 
 2. **Filter Mode Integration:**
    - Test ID Search mode applies subject ID filters correctly
-   - Test All Records mode applies no filters
-   - Test Alive at Center mode applies `calculated_status = 'Alive'` filter
+   - Test Show All mode applies no filters
+   - Test Alive, at Center mode applies `Id/Demographics/calculated_status = 'Alive'` filter
    - Test URL Params mode applies subject ID filters from URL without resolution
    - Test switching between filter modes updates reports correctly
+   - Test ID Search section hidden when switching to Show All or Alive, at Center modes
    - Test report metadata query for `supportsNonIdFilters` field
 
 3. **URL Hash Sync:**
@@ -577,55 +959,64 @@ Add tracking for:
 
 ### Manual Test Scenarios
 
+**Initial Page Load:**
+1. Navigate to Animal History page (no URL hash)
+   - Verify ID Search mode is active (button highlighted)
+   - Verify empty textarea is shown
+   - Verify placeholder message displayed: "Select Filter to View Reports"
+   - Verify no reports are rendered
+   - Verify all filter buttons are visible and enabled
+
 **ID Search Mode:**
-1. Single animal ID search (direct match)
-2. Single animal ID search (alias match)
-3. Multiple animal IDs (all direct matches)
-4. Multiple animal IDs (mixed direct and alias)
-5. Multiple animal IDs (some not found)
-6. Enter exactly 100 IDs (should succeed)
-7. Enter 101+ IDs (should show validation error and prevent search)
-8. Verify report data matches selected animals for ID Search
+2. Single animal ID search (direct match)
+3. Single animal ID search (alias match)
+4. Multiple animal IDs (all direct matches)
+5. Multiple animal IDs (mixed direct and alias)
+6. Multiple animal IDs (some not found)
+7. Enter exactly 100 IDs (should succeed)
+8. Enter 101+ IDs (should show validation error and prevent search)
+9. Verify report data matches selected animals for ID Search
 
-#### All Records Mode
+#### Show All Mode
 
-9. Click "All Records" button and verify reports show all animals
-10. Verify no ID limit applies in All Records mode
-11. Verify URL bookmarking works for All Records mode
+10. Click "Show All" button and verify reports show all animals
+11. Verify ID Search section (textarea + Search By Ids button) is hidden
+12. Verify no ID limit applies in Show All mode
+13. Verify URL bookmarking works for Show All mode
 
-#### Alive at Center Mode
+#### Alive, at Center Mode
 
-12. Click "Alive at Center" on a report with `supportsNonIdFilters = true`
-13. Verify reports show only animals with `calculated_status = 'Alive'`
-14. Verify "Alive at Center" button is disabled on report with `supportsNonIdFilters = false`
-15. Switch to a different report and verify button state updates based on new report's `supportsNonIdFilters` value
+14. Click "Alive, at Center" on a report with `supportsNonIdFilters = true`
+15. Verify reports show only animals with `Id/Demographics/calculated_status = 'Alive'`
+16. Verify ID Search section (textarea + Search By Ids button) is hidden
+17. Verify "Alive, at Center" button is disabled on report with `supportsNonIdFilters = false`
+18. Switch to a different report and verify button state updates based on new report's `supportsNonIdFilters` value
 
 #### URL Params Mode (Read-Only)
 
-16. Navigate to URL with `readOnly=true` and subjects parameter
-17. Verify no filter toggle buttons shown
-18. Verify no ID input textarea or Update Report button shown
-19. Verify read-only summary displays subject count and IDs
-20. Verify reports are filtered by URL subjects
-21. Click "Modify Search" button and verify:
+19. Navigate to URL with `readOnly=true` and subjects parameter
+20. Verify entire filter section is hidden (no filter buttons, no ID textarea)
+21. Verify read-only summary displays subject count and IDs
+22. Verify reports are filtered by URL subjects
+23. Click "Modify Search" button and verify:
     - Switches to ID Search mode
     - Subjects pre-populated in textarea
     - `readOnly` removed from URL
-    - Filter toggle buttons now visible
-22. Test URL with `readOnly=true` but no subjects (should default to All Records)
-23. Test URL with both `filterType` and `readOnly=true` (should use URL Params mode)
+    - Filter section now visible with all buttons
+24. Test URL with `readOnly=true` but no subjects (should default to Show All)
+25. Test URL with both `filterType` and `readOnly=true` (should use URL Params mode)
 
 #### Filter Mode Switching
 
-24. Switch from ID Search to All Records (verify input cleared)
-25. Switch from ID Search to Alive at Center (verify input cleared)
-26. Switch from All Records to ID Search (verify input textarea available)
-27. Switch from Alive at Center to ID Search (verify input textarea available)
+26. Switch from ID Search to Show All (verify ID Search section hidden, input cleared)
+27. Switch from ID Search to Alive, at Center (verify ID Search section hidden, input cleared)
+28. Switch from Show All to ID Search (verify ID Search section visible, empty textarea)
+29. Switch from Alive, at Center to ID Search (verify ID Search section visible, empty textarea)
 
 ## Configuration Considerations
 
 - **Center-specific Alias Types:** Different centers may have different alias categories. The alias resolution should query all alias types from `study.alias` without hardcoding specific types.
-- **Demographics Status Field:** The "Alive at Center" filter relies on `calculated_status` field in demographics. Verify this field exists and is populated correctly across all center implementations.
+- **Demographics Status Field:** The "Alive, at Center" filter relies on `Id/Demographics/calculated_status` field (lookup to demographics table). Verify this field exists and is populated correctly across all center implementations.
 
 ## What Might Go Wrong
 
@@ -633,10 +1024,10 @@ Add tracking for:
 2. **Performance with "All Records" Mode:** No ID limit on All Records and Alive at Center modes could cause performance issues with very large datasets. Reports need to handle pagination or lazy loading.
 3. **Alias Table Not Populated:** Some centers may not use aliases extensively. Handle gracefully with direct matches only.
 4. **Inconsistent Demographics Data:** The `calculated_status` field may have different values across centers. Document expected values.
-5. **Report Schema Migration:** Adding `supportsNonIdFilters` field to `ehr.reports` requires database migration. Existing reports default to `false`, so "Alive at Center" will be disabled until reports are updated.
+5. **Report Schema Migration:** Adding `supportsNonIdFilters` field to `ehr.reports` requires database migration. Existing reports default to `false`, so "Alive, at Center" will be disabled until reports are updated.
 6. **ExtJS Report Compatibility:** Some JS reports may expect specific filter formats. Test all report types with new filter structure and all three filter modes.
 7. **URL Length Limits:** Mitigated by 100 ID limit for ID Search mode. Even with maximum-length IDs, 100 subjects should stay within browser URL limits (~2,000 characters). Monitor in testing if approaching limits with long ID names.
-8. **Report Tab Changes:** When user switches between report tabs, the `activeReportSupportsNonIdFilters` value changes, which could enable/disable the "Alive at Center" button mid-session. Ensure UI clearly indicates why button state changed.
+8. **Report Tab Changes:** When user switches between report tabs, the `activeReportSupportsNonIdFilters` value changes, which could enable/disable the "Alive, at Center" button mid-session. Ensure UI clearly indicates why button state changed.
 
 ## Dev Review
 
@@ -661,7 +1052,7 @@ Add tracking for:
    - Test migration on both database platforms
 
 2. Update select reports to support non-ID filters
-   - Identify candidate reports that can support "Alive at Center" mode
+   - Identify candidate reports that can support "Alive, at Center" mode
    - Update report queries to handle no subject filter (when filterType = 'aliveAtCenter' or 'all')
    - Set `supportsNonIdFilters = true` for updated reports
    - Verify reports handle large datasets with pagination/performance
@@ -686,36 +1077,44 @@ Add tracking for:
 
 5. Implement SearchByIdPanel component - Part 1 (ID Search mode)
    - Create `SearchByIdPanel.tsx` in `labkey-ui-ehr/src/ParticipantHistory/SearchByIdPanel/`
-   - Implement filter mode toggle buttons (ID Search / All Records / Alive at Center)
+   - Implement filter mode toggle buttons (Search By Ids / All Animals / All Alive at Center)
    - Implement ID textarea with multi-separator parsing (newlines, tabs, commas, semicolons)
    - Implement 100 ID limit validation with error display
-   - Implement "Update Report" button with loading state
+   - Implement "Search By Ids" button with loading state
    - Call ID resolution service on button click
    - Display IdResolutionFeedback as child component
    - Handle special characters and case-insensitive input
 
 6. Implement SearchByIdPanel component - Part 2 (Other filter modes)
-   - Implement All Records mode (clear input, hide resolution feedback)
-   - Implement Alive at Center mode (clear input, disable if not supported)
+   - Implement All Animals mode (hides ID Search section, shows all animals)
+   - Implement All Alive at Center mode (hides ID Search section, filters by status)
    - Implement URL Params mode (read-only view with "Modify Search" button)
    - Handle filter mode switching and state clearing
    - Implement conditional rendering based on `activeReportSupportsNonIdFilters` prop
+   - Implement loading state: Search By Ids button shows "Searching..." during ID resolution
+   - Add CSS styling in `src/theme/SearchByIdPanel.scss` with ref.jsx color scheme
 
 7. Update ParticipantReports component
    - Add SearchByIdPanel above TabbedReportPanel
-   - Implement filter state management (filterType, subjects)
+   - Implement filter state management (filterType, subjects, showReport)
    - Implement URL hash detection for initial filter type (including readOnly detection)
-   - Query ehr.reports for activeReport's `supportsNonIdFilters` field
-   - Implement `handleFilterChange` callback
-   - Update URL hash when filter changes
-   - Pass filters to TabbedReportPanel
+   - Query ehr.reports for activeReport's `supportsNonIdFilters` field (filter by reportname field)
+   - Implement `handleFilterChange` callback with showReport logic:
+     - Show reports for 'all' and 'aliveAtCenter' modes always
+     - Show reports for 'idSearch' and 'urlParams' only when subjects exist
+   - Update URL hash when filter changes (include showReport parameter)
+   - Pass filters and showReport to TabbedReportPanel
 
 8. Update TabbedReportPanel filter integration
    - Update `ReportTab.getFilterArray()` to handle four filter modes
    - Add ID Search mode filter logic (subject ID filters)
    - Add URL Params mode filter logic (same as ID Search)
-   - Add Alive at Center mode filter logic (`calculated_status = 'Alive'`)
-   - Add All Records mode (no filters)
+   - Add Alive, at Center mode filter logic (`Id/Demographics/calculated_status = 'Alive'`)
+   - Add Show All mode (no filters)
+   - Update JSReportWrapper to include `resolveSubjectsFromHousing` function in panel object (queries study.demographicsCurLocation)
+   - Update `initializeActiveTab` to call `onTabChange` for initial report (ensures ParticipantReports can query initial report metadata)
+   - Add empty state placeholder: Display "Select Filter to View Reports" when showReport is false
+   - Conditionally render reports based on showReport prop (ternary instead of &&)
    - Test filter application with all report types
 
 ## Frontend - URL and Navigation
@@ -723,7 +1122,8 @@ Add tracking for:
 9. Implement URL hash management
    - Create/update `updateUrlHash()` function for four filter modes
    - Handle `readOnly` parameter for URL Params mode
-   - Parse URL hash on page load to determine initial filter type
+   - Handle `showReport` parameter (include when true, omit when false)
+   - Parse URL hash on page load to determine initial filter type and showReport state
    - Handle browser back/forward navigation
    - Test URL bookmarking for all modes
 
@@ -750,7 +1150,7 @@ Add tracking for:
     - urlHashUtils.ts: URL hash generation/parsing for all filter modes, special character encoding, conflict resolution
 
 13. Unit tests - SearchByIdPanel and IdResolutionFeedback components
-    - SearchByIdPanel: ID parsing (all separators), 100 ID limit validation, filter mode toggles, URL Params read-only view, "Modify Search" button, "Alive at Center" button state, input clearing, accessibility (ARIA, keyboard)
+    - SearchByIdPanel: ID parsing (all separators), 100 ID limit validation, filter mode toggles, URL Params read-only view, "Modify Search" button, "Alive, at Center" button state, input clearing, accessibility (ARIA, keyboard)
     - IdResolutionFeedback: Visibility logic, resolved/not-found categorization, alias type display
 
 14. Unit tests - Report integration components
@@ -764,7 +1164,7 @@ Add tracking for:
     - Create test data: animal IDs with aliases (tattoos/chips), mix of alive/dead animals
     - Configure report metadata: set `supportsNonIdFilters` for test reports
 
-16. Selenium tests - ID Search and All Records modes
+16. Selenium tests - ID Search and All Animals modes
     - ID Search: Single animal (direct and alias), multi-animal, mixed valid/invalid IDs, 100 ID limit, case-insensitive matching
     - All Records: Click button, verify no filters, URL bookmarking
 
@@ -800,7 +1200,7 @@ Add tracking for:
 * **Animal History Reports** - All existing animal history reports must function with new filter modes
 * **URL Sharing/Bookmarking** - URLs with subjects and readOnly parameter must work across sessions and users
 * **Demographics and Alias Data** - ID resolution depends on study.demographics and study.alias tables
-* **Report Metadata** - ehr.reports.supportsNonIdFilters field affects "Alive at Center" button state
+* **Report Metadata** - ehr.reports.supportsNonIdFilters field affects "Alive, at Center" button state
 * **Permissions** - Report access controlled by folder and dataset permissions
 * **ExtJS Reports** - Legacy JavaScript reports must receive correct filter data
 * **React Reports** - QueryReportWrapper and JSReportWrapper must handle all filter modes
@@ -814,13 +1214,13 @@ Add tracking for:
    - Navigate to Animal History page
    - Verify default state: ID Search mode active with empty textarea
    - Enter single animal ID in textarea
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify ID resolves and reports display for that animal
    - Verify no "ID Resolution" feedback section appears (all direct matches)
 
 2. **Single Animal Search (Alias)**
    - Enter animal alias (tattoo, chip number, etc.) in textarea
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify ID Resolution feedback section appears
    - Verify "Resolved" section shows: input alias → resolved ID (alias type)
      Example: "test123 → ID12345 (tattoo)"
@@ -828,20 +1228,20 @@ Add tracking for:
 
 3. **Multi-Animal Search (Various Separators)**
    - Enter 5 animal IDs separated by newlines
-   - Click "Update Report", verify all resolved
+   - Click "Search By Ids", verify all resolved
    - Clear and re-enter same 5 IDs separated by commas
-   - Click "Update Report", verify same results
+   - Click "Search By Ids", verify same results
    - Repeat with tab-separated and semicolon-separated lists
 
 4. **Multi-Animal Search (Mixed Separators)**
    - Enter IDs using multiple separators in single input: "ID1, ID2\nID3;ID4\tID5"
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify all 5 IDs parsed correctly
    - Verify reports show all 5 animals
 
 5. **Mixed Direct and Alias IDs**
    - Enter 3 direct IDs and 2 aliases in textarea
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify ID Resolution feedback section appears (contains aliases)
    - Verify "Resolved" section shows:
      - Direct matches without arrow: "ID123"
@@ -850,7 +1250,7 @@ Add tracking for:
 
 6. **IDs Not Found**
    - Enter mix of valid direct IDs and invalid/non-existent IDs
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify ID Resolution feedback section appears (contains not-found IDs)
    - Verify "Resolved" section shows valid IDs without arrow: "ID123"
    - Verify "Not Found" section lists invalid IDs
@@ -858,72 +1258,96 @@ Add tracking for:
 
 7. **Duplicate IDs**
    - Enter "ID123, ID456, ID123, ID456" (duplicates)
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Verify de-duplication occurs
    - Verify only 2 unique IDs used in resolution
    - Verify reports show 2 animals (not 4)
 
 8. **100 ID Limit**
    - Enter exactly 100 unique IDs
-   - Verify no validation error, "Update Report" enabled
-   - Click "Update Report", verify all resolve
+   - Verify no validation error, "Search By Ids" enabled
+   - Click "Search By Ids", verify all resolve
    - Add 1 more ID (101 total)
    - Verify validation error appears: "Maximum of 100 animal IDs allowed. You entered 101 IDs."
-   - Verify "Update Report" button is disabled
+   - Verify "Search By Ids" button remains enabled (not disabled)
+   - Click "Search By Ids" button
+   - Verify button turns blue, other buttons turn gray (filter mode set to idSearch)
+   - Verify validation error still displayed (ID resolution doesn't proceed)
    - Remove one ID to get back to 100
-   - Verify error clears and "Update Report" button re-enables
+   - Verify error clears
 
-9. **Case Insensitivity**
-   - Enter animal ID in lowercase
-   - Verify resolution finds ID regardless of stored casing
-   - Enter same ID in uppercase, verify same result
+9. **Empty Input Validation**
+   - Start on Animal History page with empty textarea
+   - Verify default state: no validation error visible
+   - Click "Search By Ids" button with empty textarea
+   - Verify validation error appears: "Please enter at least one animal ID."
+   - Verify "Search By Ids" button is now blue (active mode)
+   - Verify "All Animals" and "All Alive at Center" buttons are now gray (inactive)
+   - Verify button remains enabled (not disabled)
 
-### All Records Mode
+10. **Validation Error Cleared When Switching Modes**
+    - Enter 101 IDs to trigger validation error
+    - Verify validation error displayed
+    - Click "All Animals" button
+    - Verify validation error is cleared
+    - Verify textarea is cleared
+    - Click back to "Search By Ids" mode (textarea now empty)
+    - Enter 101 IDs again to trigger validation error
+    - Click "All Alive at Center" button
+    - Verify validation error is cleared
+    - Verify textarea is cleared
 
-10. **View All Animals**
-    - Click "All Records" button
+11. **Case Insensitivity**
+    - Enter animal ID in lowercase
+    - Verify resolution finds ID regardless of stored casing
+    - Enter same ID in uppercase, verify same result
+
+### All Animals Mode
+
+12. **View All Animals**
+    - Click "All Animals" button
     - Verify ID input textarea is cleared and hidden
     - Verify reports display data for all animals in database
     - Verify no ID filters applied
     - Test with multiple report tabs
 
-11. **URL Bookmarking - All Records**
-    - While in All Records mode, copy URL
+13. **URL Bookmarking - All Animals**
+    - While in All Animals mode, copy URL
     - Open URL in new browser tab
-    - Verify All Records mode is active
+    - Verify All Animals mode is active
     - Verify all animals shown
 
-### Alive at Center Mode
+### All Alive at Center Mode
 
-12. **View Alive Animals (Supported Report)**
+14. **View Alive Animals (Supported Report)**
     - Navigate to report with `supportsNonIdFilters = true`
-    - Verify "Alive at Center" button is enabled
-    - Click "Alive at Center"
-    - Verify reports show only animals with `calculated_status = 'Alive'`
+    - Verify "All Alive at Center" button is enabled
+    - Click "All Alive at Center"
+    - Verify reports show only animals with `Id/Demographics/calculated_status = 'Alive'`
     - Verify ID input is cleared/hidden
 
-13. **Disabled for Unsupported Reports**
+15. **Disabled for Unsupported Reports**
     - Navigate to report with `supportsNonIdFilters = false`
-    - Verify "Alive at Center" button is disabled/grayed out
+    - Verify "All Alive at Center" button is disabled/grayed out
     - Hover over button, verify tooltip explains why disabled
     - Switch to another report with `supportsNonIdFilters = true`
     - Verify button becomes enabled
 
-14. **Report Tab Switching**
-    - Start in Alive at Center mode on supported report
+16. **Report Tab Switching**
+    - Start in All Alive at Center mode on supported report
     - Switch to report tab with `supportsNonIdFilters = false`
-    - Verify "Alive at Center" button becomes disabled
-    - Verify filter mode stays as "Alive at Center" (selected)
+    - Verify "All Alive at Center" button becomes disabled
+    - Verify filter mode stays as "All Alive at Center" (selected)
     - Verify error message appears: "This report does not support Alive at Center filtering"
     - Verify report shows unfiltered data (all animals, not just alive)
     - Switch back to supported report tab
     - Verify error message clears
-    - Verify "Alive at Center" button becomes enabled again
+    - Verify "All Alive at Center" button becomes enabled again
     - Verify alive-only filter reapplies
 
 ### URL Params Mode (Read-Only)
 
-15. **Shared Link with Subjects**
+17. **Shared Link with Subjects**
     - Perform ID search for 3 animals, get results
     - Generate shareable URL with `readOnly=true` parameter
     - Open URL in incognito/private browser window
@@ -933,17 +1357,17 @@ Add tracking for:
     - Verify "Modify Search" button is visible
     - Verify reports display data for the 3 animals
 
-16. **Modify Shared Link**
+18. **Modify Shared Link**
     - From URL Params mode (shared link)
     - Click "Modify Search" button
     - Verify switches to ID Search mode
     - Verify filter toggle buttons now visible
     - Verify subjects pre-populated in textarea
     - Verify URL no longer contains `readOnly=true`
-    - Modify ID list, click "Update Report"
+    - Modify ID list, click "Search By Ids"
     - Verify new IDs resolve and reports update
 
-17. **Bookmark with Many Subjects**
+19. **Bookmark with Many Subjects**
     - Create URL Params mode link with 50 animal IDs
     - Bookmark the URL
     - Close browser, reopen bookmark
@@ -951,7 +1375,7 @@ Add tracking for:
     - Verify no ID limit validation (URL Params mode bypasses 100 limit)
     - Verify URL hash length doesn't cause browser issues
 
-18. **URL with Subjects but No readOnly Flag**
+20. **URL with Subjects but No readOnly Flag**
     - Build URL with subjects in hash but without `readOnly=true` parameter
     - Navigate to URL
     - Verify ID Search mode active (not URL Params mode)
@@ -960,50 +1384,48 @@ Add tracking for:
 
 ### Filter Mode Switching
 
-19. **ID Search → All Records**
-    - Enter 5 animal IDs, click "Update Report"
+21. **ID Search → All Animals**
+    - Enter 5 animal IDs, click "Search By Ids"
     - Verify reports show 5 animals
-    - Click "All Records" button
+    - Click "All Animals" button
     - Verify ID textarea is cleared
     - Verify reports now show all animals
 
-20. **All Records → ID Search**
-    - While in All Records mode showing all animals
-    - Click "ID Search" button
-    - Verify empty ID textarea appears
-    - Verify filter toggle buttons visible
-    - Enter animal IDs and proceed with search
+22. **All Animals → ID Search**
+    - While in All Animals mode showing all animals
+    - Enter animal IDs in textarea and click "Search By Ids"
+    - Verify ID resolution occurs
+    - Verify reports update to show only entered animals
 
-21. **ID Search → Alive at Center**
+23. **ID Search → All Alive at Center**
     - From ID Search with 5 animals
-    - Click "Alive at Center" button (on supported report)
+    - Click "All Alive at Center" button (on supported report)
     - Verify ID textarea cleared
     - Verify reports now show only alive animals (not just the 5)
 
-22. **Alive at Center → ID Search**
-    - From Alive at Center mode
-    - Click "ID Search" button
-    - Verify empty ID textarea appears
-    - Enter IDs and verify can return to ID search
+24. **All Alive at Center → ID Search**
+    - From All Alive at Center mode
+    - Enter animal IDs in textarea and click "Search By Ids"
+    - Verify can return to ID search with specified animals
 
-23. **Browser Back/Forward Navigation**
+25. **Browser Back/Forward Navigation**
     - Perform ID search for 3 animals
-    - Click "All Records"
+    - Click "All Animals"
     - Click browser back button
     - Verify returns to ID Search with 3 animals
     - Click browser forward button
-    - Verify returns to All Records mode
+    - Verify returns to All Animals mode
     - Verify state and URL hash sync correctly
 
 ### Cross-Report Consistency
 
-24. **Data Consistency Across Report Types**
+26. **Data Consistency Across Report Types**
     - Search for 3 animals
     - Navigate through all report tabs (Demographics, Weight, Housing, etc.)
     - Verify all reports show same 3 animals
     - Verify filter is maintained across tabs
 
-25. **Single vs Multi-Animal Report Variants**
+27. **Single vs Multi-Animal Report Variants**
     - Search for 1 animal
     - Verify reports using single-animal view layout
     - Search for 10 animals
@@ -1014,8 +1436,8 @@ Add tracking for:
 
 #### ID Resolution Errors
 
-* All IDs invalid/not found - verify "Not Found" section only, no reports data
-* Network error during resolution - verify error message displayed, user can retry
+* All IDs invalid/not found - verify "Not Found" section only, reports show no data (empty array passed to filters)
+* Network error during resolution - verify error message displayed, user can retry, reports show no data (empty array passed to filters)
 * Timeout during long-running alias query (e.g., 100 IDs) - verify timeout error with retry option
 * Permission denied to demographics/alias tables - verify appropriate error message
 * Malformed IDs with special characters (e.g., "###", "***") - verify treated as literal ID string, appears in "Not Found" section
@@ -1035,7 +1457,7 @@ Add tracking for:
 
 #### URL/Navigation Errors
 
-* URL with `readOnly=true` but no subjects - verify defaults to All Records mode or shows error
+* URL with `readOnly=true` but no subjects - verify defaults to All Animals mode or shows error
 * Malformed URL hash - verify defaults to ID Search mode with no subjects
 * URL with conflicting parameters (e.g., `readOnly=true` AND `filterType=all`) - verify `readOnly` takes priority, switches to urlParams mode
 * URL hash exceeds browser limit (~2000 chars with many subjects) - verify graceful degradation or error
@@ -1051,17 +1473,17 @@ Add tracking for:
 
 #### Keyboard Navigation
 
-26. **Keyboard-Only Operation**
+28. **Keyboard-Only Operation**
     - Navigate Animal History page using only keyboard (Tab, Enter, Space)
     - Verify all filter buttons accessible via Tab
     - Verify textarea accessible and functional
-    - Verify "Update Report" button activates with Enter/Space
+    - Verify "Search By Ids" button activates with Enter/Space
     - Verify focus indicators clearly visible
     - Verify logical tab order through interface
 
 #### Screen Reader Compatibility
 
-27. **Screen Reader Accessibility**
+29. **Screen Reader Accessibility**
     - Use screen reader (NVDA/JAWS) to navigate page
     - Verify filter mode changes announced
     - Verify textarea has descriptive label
@@ -1071,19 +1493,19 @@ Add tracking for:
 
 ### Performance Scenarios
 
-28. **ID Resolution Performance**
+30. **ID Resolution Performance**
     - Enter 100 animal IDs (maximum)
-    - Click "Update Report"
+    - Click "Search By Ids"
     - Verify ID resolution completes in < 5 seconds
     - Verify UI remains responsive during resolution
 
-29. **Report Rendering Performance**
+31. **Report Rendering Performance**
     - After resolving 100 animals
     - Verify reports render in < 10 seconds
     - Switch between report tabs
     - Verify tab switching completes in < 2 seconds
 
-30. **Filter Mode Switching Performance**
+32. **Filter Mode Switching Performance**
     - Switch between filter modes (ID Search, All Records, Alive at Center)
     - Verify mode transitions complete in < 200ms
     - Verify no UI lag or freezing
@@ -1137,16 +1559,20 @@ Add tracking for:
 * Test 100 ID limit validation - exactly 100 IDs
 * Test 100 ID limit validation - 101 IDs shows error
 * Test validation error clears when IDs reduced below limit
+* Test validation error cleared when switching to All Animals mode
+* Test validation error cleared when switching to All Alive at Center mode
+* Test "Search By Ids" button sets filter mode to idSearch even with validation error
+* Test button turns blue when clicked with empty input (validation error)
 * Test component behavior when `initialSubjects` prop provided (URL Params → ID Search transition)
 * Test filter mode toggle buttons render correctly
 * Test switching between filter modes updates state
-* Test ID textarea visible only in ID Search mode
-* Test "Update Report" button visible only in ID Search mode
-* Test "Update Report" button disabled when validation fails
-* Test "Update Report" button re-enables after fixing validation error
-* Test "Alive at Center" button disabled when `activeReportSupportsNonIdFilters = false`
-* Test "Alive at Center" button enabled when `activeReportSupportsNonIdFilters = true`
-* Test "Alive at Center" selected but on unsupported report shows error message
+* Test ID textarea always visible (except URL Params mode)
+* Test "Search By Ids" button always visible (except URL Params mode)
+* Test "Search By Ids" button remains enabled when validation fails
+* Test "Search By Ids" button disabled only during resolution
+* Test "Alive, at Center" button disabled when `activeReportSupportsNonIdFilters = false`
+* Test "Alive, at Center" button enabled when `activeReportSupportsNonIdFilters = true`
+* Test "Alive, at Center" selected but on unsupported report shows error message
 * Test URL Params mode hides filter buttons
 * Test URL Params mode shows read-only summary
 * Test "Modify Search" button switches to ID Search mode
@@ -1168,28 +1594,37 @@ Add tracking for:
 **File: `ParticipantReports.test.tsx`**
 * Test initial filter type determined from URL hash
 * Test `readOnly=true` in URL activates URL Params mode
-* Test filter state management (subjects, filterType)
+* Test filter state management (subjects, filterType, showReport)
 * Test `handleFilterChange` callback updates state and URL
 * Test `activeReportSupportsNonIdFilters` queried from report metadata
-* Test switching filter modes updates URL hash
+* Test switching filter modes updates URL hash (including showReport parameter)
 * Test switching from URL Params mode removes `readOnly` parameter
 * Test race condition: rapid filter mode changes before state updates
 * Test initial load with malformed URL hash (fallback behavior)
 * Test `activeReportSupportsNonIdFilters` updates when switching report tabs
+* Test showReport state: false on initial page load
+* Test showReport state: true for 'all' and 'aliveAtCenter' modes
+* Test showReport state: true for 'idSearch' and 'urlParams' modes only when subjects exist
+* Test showReport state: false for 'idSearch' mode with no subjects
+* Test showReport prop passed to TabbedReportPanel correctly
 
 **File: `TabbedReportPanel.test.tsx`**
 * Test ID Search mode creates subject ID filters
 * Test URL Params mode creates subject ID filters
-* Test All Records mode creates no filters
-* Test Alive at Center mode creates `calculated_status = 'Alive'` filter
+* Test All Animals mode creates no filters
+* Test Alive at Center mode creates `Id/Demographics/calculated_status = 'Alive'` filter
 * Test filter switching updates report filters correctly
 * Test filter structure matches LabKey Filter.create() API format
 * Test empty subjects array in ID Search mode shows validation error (not passed to reports)
 * Test report with `supportsNonIdFilters = false` in Alive at Center mode shows error message
+* Test empty state placeholder displayed when showReport is false
+* Test placeholder message: "Select Filter to View Reports"
+* Test reports rendered when showReport is true
+* Test conditional rendering: ternary operator used (not &&)
 
 **File: `urlHashUtils.test.ts`**
 * Test `updateUrlHash()` for ID Search mode
-* Test `updateUrlHash()` for All Records mode
+* Test `updateUrlHash()` for All Animals mode
 * Test `updateUrlHash()` for Alive at Center mode
 * Test `updateUrlHash()` for URL Params mode with `readOnly=true`
 * Test `getFiltersFromUrl()` parses all filter types
@@ -1197,6 +1632,9 @@ Add tracking for:
 * Test URL hash with 100+ subjects (ensure no truncation)
 * Test special character encoding in subject IDs (spaces, semicolons)
 * Test `updateUrlHash()` doesn't create duplicate history entries
+* Test `showReport` parameter included when true (showReport:1)
+* Test `showReport` parameter omitted when false or undefined
+* Test `getFiltersFromUrl()` parses showReport correctly (true/false/undefined)
 
 ### Integration Tests (Selenium - Java)
 
@@ -1211,14 +1649,14 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
 1. **`testAnimalHistorySearchById_SingleDirect()`**
    - Navigate to Animal History page in EHR_App
    - Enter single animal ID from test data
-   - Click "Update Report" button
+   - Click "Search By Ids" button
    - Assert report loads with animal data
    - Assert no ID Resolution feedback visible (all direct matches, no aliases/not-found)
 
 2. **`testAnimalHistorySearchById_SingleAlias()`**
    - Set up alias in test data (if not already present)
    - Enter alias (e.g., tattoo number) in search field
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Assert ID Resolution feedback section visible
    - Assert "Resolved" section shows alias → ID with type (e.g., "TATTOO_001 → ID123 (tattoo)")
    - Assert correct animal displayed in reports
@@ -1226,7 +1664,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
 3. **`testAnimalHistorySearchById_MultiAnimal()`**
    - Build comma-separated list of 3-5 direct test animal IDs
    - Enter in search textarea
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Assert no ID Resolution feedback visible (all direct matches)
    - Assert all animals appear in first visible report
    - Navigate to different report tabs: Demographics, Weight, Housing
@@ -1234,7 +1672,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
 
 4. **`testAnimalHistorySearchById_NotFound()`**
    - Enter mix of valid direct test IDs and "INVALID_ID_999"
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Assert ID Resolution feedback section visible
    - Assert "Resolved" section shows valid IDs without arrow
    - Assert "Not Found" section contains "INVALID_ID_999"
@@ -1246,49 +1684,49 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
    - Assert no validation error
    - Add 101st ID
    - Assert validation error visible: "Maximum of 100 animal IDs allowed. You entered 101 IDs."
-   - Assert "Update Report" button disabled
+   - Assert "Search By Ids" button disabled
    - Remove one ID
    - Assert error clears
 
 6. **`testAnimalHistorySearchById_CaseInsensitive()`**
    - Enter animal ID in lowercase
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Assert resolves correctly
    - Clear and enter same ID in uppercase
-   - Click "Update Report"
+   - Click "Search By Ids"
    - Assert same result
 
-#### All Records Mode Tests
+#### All Animals Mode Tests
 
-7. **`testAnimalHistorySearchById_AllRecords()`**
+7. **`testAnimalHistorySearchById_AllAnimals()`**
    - Navigate to Animal History
-   - Click "All Records" button
+   - Click "All Animals" button
    - Assert ID textarea not visible or disabled
    - Assert reports load without subject filters
    - Verify multiple animals displayed (more than test subset)
 
-8. **`testAnimalHistorySearchById_AllRecordsUrl()`**
-   - Click "All Records" button
+8. **`testAnimalHistorySearchById_AllAnimalsUrl()`**
+   - Click "All Animals" button
    - Capture URL containing `filterType:all`
    - Navigate away, then to captured URL
-   - Assert All Records mode active
+   - Assert All Animals mode active
    - Assert reports show all animals
 
 #### Alive at Center Mode Tests
 
 9. **`testAnimalHistorySearchById_AliveAtCenter()`**
    - Navigate to report supporting non-ID filters (verify in test setup)
-   - Assert "Alive at Center" button enabled
+   - Assert "Alive, at Center" button enabled
    - Click button
    - Assert reports filter to animals with `calculated_status = 'Alive'`
    - Verify DEAD_ANIMAL_ID not included in results
    - Verify at least one alive animal is shown
 
 10. **`testAnimalHistorySearchById_AliveAtCenterDisabled()`**
-    - Navigate to report with `supportsNonIdFilters = true` and click "Alive at Center"
+    - Navigate to report with `supportsNonIdFilters = true` and click "Alive, at Center"
     - Verify alive filter active
     - Switch to report tab with `supportsNonIdFilters = false`
-    - Assert "Alive at Center" button disabled (but still selected)
+    - Assert "Alive, at Center" button disabled (but still selected)
     - Assert error message visible: "This report does not support Alive at Center filtering"
     - Assert report shows unfiltered data (all animals, not just alive)
     - Switch back to supported report tab
@@ -1323,7 +1761,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Assert reports now show all animals
     - Click "ID Search"
     - Assert empty textarea visible
-    - Click "Alive at Center" (on supported report)
+    - Click "Alive, at Center" (on supported report)
     - Assert reports show only alive animals
 
 14. **`testAnimalHistorySearchById_MultipleTransitions()`**
@@ -1331,7 +1769,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Switch to All Records → verify shows all animals
     - Switch to Alive at Center → verify shows only alive animals
     - Switch back to ID Search → verify empty textarea
-    - Enter 5 different IDs and click "Update Report" → verify reports update to 5 animals
+    - Enter 5 different IDs and click "Search By Ids" → verify reports update to 5 animals
     - Verify state maintained correctly through all transitions
     - Verify URL hash updates at each step
 
@@ -1340,7 +1778,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
 15. **`testAnimalHistorySearchById_LargeDataset()`**
     - Note: Requires test environment with sufficient animal data
     - Enter maximum IDs supported (or realistic large number like 50)
-    - Click "Update Report"
+    - Click "Search By Ids"
     - Measure and verify: Resolution completes within acceptable time (< 10 seconds)
     - Verify: Report rendering doesn't hang
     - Verify: Browser remains responsive
@@ -1354,7 +1792,7 @@ Location: `server/modules/ehrModules/ehr_app/test/src/org/labkey/test/tests/ehr_
     - Use keyboard only (Tab, Enter keys) to:
       - Focus on ID textarea
       - Enter animal IDs
-      - Tab to "Update Report" button
+      - Tab to "Search By Ids" button
       - Press Enter to submit
     - Verify reports load correctly
     - Tab to filter mode buttons and activate with keyboard
@@ -1409,7 +1847,7 @@ private void clickUpdateReport()
 
 private void clickFilterButton(String buttonText)
 {
-    clickButton(buttonText); // "All Records", "Alive at Center", or "ID Search"
+    clickButton(buttonText); // "All Records", "Alive, at Center", or "ID Search"
     sleep(500); // Allow mode transition
 }
 
@@ -1502,11 +1940,11 @@ private void assertUpdateReportButtonEnabled(boolean shouldBeEnabled)
 
     if (shouldBeEnabled)
     {
-        assertFalse("Update Report button should not be disabled", isDisabled);
+        assertFalse("Search By Ids button should not be disabled", isDisabled);
     }
     else
     {
-        assertTrue("Update Report button should be disabled", isDisabled);
+        assertTrue("Search By Ids button should be disabled", isDisabled);
     }
 }
 

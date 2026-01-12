@@ -31,6 +31,7 @@
     "prepublishOnly": "npm install --legacy-peer-deps && cross-env WEBPACK_STATS=errors-only npm run build",
     "test": "cross-env NODE_ENV=test jest --maxWorkers=6 --silent",
     "test-ci": "cross-env NODE_ENV=test jest --ci --silent",
+    "test-coverage": "cross-env NODE_ENV=test jest --maxWorkers=6 --coverage",
     "lint": "npx eslint",
     "lint-fix": "npx eslint --fix",
     "lint-precommit": "node lint.diff.mjs",

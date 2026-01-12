@@ -46,4 +46,21 @@
             font-weight: 600;
         }
     }
+
+    // Report target container
+    .report-target {
+        min-height: 300px;
+    }
+
+    // Empty state placeholder
+    .empty-state-placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+        padding: 40px;
+        color: #666;
+        font-size: 16px;
+        font-weight: 500;
+    }
 }

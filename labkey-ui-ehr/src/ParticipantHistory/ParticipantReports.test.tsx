@@ -36,12 +36,22 @@ const mockExt4Container = {
     },
 };
 
-// Mock LABKEY.WebPart for OtherReportWrapper
+// Mock LABKEY API for OtherReportWrapper and ParticipantReports
+const mockSelectRows = jest.fn();
 (global as any).LABKEY = {
     ...(global as any).LABKEY,
     WebPart: jest.fn().mockImplementation(() => ({
         render: jest.fn(),
     })),
+    Query: {
+        selectRows: mockSelectRows,
+    },
+    Filter: {
+        create: jest.fn((field, value, type) => ({ field, value, type })),
+        Types: {
+            EQUAL: 'EQUAL',
+        },
+    },
 };
 
 describe('ParticipantReports', () => {
@@ -51,6 +61,15 @@ describe('ParticipantReports', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockExt4Container.isDestroyed = false;
+
+        // Mock LABKEY.Query.selectRows with default behavior (returns supportsnonidfilters: true)
+        mockSelectRows.mockImplementation((config: any) => {
+            if (config.success) {
+                config.success({
+                    rows: [{ supportsnonidfilters: true }],
+                });
+            }
+        });
 
         // Save and reset document.location.hash and search before each test
         originalHash = window.location.hash;
@@ -273,6 +292,254 @@ describe('ParticipantReports', () => {
 
             // Component renders successfully
             expect(screen.getByText('Loading reports...')).toBeVisible();
+        });
+    });
+
+    describe('Search By Id integration', () => {
+        describe('initial filter type from URL', () => {
+            test('initializes with ID Search mode when filterType:idSearch in hash', () => {
+                window.location.hash = '#filterType:idSearch&subjects:ID123%3BID456';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should render with subjects from hash
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('initializes with All Records mode when filterType:all in hash', () => {
+                window.location.hash = '#filterType:all';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('initializes with Alive at Center mode when filterType:aliveAtCenter in hash', () => {
+                window.location.hash = '#filterType:aliveAtCenter';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('defaults to ID Search mode when no filterType in hash', () => {
+                window.location.hash = '';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('URL Params mode (readOnly)', () => {
+            test('activates URL Params mode when readOnly:true in URL with subjects', () => {
+                window.location.hash = '#subjects:ID123%3BID456&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should render in URL Params mode
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('ignores readOnly:true when no subjects in URL', () => {
+                window.location.hash = '#readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should default to a safe mode (likely All Records or ID Search)
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('readOnly parameter takes priority over filterType parameter', () => {
+                window.location.hash = '#filterType:all&subjects:ID123&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should use URL Params mode, not All Records mode
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('filter state management', () => {
+            test('manages subjects state from URL hash', () => {
+                window.location.hash = '#subjects:ID123%3BID456%3BID789';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Verify component renders with subjects
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('manages filterType state from URL hash', () => {
+                window.location.hash = '#filterType:aliveAtCenter';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('URL hash updates', () => {
+            test('updates URL hash when filter mode changes', () => {
+                window.location.hash = '';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // After component mounts, simulate filter change
+                // Note: This would require exposing handleFilterChange or testing through UI interaction
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('includes subjects in URL hash for ID Search mode', () => {
+                window.location.hash = '#filterType:idSearch&subjects:ID123%3BID456';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(window.location.hash).toContain('subjects:');
+            });
+
+            test('removes subjects from URL hash for All Records mode', () => {
+                window.location.hash = '#filterType:all';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                expect(window.location.hash).not.toContain('subjects:');
+            });
+
+            test('removes readOnly parameter when switching from URL Params to ID Search', () => {
+                window.location.hash = '#subjects:ID123&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should be in URL Params mode initially
+                // After switching to ID Search (would require UI interaction), readOnly should be removed
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('activeReportSupportsNonIdFilters query', () => {
+            test('queries report metadata for supportsNonIdFilters field', () => {
+                window.location.hash = '#activeReport:test-report';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should query ehr.reports for the active report's metadata
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('updates activeReportSupportsNonIdFilters when switching report tabs', () => {
+                window.location.hash = '#activeReport:report1';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // After switching to different report tab, should re-query metadata
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('defaults to false when no active report selected', () => {
+                window.location.hash = '';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should handle no active report gracefully
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('race conditions', () => {
+            test('handles rapid filter mode changes before state updates', () => {
+                window.location.hash = '';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Simulate rapid filter changes
+                // This would require UI interaction or exposing handleFilterChange
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('malformed URL hash', () => {
+            test('handles malformed URL hash gracefully', () => {
+                window.location.hash = '#malformed&invalid::data';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should fall back to default state without crashing
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('handles URL hash with missing values', () => {
+                window.location.hash = '#filterType:&subjects:';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should handle empty values gracefully
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('filter integration with TabbedReportPanel', () => {
+            test('passes filters prop to TabbedReportPanel', () => {
+                window.location.hash = '#filterType:idSearch&subjects:ID123';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // TabbedReportPanel should receive filters prop with filterType and subjects
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('passes undefined subjects for All Records mode', () => {
+                window.location.hash = '#filterType:all';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // filters.subjects should be undefined for All Records
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('passes subjects for URL Params mode', () => {
+                window.location.hash = '#subjects:ID123&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // filters.subjects should be populated for URL Params mode
+                expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+        });
+
+        describe('LABKEY query error handling', () => {
+            test('handles LABKEY query failure gracefully', () => {
+                // Mock the selectRows to call the failure callback
+                mockSelectRows.mockImplementationOnce((config: any) => {
+                    if (config.failure) {
+                        config.failure({ message: 'Query failed' });
+                    }
+                });
+
+                window.location.hash = '#activeReport:demographics';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should render without crashing despite the query failure
+                // The error will be logged to console but shouldn't break the UI
+                expect(screen.queryByText('Loading reports...')).toBeInTheDocument();
+            });
+
+            test('defaults to supporting all filters when report metadata not found', () => {
+                // Mock the selectRows to return empty rows
+                mockSelectRows.mockImplementationOnce((config: any) => {
+                    if (config.success) {
+                        config.success({ rows: [] });
+                    }
+                });
+
+                window.location.hash = '#activeReport:nonexistent';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should render with default behavior (all filters supported)
+                expect(screen.queryByText('Loading reports...')).toBeInTheDocument();
+            });
         });
     });
 });

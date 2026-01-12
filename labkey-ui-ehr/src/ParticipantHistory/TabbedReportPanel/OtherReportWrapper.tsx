@@ -1,12 +1,13 @@
 import React, { FC, memo, useEffect, useId } from 'react';
+import { Filter } from '@labkey/api';
 
-import { ReportConfig } from './TabbedReportPanel';
+import { ExtReportTab, QueryWebPartConfig, ReportConfig } from './ReportTab';
 
 // Declare global variables for ExtJS and LABKEY
 declare const Ext4: any;
 declare const LABKEY: any;
 
-export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo(({ tab, report }) => {
+const OtherReportWrapperComponent: FC<{ report: ReportConfig; tab: ExtReportTab }> = ({ tab, report }) => {
     // Generate a unique ID for the render target - LABKEY.WebPart expects a string ID, not a DOM element
     const uniqueId = useId();
     const targetId = `report-target-${report.id}-${uniqueId.replace(/:/g, '-')}`;
@@ -28,14 +29,14 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
 
             // Get title suffix from filters
             const getTitleSuffix = () => {
-                const { subjects } = tab.filters || {};
-                if (subjects && subjects.length > 0) {
+                const { subjects } = tab?.filters || {};
+                if (subjects?.length > 0) {
                     return ' - ' + subjects.join(', ');
                 }
                 return '';
             };
 
-            const partConfig: any = {
+            const partConfig: Record<string, any> = {
                 title: report.title + getTitleSuffix(),
                 schemaName: report.schemaName,
                 reportId: report.reportId,
@@ -43,8 +44,8 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
             };
 
             // Add filter parameters to partConfig
-            if (filters.length) {
-                filters.forEach((filter: any) => {
+            if (filters?.length) {
+                filters.forEach((filter: Filter.IFilter) => {
                     partConfig[filter.getURLParameterName('query')] = filter.getURLParameterValue();
                 });
             }
@@ -53,7 +54,7 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
                 partConfig.showSection = report.viewName;
             }
 
-            const queryConfig: any = {
+            const queryConfig: QueryWebPartConfig = {
                 partName: 'Report',
                 renderTo: targetId,
                 suppressRenderErrors: true,
@@ -79,5 +80,9 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
         };
     }, [tab, report, targetId]);
 
-    return <div id={targetId} style={{ minHeight: '50px' }} />;
-});
+    return <div className="other-report-wrapper" id={targetId} />;
+};
+
+OtherReportWrapperComponent.displayName = 'OtherReportWrapper';
+
+export const OtherReportWrapper = memo(OtherReportWrapperComponent);

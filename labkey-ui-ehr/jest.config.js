@@ -51,4 +51,7 @@ module.exports = {
     transformIgnorePatterns: [
         'node_modules/(?!(lib0|y-protocols))'
     ],
+    moduleNameMapper: {
+        '\\.(css|scss|sass)$': '<rootDir>/src/test/styleMock.js'
+    },
 };

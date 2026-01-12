@@ -1,0 +1,298 @@
+/**
+ * SearchByIdPanel Styles
+ * Styling for the Animal ID search panel with filter modes
+ */
+
+.search-by-id-panel {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 900px;
+
+    // Main container
+    .panel-container {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    // ID Search Section - conditionally displayed in ID Search mode
+    .id-search-section {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .animal-id-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+
+            &:focus {
+                outline: none;
+                border-color: #0066cc;
+                box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            }
+        }
+
+        .validation-error {
+            padding: 10px;
+            margin-bottom: 12px;
+            background-color: #ffebee;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            color: #721c24;
+            font-size: 14px;
+        }
+
+        .update-report-button {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+
+            &:hover:not(:disabled) {
+                background-color: #0052a3;
+            }
+
+            &:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    // Filter Mode Section - always displayed
+    .filter-mode-section {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+
+        > label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .filter-toggle-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            button {
+                padding: 10px 20px;
+                background-color: #6c757d;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.2s;
+
+                &:hover:not(:disabled) {
+                    background-color: #5a6268;
+                }
+
+                &.active {
+                    background-color: #28a745;
+
+                    &:hover {
+                        background-color: #218838;
+                    }
+                }
+
+                &:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+
+    // Error message for unsupported filters
+    .error-message {
+        padding: 10px;
+        margin-bottom: 12px;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-radius: 4px;
+        color: #856404;
+        font-size: 14px;
+    }
+
+    // URL Params mode (read-only)
+    &.url-params-mode {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+
+        .read-only-summary {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #333;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #0052a3;
+            }
+        }
+    }
+
+    // Additional inline styles
+    .label-text {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .animal-id-input {
+        width: 100%;
+        min-height: 80px;
+        padding: 10px;
+        font-size: 14px;
+        font-family: monospace;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .validation-error {
+        margin-top: 8px;
+        padding: 8px 12px;
+        background-color: #ffebee;
+        color: #c62828;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .button-container {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .search-button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+
+        &.active {
+            background-color: #0066cc;
+            cursor: pointer;
+
+            &:not(:disabled):hover {
+                background-color: #0052a3;
+            }
+        }
+
+        &.inactive {
+            background-color: #6c757d;
+            cursor: pointer;
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+
+    .filter-button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+
+        &.all-animals {
+            &.active {
+                background-color: #28a745;
+
+                &:hover {
+                    background-color: #218838;
+                }
+            }
+
+            &.inactive {
+                background-color: #6c757d;
+            }
+        }
+
+        &.alive-at-center {
+            &.active {
+                background-color: #17a2b8;
+
+                &:hover {
+                    background-color: #138496;
+                }
+            }
+
+            &.inactive {
+                background-color: #6c757d;
+            }
+
+            &:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .url-params-summary {
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .modify-button {
+        padding: 10px 20px;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
+}

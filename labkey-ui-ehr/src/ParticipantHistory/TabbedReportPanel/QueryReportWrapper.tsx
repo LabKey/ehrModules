@@ -1,13 +1,13 @@
 import React, { FC, memo, useEffect } from 'react';
 import { useServerContext } from '@labkey/components';
 
-import { ReportConfig } from './TabbedReportPanel';
+import { ExtReportTab, QueryWebPartConfig, ReportConfig } from './ReportTab';
 
 // Declare global variables for ExtJS and LDK
 declare const Ext4: any;
 declare const LDK: any;
 
-export const QueryReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo(({ tab, report }) => {
+const QueryReportWrapperComponent: FC<{ report: ReportConfig; tab: ExtReportTab }> = ({ tab, report }) => {
     const { container } = useServerContext();
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export const QueryReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
             return;
         }
 
-        const queryConfig = tab.getQWPConfig();
+        const queryConfig: QueryWebPartConfig = tab.getQWPConfig();
 
         // Use LDK.Utils.getErrorCallback() if available, otherwise simple console error
         const failureCallback = (error: any) => console.error(error);
@@ -43,4 +43,8 @@ export const QueryReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
     }, [tab, report, container]);
 
     return null;
-});
+};
+
+QueryReportWrapperComponent.displayName = 'QueryReportWrapper';
+
+export const QueryReportWrapper = memo(QueryReportWrapperComponent);

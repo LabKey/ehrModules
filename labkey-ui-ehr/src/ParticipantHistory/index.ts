@@ -1,7 +1,11 @@
-import { ParticipantReports } from './ParticipantReports';
-import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
+/**
+ * ParticipantHistory module public API
+ *
+ * This module provides the ParticipantReports component for displaying
+ * animal history data with search, filtering, and reporting capabilities.
+ *
+ * All other components, services, and utilities are internal implementation
+ * details and should not be imported directly by consumers.
+ */
 
-export {
-    ParticipantReports,
-    TabbedReportPanel
-};
+export { ParticipantReports } from './ParticipantReports';

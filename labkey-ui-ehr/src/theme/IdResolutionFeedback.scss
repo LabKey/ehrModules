@@ -1,0 +1,81 @@
+/**
+ * IdResolutionFeedback Styles
+ * Styling for the ID resolution feedback component
+ */
+
+.id-resolution-feedback {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+
+    .title {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .section {
+        margin-bottom: 12px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+
+            &.resolved {
+                color: #2e7d32;
+            }
+
+            &.not-found {
+                color: #c62828;
+            }
+        }
+
+        .items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            .item {
+                padding: 6px 10px;
+                background-color: #fff;
+                border-radius: 4px;
+                font-size: 13px;
+
+                &.resolved-item {
+                    border: 1px solid #c8e6c9;
+
+                    .input-id {
+                        color: #666;
+                    }
+
+                    .arrow {
+                        color: #999;
+                        margin: 0 6px;
+                    }
+
+                    .resolved-id {
+                        font-weight: 500;
+                        color: #1a1a1a;
+                    }
+
+                    .alias-type {
+                        color: #999;
+                        margin-left: 4px;
+                    }
+                }
+
+                &.not-found-item {
+                    border: 1px solid #f5c6cb;
+                    color: #721c24;
+                }
+            }
+        }
+    }
+}
