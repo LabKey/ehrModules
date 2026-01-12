@@ -442,6 +442,9 @@
             <column columnName="reportstatus">
                 <description>Optional, description to be presented to user along with report. Might indicate it's a work in progress, for example.</description>
             </column>
+            <column columnName="supportsNonIdFilters">
+                <nullable>true</nullable>
+            </column>
         </columns>
     </table>
     <table tableName="cage_observations" tableDbType="TABLE" useColumnOrder="true">

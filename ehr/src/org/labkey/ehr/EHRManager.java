@@ -134,6 +134,89 @@ public class EHRManager
 
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
+    // Column name constants to reduce hardcoding
+    private static final class ColumnNames
+    {
+        // Common columns
+        static final String PARTICIPANT_ID = "participantid";
+        static final String DATE = "date";
+        static final String END_DATE = "enddate";
+        static final String LSID = "lsid";
+        static final String OBJECT_ID = "objectid";
+        static final String PARENT_ID = "parentid";
+        static final String TASK_ID = "taskid";
+        static final String REQUEST_ID = "requestid";
+        static final String QC_STATE = "qcstate";
+        static final String RUN_ID = "runId";
+        static final String VET_REVIEW = "vetreview";
+
+        // Dataset-specific columns
+        static final String CAGE = "cage";
+        static final String ROOM = "room";
+        static final String PROJECT = "project";
+        static final String CASE_NO = "caseno";
+        static final String CALCULATED_STATUS = "calculated_status";
+        static final String DEATH = "death";
+        static final String CATEGORY = "category";
+        static final String VALUE = "value";
+        static final String HX = "hx";
+        static final String CASE_ID = "caseid";
+        static final String DATE_FINALIZED = "datefinalized";
+        static final String ASSIGNED_VET = "assignedvet";
+        static final String OBSERVATION = "observation";
+        static final String AREA = "area";
+        static final String REMARK = "remark";
+        static final String TREATMENT_ID = "treatmentid";
+
+        // Database/schema columns
+        static final String KEY_MANAGEMENT_TYPE = "keymanagementtype";
+        static final String KEY_PROPERTY_NAME = "keypropertyname";
+        static final String DEMOGRAPHIC_DATA = "demographicdata";
+
+        // Index include prefix
+        static final String INCLUDE_PREFIX = "include:";
+    }
+
+    // Dataset name constants
+    private static final class DatasetNames
+    {
+        static final String CLINICAL_OBSERVATIONS = "clinical_observations";
+        static final String HOUSING = "Housing";
+        static final String ASSIGNMENT = "Assignment";
+        static final String CLINPATH_RUNS = "Clinpath Runs";
+        static final String CLINICAL_ENCOUNTERS = "Clinical Encounters";
+        static final String DEMOGRAPHICS = "Demographics";
+        static final String ANIMAL_RECORD_FLAGS = "Animal Record Flags";
+        static final String CLINICAL_REMARKS = "Clinical Remarks";
+        static final String TREATMENT_ORDERS = "Treatment Orders";
+        static final String CASES = "Cases";
+        static final String DRUG = "drug";
+        static final String BLOOD = "blood";
+        static final String GROSS_FINDINGS = "Gross Findings";
+    }
+
+    // Clinical observations index configuration - shared between ensureDatasetPropertyDescriptors and prepareEHRIndexContext
+    private static final String[] CLINICAL_OBSERVATIONS_REGULAR_COLS = new String[]{
+        ColumnNames.PARTICIPANT_ID,
+        ColumnNames.DATE
+    };
+
+    private static final String[] CLINICAL_OBSERVATIONS_INCLUDED_COLS = new String[]{
+        ColumnNames.TASK_ID,
+        ColumnNames.LSID,
+        ColumnNames.CATEGORY,
+        ColumnNames.OBSERVATION,
+        ColumnNames.AREA,
+        ColumnNames.REMARK
+    };
+
+    // Constructed from the regular and included columns above
+    private static final String[] CLINICAL_OBSERVATIONS_INDEX_COLS = new String[]{
+        ColumnNames.PARTICIPANT_ID,
+        ColumnNames.DATE,
+        ColumnNames.INCLUDE_PREFIX + String.join(",", CLINICAL_OBSERVATIONS_INCLUDED_COLS)
+    };
+
     private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
 
     private EHRManager()
@@ -545,13 +628,16 @@ public class EHRManager
             //ensure keymanagement type
             if (commitChanges)
             {
-                SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
+                SQLFragment sql = new SQLFragment("UPDATE study.dataset SET " + ColumnNames.KEY_MANAGEMENT_TYPE + "=?, " +
+                    ColumnNames.KEY_PROPERTY_NAME + "=? WHERE " + ColumnNames.DEMOGRAPHIC_DATA + "=? AND container=?",
+                    "GUID", ColumnNames.OBJECT_ID, false, c.getEntityId());
                 long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 messages.add("Non-demographics datasets updated to use objectId as a managed key: " + total);
             }
             else
             {
-                SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE keymanagementtype!=? AND demographicdata=? AND container=?", "GUID", false, c.getEntityId());
+                SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE " + ColumnNames.KEY_MANAGEMENT_TYPE +
+                    "!=? AND " + ColumnNames.DEMOGRAPHIC_DATA + "=? AND container=?", "GUID", false, c.getEntityId());
                 long total = new SqlExecutor(StudyService.get().getDatasetSchema()).execute(sql);
                 if (total > 0)
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
@@ -578,8 +664,14 @@ public class EHRManager
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             //add indexes
-            String[][] toIndex = new String[][]{{"taskid"}};
-            String[][] idxToRemove = new String[][]{{"date"}, {"parentid"}, {"objectid"}, {"runId"}, {"requestid"}};
+            String[][] toIndex = new String[][]{{ColumnNames.TASK_ID}};
+            String[][] idxToRemove = new String[][]{
+                {ColumnNames.DATE},
+                {ColumnNames.PARENT_ID},
+                {ColumnNames.OBJECT_ID},
+                {ColumnNames.RUN_ID},
+                {ColumnNames.REQUEST_ID}
+            };
 
             Set<String> distinctIndexes = new HashSet<>();
 
@@ -595,100 +687,101 @@ public class EHRManager
                 List<String[]> toRemove = new ArrayList<>();
                 Collections.addAll(toRemove, idxToRemove);
 
-                if (realTable.getColumn("vetreview") != null && !d.getName().equalsIgnoreCase("drug"))
-                    toRemove.add(new String[]{"qcstate", "include:vetreview"});
+                if (realTable.getColumn(ColumnNames.VET_REVIEW) != null && !d.getName().equalsIgnoreCase(DatasetNames.DRUG))
+                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.VET_REVIEW});
 
-                if (d.getLabel().equalsIgnoreCase("Housing"))
+                if (d.getLabel().equalsIgnoreCase(DatasetNames.HOUSING))
                 {
-                    toAdd.add(new String[]{"participantid", "enddate"});
-                    toAdd.add(new String[]{"participantid", "include:date,cage,room"});
-                    toAdd.add(new String[]{"lsid", "participantid"});
-                    toAdd.add(new String[]{"date", "lsid", "participantid"});
-                    toAdd.add(new String[]{"date", "include:lsid,participantid,cage,room"});
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.END_DATE});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.INCLUDE_PREFIX + ColumnNames.DATE + "," + ColumnNames.CAGE + "," + ColumnNames.ROOM});
+                    toAdd.add(new String[]{ColumnNames.LSID, ColumnNames.PARTICIPANT_ID});
+                    toAdd.add(new String[]{ColumnNames.DATE, ColumnNames.LSID, ColumnNames.PARTICIPANT_ID});
+                    toAdd.add(new String[]{ColumnNames.DATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.LSID + "," + ColumnNames.PARTICIPANT_ID + "," + ColumnNames.CAGE + "," + ColumnNames.ROOM});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Assignment"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.ASSIGNMENT))
                 {
-                    toAdd.add(new String[]{"project", "participantid", "enddate"});
-                    toAdd.add(new String[]{"enddate", "project"});
+                    toAdd.add(new String[]{ColumnNames.PROJECT, ColumnNames.PARTICIPANT_ID, ColumnNames.END_DATE});
+                    toAdd.add(new String[]{ColumnNames.END_DATE, ColumnNames.PROJECT});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Clinpath Runs"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.CLINPATH_RUNS))
                 {
-                    toAdd.add(new String[]{"parentid"});
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.PARENT_ID});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
 
-                    toAdd.add(new String[]{"requestid"});
-                    toRemove.remove(new String[]{"requestid"});
+                    toAdd.add(new String[]{ColumnNames.REQUEST_ID});
+                    toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Clinical Encounters"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.CLINICAL_ENCOUNTERS))
                 {
-                    toAdd.add(new String[]{"caseno"});
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.CASE_NO});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
 
-                    toAdd.add(new String[]{"requestid"});
-                    toRemove.remove(new String[]{"requestid"});
+                    toAdd.add(new String[]{ColumnNames.REQUEST_ID});
+                    toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Demographics"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.DEMOGRAPHICS))
                 {
-                    toAdd.add(new String[]{"participantid", "calculated_status"});
-                    toAdd.add(new String[]{"participantid:ASC", "include:death"});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.CALCULATED_STATUS});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.INCLUDE_PREFIX + ColumnNames.DEATH});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Animal Record Flags"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.ANIMAL_RECORD_FLAGS))
                 {
-                    toRemove.add(new String[]{"participantid:ASC", "include:category,value"});
+                    toRemove.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.INCLUDE_PREFIX + ColumnNames.CATEGORY + "," + ColumnNames.VALUE});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Clinical Remarks"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.CLINICAL_REMARKS))
                 {
-                    toAdd.add(new String[]{"participantid", "lsid"});
-                    toRemove.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC"});
-                    toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC", "include:hx,qcstate,datefinalized,category"});
-                    toRemove.add(new String[]{"date", "include:hx,caseid"});
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.LSID});
+                    toRemove.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.DATE + ":ASC", ColumnNames.LSID + ":ASC"});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.DATE + ":ASC", ColumnNames.LSID + ":ASC",
+                        ColumnNames.INCLUDE_PREFIX + ColumnNames.HX + "," + ColumnNames.QC_STATE + "," + ColumnNames.DATE_FINALIZED + "," + ColumnNames.CATEGORY});
+                    toRemove.add(new String[]{ColumnNames.DATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.HX + "," + ColumnNames.CASE_ID});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Treatment Orders"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.TREATMENT_ORDERS))
                 {
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
 
-                    toAdd.add(new String[]{"requestid"});
-                    toRemove.remove(new String[]{"requestid"});
+                    toAdd.add(new String[]{ColumnNames.REQUEST_ID});
+                    toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
                 }
-                else if (d.getLabel().equalsIgnoreCase("Cases"))
+                else if (d.getLabel().equalsIgnoreCase(DatasetNames.CASES))
                 {
-                    toAdd.add(new String[]{"enddate", "qcstate", "lsid"});
-                    toAdd.add(new String[]{"participantid", "lsid", "assignedvet"});
-                    toAdd.add(new String[]{"objectid"});
+                    toAdd.add(new String[]{ColumnNames.END_DATE, ColumnNames.QC_STATE, ColumnNames.LSID});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.LSID, ColumnNames.ASSIGNED_VET});
+                    toAdd.add(new String[]{ColumnNames.OBJECT_ID});
                 }
-                else if (d.getName().equalsIgnoreCase("clinical_observations"))
+                else if (d.getName().equalsIgnoreCase(DatasetNames.CLINICAL_OBSERVATIONS))
                 {
-                    toAdd.add(new String[]{"participantid", "date", "include:taskid,lsid,category,observation,area,remark"});
+                    toAdd.add(CLINICAL_OBSERVATIONS_INDEX_COLS);
                     for (String[] i : toAdd)
                     {
                         if (i.length < 2)
                             continue;
 
-                        if ("participantid".equals(i[0]) && "date".equals(i[1]))
+                        if (ColumnNames.PARTICIPANT_ID.equals(i[0]) && ColumnNames.DATE.equals(i[1]))
                         {
                             toAdd.remove(i);
                             break;
                         }
                     }
 
-                    toRemove.add(new String[]{"participantid", "date"});
+                    toRemove.add(CLINICAL_OBSERVATIONS_REGULAR_COLS);
                 }
-                else if (d.getName().equalsIgnoreCase("drug"))
+                else if (d.getName().equalsIgnoreCase(DatasetNames.DRUG))
                 {
-                    toAdd.add(new String[]{"treatmentid"});
+                    toAdd.add(new String[]{ColumnNames.TREATMENT_ID});
 
-                    toRemove.add(new String[]{"qcstate", "include:treatmentid,vetreview"});
-                    toRemove.add(new String[]{"qcstate", "include:treatmentid"});
+                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.TREATMENT_ID + "," + ColumnNames.VET_REVIEW});
+                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.TREATMENT_ID});
 
-                    toAdd.add(new String[]{"requestid"});
-                    toRemove.remove(new String[]{"requestid"});
+                    toAdd.add(new String[]{ColumnNames.REQUEST_ID});
+                    toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
                 }
-                else if (d.getName().equalsIgnoreCase("blood"))
+                else if (d.getName().equalsIgnoreCase(DatasetNames.BLOOD))
                 {
-                    toAdd.add(new String[]{"requestid"});
-                    toRemove.remove(new String[]{"requestid"});
+                    toAdd.add(new String[]{ColumnNames.REQUEST_ID});
+                    toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
                 }
 
                 //ensure indexes removed, unless explicitly requested by a table
@@ -716,20 +809,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString;
-                            if (realTable.getSqlDialect().isSqlServer())
-                            {
-                                sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
-                            }
-                            else
-                            {
-                                sqlString = "DROP INDEX " + realTable.getSchema().getName() + "." + indexName;
-                            }
-
-                            SQLFragment sql = new SQLFragment(sqlString);
-                            SqlExecutor se = new SqlExecutor(realTable.getSchema());
-                            se.execute(sql);
+                            dropIndex(realTable.getSchema(), realTable, indexName, Arrays.asList(cols), d.getLabel(), messages);
                         }
                         else
                         {
@@ -843,11 +923,11 @@ public class EHRManager
                 //then disable if needed.  only attempt on SQLServer
                 if (realTable.getSqlDialect().isSqlServer())
                 {
-                    if (!"demographics".equalsIgnoreCase(d.getName()))
+                    if (!DatasetNames.DEMOGRAPHICS.equalsIgnoreCase(d.getName()))
                     {
                         PropertyStorageSpec.Index[] idxToDisable = new PropertyStorageSpec.Index[]{
                                 new PropertyStorageSpec.Index(false, "participantsequencenum"),
-                                new PropertyStorageSpec.Index(false, "qcstate")
+                                new PropertyStorageSpec.Index(false, ColumnNames.QC_STATE)
                         };
 
                         for (PropertyStorageSpec.Index toDisable : idxToDisable)
@@ -888,13 +968,14 @@ public class EHRManager
             //increase length of encounters remark col
             if (commitChanges && DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
             {
-                for (String label : new String[]{"Clinical Encounters", "Gross Findings"})
+                for (String label : new String[]{DatasetNames.CLINICAL_ENCOUNTERS, DatasetNames.GROSS_FINDINGS})
                 {
                     Dataset ds = study.getDatasetByLabel(label);
                     if (ds != null)
                     {
-                        _log.info("increasing size of remark column for dataset: " + label);
-                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() + " ALTER COLUMN remark NVARCHAR(max)");
+                        _log.info("increasing size of " + ColumnNames.REMARK + " column for dataset: " + label);
+                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() +
+                            " ALTER COLUMN " + ColumnNames.REMARK + " NVARCHAR(max)");
                         SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
                         se.execute(sql);
                     }
@@ -996,7 +1077,7 @@ public class EHRManager
         DbSchema schema = EHRSchema.getInstance().getEHRLookupsSchema();
         TableInfo realTable = schema.getTable("flag_values");
         String indexName = "flag_values_container_category_objectid";
-        List<String> cols = Arrays.asList("container", "category", "objectid");
+        List<String> cols = Arrays.asList("container", ColumnNames.CATEGORY, ColumnNames.OBJECT_ID);
 
         boolean exists = doesIndexExist(schema, "flag_values", indexName);
 
@@ -1005,14 +1086,14 @@ public class EHRManager
             if (exists)
                 dropIndex(schema, realTable, indexName, cols, indexName, messages);
 
-            createIndex(schema, realTable, indexName, indexName, cols, new String[]{"value"}, messages);
+            createIndex(schema, realTable, indexName, indexName, cols, new String[]{ColumnNames.VALUE}, messages);
         }
         else if ((!exists || rebuildIndexes))
         {
             if (exists)
-                messages.add("Will drop index on column(s): container, category, objectid" + " for table: ehr_lookups.flag_values");
+                messages.add("Will drop index on column(s): container, " + ColumnNames.CATEGORY + ", " + ColumnNames.OBJECT_ID + " for table: ehr_lookups.flag_values");
 
-            messages.add("Will create index on column(s): container, category, objectid" + " for table: ehr_lookups.flag_values");
+            messages.add("Will create index on column(s): container, " + ColumnNames.CATEGORY + ", " + ColumnNames.OBJECT_ID + " for table: ehr_lookups.flag_values");
         }
     }
 
@@ -1050,10 +1131,226 @@ public class EHRManager
     private void dropIndex(DbSchema schema, TableInfo realTable, String indexName, List<String> cols, String tableName, List<String> messages)
     {
         messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + tableName);
-        String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+        String sqlString;
+        if (realTable.getSqlDialect().isSqlServer())
+        {
+            sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+        }
+        else
+        {
+            sqlString = "DROP INDEX " + schema.getName() + "." + indexName;
+        }
         SQLFragment sql = new SQLFragment(sqlString);
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
+    }
+
+    /**
+     * Configuration for a dataset index that can be dropped and recreated.
+     */
+    private static class DatasetIndexConfig
+    {
+        final String datasetName;
+        final String[] indexCols;
+        final String[] regularCols;
+        final String[] includedCols;
+
+        DatasetIndexConfig(String datasetName, String[] indexCols, String[] regularCols, String[] includedCols)
+        {
+            this.datasetName = datasetName;
+            this.indexCols = indexCols;
+            this.regularCols = regularCols;
+            this.includedCols = includedCols;
+        }
+    }
+
+    // Registry of dataset index configurations - supports multiple indices per dataset
+    private static final List<DatasetIndexConfig> DATASET_INDEX_CONFIGS = new ArrayList<>();
+    static
+    {
+        // Register clinical_observations index configuration
+        DATASET_INDEX_CONFIGS.add(
+            new DatasetIndexConfig(
+                DatasetNames.CLINICAL_OBSERVATIONS,
+                CLINICAL_OBSERVATIONS_INDEX_COLS,
+                CLINICAL_OBSERVATIONS_REGULAR_COLS,
+                CLINICAL_OBSERVATIONS_INCLUDED_COLS
+            )
+        );
+        // Additional dataset index configurations can be registered here
+        // DATASET_INDEX_CONFIGS.add(new DatasetIndexConfig(DatasetNames.CLINICAL_OBSERVATIONS, ...));
+    }
+
+    /**
+     * Context holder for EHR index operations on the index datasets.
+     */
+    private static class EHRIndexContext
+    {
+        final Dataset dataset;
+        final TableInfo realTable;
+        final String tableName;
+        final DbSchema schema;
+        final String indexName;
+        final List<String> cols;
+        final String[] includedCols;
+
+        EHRIndexContext(Dataset dataset, TableInfo realTable, String tableName, DbSchema schema, String indexName, List<String> cols, String[] includedCols)
+        {
+            this.dataset = dataset;
+            this.realTable = realTable;
+            this.tableName = tableName;
+            this.schema = schema;
+            this.indexName = indexName;
+            this.cols = cols;
+            this.includedCols = includedCols;
+        }
+    }
+
+    /**
+     * Prepares the context for EHR index operations on datasets.
+     * @param c Container
+     * @param config Dataset index configuration
+     * @param messages List to add error messages to
+     * @return the context, or null if study or dataset is not found (messages will be populated with the reason)
+     */
+    @Nullable
+    private EHRIndexContext prepareEHRIndexContext(Container c, DatasetIndexConfig config, List<String> messages)
+    {
+        Study study = StudyService.get().getStudy(c);
+        if (study == null)
+        {
+            messages.add("No study in this folder");
+            return null;
+        }
+
+        Dataset dataset = study.getDatasetByName(config.datasetName);
+        if (dataset == null)
+        {
+            messages.add(config.datasetName + " dataset not found");
+            return null;
+        }
+
+        TableInfo realTable = StorageProvisioner.createTableInfo(dataset.getDomain());
+        String tableName = dataset.getDomain().getStorageTableName();
+        DbSchema schema = realTable.getSchema();
+
+        String indexName = getIndexName(schema.getSqlDialect(), tableName, config.indexCols);
+
+        List<String> cols = Arrays.asList(config.regularCols);
+
+        return new EHRIndexContext(dataset, realTable, tableName, schema, indexName, cols, config.includedCols);
+    }
+
+    /**
+     * Drop indices for all registered EHR datasets.
+     * @param c Container
+     * @param u User
+     */
+    public List<String> dropEHRIndices(Container c, User u)
+    {
+        List<String> messages = new ArrayList<>();
+
+        for (DatasetIndexConfig config : DATASET_INDEX_CONFIGS)
+        {
+            messages.addAll(dropEHRIndex(c, u, config));
+        }
+
+        return messages;
+    }
+
+    /**
+     * Drop a specific index configuration.
+     * @param c Container
+     * @param u User
+     * @param config Index configuration
+     */
+    private List<String> dropEHRIndex(Container c, User u, DatasetIndexConfig config)
+    {
+        List<String> messages = new ArrayList<>();
+
+        EHRIndexContext ctx = prepareEHRIndexContext(c, config, messages);
+        if (ctx == null)
+        {
+            return messages;
+        }
+
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+        {
+            boolean exists = doesIndexExist(ctx.schema, ctx.tableName, ctx.indexName);
+            if (exists)
+            {
+                dropIndex(ctx.schema, ctx.realTable, ctx.indexName, ctx.cols, ctx.dataset.getLabel(), messages);
+                messages.add("Successfully dropped " + config.datasetName + " index: " + ctx.indexName);
+            }
+            else
+            {
+                messages.add("Index does not exist: " + ctx.indexName);
+            }
+
+            transaction.commit();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+
+        return messages;
+    }
+
+    /**
+     * Add indices for all registered EHR datasets.
+     * @param c Container
+     * @param u User
+     */
+    public List<String> addEHRIndices(Container c, User u)
+    {
+        List<String> messages = new ArrayList<>();
+
+        for (DatasetIndexConfig config : DATASET_INDEX_CONFIGS)
+        {
+            messages.addAll(addEHRIndex(c, u, config));
+        }
+
+        return messages;
+    }
+
+    /**
+     * Add a specific index configuration.
+     * @param c Container
+     * @param u User
+     * @param config Index configuration
+     */
+    private List<String> addEHRIndex(Container c, User u, DatasetIndexConfig config)
+    {
+        List<String> messages = new ArrayList<>();
+
+        EHRIndexContext ctx = prepareEHRIndexContext(c, config, messages);
+        if (ctx == null)
+        {
+            return messages;
+        }
+
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+        {
+            boolean exists = doesIndexExist(ctx.schema, ctx.tableName, ctx.indexName);
+            if (exists)
+            {
+                messages.add("Index already exists: " + ctx.indexName);
+            }
+            else
+            {
+                createIndex(ctx.schema, ctx.realTable, ctx.dataset.getLabel(), ctx.indexName, ctx.cols, ctx.includedCols, messages);
+                messages.add("Successfully created " + config.datasetName + " index: " + ctx.indexName);
+            }
+
+            transaction.commit();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+
+        return messages;
     }
 
     //the module's SQL scripts create indexes, but apparently only SQL server enterprise supports compression,
