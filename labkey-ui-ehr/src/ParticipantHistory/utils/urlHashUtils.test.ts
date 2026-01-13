@@ -1,3 +1,4 @@
+import { FILTER_TYPE_ALIVE_AT_CENTER, FILTER_TYPE_ALL, FILTER_TYPE_ID_SEARCH, FILTER_TYPE_URL_PARAMS } from '../models';
 import { getFiltersFromUrl, updateUrlHash } from './urlHashUtils';
 
 describe('urlHashUtils', () => {
@@ -15,27 +16,27 @@ describe('urlHashUtils', () => {
     describe('updateUrlHash', () => {
         describe('ID Search mode', () => {
             test('creates hash with filterType:idSearch and subjects', () => {
-                updateUrlHash('idSearch', ['ID123', 'ID456']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
 
                 expect(window.location.hash).toContain('filterType:idSearch');
                 expect(window.location.hash).toContain('subjects:ID123;ID456');
             });
 
             test('handles single subject', () => {
-                updateUrlHash('idSearch', ['ID123']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123']);
 
                 expect(window.location.hash).toContain('filterType:idSearch');
                 expect(window.location.hash).toContain('subjects:ID123');
             });
 
             test('does not include readOnly parameter', () => {
-                updateUrlHash('idSearch', ['ID123']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123']);
 
                 expect(window.location.hash).not.toContain('readOnly');
             });
 
             test('URL-encodes special characters in subject IDs', () => {
-                updateUrlHash('idSearch', ['ID 123', 'ID;456']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID 123', 'ID;456']);
 
                 // Spaces and semicolons should be encoded
                 expect(window.location.hash).toContain('subjects:');
@@ -44,19 +45,19 @@ describe('urlHashUtils', () => {
 
         describe('All Records mode', () => {
             test('creates hash with filterType:all', () => {
-                updateUrlHash('all', undefined);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
 
                 expect(window.location.hash).toContain('filterType:all');
             });
 
             test('does not include subjects parameter', () => {
-                updateUrlHash('all', undefined);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
 
                 expect(window.location.hash).not.toContain('subjects:');
             });
 
             test('does not include readOnly parameter', () => {
-                updateUrlHash('all', undefined);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
 
                 expect(window.location.hash).not.toContain('readOnly');
             });
@@ -64,19 +65,19 @@ describe('urlHashUtils', () => {
 
         describe('Alive at Center mode', () => {
             test('creates hash with filterType:aliveAtCenter', () => {
-                updateUrlHash('aliveAtCenter', undefined);
+                updateUrlHash(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
 
                 expect(window.location.hash).toContain('filterType:aliveAtCenter');
             });
 
             test('does not include subjects parameter', () => {
-                updateUrlHash('aliveAtCenter', undefined);
+                updateUrlHash(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
 
                 expect(window.location.hash).not.toContain('subjects:');
             });
 
             test('does not include readOnly parameter', () => {
-                updateUrlHash('aliveAtCenter', undefined);
+                updateUrlHash(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
 
                 expect(window.location.hash).not.toContain('readOnly');
             });
@@ -84,21 +85,21 @@ describe('urlHashUtils', () => {
 
         describe('URL Params mode', () => {
             test('creates hash with subjects and readOnly:true', () => {
-                updateUrlHash('urlParams', ['ID123', 'ID456'], true);
+                updateUrlHash(FILTER_TYPE_URL_PARAMS, ['ID123', 'ID456'], true);
 
                 expect(window.location.hash).toContain('subjects:ID123;ID456');
                 expect(window.location.hash).toContain('readOnly:true');
             });
 
             test('does not include filterType parameter in URL Params mode', () => {
-                updateUrlHash('urlParams', ['ID123'], true);
+                updateUrlHash(FILTER_TYPE_URL_PARAMS, ['ID123'], true);
 
                 expect(window.location.hash).not.toContain('filterType:');
             });
 
             test('handles many subjects without truncation', () => {
                 const subjects = Array.from({ length: 100 }, (_, i) => `ID${i}`);
-                updateUrlHash('urlParams', subjects, true);
+                updateUrlHash(FILTER_TYPE_URL_PARAMS, subjects, true);
 
                 expect(window.location.hash).toContain('subjects:');
                 expect(window.location.hash).toContain('readOnly:true');
@@ -112,7 +113,7 @@ describe('urlHashUtils', () => {
             test('preserves activeReport parameter when updating', () => {
                 window.location.hash = '#activeReport:test-report&showReport:1';
 
-                updateUrlHash('idSearch', ['ID123']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123']);
 
                 expect(window.location.hash).toContain('activeReport:test-report');
                 expect(window.location.hash).toContain('showReport:1');
@@ -122,7 +123,7 @@ describe('urlHashUtils', () => {
             test('preserves custom parameters', () => {
                 window.location.hash = '#customParam:value1&anotherParam:value2';
 
-                updateUrlHash('all', undefined);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
 
                 expect(window.location.hash).toContain('customParam:value1');
                 expect(window.location.hash).toContain('anotherParam:value2');
@@ -132,7 +133,7 @@ describe('urlHashUtils', () => {
             test('removes readOnly parameter when switching from URL Params to ID Search', () => {
                 window.location.hash = '#subjects:ID123&readOnly:true';
 
-                updateUrlHash('idSearch', ['ID123'], false);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123'], false);
 
                 expect(window.location.hash).not.toContain('readOnly');
                 expect(window.location.hash).toContain('filterType:idSearch');
@@ -143,9 +144,9 @@ describe('urlHashUtils', () => {
             test('does not create duplicate history entries', () => {
                 const initialHistoryLength = window.history.length;
 
-                updateUrlHash('idSearch', ['ID123']);
-                updateUrlHash('all', undefined);
-                updateUrlHash('aliveAtCenter', undefined);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123']);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
+                updateUrlHash(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
 
                 // Should use replaceState, not pushState
                 // History length should remain the same or increase by at most 1
@@ -163,14 +164,14 @@ describe('urlHashUtils', () => {
                 // For testing, we'll verify behavior with empty params
 
                 // Call updateUrlHash with parameters that should create content
-                updateUrlHash('all', undefined);
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
 
                 // Hash should still be present (filterType:all)
                 expect(window.location.hash).toContain('filterType:all');
             });
 
             test('handles empty subjects array correctly', () => {
-                updateUrlHash('idSearch', []);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, []);
 
                 // Empty subjects array should not add subjects parameter
                 expect(window.location.hash).not.toContain('subjects:');
@@ -186,7 +187,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('idSearch');
+                expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
             });
 
             test('parses subjects from hash', () => {
@@ -220,7 +221,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('all');
+                expect(filters.filterType).toBe(FILTER_TYPE_ALL);
             });
 
             test('returns undefined subjects for All Records mode', () => {
@@ -238,7 +239,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('aliveAtCenter');
+                expect(filters.filterType).toBe(FILTER_TYPE_ALIVE_AT_CENTER);
             });
 
             test('returns undefined subjects for Alive at Center mode', () => {
@@ -256,7 +257,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('urlParams');
+                expect(filters.filterType).toBe(FILTER_TYPE_URL_PARAMS);
                 expect(filters.subjects).toEqual(['ID123', 'ID456']);
                 expect(filters.readOnly).toBe(true);
             });
@@ -267,7 +268,7 @@ describe('urlHashUtils', () => {
                 const filters = getFiltersFromUrl();
 
                 // readOnly takes priority
-                expect(filters.filterType).toBe('urlParams');
+                expect(filters.filterType).toBe(FILTER_TYPE_URL_PARAMS);
                 expect(filters.subjects).toEqual(['ID123']);
             });
 
@@ -277,7 +278,7 @@ describe('urlHashUtils', () => {
                 const filters = getFiltersFromUrl();
 
                 // Should default to All Records or ID Search, not URL Params
-                expect(filters.filterType).not.toBe('urlParams');
+                expect(filters.filterType).not.toBe(FILTER_TYPE_URL_PARAMS);
             });
 
             test('parses many subjects from URL without limit', () => {
@@ -287,7 +288,7 @@ describe('urlHashUtils', () => {
                 const filters = getFiltersFromUrl();
 
                 expect(filters.subjects).toHaveLength(100);
-                expect(filters.filterType).toBe('urlParams');
+                expect(filters.filterType).toBe(FILTER_TYPE_URL_PARAMS);
             });
         });
 
@@ -297,7 +298,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('idSearch');
+                expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
             });
 
             test('parses empty subjects as empty array', () => {
@@ -378,7 +379,7 @@ describe('urlHashUtils', () => {
                 const filters = getFiltersFromUrl();
 
                 expect(filters).toBeDefined();
-                expect(filters.filterType).toBe('idSearch'); // Default
+                expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH); // Default
             });
 
             test('handles hash with only # symbol', () => {
@@ -395,7 +396,7 @@ describe('urlHashUtils', () => {
                 const filters = getFiltersFromUrl();
 
                 // Should default to idSearch when invalid filterType provided
-                expect(filters.filterType).toBe('idSearch');
+                expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
             });
 
             test('handles malformed URL encoding gracefully', () => {
@@ -425,7 +426,7 @@ describe('urlHashUtils', () => {
 
                 const filters = getFiltersFromUrl();
 
-                expect(filters.filterType).toBe('idSearch');
+                expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
                 expect(filters.subjects).toEqual(['ID123', 'ID456']);
                 expect(filters.activeReport).toBe('my-report');
                 expect(filters.showReport).toBe(true);
@@ -454,39 +455,39 @@ describe('urlHashUtils', () => {
     describe('round-trip consistency', () => {
         test('updateUrlHash and getFiltersFromUrl work together for ID Search', () => {
             const subjects = ['ID123', 'ID456', 'ID789'];
-            updateUrlHash('idSearch', subjects);
+            updateUrlHash(FILTER_TYPE_ID_SEARCH, subjects);
 
             const filters = getFiltersFromUrl();
 
-            expect(filters.filterType).toBe('idSearch');
+            expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
             expect(filters.subjects).toEqual(subjects);
         });
 
         test('updateUrlHash and getFiltersFromUrl work together for All Records', () => {
-            updateUrlHash('all', undefined);
+            updateUrlHash(FILTER_TYPE_ALL, undefined);
 
             const filters = getFiltersFromUrl();
 
-            expect(filters.filterType).toBe('all');
+            expect(filters.filterType).toBe(FILTER_TYPE_ALL);
             expect(filters.subjects).toBeUndefined();
         });
 
         test('updateUrlHash and getFiltersFromUrl work together for Alive at Center', () => {
-            updateUrlHash('aliveAtCenter', undefined);
+            updateUrlHash(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
 
             const filters = getFiltersFromUrl();
 
-            expect(filters.filterType).toBe('aliveAtCenter');
+            expect(filters.filterType).toBe(FILTER_TYPE_ALIVE_AT_CENTER);
             expect(filters.subjects).toBeUndefined();
         });
 
         test('updateUrlHash and getFiltersFromUrl work together for URL Params', () => {
             const subjects = ['ID123', 'ID456'];
-            updateUrlHash('urlParams', subjects, true);
+            updateUrlHash(FILTER_TYPE_URL_PARAMS, subjects, true);
 
             const filters = getFiltersFromUrl();
 
-            expect(filters.filterType).toBe('urlParams');
+            expect(filters.filterType).toBe(FILTER_TYPE_URL_PARAMS);
             expect(filters.subjects).toEqual(subjects);
             expect(filters.readOnly).toBe(true);
         });

@@ -1,7 +1,16 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
+import { incrementClientSideMetricCount } from '@labkey/components';
+
 import { IdResolutionFeedback } from './IdResolutionFeedback';
-import { IdResolutionResult, resolveAnimalIds } from '../services/idResolutionService';
-import { FilterType } from '../utils/urlHashUtils';
+import { resolveAnimalIds } from '../services/idResolutionService';
+import {
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    FilterType,
+    IdResolutionResult,
+} from '../models';
 
 /**
  * Parse IDs from input string (split by newline, tab, comma, semicolon)
@@ -74,7 +83,7 @@ export interface SearchByIdPanelProps {
 export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
     onFilterChange,
     initialSubjects = [],
-    initialFilterType = 'idSearch',
+    initialFilterType = FILTER_TYPE_ID_SEARCH,
     activeReportSupportsNonIdFilters,
 }) => {
     const [inputValue, setInputValue] = useState<string>(initialSubjects.join(','));
@@ -104,7 +113,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
     // Handle Update Report button click
     const handleUpdateReport = useCallback(async () => {
         // Set filter mode to ID Search
-        setFilterType('idSearch');
+        setFilterType(FILTER_TYPE_ID_SEARCH);
 
         // Parse IDs from input
         const parsedIds = parseIds(inputValue);
@@ -115,7 +124,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
             setValidationError(error);
             setHasUserTyped(true); // Show validation errors now
             // Call onFilterChange with empty array to show no records in reports
-            onFilterChange('idSearch', []);
+            onFilterChange(FILTER_TYPE_ID_SEARCH, []);
             return; // Stop if validation fails
         }
 
@@ -130,14 +139,17 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
             // Extract resolved subject IDs
             const resolvedSubjects = result.resolved.map(r => r.resolvedId);
 
+            // Track ID search metric
+            incrementClientSideMetricCount('ehrParticipantHistoryFilter', FILTER_TYPE_ID_SEARCH);
+
             // Call onFilterChange with resolved subject IDs
-            onFilterChange('idSearch', resolvedSubjects);
+            onFilterChange(FILTER_TYPE_ID_SEARCH, resolvedSubjects);
         } catch (error) {
             // Handle error
             console.error('Failed to resolve animal IDs:', error);
             setValidationError('Failed to resolve animal IDs. Please try again.');
             // Call onFilterChange with empty array to show no records in reports when error occurs
-            onFilterChange('idSearch', []);
+            onFilterChange(FILTER_TYPE_ID_SEARCH, []);
         } finally {
             setIsResolving(false);
         }
@@ -148,13 +160,14 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
         (newFilterType: FilterType) => {
             setFilterType(newFilterType);
 
-            if (newFilterType === 'all' || newFilterType === 'aliveAtCenter') {
-                // Clear input when switching to non-ID modes
-                setInputValue('');
-                setResolutionResult({ resolved: [], notFound: [] });
-                setValidationError(null);
-                setHasUserTyped(false);
-            }
+            // Track filter metric
+            incrementClientSideMetricCount('ehrParticipantHistoryFilter', newFilterType);
+
+            // Clear input when switching to non-ID modes
+            setInputValue('');
+            setResolutionResult({ resolved: [], notFound: [] });
+            setValidationError(null);
+            setHasUserTyped(false);
 
             onFilterChange(newFilterType, undefined);
         },
@@ -163,16 +176,16 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
 
     // Handle Modify Search button (URL Params mode)
     const handleModifySearch = useCallback(() => {
-        setFilterType('idSearch');
+        setFilterType(FILTER_TYPE_ID_SEARCH);
         setInputValue(initialSubjects.join(','));
-        onFilterChange('idSearch', initialSubjects);
+        onFilterChange(FILTER_TYPE_ID_SEARCH, initialSubjects);
     }, [initialSubjects, onFilterChange]);
 
     // Determine if resolution feedback should be visible
     const isResolutionFeedbackVisible =
         resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0;
 
-    if (filterType === 'urlParams') {
+    if (filterType === FILTER_TYPE_URL_PARAMS) {
         return (
             <div className="search-by-id-panel url-params-mode">
                 <div className="url-params-summary">
@@ -211,22 +224,22 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
 
                 <div className="button-container">
                     <button
-                        className={`search-button ${isResolving ? '' : filterType === 'idSearch' ? 'active' : 'inactive'}`}
+                        className={`search-button ${isResolving ? '' : filterType === FILTER_TYPE_ID_SEARCH ? 'active' : 'inactive'}`}
                         disabled={isResolving}
                         onClick={handleUpdateReport}
                     >
                         {isResolving ? 'Searching...' : 'Search By Ids'}
                     </button>
                     <button
-                        className={`filter-button all-animals ${filterType === 'all' ? 'active' : 'inactive'}`}
-                        onClick={() => handleFilterModeChange('all')}
+                        className={`filter-button all-animals ${filterType === FILTER_TYPE_ALL ? 'active' : 'inactive'}`}
+                        onClick={() => handleFilterModeChange(FILTER_TYPE_ALL)}
                     >
                         All Animals
                     </button>
                     <button
-                        className={`filter-button alive-at-center ${filterType === 'aliveAtCenter' ? 'active' : 'inactive'}`}
+                        className={`filter-button alive-at-center ${filterType === FILTER_TYPE_ALIVE_AT_CENTER ? 'active' : 'inactive'}`}
                         disabled={!activeReportSupportsNonIdFilters}
-                        onClick={() => handleFilterModeChange('aliveAtCenter')}
+                        onClick={() => handleFilterModeChange(FILTER_TYPE_ALIVE_AT_CENTER)}
                         title={
                             !activeReportSupportsNonIdFilters
                                 ? 'This filter type is not supported for this report'

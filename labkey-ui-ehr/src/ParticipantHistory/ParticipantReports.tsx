@@ -1,7 +1,16 @@
 import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { incrementClientSideMetricCount } from '@labkey/components';
+
 import { SearchByIdPanel } from './SearchByIdPanel/SearchByIdPanel';
 import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
-import { FilterType, getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
+import { getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
+import {
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    FilterType,
+} from './models';
 
 // Declare global LABKEY API
 declare const LABKEY: any;
@@ -13,9 +22,9 @@ const ParticipantReportsComponent: FC = () => {
     // Determine initial filter type based on URL parameters
     const initialFilterType = useMemo(() => {
         if (urlFilters.readOnly && urlFilters.subjects?.length > 0) {
-            return 'urlParams'; // Read-only mode for shared links
+            return FILTER_TYPE_URL_PARAMS; // Read-only mode for shared links
         }
-        return urlFilters.filterType || 'idSearch';
+        return urlFilters.filterType || FILTER_TYPE_ID_SEARCH;
     }, [urlFilters]);
 
     const [filterType, setFilterType] = useState<FilterType>(initialFilterType);
@@ -65,14 +74,15 @@ const ParticipantReportsComponent: FC = () => {
             // Show report for 'all' and 'aliveAtCenter' modes always
             // Show report for 'idSearch' and 'urlParams' only when subjects exist
             const shouldShowReport =
-                newFilterType === 'all' ||
-                newFilterType === 'aliveAtCenter' ||
-                ((newFilterType === 'idSearch' || newFilterType === 'urlParams') && (newSubjects?.length ?? 0) > 0);
+                newFilterType === FILTER_TYPE_ALL ||
+                newFilterType === FILTER_TYPE_ALIVE_AT_CENTER ||
+                ((newFilterType === FILTER_TYPE_ID_SEARCH || newFilterType === FILTER_TYPE_URL_PARAMS) &&
+                    (newSubjects?.length ?? 0) > 0);
             setShowReport(shouldShowReport);
 
             // When switching from urlParams to idSearch (via "Modify Search"), remove readOnly parameter
-            const isLeavingReadOnly = filterType === 'urlParams' && newFilterType !== 'urlParams';
-            const readOnly = newFilterType === 'urlParams' && !isLeavingReadOnly;
+            const isLeavingReadOnly = filterType === FILTER_TYPE_URL_PARAMS && newFilterType !== FILTER_TYPE_URL_PARAMS;
+            const readOnly = newFilterType === FILTER_TYPE_URL_PARAMS && !isLeavingReadOnly;
 
             updateUrlHash(newFilterType, newSubjects, readOnly, shouldShowReport);
         },
@@ -83,14 +93,14 @@ const ParticipantReportsComponent: FC = () => {
         (reportId: string) => {
             setActiveReport(reportId);
             // Update URL hash with new activeReport
-            updateUrlHash(filterType, subjects, filterType === 'urlParams', showReport);
+            updateUrlHash(filterType, subjects, filterType === FILTER_TYPE_URL_PARAMS, showReport);
         },
         [filterType, subjects, showReport]
     );
 
     // Determine if current filter is not supported and set error message
     useEffect(() => {
-        if (filterType === 'aliveAtCenter' && !activeReportSupportsNonIdFilters) {
+        if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
             setFilterNotSupportedError('This report does not support Alive at Center filtering.');
         } else {
             setFilterNotSupportedError(null);
@@ -99,18 +109,18 @@ const ParticipantReportsComponent: FC = () => {
 
     // Auto-switch from aliveAtCenter to all when report doesn't support it
     useEffect(() => {
-        if (filterType === 'aliveAtCenter' && !activeReportSupportsNonIdFilters) {
+        if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
             // Automatically switch to All Animals mode, but keep error message visible
 
-            handleFilterChange('all', undefined, false);
+            handleFilterChange(FILTER_TYPE_ALL, undefined, false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeReportSupportsNonIdFilters, filterType]);
 
     // Compute effective filter - override to 'all' if aliveAtCenter is not supported
     const effectiveFilterType = useMemo(() => {
-        if (filterType === 'aliveAtCenter' && !activeReportSupportsNonIdFilters) {
-            return 'all'; // Override to show all animals
+        if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
+            return FILTER_TYPE_ALL; // Override to show all animals
         }
         return filterType;
     }, [filterType, activeReportSupportsNonIdFilters]);
@@ -118,7 +128,10 @@ const ParticipantReportsComponent: FC = () => {
     const filters = useMemo(
         () => ({
             filterType: effectiveFilterType,
-            subjects: effectiveFilterType === 'idSearch' || effectiveFilterType === 'urlParams' ? subjects : undefined,
+            subjects:
+                effectiveFilterType === FILTER_TYPE_ID_SEARCH || effectiveFilterType === FILTER_TYPE_URL_PARAMS
+                    ? subjects
+                    : undefined,
         }),
         [effectiveFilterType, subjects]
     );

@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 import { Filter } from '@labkey/api';
 
 import { QueryReportWrapper } from './QueryReportWrapper';
-import { ExtReportTab, ReportConfig } from './ReportTab';
+import { ExtReportTab, ReportConfig } from '../models';
 import { defaultServerContext, renderWithServerContext } from '../../test/utils';
 
 // Mock Ext4 global

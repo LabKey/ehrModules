@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+
 import { IdResolutionFeedback } from './IdResolutionFeedback';
-import { IdResolutionResult } from '../services/idResolutionService';
+import { IdResolutionResult } from '../models';
 
 describe('IdResolutionFeedback', () => {
     describe('visibility logic', () => {

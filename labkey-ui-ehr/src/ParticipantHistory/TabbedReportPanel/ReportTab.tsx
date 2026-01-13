@@ -1,80 +1,18 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Filter } from '@labkey/api';
 
+import {
+    ExtReportTab,
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    FilterArray,
+    QueryWebPartConfig,
+    ReportConfig,
+} from '../models';
+
 // Declare global variables for ExtJS
 declare const Ext4: any;
-
-export interface ReportConfig {
-    [key: string]: any; // Allow other config options
-    category?: string;
-    containerPath?: string;
-    id: string;
-    queryName?: string;
-    reportId?: string;
-    reportType: string;
-    schemaName?: string;
-    subjectFieldName?: string;
-    title: string;
-    viewName?: string;
-}
-
-export interface FilterArray {
-    nonRemovable: Filter.IFilter[];
-    removable: Filter.IFilter[];
-}
-
-export interface QueryWebPartConfig {
-    [key: string]: any; // Allow additional properties from report config
-    allowChooseQuery?: boolean;
-    allowChooseView?: boolean;
-    allowHeaderLock?: boolean;
-    buttonBarPosition?: string;
-    containerPath?: string;
-    failure?: (error: any) => void;
-    filters?: Filter.IFilter[];
-    frame?: string;
-    linkTarget?: string;
-    partConfig?: any;
-    partName?: string;
-    queryName?: string;
-    removeableFilters?: Filter.IFilter[];
-    renderTo?: string;
-    schemaName?: string;
-    showDeleteButton?: boolean;
-    showDetailsColumn?: boolean;
-    showInsertNewButton?: boolean;
-    showRecordSelectors?: boolean;
-    showUpdateColumn?: boolean;
-    success?: () => void;
-    suppressRenderErrors?: boolean;
-    tab?: any; // ExtJS tab object
-    timeout?: number;
-    title?: string;
-    viewName?: string;
-}
-
-/**
- * Extended Ext.container.Container with custom properties and methods for report tabs
- * Note: Extends ExtJS Container component (no official TypeScript definitions available)
- */
-export interface ExtReportTab {
-    // ExtJS Container methods we use
-    add: (config: any) => void;
-    destroy: () => void;
-
-    filters: any;
-    // Custom methods added to tab
-    getFilterArray: () => FilterArray;
-
-    getQWPConfig: () => QueryWebPartConfig;
-    // ExtJS Container base properties
-    isDestroyed?: boolean;
-
-    removeAll: () => void;
-    renderTo?: HTMLElement;
-    // Custom properties added to tab
-    report: ReportConfig;
-}
 
 export const ReportTab: FC<{
     children: (tab: ExtReportTab) => React.ReactNode;
@@ -107,7 +45,12 @@ export const ReportTab: FC<{
             const subjectFieldName = report.subjectFieldName || 'Id';
 
             // ID Search mode: Filter by specific subject IDs
-            if (filters && filters.filterType === 'idSearch' && filters.subjects && filters.subjects.length) {
+            if (
+                filters &&
+                filters.filterType === FILTER_TYPE_ID_SEARCH &&
+                filters.subjects &&
+                filters.subjects.length
+            ) {
                 const subjects = filters.subjects;
                 if (subjects.length === 1) {
                     filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
@@ -119,7 +62,12 @@ export const ReportTab: FC<{
             }
 
             // URL Params mode: Filter by URL-provided subject IDs (same as ID Search)
-            if (filters && filters.filterType === 'urlParams' && filters.subjects && filters.subjects.length) {
+            if (
+                filters &&
+                filters.filterType === FILTER_TYPE_URL_PARAMS &&
+                filters.subjects &&
+                filters.subjects.length
+            ) {
                 const subjects = filters.subjects;
                 if (subjects.length === 1) {
                     filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
@@ -131,13 +79,13 @@ export const ReportTab: FC<{
             }
 
             // Alive at Center mode: Filter by calculated_status
-            if (filters && filters.filterType === 'aliveAtCenter') {
+            if (filters && filters.filterType === FILTER_TYPE_ALIVE_AT_CENTER) {
                 filterArray.nonRemovable.push(
                     Filter.create('Id/Demographics/calculated_status', 'Alive', Filter.Types.EQUAL)
                 );
             }
 
-            // All Records mode: No filters applied (filterType === 'all')
+            // All Records mode: No filters applied (filterType === FILTER_TYPE_ALL)
 
             return filterArray;
         };

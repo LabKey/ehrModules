@@ -3,7 +3,13 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { TabbedReportPanel } from './TabbedReportPanel';
-import { ReportConfig } from './ReportTab';
+import {
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    ReportConfig,
+} from '../models';
 import { defaultServerContext, renderWithServerContext } from '../../test/utils';
 
 // Mock @labkey/api Query.selectRows to prevent communication failure in tests
@@ -244,7 +250,7 @@ describe('TabbedReportPanel', () => {
         describe('ID Search mode', () => {
             test('creates subject ID filter for single subject', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -261,7 +267,7 @@ describe('TabbedReportPanel', () => {
 
             test('creates subject ID filter for multiple subjects', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123', 'ID456', 'ID789'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -278,7 +284,7 @@ describe('TabbedReportPanel', () => {
 
             test('uses EQUALS_ONE_OF filter type for multiple subjects', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123', 'ID456'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -297,7 +303,7 @@ describe('TabbedReportPanel', () => {
         describe('URL Params mode', () => {
             test('creates subject ID filter from URL-provided subjects', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'urlParams', subjects: ['ID123', 'ID456'] };
+                const filters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123', 'ID456'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -314,7 +320,7 @@ describe('TabbedReportPanel', () => {
 
             test('handles single subject from URL params', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'urlParams', subjects: ['ID123'] };
+                const filters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -332,7 +338,7 @@ describe('TabbedReportPanel', () => {
         describe('All Records mode', () => {
             test('creates no filters when filterType is all', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'all', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -349,7 +355,7 @@ describe('TabbedReportPanel', () => {
 
             test('ignores subjects when filterType is all', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'all', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -368,7 +374,7 @@ describe('TabbedReportPanel', () => {
         describe('Alive at Center mode', () => {
             test('creates calculated_status = Alive filter', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -385,7 +391,7 @@ describe('TabbedReportPanel', () => {
 
             test('does not create subject filters in Alive at Center mode', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -404,7 +410,7 @@ describe('TabbedReportPanel', () => {
         describe('filter switching', () => {
             test('updates report filters when switching from ID Search to All Records', async () => {
                 const reports = [queryReport];
-                const initialFilters = { filterType: 'idSearch', subjects: ['ID123'] };
+                const initialFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel filters={initialFilters} reports={reports} />,
@@ -414,7 +420,7 @@ describe('TabbedReportPanel', () => {
                 await screen.findByText('Query Report');
 
                 // Switch to All Records mode
-                const newFilters = { filterType: 'all', subjects: undefined };
+                const newFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
                 rerender(<TabbedReportPanel filters={newFilters} reports={reports} />);
 
                 // Report should update with no filters
@@ -425,7 +431,7 @@ describe('TabbedReportPanel', () => {
 
             test('updates report filters when switching from All Records to Alive at Center', async () => {
                 const reports = [queryReport];
-                const initialFilters = { filterType: 'all', subjects: undefined };
+                const initialFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
 
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel filters={initialFilters} reports={reports} />,
@@ -435,7 +441,7 @@ describe('TabbedReportPanel', () => {
                 await screen.findByText('Query Report');
 
                 // Switch to Alive at Center mode
-                const newFilters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const newFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
                 rerender(<TabbedReportPanel filters={newFilters} reports={reports} />);
 
                 // Report should update with status filter
@@ -446,7 +452,7 @@ describe('TabbedReportPanel', () => {
 
             test('updates report filters when switching from Alive at Center to ID Search', async () => {
                 const reports = [queryReport];
-                const initialFilters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const initialFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel filters={initialFilters} reports={reports} />,
@@ -456,7 +462,7 @@ describe('TabbedReportPanel', () => {
                 await screen.findByText('Query Report');
 
                 // Switch to ID Search mode
-                const newFilters = { filterType: 'idSearch', subjects: ['ID123', 'ID456'] };
+                const newFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
                 rerender(<TabbedReportPanel filters={newFilters} reports={reports} />);
 
                 // Report should update with subject filters
@@ -469,7 +475,7 @@ describe('TabbedReportPanel', () => {
         describe('empty subjects validation', () => {
             test('shows validation error when ID Search mode has empty subjects array', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: [] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -493,7 +499,7 @@ describe('TabbedReportPanel', () => {
                     supportsNonIdFilters: false,
                 };
                 const reports = [unsupportedReport];
-                const filters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -516,7 +522,7 @@ describe('TabbedReportPanel', () => {
                     supportsNonIdFilters: true,
                 };
                 const reports = [supportedReport];
-                const filters = { filterType: 'aliveAtCenter', subjects: undefined };
+                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -535,7 +541,7 @@ describe('TabbedReportPanel', () => {
         describe('LabKey Filter API format', () => {
             test('creates filters in correct LabKey Filter.create() format for single subject', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -552,7 +558,7 @@ describe('TabbedReportPanel', () => {
 
             test('creates filters in correct LabKey Filter.create() format for multiple subjects', async () => {
                 const reports = [queryReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123', 'ID456'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -576,7 +582,7 @@ describe('TabbedReportPanel', () => {
                     subjectFieldName: 'ParticipantId',
                 };
                 const reports = [customReport];
-                const filters = { filterType: 'idSearch', subjects: ['ID123'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,
@@ -593,7 +599,7 @@ describe('TabbedReportPanel', () => {
 
             test('defaults to Id when subjectFieldName not specified', async () => {
                 const reports = [queryReport]; // No subjectFieldName specified
-                const filters = { filterType: 'idSearch', subjects: ['ID123'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
                 renderWithServerContext(
                     <TabbedReportPanel filters={filters} reports={reports} />,

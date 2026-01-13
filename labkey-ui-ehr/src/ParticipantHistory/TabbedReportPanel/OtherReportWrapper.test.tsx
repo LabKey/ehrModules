@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/react';
 import { Filter } from '@labkey/api';
 
 import { OtherReportWrapper } from './OtherReportWrapper';
-import { ExtReportTab, ReportConfig } from './ReportTab';
+import { ExtReportTab, FILTER_TYPE_ID_SEARCH, ReportConfig } from '../models';
 
 // Mock Ext4 global
 (global as any).Ext4 = {
@@ -27,7 +27,7 @@ describe('OtherReportWrapper', () => {
 
     const mockTab: ExtReportTab = {
         report: null as any,
-        filters: { filterType: 'idSearch', subjects: ['ID123', 'ID456'] },
+        filters: { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] },
         isDestroyed: false,
         add: jest.fn(),
         removeAll: jest.fn(),

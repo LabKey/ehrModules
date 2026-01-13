@@ -2,7 +2,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 
 import { JSReportWrapper } from './JSReportWrapper';
-import { ExtReportTab, ReportConfig } from './ReportTab';
+import { ExtReportTab, ReportConfig } from '../models';
 
 // Mock Ext4 global
 const mockExt4Container: ExtReportTab = {

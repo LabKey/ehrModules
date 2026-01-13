@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { IdResolutionResult } from '../services/idResolutionService';
+
+import { IdResolutionResult } from '../models';
 
 /**
  * Component to display ID resolution feedback

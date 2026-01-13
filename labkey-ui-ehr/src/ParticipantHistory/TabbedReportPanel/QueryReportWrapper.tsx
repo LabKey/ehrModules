@@ -1,7 +1,7 @@
 import React, { FC, memo, useEffect } from 'react';
 import { useServerContext } from '@labkey/components';
 
-import { ExtReportTab, QueryWebPartConfig, ReportConfig } from './ReportTab';
+import { ExtReportTab, QueryWebPartConfig, ReportConfig } from '../models';
 
 // Declare global variables for ExtJS and LDK
 declare const Ext4: any;

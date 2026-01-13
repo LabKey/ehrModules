@@ -4,7 +4,8 @@ import { Filter, Query } from '@labkey/api';
 import { JSReportWrapper } from './JSReportWrapper';
 import { QueryReportWrapper } from './QueryReportWrapper';
 import { OtherReportWrapper } from './OtherReportWrapper';
-import { ReportConfig, ReportTab } from './ReportTab';
+import { ReportTab } from './ReportTab';
+import { ReportConfig } from '../models';
 
 interface TabbedReportPanelProps {
     activeReport?: string;

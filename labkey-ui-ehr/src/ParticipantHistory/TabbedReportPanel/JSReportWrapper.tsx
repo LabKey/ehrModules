@@ -1,6 +1,6 @@
 import React, { FC, memo, useEffect } from 'react';
 
-import { ExtReportTab, FilterArray, QueryWebPartConfig, ReportConfig } from './ReportTab';
+import { ExtReportTab, FilterArray, QueryWebPartConfig, ReportConfig } from '../models';
 
 // Declare global variables for ExtJS and LabKey
 declare const Ext4: any;

@@ -1,8 +1,10 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { parseIds, SearchByIdPanel, validateInput } from './SearchByIdPanel';
 import * as idResolutionService from '../services/idResolutionService';
+import { FILTER_TYPE_ALIVE_AT_CENTER, FILTER_TYPE_ALL, FILTER_TYPE_ID_SEARCH, FILTER_TYPE_URL_PARAMS } from '../models';
 
 // Mock the idResolutionService
 jest.mock('../services/idResolutionService');
@@ -340,7 +342,7 @@ describe('SearchByIdPanel', () => {
             });
 
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
-            expect(mockOnFilterChange).toHaveBeenCalledWith('idSearch', []);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
         });
 
         test('treats whitespace-only input as empty', async () => {
@@ -357,7 +359,7 @@ describe('SearchByIdPanel', () => {
             });
 
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
-            expect(mockOnFilterChange).toHaveBeenCalledWith('idSearch', []);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
         });
 
         test('allows exactly 100 IDs without validation error', async () => {
@@ -420,7 +422,7 @@ describe('SearchByIdPanel', () => {
 
             // Clicking button should call onFilterChange with empty array to show no records
             fireEvent.click(updateButton);
-            expect(mockOnFilterChange).toHaveBeenCalledWith('idSearch', []);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
         });
 
@@ -510,7 +512,7 @@ describe('SearchByIdPanel', () => {
             const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
             fireEvent.click(allRecordsButton);
 
-            expect(mockOnFilterChange).toHaveBeenCalledWith('all', undefined);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ALL, undefined);
         });
 
         test('search by ids button sets filter mode even with validation error', () => {
@@ -605,7 +607,7 @@ describe('SearchByIdPanel', () => {
             const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
             fireEvent.click(aliveAtCenterButton);
 
-            expect(mockOnFilterChange).toHaveBeenCalledWith('aliveAtCenter', undefined);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
         });
 
         test('clears validation error when switching to all animals mode', () => {
@@ -949,7 +951,7 @@ describe('SearchByIdPanel', () => {
             const modifyButton = screen.getByRole('button', { name: /modify search/i });
             fireEvent.click(modifyButton);
 
-            expect(mockOnFilterChange).toHaveBeenCalledWith('idSearch', ['ID123', 'ID456']);
+            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
         });
     });
 

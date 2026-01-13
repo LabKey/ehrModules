@@ -1,5 +1,7 @@
 import { Filter, Query } from '@labkey/api';
 
+import { IdResolutionResult, ResolveIdsParams } from '../models';
+
 /**
  * Service for resolving animal IDs and aliases
  *
@@ -9,20 +11,6 @@ import { Filter, Query } from '@labkey/api';
  * - Case-insensitive matching using lowercase filter columns
  * - De-duplication of results
  */
-
-export interface IdResolutionResult {
-    notFound: string[];
-    resolved: {
-        aliasType?: null | string;
-        inputId: string;
-        resolvedBy: 'alias' | 'direct';
-        resolvedId: string;
-    }[];
-}
-
-export interface ResolveIdsParams {
-    inputIds: string[];
-}
 
 /**
  * Resolves animal IDs by querying study.directIdMatches and study.aliasIdMatches

@@ -203,23 +203,48 @@ The `ReportTab` component has been extracted from `TabbedReportPanel.tsx` into i
 - Reduced file size and complexity of TabbedReportPanel.tsx
 - Dedicated test file for ReportTab-specific behavior
 
-**Exports:**
-- `ReportTab` component
-- `ReportConfig` interface
-- `FilterArray` interface
-- `QueryWebPartConfig` interface
+**Centralized Type Definitions (Updated 2026-01-13):**
+
+All commonly used interfaces have been centralized into a dedicated models directory for better code organization and reusability:
+
+**Location:** `labkey-ui-ehr/src/ParticipantHistory/models/index.ts`
+
+**Exported Interfaces:**
+- `ReportConfig` - Report metadata and configuration
+- `FilterArray` - Removable and non-removable filters
+- `QueryWebPartConfig` - LabKey Query WebPart configuration
+- `ExtReportTab` - Extended ExtJS Container for report tabs
+- `FilterType` - Filter mode types (aliveAtCenter, all, idSearch, urlParams)
+- `UrlFilters` - URL hash filter parameters
+- `IdResolutionResult` - Animal ID resolution results
+- `ResolveIdsParams` - Parameters for ID resolution
 
 **Import Pattern:**
-All components that need these types now import directly from `ReportTab.tsx`:
+All components that need these types now import from the centralized models directory:
 ```typescript
-import { ReportConfig, QueryWebPartConfig } from './ReportTab';
+import { ReportConfig, QueryWebPartConfig, FilterType } from '../models';
 ```
 
-This eliminates the need for re-exports and creates a clearer dependency structure where:
-- `ReportTab.tsx` is the single source of truth for shared types
-- `TabbedReportPanel.tsx` imports only what it needs from ReportTab
-- Report wrapper components (JSReportWrapper, QueryReportWrapper, OtherReportWrapper) import types from ReportTab
-- Test files import types directly from ReportTab
+**Benefits of Centralization:**
+- Single source of truth for all shared type definitions
+- Eliminates circular dependencies and import confusion
+- Easier to locate and maintain type definitions
+- Consistent import pattern across all ParticipantHistory components
+- Better separation between component logic and type definitions
+- Improved IDE autocomplete and type checking
+
+**Affected Files (13 files updated):**
+- `TabbedReportPanel/ReportTab.tsx` - Imports interfaces from models
+- `TabbedReportPanel/TabbedReportPanel.tsx` - Imports from models
+- `TabbedReportPanel/QueryReportWrapper.tsx` - Imports from models
+- `TabbedReportPanel/JSReportWrapper.tsx` - Imports from models
+- `TabbedReportPanel/OtherReportWrapper.tsx` - Imports from models
+- `utils/urlHashUtils.ts` - Imports from models
+- `services/idResolutionService.ts` - Imports from models
+- `ParticipantReports.tsx` - Imports from models
+- `SearchByIdPanel/SearchByIdPanel.tsx` - Imports from models
+- `SearchByIdPanel/IdResolutionFeedback.tsx` - Imports from models
+- All corresponding test files (.test.tsx) - Imports from models
 
 **Test Coverage:**
 - `ReportTab.test.tsx` - 16 unit tests covering ExtJS integration, lifecycle, props, and filter logic
@@ -229,9 +254,11 @@ This eliminates the need for re-exports and creates a clearer dependency structu
 
 **TypeScript Type Definitions:**
 
-The codebase uses strongly-typed interfaces for all configuration objects, improving type safety and developer experience:
+The codebase uses strongly-typed interfaces for all configuration objects, improving type safety and developer experience. All shared type definitions are centralized in `src/ParticipantHistory/models/index.ts` (see Component Modularity section above).
 
-**ExtReportTab** - Extended ExtJS Container interface:
+**Key Interfaces:**
+
+**ExtReportTab** - Extended ExtJS Container interface (defined in `models/index.ts`):
 ```typescript
 export interface ExtReportTab {
     // ExtJS Container base properties
@@ -253,7 +280,7 @@ export interface ExtReportTab {
 }
 ```
 
-**JSReportPanel** - Panel object interface for JavaScript report functions:
+**JSReportPanel** - Panel object interface for JavaScript report functions (defined in `JSReportWrapper.tsx`):
 ```typescript
 export interface JSReportPanel {
     getFilterArray: () => FilterArray;
@@ -884,11 +911,14 @@ When `showReport` prop is false (initial page load, ID Search with no subjects),
 
 Add tracking for:
 1. **Filter Usage:**
-   - `animalHistory.filter.idSearch` - ID Search mode used (include count of IDs)
-   - `animalHistory.filter.idSearch.single` - Single ID search performed
-   - `animalHistory.filter.idSearch.multi` - Multi ID search performed (include count)
-   - `animalHistory.filter.all` - "Show All" filter selected
-   - `animalHistory.filter.aliveAtCenter` - "Alive, at Center" filter selected
+   - Feature Area: `ehrParticipantHistoryFilter`
+   - Metrics (using FilterType values directly):
+     - `idSearch` - ID Search mode used (tracked when search successfully resolves IDs)
+     - `all` - "All Animals" filter selected (tracked when button clicked)
+     - `aliveAtCenter` - "All Alive at Center" filter selected (tracked when button clicked)
+     - `urlParams` - URL Parameters mode (tracked when filter mode changes to urlParams)
+   - Implementation: Uses `incrementClientSideMetricCount('ehrParticipantHistoryFilter', filterType)` from `@labkey/components`
+   - Location: `SearchByIdPanel.tsx` in `handleUpdateReport` (after successful ID resolution) and `handleFilterModeChange`
 
 2. **Resolution Stats (ID Search mode only):**
    - `animalHistory.search.aliasResolved` - Count of IDs resolved via alias
@@ -1135,11 +1165,16 @@ Add tracking for:
 ## Metrics and Monitoring
 
 11. Implement metrics tracking
-    - Add filter usage metrics (idSearch, all, aliveAtCenter, urlParams)
+    - **Filter usage metrics** (Feature Area: `ehrParticipantHistoryFilter`):
+      - Metrics use FilterType values directly: `idSearch`, `all`, `aliveAtCenter`, `urlParams`
+      - `idSearch` - Tracked when search successfully resolves IDs
+      - `all` - Tracked when user clicks "All Animals" button
+      - `aliveAtCenter` - Tracked when user clicks "All Alive at Center" button
+      - `urlParams` - Tracked when filter mode changes to URL Params mode
     - Track single vs multi ID searches
     - Track alias resolution stats (resolved, not found)
     - Track report usage by filter mode
-    - Integrate with existing metrics infrastructure
+    - Implementation: Uses `incrementClientSideMetricCount('ehrParticipantHistoryFilter', filterType)` from `@labkey/components` in `SearchByIdPanel.tsx`
 
 ## Testing
 
@@ -2058,6 +2093,8 @@ private void ensureStatusVariety()
   - Use in test 9 to verify exclusion from Alive at Center results
 - At least two test reports: one supporting non-ID filters, one not supporting - configured by `configureTestReportMetadata()`
 
+---
+
 # User Education Handoff 
 
 Release:  
@@ -2091,8 +2128,12 @@ Products/Tiers:
 
 *Provide the name of the metric(s) being created as part of this feature or write N/A. Please check if off the metric once it has been verified and annotated.*
 
-- [ ] Metric name   
-- [ ] Metric name  
-- [ ] Metric name
+Feature Area: `ehrParticipantHistoryFilter`
+
+Metrics use FilterType values directly:
+- [x] `idSearch` - Tracks when user performs a successful ID search (after IDs are resolved)
+- [x] `all` - Tracks when user selects "All Animals" filter (clicks "All Animals" button)
+- [x] `aliveAtCenter` - Tracks when user selects "All Alive at Center" filter (clicks "All Alive at Center" button)
+- [x] `urlParams` - Tracks when filter mode changes to URL Params mode
 
 [image1]: images/animal-history-search-by-id-mockup.png "Animal History Search By Id Interface"

@@ -1,3 +1,12 @@
+import {
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    FilterType,
+    UrlFilters,
+} from '../models';
+
 /**
  * URL hash utilities for managing filter state in the URL
  *
@@ -8,18 +17,12 @@
  * - Using replaceState to avoid duplicate history entries
  */
 
-export type FilterType = 'aliveAtCenter' | 'all' | 'idSearch' | 'urlParams';
-
-const VALID_FILTER_TYPES: readonly FilterType[] = ['aliveAtCenter', 'all', 'idSearch', 'urlParams'] as const;
-
-export interface UrlFilters {
-    [key: string]: boolean | FilterType | string | string[] | undefined; // Allow custom parameters
-    activeReport?: string;
-    filterType?: FilterType;
-    readOnly?: boolean;
-    showReport?: boolean;
-    subjects?: string[];
-}
+const VALID_FILTER_TYPES: readonly FilterType[] = [
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+] as const;
 
 /**
  * Helper function to safely decode URI component
@@ -94,7 +97,7 @@ export function updateUrlHash(
     }
 
     // Add filterType parameter (except for urlParams mode which uses readOnly instead)
-    if (filterType !== 'urlParams') {
+    if (filterType !== FILTER_TYPE_URL_PARAMS) {
         params.filterType = filterType;
     }
 
@@ -148,7 +151,7 @@ export function getFiltersFromUrl(): UrlFilters {
     // Return default if no hash
     if (!hashContent) {
         return {
-            filterType: 'idSearch',
+            filterType: FILTER_TYPE_ID_SEARCH,
         };
     }
 
@@ -186,12 +189,12 @@ export function getFiltersFromUrl(): UrlFilters {
 
     // Determine filterType if readOnly is present (URL Params mode)
     if (filters.readOnly && filters.subjects && filters.subjects.length > 0) {
-        filters.filterType = 'urlParams';
+        filters.filterType = FILTER_TYPE_URL_PARAMS;
     }
 
     // Default to idSearch if no filterType specified
     if (!filters.filterType) {
-        filters.filterType = 'idSearch';
+        filters.filterType = FILTER_TYPE_ID_SEARCH;
     }
 
     return filters;
