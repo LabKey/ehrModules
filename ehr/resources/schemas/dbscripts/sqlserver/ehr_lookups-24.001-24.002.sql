@@ -1,1 +1,0 @@
-ALTER TABLE ehr_lookups.lab_tests ADD Lsid LsidType null;

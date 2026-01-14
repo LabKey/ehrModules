@@ -1,1 +1,0 @@
-ALTER TABLE ehr_lookups.species ADD isNHP BIT DEFAULT 1;
