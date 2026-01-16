@@ -86,14 +86,14 @@ Beyond migrating to a new framework, this will be an opportunity to rethink and 
    2. Likelihood: Medium  
    3. Mitigation:   
       1. Id resolution feedback for in UI.  
-      2. Implemented as experimental feature to be able to view old and new animal history results side-by-side.   
+      2. Implemented as admin feature initially to be able to view old and new animal history results side-by-side.   
       3. Manual testing with test data.  
       4. Regression test coverage.  
 2. Risk: Incorrect data sent to reports  
    1. Impact: High  
    2. Likelihood: Medium  
    3. Mitigation:   
-      1. Implemented as experimental feature to be able to view old and new animal history reports side-by-side.   
+      1. Implemented as admin feature initially to be able to view old and new animal history reports side-by-side.   
       2. Manual testing with test data.  
       3. Regression test coverage across all reports for each center.
 
@@ -1362,16 +1362,58 @@ Add tracking for:
     - Verify resolution finds ID regardless of stored casing
     - Enter same ID in uppercase, verify same result
 
+12. **Very Long IDs**
+    - Enter a single ID with 500+ characters
+    - Click "Search By Ids"
+    - Verify ID is processed without truncation or error
+    - Verify ID appears in "Not Found" section (assuming no match)
+    - Enter a single ID with 2000+ characters
+    - Verify no browser/UI freeze or crash
+    - Verify appropriate handling (either processed or reasonable error)
+    - Enter 50 IDs where each ID is 100 characters long
+    - Verify all IDs are parsed and processed correctly
+    - Verify URL hash doesn't exceed browser limits when bookmarking
+
+13. **Special Characters in IDs (Beyond Separators)**
+    - **URL-sensitive characters:** Enter IDs containing `&`, `=`, `?`, `#`, `%`, `+`
+      - Example: "ID&123", "ID=456", "ID?789", "ID#ABC", "ID%20DEF", "ID+GHI"
+      - Verify characters are preserved literally, not interpreted as URL parameters
+      - Verify URL hash encoding works correctly when bookmarking
+    - **Quote characters:** Enter IDs containing single quotes, double quotes, backticks
+      - Example: "ID'123", "ID\"456", "ID\`789"
+      - Verify no JavaScript errors or injection issues
+      - Verify IDs appear in "Not Found" section (assuming no match)
+    - **HTML/XSS characters:** Enter IDs containing `<`, `>`, `&`, script tags
+      - Example: "ID<123>", "ID&amp;456", "<script>alert(1)</script>"
+      - Verify characters are escaped in display, no XSS execution
+      - Verify feedback section renders safely
+    - **Regex metacharacters:** Enter IDs containing `*`, `.`, `[`, `]`, `^`, `$`, `(`, `)`, `{`, `}`, `|`, `\`
+      - Example: "ID*123", "ID.456", "ID[789]", "ID^ABC", "ID$DEF", "ID(GHI)", "ID\\JKL"
+      - Verify characters are treated literally, not as regex patterns
+      - Verify no regex evaluation errors
+    - **Unicode and international characters:** Enter IDs with accented letters, CJK characters, emoji
+      - Example: "IDéàü123", "ID中文456", "ID🐒789"
+      - Verify characters are preserved and displayed correctly
+      - Verify encoding works in URL hash
+    - **Whitespace variations:** Enter IDs with leading/trailing spaces, multiple spaces, non-breaking spaces
+      - Example: " ID123 ", "ID  456", "ID\u00A0789" (non-breaking space)
+      - Verify trimming behavior is consistent
+      - Verify non-breaking spaces are handled appropriately
+    - **Null and control characters:** Enter IDs with embedded null bytes or control characters
+      - Example: "ID\x00123", "ID\x01456"
+      - Verify no crash or security issue
+      - Verify sanitization removes or escapes dangerous characters
+
 ### All Animals Mode
 
-12. **View All Animals**
+14. **View All Animals**
     - Click "All Animals" button
     - Verify ID input textarea is cleared and hidden
     - Verify reports display data for all animals in database
     - Verify no ID filters applied
     - Test with multiple report tabs
 
-13. **URL Bookmarking - All Animals**
+15. **URL Bookmarking - All Animals**
     - While in All Animals mode, copy URL
     - Open URL in new browser tab
     - Verify All Animals mode is active
@@ -1379,21 +1421,21 @@ Add tracking for:
 
 ### All Alive at Center Mode
 
-14. **View Alive Animals (Supported Report)**
+16. **View Alive Animals (Supported Report)**
     - Navigate to report with `supportsNonIdFilters = true`
     - Verify "All Alive at Center" button is enabled
     - Click "All Alive at Center"
     - Verify reports show only animals with `Id/Demographics/calculated_status = 'Alive'`
     - Verify ID input is cleared/hidden
 
-15. **Disabled for Unsupported Reports**
+17. **Disabled for Unsupported Reports**
     - Navigate to report with `supportsNonIdFilters = false`
     - Verify "All Alive at Center" button is disabled/grayed out
     - Hover over button, verify tooltip explains why disabled
     - Switch to another report with `supportsNonIdFilters = true`
     - Verify button becomes enabled
 
-16. **Report Tab Switching**
+18. **Report Tab Switching**
     - Start in All Alive at Center mode on supported report
     - Switch to report tab with `supportsNonIdFilters = false`
     - Verify "All Alive at Center" button becomes disabled
@@ -1407,7 +1449,7 @@ Add tracking for:
 
 ### URL Params Mode (Read-Only)
 
-17. **Shared Link with Subjects**
+19. **Shared Link with Subjects**
     - Perform ID search for 3 animals, get results
     - Generate shareable URL with `readOnly=true` parameter
     - Open URL in incognito/private browser window
@@ -1415,7 +1457,7 @@ Add tracking for:
     - Verify reports display data for the 3 animals immediately
     - Verify clean presentation suitable for sharing
 
-18. **Exit ReadOnly Mode via URL Edit**
+20. **Exit ReadOnly Mode via URL Edit**
     - From URL Params mode (shared link with readOnly=true)
     - Manually edit URL to remove `readOnly:true` from hash
     - Verify SearchByIdPanel now visible
@@ -1424,7 +1466,7 @@ Add tracking for:
     - Modify ID list, click "Search By Ids"
     - Verify new IDs resolve and reports update
 
-19. **Bookmark with Many Subjects**
+21. **Bookmark with Many Subjects**
     - Create URL Params mode link with 50 animal IDs
     - Bookmark the URL
     - Close browser, reopen bookmark
@@ -1432,7 +1474,7 @@ Add tracking for:
     - Verify no ID limit validation (URL Params mode bypasses 100 limit)
     - Verify URL hash length doesn't cause browser issues
 
-20. **URL with Subjects but No readOnly Flag**
+22. **URL with Subjects but No readOnly Flag**
     - Build URL with subjects in hash but without `readOnly=true` parameter
     - Navigate to URL
     - Verify ID Search mode active (not URL Params mode)
@@ -1441,31 +1483,31 @@ Add tracking for:
 
 ### Filter Mode Switching
 
-21. **ID Search → All Animals**
+23. **ID Search → All Animals**
     - Enter 5 animal IDs, click "Search By Ids"
     - Verify reports show 5 animals
     - Click "All Animals" button
     - Verify ID textarea is cleared
     - Verify reports now show all animals
 
-22. **All Animals → ID Search**
+24. **All Animals → ID Search**
     - While in All Animals mode showing all animals
     - Enter animal IDs in textarea and click "Search By Ids"
     - Verify ID resolution occurs
     - Verify reports update to show only entered animals
 
-23. **ID Search → All Alive at Center**
+25. **ID Search → All Alive at Center**
     - From ID Search with 5 animals
     - Click "All Alive at Center" button (on supported report)
     - Verify ID textarea cleared
     - Verify reports now show only alive animals (not just the 5)
 
-24. **All Alive at Center → ID Search**
+26. **All Alive at Center → ID Search**
     - From All Alive at Center mode
     - Enter animal IDs in textarea and click "Search By Ids"
     - Verify can return to ID search with specified animals
 
-25. **Browser Back/Forward Navigation**
+27. **Browser Back/Forward Navigation**
     - Perform ID search for 3 animals
     - Click "All Animals"
     - Click browser back button
@@ -1476,13 +1518,13 @@ Add tracking for:
 
 ### Cross-Report Consistency
 
-26. **Data Consistency Across Report Types**
+28. **Data Consistency Across Report Types**
     - Search for 3 animals
     - Navigate through all report tabs (Demographics, Weight, Housing, etc.)
     - Verify all reports show same 3 animals
     - Verify filter is maintained across tabs
 
-27. **Single vs Multi-Animal Report Variants**
+29. **Single vs Multi-Animal Report Variants**
     - Search for 1 animal
     - Verify reports using single-animal view layout
     - Search for 10 animals
