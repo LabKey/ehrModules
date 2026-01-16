@@ -1,8 +1,19 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 
+import { Query } from '@labkey/api';
+
 import { JSReportWrapper } from './JSReportWrapper';
 import { ExtReportTab, ReportConfig } from '../models';
+
+// Mock @labkey/api Query.selectRows
+jest.mock('@labkey/api', () => ({
+    ...jest.requireActual('@labkey/api'),
+    Query: {
+        ...jest.requireActual('@labkey/api').Query,
+        selectRows: jest.fn(),
+    },
+}));
 
 // Mock Ext4 global
 const mockExt4Container: ExtReportTab = {
@@ -21,13 +32,6 @@ const mockExt4Container: ExtReportTab = {
     Msg: {
         wait: jest.fn(),
         hide: jest.fn(),
-    },
-};
-
-// Mock LABKEY global
-(global as any).LABKEY = {
-    Query: {
-        selectRows: jest.fn(),
     },
 };
 
@@ -191,8 +195,7 @@ describe('JSReportWrapper', () => {
         });
         (window as any).testFunction = mockJsFunction;
 
-        const mockSelectRows = jest.fn();
-        (global as any).LABKEY.Query.selectRows = mockSelectRows;
+        const mockSelectRows = Query.selectRows as jest.Mock;
 
         render(<JSReportWrapper report={jsReport} tab={mockTab} />);
 
@@ -219,13 +222,12 @@ describe('JSReportWrapper', () => {
         });
         (window as any).testFunction = mockJsFunction;
 
-        const mockSelectRows = jest.fn((config: any) => {
+        (Query.selectRows as jest.Mock).mockImplementation((config: any) => {
             // Simulate successful query
             config.success({
                 rows: [{ Id: 'ID123' }, { Id: 'ID456' }, { Id: 'ID789' }],
             });
         });
-        (global as any).LABKEY.Query.selectRows = mockSelectRows;
 
         render(<JSReportWrapper report={jsReport} tab={mockTab} />);
 

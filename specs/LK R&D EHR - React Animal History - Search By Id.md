@@ -569,7 +569,7 @@ export const ParticipantReports: FC = memo(() => {
     const [showReport, setShowReport] = useState<boolean>(urlFilters.showReport ?? false);
 
     // Query active report metadata to get supportsNonIdFilters field
-    // Uses LABKEY.Query.selectRows to query ehr.reports table
+    // Uses Query.selectRows from @labkey/api to query ehr.reports table
     // Filter by reportname field (activeReport contains the report name from TabbedReportPanel)
     // Stores result in state (activeReportSupportsNonIdFilters)
     // Defaults to true if query fails or no active report
@@ -1600,7 +1600,7 @@ Add tracking for:
 * Test LabKey API returns 500 error - verify error handling
 * Test LabKey API returns empty result set - verify handled gracefully
 * Test LabKey API returns malformed response - verify doesn't crash
-* Mock LabKey.Query.selectRows calls
+* Mock @labkey/api Query.selectRows calls
 
 **File: `SearchByIdPanel.test.tsx`**
 * Test ID parsing with newline separators

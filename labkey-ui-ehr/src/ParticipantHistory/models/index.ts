@@ -70,7 +70,7 @@ export interface ExtReportTab {
     add: (config: any) => void;
     destroy: () => void;
 
-    filters: any;
+    filters: ReportFilters;
     // Custom methods added to tab
     getFilterArray: () => FilterArray;
 

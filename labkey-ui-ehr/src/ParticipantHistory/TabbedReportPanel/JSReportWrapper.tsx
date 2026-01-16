@@ -1,10 +1,27 @@
 import React, { FC, memo, useEffect } from 'react';
 
+import { Query, Filter } from '@labkey/api';
+
 import { ExtReportTab, FilterArray, QueryWebPartConfig, ReportConfig } from '../models';
 
 // Declare global variables for ExtJS and LabKey
 declare const Ext4: any;
 declare const LABKEY: any;
+
+/** Row from demographicsCurLocation query */
+interface DemographicsLocationRow {
+    [key: string]: unknown;
+    Id?: string;
+}
+
+/** Result from LABKEY.Query.selectRows */
+interface SelectRowsResult {
+    [key: string]: unknown;
+    rows?: DemographicsLocationRow[];
+}
+
+/** Type for JS report handler function */
+type JSReportHandler = (panel: JSReportPanel, tab: ExtReportTab) => void;
 
 /**
  * Panel object interface passed to JavaScript report functions
@@ -17,7 +34,7 @@ export interface JSReportPanel {
     resolveSubjectsFromHousing: (
         tab: ExtReportTab,
         callback: (subjects: string[], tab: ExtReportTab) => void,
-        scope?: any
+        scope?: unknown
     ) => void;
 }
 
@@ -27,10 +44,7 @@ export interface JSReportPanel {
  * @param reportNamespace - Optional namespace to search (e.g., "EHR.reports")
  * @returns Resolved function or null
  */
-const resolveJsFunction = (
-    handlerName: any,
-    reportNamespace?: string
-): ((panel: JSReportPanel, tab: ExtReportTab) => void) | null => {
+const resolveJsFunction = (handlerName: JSReportHandler | string, reportNamespace?: string): JSReportHandler | null => {
     if (typeof handlerName === 'function') {
         return handlerName;
     }
@@ -82,13 +96,13 @@ const getTitleSuffix = (subjects?: string[]): string => {
  * @returns Function that resolves subjects from housing location
  */
 const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPanel | null) => {
-    return (tabArg: ExtReportTab, callback: (subjects: string[], tab: ExtReportTab) => void, scope?: any) => {
+    return (tabArg: ExtReportTab, callback: (subjects: string[], tab: ExtReportTab) => void, scope?: unknown) => {
         if (Ext4?.Msg?.wait) {
             Ext4.Msg.wait('Loading Ids For Location...');
         }
 
         const filterArray = tab.getFilterArray();
-        let filters: any[] = [];
+        let filters: Filter.IFilter[] = [];
 
         if (filterArray.nonRemovable) {
             filters = filters.concat(filterArray.nonRemovable);
@@ -98,25 +112,25 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
             filters = filters.concat(filterArray.removable);
         }
 
-        LABKEY.Query.selectRows({
+        Query.selectRows({
             schemaName: 'study',
             queryName: 'demographicsCurLocation',
             sort: 'room,cage,id',
             filterArray: filters,
-            failure: (error: any) => {
+            failure: (error: unknown) => {
                 if (Ext4?.Msg?.hide) {
                     Ext4.Msg.hide();
                 }
                 console.error('Failed to resolve subjects from housing:', error);
             },
-            success: (results: any) => {
+            success: (results: SelectRowsResult) => {
                 if (Ext4?.Msg?.hide) {
                     Ext4.Msg.hide();
                 }
 
                 const subjects: string[] = [];
                 if (results.rows) {
-                    results.rows.forEach((row: any) => {
+                    results.rows.forEach((row: DemographicsLocationRow) => {
                         if (row.Id) {
                             subjects.push(row.Id);
                         }

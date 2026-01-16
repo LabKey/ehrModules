@@ -1,5 +1,6 @@
 import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { Query } from '@labkey/api';
 import { SearchByIdPanel } from './SearchByIdPanel/SearchByIdPanel';
 import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
 import { getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
@@ -49,7 +50,7 @@ const ParticipantReportsComponent: FC = () => {
             return;
         }
 
-        LABKEY.Query.selectRows({
+        Query.selectRows({
             schemaName: 'ehr',
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],

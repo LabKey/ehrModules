@@ -1,6 +1,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import { Query } from '@labkey/api';
+
 import { ParticipantReports } from './ParticipantReports';
 import { defaultServerContext, renderWithServerContext } from '../test/utils';
 
@@ -37,15 +39,12 @@ const mockExt4Container = {
 };
 
 // Mock LABKEY API for OtherReportWrapper and ParticipantReports
-const mockSelectRows = jest.fn();
+// Note: Query.selectRows is mocked via @labkey/api mock above
 (global as any).LABKEY = {
     ...(global as any).LABKEY,
     WebPart: jest.fn().mockImplementation(() => ({
         render: jest.fn(),
     })),
-    Query: {
-        selectRows: mockSelectRows,
-    },
     Filter: {
         create: jest.fn((field, value, type) => ({ field, value, type })),
         Types: {
@@ -62,9 +61,9 @@ describe('ParticipantReports', () => {
         jest.clearAllMocks();
         mockExt4Container.isDestroyed = false;
 
-        // Mock LABKEY.Query.selectRows with default behavior
+        // Mock Query.selectRows with default behavior
         // Returns a proper reports array for the consolidated query
-        mockSelectRows.mockImplementation((config: any) => {
+        (Query.selectRows as jest.Mock).mockImplementation((config: any) => {
             if (config.success) {
                 config.success({
                     rows: [
@@ -576,7 +575,7 @@ describe('ParticipantReports', () => {
         describe('LABKEY query error handling', () => {
             test('handles LABKEY query failure gracefully', () => {
                 // Mock the selectRows to call the failure callback
-                mockSelectRows.mockImplementationOnce((config: any) => {
+                (Query.selectRows as jest.Mock).mockImplementationOnce((config: any) => {
                     if (config.failure) {
                         config.failure({ message: 'Query failed' });
                     }
@@ -593,7 +592,7 @@ describe('ParticipantReports', () => {
 
             test('defaults to supporting all filters when report metadata not found', () => {
                 // Mock the selectRows to return empty rows
-                mockSelectRows.mockImplementationOnce((config: any) => {
+                (Query.selectRows as jest.Mock).mockImplementationOnce((config: any) => {
                     if (config.success) {
                         config.success({ rows: [] });
                     }
@@ -612,7 +611,7 @@ describe('ParticipantReports', () => {
         describe('filter unsupported error message', () => {
             test('shows error message when Alive at Center filter is not supported by report', async () => {
                 // Mock the selectRows to return a report with supportsnonidfilters: false
-                mockSelectRows.mockImplementationOnce((config: any) => {
+                (Query.selectRows as jest.Mock).mockImplementationOnce((config: any) => {
                     if (config.success) {
                         config.success({
                             rows: [

@@ -9,6 +9,7 @@ import {
     FilterArray,
     QueryWebPartConfig,
     ReportConfig,
+    ReportFilters,
 } from '../models';
 
 // Declare global variables for ExtJS
@@ -16,7 +17,7 @@ declare const Ext4: any;
 
 export const ReportTab: FC<{
     children: (tab: ExtReportTab) => React.ReactNode;
-    filters: any;
+    filters: ReportFilters;
     report: ReportConfig;
 }> = ({ report, filters, children }) => {
     const targetRef = useRef<HTMLDivElement>(null);
