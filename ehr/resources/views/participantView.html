@@ -20,12 +20,24 @@
         // Add "New Participant View" link in upper left corner if experimental feature is enabled
         var ehrContext = LABKEY.getModuleContext('ehr');
         if (ehrContext && ehrContext.isReactAnimalHistoryEnabled) {
+            // Build base URL with query parameters
             var newViewUrl = LABKEY.ActionURL.buildURL(
                 LABKEY.ActionURL.getController(),
                 'participantViewNew',
                 LABKEY.ActionURL.getContainer(),
-                LABKEY.ActionURL.getParameters()
+                { participantId: participantId }
             );
+
+            // Add hash parameters for React Animal History page
+            // readOnly:true makes the SearchByIdPanel show read-only summary instead of editable inputs
+            var hashParams = [
+                'subjects:' + encodeURIComponent(participantId),
+                'readOnly:true',
+                'showReport:1',
+                'activeReport:snapshot'
+            ];
+            newViewUrl += '#' + hashParams.join('&');
+
             var linkDiv = document.createElement('div');
             linkDiv.style.cssText = 'text-align: left;';
             linkDiv.innerHTML = '<a href="' + newViewUrl + '">New Participant View</a>';
