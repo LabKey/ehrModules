@@ -150,6 +150,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         links.add("ehr-updateTable.view");
         links.add("ehr-populateLookupData.view");
         links.add("ehr-participantViewNew.view");
+        links.add("ehr-postgresMigration.view");
         return links;
     }
 
