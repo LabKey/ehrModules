@@ -61,12 +61,11 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
         [activeReport, onTabChange]
     );
 
+    // Effect for initial reports fetch - runs once on mount, NOT on tab changes
+    // Note: activeReport is intentionally excluded to prevent re-fetching reports on every tab switch
     useEffect(() => {
         if (propsReports) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setReports(propsReports);
-            initializeActiveTab(propsReports);
-
             setIsLoading(false);
             return;
         }
@@ -101,7 +100,6 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
                     return report;
                 });
                 setReports(loadedReports);
-                initializeActiveTab(loadedReports);
                 setIsLoading(false);
             },
             failure: e => {
@@ -110,7 +108,16 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
                 setIsLoading(false);
             },
         });
-    }, [propsReports, activeReport, reportsSchema, reportsQuery, initializeActiveTab]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [propsReports, reportsSchema, reportsQuery]);
+
+    // Effect for initial tab selection - runs after reports are loaded
+    // Triggers when reports are loaded and category hasn't been set yet
+    useEffect(() => {
+        if (reports.length > 0 && !activeCategory) {
+            initializeActiveTab(reports);
+        }
+    }, [reports, activeCategory, initializeActiveTab]);
 
     // Group reports by category, preserving order
     const { categories, reportsByCategory } = useMemo(() => {
@@ -199,7 +206,7 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
 
             <div className="tab-content">
                 {showReport && currentActiveReport ? (
-                    <div key={currentActiveReport.id}>
+                    <div>
                         <ReportTab filters={filters} report={currentActiveReport}>
                             {tab => (
                                 <>

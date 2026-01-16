@@ -341,13 +341,38 @@ describe('ParticipantReports', () => {
                 expect(screen.getByText('Loading reports...')).toBeVisible();
             });
 
-            test('ignores readOnly:true when no subjects in URL', () => {
+            test('hides SearchByIdPanel when in readOnly mode with subjects', () => {
+                window.location.hash = '#subjects:ID123%3BID456&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // SearchByIdPanel should NOT be rendered
+                expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /all alive at center/i })).not.toBeInTheDocument();
+            });
+
+            test('shows SearchByIdPanel in normal mode (not readOnly)', () => {
+                window.location.hash = '#filterType:idSearch';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // SearchByIdPanel should be rendered with its elements
+                expect(screen.getByLabelText(/enter animal ids/i)).toBeInTheDocument();
+                expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
+                expect(screen.getByRole('button', { name: /all animals/i })).toBeInTheDocument();
+                expect(screen.getByRole('button', { name: /all alive at center/i })).toBeInTheDocument();
+            });
+
+            test('ignores readOnly:true when no subjects in URL and shows SearchByIdPanel', () => {
                 window.location.hash = '#readOnly:true';
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                // Should default to a safe mode (likely All Records or ID Search)
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                // Without subjects, readOnly is ignored and SearchByIdPanel should be visible
+                expect(screen.getByLabelText(/enter animal ids/i)).toBeInTheDocument();
+                expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             });
 
             test('readOnly parameter takes priority over filterType parameter', () => {
@@ -355,7 +380,19 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                // Should use URL Params mode, not All Records mode
+                // Should use URL Params mode (readOnly), not All Records mode
+                // SearchByIdPanel should be hidden
+                expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
+            });
+
+            test('shows reports immediately in readOnly mode (showReport defaults to true)', () => {
+                window.location.hash = '#subjects:ID123&readOnly:true';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // In readOnly mode, reports should be loading immediately
+                // The TabbedReportPanel should be attempting to load reports
                 expect(screen.getByText('Loading reports...')).toBeVisible();
             });
         });
@@ -414,6 +451,24 @@ describe('ParticipantReports', () => {
                 // Component should be in URL Params mode initially
                 // After switching to ID Search (would require UI interaction), readOnly should be removed
                 expect(screen.getByText('Loading reports...')).toBeVisible();
+            });
+
+            test('preserves activeReport parameter from URL hash', () => {
+                window.location.hash = '#filterType:idSearch&activeReport:test-report&subjects:ID123';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Component should preserve activeReport in state
+                expect(window.location.hash).toContain('activeReport:test-report');
+            });
+
+            test('preserves activeReport when changing filter modes', () => {
+                window.location.hash = '#filterType:all&activeReport:my-report&showReport:1';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // activeReport should remain in the hash
+                expect(window.location.hash).toContain('activeReport:my-report');
             });
         });
 
@@ -539,6 +594,40 @@ describe('ParticipantReports', () => {
 
                 // Component should render with default behavior (all filters supported)
                 expect(screen.queryByText('Loading reports...')).toBeInTheDocument();
+            });
+        });
+
+        describe('filter unsupported error message', () => {
+            test('shows error message when Alive at Center filter is not supported by report', async () => {
+                // Mock the selectRows to return supportsnonidfilters: false
+                mockSelectRows.mockImplementationOnce((config: any) => {
+                    if (config.success) {
+                        config.success({ rows: [{ supportsnonidfilters: false }] });
+                    }
+                });
+
+                // Start with Alive at Center filter active
+                window.location.hash = '#filterType:aliveAtCenter&activeReport:test-report&showReport:1';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Wait for the error message to appear
+                const errorMessage = await screen.findByRole('alert');
+                expect(errorMessage).toHaveTextContent(
+                    'Filter type unsupported for this report. Switched to All Animals.'
+                );
+            });
+
+            test('does not show error message when Alive at Center filter is supported', () => {
+                // Default mock already returns supportsnonidfilters: true
+                window.location.hash = '#filterType:aliveAtCenter&activeReport:test-report&showReport:1';
+
+                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+
+                // Should not show error message
+                expect(
+                    screen.queryByText('Filter type unsupported for this report. Switched to All Animals.')
+                ).not.toBeInTheDocument();
             });
         });
     });

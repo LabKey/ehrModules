@@ -109,13 +109,44 @@ describe('urlHashUtils', () => {
             });
         });
 
+        describe('activeReport parameter', () => {
+            test('sets activeReport parameter when provided', () => {
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123'], false, true, 'my-report');
+
+                expect(window.location.hash).toContain('activeReport:my-report');
+                expect(window.location.hash).toContain('filterType:idSearch');
+            });
+
+            test('overrides existing activeReport with new value', () => {
+                window.location.hash = '#activeReport:old-report&filterType:idSearch';
+
+                updateUrlHash(FILTER_TYPE_ALL, undefined, false, true, 'new-report');
+
+                expect(window.location.hash).toContain('activeReport:new-report');
+                expect(window.location.hash).not.toContain('activeReport:old-report');
+            });
+
+            test('omits activeReport when not provided', () => {
+                updateUrlHash(FILTER_TYPE_ALL, undefined);
+
+                expect(window.location.hash).not.toContain('activeReport');
+            });
+
+            test('clears activeReport from URL when not provided', () => {
+                window.location.hash = '#activeReport:old-report&filterType:idSearch';
+
+                updateUrlHash(FILTER_TYPE_ALL, undefined, false, true);
+
+                expect(window.location.hash).not.toContain('activeReport');
+            });
+        });
+
         describe('preserving other parameters', () => {
-            test('preserves activeReport parameter when updating', () => {
-                window.location.hash = '#activeReport:test-report&showReport:1';
+            test('preserves showReport parameter when updating', () => {
+                window.location.hash = '#showReport:1';
 
-                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123']);
+                updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123'], false, false, 'test-report');
 
-                expect(window.location.hash).toContain('activeReport:test-report');
                 expect(window.location.hash).toContain('showReport:1');
                 expect(window.location.hash).toContain('filterType:idSearch');
             });
@@ -490,6 +521,17 @@ describe('urlHashUtils', () => {
             expect(filters.filterType).toBe(FILTER_TYPE_URL_PARAMS);
             expect(filters.subjects).toEqual(subjects);
             expect(filters.readOnly).toBe(true);
+        });
+
+        test('updateUrlHash and getFiltersFromUrl work together for activeReport', () => {
+            updateUrlHash(FILTER_TYPE_ID_SEARCH, ['ID123'], false, true, 'my-test-report');
+
+            const filters = getFiltersFromUrl();
+
+            expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
+            expect(filters.subjects).toEqual(['ID123']);
+            expect(filters.activeReport).toBe('my-test-report');
+            expect(filters.showReport).toBe(true);
         });
     });
 });

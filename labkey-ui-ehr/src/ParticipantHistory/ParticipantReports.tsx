@@ -1,5 +1,4 @@
 import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { incrementClientSideMetricCount } from '@labkey/components';
 
 import { SearchByIdPanel } from './SearchByIdPanel/SearchByIdPanel';
 import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
@@ -19,19 +18,25 @@ const ParticipantReportsComponent: FC = () => {
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
     const [subjects, setSubjects] = useState<string[]>(urlFilters.subjects || []);
 
+    // Determine if we're in read-only mode from URL (for shared/bookmarked links)
+    const isReadOnly = useMemo(() => {
+        return urlFilters.readOnly && (urlFilters.subjects?.length ?? 0) > 0;
+    }, [urlFilters]);
+
     // Determine initial filter type based on URL parameters
     const initialFilterType = useMemo(() => {
-        if (urlFilters.readOnly && urlFilters.subjects?.length > 0) {
+        if (isReadOnly) {
             return FILTER_TYPE_URL_PARAMS; // Read-only mode for shared links
         }
         return urlFilters.filterType || FILTER_TYPE_ID_SEARCH;
-    }, [urlFilters]);
+    }, [urlFilters, isReadOnly]);
 
     const [filterType, setFilterType] = useState<FilterType>(initialFilterType);
     const [activeReport, setActiveReport] = useState(urlFilters.activeReport);
     const [activeReportSupportsNonIdFilters, setActiveReportSupportsNonIdFilters] = useState<boolean>(true);
     const [filterNotSupportedError, setFilterNotSupportedError] = useState<null | string>(null);
-    const [showReport, setShowReport] = useState<boolean>(urlFilters.showReport ?? false);
+    // In readOnly mode, always show reports immediately
+    const [showReport, setShowReport] = useState<boolean>(isReadOnly || (urlFilters.showReport ?? false));
 
     // Query active report metadata to get supportsNonIdFilters field from ehr.reports
     useEffect(() => {
@@ -84,38 +89,45 @@ const ParticipantReportsComponent: FC = () => {
             const isLeavingReadOnly = filterType === FILTER_TYPE_URL_PARAMS && newFilterType !== FILTER_TYPE_URL_PARAMS;
             const readOnly = newFilterType === FILTER_TYPE_URL_PARAMS && !isLeavingReadOnly;
 
-            updateUrlHash(newFilterType, newSubjects, readOnly, shouldShowReport);
+            updateUrlHash(newFilterType, newSubjects, readOnly, shouldShowReport, activeReport);
         },
-        [filterType]
+        [filterType, activeReport]
     );
 
     const handleTabChange = useCallback(
         (reportId: string) => {
             setActiveReport(reportId);
             // Update URL hash with new activeReport
-            updateUrlHash(filterType, subjects, filterType === FILTER_TYPE_URL_PARAMS, showReport);
+            updateUrlHash(filterType, subjects, filterType === FILTER_TYPE_URL_PARAMS, showReport, reportId);
         },
         [filterType, subjects, showReport]
     );
 
-    // Determine if current filter is not supported and set error message
-    useEffect(() => {
-        if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
-            setFilterNotSupportedError('This report does not support Alive at Center filtering.');
-        } else {
-            setFilterNotSupportedError(null);
-        }
-    }, [filterType, activeReportSupportsNonIdFilters]);
-
     // Auto-switch from aliveAtCenter to all when report doesn't support it
+    // Also set the error message when switching
     useEffect(() => {
         if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
-            // Automatically switch to All Animals mode, but keep error message visible
-
+            // Set error message before switching to All Animals mode
+            setFilterNotSupportedError('Filter type unsupported for this report. Switched to All Animals.');
+            // Automatically switch to All Animals mode
             handleFilterChange(FILTER_TYPE_ALL, undefined, false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeReportSupportsNonIdFilters, filterType]);
+
+    // Clear error message when user manually changes filter or when report supports the filter
+    useEffect(() => {
+        // Only clear error if user has changed to a filter mode that works
+        // Don't clear if we just auto-switched to all (that's handled above with clearError=false)
+        if (filterType !== FILTER_TYPE_ALL || activeReportSupportsNonIdFilters) {
+            // When filter type is not 'all', or when the report supports non-id filters,
+            // the error should be cleared (unless it was just set by the auto-switch)
+            // We use a check for activeReportSupportsNonIdFilters here
+            if (activeReportSupportsNonIdFilters) {
+                setFilterNotSupportedError(null);
+            }
+        }
+    }, [filterType, activeReportSupportsNonIdFilters]);
 
     // Compute effective filter - override to 'all' if aliveAtCenter is not supported
     const effectiveFilterType = useMemo(() => {
@@ -138,12 +150,14 @@ const ParticipantReportsComponent: FC = () => {
 
     return (
         <div className="participant-reports">
-            <SearchByIdPanel
-                activeReportSupportsNonIdFilters={activeReportSupportsNonIdFilters}
-                initialFilterType={filterType}
-                initialSubjects={subjects}
-                onFilterChange={handleFilterChange}
-            />
+            {!isReadOnly && (
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={activeReportSupportsNonIdFilters}
+                    initialFilterType={filterType}
+                    initialSubjects={subjects}
+                    onFilterChange={handleFilterChange}
+                />
+            )}
             {filterNotSupportedError && (
                 <div className="filter-not-supported-error" role="alert">
                     {filterNotSupportedError}

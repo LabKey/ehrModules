@@ -51,21 +51,23 @@ function isValidFilterType(value: string): value is FilterType {
  * Updates the URL hash with filter parameters
  *
  * Format examples:
- * - ID Search: #filterType:idSearch&subjects:ID1;ID2;ID3&showReport:1
- * - All Records: #filterType:all&showReport:1
- * - Alive at Center: #filterType:aliveAtCenter&showReport:1
- * - URL Params: #subjects:ID1;ID2&readOnly:true&showReport:1
+ * - ID Search: #filterType:idSearch&subjects:ID1;ID2;ID3&showReport:1&activeReport:reportId
+ * - All Records: #filterType:all&showReport:1&activeReport:reportId
+ * - Alive at Center: #filterType:aliveAtCenter&showReport:1&activeReport:reportId
+ * - URL Params: #subjects:ID1;ID2&readOnly:true&showReport:1&activeReport:reportId
  *
  * @param filterType - The filter mode to set
  * @param subjects - Optional array of subject IDs (for idSearch and urlParams modes)
  * @param readOnly - Optional flag to enable read-only URL Params mode
  * @param showReport - Optional flag to show report content (defaults to false)
+ * @param activeReport - Optional report ID to set as active
  */
 export function updateUrlHash(
     filterType: FilterType,
     subjects?: string[],
     readOnly?: boolean,
-    showReport?: boolean
+    showReport?: boolean,
+    activeReport?: string
 ): void {
     // Parse existing hash to preserve other parameters
     const existingFilters = getFiltersFromUrl();
@@ -79,6 +81,7 @@ export function updateUrlHash(
             key !== 'filterType' &&
             key !== 'subjects' &&
             key !== 'readOnly' &&
+            key !== 'activeReport' &&
             existingFilters[key] !== undefined &&
             existingFilters[key] !== null
         ) {
@@ -109,6 +112,11 @@ export function updateUrlHash(
     // Add showReport parameter if true
     if (showReport) {
         params.showReport = '1';
+    }
+
+    // Add activeReport parameter if provided
+    if (activeReport) {
+        params.activeReport = activeReport;
     }
 
     // Build hash string
