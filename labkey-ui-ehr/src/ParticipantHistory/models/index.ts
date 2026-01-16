@@ -91,6 +91,15 @@ export interface ExtReportTab {
 export type FilterType = 'aliveAtCenter' | 'all' | 'idSearch' | 'urlParams';
 
 /**
+ * Report Filters
+ * Filters passed to TabbedReportPanel for filtering report data
+ */
+export interface ReportFilters {
+    filterType: FilterType;
+    subjects?: string[];
+}
+
+/**
  * Filter Type Constants
  * Constant values for filter modes to avoid magic strings
  */

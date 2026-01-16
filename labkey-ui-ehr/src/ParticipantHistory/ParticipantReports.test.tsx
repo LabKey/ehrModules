@@ -62,11 +62,21 @@ describe('ParticipantReports', () => {
         jest.clearAllMocks();
         mockExt4Container.isDestroyed = false;
 
-        // Mock LABKEY.Query.selectRows with default behavior (returns supportsnonidfilters: true)
+        // Mock LABKEY.Query.selectRows with default behavior
+        // Returns a proper reports array for the consolidated query
         mockSelectRows.mockImplementation((config: any) => {
             if (config.success) {
                 config.success({
-                    rows: [{ supportsnonidfilters: true }],
+                    rows: [
+                        {
+                            reportname: 'test-report',
+                            reporttitle: 'Test Report',
+                            reporttype: 'query',
+                            supportsnonidfilters: true,
+                            visible: true,
+                            category: 'General',
+                        },
+                    ],
                 });
             }
         });
@@ -93,15 +103,15 @@ describe('ParticipantReports', () => {
         test('renders TabbedReportPanel component', () => {
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            // Component should render and show loading state (since no reports are loaded yet)
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            // Component should render and show the report category tabs
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('renders with default subjects filter when no URL hash present', () => {
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
             // Component renders without errors when no hash is present
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
     });
 
@@ -112,7 +122,7 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
             // Component should render without errors when activeReport is in hash
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses inputType from URL hash', () => {
@@ -120,7 +130,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses showReport as true from URL hash', () => {
@@ -128,7 +138,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses showReport as false from URL hash', () => {
@@ -136,7 +146,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses subjects from URL hash', () => {
@@ -144,7 +154,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses multiple parameters from URL hash', () => {
@@ -152,7 +162,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('parses custom/unknown parameters from URL hash', () => {
@@ -160,7 +170,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('handles URL-encoded values in hash parameters', () => {
@@ -168,7 +178,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('handles empty subjects value in URL hash', () => {
@@ -176,7 +186,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('ignores parameters without values', () => {
@@ -184,7 +194,7 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
     });
 
@@ -194,14 +204,14 @@ describe('ParticipantReports', () => {
 
             // The component should render the TabbedReportPanel with EHR.reports namespace
             // This is verified indirectly by successful render
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('passes correct reportsQuery and reportsSchema props', () => {
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
             // The component should render with ehr schema and reports query
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
     });
 
@@ -213,7 +223,7 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
             // Component should render without errors when participantId is in query params
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
 
             // Verify the participantId was parsed correctly by checking document.location.search
             const urlParams = new URLSearchParams(document.location.search);
@@ -231,7 +241,7 @@ describe('ParticipantReports', () => {
             expect(urlParams.get('participantId')).toBe('12345');
 
             // Component renders successfully
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('participantId is merged with hash subjects when both are present', () => {
@@ -247,7 +257,7 @@ describe('ParticipantReports', () => {
             expect(window.location.hash).toContain('subjects:subject1');
 
             // Component renders successfully
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('participantId from query params takes priority when not in hash subjects', () => {
@@ -262,7 +272,7 @@ describe('ParticipantReports', () => {
             expect(urlParams.get('participantId')).toBe('55555');
 
             // Component renders successfully - participantId should be merged with hash subjects
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('handles participantId with other URL query parameters', () => {
@@ -277,7 +287,7 @@ describe('ParticipantReports', () => {
             expect(urlParams.get('otherParam')).toBe('value');
 
             // Component renders successfully
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
 
         test('renders correctly when participantId is not present in query params', () => {
@@ -291,7 +301,7 @@ describe('ParticipantReports', () => {
             expect(urlParams.get('participantId')).toBeNull();
 
             // Component renders successfully
-            expect(screen.getByText('Loading reports...')).toBeVisible();
+            expect(screen.getByText('General')).toBeVisible();
         });
     });
 
@@ -303,7 +313,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Component should render with subjects from hash
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('initializes with All Records mode when filterType:all in hash', () => {
@@ -311,7 +321,7 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('initializes with Alive at Center mode when filterType:aliveAtCenter in hash', () => {
@@ -319,7 +329,7 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('defaults to ID Search mode when no filterType in hash', () => {
@@ -327,7 +337,7 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -338,7 +348,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Component should render in URL Params mode
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('hides SearchByIdPanel when in readOnly mode with subjects', () => {
@@ -393,7 +403,7 @@ describe('ParticipantReports', () => {
 
                 // In readOnly mode, reports should be loading immediately
                 // The TabbedReportPanel should be attempting to load reports
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -404,7 +414,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Verify component renders with subjects
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('manages filterType state from URL hash', () => {
@@ -412,7 +422,7 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -424,7 +434,7 @@ describe('ParticipantReports', () => {
 
                 // After component mounts, simulate filter change
                 // Note: This would require exposing handleFilterChange or testing through UI interaction
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('includes subjects in URL hash for ID Search mode', () => {
@@ -450,7 +460,7 @@ describe('ParticipantReports', () => {
 
                 // Component should be in URL Params mode initially
                 // After switching to ID Search (would require UI interaction), readOnly should be removed
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('preserves activeReport parameter from URL hash', () => {
@@ -463,12 +473,13 @@ describe('ParticipantReports', () => {
             });
 
             test('preserves activeReport when changing filter modes', () => {
-                window.location.hash = '#filterType:all&activeReport:my-report&showReport:1';
+                // Use test-report which matches the mock data
+                window.location.hash = '#filterType:all&activeReport:test-report&showReport:1';
 
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // activeReport should remain in the hash
-                expect(window.location.hash).toContain('activeReport:my-report');
+                expect(window.location.hash).toContain('activeReport:test-report');
             });
         });
 
@@ -479,7 +490,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Component should query ehr.reports for the active report's metadata
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('updates activeReportSupportsNonIdFilters when switching report tabs', () => {
@@ -488,7 +499,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // After switching to different report tab, should re-query metadata
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('defaults to false when no active report selected', () => {
@@ -497,7 +508,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Should handle no active report gracefully
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -509,7 +520,7 @@ describe('ParticipantReports', () => {
 
                 // Simulate rapid filter changes
                 // This would require UI interaction or exposing handleFilterChange
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -520,7 +531,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Should fall back to default state without crashing
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('handles URL hash with missing values', () => {
@@ -529,7 +540,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Should handle empty values gracefully
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -540,7 +551,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // TabbedReportPanel should receive filters prop with filterType and subjects
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('passes undefined subjects for All Records mode', () => {
@@ -549,7 +560,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // filters.subjects should be undefined for All Records
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
 
             test('passes subjects for URL Params mode', () => {
@@ -558,7 +569,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // filters.subjects should be populated for URL Params mode
-                expect(screen.getByText('Loading reports...')).toBeVisible();
+                expect(screen.getByText('General')).toBeVisible();
             });
         });
 
@@ -576,8 +587,8 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Component should render without crashing despite the query failure
-                // The error will be logged to console but shouldn't break the UI
-                expect(screen.queryByText('Loading reports...')).toBeInTheDocument();
+                // When failure happens, no reports are loaded so TabbedReportPanel shows empty state
+                expect(screen.queryByText('No reports configuration provided.')).toBeInTheDocument();
             });
 
             test('defaults to supporting all filters when report metadata not found', () => {
@@ -593,16 +604,28 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports />, defaultServerContext());
 
                 // Component should render with default behavior (all filters supported)
-                expect(screen.queryByText('Loading reports...')).toBeInTheDocument();
+                // With no reports, TabbedReportPanel shows empty state
+                expect(screen.queryByText('No reports configuration provided.')).toBeInTheDocument();
             });
         });
 
         describe('filter unsupported error message', () => {
             test('shows error message when Alive at Center filter is not supported by report', async () => {
-                // Mock the selectRows to return supportsnonidfilters: false
+                // Mock the selectRows to return a report with supportsnonidfilters: false
                 mockSelectRows.mockImplementationOnce((config: any) => {
                     if (config.success) {
-                        config.success({ rows: [{ supportsnonidfilters: false }] });
+                        config.success({
+                            rows: [
+                                {
+                                    reportname: 'test-report',
+                                    reporttitle: 'Test Report',
+                                    reporttype: 'query',
+                                    supportsnonidfilters: false,
+                                    visible: true,
+                                    category: 'General',
+                                },
+                            ],
+                        });
                     }
                 });
 

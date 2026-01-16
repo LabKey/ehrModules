@@ -9,6 +9,8 @@ import {
     FILTER_TYPE_ID_SEARCH,
     FILTER_TYPE_URL_PARAMS,
     FilterType,
+    ReportConfig,
+    ReportFilters,
 } from './models';
 
 // Declare global LABKEY API
@@ -33,39 +35,66 @@ const ParticipantReportsComponent: FC = () => {
 
     const [filterType, setFilterType] = useState<FilterType>(initialFilterType);
     const [activeReport, setActiveReport] = useState(urlFilters.activeReport);
-    const [activeReportSupportsNonIdFilters, setActiveReportSupportsNonIdFilters] = useState<boolean>(true);
     const [filterNotSupportedError, setFilterNotSupportedError] = useState<null | string>(null);
     // In readOnly mode, always show reports immediately
     const [showReport, setShowReport] = useState<boolean>(isReadOnly || (urlFilters.showReport ?? false));
+    const [reports, setReports] = useState<ReportConfig[]>([]);
+    const [reportsLoading, setReportsLoading] = useState(true);
 
-    // Query active report metadata to get supportsNonIdFilters field from ehr.reports
+    // Fetch all visible reports once on mount
+    // This consolidates the query that was previously in TabbedReportPanel
     useEffect(() => {
-        if (!activeReport || typeof LABKEY === 'undefined') {
-            setActiveReportSupportsNonIdFilters(true); // Default to true if no report or LABKEY not available
+        if (typeof LABKEY === 'undefined') {
+            setReportsLoading(false);
             return;
         }
 
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
             queryName: 'reports',
-            filterArray: [LABKEY.Filter.create('reportname', activeReport, LABKEY.Filter.Types.EQUAL)],
-            columns: 'supportsnonidfilters',
+            filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
+            sort: 'category,sort_order,reporttitle,reportstatus',
             success: (data: any) => {
-                if (data.rows && data.rows.length > 0) {
-                    const supportsNonIdFilters = data.rows[0].supportsnonidfilters;
-                    setActiveReportSupportsNonIdFilters(supportsNonIdFilters === true);
-                } else {
-                    // Report not found in metadata, default to true (allow all filters)
-                    setActiveReportSupportsNonIdFilters(true);
-                }
+                // Match TabbedReportPanel's mapping format
+                const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
+                    const report: ReportConfig = {
+                        id: row.reportname,
+                        title: row.reporttitle,
+                        reportType: row.reporttype,
+                        schemaName: row.schemaname,
+                        queryName: row.queryname,
+                        viewName: row.viewname,
+                        reportId: row.report,
+                        ...row, // Spreads all fields including supportsnonidfilters
+                    };
+
+                    if (row.jsonConfig) {
+                        try {
+                            const json = JSON.parse(row.jsonConfig);
+                            Object.assign(report, json);
+                        } catch (e) {
+                            console.warn('Failed to parse jsonConfig for report: ' + row.reportname, e);
+                        }
+                    }
+                    return report;
+                });
+                setReports(loadedReports);
+                setReportsLoading(false);
             },
             failure: (error: any) => {
-                console.error('Failed to query report metadata:', error);
-                // On error, default to true (allow all filters)
-                setActiveReportSupportsNonIdFilters(true);
+                console.error('Failed to load reports', error);
+                setReportsLoading(false);
             },
         });
-    }, [activeReport]);
+    }, []);
+
+    // Look up supportsnonidfilters from cached reports instead of making a separate query
+    // Note: Use lowercase 'supportsnonidfilters' to match the database column name
+    const activeReportSupportsNonIdFilters = useMemo(() => {
+        if (!activeReport || reports.length === 0) return true;
+        const report = reports.find(r => r.id === activeReport);
+        return report?.supportsnonidfilters ?? true;
+    }, [activeReport, reports]);
 
     const handleFilterChange = useCallback(
         (newFilterType: FilterType, newSubjects?: string[], clearError = true) => {
@@ -137,7 +166,7 @@ const ParticipantReportsComponent: FC = () => {
         return filterType;
     }, [filterType, activeReportSupportsNonIdFilters]);
 
-    const filters = useMemo(
+    const filters: ReportFilters = useMemo(
         () => ({
             filterType: effectiveFilterType,
             subjects:
@@ -168,8 +197,7 @@ const ParticipantReportsComponent: FC = () => {
                 filters={filters}
                 onTabChange={handleTabChange}
                 reportNamespace="EHR.reports"
-                reportsQuery="reports"
-                reportsSchema="ehr"
+                reports={reportsLoading ? undefined : reports}
                 showReport={showReport}
             />
         </div>

@@ -1,20 +1,17 @@
-import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Filter, Query } from '@labkey/api';
+import React, { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { JSReportWrapper } from './JSReportWrapper';
 import { QueryReportWrapper } from './QueryReportWrapper';
 import { OtherReportWrapper } from './OtherReportWrapper';
 import { ReportTab } from './ReportTab';
-import { ReportConfig } from '../models';
+import { ReportConfig, ReportFilters } from '../models';
 
 interface TabbedReportPanelProps {
     activeReport?: string;
-    filters: any;
+    filters: ReportFilters;
     onTabChange?: (reportId: string) => void;
     reportNamespace?: string;
     reports?: ReportConfig[];
-    reportsQuery?: string;
-    reportsSchema?: string;
     showReport?: boolean;
 }
 
@@ -23,128 +20,79 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
     filters,
     onTabChange,
     reportNamespace,
-    reports: propsReports,
-    reportsQuery = 'reports',
-    reportsSchema = 'ehr',
+    reports,
     showReport = true,
 }) => {
-    const [reports, setReports] = useState<ReportConfig[]>(propsReports || []);
-    const [activeCategory, setActiveCategory] = useState<string>('');
-    const [activeTabId, setActiveTabId] = useState<string>(activeReport || '');
-    const [isLoading, setIsLoading] = useState<boolean>(!propsReports);
-    const [error, setError] = useState<null | string>(null);
+    // Track user-initiated selections (null means use computed default)
+    const [userSelectedCategory, setUserSelectedCategory] = useState<null | string>(null);
+    const [userSelectedTabId, setUserSelectedTabId] = useState<null | string>(null);
+    const hasNotifiedParent = useRef(false);
 
-    // Helper function to set active tab and category from reports
-    const initializeActiveTab = useCallback(
-        (reportsList: ReportConfig[]) => {
-            if (reportsList.length === 0) return;
+    // Compute default active tab based on reports and activeReport prop
+    const defaultActive = useMemo(() => {
+        if (!reports || reports.length === 0) {
+            return { category: '', tabId: '' };
+        }
 
-            // If activeReport prop is provided, try to find and select it
-            if (activeReport) {
-                const targetReport = reportsList.find(r => r.id === activeReport);
-                if (targetReport) {
-                    setActiveCategory(targetReport.category || 'Uncategorized');
-                    setActiveTabId(targetReport.id);
-                    // Notify parent about initial active report
-                    onTabChange?.(targetReport.id);
-                    return;
-                }
+        // If activeReport prop is provided, try to find and select it
+        if (activeReport) {
+            const targetReport = reports.find(r => r.id === activeReport);
+            if (targetReport) {
+                return {
+                    category: targetReport.category || 'Uncategorized',
+                    tabId: targetReport.id,
+                };
             }
-
-            // Default to first report
-            const firstReport = reportsList[0];
-            setActiveCategory(firstReport.category || 'Uncategorized');
-            setActiveTabId(firstReport.id);
-            // Notify parent about initial active report (first report)
-            onTabChange?.(firstReport.id);
-        },
-        [activeReport, onTabChange]
-    );
-
-    // Effect for initial reports fetch - runs once on mount, NOT on tab changes
-    // Note: activeReport is intentionally excluded to prevent re-fetching reports on every tab switch
-    useEffect(() => {
-        if (propsReports) {
-            setReports(propsReports);
-            setIsLoading(false);
-            return;
         }
 
-        setIsLoading(true);
-        Query.selectRows({
-            schemaName: reportsSchema,
-            queryName: reportsQuery,
-            filterArray: [Filter.create('visible', true, Filter.Types.EQUAL)],
-            sort: 'category,sort_order,reporttitle,reportstatus',
-            success: data => {
-                const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
-                    const report: ReportConfig = {
-                        id: row.reportname,
-                        title: row.reporttitle,
-                        reportType: row.reporttype,
-                        schemaName: row.schemaname,
-                        queryName: row.queryname,
-                        viewName: row.viewname,
-                        reportId: row.report,
-                        ...row,
-                    };
+        // Default to first report
+        const firstReport = reports[0];
+        return {
+            category: firstReport.category || 'Uncategorized',
+            tabId: firstReport.id,
+        };
+    }, [reports, activeReport]);
 
-                    if (row.jsonConfig) {
-                        try {
-                            const json = JSON.parse(row.jsonConfig);
-                            Object.assign(report, json);
-                        } catch (e) {
-                            console.warn('Failed to parse jsonConfig for report: ' + row.reportname, e);
-                        }
-                    }
-                    return report;
-                });
-                setReports(loadedReports);
-                setIsLoading(false);
-            },
-            failure: e => {
-                console.error('Failed to load reports', e);
-                setError('Failed to load reports.');
-                setIsLoading(false);
-            },
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [propsReports, reportsSchema, reportsQuery]);
+    // Effective active values: user selection takes precedence over defaults
+    const activeCategory = userSelectedCategory ?? defaultActive.category;
+    const activeTabId = userSelectedTabId ?? defaultActive.tabId;
 
-    // Effect for initial tab selection - runs after reports are loaded
-    // Triggers when reports are loaded and category hasn't been set yet
+    // Notify parent about initial active report (side effect only, no setState)
     useEffect(() => {
-        if (reports.length > 0 && !activeCategory) {
-            initializeActiveTab(reports);
+        if (reports && reports.length > 0 && !hasNotifiedParent.current && defaultActive.tabId) {
+            hasNotifiedParent.current = true;
+            onTabChange?.(defaultActive.tabId);
         }
-    }, [reports, activeCategory, initializeActiveTab]);
+    }, [reports, defaultActive.tabId, onTabChange]);
+
+    // Setters that update user selection
+    const setActiveCategory = (category: string) => setUserSelectedCategory(category);
+    const setActiveTabId = (tabId: string) => setUserSelectedTabId(tabId);
 
     // Group reports by category, preserving order
     const { categories, reportsByCategory } = useMemo(() => {
         const cats: string[] = [];
         const grouped: Record<string, ReportConfig[]> = {};
 
-        reports.forEach(report => {
-            const category = report.category || 'Uncategorized';
-            if (!grouped[category]) {
-                grouped[category] = [];
-                cats.push(category);
-            }
-            grouped[category].push(report);
-        });
+        if (reports) {
+            reports.forEach(report => {
+                const category = report.category || 'Uncategorized';
+                if (!grouped[category]) {
+                    grouped[category] = [];
+                    cats.push(category);
+                }
+                grouped[category].push(report);
+            });
+        }
 
         return { categories: cats, reportsByCategory: grouped };
     }, [reports]);
 
-    if (isLoading) {
+    if (!reports) {
         return <div>Loading reports...</div>;
     }
 
-    if (error) {
-        return <div className="text-danger">{error}</div>;
-    }
-
-    if (!reports || reports.length === 0) {
+    if (reports.length === 0) {
         return <div>No reports configuration provided.</div>;
     }
 
