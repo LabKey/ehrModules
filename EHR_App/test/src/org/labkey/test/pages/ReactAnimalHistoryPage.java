@@ -559,7 +559,7 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
         return new ElementCache();
     }
 
-    public class ElementCache extends LabKeyPage.ElementCache
+    public class ElementCache extends LabKeyPage<ElementCache>.ElementCache
     {
         WebElement searchByIdPanel = Locators.SEARCH_BY_ID_PANEL.findWhenNeeded(this);
         WebElement animalIdTextarea = Locators.ANIMAL_ID_TEXTAREA.findWhenNeeded(this);
