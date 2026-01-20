@@ -11,7 +11,10 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.EHR;
 import org.labkey.test.pages.ReactAnimalHistoryPage;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
+import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.PostgresOnlyTest;
+import org.labkey.test.util.TextSearcher;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.labkey.test.components.html.Input.Input;
 
@@ -97,6 +101,12 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     {
         EHR_AppTest init = getCurrentTest();
         init.doSetup();
+    }
+
+    @Override
+    protected String getExpectedAnimalIDCasing(String id)
+    {
+        return id.toUpperCase();
     }
 
     private void doSetup() throws Exception
@@ -199,50 +209,44 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
 
         // Scenario 1: Initial page load - verify default state
         log("Testing initial page load - default state");
-        animalHistoryPage
-                .assertDefaultStatePresent()
-                .assertNoValidationError()
-                .assertEmptyStatePlaceholderShown();
+        assertTrue("Search panel should be present", animalHistoryPage.isSearchByIdPanelPresent());
+        assertTrue("Animal ID textarea should be present", animalHistoryPage.isAnimalIdTextareaPresent());
+        assertTrue("Search button should be present", animalHistoryPage.isSearchByIdsButtonPresent());
+        assertTrue("All Animals button should be present", animalHistoryPage.isAllAnimalsButtonPresent());
+        assertTrue("Alive at Center button should be present", animalHistoryPage.isAliveAtCenterButtonPresent());
+        assertFalse("No validation error should be shown", animalHistoryPage.isValidationErrorVisible());
+        assertTrue("Empty state should be present", animalHistoryPage.isEmptyStatePlaceholderVisible());
 
         // Scenario 2: Single direct ID match
         log("Testing single direct ID search");
-        animalHistoryPage
-                .enterAnimalIds(testAnimalId1)
-                .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1);
+        animalHistoryPage.searchByIds(testAnimalId1);
+
+        // Navigate to Demographics and verify the searched animal is shown
+        log("Verifying Demographics shows the searched animal");
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1);
 
         // Scenario 3: Multi-animal direct search
         log("Testing multi-animal search");
-        animalHistoryPage
-                .clearIdInput()
-                .enterAnimalIds(testAnimalId1, testAnimalId2, testAnimalId3)
-                .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1)
-                .assertReportContainsAnimal(testAnimalId2)
-                .assertReportContainsAnimal(testAnimalId3);
+        animalHistoryPage.searchByIds(testAnimalId1, testAnimalId2, testAnimalId3);
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1, testAnimalId2, testAnimalId3);
 
         // Scenario 4: Mixed valid/invalid IDs (not found feedback)
         log("Testing mixed valid/invalid IDs with not-found feedback");
-        animalHistoryPage
-                .clearIdInput()
-                .enterAnimalIds(testAnimalId1, "INVALID_ID_XYZ_999")
-                .clickSearchByIds()
-                .assertIdResolutionVisible(true)
-                .assertNotFoundContains("INVALID_ID_XYZ_999")
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1);
+        animalHistoryPage.searchByIds(testAnimalId1, "INVALID_ID_XYZ_999");
+        assertTrue("ID resolution feedback should be visible", animalHistoryPage.isIdResolutionFeedbackVisible());
+        assertTrue("Not found section should be present", animalHistoryPage.isNotFoundSectionPresent());
+        assertTrue("Invalid ID should be in not-found list", animalHistoryPage.hasNotFoundItem("INVALID_ID_XYZ_999"));
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1);
 
         // Scenario 5: Case-insensitive matching
         log("Testing case-insensitive search");
         String lowercaseId = testAnimalId1.toLowerCase();
-        animalHistoryPage
-                .clearIdInput()
-                .enterAnimalIds(lowercaseId)
-                .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1);
+        animalHistoryPage.searchByIds(lowercaseId);
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1);
     }
 
     /**
@@ -266,21 +270,25 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         log("Testing empty input validation");
         animalHistoryPage
                 .clearIdInput()
-                .clickSearchByIds()
-                .assertValidationErrorShown("Please enter at least one animal ID");
+                .clickSearchByIds();
+        assertTrue("Validation error should be shown", animalHistoryPage.isValidationErrorVisible());
+        assertTextPresent("Please enter at least one animal ID");
 
         // Scenario 2: Validation error clears when input is added
         log("Testing validation error clears when input is added");
-        animalHistoryPage
-                .enterAnimalIds(MORE_ANIMAL_IDS[0])
-                .assertNoValidationError();
+        animalHistoryPage.enterAnimalIds(MORE_ANIMAL_IDS[0]);
+        assertFalse("Validation error should be cleared", animalHistoryPage.isValidationErrorVisible());
 
         // Scenario 3: Search succeeds after adding input
         log("Testing search succeeds after adding input");
         animalHistoryPage
                 .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(MORE_ANIMAL_IDS[0]);
+                .waitForReportToLoad();
+
+        // Navigate to Demographics and verify the searched animal is shown
+        log("Verifying Demographics shows the searched animal");
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, MORE_ANIMAL_IDS[0]);
     }
 
     /**
@@ -307,35 +315,32 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
 
         // Scenario 1: Search for a single ID
         log("Setting up initial ID search state with single animal");
-        animalHistoryPage
-                .enterAnimalIds(searchedAnimalId)
-                .clickSearchByIds()
-                .waitForReportToLoad();
+        animalHistoryPage.searchByIds(searchedAnimalId);
 
         // Navigate to Demographics and verify only the searched animal is shown
         log("Verifying Demographics shows only searched animal");
         animalHistoryPage.clickDemographicsTab();
         int initialRowCount = animalHistoryPage.getDemographicsRowCount();
         log("Initial Demographics row count: " + initialRowCount);
-        animalHistoryPage.assertDemographicsContainsId(searchedAnimalId);
+        assertDemographicsContainsId(animalHistoryPage, searchedAnimalId);
 
         // Scenario 2: Activate All Animals mode
         log("Testing All Animals mode activation");
-        animalHistoryPage
-                .clickAllAnimals()
-                .assertTextareaEmpty()
-                .assertAllAnimalsActive();
+        animalHistoryPage.clickAllAnimals();
+        assertTrue("Textarea should be empty", animalHistoryPage.getIdInputValue().isEmpty());
+        assertTrue("All Animals button should be active", animalHistoryPage.isAllAnimalsActive());
 
         // Scenario 3: Verify URL contains filterType (check BEFORE DataRegion operations which may modify URL)
         log("Testing All Animals URL state");
-        animalHistoryPage.assertUrlContains("filterType:all");
+        String currentUrl = getDriver().getCurrentUrl();
+        assertTrue("URL should contain 'filterType:all' but was: " + currentUrl,
+                currentUrl.contains("filterType:all"));
 
         // Scenario 4: Verify Demographics now shows more animals
         log("Verifying Demographics shows more animals in All Animals mode");
-        animalHistoryPage
-                .clickDemographicsTab()
-                .assertDemographicsRowCountGreaterThan(initialRowCount)
-                .assertDemographicsContainsId(otherAnimalId); // Verify animal NOT in original search now appears
+        animalHistoryPage.clickDemographicsTab();
+        assertDemographicsRowCountGreaterThan(animalHistoryPage, initialRowCount);
+        assertDemographicsContainsId(animalHistoryPage, otherAnimalId); // Verify animal NOT in original search now appears
     }
 
     /**
@@ -366,50 +371,38 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
 
         // Scenario 1: Search for a Dead animal first
         log("Setting up initial ID search state with Dead animal");
-        animalHistoryPage
-                .enterAnimalIds(deadAnimalId)
-                .clickSearchByIds()
-                .waitForReportToLoad();
+        animalHistoryPage.searchByIds(deadAnimalId);
 
         // Navigate to Demographics and verify the Dead animal is shown
         log("Verifying Demographics shows the Dead animal");
-        animalHistoryPage
-                .clickDemographicsTab()
-                .assertDemographicsContainsId(deadAnimalId);
+        animalHistoryPage.clickDemographicsTab();
+        assertDemographicsContainsId(animalHistoryPage, deadAnimalId);
 
         log("Testing Alive at Center mode activation");
+        assertTrue("Alive at Center button should be enabled for Demographics report",
+                animalHistoryPage.isAliveAtCenterEnabled());
 
-        if (animalHistoryPage.isAliveAtCenterEnabled())
-        {
-            // Scenario 2: Activate Alive at Center mode
-            animalHistoryPage
-                    .clickAliveAtCenter()
-                    .assertAliveAtCenterActive()
-                    .assertTextareaEmpty();
+        // Scenario 2: Activate Alive at Center mode
+        animalHistoryPage.clickAliveAtCenter();
+        assertTrue("Alive at Center button should be active", animalHistoryPage.isAliveAtCenterActive());
+        assertTrue("Textarea should be empty", animalHistoryPage.getIdInputValue().isEmpty());
 
-            // Scenario 3: Verify URL contains filterType (check BEFORE DataRegion operations which may modify URL)
-            log("Testing Alive at Center URL state");
-            animalHistoryPage.assertUrlContains("filterType:aliveAtCenter");
+        // Scenario 3: Verify URL contains filterType (check BEFORE DataRegion operations which may modify URL)
+        log("Testing Alive at Center URL state");
+        String currentUrl = getDriver().getCurrentUrl();
+        assertTrue("URL should contain 'filterType:aliveAtCenter' but was: " + currentUrl,
+                currentUrl.contains("filterType:aliveAtCenter"));
 
-            // Scenario 4: Verify Demographics now shows only Alive animals
-            log("Verifying Demographics shows only Alive animals");
-            animalHistoryPage
-                    .clickDemographicsTab()
-                    .assertDemographicsContainsId(aliveAnimalId) // Alive animal should appear
-                    .assertDemographicsDoesNotContainId(deadAnimalId); // Dead animal should NOT appear
+        // Scenario 4: Verify Demographics now shows only Alive animals
+        log("Verifying Demographics shows only Alive animals");
+        animalHistoryPage.clickDemographicsTab();
+        assertDemographicsContainsId(animalHistoryPage, aliveAnimalId); // Alive animal should appear
+        assertDemographicsDoesNotContainId(animalHistoryPage, deadAnimalId); // Dead animal should NOT appear
 
-            // Scenario 5: Verify all Status values are "Alive"
-            log("Verifying all Demographics rows have Status = Alive");
-            animalHistoryPage
-                    .assertDemographicsAllRowsHaveStatus("Alive")
-                    .assertDemographicsNoRowsHaveStatus("Dead");
-        }
-        else
-        {
-            log("Alive at Center button is disabled - skipping mode activation test");
-            // Button may be disabled if current report doesn't support non-ID filters
-            // This is expected behavior based on spec
-        }
+        // Scenario 5: Verify all Status values are "Alive"
+        log("Verifying all Demographics rows have Status = Alive");
+        assertDemographicsAllRowsHaveStatus(animalHistoryPage, "Alive");
+        assertDemographicsNoRowsHaveStatus(animalHistoryPage, "Dead");
     }
 
     /**
@@ -435,14 +428,11 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         String urlHash = "subjects:" + testAnimalId1 + ";" + testAnimalId2 + "&filterType:idSearch&showReport:1";
         ReactAnimalHistoryPage animalHistoryPage = ReactAnimalHistoryPage.beginAt(this, getContainerPath(), urlHash);
 
-        // Allow URL hash to be processed
-        animalHistoryPage.waitForUrlHashProcessing();
-
         // Verify subjects are loaded
         log("Verifying URL subjects are processed");
-        animalHistoryPage
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1);
+        animalHistoryPage.waitForReportToLoad();
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1);
     }
 
     /**
@@ -465,27 +455,24 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
 
         // Scenario 1: Start with ID Search
         log("Testing ID Search mode");
-        animalHistoryPage
-                .enterAnimalIds(testAnimalId1, testAnimalId2)
-                .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId1)
-                .assertSearchByIdsActive();
+        animalHistoryPage.searchByIds(testAnimalId1, testAnimalId2);
+
+        // Navigate to Demographics and verify the Dead animal is shown
+        log("Verifying Demographics shows the searched animal");
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId1);
+        assertTrue("Search By Ids button should be active", animalHistoryPage.isSearchByIdsActive());
 
         // Scenario 2: Switch to All Animals
         log("Testing ID Search → All Animals transition");
-        animalHistoryPage
-                .clickAllAnimals()
-                .assertAllAnimalsActive()
-                .assertTextareaEmpty();
+        animalHistoryPage.clickAllAnimals();
+        assertTrue("All Animals button should be active", animalHistoryPage.isAllAnimalsActive());
+        assertTrue("Textarea should be empty", animalHistoryPage.getIdInputValue().isEmpty());
 
         // Scenario 3: Switch back to ID Search
         log("Testing All Animals → ID Search transition");
-        animalHistoryPage
-                .enterAnimalIds(testAnimalId1)
-                .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertSearchByIdsActive();
+        animalHistoryPage.searchByIds(testAnimalId1);
+        assertTrue("Search By Ids button should be active", animalHistoryPage.isSearchByIdsActive());
 
         // Verify URL contains subjects
         log("Verifying URL state after transitions");
@@ -522,7 +509,90 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         log("Testing search activation");
         animalHistoryPage
                 .clickSearchByIds()
-                .waitForReportToLoad()
-                .assertReportContainsAnimal(testAnimalId);
+                .waitForReportToLoad();
+
+        // Navigate to Demographics and verify the searched animal is shown
+        log("Verifying Demographics shows the searched animal");
+        animalHistoryPage.clickDemographicsTab();
+        assertReportContainsAnimals(animalHistoryPage, testAnimalId);
+    }
+
+    // =============================================================================
+    // Assertion Helpers for React Animal History Tests
+    // =============================================================================
+
+    /**
+     * Assert that the report panel contains the specified animal IDs.
+     * More efficient than assertTextPresent() and scoped to report area only.
+     * Uses TextSearcher to batch multiple text checks in a single DOM read.
+     */
+    private void assertReportContainsAnimals(ReactAnimalHistoryPage page, String... animalIds)
+    {
+        WebElement reportPanel = page.getReportPanelElement();
+        assertTextPresent(new TextSearcher(reportPanel::getText), animalIds);
+    }
+
+    /**
+     * Assert that the Demographics report contains a specific animal ID.
+     */
+    private void assertDemographicsContainsId(ReactAnimalHistoryPage page, String animalId)
+    {
+        DataRegionTable table = page.getActiveReportDataRegion();
+        table.setFilter("Id", "Equals", animalId);
+        int rowCount = table.getDataRowCount();
+        assertTrue("Demographics should contain animal ID '" + animalId + "' but found " + rowCount + " rows",
+                rowCount > 0);
+        table.clearFilter("Id");
+    }
+
+    /**
+     * Assert that the Demographics report does NOT contain a specific animal ID.
+     */
+    private void assertDemographicsDoesNotContainId(ReactAnimalHistoryPage page, String animalId)
+    {
+        DataRegionTable table = page.getActiveReportDataRegion();
+        table.setFilter("Id", "Equals", animalId);
+        int rowCount = table.getDataRowCount();
+        assertEquals("Demographics should NOT contain animal ID '" + animalId + "'", 0, rowCount);
+        table.clearFilter("Id");
+    }
+
+    /**
+     * Assert that the Demographics report contains more rows than a specified count.
+     */
+    private void assertDemographicsRowCountGreaterThan(ReactAnimalHistoryPage page, int minCount)
+    {
+        DataRegionTable table = page.getActiveReportDataRegion();
+        int rowCount = table.getDataRowCount();
+        assertTrue("Demographics should have more than " + minCount + " rows but found " + rowCount,
+                rowCount > minCount);
+    }
+
+    /**
+     * Assert that all rows in the Demographics report have a specific status value.
+     */
+    private void assertDemographicsAllRowsHaveStatus(ReactAnimalHistoryPage page, String expectedStatus)
+    {
+        DataRegionTable table = page.getActiveReportDataRegion();
+        List<String> statusValues = table.getColumnDataAsText("calculated_status");
+        for (String status : statusValues)
+        {
+            assertEquals("All Demographics rows should have status '" + expectedStatus + "'",
+                    expectedStatus, status);
+        }
+    }
+
+    /**
+     * Assert that no rows in the Demographics report have a specific status value.
+     */
+    private void assertDemographicsNoRowsHaveStatus(ReactAnimalHistoryPage page, String excludedStatus)
+    {
+        DataRegionTable table = page.getActiveReportDataRegion();
+        List<String> statusValues = table.getColumnDataAsText("calculated_status");
+        for (String status : statusValues)
+        {
+            assertFalse("Demographics should not contain status '" + excludedStatus + "' but found it",
+                    status.equals(excludedStatus));
+        }
     }
 }
