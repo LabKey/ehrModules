@@ -32,7 +32,6 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="java.util.Objects" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
@@ -68,38 +67,21 @@
 
     Map<Integer, Category> categories = sndService.getAllCategories(getContainer(), getUser());
     Map<String, Role> roles = sndSecurityManager.getAllSecurityRoles();
-
     Map<Integer, Map<Integer, String>> roleMapping = new IntHashMap<>();
-    Map<Integer, String> roleNameMap;
-    SecurityPolicy policy;
-    List<Role> policyRoles;
-    String currentRoleName;
+
     for (Category category : categories.values())
     {
-        roleNameMap = new HashMap<>();
-        for (Group gr : validGroups)
-        {
-            policy = SecurityPolicyManager.getPolicy(category);
-            policyRoles = policy.getAssignedRoles(gr);
-            if (!policyRoles.isEmpty())
-            {
-                currentRoleName = null;
-                for (Role policyRole : policyRoles)
-                {
-                    if (roles.containsKey(policyRole.getName()))
-                    {
-                        currentRoleName = policyRole.getName();
-                        break;
-                    }
-                }
+        SecurityPolicy policy = SecurityPolicyManager.getPolicy(category);
+        Map<Integer, String> roleNameMap = new HashMap<>();
+        validGroups.forEach(gr -> {
+            String currentRoleName = policy.getAssignedRoles(gr)
+                .filter(policyRole -> roles.containsKey(policyRole.getName()))
+                .findFirst()
+                .map(Role::getName)
+                .orElse("None");
 
-                roleNameMap.put(gr.getUserId(), Objects.requireNonNullElse(currentRoleName, "None"));
-            }
-            else
-            {
-                roleNameMap.put(gr.getUserId(), "None");
-            }
-        }
+            roleNameMap.put(gr.getUserId(), currentRoleName);
+        });
         roleMapping.put(category.getCategoryId(), roleNameMap);
     }
 %>
