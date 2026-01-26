@@ -78,7 +78,7 @@ export interface SearchByIdPanelProps {
     activeReportSupportsNonIdFilters: boolean;
     initialFilterType: FilterType;
     initialSubjects: string[];
-    onFilterChange: (filterType: FilterType, subjects?: string[]) => void;
+    onFilterChange: (filterType: FilterType, subjects: string[] | undefined) => void;
 }
 
 export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
