@@ -1,9 +1,7 @@
 import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Query } from '@labkey/api';
 import { SearchByIdPanel } from './SearchByIdPanel/SearchByIdPanel';
 import { TabbedReportPanel } from './TabbedReportPanel/TabbedReportPanel';
-import { getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
 import {
     FILTER_TYPE_ALIVE_AT_CENTER,
     FILTER_TYPE_ALL,
@@ -13,11 +11,14 @@ import {
     ReportConfig,
     ReportFilters,
 } from './models';
+import { fetchReports as defaultFetchReports, FetchReportsFn } from './services/reportsService';
+import { getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
 
-// Declare global LABKEY API
-declare const LABKEY: any;
+interface ParticipantReportsProps {
+    fetchReports?: FetchReportsFn;
+}
 
-const ParticipantReportsComponent: FC = () => {
+const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({ fetchReports = defaultFetchReports }) => {
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
     const [subjects, setSubjects] = useState<string[]>(urlFilters.subjects || []);
 
@@ -26,15 +27,12 @@ const ParticipantReportsComponent: FC = () => {
         return urlFilters.readOnly && (urlFilters.subjects?.length ?? 0) > 0;
     }, [urlFilters]);
 
-    // Determine initial filter type based on URL parameters
-    const initialFilterType = useMemo(() => {
+    const [filterType, setFilterType] = useState<FilterType>(() => {
         if (isReadOnly) {
             return FILTER_TYPE_URL_PARAMS; // Read-only mode for shared links
         }
         return urlFilters.filterType || FILTER_TYPE_ID_SEARCH;
-    }, [urlFilters, isReadOnly]);
-
-    const [filterType, setFilterType] = useState<FilterType>(initialFilterType);
+    });
     const [activeReport, setActiveReport] = useState(urlFilters.activeReport);
     const [filterNotSupportedError, setFilterNotSupportedError] = useState<null | string>(null);
     // In readOnly mode, always show reports immediately
@@ -45,49 +43,14 @@ const ParticipantReportsComponent: FC = () => {
     // Fetch all visible reports once on mount
     // This consolidates the query that was previously in TabbedReportPanel
     useEffect(() => {
-        if (typeof LABKEY === 'undefined') {
+        fetchReports().then(({ reports: loadedReports, error }) => {
+            if (error) {
+                console.error('Failed to load reports:', error);
+            }
+            setReports(loadedReports);
             setReportsLoading(false);
-            return;
-        }
-
-        Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'reports',
-            filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
-            sort: 'category,sort_order,reporttitle,reportstatus',
-            success: (data: any) => {
-                // Match TabbedReportPanel's mapping format
-                const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
-                    const report: ReportConfig = {
-                        id: row.reportname,
-                        title: row.reporttitle,
-                        reportType: row.reporttype,
-                        schemaName: row.schemaname,
-                        queryName: row.queryname,
-                        viewName: row.viewname,
-                        reportId: row.report,
-                        ...row, // Spreads all fields including supportsnonidfilters
-                    };
-
-                    if (row.jsonConfig) {
-                        try {
-                            const json = JSON.parse(row.jsonConfig);
-                            Object.assign(report, json);
-                        } catch (e) {
-                            console.warn('Failed to parse jsonConfig for report: ' + row.reportname, e);
-                        }
-                    }
-                    return report;
-                });
-                setReports(loadedReports);
-                setReportsLoading(false);
-            },
-            failure: (error: any) => {
-                console.error('Failed to load reports', error);
-                setReportsLoading(false);
-            },
         });
-    }, []);
+    }, [fetchReports]);
 
     // Look up supportsnonidfilters from cached reports instead of making a separate query
     // Note: Use lowercase 'supportsnonidfilters' to match the database column name
@@ -160,12 +123,10 @@ const ParticipantReportsComponent: FC = () => {
     }, [filterType, activeReportSupportsNonIdFilters]);
 
     // Compute effective filter - override to 'all' if aliveAtCenter is not supported
-    const effectiveFilterType = useMemo(() => {
-        if (filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters) {
-            return FILTER_TYPE_ALL; // Override to show all animals
-        }
-        return filterType;
-    }, [filterType, activeReportSupportsNonIdFilters]);
+    const effectiveFilterType =
+        filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters
+            ? FILTER_TYPE_ALL
+            : filterType;
 
     const filters: ReportFilters = useMemo(
         () => ({

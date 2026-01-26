@@ -1,20 +1,22 @@
 import React, { FC, memo, useEffect } from 'react';
 import { useServerContext } from '@labkey/components';
 
-import { ExtReportTab, QueryWebPartConfig, ReportConfig } from '../models';
+import { ExtReportTab, QueryReportConfig, QueryWebPartConfig } from '../models';
 
 // Declare global variables for ExtJS and LDK
 declare const Ext4: any;
 declare const LDK: any;
 
-const QueryReportWrapperComponent: FC<{ report: ReportConfig; tab: ExtReportTab }> = ({ tab, report }) => {
+/** Props for QueryReportWrapper component */
+interface QueryReportWrapperProps {
+    report: QueryReportConfig;
+    tab: ExtReportTab;
+}
+
+const QueryReportWrapperComponent: FC<QueryReportWrapperProps> = ({ tab, report }) => {
     const { container } = useServerContext();
 
     useEffect(() => {
-        if (!tab || !Ext4 || !LDK) {
-            return;
-        }
-
         const queryConfig: QueryWebPartConfig = tab.getQWPConfig();
 
         // Use LDK.Utils.getErrorCallback() if available, otherwise simple console error
@@ -42,6 +44,8 @@ const QueryReportWrapperComponent: FC<{ report: ReportConfig; tab: ExtReportTab 
         };
     }, [tab, report, container]);
 
+    // This component manages ExtJS lifecycle imperatively via useEffect
+    // and does not render any DOM elements
     return null;
 };
 

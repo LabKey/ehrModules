@@ -362,6 +362,7 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
      */
     public boolean isEmptyStatePlaceholderVisible()
     {
+        waitForElement(Locators.EMPTY_STATE_PLACEHOLDER);
         return isElementPresent(Locators.EMPTY_STATE_PLACEHOLDER);
     }
 
@@ -415,8 +416,8 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
         public static final Locator NOT_FOUND_SECTION_TITLE = Locator.css(".id-resolution-feedback .section-title.not-found");
         public static final Locator RESOLVED_ITEMS = Locator.css(".id-resolution-feedback .section .items .resolved-item");
         public static final Locator NOT_FOUND_ITEMS = Locator.css(".id-resolution-feedback .section .items .not-found-item");
-        public static final Locator CATEGORY_TAB = Locator.css(".tabbed-report-panel .category-tabs a");
-        public static final Locator REPORT_TAB = Locator.css(".tabbed-report-panel .report-tabs a");
+        public static final Locator CATEGORY_TAB = Locator.css(".tabbed-report-panel .category-tabs button");
+        public static final Locator REPORT_TAB = Locator.css(".tabbed-report-panel .report-tabs button");
         public static final Locator VALIDATION_ERROR = Locator.css(".search-by-id-panel .validation-error");
         public static final Locator EMPTY_STATE_PLACEHOLDER = Locator.css(".tabbed-report-panel .empty-state-placeholder");
     }

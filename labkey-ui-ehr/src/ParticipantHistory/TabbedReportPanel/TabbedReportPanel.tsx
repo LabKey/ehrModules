@@ -7,12 +7,12 @@ import { ReportTab } from './ReportTab';
 import { ReportConfig, ReportFilters } from '../models';
 
 interface TabbedReportPanelProps {
-    activeReport?: string;
+    activeReport: string | undefined;
     filters: ReportFilters;
-    onTabChange?: (reportId: string) => void;
-    reportNamespace?: string;
-    reports?: ReportConfig[];
-    showReport?: boolean;
+    onTabChange: (reportId: string) => void;
+    reportNamespace: string;
+    reports: ReportConfig[] | undefined;
+    showReport: boolean;
 }
 
 const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
@@ -21,11 +21,11 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
     onTabChange,
     reportNamespace,
     reports,
-    showReport = true,
+    showReport,
 }) => {
-    // Track user-initiated selections (null means use computed default)
-    const [userSelectedCategory, setUserSelectedCategory] = useState<null | string>(null);
-    const [userSelectedTabId, setUserSelectedTabId] = useState<null | string>(null);
+    // Track user-initiated selections (undefined means use computed default)
+    const [userSelectedCategory, setUserSelectedCategory] = useState<string>();
+    const [userSelectedTabId, setUserSelectedTabId] = useState<string>();
     const hasNotifiedParent = useRef(false);
 
     // Compute default active tab based on reports and activeReport prop
@@ -61,29 +61,23 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
     useEffect(() => {
         if (reports && reports.length > 0 && !hasNotifiedParent.current && defaultActive.tabId) {
             hasNotifiedParent.current = true;
-            onTabChange?.(defaultActive.tabId);
+            onTabChange(defaultActive.tabId);
         }
     }, [reports, defaultActive.tabId, onTabChange]);
-
-    // Setters that update user selection
-    const setActiveCategory = (category: string) => setUserSelectedCategory(category);
-    const setActiveTabId = (tabId: string) => setUserSelectedTabId(tabId);
 
     // Group reports by category, preserving order
     const { categories, reportsByCategory } = useMemo(() => {
         const cats: string[] = [];
         const grouped: Record<string, ReportConfig[]> = {};
 
-        if (reports) {
-            reports.forEach(report => {
-                const category = report.category || 'Uncategorized';
-                if (!grouped[category]) {
-                    grouped[category] = [];
-                    cats.push(category);
-                }
-                grouped[category].push(report);
-            });
-        }
+        reports?.forEach(report => {
+            const category = report.category || 'Uncategorized';
+            if (!grouped[category]) {
+                grouped[category] = [];
+                cats.push(category);
+            }
+            grouped[category].push(report);
+        });
 
         return { categories: cats, reportsByCategory: grouped };
     }, [reports]);
@@ -97,14 +91,14 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
     }
 
     const handleCategoryClick = (category: string) => {
-        setActiveCategory(category);
+        setUserSelectedCategory(category);
         const categoryReports = reportsByCategory[category];
         if (categoryReports?.length > 0) {
             const newTabId = categoryReports[0].id;
-            setActiveTabId(newTabId);
-            onTabChange?.(newTabId);
+            setUserSelectedTabId(newTabId);
+            onTabChange(newTabId);
         } else {
-            setActiveTabId('');
+            setUserSelectedTabId('');
         }
     };
 
@@ -117,16 +111,13 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
             <ul className="nav nav-tabs category-tabs">
                 {categories.map(category => (
                     <li className={activeCategory === category ? 'active' : ''} key={category}>
-                        <a
+                        <button
                             className={activeCategory === category ? 'category-tab-active' : 'category-tab'}
-                            href="#"
-                            onClick={e => {
-                                e.preventDefault();
-                                handleCategoryClick(category);
-                            }}
+                            onClick={() => handleCategoryClick(category)}
+                            type="button"
                         >
                             {category}
-                        </a>
+                        </button>
                     </li>
                 ))}
             </ul>
@@ -136,17 +127,16 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
                 <ul className="nav nav-tabs report-tabs">
                     {activeCategoryReports.map(report => (
                         <li className={activeTabId === report.id ? 'active' : ''} key={report.id}>
-                            <a
+                            <button
                                 className={activeTabId === report.id ? 'report-tab-active' : 'report-tab'}
-                                href="#"
-                                onClick={e => {
-                                    e.preventDefault();
-                                    setActiveTabId(report.id);
-                                    onTabChange?.(report.id);
+                                onClick={() => {
+                                    setUserSelectedTabId(report.id);
+                                    onTabChange(report.id);
                                 }}
+                                type="button"
                             >
                                 {report.title}
-                            </a>
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -158,21 +148,18 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
                         <ReportTab filters={filters} report={currentActiveReport}>
                             {tab => (
                                 <>
-                                    {currentActiveReport.reportType === 'query' ? (
+                                    {currentActiveReport.reportType === 'query' && (
                                         <QueryReportWrapper report={currentActiveReport} tab={tab} />
-                                    ) : currentActiveReport.reportType === 'js' ? (
+                                    )}
+                                    {currentActiveReport.reportType === 'js' && (
                                         <JSReportWrapper
                                             report={currentActiveReport}
                                             reportNamespace={reportNamespace}
                                             tab={tab}
                                         />
-                                    ) : currentActiveReport.reportType === 'report' ? (
+                                    )}
+                                    {currentActiveReport.reportType === 'report' && (
                                         <OtherReportWrapper report={currentActiveReport} tab={tab} />
-                                    ) : (
-                                        <div>
-                                            Placeholder for {currentActiveReport.title} (Type:{' '}
-                                            {currentActiveReport.reportType})
-                                        </div>
                                     )}
                                 </>
                             )}

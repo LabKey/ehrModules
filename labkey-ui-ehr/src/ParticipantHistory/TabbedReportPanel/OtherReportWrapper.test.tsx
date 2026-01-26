@@ -193,39 +193,6 @@ describe('OtherReportWrapper', () => {
         consoleErrorSpy.mockRestore();
     });
 
-    test('does not render when tab is null', () => {
-        const { container } = render(<OtherReportWrapper report={reportConfig} tab={null as any} />);
-
-        const targetDiv = container.querySelector('.other-report-wrapper');
-        expect(targetDiv).toBeInTheDocument();
-        expect((global as any).LABKEY.WebPart).not.toHaveBeenCalled();
-    });
-
-    test('does not render when Ext4 is undefined', () => {
-        const originalExt4 = (global as any).Ext4;
-        (global as any).Ext4 = undefined;
-
-        const { container } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        const targetDiv = container.querySelector('.other-report-wrapper');
-        expect(targetDiv).toBeInTheDocument();
-        expect((global as any).LABKEY.WebPart).not.toHaveBeenCalled();
-
-        (global as any).Ext4 = originalExt4;
-    });
-
-    test('does not render when LABKEY is undefined', () => {
-        const originalLABKEY = (global as any).LABKEY;
-        (global as any).LABKEY = undefined;
-
-        const { container } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        const targetDiv = container.querySelector('.other-report-wrapper');
-        expect(targetDiv).toBeInTheDocument();
-
-        (global as any).LABKEY = originalLABKEY;
-    });
-
     test('does not render when target element is not found', () => {
         // Mock getElementById to return null
         const originalGetElementById = document.getElementById;
@@ -240,6 +207,7 @@ describe('OtherReportWrapper', () => {
 
     test('handles error during WebPart creation', () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+        const originalWebPart = (global as any).LABKEY.WebPart;
         (global as any).LABKEY.WebPart = jest.fn(() => {
             throw new Error('WebPart creation failed');
         });
@@ -248,6 +216,7 @@ describe('OtherReportWrapper', () => {
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading report', expect.any(Error));
         consoleErrorSpy.mockRestore();
+        (global as any).LABKEY.WebPart = originalWebPart;
     });
 
     test('generates unique IDs for multiple instances', () => {

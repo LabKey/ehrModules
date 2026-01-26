@@ -5,62 +5,6 @@ import { IdResolutionFeedback } from './IdResolutionFeedback';
 import { IdResolutionResult } from '../models';
 
 describe('IdResolutionFeedback', () => {
-    describe('visibility logic', () => {
-        test('component hidden when all IDs are direct matches (no aliases, no not-found)', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            };
-
-            const { container } = render(
-                <IdResolutionFeedback isVisible={false} resolutionResult={resolutionResult} />
-            );
-
-            // Component should not render anything
-            expect(container.firstChild).toBeNull();
-        });
-
-        test('component visible when aliases present', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'TATTOO_001', resolvedId: 'ID456', resolvedBy: 'alias', aliasType: 'tattoo' },
-                ],
-                notFound: [],
-            };
-
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
-
-            expect(screen.getByText(/resolved/i)).toBeVisible();
-        });
-
-        test('component visible when not-found IDs present', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [{ inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null }],
-                notFound: ['INVALID_ID'],
-            };
-
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
-
-            expect(screen.getByText(/not found/i)).toBeVisible();
-        });
-
-        test('component visible when both aliases and not-found IDs present', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' }],
-                notFound: ['INVALID_ID'],
-            };
-
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
-
-            expect(screen.getByText(/resolved/i)).toBeVisible();
-            expect(screen.getByText(/not found/i)).toBeVisible();
-        });
-    });
-
     describe('resolved section display', () => {
         test('displays direct matches without arrow', () => {
             const resolutionResult: IdResolutionResult = {
@@ -182,17 +126,22 @@ describe('IdResolutionFeedback', () => {
     });
 
     describe('empty results', () => {
-        test('does not render when no resolved and no not found IDs', () => {
+        test('renders container with title but no sections when no resolved and no not found IDs', () => {
             const resolutionResult: IdResolutionResult = {
                 resolved: [],
                 notFound: [],
             };
 
             const { container } = render(
-                <IdResolutionFeedback isVisible={false} resolutionResult={resolutionResult} />
+                <IdResolutionFeedback resolutionResult={resolutionResult} />
             );
 
-            expect(container.firstChild).toBeNull();
+            // Component renders container with title
+            expect(container.firstChild).not.toBeNull();
+            expect(screen.getByText('ID Resolution')).toBeVisible();
+            // But no sections are rendered
+            expect(screen.queryByText(/Resolved/)).not.toBeInTheDocument();
+            expect(screen.queryByText(/Not Found/)).not.toBeInTheDocument();
         });
     });
 

@@ -195,25 +195,65 @@ The `ReportTab` component has been extracted from `TabbedReportPanel.tsx` into i
 
 **Location:** `labkey-ui-ehr/src/ParticipantHistory/TabbedReportPanel/ReportTab.tsx`
 
+**Props Interface:**
+```typescript
+interface ReportTabProps {
+    children: (tab: ExtReportTab) => React.ReactNode;
+    filters: ReportFilters;
+    report: ReportConfig;
+}
+```
+
+**Render Props Pattern:**
+ReportTab uses the render props pattern via the `children` prop. This allows parent components to receive the initialized `ExtReportTab` instance and render appropriate report wrappers:
+
+```tsx
+<ReportTab filters={filters} report={currentActiveReport}>
+    {tab => (
+        <>
+            {currentActiveReport.reportType === 'query' && (
+                <QueryReportWrapper report={currentActiveReport} tab={tab} />
+            )}
+            {currentActiveReport.reportType === 'js' && (
+                <JSReportWrapper
+                    report={currentActiveReport}
+                    reportNamespace={reportNamespace}
+                    tab={tab}
+                />
+            )}
+            {currentActiveReport.reportType === 'report' && (
+                <OtherReportWrapper report={currentActiveReport} tab={tab} />
+            )}
+        </>
+    )}
+</ReportTab>
+```
+
 **Benefits:**
 - Improved code organization with single-responsibility principle
 - Easier to test the ReportTab component in isolation
 - Better separation of concerns between tab management and report panel orchestration
 - Reduced file size and complexity of TabbedReportPanel.tsx
 - Dedicated test file for ReportTab-specific behavior
+- Render props pattern provides clean composition for report type-specific rendering
 
-**Centralized Type Definitions (Updated 2026-01-13):**
+**Centralized Type Definitions (Updated 2026-01-21):**
 
 All commonly used interfaces have been centralized into a dedicated models directory for better code organization and reusability:
 
 **Location:** `labkey-ui-ehr/src/ParticipantHistory/models/index.ts`
 
-**Exported Interfaces:**
-- `ReportConfig` - Report metadata and configuration
+**Exported Types and Interfaces:**
+- `ReportType` - Literal union type for report types ('js' | 'query' | 'report')
+- `ReportConfig` - Discriminated union of all report configuration types
+- `QueryReportConfig` - Configuration for query-based reports
+- `JsReportConfig` - Configuration for JavaScript function reports
+- `OtherReportConfig` - Configuration for saved LabKey reports (R, chart, etc.)
 - `FilterArray` - Removable and non-removable filters
 - `QueryWebPartConfig` - LabKey Query WebPart configuration
 - `ExtReportTab` - Extended ExtJS Container for report tabs
 - `FilterType` - Filter mode types (aliveAtCenter, all, idSearch, urlParams)
+- `ReportFilters` - Filters passed to TabbedReportPanel for filtering report data
 - `UrlFilters` - URL hash filter parameters
 - `IdResolutionResult` - Animal ID resolution results
 - `ResolveIdsParams` - Parameters for ID resolution
@@ -221,7 +261,7 @@ All commonly used interfaces have been centralized into a dedicated models direc
 **Import Pattern:**
 All components that need these types now import from the centralized models directory:
 ```typescript
-import { ReportConfig, QueryWebPartConfig, FilterType } from '../models';
+import { ReportConfig, QueryReportConfig, JsReportConfig, OtherReportConfig, FilterType } from '../models';
 ```
 
 **Benefits of Centralization:**
@@ -233,14 +273,15 @@ import { ReportConfig, QueryWebPartConfig, FilterType } from '../models';
 - Improved IDE autocomplete and type checking
 
 **Affected Files (13 files updated):**
-- `TabbedReportPanel/ReportTab.tsx` - Imports interfaces from models
-- `TabbedReportPanel/TabbedReportPanel.tsx` - Imports from models
-- `TabbedReportPanel/QueryReportWrapper.tsx` - Imports from models
-- `TabbedReportPanel/JSReportWrapper.tsx` - Imports from models
-- `TabbedReportPanel/OtherReportWrapper.tsx` - Imports from models
+- `TabbedReportPanel/ReportTab.tsx` - Imports `ReportConfig` union from models
+- `TabbedReportPanel/TabbedReportPanel.tsx` - Imports `ReportConfig` union from models
+- `TabbedReportPanel/QueryReportWrapper.tsx` - Imports `QueryReportConfig` variant from models
+- `TabbedReportPanel/JSReportWrapper.tsx` - Imports `JsReportConfig` variant from models
+- `TabbedReportPanel/OtherReportWrapper.tsx` - Imports `OtherReportConfig` variant from models
 - `utils/urlHashUtils.ts` - Imports from models
 - `services/idResolutionService.ts` - Imports from models
-- `ParticipantReports.tsx` - Imports from models
+- `services/reportsService.ts` - Imports `ReportConfig` from models, exports `FetchReportsFn` type
+- `ParticipantReports.tsx` - Imports `ReportConfig` union from models, imports `fetchReports` from services
 - `SearchByIdPanel/SearchByIdPanel.tsx` - Imports from models
 - `SearchByIdPanel/IdResolutionFeedback.tsx` - Imports from models
 - All corresponding test files (.test.tsx) - Imports from models
@@ -271,13 +312,83 @@ export interface ExtReportTab {
 
     // Custom properties added to tab
     report: ReportConfig;
-    filters: any;
+    filters: ReportFilters;
 
     // Custom methods added to tab
     getFilterArray: () => FilterArray;
     getQWPConfig: () => QueryWebPartConfig;
 }
 ```
+
+**ReportConfig** - Discriminated union for report configuration (defined in `models/index.ts`):
+
+The `ReportConfig` type uses a discriminated union pattern based on `reportType` to provide type-safe access to report-specific properties:
+
+```typescript
+// Literal type for report types
+export type ReportType = 'js' | 'query' | 'report';
+
+// Base configuration shared by all report types
+interface ReportConfigBase {
+    id: string;
+    title: string;
+    category: null | string;           // Always present from API, may be null
+    containerPath: null | string;      // Always present from API, may be null
+    subjectIdFieldName: null | string; // Always present from API, may be null
+    supportsnonidfilters: boolean | null; // Always present from API, may be null
+    viewName: null | string;           // Always present from API, may be null
+}
+
+// Query reports - display LabKey query results
+export interface QueryReportConfig extends ReportConfigBase {
+    reportType: 'query';
+    schemaName: string;
+    queryName: string;
+}
+
+// JS reports - rendered by JavaScript functions
+export interface JsReportConfig extends ReportConfigBase {
+    reportType: 'js';
+    queryName: string;  // Function name to invoke
+}
+
+// Other reports - saved LabKey reports (R, chart, etc.)
+export interface OtherReportConfig extends ReportConfigBase {
+    reportType: 'report';
+    schemaName: string;
+    queryName: string;
+    reportId: string;
+}
+
+// Discriminated union of all report types
+export type ReportConfig = JsReportConfig | OtherReportConfig | QueryReportConfig;
+```
+
+**Benefits of Discriminated Union:**
+- TypeScript enforces required properties per report type at compile time
+- Component props can accept specific variants (e.g., `QueryReportWrapper` only accepts `QueryReportConfig`)
+- Eliminates runtime null reference errors for type-specific properties
+- Self-documenting which fields each report type requires
+
+**Component Type Usage:**
+- `QueryReportWrapper` - accepts `QueryReportConfig`
+- `JSReportWrapper` - accepts `JsReportConfig`
+- `OtherReportWrapper` - accepts `OtherReportConfig`
+- `ReportTab` and `TabbedReportPanel` - accept the full `ReportConfig` union
+
+**JSReportWrapperProps** - Props interface for JSReportWrapper component (defined in `JSReportWrapper.tsx`):
+```typescript
+interface JSReportWrapperProps {
+    report: JsReportConfig;
+    reportNamespace: string;
+    tab: ExtReportTab;
+}
+```
+
+This interface defines the props for rendering JavaScript-based reports:
+- `report` - The JS report configuration containing the function name to invoke
+- `reportNamespace` - Namespace to search for report functions (e.g., "EHR.reports")
+- `tab` - The ExtJS container tab instance for rendering report content
 
 **JSReportPanel** - Panel object interface for JavaScript report functions (defined in `JSReportWrapper.tsx`):
 ```typescript
@@ -288,7 +399,7 @@ export interface JSReportPanel {
     resolveSubjectsFromHousing: (
         tab: ExtReportTab,
         callback: (subjects: string[], tab: ExtReportTab) => void,
-        scope?: any
+        scope?: unknown
     ) => void;
 }
 ```
@@ -491,10 +602,10 @@ interface SearchByIdPanelProps {
   - No ID limit applies (URL-provided subjects are assumed already validated/resolved)
 
 **IdResolutionFeedback:**
-- Always rendered (not conditionally based on filter mode)
-- Component controls its own visibility via `isVisible` prop
+- Conditionally rendered by `SearchByIdPanel` (only when aliases exist or IDs not found)
+- Component has no visibility prop - `SearchByIdPanel` decides when to render it
 - Shows feedback when aliases are resolved or IDs are not found
-- Remains visible even when switching between filter modes (since textarea is always visible)
+- Rendered when: `resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0`
 
 **Internal Structure:**
 - `SearchByIdPanel` internally manages `IdResolutionFeedback` component
@@ -521,13 +632,12 @@ interface IdResolutionResult {
 
 interface IdResolutionFeedbackProps {
     resolutionResult: IdResolutionResult;
-    isVisible: boolean; // Only show when there are aliases or not-found IDs
 }
 ```
 
 **Display Logic:**
-- Component only renders when `isVisible === true` (caller determines visibility using: `resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0`)
-- Returns `null` when `isVisible === false`
+- Component always renders its content when mounted
+- Visibility controlled by `SearchByIdPanel` which conditionally renders the component using: `resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0`
 - "Resolved" section (shown when `resolved.length > 0`):
   - Direct matches displayed as: `ID123` (just the resolved ID)
   - Alias matches displayed as: `TATTOO_001 → ID123 (tattoo)` (inputId → resolvedId (aliasType))
@@ -547,32 +657,60 @@ interface IdResolutionFeedbackProps {
 - Manage `subjects` and `filterType` state locally instead of only from URL
 - Update URL hash when filter changes
 - Pass filter information to `TabbedReportPanel` via `filters` prop
-- Provide `activeReportSupportsNonIdFilters` to `SearchByIdPanel` from active report metadata
+- Fetch reports once on mount using `reportsService` and cache in state
+- Look up `activeReportSupportsNonIdFilters` from cached reports (no separate query)
+- Provide `activeReportSupportsNonIdFilters` to `SearchByIdPanel` from cached report metadata
 - `SearchByIdPanel` internally manages ID resolution and displays `IdResolutionFeedback` (not managed by parent)
+- Accept `fetchReports` prop for dependency injection (testability)
 
 **Updated Structure:**
 ```typescript
-export const ParticipantReports: FC = memo(() => {
+interface ParticipantReportsProps {
+    fetchReports?: FetchReportsFn;
+}
+
+const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({ fetchReports = defaultFetchReports }) => {
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
     const [subjects, setSubjects] = useState<string[]>(urlFilters.subjects || []);
 
-    // Determine initial filter type based on URL parameters
-    const initialFilterType = useMemo(() => {
-        if (urlFilters.readOnly && urlFilters.subjects?.length > 0) {
-            return 'urlParams'; // Read-only mode for shared links
-        }
-        return urlFilters.filterType || 'idSearch';
+    // Determine if we're in read-only mode from URL (for shared/bookmarked links)
+    const isReadOnly = useMemo(() => {
+        return urlFilters.readOnly && (urlFilters.subjects?.length ?? 0) > 0;
     }, [urlFilters]);
 
-    const [filterType, setFilterType] = useState<'idSearch' | 'all' | 'aliveAtCenter' | 'urlParams'>(initialFilterType);
+    // Lazy initializer for filterType - only runs on first render
+    const [filterType, setFilterType] = useState<FilterType>(() => {
+        if (isReadOnly) {
+            return FILTER_TYPE_URL_PARAMS; // Read-only mode for shared links
+        }
+        return urlFilters.filterType || FILTER_TYPE_ID_SEARCH;
+    });
     const [activeReport, setActiveReport] = useState(urlFilters.activeReport);
-    const [showReport, setShowReport] = useState<boolean>(urlFilters.showReport ?? false);
+    const [filterNotSupportedError, setFilterNotSupportedError] = useState<null | string>(null);
+    // In readOnly mode, always show reports immediately
+    const [showReport, setShowReport] = useState<boolean>(isReadOnly || (urlFilters.showReport ?? false));
+    const [reports, setReports] = useState<ReportConfig[]>([]);
+    const [reportsLoading, setReportsLoading] = useState(true);
 
-    // Query active report metadata to get supportsNonIdFilters field
-    // Uses Query.selectRows from @labkey/api to query ehr.reports table
-    // Filter by reportname field (activeReport contains the report name from TabbedReportPanel)
-    // Stores result in state (activeReportSupportsNonIdFilters)
-    // Defaults to true if query fails or no active report
+    // Fetch all visible reports once on mount
+    // This consolidates the query that was previously in TabbedReportPanel
+    useEffect(() => {
+        fetchReports().then(({ reports: loadedReports, error }) => {
+            if (error) {
+                console.error('Failed to load reports:', error);
+            }
+            setReports(loadedReports);
+            setReportsLoading(false);
+        });
+    }, [fetchReports]);
+
+    // Look up supportsnonidfilters from cached reports instead of making a separate query
+    // Note: Use lowercase 'supportsnonidfilters' to match the database column name
+    const activeReportSupportsNonIdFilters = useMemo(() => {
+        if (!activeReport || reports.length === 0) return true;
+        const report = reports.find(r => r.id === activeReport);
+        return report?.supportsnonidfilters ?? true;
+    }, [activeReport, reports]);
 
     // Override filter to 'all' when aliveAtCenter not supported
     // Compute effectiveFilterType: if filterType is 'aliveAtCenter' and
@@ -581,59 +719,75 @@ export const ParticipantReports: FC = memo(() => {
     // Pass effectiveFilterType to TabbedReportPanel filters
 
     const handleFilterChange = useCallback((
-        newFilterType: 'idSearch' | 'all' | 'aliveAtCenter' | 'urlParams',
-        newSubjects?: string[]
+        newFilterType: FilterType,
+        newSubjects?: string[],
+        clearError = true
     ) => {
         setFilterType(newFilterType);
         setSubjects(newSubjects || []);
+        if (clearError) {
+            setFilterNotSupportedError(null); // Clear any previous error
+        }
 
         // Determine if report should be shown
         // Show report for 'all' and 'aliveAtCenter' modes always
         // Show report for 'idSearch' and 'urlParams' only when subjects exist
         const shouldShowReport =
-            newFilterType === 'all' ||
-            newFilterType === 'aliveAtCenter' ||
-            ((newFilterType === 'idSearch' || newFilterType === 'urlParams') &&
+            newFilterType === FILTER_TYPE_ALL ||
+            newFilterType === FILTER_TYPE_ALIVE_AT_CENTER ||
+            ((newFilterType === FILTER_TYPE_ID_SEARCH || newFilterType === FILTER_TYPE_URL_PARAMS) &&
                 (newSubjects?.length ?? 0) > 0);
         setShowReport(shouldShowReport);
 
-        // Note: In current implementation, users must manually edit URL to exit readOnly mode
-        const isLeavingReadOnly = filterType === 'urlParams' && newFilterType !== 'urlParams';
-        const readOnly = newFilterType === 'urlParams' && !isLeavingReadOnly;
+        // When switching from urlParams to idSearch (via "Modify Search"), remove readOnly parameter
+        const isLeavingReadOnly = filterType === FILTER_TYPE_URL_PARAMS && newFilterType !== FILTER_TYPE_URL_PARAMS;
+        const readOnly = newFilterType === FILTER_TYPE_URL_PARAMS && !isLeavingReadOnly;
         updateUrlHash(newFilterType, newSubjects, readOnly, shouldShowReport, activeReport);
     }, [filterType, activeReport]);
 
     const handleTabChange = useCallback((reportId: string) => {
         setActiveReport(reportId);
         // Update URL hash with new activeReport
-        updateUrlHash(filterType, subjects, filterType === 'urlParams', showReport, reportId);
+        updateUrlHash(filterType, subjects, filterType === FILTER_TYPE_URL_PARAMS, showReport, reportId);
     }, [filterType, subjects, showReport]);
 
-    const filters = useMemo(() => ({
-        filterType,
-        subjects: (filterType === 'idSearch' || filterType === 'urlParams') ? subjects : undefined,
-    }), [filterType, subjects]);
+    const filters: ReportFilters = useMemo(() => ({
+        filterType: effectiveFilterType,
+        subjects: (effectiveFilterType === FILTER_TYPE_ID_SEARCH || effectiveFilterType === FILTER_TYPE_URL_PARAMS)
+            ? subjects
+            : undefined,
+    }), [effectiveFilterType, subjects]);
 
     return (
-        <div>
-            <SearchByIdPanel
-                onFilterChange={handleFilterChange}
-                initialSubjects={subjects}
-                initialFilterType={filterType}
-                activeReportSupportsNonIdFilters={activeReportSupportsNonIdFilters}
-            />
+        <div className="participant-reports">
+            {!isReadOnly && (
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={activeReportSupportsNonIdFilters}
+                    initialFilterType={filterType}
+                    initialSubjects={subjects}
+                    onFilterChange={handleFilterChange}
+                />
+            )}
+            {filterNotSupportedError && (
+                <div className="filter-not-supported-error" role="alert">
+                    {filterNotSupportedError}
+                </div>
+            )}
             <TabbedReportPanel
                 activeReport={activeReport}
                 filters={filters}
                 onTabChange={handleTabChange}
                 reportNamespace="EHR.reports"
-                reportsQuery="reports"
-                reportsSchema="ehr"
+                reports={reportsLoading ? undefined : reports}
                 showReport={showReport}
             />
         </div>
     );
-});
+};
+
+ParticipantReportsComponent.displayName = 'ParticipantReports';
+
+export const ParticipantReports = memo(ParticipantReportsComponent);
 ```
 
 **Key Points:**
@@ -647,6 +801,12 @@ export const ParticipantReports: FC = memo(() => {
   - Set to `true` for 'all' and 'aliveAtCenter' modes always
   - Set to `true` for 'idSearch' and 'urlParams' modes only when subjects exist
   - Synced to URL hash (showReport:1 when true, omitted when false)
+- **Reports fetching**: Uses `reportsService.fetchReports()` to load all visible reports once on mount
+  - Cached in `reports` state, passed to `TabbedReportPanel` as prop
+  - `reportsLoading` state ensures undefined is passed until reports are loaded
+  - `activeReportSupportsNonIdFilters` is computed from cached reports (no separate query)
+- **Dependency injection**: Accepts optional `fetchReports` prop for unit testing
+- **Lazy initializer**: Uses `useState(() => ...)` for `filterType` initial value computation
 
 ### 2. AnimalHistoryPage.tsx
 
@@ -726,6 +886,78 @@ Filter.create('lowerAliasForMatching', lowercaseUnresolvedInputIds, Filter.Types
 - The application layer de-duplicates resolved IDs when passing to reports (multiple inputs may resolve to the same animal ID)
 - Using pre-defined queries ensures consistency across the EHR module and simplifies maintenance
 
+### Reports Service
+
+**New File:** `labkey-ui-ehr/src/ParticipantHistory/services/reportsService.ts`
+
+Centralized service for fetching report configurations from the `ehr.reports` table. This consolidates report fetching that was previously done in `TabbedReportPanel` and provides dependency injection support for testing.
+
+```typescript
+export interface FetchReportsResult {
+    error?: string;
+    reports: ReportConfig[];
+}
+
+export type FetchReportsFn = () => Promise<FetchReportsResult>;
+
+/**
+ * Fetches all visible reports from the EHR schema.
+ * Returns a promise that resolves with the report configurations.
+ */
+export const fetchReports: FetchReportsFn = (): Promise<FetchReportsResult> => {
+    return new Promise(resolve => {
+        Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'reports',
+            filterArray: [Filter.create('visible', true, Filter.Types.EQUAL)],
+            sort: 'category,sort_order,reporttitle,reportstatus',
+            success: (data: any) => {
+                const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
+                    const report: ReportConfig = {
+                        id: row.reportname,
+                        title: row.reporttitle,
+                        reportType: row.reporttype,
+                        schemaName: row.schemaname,
+                        queryName: row.queryname,
+                        viewName: row.viewname,
+                        reportId: row.report,
+                        ...row,
+                    };
+
+                    if (row.jsonConfig) {
+                        try {
+                            const json = JSON.parse(row.jsonConfig);
+                            Object.assign(report, json);
+                        } catch (e) {
+                            console.warn('Failed to parse jsonConfig for report: ' + row.reportname, e);
+                        }
+                    }
+                    return report;
+                });
+                resolve({ reports: loadedReports });
+            },
+            failure: (error: any) => {
+                console.error('Failed to load reports', error);
+                resolve({ reports: [], error: error?.message || 'Failed to load reports' });
+            },
+        });
+    });
+};
+```
+
+**Key Points:**
+- Fetches all visible reports with a single query on component mount
+- Returns both reports and optional error for graceful error handling
+- Parses `jsonConfig` field to merge additional configuration into report objects
+- Sorts reports by category, sort_order, title, and status for consistent display order
+- Exported `FetchReportsFn` type enables dependency injection for testing
+
+**Benefits of Centralization:**
+- Single source of truth for report fetching logic
+- Enables dependency injection in `ParticipantReports` for unit testing
+- Reports are fetched once and cached in state, eliminating redundant queries
+- `supportsnonidfilters` field lookup uses cached reports instead of separate query
+
 ## URL Hash Format
 
 The URL hash format follows the existing pattern in `ParticipantReports.tsx`:
@@ -794,34 +1026,40 @@ The `TabbedReportPanel` needs updates to handle four filter modes:
 ```typescript
 newTab.getFilterArray = () => {
     const filterArray = { removable: [], nonRemovable: [] };
-    const subjectFieldName = report.subjectFieldName || 'Id';
+
+    if (!filters) {
+        return filterArray;
+    }
+
+    const subjectIdFieldName = report.subjectIdFieldName || 'Id';
+    const hasSubjects = filters.subjects?.length > 0;
 
     // ID Search mode: Filter by specific subject IDs
-    if (filters && filters.filterType === 'idSearch' && filters.subjects && filters.subjects.length) {
+    if (filters.filterType === 'idSearch' && hasSubjects) {
         const subjects = filters.subjects;
         if (subjects.length === 1) {
-            filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
+            filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
         } else {
             filterArray.nonRemovable.push(
-                Filter.create(subjectFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
+                Filter.create(subjectIdFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
             );
         }
     }
 
     // URL Params mode: Filter by URL-provided subject IDs (same as ID Search)
-    if (filters && filters.filterType === 'urlParams' && filters.subjects && filters.subjects.length) {
+    if (filters.filterType === 'urlParams' && hasSubjects) {
         const subjects = filters.subjects;
         if (subjects.length === 1) {
-            filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
+            filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
         } else {
             filterArray.nonRemovable.push(
-                Filter.create(subjectFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
+                Filter.create(subjectIdFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
             );
         }
     }
 
     // Alive at Center mode: Filter by calculated_status
-    if (filters && filters.filterType === 'aliveAtCenter') {
+    if (filters.filterType === 'aliveAtCenter') {
         filterArray.nonRemovable.push(
             Filter.create('Id/Demographics/calculated_status', 'Alive', Filter.Types.EQUAL)
         );
@@ -940,8 +1178,8 @@ Add tracking for:
    - Test 100 ID limit validation (exactly 100, 101+)
 
 2. **IdResolutionFeedback:**
-   - Test visibility logic (show only when aliases or not-found exist)
    - Test correct categorization of resolved vs not-found
+   - Test display formatting (direct matches, alias matches with arrow and type)
 
 3. **SearchByIdPanel:**
    - Test input state management for ID Search mode
@@ -1094,11 +1332,11 @@ Add tracking for:
 
 4. Implement IdResolutionFeedback component
    - Create `IdResolutionFeedback.tsx` in `labkey-ui-ehr/src/ParticipantHistory/SearchByIdPanel/`
-   - Implement visibility logic (show only when aliases or not-found exist)
    - Display "Resolved" section with direct and alias matches
    - Display "Not Found" section for unresolved IDs
    - Show alias type for alias-resolved IDs
    - Style component for clear user feedback
+   - Note: Visibility logic implemented in `SearchByIdPanel` (conditionally renders this component)
 
 5. Implement SearchByIdPanel component - Part 1 (ID Search mode)
    - Create `SearchByIdPanel.tsx` in `labkey-ui-ehr/src/ParticipantHistory/SearchByIdPanel/`
@@ -1177,14 +1415,15 @@ Add tracking for:
 
 12. Unit tests - Core services and utilities
     - idResolutionService.ts: Direct/alias resolution, case-insensitive matching, de-duplication, special characters, error handling, API mocking
+    - reportsService.ts: Report fetching, visible filter, sorting, jsonConfig parsing, error handling, FetchReportsFn type export
     - urlHashUtils.ts: URL hash generation/parsing for all filter modes, special character encoding, conflict resolution
 
 13. Unit tests - SearchByIdPanel and IdResolutionFeedback components
     - SearchByIdPanel: ID parsing (all separators), 100 ID limit validation, filter mode toggles, "Alive, at Center" button state, input clearing, accessibility (ARIA, keyboard)
-    - IdResolutionFeedback: Visibility logic, resolved/not-found categorization, alias type display
+    - IdResolutionFeedback: Resolved/not-found categorization, alias type display, section headings
 
 14. Unit tests - Report integration components
-    - ParticipantReports.tsx: URL hash detection, filter state management, `activeReportSupportsNonIdFilters` querying, mode switching, race conditions
+    - ParticipantReports.tsx: URL hash detection, filter state management, `activeReportSupportsNonIdFilters` lookup from cached reports, mode switching, race conditions, fetchReports dependency injection, reportsLoading state
     - TabbedReportPanel.tsx: Filter creation for all modes (ID Search, URL Params, All Records, Alive at Center), filter structure validation, error handling for unsupported modes
 
 ### Integration Tests (Selenium - Java)
@@ -1644,6 +1883,18 @@ Add tracking for:
 * Test LabKey API returns malformed response - verify doesn't crash
 * Mock @labkey/api Query.selectRows calls
 
+**File: `reportsService.test.ts`**
+* Test `fetchReports()` returns reports from ehr.reports table
+* Test `fetchReports()` filters by visible=true
+* Test `fetchReports()` sorts by category, sort_order, reporttitle, reportstatus
+* Test `fetchReports()` maps row fields to ReportConfig interface
+* Test `fetchReports()` parses jsonConfig field and merges into report
+* Test `fetchReports()` handles malformed jsonConfig gracefully (logs warning, continues)
+* Test `fetchReports()` returns empty array with error on API failure
+* Test `fetchReports()` returns error message from API response
+* Test FetchReportsFn type can be used for dependency injection
+* Mock @labkey/api Query.selectRows calls
+
 **File: `SearchByIdPanel.test.tsx`**
 * Test ID parsing with newline separators
 * Test ID parsing with comma separators
@@ -1678,14 +1929,18 @@ Add tracking for:
 * Test IDs with SQL injection patterns treated as literal strings (security test)
 
 **File: `IdResolutionFeedback.test.tsx`**
-* Test component hidden when all IDs are direct matches (no aliases, no not-found)
-* Test component visible when aliases present
-* Test component visible when not-found IDs present
-* Test component visible when both aliases and not-found IDs present
 * Test "Resolved" section displays direct matches without arrow: "ID123"
 * Test "Resolved" section displays alias matches with arrow and type: "alias456 → ID123 (tattoo)"
+* Test "Resolved" section displays multiple alias matches with different types
+* Test "Resolved" section displays mixed direct and alias matches correctly
 * Test "Not Found" section displays unresolved IDs
 * Test multiple inputs resolving to same ID displayed correctly
+* Test empty results renders container with title but no sections
+* Test section headings have proper structure
+* Test accessibility: resolved and not-found items have proper CSS classes
+* Test special characters in IDs handled correctly
+
+Note: Visibility tests are in `SearchByIdPanel.test.tsx` under "resolution feedback visibility" describe block, since `SearchByIdPanel` controls when `IdResolutionFeedback` is rendered.
 
 **File: `ParticipantReports.test.tsx`**
 * Test initial filter type determined from URL hash
@@ -1707,19 +1962,75 @@ Add tracking for:
 * Test showReport state: false for 'idSearch' mode with no subjects
 * Test showReport prop passed to TabbedReportPanel correctly
 
+*Dependency injection tests:*
+* Test accepts fetchReports prop for dependency injection
+* Test uses default fetchReports when prop not provided
+* Test injected fetchReports handles errors
+* Test injected fetchReports can return multiple categories
+* Test reportsLoading state: passes undefined to TabbedReportPanel while loading
+* Test reportsLoading state: passes reports array after loading completes
+* Test activeReportSupportsNonIdFilters computed from cached reports (no separate query)
+* Test activeReportSupportsNonIdFilters defaults to true when report not found
+
 **File: `TabbedReportPanel.test.tsx`**
-* Test ID Search mode creates subject ID filters
-* Test URL Params mode creates subject ID filters
-* Test All Animals mode creates no filters
-* Test Alive at Center mode creates `Id/Demographics/calculated_status = 'Alive'` filter
-* Test filter switching updates report filters correctly
-* Test filter structure matches LabKey Filter.create() API format
-* Test empty subjects array in ID Search mode shows validation error (not passed to reports)
-* Test report with `supportsNonIdFilters = false` in Alive at Center mode shows error message
-* Test empty state placeholder displayed when showReport is false
-* Test placeholder message: "Select Filter to View Reports"
-* Test reports rendered when showReport is true
-* Test conditional rendering: ternary operator used (not &&)
+
+*Basic rendering tests:*
+* Test renders query report tab and displays QueryReportWrapper
+* Test renders js report tab and displays JSReportWrapper
+* Test renders other report tab and displays OtherReportWrapper
+* Test renders category tabs and allows switching between categories
+* Test allows switching between reports in the same category
+* Test displays loading state when no reports provided initially
+* Test displays message when reports array is empty
+* Test calls onTabChange when switching tabs
+* Test selects the specified active report on initial render
+
+*Filter modes integration - ID Search mode:*
+* Test creates subject ID filter for single subject
+* Test creates subject ID filter for multiple subjects
+* Test uses EQUALS_ONE_OF filter type for multiple subjects
+
+*Filter modes integration - URL Params mode:*
+* Test creates subject ID filter from URL-provided subjects
+* Test handles single subject from URL params
+
+*Filter modes integration - All Records mode:*
+* Test creates no filters when filterType is all
+* Test ignores subjects when filterType is all
+
+*Filter modes integration - Alive at Center mode:*
+* Test creates calculated_status = Alive filter
+* Test does not create subject filters in Alive at Center mode
+
+*Filter modes integration - filter switching:*
+* Test updates report filters when switching from ID Search to All Records
+* Test updates report filters when switching from All Records to Alive at Center
+* Test updates report filters when switching from Alive at Center to ID Search
+
+*Filter modes integration - empty subjects validation:*
+* Test creates no subject filters when ID Search mode has empty subjects array
+
+*Filter modes integration - report supportsNonIdFilters field:*
+* Test applies Alive at Center filter regardless of supportsnonidfilters setting (parent component handles error display)
+* Test applies Alive at Center filter when report supports non-ID filters
+
+*Filter modes integration - LabKey Filter API format:*
+* Test creates filters in correct LabKey Filter.create() format for single subject
+* Test creates filters in correct LabKey Filter.create() format for multiple subjects
+
+*Filter modes integration - custom subjectIdFieldName handling:*
+* Test uses custom subjectIdFieldName from report config
+* Test defaults to Id when subjectIdFieldName not specified
+* Test defaults to Id when subjectIdFieldName is null
+
+*Filter modes integration - edge cases for filter modes:*
+* Test handles undefined filterType gracefully
+* Test handles null filters gracefully
+* Test handles empty filterType string
+
+*Filter modes integration - FilterArray structure validation:*
+* Test getFilterArray returns correct structure with nonRemovable filters
+* Test getFilterArray returns empty arrays for All Records mode
 
 **File: `urlHashUtils.test.ts`**
 * Test `updateUrlHash()` for ID Search mode

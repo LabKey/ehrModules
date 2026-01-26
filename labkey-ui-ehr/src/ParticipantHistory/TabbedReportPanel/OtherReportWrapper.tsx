@@ -1,22 +1,24 @@
 import React, { FC, memo, useEffect, useId } from 'react';
 import { Filter } from '@labkey/api';
 
-import { ExtReportTab, QueryWebPartConfig, ReportConfig } from '../models';
+import { ExtReportTab, OtherReportConfig, QueryWebPartConfig } from '../models';
 
 // Declare global variables for ExtJS and LABKEY
 declare const Ext4: any;
 declare const LABKEY: any;
 
-const OtherReportWrapperComponent: FC<{ report: ReportConfig; tab: ExtReportTab }> = ({ tab, report }) => {
+/** Props for OtherReportWrapper component */
+interface OtherReportWrapperProps {
+    report: OtherReportConfig;
+    tab: ExtReportTab;
+}
+
+const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ tab, report }) => {
     // Generate a unique ID for the render target - LABKEY.WebPart expects a string ID, not a DOM element
     const uniqueId = useId();
     const targetId = `report-target-${report.id}-${uniqueId.replace(/:/g, '-')}`;
 
     useEffect(() => {
-        if (!tab || !Ext4 || !LABKEY) {
-            return;
-        }
-
         // Ensure the DOM element exists before rendering
         const targetElement = document.getElementById(targetId);
         if (!targetElement) {

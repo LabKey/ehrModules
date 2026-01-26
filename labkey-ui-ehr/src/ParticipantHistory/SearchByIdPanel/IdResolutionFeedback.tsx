@@ -15,16 +15,10 @@ import { IdResolutionResult } from '../models';
  */
 
 export interface IdResolutionFeedbackProps {
-    isVisible: boolean;
     resolutionResult: IdResolutionResult;
 }
 
-export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolutionResult, isVisible }) => {
-    // Don't render if not visible
-    if (!isVisible) {
-        return null;
-    }
-
+export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolutionResult }) => {
     const { resolved, notFound } = resolutionResult;
 
     // Separate direct matches from alias matches
@@ -39,13 +33,13 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
                 <div className="section">
                     <h4 className="section-title resolved">Resolved ({resolved.length})</h4>
                     <div className="items">
-                        {directMatches.map((match, index) => (
-                            <div className="item resolved-item" key={`direct-${index}`}>
+                        {directMatches.map(match => (
+                            <div className="item resolved-item" key={match.inputId}>
                                 <span className="resolved-id">{match.resolvedId}</span>
                             </div>
                         ))}
-                        {aliasMatches.map((match, index) => (
-                            <div className="item resolved-item" key={`alias-${index}`}>
+                        {aliasMatches.map(match => (
+                            <div className="item resolved-item" key={match.inputId}>
                                 <span className="input-id">{match.inputId}</span>
                                 <span className="arrow">→</span>
                                 <span className="resolved-id">{match.resolvedId}</span>
@@ -60,8 +54,8 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
                 <div className="section">
                     <h4 className="section-title not-found">Not Found ({notFound.length})</h4>
                     <div className="items">
-                        {notFound.map((id, index) => (
-                            <div className="item not-found-item" key={`notfound-${index}`}>
+                        {notFound.map(id => (
+                            <div className="item not-found-item" key={id}>
                                 {id}
                             </div>
                         ))}

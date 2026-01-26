@@ -146,36 +146,9 @@ describe('QueryReportWrapper', () => {
         });
     });
 
-    test('does not render when tab is null', () => {
-        renderWithServerContext(<QueryReportWrapper report={queryReport} tab={null as any} />, defaultServerContext);
-
-        expect(mockTab.add).not.toHaveBeenCalled();
-    });
-
-    test('does not render when Ext4 is undefined', () => {
-        const originalExt4 = (global as any).Ext4;
-        (global as any).Ext4 = undefined;
-
-        renderWithServerContext(<QueryReportWrapper report={queryReport} tab={mockTab} />, defaultServerContext);
-
-        expect(mockTab.add).not.toHaveBeenCalled();
-
-        (global as any).Ext4 = originalExt4;
-    });
-
-    test('does not render when LDK is undefined', () => {
-        const originalLDK = (global as any).LDK;
-        (global as any).LDK = undefined;
-
-        renderWithServerContext(<QueryReportWrapper report={queryReport} tab={mockTab} />, defaultServerContext);
-
-        expect(mockTab.add).not.toHaveBeenCalled();
-
-        (global as any).LDK = originalLDK;
-    });
-
     test('handles error during component creation', () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+        const originalAdd = mockTab.add;
         mockTab.add = jest.fn(() => {
             throw new Error('Failed to create ExtJS component');
         });
@@ -184,6 +157,7 @@ describe('QueryReportWrapper', () => {
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create ExtJS component', expect.any(Error));
         consoleErrorSpy.mockRestore();
+        mockTab.add = originalAdd;
     });
 
     test('cleans up by calling removeAll on unmount', async () => {

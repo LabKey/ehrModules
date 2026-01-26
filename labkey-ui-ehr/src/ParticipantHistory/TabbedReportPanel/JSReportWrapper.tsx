@@ -2,11 +2,10 @@ import React, { FC, memo, useEffect } from 'react';
 
 import { Query, Filter } from '@labkey/api';
 
-import { ExtReportTab, FilterArray, QueryWebPartConfig, ReportConfig } from '../models';
+import { ExtReportTab, FilterArray, JsReportConfig, QueryWebPartConfig } from '../models';
 
-// Declare global variables for ExtJS and LabKey
+// Declare global variable for ExtJS
 declare const Ext4: any;
-declare const LABKEY: any;
 
 /** Row from demographicsCurLocation query */
 interface DemographicsLocationRow {
@@ -128,14 +127,10 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
                     Ext4.Msg.hide();
                 }
 
-                const subjects: string[] = [];
-                if (results.rows) {
-                    results.rows.forEach((row: DemographicsLocationRow) => {
-                        if (row.Id) {
-                            subjects.push(row.Id);
-                        }
-                    });
-                }
+                const subjects = results.rows?.reduce((result, row: DemographicsLocationRow) => {
+                    if (row.Id) result.push(row.Id);
+                    return result;
+                }, [] as string[]);
 
                 callback.apply(scope || panel, [subjects, tabArg]);
             },
@@ -143,15 +138,19 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
     };
 };
 
-const JSReportWrapperComponent: FC<{ report: ReportConfig; reportNamespace?: string; tab: ExtReportTab }> = ({
+/** Props for JSReportWrapper component */
+interface JSReportWrapperProps {
+    report: JsReportConfig;
+    reportNamespace: string;
+    tab: ExtReportTab;
+}
+
+const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
     tab,
     report,
     reportNamespace,
 }) => {
     useEffect(() => {
-        if (!tab || !Ext4) {
-            return;
-        }
 
         try {
             const handlerName = report.queryName;
@@ -198,6 +197,8 @@ const JSReportWrapperComponent: FC<{ report: ReportConfig; reportNamespace?: str
         };
     }, [tab, report, reportNamespace]);
 
+    // This component manages ExtJS lifecycle imperatively via useEffect
+    // and does not render any DOM elements
     return null;
 };
 

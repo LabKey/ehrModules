@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.4-fb-ehr-hist-id-search.5",
+  "version": "0.0.4-fb-ehr-hist-id-search.7",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -29,7 +29,7 @@
     "clean": "rimraf dist",
     "cleanAll": "rimraf dist && rimraf node_modules",
     "prepublishOnly": "npm install --legacy-peer-deps && cross-env WEBPACK_STATS=errors-only npm run build",
-    "test": "cross-env NODE_ENV=test jest --maxWorkers=6 --silent",
+    "test": "cross-env NODE_ENV=test jest --maxWorkers=6",
     "test-ci": "cross-env NODE_ENV=test jest --ci --silent",
     "test-coverage": "cross-env NODE_ENV=test jest --maxWorkers=6 --coverage",
     "lint": "npx eslint",

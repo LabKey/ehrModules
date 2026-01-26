@@ -227,10 +227,10 @@ describe('ReportTab', () => {
         expect(container.querySelector('.report-target')).toBeInTheDocument();
     });
 
-    test('uses custom subjectFieldName from report config', async () => {
+    test('uses custom subjectIdFieldName from report config', async () => {
         const customReport: ReportConfig = {
             ...queryReport,
-            subjectFieldName: 'ParticipantId',
+            subjectIdFieldName: 'ParticipantId',
         };
         const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
@@ -246,7 +246,7 @@ describe('ReportTab', () => {
         });
     });
 
-    test('defaults to Id when subjectFieldName not specified', async () => {
+    test('defaults to Id when subjectIdFieldName not specified', async () => {
         const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
         render(
@@ -256,9 +256,9 @@ describe('ReportTab', () => {
         );
 
         await waitFor(() => {
-            // Verify the report was assigned without subjectFieldName
+            // Verify the report was assigned without subjectIdFieldName
             expect(mockExt4Container.report).toEqual(queryReport);
-            expect(mockExt4Container.report.subjectFieldName).toBeUndefined();
+            expect(mockExt4Container.report.subjectIdFieldName).toBeUndefined();
         });
     });
 });

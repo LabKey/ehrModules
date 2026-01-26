@@ -38,7 +38,6 @@ describe('idResolutionService', () => {
 
                 mockSelectRows.mockImplementation((config: MockConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
-                        // Verify using filterArray with lowerIdForMatching
                         expect(config.filterArray).toBeDefined();
                         config.success({
                             rows: [{ resolvedId: 'ID123' }],
@@ -49,7 +48,6 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(1);
                 expect(result.resolved[0]).toEqual({
                     inputId: 'ID123',
                     resolvedId: 'ID123',
@@ -73,7 +71,24 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(3);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[2]).toEqual({
+                    inputId: 'ID789',
+                    resolvedId: 'ID789',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(0);
             });
         });
@@ -101,7 +116,6 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(1);
                 expect(result.resolved[0]).toEqual({
                     inputId: 'TATTOO_001',
                     resolvedId: 'ID123',
@@ -136,7 +150,18 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'TATTOO_001',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'alias',
+                    aliasType: 'tattoo',
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'CHIP_12345',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'alias',
+                    aliasType: 'chip',
+                });
                 expect(result.notFound).toHaveLength(0);
             });
         });
@@ -166,10 +191,25 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(3);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[2]).toEqual({
+                    inputId: 'TATTOO_001',
+                    resolvedId: 'ID789',
+                    resolvedBy: 'alias',
+                    aliasType: 'tattoo',
+                });
                 expect(result.notFound).toHaveLength(0);
-                expect(result.resolved.filter(r => r.resolvedBy === 'direct')).toHaveLength(2);
-                expect(result.resolved.filter(r => r.resolvedBy === 'alias')).toHaveLength(1);
             });
 
             test('returns not-found IDs when some IDs cannot be resolved', async () => {
@@ -188,7 +228,18 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(1);
                 expect(result.notFound[0]).toBe('INVALID_ID');
             });
@@ -224,36 +275,24 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(3);
-                expect(result.notFound).toHaveLength(0);
-            });
-
-            test('resolves aliases regardless of input casing', async () => {
-                const inputIds = ['tattoo_001', 'TATTOO_002'];
-
-                let callCount = 0;
-                mockSelectRows.mockImplementation((config: MockConfig) => {
-                    callCount++;
-                    if (callCount === 1 && config.schemaName === 'study' && config.queryName === 'directIdMatches') {
-                        config.success({ rows: [] });
-                    } else if (
-                        callCount === 2 &&
-                        config.schemaName === 'study' &&
-                        config.queryName === 'aliasIdMatches'
-                    ) {
-                        config.success({
-                            rows: [
-                                { resolvedId: 'ID123', inputId: 'tattoo_001', aliasType: 'tattoo' },
-                                { resolvedId: 'ID456', inputId: 'TATTOO_002', aliasType: 'tattoo' },
-                            ],
-                        });
-                    }
-                    return {} as MockConfig;
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'id123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
                 });
-
-                const result = await resolveAnimalIds({ inputIds });
-
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[2]).toEqual({
+                    inputId: 'Id789',
+                    resolvedId: 'ID789',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(0);
             });
         });
@@ -273,7 +312,18 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(0);
             });
 
@@ -302,10 +352,19 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'TATTOO_001',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'alias',
+                    aliasType: 'tattoo',
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'CHIP_12345',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'alias',
+                    aliasType: 'chip',
+                });
                 expect(result.notFound).toHaveLength(0);
-                expect(result.resolved[0].resolvedId).toBe('ID123');
-                expect(result.resolved[1].resolvedId).toBe('ID123');
             });
         });
 
@@ -324,8 +383,13 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(1);
-                expect(result.resolved[0].resolvedId).toBe('ID-123-456');
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID-123-456',
+                    resolvedId: 'ID-123-456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.notFound).toHaveLength(0);
             });
 
             test('handles IDs with underscores', async () => {
@@ -342,8 +406,13 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(1);
-                expect(result.resolved[0].resolvedId).toBe('ID_123_456');
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID_123_456',
+                    resolvedId: 'ID_123_456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.notFound).toHaveLength(0);
             });
 
             test('handles IDs with spaces', async () => {
@@ -360,8 +429,13 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(1);
-                expect(result.resolved[0].resolvedId).toBe('ID 123');
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID 123',
+                    resolvedId: 'ID 123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.notFound).toHaveLength(0);
             });
         });
 
@@ -381,6 +455,19 @@ describe('idResolutionService', () => {
                 const result = await resolveAnimalIds({ inputIds });
 
                 expect(result.resolved).toHaveLength(150);
+                // Spot-check first and last items
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID0',
+                    resolvedId: 'ID0',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[149]).toEqual({
+                    inputId: 'ID149',
+                    resolvedId: 'ID149',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(0);
             });
         });
@@ -517,7 +604,18 @@ describe('idResolutionService', () => {
 
                 const result = await resolveAnimalIds({ inputIds });
 
-                expect(result.resolved).toHaveLength(2);
+                expect(result.resolved[0]).toEqual({
+                    inputId: 'ID123',
+                    resolvedId: 'ID123',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
+                expect(result.resolved[1]).toEqual({
+                    inputId: 'ID456',
+                    resolvedId: 'ID456',
+                    resolvedBy: 'direct',
+                    aliasType: null,
+                });
                 expect(result.notFound).toHaveLength(0);
             });
         });

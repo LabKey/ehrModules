@@ -1,4 +1,15 @@
 .tabbed-report-panel {
+    // Button reset for tab elements
+    .category-tab,
+    .category-tab-active,
+    .report-tab,
+    .report-tab-active {
+        background: none;
+        border: none;
+        text-align: left;
+        font-family: inherit;
+    }
+
     .category-tabs {
         margin-bottom: 0;
         background-color: #f8f9fa;

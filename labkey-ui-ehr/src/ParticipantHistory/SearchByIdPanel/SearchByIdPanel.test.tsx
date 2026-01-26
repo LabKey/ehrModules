@@ -81,15 +81,15 @@ describe('parseIds utility function', () => {
 });
 
 describe('validateInput utility function', () => {
-    test('returns null for valid input with 1 ID', () => {
+    test('returns undefined for valid input with 1 ID', () => {
         const result = validateInput(['ID1']);
-        expect(result).toBeNull();
+        expect(result).toBeUndefined();
     });
 
-    test('returns null for valid input with 100 IDs', () => {
+    test('returns undefined for valid input with 100 IDs', () => {
         const ids = Array.from({ length: 100 }, (_, i) => `ID${i}`);
         const result = validateInput(ids);
-        expect(result).toBeNull();
+        expect(result).toBeUndefined();
     });
 
     test('returns error for empty array', () => {
@@ -123,7 +123,14 @@ describe('SearchByIdPanel', () => {
 
     describe('ID parsing', () => {
         test('parses IDs with newline separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -149,7 +156,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('parses IDs with comma separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -175,7 +189,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('parses IDs with tab separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -201,7 +222,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('parses IDs with semicolon separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -227,7 +255,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('parses IDs with mixed separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -255,7 +290,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('trims whitespace from IDs', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -280,7 +322,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('de-duplicates IDs across different separators', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -305,7 +354,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('filters out empty strings from parsed IDs', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -332,7 +388,14 @@ describe('SearchByIdPanel', () => {
 
     describe('validation', () => {
         test('shows validation error when input is empty', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
             fireEvent.click(updateButton);
@@ -346,7 +409,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('treats whitespace-only input as empty', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -363,7 +433,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('allows exactly 100 IDs without validation error', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -392,7 +469,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('shows validation error when more than 100 IDs entered', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
@@ -405,7 +489,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('button remains enabled when validation fails', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -427,7 +518,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('clears validation error when IDs reduced below limit', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
 
@@ -451,7 +549,14 @@ describe('SearchByIdPanel', () => {
 
     describe('filter mode toggles', () => {
         test('renders filter mode toggle buttons', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeVisible();
             expect(screen.getByRole('button', { name: /all animals/i })).toBeVisible();
@@ -462,7 +567,8 @@ describe('SearchByIdPanel', () => {
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -475,7 +581,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="all"
+                    initialFilterType={FILTER_TYPE_ALL}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -486,7 +593,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="aliveAtCenter"
+                    initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -497,7 +605,7 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -507,7 +615,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('switches between filter modes', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
             fireEvent.click(allRecordsButton);
@@ -516,7 +631,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('search by ids button sets filter mode even with validation error', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             // First switch to All Animals mode
             const allAnimalsButton = screen.getByRole('button', { name: /all animals/i });
@@ -543,7 +665,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -560,7 +683,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -577,7 +701,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -596,7 +721,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -614,7 +740,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -641,7 +768,8 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -670,7 +798,8 @@ describe('SearchByIdPanel', () => {
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -683,7 +812,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="all"
+                    initialFilterType={FILTER_TYPE_ALL}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -694,7 +824,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="aliveAtCenter"
+                    initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -710,7 +841,14 @@ describe('SearchByIdPanel', () => {
             });
             mockResolveAnimalIds.mockReturnValue(slowPromise);
 
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -749,7 +887,8 @@ describe('SearchByIdPanel', () => {
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -775,7 +914,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="all"
+                    initialFilterType={FILTER_TYPE_ALL}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -787,7 +927,8 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="aliveAtCenter"
+                    initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
+                    initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
                 />
             );
@@ -805,7 +946,14 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -824,7 +972,14 @@ describe('SearchByIdPanel', () => {
                 notFound: ['notfound1', 'notfound2'],
             });
 
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -846,7 +1001,14 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -865,14 +1027,28 @@ describe('SearchByIdPanel', () => {
 
     describe('all alive at center button state', () => {
         test('all alive at center button enabled when activeReportSupportsNonIdFilters is true', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
             expect(aliveAtCenterButton).not.toBeDisabled();
         });
 
         test('all alive at center button disabled when activeReportSupportsNonIdFilters is false', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={false} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={false}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
             expect(aliveAtCenterButton).toBeDisabled();
@@ -884,7 +1060,7 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -899,7 +1075,7 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -913,7 +1089,7 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456', 'ID789']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -929,7 +1105,7 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -942,7 +1118,7 @@ describe('SearchByIdPanel', () => {
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -960,7 +1136,7 @@ describe('SearchByIdPanel', () => {
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="urlParams"
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -970,7 +1146,7 @@ describe('SearchByIdPanel', () => {
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
-                    initialFilterType="idSearch"
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
                 />
@@ -983,14 +1159,28 @@ describe('SearchByIdPanel', () => {
 
     describe('accessibility', () => {
         test('textarea has accessible label', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             expect(textarea).toHaveAccessibleName();
         });
 
         test('buttons have accessible names', () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /all animals/i })).toBeInTheDocument();
@@ -998,7 +1188,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('validation errors have role="alert" for screen readers', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
@@ -1012,7 +1209,14 @@ describe('SearchByIdPanel', () => {
         });
 
         test('keyboard navigation works correctly', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
@@ -1038,7 +1242,14 @@ describe('SearchByIdPanel', () => {
 
     describe('security - SQL injection protection', () => {
         test('treats IDs with SQL injection patterns as literal strings', async () => {
-            render(<SearchByIdPanel activeReportSupportsNonIdFilters={true} onFilterChange={mockOnFilterChange} />);
+            render(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_ID_SEARCH}
+                    initialSubjects={[]}
+                    onFilterChange={mockOnFilterChange}
+                />
+            );
 
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });

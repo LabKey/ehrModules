@@ -1,22 +1,60 @@
 import { Filter } from '@labkey/api';
 
 /**
- * Report Configuration
- * Defines the structure for report metadata and configuration
+ * Report Type Constants
+ * Literal types for the discriminated union
  */
-export interface ReportConfig {
-    [key: string]: any; // Allow other config options
-    category?: string;
-    containerPath?: string;
+export type ReportType = 'js' | 'query' | 'report';
+
+/**
+ * Base Report Configuration
+ * Common properties shared by all report types
+ */
+interface ReportConfigBase {
+    category: null | string;
+    containerPath: null | string;
     id: string;
-    queryName?: string;
-    reportId?: string;
-    reportType: string;
-    schemaName?: string;
-    subjectFieldName?: string;
+    subjectIdFieldName: null | string;
+    supportsnonidfilters: boolean | null;
     title: string;
-    viewName?: string;
+    viewName: null | string;
 }
+
+/**
+ * Query Report Configuration
+ * For reports that display LabKey query results
+ */
+export interface QueryReportConfig extends ReportConfigBase {
+    queryName: string;
+    reportType: 'query';
+    schemaName: string;
+}
+
+/**
+ * JS Report Configuration
+ * For reports rendered by JavaScript functions
+ */
+export interface JsReportConfig extends ReportConfigBase {
+    queryName: string; // Function name to invoke
+    reportType: 'js';
+}
+
+/**
+ * Other Report Configuration
+ * For saved LabKey reports (R, chart, etc.)
+ */
+export interface OtherReportConfig extends ReportConfigBase {
+    queryName: string;
+    reportId: string;
+    reportType: 'report';
+    schemaName: string;
+}
+
+/**
+ * Report Configuration
+ * Discriminated union of all report types
+ */
+export type ReportConfig = JsReportConfig | OtherReportConfig | QueryReportConfig;
 
 /**
  * Filter Array

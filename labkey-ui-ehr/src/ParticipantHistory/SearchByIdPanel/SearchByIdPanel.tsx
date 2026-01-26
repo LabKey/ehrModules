@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
+import classNames from 'classnames';
 import { incrementClientSideMetricCount } from '@labkey/components';
 
 import { IdResolutionFeedback } from './IdResolutionFeedback';
@@ -41,10 +42,10 @@ export const parseIds = (input: string): string[] => {
 
 /**
  * Validate input IDs (check for empty, check 100 ID limit)
- * Returns null if valid, error message string if invalid
+ * Returns undefined if valid, error message string if invalid
  * @internal - Exported for testing
  */
-export const validateInput = (ids: string[]): null | string => {
+export const validateInput = (ids: string[]): string | undefined => {
     if (ids.length === 0) {
         return 'Please enter at least one animal ID.';
     }
@@ -53,7 +54,7 @@ export const validateInput = (ids: string[]): null | string => {
         return `Maximum of 100 animal IDs allowed. You entered ${ids.length} IDs.`;
     }
 
-    return null;
+    return undefined;
 };
 
 /**
@@ -75,15 +76,15 @@ export const validateInput = (ids: string[]): null | string => {
 
 export interface SearchByIdPanelProps {
     activeReportSupportsNonIdFilters: boolean;
-    initialFilterType?: FilterType;
-    initialSubjects?: string[];
+    initialFilterType: FilterType;
+    initialSubjects: string[];
     onFilterChange: (filterType: FilterType, subjects?: string[]) => void;
 }
 
 export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
     onFilterChange,
-    initialSubjects = [],
-    initialFilterType = FILTER_TYPE_ID_SEARCH,
+    initialSubjects,
+    initialFilterType,
     activeReportSupportsNonIdFilters,
 }) => {
     const [inputValue, setInputValue] = useState<string>(initialSubjects.join(','));
@@ -93,7 +94,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
         resolved: [],
         notFound: [],
     });
-    const [validationError, setValidationError] = useState<null | string>(null);
+    const [validationError, setValidationError] = useState<string | undefined>(undefined);
     const [hasUserTyped, setHasUserTyped] = useState<boolean>(false);
 
     // Sync filterType with initialFilterType prop changes
@@ -166,7 +167,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
             // Clear input when switching to non-ID modes
             setInputValue('');
             setResolutionResult({ resolved: [], notFound: [] });
-            setValidationError(null);
+            setValidationError(undefined);
             setHasUserTyped(false);
 
             onFilterChange(newFilterType, undefined);
@@ -224,7 +225,10 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
 
                 <div className="button-container">
                     <button
-                        className={`search-button ${isResolving ? '' : filterType === FILTER_TYPE_ID_SEARCH ? 'active' : 'inactive'}`}
+                        className={classNames('search-button', {
+                            active: !isResolving && filterType === FILTER_TYPE_ID_SEARCH,
+                            inactive: !isResolving && filterType !== FILTER_TYPE_ID_SEARCH,
+                        })}
                         disabled={isResolving}
                         onClick={handleUpdateReport}
                     >
@@ -251,7 +255,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
                 </div>
             </div>
 
-            <IdResolutionFeedback isVisible={isResolutionFeedbackVisible} resolutionResult={resolutionResult} />
+            {isResolutionFeedbackVisible && <IdResolutionFeedback resolutionResult={resolutionResult} />}
         </div>
     );
 };

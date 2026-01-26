@@ -15,11 +15,14 @@ import {
 // Declare global variables for ExtJS
 declare const Ext4: any;
 
-export const ReportTab: FC<{
+/** Props for ReportTab component */
+interface ReportTabProps {
     children: (tab: ExtReportTab) => React.ReactNode;
     filters: ReportFilters;
     report: ReportConfig;
-}> = ({ report, filters, children }) => {
+}
+
+export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const [tab, setTab] = useState<ExtReportTab | null>(null);
 
@@ -43,44 +46,39 @@ export const ReportTab: FC<{
                 nonRemovable: [],
             };
 
-            const subjectFieldName = report.subjectFieldName || 'Id';
+            if (!filters) {
+                return filterArray;
+            }
+
+            const subjectIdFieldName = report.subjectIdFieldName || 'Id';
+            const hasSubjects = filters.subjects?.length > 0;
 
             // ID Search mode: Filter by specific subject IDs
-            if (
-                filters &&
-                filters.filterType === FILTER_TYPE_ID_SEARCH &&
-                filters.subjects &&
-                filters.subjects.length
-            ) {
+            if (filters.filterType === FILTER_TYPE_ID_SEARCH && hasSubjects) {
                 const subjects = filters.subjects;
                 if (subjects.length === 1) {
-                    filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
+                    filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
                 } else {
                     filterArray.nonRemovable.push(
-                        Filter.create(subjectFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
+                        Filter.create(subjectIdFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
                     );
                 }
             }
 
             // URL Params mode: Filter by URL-provided subject IDs (same as ID Search)
-            if (
-                filters &&
-                filters.filterType === FILTER_TYPE_URL_PARAMS &&
-                filters.subjects &&
-                filters.subjects.length
-            ) {
+            if (filters.filterType === FILTER_TYPE_URL_PARAMS && hasSubjects) {
                 const subjects = filters.subjects;
                 if (subjects.length === 1) {
-                    filterArray.nonRemovable.push(Filter.create(subjectFieldName, subjects[0], Filter.Types.EQUAL));
+                    filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
                 } else {
                     filterArray.nonRemovable.push(
-                        Filter.create(subjectFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
+                        Filter.create(subjectIdFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
                     );
                 }
             }
 
             // Alive at Center mode: Filter by calculated_status
-            if (filters && filters.filterType === FILTER_TYPE_ALIVE_AT_CENTER) {
+            if (filters.filterType === FILTER_TYPE_ALIVE_AT_CENTER) {
                 filterArray.nonRemovable.push(
                     Filter.create('Id/Demographics/calculated_status', 'Alive', Filter.Types.EQUAL)
                 );
@@ -99,9 +97,6 @@ export const ReportTab: FC<{
                 partName: 'Report',
                 suppressRenderErrors: true,
                 title: report.title,
-                schemaName: report.schemaName,
-                queryName: report.queryName,
-                viewName: report.viewName,
                 allowChooseQuery: false,
                 allowChooseView: true,
                 showInsertNewButton: false,
