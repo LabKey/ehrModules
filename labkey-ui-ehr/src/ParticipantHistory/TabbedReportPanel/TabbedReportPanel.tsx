@@ -1,4 +1,5 @@
 import React, { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
+import classNames from 'classnames';
 
 import { JSReportWrapper } from './JSReportWrapper';
 import { QueryReportWrapper } from './QueryReportWrapper';
@@ -110,9 +111,12 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
             {/* First Layer: Categories (Top Level - Primary Navigation) */}
             <ul className="nav nav-tabs category-tabs">
                 {categories.map(category => (
-                    <li className={activeCategory === category ? 'active' : ''} key={category}>
+                    <li className={classNames({ active: activeCategory === category })} key={category}>
                         <button
-                            className={activeCategory === category ? 'category-tab-active' : 'category-tab'}
+                            className={classNames({
+                                'category-tab-active': activeCategory === category,
+                                'category-tab': activeCategory !== category,
+                            })}
                             onClick={() => handleCategoryClick(category)}
                             type="button"
                         >
@@ -126,9 +130,12 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
             {activeCategory && activeCategoryReports?.length > 0 && (
                 <ul className="nav nav-tabs report-tabs">
                     {activeCategoryReports.map(report => (
-                        <li className={activeTabId === report.id ? 'active' : ''} key={report.id}>
+                        <li className={classNames({ active: activeTabId === report.id })} key={report.id}>
                             <button
-                                className={activeTabId === report.id ? 'report-tab-active' : 'report-tab'}
+                                className={classNames({
+                                    'report-tab-active': activeTabId === report.id,
+                                    'report-tab': activeTabId !== report.id,
+                                })}
                                 onClick={() => {
                                     setUserSelectedTabId(report.id);
                                     onTabChange(report.id);

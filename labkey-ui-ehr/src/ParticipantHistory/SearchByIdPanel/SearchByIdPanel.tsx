@@ -235,13 +235,19 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
                         {isResolving ? 'Searching...' : 'Search By Ids'}
                     </button>
                     <button
-                        className={`filter-button all-animals ${filterType === FILTER_TYPE_ALL ? 'active' : 'inactive'}`}
+                        className={classNames('filter-button', 'all-animals', {
+                            active: filterType === FILTER_TYPE_ALL,
+                            inactive: filterType !== FILTER_TYPE_ALL,
+                        })}
                         onClick={() => handleFilterModeChange(FILTER_TYPE_ALL)}
                     >
                         All Animals
                     </button>
                     <button
-                        className={`filter-button alive-at-center ${filterType === FILTER_TYPE_ALIVE_AT_CENTER ? 'active' : 'inactive'}`}
+                        className={classNames('filter-button', 'alive-at-center', {
+                            active: filterType === FILTER_TYPE_ALIVE_AT_CENTER,
+                            inactive: filterType !== FILTER_TYPE_ALIVE_AT_CENTER,
+                        })}
                         disabled={!activeReportSupportsNonIdFilters}
                         onClick={() => handleFilterModeChange(FILTER_TYPE_ALIVE_AT_CENTER)}
                         title={
