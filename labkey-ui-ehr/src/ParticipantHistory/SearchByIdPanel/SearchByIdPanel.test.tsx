@@ -888,13 +888,10 @@ describe('SearchByIdPanel', () => {
             fireEvent.change(textarea, { target: { value: 'ID123' } });
             fireEvent.click(updateButton);
 
-            // Should show "Searching..." while loading
-            await waitFor(() => {
-                expect(screen.getByRole('button', { name: /searching/i })).toBeInTheDocument();
-            });
-
             // Button should be disabled while loading
-            expect(screen.getByRole('button', { name: /searching/i })).toBeDisabled();
+            await waitFor(() => {
+                expect(screen.getByRole('button', { name: /search by ids/i })).toBeDisabled();
+            });
 
             // Resolve the promise
             resolvePromise!({
@@ -902,9 +899,9 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
-            // Should return to "search by ids" after loading
+            // Button should be re-enabled after loading
             await waitFor(() => {
-                expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
+                expect(screen.getByRole('button', { name: /search by ids/i })).toBeEnabled();
             });
         });
     });
